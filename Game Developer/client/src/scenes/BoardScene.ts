@@ -1,9 +1,10 @@
 // The board at phone size: spaces and connections as shapes, the character as a token, a Roll button.
-// No art yet: shapes and labels (the Art Director's sprites come later). Everything here is drawing and input;
-// what happens is decided by the rules through LocalGame.
+// After a roll, every space the roll can end on lights up and the player taps one. No art yet: shapes and labels
+// (the Art Director's sprites come later). Everything here is drawing and input; what happens is decided by the
+// rules through LocalGame.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, legalPaths, SPACE_KIND_DATA, type GameEvent, type Space, type SpaceKind } from '../../../rules/src/index.ts';
+import { CLASS_DATA, reachable, SPACE_KIND_DATA, type GameEvent, type Space, type SpaceKind } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
@@ -15,8 +16,11 @@ export interface BoardSceneDeps {
 
 const FONT = 'system-ui, "Segoe UI", Roboto, sans-serif';
 const SPACE_RADIUS = 26;
+const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circle
+const RING_RADIUS = 34;
 const TOKEN_RADIUS = 15;
 const STEP_MS = 260;
+const LIT = 0xfff27a;
 
 // One colour per kind of space (mine, 2026-10-31, placeholders until the art comes).
 const KIND_COLORS: Record<SpaceKind, number> = {
@@ -40,12 +44,15 @@ const CLASS_COLORS: Record<string, number> = {
 export class BoardScene extends Phaser.Scene {
   private readonly game_: LocalGame;
   private readonly log: GameLog;
+  private readonly rings = new Map<string, Phaser.GameObjects.Arc>();
   private token!: Phaser.GameObjects.Container;
   private hudStats!: Phaser.GameObjects.Text;
   private dieText!: Phaser.GameObjects.Text;
   private dieBox!: Phaser.GameObjects.Container;
   private message!: Phaser.GameObjects.Text;
   private rollButton!: Phaser.GameObjects.Container;
+  /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
+  private choices: Map<string, string[]> | null = null;
   private busy = false;
 
   constructor(deps: BoardSceneDeps) {
@@ -62,8 +69,17 @@ export class BoardScene extends Phaser.Scene {
     this.drawToken();
     this.drawControls();
     this.refreshHud();
-    this.setMessage(`Tap Roll to move ${this.game_.me.name}.`);
     this.log.note('board scene ready');
+
+    const me = this.game_.me;
+    if (me.steps > 0) {
+      // The page was closed mid-choice: the roll is still owed, so offer the same choice again.
+      this.dieText.setText(String(this.game_.state.die.last ?? me.steps));
+      this.setBusy(true);
+      this.offerChoices();
+    } else {
+      this.setMessage(`Tap Roll to move ${me.name}.`);
+    }
   }
 
   override update(_time: number, delta: number): void {
@@ -87,12 +103,20 @@ export class BoardScene extends Phaser.Scene {
 
   private drawSpace(space: Space): void {
     const color = KIND_COLORS[space.kind];
-    const circle = this.add.circle(space.x, space.y, SPACE_RADIUS, color, 1);
+    const ring = this.add.circle(space.x, space.y, RING_RADIUS);
+    ring.setStrokeStyle(4, LIT, 1).setVisible(false).setDepth(4);
+    this.rings.set(space.id, ring);
+
+    const circle = this.add.circle(space.x, space.y, SPACE_RADIUS, color, 1).setDepth(5);
     circle.setStrokeStyle(space.kind === 'bossgate' ? 5 : 3, 0xffffff, space.kind === 'bossgate' ? 0.6 : 0.25);
+    circle.setInteractive(new Phaser.Geom.Circle(SPACE_RADIUS, SPACE_RADIUS, TAP_RADIUS), Phaser.Geom.Circle.Contains);
+    circle.on('pointerdown', () => this.onSpaceTap(space.id));
+
     const label = SPACE_KIND_DATA[space.kind].label;
     this.add
       .text(space.x, space.y, label.charAt(0), { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#101318' })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(6);
     this.add
       .text(space.x, space.y + SPACE_RADIUS + 4, space.name, {
         fontFamily: FONT,
@@ -100,7 +124,8 @@ export class BoardScene extends Phaser.Scene {
         color: COLORS.text,
         align: 'center',
       })
-      .setOrigin(0.5, 0);
+      .setOrigin(0.5, 0)
+      .setDepth(6);
   }
 
   private drawToken(): void {
@@ -186,9 +211,11 @@ export class BoardScene extends Phaser.Scene {
   // ---- play ----------------------------------------------------------------------------------------------------
 
   private onRoll(): void {
-    if (this.busy) return;
-    this.busy = true;
-    this.rollButton.setAlpha(0.5);
+    if (this.busy) {
+      if (this.choices) this.setMessage('Tap a lit space first.');
+      return;
+    }
+    this.setBusy(true);
 
     const rolled = this.game_.act({ type: 'roll', player: this.game_.player });
     const roll = rolled.find((e) => e.type === 'rolled');
@@ -198,25 +225,70 @@ export class BoardScene extends Phaser.Scene {
     }
     this.dieText.setText(String(roll.value));
     this.tweens.add({ targets: this.dieBox, scaleX: 1.25, scaleY: 1.25, duration: 120, yoyo: true, ease: 'Quad.easeOut' });
-    this.setMessage(`Rolled ${roll.value}.`);
     this.log.note(`rolled ${roll.value}`);
+    this.offerChoices();
+  }
 
-    // The client picks the first legal path for now (mine, 2026-10-31); choosing at a fork by tapping comes next.
+  /** Light up every space the owed roll can end on. One place to go: walk at once. More: wait for a tap. */
+  private offerChoices(): void {
     const me = this.game_.me;
-    const path = legalPaths(this.game_.state.board, me.space, me.steps)[0];
-    if (!path) {
-      this.finish(`No way to walk ${me.steps} from ${me.space}.`);
+    const value = this.game_.state.die.last ?? me.steps;
+    const options = reachable(this.game_.state.board, me.space, me.steps);
+    if (options.length === 0) {
+      this.finish(`No way to walk ${me.steps} from here.`);
       return;
     }
+    if (options.length === 1) {
+      this.setMessage(`Rolled ${value}.`);
+      this.go(options[0]!.path);
+      return;
+    }
+    this.choices = new Map(options.map((o) => [o.space, o.path]));
+    const rings: Phaser.GameObjects.Arc[] = [];
+    for (const o of options) {
+      const ring = this.rings.get(o.space);
+      if (ring) rings.push(ring.setVisible(true).setAlpha(1));
+    }
+    this.tweens.add({ targets: rings, alpha: 0.25, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.setMessage(`Rolled ${value}. Tap a lit space to walk there.`);
+  }
+
+  private onSpaceTap(id: string): void {
+    if (!this.choices) return;
+    const path = this.choices.get(id);
+    if (!path) {
+      this.setMessage(`Not ${this.game_.me.steps} steps away. Tap a lit space.`);
+      return;
+    }
+    this.clearChoices();
+    this.log.note(`chose ${id}`);
+    this.go(path);
+  }
+
+  private clearChoices(): void {
+    if (!this.choices) return;
+    for (const id of this.choices.keys()) {
+      const ring = this.rings.get(id);
+      if (ring) {
+        this.tweens.killTweensOf(ring);
+        ring.setVisible(false).setAlpha(1);
+      }
+    }
+    this.choices = null;
+  }
+
+  /** Send the move and walk the token along it. */
+  private go(path: string[]): void {
     const moved = this.game_.act({ type: 'move', player: this.game_.player, path });
     const landed = moved.find((e) => e.type === 'landed');
     if (!landed || landed.type !== 'landed') {
       this.finish(this.describe(moved));
       return;
     }
+    const value = this.game_.state.die.last;
     this.walk(path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
-      this.finish(`Rolled ${roll.value}. Landed on ${space.name} (${SPACE_KIND_DATA[space.kind].label.toLowerCase()}).`);
+      this.finish(`Rolled ${value}. Landed on ${space.name} (${SPACE_KIND_DATA[space.kind].label.toLowerCase()}).`);
       this.log.note(`landed on ${space.id} ${space.name} (${space.kind})`);
     });
   }
@@ -236,8 +308,12 @@ export class BoardScene extends Phaser.Scene {
   private finish(message: string): void {
     this.setMessage(message);
     this.refreshHud();
-    this.busy = false;
-    this.rollButton.setAlpha(1);
+    this.setBusy(false);
+  }
+
+  private setBusy(busy: boolean): void {
+    this.busy = busy;
+    this.rollButton.setAlpha(busy ? 0.5 : 1);
   }
 
   private onDownloadLog(): void {

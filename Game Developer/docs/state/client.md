@@ -30,12 +30,16 @@ button (220 by 66) and the Log button (80 by 50) at y 862; a tiny build-and-seed
   battle red, shop yellow, event purple, treasure orange, quest blue, boss gate dark red with a thick ring, shrine teal), with
   the kind's first letter inside and the name under; the **token** is a container (a circle of radius 15 with the class's
   first letter) sitting just above its space.
-- **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then picks a path and calls
-  `game.act({ type: 'move', path })` at once, and only then walks the token: a tween chain, 260 ms per step, Sine in-out.
-  The state is therefore ahead of the picture during the walk, as it will be with a server: the picture is playback.
-  While walking, the button is dimmed and ignores taps.
-- **The path is picked by the client**: the first entry of `legalPaths` (mine, 2026-10-31: the ring, anticlockwise from
-  the start). Offering the choice at a fork by tapping a space is the next thing this scene needs.
+- **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then asks the rules
+  where the roll can end (`reachable`). **One place: the token walks at once. More: those spaces light up** (a pulsing
+  yellow ring, radius 34) and the message says "Tap a lit space to walk there". The tap area of a space is a circle of
+  radius 38, wider than the drawn 26, for thumbs. Tapping an unlit space says "Not N steps away"; tapping Roll says "Tap
+  a lit space first". (Robin, 2026-10-31: the die gives the choice of where to go; the tap-the-destination form is mine.)
+- **The tap** calls `game.act({ type: 'move', path })` at once, clears the rings, and only then walks the token: a tween
+  chain, 260 ms per step, Sine in-out. The state is therefore ahead of the picture during the walk, as it will be with a
+  server: the picture is playback. While choosing or walking, the Roll button is dimmed.
+- **A page closed mid-choice** opens with the same choice lit again: the save holds the owed steps and the die's last
+  value, and `create` offers the choice when `steps > 0`.
 - A refusal shows as "Not allowed: <reason>." in the message line.
 - A hidden tab or a hidden browser pane pauses Phaser (no animation frames), so a walk finishes when the page is shown
   again. The state is already saved by then.
@@ -69,6 +73,7 @@ above 1.5 MB per chunk.
 
 ## Not here yet
 
-A fight screen, the space resolutions, choosing at forks, a character screen, sound (`?mute=1` is the convention for
+A fight screen, the space resolutions, a map bigger than one screen (a camera that follows the character and zooms out
+for the overview), a character screen, sound (`?mute=1` is the convention for
 test pages once sound exists), the socket client (after `docs/state/protocol.md` is written), reconnect on
 `visibilitychange` and `pageshow`.

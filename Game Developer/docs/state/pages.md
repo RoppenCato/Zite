@@ -21,7 +21,10 @@ boardWorld.phaser.loop.actualFps
 ```
 
 The Roll button in design pixels is at (176, 862); in the mobile preset (375 by 812, canvas at 0.89 scale, 5 pixels in
-from the left) that is about (161, 765). The Log button triggers a file download, so in the pane read `log.text()` instead.
+from the left) that is about (161, 765). A space at design (x, y) is at about (5 + 0.887 x, 0.887 y): Crossroads (56, 430)
+is (55, 381), Windy Ridge (356, 430) is (320, 381). After a roll with more than one place to go, the lit spaces are
+tappable; `boardWorld.phaser.scene.getScene('board').choices` is the map of landing space to path while the player is
+choosing, null otherwise. The Log button triggers a file download, so in the pane read `log.text()` instead.
 
 ## Things the pane does to a page
 

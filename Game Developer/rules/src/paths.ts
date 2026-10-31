@@ -26,6 +26,29 @@ export function legalPaths(board: Board, from: string, steps: number): string[][
   return out;
 }
 
+export interface Reach {
+  /** A space the roll can end on. */
+  space: string;
+  /** The first walk (in link order) that gets there. */
+  path: string[];
+}
+
+/**
+ * Where a roll can end: each landing space once, with the first walk that reaches it. The client lights these up and
+ * the player taps one (mine, 2026-10-31: the choice is the destination, one tap, not a turn at every fork).
+ */
+export function reachable(board: Board, from: string, steps: number): Reach[] {
+  const out: Reach[] = [];
+  const seen = new Set<string>();
+  for (const path of legalPaths(board, from, steps)) {
+    const space = path[path.length - 1]!;
+    if (seen.has(space)) continue;
+    seen.add(space);
+    out.push({ space, path });
+  }
+  return out;
+}
+
 /** Why `path` is not a legal walk of `steps` steps from `from`, or null when it is. */
 export function checkPath(board: Board, from: string, steps: number, path: string[]): PathProblem | null {
   if (path.length !== steps) return 'wrong number of steps';

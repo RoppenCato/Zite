@@ -10,7 +10,7 @@ server's region actor (`server/src/region-actor.ts`). Import from `rules/src/ind
 | `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (1) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
 | `src/data.ts` | the numbers from `data/*.json`, typed |
-| `src/paths.ts` | `legalPaths` (every walk a roll allows) and `checkPath` (why a walk is not allowed) |
+| `src/paths.ts` | `legalPaths` (every walk a roll allows), `reachable` (where it can end, each space once), `checkPath` (why a walk is not allowed) |
 | `src/game.ts` | `newGame`, `apply`, `makeBoard`, `makeCharacter` |
 | `src/save.ts` | `migrate(raw)`: a stored state up to the current version, or null |
 | `data/board.json` | the first board: twelve spaces, the start, the links, the design-pixel positions |
@@ -50,7 +50,12 @@ A refused action returns the **same** state object and one `rejected { action, p
 
 **One intent per roll** (mine, 2026-10-31): the whole walk goes in one `move`, so a phone sends one message per turn and the
 server checks the walk in one go. Forks are expressed by the path; `legalPaths(board, from, steps)` lists every allowed walk
-in link order, and the client offers (today: picks) one of them.
+in link order, and `reachable(board, from, steps)` lists where those walks end, each space once with the first walk that
+gets there. The client lights those spaces and the player taps one: the choice is the destination, one tap, not a turn at
+every fork (mine, 2026-10-31). Two walks to the same space: the first in link order is taken.
+
+**The board is a big connected map** (Robin, 2026-10-31: like Dokapon's, many paths, the die gives the choice of where to
+go). The twelve-space ring is the test board only; a map in that shape is the next piece.
 
 **Landing does nothing yet.** `landed` says the kind of space; what a battle, shop, event, treasure, quest, boss gate or
 shrine does comes with MVP step 1's next pieces.

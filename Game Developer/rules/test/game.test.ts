@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { apply, newGame } from '../src/game.ts';
-import { legalPaths } from '../src/paths.ts';
+import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
 import { migrate } from '../src/save.ts';
 import type { Action, GameState } from '../src/types.ts';
@@ -143,6 +143,20 @@ describe('the legal paths', () => {
     expect(legalPaths(board, 's3', 1)).toEqual([['s2'], ['s4'], ['s9']]);
     expect(legalPaths(board, 's0', 4)).toHaveLength(4);
     expect(legalPaths(board, 's0', 0)).toEqual([]);
+  });
+
+  it('lists where a roll can end, each space once, with the first walk there', () => {
+    const { board } = fresh();
+    expect(reachable(board, 's0', 2)).toEqual([
+      { space: 's10', path: ['s11', 's10'] },
+      { space: 's2', path: ['s1', 's2'] },
+    ]);
+    // A 6 from the start: six walks, but two of them end on Moon Shrine, so five places to tap.
+    const six = reachable(board, 's0', 6);
+    expect(legalPaths(board, 's0', 6)).toHaveLength(6);
+    expect(six.map((r) => r.space)).toEqual(['s6', 's1', 's5', 's7', 's11']);
+    expect(six[0]?.path).toEqual(['s11', 's10', 's9', 's8', 's7', 's6']);
+    expect(reachable(board, 's0', 0)).toEqual([]);
   });
 
   it('agrees with move: every legal path is accepted', () => {
