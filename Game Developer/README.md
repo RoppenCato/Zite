@@ -33,7 +33,8 @@ it at phone size: in the Claude desktop app, the browser pane with its mobile pr
 (entry `game`) when the session's folder is this one. The first time, the character screen asks for a name and a class.
 Tap **Roll**: the die rolls; with more than one place to go the
 camera frames the lit spaces and you tap one; the character walks and the camera follows. A battle space opens the fight
-screen: Attack, your class's move, Defend or Flee, one round a tap. Drag to look around, pinch to zoom; **Map** shows the
+screen: Attack, your class's move, Defend, Flee or a Potion, one round a tap. A shop sells potions and dice cards; a dice
+card held shows as a chip under the board while a roll is pending. Drag to look around, pinch to zoom; **Map** shows the
 whole island and **Back** returns to the character. **Log** downloads the frame log and error log as a text file.
 
 ```bash
@@ -57,9 +58,9 @@ Also: `npm run typecheck` (TypeScript, strict, both configs), `npm run icons` (r
 
 ```
 rules/src        types, rng, data, island, paths, game, save, index
-rules/data       board.json (the island: hubs and roads), dice, classes, spaces, events, enemies, progression
-rules/test       rng, game, fight, board, island, purity; fixtures/ring (the first twelve-space board)
-client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, play, BoardScene, HudScene, FightScene
+rules/data       board.json (the island: hubs and roads), dice, classes, spaces, events, enemies, progression, items
+rules/test       rng, game, fight, items, board, island, purity; fixtures/ring (the first twelve-space board)
+client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, play, BoardScene, HudScene, FightScene, ShopScene
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
 server/src       db, region-actor, index
 server/test      region-actor

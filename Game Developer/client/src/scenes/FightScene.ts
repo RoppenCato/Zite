@@ -3,7 +3,7 @@
 // between, four buttons. It decides nothing: each button sends one intent and the events are played back one by one.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, type GameEvent } from '../../../rules/src/index.ts';
+import { CLASS_DATA, ITEMS, type GameEvent } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
@@ -21,6 +21,7 @@ export const FIGHT_BUTTONS = {
   skill: { x: 302, y: 672, w: 180, h: 52 },
   defend: { x: 110, y: 736, w: 180, h: 52 },
   flee: { x: 302, y: 736, w: 180, h: 52 },
+  potion: { x: 206, y: 612, w: 220, h: 44 },
   continue: { x: 206, y: 704, w: 220, h: 56 },
 } as const;
 
@@ -54,6 +55,8 @@ export class FightScene extends Phaser.Scene {
   private heroBar!: Bar;
   private message!: Phaser.GameObjects.Text;
   private buttons: Phaser.GameObjects.Container[] = [];
+  private potionButton!: Phaser.GameObjects.Container;
+  private potionLabel!: Phaser.GameObjects.Text;
   private continueButton!: Phaser.GameObjects.Container;
   /** True while a round's events are being played back; the buttons wait. */
   private busy = false;
@@ -108,6 +111,11 @@ export class FightScene extends Phaser.Scene {
       makeButton(this, b.defend.x, b.defend.y, b.defend.w, b.defend.h, 'Defend', COLORS.log, '20px', () => this.act('defend')).button,
       makeButton(this, b.flee.x, b.flee.y, b.flee.w, b.flee.h, 'Flee', COLORS.log, '20px', () => this.act('flee')).button,
     ];
+    const potion = makeButton(this, b.potion.x, b.potion.y, b.potion.w, b.potion.h, 'Potion', 0x4aa3df, '17px', () => this.act('use', 'potion'));
+    this.potionButton = potion.button;
+    this.potionLabel = potion.label;
+    this.buttons.push(this.potionButton);
+    this.refreshPotion();
     this.continueButton = makeButton(this, b.continue.x, b.continue.y, b.continue.w, b.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);
 
@@ -118,10 +126,10 @@ export class FightScene extends Phaser.Scene {
 
   // ---- play ----------------------------------------------------------------------------------------------------------
 
-  private act(type: 'attack' | 'defend' | 'skill' | 'flee'): void {
+  private act(type: 'attack' | 'defend' | 'skill' | 'flee' | 'use', item?: string): void {
     if (this.busy || this.outcome) return;
     this.setBusy(true);
-    const events = this.game_.act({ type, player: this.game_.player });
+    const events = type === 'use' ? this.game_.act({ type, player: this.game_.player, item: item ?? 'potion' }) : this.game_.act({ type, player: this.game_.player });
     this.log.note(`fight ${type}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
     this.play(events, 0);
   }
@@ -130,6 +138,7 @@ export class FightScene extends Phaser.Scene {
   private play(events: GameEvent[], i: number): void {
     if (i >= events.length) {
       this.setBusy(false);
+      this.refreshPotion();
       (this.scene.get('board') as BoardScene).refreshHud();
       if (this.outcome) {
         for (const b of this.buttons) b.setVisible(false);
@@ -154,6 +163,13 @@ export class FightScene extends Phaser.Scene {
           this.heroBar.set(e.hp, me.maxHp);
           this.say(`${e.move} hits you for ${e.damage}${e.crit ? ', a crit!' : '.'}`);
         }
+        break;
+      case 'used':
+        this.say(`You drink a ${ITEMS[e.item]?.name ?? e.item}.`);
+        break;
+      case 'healed':
+        this.heroBar.set(e.hp, me.maxHp);
+        this.say(e.amount > 0 ? `You feel better: +${e.amount} HP.` : 'Nothing to heal.');
         break;
       case 'charged':
         this.say('You gather power. The next hit will be huge.');
@@ -209,6 +225,13 @@ export class FightScene extends Phaser.Scene {
 
   private say(text: string): void {
     this.message.setText(text);
+  }
+
+  /** The potion button shows how many are left and hides when there are none. */
+  private refreshPotion(): void {
+    const n = this.game_.me.items.potion ?? 0;
+    this.potionLabel.setText(n > 1 ? `Potion ×${n}` : 'Potion');
+    this.potionButton.setVisible(n > 0);
   }
 
   private setBusy(busy: boolean): void {

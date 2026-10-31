@@ -33,17 +33,22 @@ boardWorld.phaser.scene.getScene('hud')  // the chrome: setMessage, setStats, se
 boardWorld.phaser.scene.isActive('fight') // true while the fight screen is up
 boardWorld.game.me.fight                 // the enemy and the round, or null
 boardWorld.game.act({ type: 'attack', player: 'local' })   // or defend, skill, flee: one round, the events back
+boardWorld.game.act({ type: 'buy', player: 'local', item: 'potion' })        // standing on a shop
+boardWorld.game.act({ type: 'use', player: 'local', item: 'exact', value: 4 }) // a dice card on a pending roll
+boardWorld.phaser.scene.isActive('shop')  // the shop is up; Buy buttons at (352, 214 + 72 n), Leave at (206, 696)
 ```
 
 **Where things are on the screen.** The buttons sit at y 862 in design pixels: Map at x 50, Roll at x 206, Log at x 362.
 In the mobile preset (375 by 812, canvas at 0.89 scale, 5 pixels in from the left) that is about (49, 765), (188, 765)
 and (326, 765). A space at world (wx, wy) is on the screen at design
 `x = (wx − worldView.x) × zoom`, `y = 90 + (wy − worldView.y) × zoom` (the band starts at y 90), then times 0.887 plus the
-5 pixels for the preset; it is tappable only while inside the band (y 90 to 770 in design pixels). `board.frame([...])`
+5 pixels for the preset; it is tappable only while inside the band (y 90 to 750 in design pixels). `board.frame([...])`
 and `board.overview()` are private but callable from a script when a test needs the lit spaces in view.
 
 **The fight screen's buttons**, in design pixels: Attack (110, 672), the class's move (302, 672), Defend (110, 736),
-Flee (302, 736), each 180 by 52; Continue (206, 704) once the fight is over. A round's events play 450 ms apart; the
+Flee (302, 736), each 180 by 52; Potion (206, 612) while the bag has one; Continue (206, 704) once the fight is over.
+**The dice-card chips** sit in a row centred at (206, 764) while a roll is pending and the bag has a card; the HUD's
+`cardRow` container holds them, each chip a button with its label. A round's events play 450 ms apart; the
 scene's `busy` is true meanwhile. From Ashford every roll but a 2 offers a battle space, so the driver reaches a fight in
 a roll or two.
 
@@ -51,8 +56,9 @@ a roll or two.
 before it lifts (it pans the camera, and lifting it on a space is not a tap); a pinch is two touches moving apart or
 together; a mouse wheel over the band zooms by a tenth a notch. `tools/drive-board.mjs` does all of this headless against
 the built game (`node tools/drive-board.mjs [url]`, Chromium through Playwright, CDP touch events for drags and pinches):
-the character screen, the camera, the gestures, a reload mid-choice, a version-1 save, the landed message, a whole fight
-and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first.
+the character screen, the camera, the gestures, a reload mid-choice, a version-1 save, the landed message, a whole fight,
+the shop, a dice card, a potion and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first and
+plants saves of its own to reach the shop and a fight with a potion.
 
 ## Things the pane does to a page
 

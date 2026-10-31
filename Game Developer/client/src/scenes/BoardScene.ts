@@ -6,6 +6,7 @@
 import Phaser from 'phaser';
 import {
   CLASS_DATA,
+  ITEMS,
   reachable,
   SPACE_KIND_DATA,
   type Board,
@@ -17,7 +18,7 @@ import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
 import type { FightOutcome } from './FightScene.ts';
-import type { HudScene } from './HudScene.ts';
+import type { CardChip, HudScene } from './HudScene.ts';
 
 export interface BoardSceneDeps {
   game: LocalGame;
@@ -128,6 +129,28 @@ export class BoardScene extends Phaser.Scene {
     } else {
       this.setMessage(`Tap Roll to move ${me.name}.`);
     }
+  }
+
+  /** A dice card from the HUD's row: change the pending roll and offer the new choices. */
+  useCard(item: string, value?: number): void {
+    if (!this.choices_) return;
+    const events = this.game_.act({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) });
+    const steps = events.find((e) => e.type === 'steps');
+    if (!steps || steps.type !== 'steps') {
+      this.setMessage(this.describe(events));
+      return;
+    }
+    this.log.note(`used ${item}${value !== undefined ? ` ${value}` : ''}: ${steps.steps} steps`);
+    this.hud?.setDie(String(steps.steps), true);
+    this.clearChoices();
+    this.offerChoices(`${ITEMS[item]?.name ?? item}: now ${steps.steps} ${steps.steps === 1 ? 'step' : 'steps'}.`);
+  }
+
+  /** The shop scene is done: close it and give the turn back. */
+  shopLeft(): void {
+    this.scene.stop('shop');
+    const space = this.game_.state.board.spaces[this.game_.me.space];
+    this.finish(`Left ${space?.name || 'the shop'}. Tap it again to go back in.`);
   }
 
   /** The fight scene is done: close it, and if the character was beaten, put the token in the town it woke in. */
@@ -423,8 +446,11 @@ export class BoardScene extends Phaser.Scene {
 
   // ---- play --------------------------------------------------------------------------------------------------------
 
-  /** Light up every space the owed roll can end on. One place to go: walk at once. More: frame them and wait for a tap. */
-  private offerChoices(): void {
+  /**
+   * Light up every space the owed roll can end on. One place to go and no dice card in the bag: walk at once. Otherwise
+   * frame them and wait for a tap, with the dice cards offered in the HUD's row (mine: a card can still change the roll).
+   */
+  private offerChoices(lead = ''): void {
     const me = this.game_.me;
     const { board } = this.game_.state;
     const value = this.game_.state.die.last ?? me.steps;
@@ -433,7 +459,8 @@ export class BoardScene extends Phaser.Scene {
       this.finish(`No way to walk ${me.steps} from here.`);
       return;
     }
-    if (options.length === 1) {
+    const cards = this.diceCards();
+    if (options.length === 1 && cards.length === 0) {
       this.setMessage(`Rolled ${value}.`);
       this.go(options[0]!.path);
       return;
@@ -446,11 +473,24 @@ export class BoardScene extends Phaser.Scene {
     }
     this.tweens.add({ targets: rings, alpha: 0.25, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.frame([this.token, ...options.map((o) => board.spaces[o.space]!)]);
-    this.setMessage(`Rolled ${value}. Tap a lit space to walk there.`);
+    this.hud?.setCards(cards);
+    this.setMessage(`${lead || `Rolled ${value}.`} Tap a lit space to walk there.`);
+  }
+
+  /** The dice cards in the bag, for the HUD's row. */
+  private diceCards(): CardChip[] {
+    return Object.entries(this.game_.me.items)
+      .filter(([id, n]) => n > 0 && ITEMS[id]?.dice)
+      .map(([id, n]) => ({ item: id, label: ITEMS[id]!.name, count: n }));
   }
 
   private onSpaceTap(id: string): void {
-    if (!this.choices_) return;
+    if (!this.choices_) {
+      // Standing on a shop with nothing pending: a tap on it goes back in.
+      const me = this.game_.me;
+      if (!this.busy && id === me.space && this.game_.state.board.spaces[id]?.kind === 'shop') this.openShop();
+      return;
+    }
     const path = this.choices_.get(id);
     if (!path) {
       this.setMessage(`Not ${this.game_.me.steps} steps away. Tap a lit space.`);
@@ -471,6 +511,7 @@ export class BoardScene extends Phaser.Scene {
       }
     }
     this.choices_ = null;
+    this.hud?.setCards([]);
   }
 
   /** Send the move, then follow the token as it walks. */
@@ -490,6 +531,12 @@ export class BoardScene extends Phaser.Scene {
       this.log.note(`landed on ${space.id} (${space.kind}): ${this.describeLanding(moved) || 'nothing'}`);
       if (this.game_.me.fight) {
         this.openFight();
+        return;
+      }
+      if (space.kind === 'shop') {
+        this.setMessage(`Rolled ${value}. Landed on ${where}.`);
+        this.refreshHud();
+        this.openShop();
         return;
       }
       this.finish(`Rolled ${value}. Landed on ${where}. ${this.describeLanding(moved)}`.trimEnd());
@@ -516,6 +563,12 @@ export class BoardScene extends Phaser.Scene {
     this.setMessage(`A ${fight.enemy.name} blocks the way.`);
     this.refreshHud();
     this.scene.launch('fight');
+  }
+
+  /** The shop is open: the board waits under the shop scene until the player leaves. */
+  private openShop(): void {
+    this.setBusy(true);
+    this.scene.launch('shop');
   }
 
   private finish(message: string): void {

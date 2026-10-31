@@ -5,7 +5,7 @@
 import Phaser from 'phaser';
 import { CLASS_DATA, ISLAND_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -21,7 +21,16 @@ export const BUTTONS = {
   roll: { x: 206, y: 862, w: 220, h: 66 },
   log: { x: 362, y: 862, w: 72, h: 50 },
 } as const;
-const MESSAGE_Y = 795;
+const MESSAGE_Y = 790;
+/** The row of dice-card chips, between the band and the message line. */
+export const CARDS_Y = 764;
+
+/** A dice card the player holds, as the board offers it while a roll is pending. */
+export interface CardChip {
+  item: string;
+  label: string;
+  count: number;
+}
 
 export class HudScene extends Phaser.Scene {
   private readonly game_: LocalGame;
@@ -32,6 +41,8 @@ export class HudScene extends Phaser.Scene {
   private message!: Phaser.GameObjects.Text;
   private rollButton!: Phaser.GameObjects.Container;
   private mapLabel!: Phaser.GameObjects.Text;
+  private cardRow!: Phaser.GameObjects.Container;
+  private cards: CardChip[] = [];
 
   constructor(deps: HudSceneDeps) {
     super('hud');
@@ -74,6 +85,37 @@ export class HudScene extends Phaser.Scene {
     this.mapLabel.setText(following ? 'Map' : 'Back');
   }
 
+  /** The dice cards to offer while a roll is pending; an empty list clears the row. */
+  setCards(cards: CardChip[]): void {
+    this.cards = cards;
+    this.drawChips(cards.map((c) => ({ text: c.count > 1 ? `${c.label} ×${c.count}` : c.label, onTap: () => this.onCard(c) })));
+  }
+
+  private onCard(card: CardChip): void {
+    const board = this.scene.get('board') as BoardScene;
+    if (card.item !== 'exact') {
+      board.useCard(card.item);
+      return;
+    }
+    // Exactly N: the row becomes the numbers to choose from, and a way back.
+    const sides = this.game_.state.die.sides;
+    const numbers = Array.from({ length: sides }, (_, i) => ({ text: String(i + 1), onTap: () => board.useCard('exact', i + 1) }));
+    this.drawChips([...numbers, { text: '×', onTap: () => this.setCards(this.cards) }]);
+  }
+
+  private drawChips(chips: { text: string; onTap: () => void }[]): void {
+    this.cardRow.removeAll(true);
+    const widths = chips.map((c) => Math.max(36, c.text.length * 9 + 22));
+    const gap = 8;
+    let x = -(widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1)) / 2;
+    chips.forEach((chip, i) => {
+      const w = widths[i]!;
+      const { button } = makeButton(this, x + w / 2, 0, w, 30, chip.text, 0x8e6ad9, '14px', chip.onTap);
+      this.cardRow.add(button);
+      x += w + gap;
+    });
+  }
+
   // ---- drawing ----------------------------------------------------------------------------------------------------
 
   private drawPanel(): void {
@@ -97,9 +139,10 @@ export class HudScene extends Phaser.Scene {
   }
 
   private drawControls(): void {
-    // A dark strip under the message and the buttons, so the world never shows through there.
-    const stripTop = MESSAGE_Y - 20;
+    // A dark strip under the dice cards, the message and the buttons, so the world never shows through there.
+    const stripTop = HUD_HEIGHT + VIEW_HEIGHT;
     this.add.rectangle(DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, DESIGN_WIDTH, DESIGN_HEIGHT - stripTop, COLORS.panel, 1);
+    this.cardRow = this.add.container(DESIGN_WIDTH / 2, CARDS_Y);
 
     this.message = this.add
       .text(DESIGN_WIDTH / 2, MESSAGE_Y, '', {

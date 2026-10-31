@@ -4,8 +4,8 @@ export const DESIGN_HEIGHT = 915;
 
 /** The HUD panel across the top; the world is seen under it. */
 export const HUD_HEIGHT = 90;
-/** The band the world camera looks through: from under the HUD panel to above the message line and the buttons. */
-export const VIEW_HEIGHT = 680;
+/** The band the world camera looks through: from under the HUD panel to above the dice cards, the message and the buttons. */
+export const VIEW_HEIGHT = 660;
 
 export const COLORS = {
   background: '#1b1f2a',
