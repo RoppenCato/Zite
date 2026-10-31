@@ -163,23 +163,22 @@ A new thing is right when:
 7. its **data is complete**;
 8. it **would not look out of place in `Maps/Places/`, and no piece of it is theirs.**
 
-## Open, for Robin
+## The world's form (decided: Robin, 2026-10-31)
 
-Robin, later on 2026-10-31, showed a Dokapon Kingdom board (a green island seen from a raised camera, gold spaces on roads,
-castles, trees, a river) and asked for "like B but 2.5D, a mix of A and B". That is a third form, **(c)**: the ground drawn
-from above at a tilt, with cliff faces where the land steps up; roads, rivers and the spaces flat on it; everything standing
-on it (trees, houses, castles, players, monsters) upright and sorted by depth; the camera follows the token and comes down for
-a fight, so the board's own scenery is the fight's background. Drawn as `docs/pictures/world-form/C-diorama.png`. **The
-studio now recommends (c)** over (a) and (b): it is the board game Robin described, it shows the world and the other players
-at once, it keeps the library's figures, props, monsters and painted style whole, and the one new thing it needs is a tilted
-ground kit (plates, roads, shore, cliff faces) instead of the side-view tile kit; the library's grassy top edges and earth
-bodies still teach how a cliff face is painted. (a) and (b) stay below as the record.
+**(c) The board is seen from a raised camera, in 2D.** Robin showed a Dokapon Kingdom board and asked for "like B but 2.5D":
+the ground drawn from above at a tilt, with cliff faces where the land steps up; roads, rivers, shores and the gold spaces flat
+on it; everything standing on it (trees, houses, castles, the players, the monsters) upright and sorted by depth; a horizon
+band (sea, far islands, sky, drifting clouds) that moves less than the ground. The camera follows the token and can pull back.
+`docs/pictures/world-form/C-diorama.png` is the picture; (a) and (b) beside it are kept as the record.
 
-- **The world's form.** The library builds side-view places: ground kits, layered backgrounds, props. Either (a) the world
-  itself is such a place, a huge side-view MapleStory-like world generated from kits, the board's spaces laid along its
-  ground, the camera following the token, a fight happening where the token stands (the fight background is the place
-  itself) and an overview map screen like MapleStory's World Map for the big picture; or (b) a top-down painted world map
-  of spaces and paths, with side-view fight scenes built from the kits. **My recommendation is (a)**: it uses everything the
-  library teaches, the fight backgrounds come free, and it looks like MapleStory; (b) uses the library only for fights and
-  monsters, and the top-down map has nothing in it to learn from but the World Map screen. The brief's "big beautiful world
-  map" is then the world seen as you travel, and the overview map on top.
+**Fights are their own screen** (Robin, 2026-10-31): 2D, outside the world map, "an instanced version of where you are": a
+side-view scene that looks like the place the token stands in, built from the area's kit: a ground band with a bright top
+edge, three to five parallax planes, the area's props, the fighters big. This is where the library's background and parallax
+rules (sections 5 and 6) apply whole.
+
+**So an area has two kits in one palette:** the **board kit** (ground plates of its kind of ground, road pieces: straight,
+bend, fork, bridge; shore; cliff faces for a step up, painted like the fight ground's top edge over its body; the gold space
+plate; props seen a touch from above) and the **fight kit** (the side-view ground pieces of section 4, the planes, props seen
+side on). They share the props' models and the monsters; they differ in camera. The board kit's pieces are new to us and get
+their names and origins in `docs/pipeline.md` when the first area is made; the board kit comes first, because the player sees
+it most.

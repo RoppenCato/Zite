@@ -49,7 +49,14 @@ Each prop: `file`, `origin` (the centre, so the base is computed), `layer` (0 to
 `Art Director/out/<area>/kit.json` holds every piece of an area with the data above; `out/<monster>/<monster>.json` holds
 a sprite's actions and frame data beside its atlas. The game copies a drop as the whole folder into `assets/` and commits it.
 
-## Not decided (2026-10-31)
+## The two scenes (decided: Robin, 2026-10-31)
 
-Whether the world itself is a side-view place built from these kits with the board's spaces along its ground, or a top-down
-world map with side-view fight scenes: `Art Director/docs/direction.md`, "Open, for Robin". The data above serves both.
+**The board** is seen from a raised camera, in 2D: a tilted ground (flat pieces: ground plates, road pieces, shore, cliff
+faces, the space plates; each with `file`, `origin` and a draw order), a horizon band of layers with scroll factors above it,
+and upright pieces (props, players, monsters) whose depth is the y of their base: one sort by y, `setDepth(y)` in Phaser.
+The camera follows the token and can pull back. The board scene is what the generator lays from the board kit.
+
+**A fight** is its own scene, 2D, outside the map: an instance of where the token stands, built from that area's fight kit:
+the layers with scroll factors above, a ground band (the side-view tile pieces), props, the fighters. The same monster sprites
+and frame data serve both scenes. In Phaser: two Scenes, `Board` and `Fight`; the fight scene is given the area and the
+space, and returns to the board.

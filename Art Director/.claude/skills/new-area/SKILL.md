@@ -1,6 +1,6 @@
 ---
 name: new-area
-description: Make the art kit for a new area of the board world (a mood, a region): its palette, a ground tile kit, three to five background planes with scroll factors, ten to twenty props, previewed panning at phone size and delivered with data for the generator. Use when Robin or Miles, GD says "we need a desert area", "make the forest region's kit", "a background for the swamp", or names a region that has no art.
+description: Make the art kit for a new area of the board world (a mood, a region): its palette, the board kit (tilted ground plates, roads, shore, cliff faces, the space plate, props seen a touch from above) and the fight kit (a side-view ground band, three to five planes with scroll factors, props side on), previewed at phone size and delivered with data for the generator. Use when Robin or Miles, GD says "we need a desert area", "make the forest region's kit", "a background for the swamp", or names a region that has no art.
 ---
 
 # A new area
@@ -22,7 +22,12 @@ copy a piece of the library.
 
 ## 2. Make the kit
 
-- **The ground**: the named pieces of the grid (`bsc`, `enH0`, `enH1`, `enV0`, `enV1`, `edU`, `edD`, the four slopes), with
+- **Two kits, one palette** (`docs/direction.md`, "The world's form"): the board kit for the raised-camera world, the
+  fight kit for the fight screen. The board kit first: it is what the player sees most.
+- **The board's ground**: plates of the area's ground with soft edges, road pieces (straight, bend, fork, bridge), the
+  shore, cliff faces for a step up (a bright top edge over a darker face, as the fight ground's edge over its body), the
+  gold space plate; all flat on the tilted ground, drawn before anything upright.
+- **The fight's ground**: the named pieces of the grid (`bsc`, `enH0`, `enH1`, `enV0`, `enV1`, `edU`, `edD`, the four slopes), with
   variants (6, 3, 3, 2, 1), seamless at matched edges, a bright top edge above a darker body, light from above. Painted in
   Node canvas, or a Blender render finished in Node where a form helps (rock). Tile each piece 3 by 3 and look.
 - **The planes**: far ones paler, hazier, less saturated, lower in contrast and detail, shifted toward the sky, smaller;

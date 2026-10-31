@@ -40,7 +40,7 @@ Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
 
 ## The look
 - **The art follows the MapleStory reference library** at `C:\dev\MapleStoryPlus\Settings\Inspiration` and its `Instructions.md` (Robin, 2026-10-31): painted, cute and chunky, dark outlines, layered parallax backgrounds, tile and prop kits, monsters as named actions with frame data. We learn from it and make our own; nothing from it is ever copied into the game or committed (both repositories are public). The Art Director's `docs/direction.md` is the direction drawn from it.
-- Open: whether the world itself is a side-view MapleStory-like place with the board's spaces along its ground, or a top-down map with side-view fights (the Art Director recommends the first).
+- **The board is seen from a raised camera, in 2D** (Robin, 2026-10-31, after showing a Dokapon Kingdom board): a tilted ground with cliff faces where the land steps up; roads, rivers and the spaces flat on it; everything standing on it upright, sorted by depth. **Fights are their own screen**, 2D, outside the map: an instanced scene of where you are, in the area's look (Robin, 2026-10-31).
 
 ## Combat
 - Turn-based RPG combat, not Dokapon's rock-paper-scissors (Robin, 2026-10-31): you choose among attacks, spells and defending; stats such as attack, defense and health decide the outcome.

@@ -32,7 +32,8 @@ sentence, our scale, the pipeline, the check); `docs/pipeline.md` (the exact com
 
 **The art follows the MapleStory reference library**, `C:\dev\MapleStoryPlus\Settings\Inspiration`: painted, cute and
 chunky, dark-outlined figures on soft layered parallax backgrounds, ground from tile kits on a grid, places from prop kits,
-monsters as named actions with frame data. The sentence: *MapleStory's world, drawn by us: painted, cute and chunky, outlined
+monsters as named actions with frame data. **The board is seen from a raised camera, in 2D, and fights are their own
+side-view screen, an instance of where you stand** (Robin, 2026-10-31: `docs/direction.md`, "The world's form"). The sentence: *MapleStory's world, drawn by us: painted, cute and chunky, outlined
 dark against soft layered backgrounds; every area one idea and one palette; built from kits, the way MapleStory builds its
 places.* Everything is checked against `docs/direction.md`.
 
@@ -74,9 +75,10 @@ checks added.
 - **"A new monster for the X area"** (or a boss, a class character): skill `new-monster`. Five to eight candidates with a
   look, the silhouette's one thing, the reference monster of the same level band for proportion, the actions it needs and
   the cost; Robin picks; concepts first, then the build with its frame data.
-- **"A new area"** (a mood, a region): skill `new-area`. The mood from the library's table, the palette, a tile kit, three to
-  five background planes with scroll factors, ten to twenty props, previewed panning at phone size, delivered as a kit with
-  data for the generator.
+- **"A new area"** (a mood, a region): skill `new-area`. The mood from the library's table, the palette, then the area's
+  two kits: the board kit (tilted ground plates, roads, shore, cliff faces, the space plate, props seen a touch from above)
+  and the fight kit (a side-view ground band, three to five planes with scroll factors, props side on), previewed at phone
+  size, delivered with data for the generator.
 - **"Improve the X"**: skill `improve-asset`. The loop above, with the asset's entry in `docs/inventory.md` as the starting
   list of what is wrong.
 - **"What needs improvement?"**: skill `art-review`. Look at the game at phone size, judge everything by the check and

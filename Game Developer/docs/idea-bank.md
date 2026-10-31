@@ -19,12 +19,8 @@ the date, and comes off this list.
    Cloudflare Tunnel): mine, for Robin to confirm or change. Decided by Robin on 2026-10-31: the PC may stay on, with the
    option of moving the server later; Android first, iOS later.
 
-9. **The world's form** (Perry, AD, 2026-10-31, after Robin's art decision): (a) the world itself a side-view
-   MapleStory-like place generated from kits, the board's spaces along its ground, the camera following the token, fights
-   where the token stands, an overview map screen for the big picture; or (b) a top-down painted world map of spaces and
-   paths with side-view fight scenes. Later that day Robin showed a Dokapon board and asked for a mix: (c) the board seen from a raised camera in 2D, a tilted
-   ground with cliff faces and upright pieces sorted by depth, the camera coming down for a fight (`Art Director/docs/pictures/
-   world-form/C-diorama.png`). Perry, AD now recommends (c). Robin decides.
+9. **The world's form**: decided (Robin, 2026-10-31): (c) the board seen from a raised camera in 2D, and fights on their
+   own 2D screen as an instance of where you stand. In the brief and `Art Director/docs/direction.md`.
 
 ## Ideas noted in the brief, not decided
 
