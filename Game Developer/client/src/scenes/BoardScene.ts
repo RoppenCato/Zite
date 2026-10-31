@@ -486,7 +486,7 @@ export class BoardScene extends Phaser.Scene {
     this.walk(path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
-      const where = space.name ? `${space.name} (${kind})` : `a ${kind} space`;
+      const where = space.name ? `${space.name} (${kind})` : `${/^[aeiou]/.test(kind) ? 'an' : 'a'} ${kind} space`;
       this.log.note(`landed on ${space.id} (${space.kind}): ${this.describeLanding(moved) || 'nothing'}`);
       if (this.game_.me.fight) {
         this.openFight();

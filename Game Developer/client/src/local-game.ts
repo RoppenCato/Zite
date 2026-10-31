@@ -10,6 +10,7 @@ import {
   resumeRng,
   type Action,
   type Character,
+  type ClassId,
   type GameEvent,
   type GameState,
   type Rng,
@@ -42,8 +43,8 @@ export class LocalGame {
     this.storage = storage;
   }
 
-  /** The saved game if there is one we understand, otherwise a fresh game from a new seed. */
-  static load(storage: Storage | null, seed: string = newSeed()): LocalGame {
+  /** The saved game if there is one we understand; null when there is none (or it is broken), so the character screen comes up. */
+  static load(storage: Storage | null): LocalGame | null {
     try {
       const raw = storage?.getItem(SAVE_KEY);
       if (raw) {
@@ -52,9 +53,15 @@ export class LocalGame {
         if (state && typeof save.rng === 'number') return new LocalGame(state, resumeRng(save.rng), storage);
       }
     } catch {
-      // A broken save: start fresh below.
+      // A broken save: start fresh.
     }
-    const game = new LocalGame(newGame({ seed, player: PLAYER, name: 'Robin', classId: 'warrior' }), makeRng(seed), storage);
+    return null;
+  }
+
+  /** A fresh game for the character the player made, saved at once. */
+  static create(storage: Storage | null, o: { name: string; classId: ClassId; seed?: string }): LocalGame {
+    const seed = o.seed ?? newSeed();
+    const game = new LocalGame(newGame({ seed, player: PLAYER, name: o.name, classId: o.classId }), makeRng(seed), storage);
     game.save();
     return game;
   }
@@ -72,11 +79,13 @@ export class LocalGame {
     return result.events;
   }
 
-  /** Throw the save away and start again. */
-  reset(seed: string = newSeed()): void {
-    this.state = newGame({ seed, player: PLAYER, name: 'Robin', classId: 'warrior' });
-    this.rng = makeRng(seed);
-    this.save();
+  /** Throw the save away; the next load has no game and shows the character screen. */
+  reset(): void {
+    try {
+      this.storage?.removeItem(SAVE_KEY);
+    } catch {
+      // Storage blocked: nothing to throw away.
+    }
   }
 
   private save(): void {

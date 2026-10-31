@@ -1,15 +1,17 @@
 # The client (`client/`)
 
-Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Three scenes: the **board** (the world,
-drawn in world pixels under a camera that follows the character), the **HUD** over it (the fixed chrome, which never
-scrolls or zooms), and the **fight**, launched over both when a fight begins and stopped when it ends. Shapes and labels
-only; the Art Director's sprites come later. The client never decides anything: it sends intents to the holder of the
+Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Four scenes: the **character screen**
+the first time (a name and a class), then the **board** (the world, drawn in world pixels under a camera that follows the
+character), the **HUD** over it (the fixed chrome, which never scrolls or zooms), and the **fight**, launched over both
+when a fight begins and stopped when it ends. Shapes and labels only; the Art Director's sprites come later. The client never decides anything: it sends intents to the holder of the
 state (`LocalGame` today, the server from MVP step 2) and plays back the events.
 
 | File | What it does |
 | --- | --- |
 | `index.html` | the page: viewport for phones, dark background, the `#game` box the canvas fills, `touch-action: none` |
-| `src/main.ts` | makes the log, loads the save, starts Phaser with both scenes, exposes `window.boardWorld` |
+| `src/main.ts` | makes the log, loads the save, starts Phaser on the board (a save) or the character screen (none), exposes `window.boardWorld` |
+| `src/scenes/CreateScene.ts` | the character screen: the name field, the four class cards, Begin; makes the game and starts the board |
+| `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD and fight scenes made together |
 | `src/layout.ts` | the design size (412 by 915), the HUD's height (90) and the world band's (680), the colours, the font |
 | `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules, saves |
 | `src/game-log.ts` | the frame log and error log, downloadable |
@@ -30,7 +32,16 @@ right); **the world band from y 90 to 770**, the main camera's viewport; a dark 
 y 795 and, at y 862, the Map button (72 by 50, centred at x 50), the Roll button (220 by 66, centred at x 206) and the Log
 button (72 by 50, centred at x 362); a tiny build-island-and-seed line at the bottom left.
 
-## The two scenes
+## The character screen (mine, 2026-10-31: first layout; Robin, 2026-10-31: the class is chosen at creation)
+
+Shown when there is no save. "Board World" and the island's name at the top; **a name field** (a real `<input>` through
+Phaser's DOM container, 300 by 44 at y 180, at most 12 characters, "Robin" to start, so the phone's keyboard comes up);
+**four cards** (340 by 104, from y 292, 12 apart) with each class's name, its style line from the brief ("Steady, high
+base damage, tough." and so on, in `classes.json`) and its HP, attack, defense and move; the chosen card is lit with a
+yellow border; **Begin** (220 by 66 at y 812) makes the game (`LocalGame.create`), adds the three play scenes and starts
+the board. An empty name becomes "Robin". The pane can call `choose(classId)` and `begin()` on the scene.
+
+## The two scenes of play and the HUD
 
 The board scene starts first, draws the world and **launches the HUD** (`this.scene.launch('hud')`) at the end of its
 `create`. The HUD's `create` draws the chrome and calls `board.hudReady(hud)`; only then does the board push its first
@@ -111,10 +122,10 @@ message says where the character wakes and what it cost.
 
 `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On load a save
 of version 1 passes its state through `migrate`, which brings a version-1 state (the ring) or a version-2 state (no xp
-yet) up to version 3; anything else starts a fresh game from a new seed (`crypto.randomUUID`, or a
-timestamp-and-random fallback where that is missing). The one local player's id is `local`, named Robin, a Warrior (mine,
-until there is a character screen). `reset()` throws the save away. A save made in the pane is not Robin's: he plays on his
-phone.
+yet) up to version 3; no save, or one we cannot read, gives null and the character screen comes up, and `create` makes
+the game from the name and class chosen with a new seed (`crypto.randomUUID`, or a timestamp-and-random fallback where
+that is missing). The one local player's id is `local`. `reset()` throws the save away, so the next load is the character
+screen. A save made in the pane is not Robin's: he plays on his phone.
 
 ## The frame log and error log (`game-log.ts`)
 
@@ -137,6 +148,6 @@ above 1.5 MB per chunk.
 
 ## Not here yet
 
-The shop, the quest giver and the boss gate, a second island and the world beyond it (the generator), a character screen, sound
+The shop, the quest giver and the boss gate, a second island and the world beyond it (the generator), sound
 (`?mute=1` is the convention for test pages once sound exists), the socket client (after `docs/state/protocol.md` is
 written), reconnect on `visibilitychange` and `pageshow`.

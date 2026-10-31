@@ -71,7 +71,27 @@ const ready = async () => { await page.waitForFunction(() => window.boardWorld &
 await page.goto(PAGE);
 await page.evaluate(() => localStorage.clear());
 await page.reload();
+// No save: the character screen. Type a name, pick the Mage, Begin.
+await page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.isActive('create'), null, { timeout: 15000 });
+await sleep(400);
+const createShown = await page.evaluate(() => ({ create: boardWorld.phaser.scene.isActive('create'), game: boardWorld.game, input: document.querySelector('#game input')?.value }));
+check('no save: the character screen comes first, the name field filled with the default', createShown.create && createShown.game === null && createShown.input === 'Robin', JSON.stringify(createShown));
+await shot('0-character-screen');
+await page.fill('#game input', 'Driver');
+await touch('touchStart', [{ x: 206, y: 524 }]); // the third card: Mage
+await sleep(40);
+await touch('touchEnd', []);
+await sleep(100);
+await touch('touchStart', [{ x: 206, y: 812 }]); // Begin
+await sleep(40);
+await touch('touchEnd', []);
 await ready();
+const created = await page.evaluate(() => ({ create: boardWorld.phaser.scene.isActive('create'), name: boardWorld.game?.me.name, classId: boardWorld.game?.me.classId, space: boardWorld.game?.me.space, header: boardWorld.phaser.scene.getScene('hud').children.list.find((o) => o.text && /the /.test(o.text))?.text }));
+check('Begin makes the character and starts the board: Driver the Mage on Ashford', !created.create && created.name === 'Driver' && created.classId === 'mage' && created.space === 'ashford' && created.header === 'Driver the Mage', JSON.stringify(created));
+await page.reload();
+await ready();
+const kept = await page.evaluate(() => ({ create: boardWorld.phaser.scene.isActive('create'), name: boardWorld.game?.me.name }));
+check('a reload with a save skips the character screen', !kept.create && kept.name === 'Driver', JSON.stringify(kept));
 let c = await cam();
 console.log('start', JSON.stringify(c));
 check('follow zoom 0.8 at start, following', c.zoom === 0.8 && c.following === true && c.mapLabel === 'Map', JSON.stringify(c));
@@ -270,6 +290,12 @@ await sleep(400);
 const back = await page.evaluate(() => { const s = boardWorld.phaser.scene.getScene('board'); const sp = boardWorld.game.state.board.spaces[boardWorld.game.me.space]; return { active: boardWorld.phaser.scene.isActive('fight'), stats: boardWorld.phaser.scene.getScene('hud').stats.text, message: boardWorld.phaser.scene.getScene('hud').message.text, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha, tokenOnMe: Math.abs(s.token.x - sp.x) < 1 && Math.abs(s.token.y - (sp.y - 32)) < 1 }; });
 check('Continue closes the fight: Roll is back, the HUD shows the level, the token stands where the character is', !back.active && /^Lv \d+ /.test(back.stats) && back.rollAlpha === 1 && /(Beat the|wake in)/.test(back.message) && back.tokenOnMe, JSON.stringify(back));
 await shot('11-after-fight');
+
+// reset() throws the save away: the next load is the character screen again.
+await page.evaluate(() => boardWorld.game.reset());
+await page.reload();
+await page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.isActive('create'), null, { timeout: 15000 });
+check('reset then reload shows the character screen again', true);
 
 const logErrors = await page.evaluate(() => boardWorld.log.errorCount);
 const fps = await page.evaluate(() => boardWorld.phaser.loop.actualFps.toFixed(0));

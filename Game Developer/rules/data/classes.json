@@ -1,21 +1,21 @@
 {
   "warrior": {
-    "name": "Warrior", "hp": 120, "attack": 12, "defense": 8, "gold": 50,
+    "name": "Warrior", "style": "Steady, high base damage, tough.", "hp": 120, "attack": 12, "defense": 8, "gold": 50,
     "skill": { "id": "heavy-blow", "name": "Heavy Blow", "power": 1.6 },
     "growth": { "hp": 12, "attack": 2, "defense": 1 }
   },
   "rogue": {
-    "name": "Rogue", "hp": 90, "attack": 9, "defense": 5, "gold": 60,
+    "name": "Rogue", "style": "Low base damage, chains crits.", "hp": 90, "attack": 9, "defense": 5, "gold": 60,
     "skill": { "id": "backstab", "name": "Backstab", "power": 1.2, "crit": 0.5 },
     "growth": { "hp": 8, "attack": 2, "defense": 1 }
   },
   "mage": {
-    "name": "Mage", "hp": 80, "attack": 14, "defense": 4, "gold": 50,
+    "name": "Mage", "style": "Charges for a turn, then a huge hit.", "hp": 80, "attack": 14, "defense": 4, "gold": 50,
     "skill": { "id": "charge", "name": "Charge", "power": 3, "charge": true },
     "growth": { "hp": 7, "attack": 3, "defense": 1 }
   },
   "ranger": {
-    "name": "Ranger", "hp": 95, "attack": 8, "defense": 6, "gold": 50,
+    "name": "Ranger", "style": "Strikes first, many small hits.", "hp": 95, "attack": 8, "defense": 6, "gold": 50,
     "skill": { "id": "volley", "name": "Volley", "power": 0.7, "hits": 3 },
     "growth": { "hp": 9, "attack": 2, "defense": 1 },
     "firstStrike": true

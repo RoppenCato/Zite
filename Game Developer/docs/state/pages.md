@@ -9,13 +9,16 @@
 
 ## Driving the game from the pane
 
-`window.boardWorld` is `{ game, log, phaser }`:
+`window.boardWorld` is `{ game, log, phaser }`; `game` is null while the character screen is up:
 
 ```js
-boardWorld.game.me                       // the character: space, steps, hp, gold
+boardWorld.phaser.scene.isActive('create')                 // the character screen (no save)
+boardWorld.phaser.scene.getScene('create').choose('mage')  // or tap a card; Begin at (206, 812), the cards at y 292, 408, 524, 640
+boardWorld.phaser.scene.getScene('create').begin()         // the name is read from the <input> inside #game
+boardWorld.game.me                       // the character: space, steps, hp, gold, xp, level, fight
 boardWorld.game.act({ type: 'roll', player: 'local' })
 boardWorld.game.act({ type: 'move', player: 'local', path: ['ashford-millford-1', 'ashford-millford-2'] })
-boardWorld.game.reset()                  // a fresh game and seed; reload the page to redraw
+boardWorld.game.reset()                  // throws the save away; reload and the character screen comes up
 boardWorld.log.text()                    // what the Log button downloads
 boardWorld.phaser.loop.actualFps
 
@@ -48,8 +51,8 @@ a roll or two.
 before it lifts (it pans the camera, and lifting it on a space is not a tap); a pinch is two touches moving apart or
 together; a mouse wheel over the band zooms by a tenth a notch. `tools/drive-board.mjs` does all of this headless against
 the built game (`node tools/drive-board.mjs [url]`, Chromium through Playwright, CDP touch events for drags and pinches):
-the camera, the gestures, a reload mid-choice, a version-1 save, the landed message and a whole fight, with screenshots
-in `tools/out/shots/`. It clears the page's save first.
+the character screen, the camera, the gestures, a reload mid-choice, a version-1 save, the landed message, a whole fight
+and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first.
 
 ## Things the pane does to a page
 

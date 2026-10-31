@@ -26,6 +26,8 @@ export interface SkillData {
 
 export interface ClassData {
   name: string;
+  /** One line on how it plays, from the brief (Robin, 2026-10-31), shown when choosing. */
+  style: string;
   hp: number;
   attack: number;
   defense: number;
