@@ -1,23 +1,28 @@
 // A balance look at the rules, no screen: bots play from Ashford under a plain policy and the bosses are fought level
 // by level in plain gear of the rank. Pure and seeded, so a run repeats. Run: node tools/simulate.ts [turns] [seeds]
 //
-// It prints, per class: turns to each level, deaths, gold and gear, the first win over the Thornwood Warden and the
-// Briar King; then the wall: the share of fights won against each boss at each level with the area's plain gear.
+// It prints, per class: turns to each level, deaths, gold and gear, the first win over the Thornwood Warden, the
+// Briar King and the Frost Matriarch, how far into the grown areas the bots get; then the wall: the share of fights won
+// against each boss, hand-laid and grown, at each level with the area's plain gear.
 
 import {
   ABILITIES,
   apply,
+  creature,
   ENEMIES,
+  generateArea,
   ITEMS,
   makeRng,
   newGame,
   plainGear,
+  rankName,
   reachable,
   SLOTS,
   stats,
   type Action,
   type Character,
   type ClassId,
+  type EnemyData,
   type FightMove,
   type GameState,
   type Guard,
@@ -45,6 +50,9 @@ interface Run {
   briarTries: number;
   briarWinTurn: number | null;
   matriarchWinTurn: number | null;
+  /** The highest tier opened, and the turn each grown area was opened. */
+  topTier: number;
+  openedAt: Record<string, number>;
   finalLevel: number;
   finalGold: number;
   gearWorn: number;
@@ -137,7 +145,7 @@ function choose(state: GameState, now: number): string[] {
     let score = 0;
     switch (space.kind) {
       case 'boss': {
-        const boss = ENEMIES[space.boss!]!;
+        const boss = creature(space.boss!, state.board.bestiary)!;
         const ready = me.level >= boss.level && me.hp >= s.maxHp * 0.8 && gearCount >= 3;
         score = cooling ? -50 : ready ? 100 : -100;
         break;
@@ -175,7 +183,7 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
   const rng = makeRng(seed);
   let state = newGame({ seed, player: P, name: 'Bot', classId });
   let now = 1_000_000;
-  const run: Run = { classId, seed, levelAt: { 1: 0 }, deaths: 0, deathsByTier: {}, fights: 0, fightsByTier: {}, roundsByTier: {}, wardenTries: 0, wardenWinTurn: null, briarTries: 0, briarWinTurn: null, matriarchWinTurn: null, finalLevel: 1, finalGold: 0, gearWorn: 0, turns: 0, hpLeftByTier: {}, winsByTier: {}, rests: 0, stranded: false };
+  const run: Run = { classId, seed, levelAt: { 1: 0 }, deaths: 0, deathsByTier: {}, fights: 0, fightsByTier: {}, roundsByTier: {}, wardenTries: 0, wardenWinTurn: null, briarTries: 0, briarWinTurn: null, matriarchWinTurn: null, topTier: 1, openedAt: {}, finalLevel: 1, finalGold: 0, gearWorn: 0, turns: 0, hpLeftByTier: {}, winsByTier: {}, rests: 0, stranded: false };
   let turn = 0;
   let fightTier = 1;
   for (let i = 0; i < turns * 30 && turn < turns; i++) {
@@ -197,6 +205,10 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
           if (me.fight.enemy.id === 'thornwood-warden' && run.wardenWinTurn === null) run.wardenWinTurn = turn;
           if (me.fight.enemy.id === 'briar-king' && run.briarWinTurn === null) run.briarWinTurn = turn;
           if (me.fight.enemy.id === 'frost-matriarch' && run.matriarchWinTurn === null) run.matriarchWinTurn = turn;
+        }
+        if (e.type === 'opened') {
+          run.openedAt[e.area] = turn;
+          run.topTier = Math.max(run.topTier, r.state.board.areas[e.area]?.tier ?? 0);
         }
         if (e.type === 'levelled') run.levelAt[e.level] = turn;
       }
@@ -243,7 +255,7 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
 }
 
 /** The wall: a fresh character of the level, in the plain gear of the rank, against the boss; the share of wins. */
-function wall(classId: ClassId, boss: string, level: number, rank: number, seeds: number): { wins: number; rounds: number } {
+function wall(classId: ClassId, boss: string, level: number, rank: number, seeds: number, bestiary: Record<string, EnemyData> = {}): { wins: number; rounds: number } {
   let wins = 0;
   let rounds = 0;
   for (let i = 0; i < seeds; i++) {
@@ -262,7 +274,7 @@ function wall(classId: ClassId, boss: string, level: number, rank: number, seeds
     // Square up on the ring's boss spot by hand: the fight itself is what we measure.
     const enemyState = { ...state, characters: { [P]: { ...me, space: 'gate' } } };
     state = apply({ ...enemyState, characters: { [P]: { ...enemyState.characters[P]!, steps: 0 } } }, act('roll'), rng, 0).state; // spend nothing but keep the shape
-    state = { ...state, characters: { [P]: { ...state.characters[P]!, steps: 0, fight: startFightOn(state, boss) } } };
+    state = { ...state, characters: { [P]: { ...state.characters[P]!, steps: 0, fight: startFightOn(boss, bestiary) } } };
     for (let r = 0; r < 60 && state.characters[P]!.fight; r++) {
       const { move, guard } = fightMove(state.characters[P]!);
       const res = apply(state, act('fight', { move, guard }), rng, 0);
@@ -276,8 +288,8 @@ function wall(classId: ClassId, boss: string, level: number, rank: number, seeds
 
 // A tiny hand-made fight state, through the public surface: makeEnemy is exported; the Fight shape is public.
 import { makeEnemy, CLASS_DATA } from '../rules/src/index.ts';
-function startFightOn(state: GameState, boss: string) {
-  return { enemy: makeEnemy(boss), round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'gate', spawn: false };
+function startFightOn(boss: string, bestiary: Record<string, EnemyData>) {
+  return { enemy: makeEnemy(boss, bestiary), round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'gate', spawn: false };
 }
 function await_import_classes(classId: ClassId) {
   return CLASS_DATA[classId];
@@ -293,7 +305,8 @@ const median = (xs: number[]): number => {
 const fmt = (n: number | null | undefined, w = 5): string => (n === null || n === undefined || Number.isNaN(n) ? '–' : String(Math.round(n))).padStart(w);
 
 console.log(`Bots: ${SEEDS} seeds per class, ${TURNS} turns each (a turn is one roll).\n`);
-console.log('class    | turns to level 2   3   4   5   6   7   8 | deaths/100t  by tier 1/2/3 | fights/100t rests/100t | rounds per fight t1/t2/t3 | HP left after a win t1/t2/t3 | Warden: tries  first win (turn)  beaten | Briar: tries  beaten | lvl  gold  gear stranded');
+const TIERS = [1, 2, 3, 4, 5, 6];
+console.log('class    | turns to level 2   3   4   5   6   7   8  10  14  18 | deaths/100t  by tier 1..6 | fights/100t rests/100t | rounds per fight t1..t6 | HP left after a win t1..t6 | Warden: tries  first win (turn)  beaten | Briar: tries  beaten | Matriarch beaten (turn) | top tier  gen-1  gen-2  gen-3 (turn) | lvl  gold  gear stranded');
 for (const classId of CLASSES) {
   const runs: Run[] = [];
   for (let i = 0; i < SEEDS; i++) runs.push(simulate(classId, `sim-${classId}-${i}`, TURNS));
@@ -301,32 +314,40 @@ for (const classId of CLASSES) {
   const total = (f: (r: Run) => number) => runs.reduce((a, r) => a + f(r), 0);
   const turnsAll = total((r) => r.turns);
   const per100 = (n: number) => fmt((n / turnsAll) * 100, 4);
-  const deathsTier = [1, 2, 3].map((t) => total((r) => r.deathsByTier[t] ?? 0));
-  const rounds = [1, 2, 3].map((t) => { const f = total((r) => r.fightsByTier[t] ?? 0); return f ? (total((r) => r.roundsByTier[t] ?? 0) / f).toFixed(1) : '–'; });
-  const hpLeft = [1, 2, 3].map((t) => { const w = total((r) => r.winsByTier[t] ?? 0); return w ? `${Math.round((total((r) => r.hpLeftByTier[t] ?? 0) / w) * 100)}%` : '–'; });
+  const deathsTier = TIERS.map((t) => total((r) => r.deathsByTier[t] ?? 0));
+  const rounds = TIERS.map((t) => { const f = total((r) => r.fightsByTier[t] ?? 0); return f ? (total((r) => r.roundsByTier[t] ?? 0) / f).toFixed(1) : '–'; });
+  const hpLeft = TIERS.map((t) => { const w = total((r) => r.winsByTier[t] ?? 0); return w ? `${Math.round((total((r) => r.hpLeftByTier[t] ?? 0) / w) * 100)}%` : '–'; });
   const stranded = runs.filter((r) => r.stranded).length;
   const wardenBeaten = runs.filter((r) => r.wardenWinTurn !== null).length;
   const briarBeaten = runs.filter((r) => r.briarWinTurn !== null).length;
+  const matriarchBeaten = runs.filter((r) => r.matriarchWinTurn !== null).length;
+  const openedTurn = (area: string) => { const got = runs.filter((r) => r.openedAt[area] !== undefined); return `${String(got.length).padStart(2)}/${SEEDS}${got.length ? `@${fmt(median(got.map((r) => r.openedAt[area]!)), 1)}` : ''}`; };
   console.log(
-    `${classId.padEnd(8)} | ${lv(2)} ${lv(3)} ${lv(4)} ${lv(5)} ${lv(6)} ${lv(7)} ${lv(8)} | ${per100(total((r) => r.deaths))}   ${deathsTier.join('/').padEnd(10)} | ${per100(total((r) => r.fights))}      ${per100(total((r) => r.rests))}    | ${rounds.join(' / ').padEnd(21)} | ${hpLeft.join(' / ').padEnd(26)} | ${fmt(total((r) => r.wardenTries), 5)}  ${fmt(median(runs.filter((r) => r.wardenWinTurn !== null).map((r) => r.wardenWinTurn!)), 8)}      ${String(wardenBeaten).padStart(2)}/${SEEDS} | ${fmt(total((r) => r.briarTries), 5)}  ${String(briarBeaten).padStart(2)}/${SEEDS} | ${fmt(median(runs.map((r) => r.finalLevel)), 3)} ${fmt(median(runs.map((r) => r.finalGold)), 5)} ${fmt(median(runs.map((r) => r.gearWorn)), 4)} ${String(stranded).padStart(4)}`,
+    `${classId.padEnd(8)} | ${lv(2)} ${lv(3)} ${lv(4)} ${lv(5)} ${lv(6)} ${lv(7)} ${lv(8)} ${lv(10)} ${lv(14)} ${lv(18)} | ${per100(total((r) => r.deaths))}   ${deathsTier.join('/').padEnd(14)} | ${per100(total((r) => r.fights))}      ${per100(total((r) => r.rests))}    | ${rounds.join('/').padEnd(27)} | ${hpLeft.join('/').padEnd(29)} | ${fmt(total((r) => r.wardenTries), 5)}  ${fmt(median(runs.filter((r) => r.wardenWinTurn !== null).map((r) => r.wardenWinTurn!)), 8)}      ${String(wardenBeaten).padStart(2)}/${SEEDS} | ${fmt(total((r) => r.briarTries), 5)}  ${String(briarBeaten).padStart(2)}/${SEEDS} | ${String(matriarchBeaten).padStart(2)}/${SEEDS} ${fmt(median(runs.filter((r) => r.matriarchWinTurn !== null).map((r) => r.matriarchWinTurn!)), 6)} | ${fmt(median(runs.map((r) => r.topTier)), 4)}  ${openedTurn('gen-1').padEnd(10)} ${openedTurn('gen-2').padEnd(10)} ${openedTurn('gen-3').padEnd(10)} | ${fmt(median(runs.map((r) => r.finalLevel)), 3)} ${fmt(median(runs.map((r) => r.finalGold)), 5)} ${fmt(median(runs.map((r) => r.gearWorn)), 4)} ${String(stranded).padStart(4)}`,
   );
 }
 console.log('\n* fewer than half the bots got there.\n');
 
+// The grown areas' creatures come from the generator, for the seed the bots play on; the first three are tiers 4 to 6.
+const grownBestiary: Record<string, EnemyData> = {};
+for (let n = 1; n <= 3; n++) Object.assign(grownBestiary, generateArea('sim', n).bestiary);
 const WALLS: { boss: string; rank: number; levels: number[] }[] = [
   { boss: 'thornwood-warden', rank: 1, levels: [1, 2, 3, 4, 5, 6, 7, 8] },
   { boss: 'briar-king', rank: 2, levels: [5, 6, 7, 8, 9, 10, 11, 12] },
   { boss: 'frost-matriarch', rank: 3, levels: [9, 10, 11, 12, 13, 14, 15] },
+  { boss: 'g1-boss', rank: 4, levels: [13, 14, 15, 16, 17, 18, 19, 20] },
+  { boss: 'g2-boss', rank: 5, levels: [17, 18, 19, 20, 21, 22, 23, 24] },
+  { boss: 'g3-boss', rank: 6, levels: [21, 22, 23, 24, 25, 26, 27, 28] },
 ];
 const WALL_SEEDS = 60;
 for (const w of WALLS) {
-  const boss = ENEMIES[w.boss]!;
-  console.log(`The wall: ${boss.name} (level ${boss.level}) against each class in plain ${['copper', 'iron', 'steel'][w.rank - 1]} gear with two potions. Wins in ${WALL_SEEDS} fights, by level:`);
+  const boss = creature(w.boss, grownBestiary)!;
+  console.log(`The wall: ${boss.name} (level ${boss.level}, tier ${w.rank}) against each class in plain ${rankName(w.rank).toLowerCase()} gear with two potions. Wins in ${WALL_SEEDS} fights, by level:`);
   console.log(`class    | ${w.levels.map((l) => `L${l}`.padStart(5)).join(' ')}`);
   for (const classId of CLASSES) {
-    const cells = w.levels.map((l) => { const r = wall(classId, w.boss, l, w.rank, WALL_SEEDS); return `${Math.round((r.wins / WALL_SEEDS) * 100)}%`.padStart(5); });
+    const cells = w.levels.map((l) => { const r = wall(classId, w.boss, l, w.rank, WALL_SEEDS, grownBestiary); return `${Math.round((r.wins / WALL_SEEDS) * 100)}%`.padStart(5); });
     console.log(`${classId.padEnd(8)} | ${cells.join(' ')}`);
   }
-  const bare = CLASSES.map((c) => `${c} ${Math.round((wall(c, w.boss, boss.level, 0, WALL_SEEDS).wins / WALL_SEEDS) * 100)}%`).join(', ');
+  const bare = CLASSES.map((c) => `${c} ${Math.round((wall(c, w.boss, boss.level, 0, WALL_SEEDS, grownBestiary).wins / WALL_SEEDS) * 100)}%`).join(', ');
   console.log(`  at the boss's own level with no gear at all: ${bare}\n`);
 }

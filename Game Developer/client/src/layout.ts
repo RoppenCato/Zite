@@ -29,6 +29,12 @@ export const THEME_COLORS: Record<string, number> = {
   ice: 0x24303c,
   fire: 0x32241f,
   water: 0x1f2a36,
+  swamp: 0x252e22,
+  desert: 0x343022,
+  crystal: 0x2a2738,
+  shadow: 0x1c1b26,
+  sky: 0x22313c,
+  jungle: 0x1e2f20,
 };
 
 /** The colours of the rarities, as text colours. */

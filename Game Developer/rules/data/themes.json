@@ -1,0 +1,30 @@
+{
+  "order": ["fire", "water", "swamp", "desert", "crystal", "shadow", "sky", "jungle"],
+  "themes": {
+    "fire":    { "areas": ["Emberfall", "Ashen Reach", "Cinder Wastes", "Magma Fields"],  "adjectives": ["Ember", "Ash", "Cinder", "Magma", "Smoulder"], "mobs": ["Cinder Hound", "Magma Crawler", "Ash Wraith", "Flame Imp"], "mini": "Ember Drake", "boss": "Molten Tyrant" },
+    "water":   { "areas": ["Mistwater", "Tidehollow", "Drowned Coast", "Saltreach"],      "adjectives": ["Tide", "Mist", "Brine", "Reef", "Foam"],        "mobs": ["Tide Crab", "Drowned Sailor", "Reef Serpent", "Mist Siren"], "mini": "Kraken Spawn", "boss": "Abyssal Leviathan" },
+    "swamp":   { "areas": ["Murkfen", "Rotmire", "Bogwater", "Sunken Marsh"],             "adjectives": ["Bog", "Mire", "Rot", "Fen", "Murk"],           "mobs": ["Bog Leech", "Mire Troll", "Marsh Hag", "Rot Stalker"], "mini": "Fen Hydra", "boss": "Bog King" },
+    "desert":  { "areas": ["Sunscar", "Dune Sea", "Glassfields", "Scorchland"],           "adjectives": ["Sand", "Dune", "Sun", "Dust", "Scorch"],       "mobs": ["Sand Scarab", "Dune Raider", "Sun Scorpion", "Dust Djinn"], "mini": "Sand Wyrm", "boss": "Sun Pharaoh" },
+    "crystal": { "areas": ["Glimmerdeep", "Shardfall", "Prism Vale", "Geode Hollows"],    "adjectives": ["Shard", "Prism", "Glass", "Geode", "Glimmer"], "mobs": ["Shard Beetle", "Prism Golem", "Glass Wisp", "Geode Lurker"], "mini": "Crystal Colossus", "boss": "Prismatic Queen" },
+    "shadow":  { "areas": ["Duskmoor", "Nightveil", "Gloomhallow", "Umbral Reach"],       "adjectives": ["Dusk", "Night", "Gloom", "Umbral", "Dread"],   "mobs": ["Night Stalker", "Umbral Wolf", "Dread Shade", "Void Imp"], "mini": "Shadow Fiend", "boss": "Dusk Lord" },
+    "sky":     { "areas": ["Skyreach", "Cloudrest", "Stormcrown", "Windward Heights"],    "adjectives": ["Storm", "Cloud", "Gale", "Thunder", "Sky"],    "mobs": ["Storm Hawk", "Cloud Ray", "Gale Sprite", "Thunder Ram"], "mini": "Roc", "boss": "Storm Titan" },
+    "jungle":  { "areas": ["Verdant Tangle", "Vinewood", "Canopy Deep", "Greenmaw"],      "adjectives": ["Vine", "Fern", "Canopy", "Moss", "Thorn"],     "mobs": ["Vine Viper", "Shadow Jaguar", "Poison Frog", "Ape Brute"], "mini": "Elder Ape", "boss": "Jungle Idol" }
+  },
+  "places": {
+    "town":   ["Hold", "Haven", "Rest", "Crossing", "Landing"],
+    "shop":   ["Trader", "Market", "Cart", "Stall"],
+    "spell":  ["Shrine", "Stone", "Altar"],
+    "chest":  ["Hoard", "Cache", "Cairn"],
+    "potion": ["Spring", "Pool", "Well"],
+    "normal": ["Ridge", "Hollow", "Flats", "Reach", "Edge", "Hill", "Thicket", "Crag"]
+  },
+  "archetypes": [
+    { "hp": 1.0,  "attack": 1.0,  "defense": 1.0,  "moves": [ { "name": "Strike", "power": 1, "weight": 3 }, { "name": "Lunge", "power": 1.4, "weight": 1 } ] },
+    { "hp": 1.35, "attack": 1.05, "defense": 1.25, "moves": [ { "name": "Swipe", "power": 1, "weight": 2 }, { "name": "Crush", "power": 1.7, "weight": 1, "charge": true } ] },
+    { "hp": 0.9,  "attack": 1.2,  "defense": 0.7,  "moves": [ { "name": "Bolt", "power": 1, "weight": 1 } ] },
+    { "hp": 1.6,  "attack": 1.0,  "defense": 1.6,  "moves": [ { "name": "Slam", "power": 1, "weight": 2 }, { "name": "Quake", "power": 1.8, "weight": 1, "charge": true } ] }
+  ],
+  "base": { "mob": { "hp": 260, "attack": 38, "defense": 11, "xp": 42, "gold": 48 }, "mini": { "hp": 700, "attack": 48, "defense": 16, "xp": 170, "gold": 180 }, "boss": { "hp": 1200, "attack": 46, "defense": 15, "xp": 700, "gold": 600 } },
+  "perTier": { "hp": 1.25, "attack": 1.15, "defense": 1.12, "reward": 1.3 },
+  "cell": { "width": 1400, "height": 1900, "firstColumn": 2 }
+}

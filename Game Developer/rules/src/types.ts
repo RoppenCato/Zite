@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 5;
+export const STATE_VERSION = 6;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -49,13 +49,31 @@ export interface Area {
   bounds: { x: number; y: number; width: number; height: number };
 }
 
-/** The board is a graph: spaces and the connections between them, never a grid. One big map in areas by tier. */
+/** A creature as the data describes it: what a fight starts from. */
+export interface EnemyData {
+  name: string;
+  level: number;
+  role: 'mob' | 'mini' | 'boss';
+  hp: number;
+  attack: number;
+  defense: number;
+  xp: number;
+  gold: number;
+  moves: EnemyMove[];
+}
+
+/**
+ * The board is a graph: spaces and the connections between them, never a grid. One big map in areas by tier: the
+ * hand-laid ones from the start, and the grown ones added as bosses fall, with their creatures in the bestiary.
+ */
 export interface Board {
   start: string;
   width: number;
   height: number;
   spaces: Record<string, Space>;
   areas: Record<string, Area>;
+  /** The creatures of the grown areas, by id; the hand-laid ones live in enemies.json. */
+  bestiary: Record<string, EnemyData>;
 }
 
 export type GearStat = 'attack' | 'defense' | 'maxHp' | 'maxMana';

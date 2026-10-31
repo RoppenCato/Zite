@@ -1,13 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { GEAR } from '../src/data.ts';
 import { makeBoard, makeCharacter } from '../src/game.ts';
-import { describeGear, plainGear, rankName, rollGear, rollRarity, stats } from '../src/gear.ts';
+import { describeGear, plainGear, rankName, rankPrice, rankStat, rollGear, rollRarity, stats } from '../src/gear.ts';
 import { makeRng } from '../src/rng.ts';
 import { RARITIES, SLOTS, type Rarity } from '../src/types.ts';
 
 describe('gear', () => {
-  it('names ranks by tier and tops out at the last', () => {
-    expect([1, 2, 3, 4, 0].map(rankName)).toEqual(['Copper', 'Iron', 'Steel', 'Steel', 'Copper']);
+  it('names ranks by tier, ten names and then "Rank n"', () => {
+    expect([1, 2, 3, 4, 10, 11, 0].map(rankName)).toEqual(['Copper', 'Iron', 'Steel', 'Mithril', 'Sunmetal', 'Rank 11', 'Copper']);
+  });
+
+  it('grows a slot\'s number and price past the table by the growth a rank, so grown areas have gear of their rank', () => {
+    const n = GEAR.slots.weapon.perRank.length;
+    expect(rankStat('weapon', n)).toBe(GEAR.slots.weapon.perRank[n - 1]);
+    expect(rankStat('weapon', n + 1)).toBe(Math.round(GEAR.slots.weapon.perRank[n - 1]! * GEAR.rankGrowth));
+    expect(rankStat('weapon', n + 3)).toBe(Math.round(GEAR.slots.weapon.perRank[n - 1]! * GEAR.rankGrowth ** 3));
+    expect(rankPrice('weapon', n + 1)).toBe(Math.round(GEAR.slots.weapon.price[n - 1]! * GEAR.priceGrowth));
+    expect(plainGear('g9', 'weapon', n + 1)).toMatchObject({ rank: n + 1, name: `${rankName(n + 1)} Sword`, stats: { attack: rankStat('weapon', n + 1) }, price: rankPrice('weapon', n + 1) });
+    for (let r = 1; r < 15; r++) expect(rankStat('armour', r + 1), `rank ${r}`).toBeGreaterThan(rankStat('armour', r));
   });
 
   it('a plain piece is the common rank item of its slot, priced from the table', () => {

@@ -5,22 +5,28 @@
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
 import { addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
 import { rollGear, stats, type Stats } from './gear.ts';
+import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
-import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard } from './types.ts';
+import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
 
+/** A creature's data: the hand-laid ones from enemies.json, the grown ones from the board's bestiary. */
+export function creature(id: string, bestiary: Record<string, EnemyData> = {}): EnemyData | undefined {
+  return ENEMIES[id] ?? bestiary[id];
+}
+
 /** An enemy fresh from the data, ready to fight. */
-export function makeEnemy(id: string): Enemy {
-  const d = ENEMIES[id];
+export function makeEnemy(id: string, bestiary: Record<string, EnemyData> = {}): Enemy {
+  const d = creature(id, bestiary);
   if (!d) throw new Error(`no such enemy: ${id}`);
   return { id, name: d.name, level: d.level, role: d.role, hp: d.hp, maxHp: d.hp, attack: d.attack, defense: d.defense, xp: d.xp, gold: d.gold, moves: d.moves.map((m) => ({ ...m })), charged: null, stunned: 0, weakened: null, poison: null };
 }
 
 /** The character squared up to the enemy on this space. */
-export function startFight(c: Character, enemyId: string, space: string, spawn: boolean): Character {
-  const fight: Fight = { enemy: makeEnemy(enemyId), round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn };
+export function startFight(c: Character, enemyId: string, space: string, spawn: boolean, bestiary: Record<string, EnemyData> = {}): Character {
+  const fight: Fight = { enemy: makeEnemy(enemyId, bestiary), round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn };
   return { ...c, fight };
 }
 
@@ -272,6 +278,8 @@ function win(state: GameState, c: Character, action: Action, rng: Rng, events: G
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };
     events.push({ type: 'bossDown', action: id, player, space: f.space, until });
     if (space.opens && !next.opened.includes(space.opens)) {
+      // An area not laid yet grows now, from the seed, the same for everyone.
+      if (!s.board.areas[space.opens]) s = { ...s, board: growBoard(s.board, s.seed, space.opens) };
       next = { ...next, opened: [...next.opened, space.opens] };
       events.push({ type: 'opened', action: id, player, area: space.opens });
     }

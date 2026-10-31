@@ -9,7 +9,7 @@ import {
   CLASS_DATA,
   countdown,
   describeGear,
-  ENEMIES,
+  creature,
   hintFor,
   ITEMS,
   reachable,
@@ -44,7 +44,8 @@ const LIT = 0xfff27a;
 // The camera (mine, 2026-10-31: numbers to start with).
 const FOLLOW_ZOOM = 0.8; // walking about
 const MAX_ZOOM = 1.4; // the closest a pinch gets
-const HARD_MIN_ZOOM = 0.12;
+const HARD_MIN_ZOOM = 0.12; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
+const ZOOM_FLOOR = 0.05;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
 const CAMERA_MS = 350; // a pan or a zoom
 const FOLLOW_LERP = 0.12;
@@ -94,6 +95,12 @@ export class BoardScene extends Phaser.Scene {
   private readonly bossLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly covers = new Map<string, Phaser.GameObjects.Rectangle>();
   private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
+  /** The areas drawn so far: the world grows as bosses fall, and a new area is drawn when it comes (mine, 2026-10-31). */
+  private readonly drawn = new Set<string>();
+  /** When the fight, the shop or the bag last closed: the tap that closed it must not also reach the spot under the button (mine, 2026-10-31). */
+  private overlayClosedAt = -Infinity;
+  private links!: Phaser.GameObjects.Graphics;
+  private border!: Phaser.GameObjects.Graphics;
   private token!: Phaser.GameObjects.Container;
   private hud: HudScene | null = null;
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
@@ -114,10 +121,9 @@ export class BoardScene extends Phaser.Scene {
 
   create(): void {
     const { board } = this.game_.state;
-    this.drawGround(board);
-    this.drawLinks(board.spaces);
-    for (const space of Object.values(board.spaces)) this.drawSpace(space);
-    this.drawCovers(board);
+    this.links = this.add.graphics().setDepth(1);
+    this.border = this.add.graphics().setDepth(2);
+    this.drawBoard();
     this.drawToken();
     this.drawSpawns();
     this.refreshClocks();
@@ -201,6 +207,7 @@ export class BoardScene extends Phaser.Scene {
   /** The bag is closed: the numbers may have changed. */
   bagClosed(): void {
     this.scene.stop('bag');
+    this.overlayClosedAt = this.time.now;
     this.refreshHud();
   }
 
@@ -245,6 +252,7 @@ export class BoardScene extends Phaser.Scene {
   /** The shop scene is done: close it and give the turn back. */
   shopLeft(): void {
     this.scene.stop('shop');
+    this.overlayClosedAt = this.time.now;
     const space = this.game_.state.board.spaces[this.game_.me.space];
     const again = space?.kind === 'shop' || space?.kind === 'town' ? ' Tap it again to go back in.' : '';
     this.finish(`Left ${space?.name || 'the shop'}.${again}`);
@@ -253,12 +261,14 @@ export class BoardScene extends Phaser.Scene {
   /** The fight scene is done: close it; a beaten character wakes in a town; a beaten boss may have opened an area. */
   fightOver(outcome: FightOutcome): void {
     this.scene.stop('fight');
+    this.overlayClosedAt = this.time.now;
     const me = this.game_.me;
     if (outcome.type === 'died') {
       const town = this.game_.state.board.spaces[me.space]!;
       this.token.setPosition(town.x, town.y - SPACE_RADIUS - 6);
       this.follow(true);
     }
+    this.drawBoard();
     this.refreshCovers();
     this.drawSpawns();
     this.refreshClocks();
@@ -268,31 +278,59 @@ export class BoardScene extends Phaser.Scene {
 
   // ---- drawing -----------------------------------------------------------------------------------------------------
 
-  /** Each area's ground in its theme's colour, its name written large and faint, and a thin border on the world. */
-  private drawGround(board: Board): void {
-    const g = this.add.graphics().setDepth(0);
-    for (const area of Object.values(board.areas)) {
-      g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
-      g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
-      // The name sits in the margin above the area's top spots, faint, readable from the overview.
-      this.add
-        .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 6, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '26px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
-        .setOrigin(0.5, 0)
-        .setAlpha(0.4)
-        .setDepth(1);
+  /**
+   * Everything on the board not drawn yet: at the start the whole world, later each area the board has grown (the ground
+   * in its theme's colour, its name, its roads, its spots, its cover). The border and the camera's bounds follow the map.
+   */
+  private drawBoard(): void {
+    const { board } = this.game_.state;
+    const fresh = Object.values(board.areas).filter((a) => !this.drawn.has(a.id));
+    if (!fresh.length) return;
+    for (const area of fresh) {
+      this.drawGround(area);
+      this.drawn.add(area.id);
     }
-    g.lineStyle(6, COLORS.border, 1);
-    g.strokeRect(3, 3, board.width - 6, board.height - 6);
+    const spaces = Object.values(board.spaces).filter((s) => !this.circles.has(s.id));
+    this.drawLinks(spaces, board.spaces);
+    for (const space of spaces) this.drawSpace(space);
+    for (const area of fresh) this.drawCover(area);
+    this.border.clear();
+    this.border.lineStyle(6, COLORS.border, 1);
+    this.border.strokeRect(3, 3, board.width - 6, board.height - 6);
+    const cam = this.cameras.main;
+    cam.setBounds(0, 0, board.width, board.height);
+    this.minZoom = this.overviewZoom();
+    if (this.lastZoom >= 0) {
+      // Names drawn now follow the zoom's rule for names, like the rest.
+      const hidden = cam.zoom < NAME_ZOOM;
+      for (const name of this.names) name.setVisible(!hidden);
+    }
+    this.refreshCovers();
+    if (this.drawn.size > fresh.length) this.log.note(`board grown: ${fresh.map((a) => a.name).join(', ')}; ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
   }
 
-  private drawLinks(spaces: Record<string, Space>): void {
-    const g = this.add.graphics().setDepth(1);
-    g.lineStyle(6, COLORS.link, 1);
-    for (const space of Object.values(spaces)) {
+  /** An area's ground in its theme's colour, its name written large and faint. */
+  private drawGround(area: Area): void {
+    const g = this.add.graphics().setDepth(0);
+    g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
+    g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
+    // The name sits in the margin above the area's top spots, faint, readable from the overview.
+    this.add
+      .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 6, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '26px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
+      .setOrigin(0.5, 0)
+      .setAlpha(0.4)
+      .setDepth(1);
+  }
+
+  /** The roads of the given spots: each link once, and a link to a spot drawn earlier (the passage from a boss into a grown area). */
+  private drawLinks(spaces: Space[], all: Record<string, Space>): void {
+    const fresh = new Set(spaces.map((s) => s.id));
+    this.links.lineStyle(6, COLORS.link, 1);
+    for (const space of spaces) {
       for (const other of space.links) {
-        if (space.id < other) {
-          const b = spaces[other];
-          if (b) g.lineBetween(space.x, space.y, b.x, b.y);
+        if (!fresh.has(other) || space.id < other) {
+          const b = all[other];
+          if (b) this.links.lineBetween(space.x, space.y, b.x, b.y);
         }
       }
     }
@@ -310,7 +348,7 @@ export class BoardScene extends Phaser.Scene {
     circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
     // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
     circle.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-      if (pointer.getDistance() < TAP_MAX) this.onSpaceTap(space.id);
+      if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250) this.onSpaceTap(space.id);
     });
     this.circles.set(space.id, circle);
 
@@ -339,14 +377,11 @@ export class BoardScene extends Phaser.Scene {
     }
   }
 
-  /** A dark cover over every area not yet open: you can see there is more, not what. */
-  private drawCovers(board: Board): void {
-    for (const area of Object.values(board.areas)) {
-      const b = area.bounds;
-      const cover = this.add.rectangle(b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x0b0d14, 0.72).setDepth(8);
-      this.covers.set(area.id, cover);
-    }
-    this.refreshCovers();
+  /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
+  private drawCover(area: Area): void {
+    const b = area.bounds;
+    const cover = this.add.rectangle(b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x0b0d14, 0.72).setDepth(8);
+    this.covers.set(area.id, cover);
   }
 
   private refreshCovers(): void {
@@ -377,7 +412,7 @@ export class BoardScene extends Phaser.Scene {
     const now = this.game_.now();
     for (const [spaceId, label] of this.bossLabels) {
       const space = this.game_.state.board.spaces[spaceId]!;
-      const boss = space.boss ? ENEMIES[space.boss] : undefined;
+      const boss = space.boss ? creature(space.boss, this.game_.state.board.bestiary) : undefined;
       const left = (me.cooldowns[spaceId] ?? 0) - now;
       label.setText(left > 0 ? `${boss?.name ?? 'boss'} · back in ${countdown(left)}` : `${boss?.name ?? 'boss'} · level ${boss?.level ?? '?'}`);
       this.circles.get(spaceId)?.setAlpha(left > 0 ? 0.45 : 1);
@@ -421,7 +456,9 @@ export class BoardScene extends Phaser.Scene {
   private overviewZoom(): number {
     const cam = this.cameras.main;
     const b = this.openBounds();
-    return Math.max(HARD_MIN_ZOOM, Math.min(cam.width / b.width, cam.height / b.height));
+    // The hand-laid world fits at 0.12 or more; a world grown wider than that may pull back further, down to the floor.
+    const fit = Math.min(cam.width / b.width, cam.height / b.height);
+    return Math.max(fit >= HARD_MIN_ZOOM ? HARD_MIN_ZOOM : ZOOM_FLOOR, fit);
   }
 
   /** Follow the token at the follow zoom. `snap` puts the camera there at once; otherwise it glides from where it is. */

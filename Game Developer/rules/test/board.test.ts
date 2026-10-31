@@ -3,6 +3,8 @@ import { DICE_DATA, ENEMIES, SPACE_KINDS, WORLD_DATA } from '../src/data.ts';
 import { makeBoard } from '../src/game.ts';
 import { legalPaths } from '../src/paths.ts';
 import type { Board } from '../src/types.ts';
+import { GROWN } from '../src/world.ts';
+import { grownWorld } from './fixtures/grown.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 // Every board the game can play on must be a sound graph and drawable: these checks run over the ring fixture and the
@@ -12,10 +14,14 @@ const MAX_LINK = 200; // further apart than this, a step looks like a jump
 const MIN_APART = 55; // any two spaces, linked or not
 const MARGIN = 40; // from the board's edge, so a space and its ring are never cut off
 
+
 const boards: { name: string; board: Board; maxLink: number }[] = [
   // The ring's chord across the middle is 300 pixels long: it is the fork test, not a map to draw, so it alone may be long.
   { name: 'the twelve-space ring (the test fixture)', board: ringBoard(), maxLink: 300 },
   { name: 'the world (built from rules/data/world.json)', board: makeBoard(), maxLink: MAX_LINK },
+  // The generator must pass every check the hand-laid world does: ten grown areas, more than one round of the themes.
+  { name: 'the world grown ten areas (the generator, seed ashford)', board: grownWorld('ashford', 10), maxLink: MAX_LINK },
+  { name: 'the world grown ten areas (the generator, seed moon)', board: grownWorld('moon', 10), maxLink: MAX_LINK },
 ];
 
 describe.each(boards)('$name', ({ board, maxLink }) => {
@@ -33,8 +39,8 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
     for (const s of spaces) {
       expect(SPACE_KINDS).toContain(s.kind);
       if (s.kind === 'boss') {
-        expect(s.boss && ENEMIES[s.boss]?.role, `${s.id} names a boss`).toBe('boss');
-        if (s.opens) expect(board.areas[s.opens], `${s.id} opens ${s.opens}`).toBeDefined();
+        expect(s.boss && (board.bestiary[s.boss] ?? ENEMIES[s.boss])?.role, `${s.id} names a boss`).toBe('boss');
+        if (s.opens) expect(!!board.areas[s.opens] || GROWN.test(s.opens), `${s.id} opens ${s.opens}`).toBe(true);
       } else {
         expect(s.boss).toBeUndefined();
       }
@@ -52,9 +58,9 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
     }
   });
 
-  it('has no dead ends, except a boss spot at the end of the world with nothing beyond it yet', () => {
+  it('has no dead ends, except a boss spot at the end of the world with nothing beyond it laid yet', () => {
     for (const s of spaces) {
-      if (s.kind === 'boss' && s.opens === null) expect(s.links.length, s.id).toBeGreaterThanOrEqual(1);
+      if (s.kind === 'boss' && (!s.opens || !board.areas[s.opens])) expect(s.links.length, s.id).toBeGreaterThanOrEqual(1);
       else expect(s.links.length, s.id).toBeGreaterThanOrEqual(2);
     }
   });
@@ -150,10 +156,10 @@ describe('the world', () => {
     }
   });
 
-  it('passes from area to area over a boss spot: the Iron Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit nothing yet', () => {
+  it('passes from area to area over a boss spot: the Iron Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit the first grown area', () => {
     expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'thornwood' });
     expect(board.spaces.briar).toMatchObject({ kind: 'boss', area: 'thornwood', boss: 'briar-king', opens: 'frostpeak' });
-    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: null });
+    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: 'gen-1' });
     // The road beyond a gate belongs to the next area, so it is closed until the gate's boss falls.
     expect(board.spaces['gate-edge-1']).toMatchObject({ area: 'thornwood', kind: 'normal' });
     expect(board.spaces['briar-pass-1']).toMatchObject({ area: 'frostpeak' });

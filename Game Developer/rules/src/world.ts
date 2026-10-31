@@ -1,6 +1,7 @@
 // The world: areas by tier, each a set of hubs (named spots at fixed positions) joined by roads (a spot every step,
-// laid along a curve), and passage roads between areas that start at a boss. buildBoard turns that description into the
-// Board the rules walk on. Pure and deterministic: the same world always gives the same board.
+// laid along a curve), and passage roads between areas that start at a boss. buildBoard turns the hand-laid description
+// into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
+// Pure and deterministic: the same world always gives the same board.
 
 import type { Area, Board, Space, SpaceKind } from './types.ts';
 
@@ -11,7 +12,8 @@ export interface WorldHub {
   name: string;
   x: number;
   y: number;
-  /** For a boss spot: the enemy, and the area beaten it opens (null when nothing lies beyond yet). */
+  /** For a boss spot: the enemy, and the area beaten it opens (null when nothing lies beyond). An area not laid yet
+   * may be named by its grown id ("gen-1"): it is laid when the boss falls. */
   boss?: string;
   opens?: string | null;
 }
@@ -65,6 +67,8 @@ export const KIND_LETTERS: Record<string, SpaceKind> = {
 
 const KNOWN_KINDS = new Set<string>(Object.values(KIND_LETTERS));
 const AREA_MARGIN = 60;
+/** The id of an area grown by the generator: "gen-" and its number from 1. */
+export const GROWN = /^gen-\d+$/;
 
 /** The id of the n-th spot (from 1) on the road from `from` to `to`. */
 export function roadSpaceId(from: string, to: string, n: number): string {
@@ -72,94 +76,111 @@ export function roadSpaceId(from: string, to: string, n: number): string {
 }
 
 /**
- * The board from a world. Road spots are named "" (the client shows the kind instead) and chained hub → 1 → 2 → … →
- * hub, linked both ways; a hub gains its links in road order, its own area's roads first, then the passage roads.
- * Throws a clear Error on an unknown hub, an unknown kind letter, a duplicate id, an unknown area, a boss spot with
- * no boss, or a start that is not a hub.
+ * The board from the hand-laid world. Road spots are named "" (the client shows the kind instead) and chained hub →
+ * 1 → 2 → … → hub, linked both ways; a hub gains its links in road order, its own area's roads first, then the passage
+ * roads. Throws a clear Error on an unknown hub, an unknown kind letter, a duplicate id, an unknown area, a boss spot
+ * with no boss, or a start that is not a hub.
  */
 export function buildBoard(world: World): Board {
-  const spaces: Record<string, Space> = {};
-  const areas: Record<string, Area> = {};
-  const hubArea = new Map<string, string>();
-  const add = (space: Space): void => {
-    if (spaces[space.id]) throw new Error(`world ${world.name}: duplicate space id "${space.id}"`);
-    spaces[space.id] = space;
-  };
+  const board: Board = { start: world.start, width: world.width, height: world.height, spaces: {}, areas: {}, bestiary: {} };
+  for (const area of world.areas) addArea(board, area, world.name);
+  const start = board.spaces[world.start];
+  if (!start || start.name === '') throw new Error(`world ${world.name}: start "${world.start}" is not a hub`);
+  for (const road of world.roads) addRoad(board, road, board.spaces[road.from]?.area ?? '', world.name);
+  for (const areaId of Object.keys(board.areas)) setBounds(board, areaId);
+  checkOpens(board, world.name);
+  return board;
+}
 
-  for (const area of world.areas) {
-    if (areas[area.id]) throw new Error(`world ${world.name}: duplicate area id "${area.id}"`);
-    areas[area.id] = { id: area.id, name: area.name, theme: area.theme, tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
-    for (const hub of area.hubs) {
-      if (!KNOWN_KINDS.has(hub.kind)) throw new Error(`world ${world.name}: hub "${hub.id}" has unknown kind "${hub.kind}"`);
-      if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${world.name}: boss spot "${hub.id}" names no boss`);
-      const space: Space = { id: hub.id, kind: hub.kind, name: hub.name, x: hub.x, y: hub.y, links: [], area: area.id };
-      if (hub.kind === 'boss') {
-        space.boss = hub.boss;
-        space.opens = hub.opens ?? null;
-      }
-      add(space);
-      hubArea.set(hub.id, area.id);
+/** Lay an area's hubs and roads into the board (the board is changed in place; pass a copy to keep the old one). */
+export function addArea(board: Board, area: WorldArea, worldName = 'world'): void {
+  if (board.areas[area.id]) throw new Error(`world ${worldName}: duplicate area id "${area.id}"`);
+  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
+  for (const hub of area.hubs) {
+    if (!KNOWN_KINDS.has(hub.kind)) throw new Error(`world ${worldName}: hub "${hub.id}" has unknown kind "${hub.kind}"`);
+    if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${worldName}: boss spot "${hub.id}" names no boss`);
+    if (hub.name === '') throw new Error(`world ${worldName}: hub "${hub.id}" has no name`);
+    const space: Space = { id: hub.id, kind: hub.kind, name: hub.name, x: hub.x, y: hub.y, links: [], area: area.id };
+    if (hub.kind === 'boss') {
+      space.boss = hub.boss;
+      space.opens = hub.opens ?? null;
+    }
+    add(board, space, worldName);
+  }
+  for (const road of area.roads) addRoad(board, road, area.id, worldName);
+}
+
+/** A road's spots into the board, chained between its hubs, in `areaId`. */
+export function addRoad(board: Board, road: WorldRoad, areaId: string, worldName = 'world'): void {
+  const a = board.spaces[road.from];
+  const b = board.spaces[road.to];
+  if (!a || a.name === '') throw new Error(`world ${worldName}: road ${road.from}-${road.to} starts at unknown hub "${road.from}"`);
+  if (!b || b.name === '') throw new Error(`world ${worldName}: road ${road.from}-${road.to} ends at unknown hub "${road.to}"`);
+  const area = road.area ?? areaId;
+  if (!board.areas[area]) throw new Error(`world ${worldName}: road ${road.from}-${road.to} lies in unknown area "${area}"`);
+  const points = roadPoints(a, b, road.kinds.length, road.bow, areaCentre(board, area));
+  let previous = a.id;
+  for (let n = 1; n <= road.kinds.length; n++) {
+    const letter = road.kinds.charAt(n - 1);
+    const kind = KIND_LETTERS[letter];
+    if (!kind) throw new Error(`world ${worldName}: road ${road.from}-${road.to} has unknown kind letter "${letter}"`);
+    if (kind === 'boss') throw new Error(`world ${worldName}: road ${road.from}-${road.to} puts a boss on a road; bosses are hubs`);
+    const point = points[n - 1]!;
+    const id = roadSpaceId(road.from, road.to, n);
+    add(board, { id, kind, name: '', x: point.x, y: point.y, links: [], area }, worldName);
+    link(board, previous, id);
+    previous = id;
+  }
+  link(board, previous, b.id);
+}
+
+/** The box round an area's spots, with a margin, clipped to the board. */
+export function setBounds(board: Board, areaId: string): void {
+  const area = board.areas[areaId];
+  if (!area) return;
+  const own = Object.values(board.spaces).filter((s) => s.area === areaId);
+  if (!own.length) return;
+  const xs = own.map((s) => s.x);
+  const ys = own.map((s) => s.y);
+  const x = Math.max(0, Math.min(...xs) - AREA_MARGIN);
+  const y = Math.max(0, Math.min(...ys) - AREA_MARGIN);
+  area.bounds = { x, y, width: Math.min(board.width, Math.max(...xs) + AREA_MARGIN) - x, height: Math.min(board.height, Math.max(...ys) + AREA_MARGIN) - y };
+}
+
+/** Every boss's `opens` names an area that exists, or a grown one laid when it falls. */
+export function checkOpens(board: Board, worldName = 'world'): void {
+  for (const space of Object.values(board.spaces)) {
+    if (space.opens && !board.areas[space.opens] && !GROWN.test(space.opens)) {
+      throw new Error(`world ${worldName}: boss spot "${space.id}" opens unknown area "${space.opens}"`);
     }
   }
-  if (!hubArea.has(world.start)) throw new Error(`world ${world.name}: start "${world.start}" is not a hub`);
-  for (const space of Object.values(spaces)) {
-    if (space.opens && !areas[space.opens]) throw new Error(`world ${world.name}: boss spot "${space.id}" opens unknown area "${space.opens}"`);
-  }
+}
 
-  const centres = new Map<string, { x: number; y: number }>();
-  for (const area of world.areas) {
-    const xs = area.hubs.map((h) => h.x);
-    const ys = area.hubs.map((h) => h.y);
-    centres.set(area.id, { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 });
-  }
+function add(board: Board, space: Space, worldName: string): void {
+  if (board.spaces[space.id]) throw new Error(`world ${worldName}: duplicate space id "${space.id}"`);
+  board.spaces[space.id] = space;
+}
 
-  const link = (a: string, b: string): void => {
-    spaces[a]!.links.push(b);
-    spaces[b]!.links.push(a);
-  };
-  const lay = (road: WorldRoad, defaultArea: string): void => {
-    const a = spaces[road.from];
-    const b = spaces[road.to];
-    if (!a || !hubArea.has(road.from)) throw new Error(`world ${world.name}: road ${road.from}-${road.to} starts at unknown hub "${road.from}"`);
-    if (!b || !hubArea.has(road.to)) throw new Error(`world ${world.name}: road ${road.from}-${road.to} ends at unknown hub "${road.to}"`);
-    const areaId = road.area ?? defaultArea;
-    if (!areas[areaId]) throw new Error(`world ${world.name}: road ${road.from}-${road.to} lies in unknown area "${areaId}"`);
-    const points = roadPoints(a, b, road.kinds.length, road.bow, centres.get(areaId)!);
-    let previous = a.id;
-    for (let n = 1; n <= road.kinds.length; n++) {
-      const letter = road.kinds.charAt(n - 1);
-      const kind = KIND_LETTERS[letter];
-      if (!kind) throw new Error(`world ${world.name}: road ${road.from}-${road.to} has unknown kind letter "${letter}"`);
-      if (kind === 'boss') throw new Error(`world ${world.name}: road ${road.from}-${road.to} puts a boss on a road; bosses are hubs`);
-      const point = points[n - 1]!;
-      const id = roadSpaceId(road.from, road.to, n);
-      add({ id, kind, name: '', x: point.x, y: point.y, links: [], area: areaId });
-      link(previous, id);
-      previous = id;
-    }
-    link(previous, b.id);
-  };
-  for (const area of world.areas) for (const road of area.roads) lay(road, area.id);
-  for (const road of world.roads) lay(road, hubArea.get(road.from) ?? '');
+/** Link both ways, replacing the spaces rather than scribbling on them, so a copied board never touches the original's. */
+function link(board: Board, a: string, b: string): void {
+  board.spaces[a] = { ...board.spaces[a]!, links: [...board.spaces[a]!.links, b] };
+  board.spaces[b] = { ...board.spaces[b]!, links: [...board.spaces[b]!.links, a] };
+}
 
-  // Each area's box, with a margin, from the spots it holds.
-  for (const area of Object.values(areas)) {
-    const own = Object.values(spaces).filter((s) => s.area === area.id);
-    const xs = own.map((s) => s.x);
-    const ys = own.map((s) => s.y);
-    const x = Math.max(0, Math.min(...xs) - AREA_MARGIN);
-    const y = Math.max(0, Math.min(...ys) - AREA_MARGIN);
-    area.bounds = { x, y, width: Math.min(world.width, Math.max(...xs) + AREA_MARGIN) - x, height: Math.min(world.height, Math.max(...ys) + AREA_MARGIN) - y };
-  }
-
-  return { start: world.start, width: world.width, height: world.height, spaces, areas };
+/** The middle of an area's hubs: what its roads bow away from. */
+export function areaCentre(board: Board, areaId: string): { x: number; y: number } {
+  const hubs = Object.values(board.spaces).filter((s) => s.area === areaId && s.name !== '');
+  if (!hubs.length) return { x: 0, y: 0 };
+  const xs = hubs.map((h) => h.x);
+  const ys = hubs.map((h) => h.y);
+  return { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 };
 }
 
 /**
  * `count` points evenly spaced in the parameter of a quadratic Bezier from `a` to `b`, whose middle lies `bow` pixels
  * off the straight line, away from `centre`. Rounded to whole pixels.
  */
-function roadPoints(
+export function roadPoints(
   a: { x: number; y: number },
   b: { x: number; y: number },
   count: number,

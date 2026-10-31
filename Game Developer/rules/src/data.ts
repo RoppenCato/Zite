@@ -10,8 +10,9 @@ import itemsJson from '../data/items.json' with { type: 'json' };
 import abilitiesJson from '../data/abilities.json' with { type: 'json' };
 import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
+import themesJson from '../data/themes.json' with { type: 'json' };
 import type { World } from './world.ts';
-import type { AffixKind, ClassId, EnemyMove, Rarity, Slot, SpaceKind } from './types.ts';
+import type { AffixKind, ClassId, EnemyData, EnemyMove, Rarity, Slot, SpaceKind } from './types.ts';
 
 export interface ClassData {
   name: string;
@@ -63,18 +64,6 @@ export interface SpaceKindData {
   cooldownMs?: number;
 }
 
-export interface EnemyData {
-  name: string;
-  level: number;
-  role: 'mob' | 'mini' | 'boss';
-  hp: number;
-  attack: number;
-  defense: number;
-  xp: number;
-  gold: number;
-  moves: EnemyMove[];
-}
-
 /** A thing to carry: a potion, or a dice card that changes a pending roll. */
 export interface ItemData {
   name: string;
@@ -85,8 +74,11 @@ export interface ItemData {
 }
 
 export interface GearData {
-  /** The rank names by tier, from 1. */
+  /** The rank names by tier, from 1; beyond the names a rank is "Rank n". */
   ranks: string[];
+  /** How much each rank beyond the tables multiplies the last table entry's number and price. */
+  rankGrowth: number;
+  priceGrowth: number;
   slots: Record<Slot, { base: string; stat: 'attack' | 'defense' | 'maxHp' | 'maxMana'; perRank: number[]; price: number[] }>;
   rarities: Record<Rarity, { mult: number; weight: number; priceMult: number; affix: boolean; named: boolean }>;
   /** The spread of a roll round the rank's number, as a share. */
@@ -97,6 +89,17 @@ export interface GearData {
   rarityBoost: Record<'mob' | 'mini' | 'boss', number>;
   consumableDrop: { potion: number; card: number };
   sellShare: number;
+}
+
+/** What the generator draws from to grow an area: its theme's names and creatures, the shapes of creatures, the cell grid. */
+export interface ThemesData {
+  order: string[];
+  themes: Record<string, { areas: string[]; adjectives: string[]; mobs: string[]; mini: string; boss: string }>;
+  places: Record<string, string[]>;
+  archetypes: { hp: number; attack: number; defense: number; moves: EnemyMove[] }[];
+  base: Record<'mob' | 'mini' | 'boss', { hp: number; attack: number; defense: number; xp: number; gold: number }>;
+  perTier: { hp: number; attack: number; defense: number; reward: number };
+  cell: { width: number; height: number; firstColumn: number };
 }
 
 export interface ProgressionData {
@@ -129,6 +132,7 @@ export const ITEMS = itemsJson as Record<string, ItemData>;
 export const GEAR = gearJson as GearData;
 /** The odds of what a normal spot holds, as weights. */
 export const SURPRISES = surprisesJson as Record<'fight' | 'chest' | 'merchant' | 'gamble' | 'miniboss', number>;
+export const THEMES = themesJson as ThemesData;
 
 export const SPACE_KINDS = Object.keys(SPACE_KIND_DATA) as SpaceKind[];
 export const CLASS_IDS = Object.keys(CLASS_DATA) as ClassId[];

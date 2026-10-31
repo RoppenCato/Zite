@@ -1,6 +1,7 @@
 // Drives the built game headless at phone size (412 by 915, touch) and checks it end to end: the character screen,
 // the camera over the world (follow, overview of what is open, framing a roll, drag, pinch, wheel, hub names by zoom),
 // a hint on a tapped spot, the closed areas and the bosses on the board, a reload mid-choice, an old save, landings,
+// the world growing past the Summit,
 // a fight (two taps a round, a reload mid-fight, Continue), the shop and the bag, a dice card, a potion in a fight,
 // and a reset. Screenshots land in tools/out/shots/.
 //
@@ -20,7 +21,7 @@ mkdirSync(OUT, { recursive: true });
 const PAGE = process.argv[2] ?? 'http://localhost:4173/';
 const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
-const STATE_VERSION = 5; // rules/src/types.ts
+const STATE_VERSION = 6; // rules/src/types.ts
 const B = { map: [72, 836], bag: [206, 836], log: [340, 836], roll: [206, 884] }; // HudScene BUTTONS
 const F = { a: [110, 600], b: [302, 600], c: [110, 652], d: [302, 652], e: [110, 704], f: [302, 704], cont: [206, 652] }; // FightScene FIGHT_BUTTONS
 const SHOP = { row: (i) => 224 + i * 44, buyX: 356, leave: [206, 706], tabSell: [272, 178] };
@@ -300,7 +301,7 @@ const stockSave = (patch, statePatch = {}) => ev(({ patch, statePatch }) => {
   boardWorld.game.state = state;
 }, { patch, statePatch });
 /** A fight against `enemy` as the rules would start it, with the enemy patched. */
-const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => ({ enemy: { ...boardWorld.rules.makeEnemy(enemy), ...enemyPatch }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn: false }), { enemy, space, enemyPatch });
+const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => ({ enemy: { ...boardWorld.rules.makeEnemy(enemy, boardWorld.game.state.board.bestiary), ...enemyPatch }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn: false }), { enemy, space, enemyPatch });
 const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
 const STRONG = { level: 10, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, fight: null, offer: null, steps: 0, items: {}, equipment: NO_GEAR };
 await stockSave({ space: 'tinker', steps: 0, gold: 150, items: {}, fight: null, offer: null, hp: 60, bag: [] });
@@ -615,6 +616,45 @@ await frameArea('thornwood');
 await shot('21-thornwood');
 await frameArea('frostpeak');
 await shot('22-frostpeak');
+
+// The Summit: the Frost Matriarch falls and the world grows. The first grown area is laid from the seed and opened, drawn
+// on the spot with its ground, roads, spots and boss, and the map is wider for it; the hint at its gate names the next.
+await stockSave({ ...STRONG, attack: 120, defense: 60, hp: 900, maxHp: 900, space: 'summit', opened: ['meadows', 'thornwood', 'frostpeak'], cooldowns: {}, bossKills: {}, fight: await plantedFight('frost-matriarch', 'summit', { hp: 1 }) });
+await page.reload();
+await ready();
+await settle();
+const atSummit = await ev(() => ({ width: boardWorld.game.state.board.width, areas: Object.keys(boardWorld.game.state.board.areas).length, enemy: boardWorld.game.me.fight?.enemy.name }));
+await finishFight();
+const grown = await ev(() => {
+  const s = boardWorld.phaser.scene.getScene('board');
+  const b = boardWorld.game.state.board;
+  const area = b.areas['gen-1'];
+  const own = Object.values(b.spaces).filter((x) => x.area === 'gen-1');
+  const gate = own.find((x) => x.kind === 'boss');
+  return { opened: boardWorld.game.me.opened, area: area && { name: area.name, tier: area.tier, theme: area.theme }, width: b.width, camWidth: s.cameras.main.getBounds().width, cover: s.covers.get('gen-1')?.visible, drawn: own.filter((x) => s.circles.has(x.id)).length, spaces: own.length, message: boardWorld.phaser.scene.getScene('hud').message.text, gate: gate && { id: gate.id, boss: gate.boss, bossName: b.bestiary[gate.boss]?.name, label: s.bossLabels.get(gate.id)?.text } };
+});
+check('the Frost Matriarch falls: the first grown area is laid and opened, drawn spot for spot with its boss, the map wider', atSummit.enemy === 'Frost Matriarch' && grown.opened.includes('gen-1') && grown.area?.tier === 4 && grown.width > atSummit.width && grown.camWidth === grown.width && grown.cover === false && grown.spaces >= 40 && grown.drawn === grown.spaces && new RegExp(`${grown.area?.name} is open`).test(grown.message) && /level \d+/.test(grown.gate?.label ?? ''), JSON.stringify({ atSummit, ...grown }));
+await frameArea('gen-1');
+await shot('23-grown-area');
+const grownSpaces = await ev(() => Object.fromEntries(Object.values(boardWorld.game.state.board.spaces).map((s) => [s.id, { x: s.x, y: s.y, kind: s.kind }])));
+await tapSpace(grown.gate.id, grownSpaces);
+await sleep(300);
+c = await cam();
+check("the grown gate's hint names its boss and the area beyond by name and tier, before it is laid", new RegExp(`^${grown.gate.bossName}, level \\d+`).test(c.message) && /Land exactly here/.test(c.message) && /Beat it to open .+ \(tier 5\)\./.test(c.message), c.message);
+
+// Its boss in turn, from the board's own bestiary, lays the second; a reload keeps the first drawn.
+await stockSave({ ...STRONG, attack: 160, defense: 80, hp: 1200, maxHp: 1200, space: grown.gate.id, cooldowns: {}, bossKills: {}, fight: await plantedFight(grown.gate.boss, grown.gate.id, { hp: 1 }) });
+await page.reload();
+await ready();
+await settle();
+const redrawn = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const b = boardWorld.game.state.board; return { gen1Drawn: Object.values(b.spaces).filter((x) => x.area === 'gen-1').every((x) => s.circles.has(x.id)), enemy: boardWorld.game.me.fight?.enemy.name, width: b.width }; });
+await finishFight();
+const second = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const b = boardWorld.game.state.board; const area = b.areas['gen-2']; const own = Object.values(b.spaces).filter((x) => x.area === 'gen-2'); return { opened: boardWorld.game.me.opened, area: area && { name: area.name, tier: area.tier }, drawn: own.filter((x) => s.circles.has(x.id)).length, spaces: own.length, cover: s.covers.get('gen-2')?.visible, width: b.width, height: b.height, kills: boardWorld.game.me.bossKills, message: boardWorld.phaser.scene.getScene('hud').message.text }; });
+check('a reload keeps the grown area drawn; its boss lays and opens the second grown area under the first', redrawn.gen1Drawn && redrawn.width === grown.width && redrawn.enemy === grown.gate.bossName && second.opened.includes('gen-2') && second.area?.tier === 5 && second.drawn === second.spaces && second.spaces >= 40 && second.cover === false && second.width === grown.width && second.height === 3800 && second.kills[grown.gate.id] === 1 && new RegExp(`${second.area?.name} is open`).test(second.message), JSON.stringify({ redrawn, second }));
+await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
+await sleep(400);
+await settle();
+await shot('24-overview-grown');
 
 // reset() throws the save away: the next load is the character screen again.
 await ev(() => boardWorld.game.reset());

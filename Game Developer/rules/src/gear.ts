@@ -58,17 +58,34 @@ export function stats(c: Character): Stats {
   return { attack, defense, maxHp: Math.round(maxHp * (1 + vigor)), maxMana, crit, dodge, lifesteal, thorns };
 }
 
-/** The rank's name for a tier: Copper for 1, Iron for 2, …; the top rank for anything beyond the table. */
+/** The rank's name for a tier: Copper for 1, Iron for 2, …; "Rank n" beyond the names. */
 export function rankName(rank: number): string {
-  return GEAR.ranks[Math.min(Math.max(1, rank), GEAR.ranks.length) - 1]!;
+  const r = Math.max(1, Math.floor(rank));
+  return GEAR.ranks[r - 1] ?? `Rank ${r}`;
+}
+
+/** A slot's number at a rank: the table while it lasts, then the last entry grown by `rankGrowth` a rank. */
+export function rankStat(slot: Slot, rank: number): number {
+  const def = GEAR.slots[slot];
+  const r = Math.max(1, Math.floor(rank));
+  const n = def.perRank.length;
+  return r <= n ? def.perRank[r - 1]! : Math.round(def.perRank[n - 1]! * Math.pow(GEAR.rankGrowth, r - n));
+}
+
+/** A slot's plain price at a rank: the table, then grown by `priceGrowth` a rank. */
+export function rankPrice(slot: Slot, rank: number): number {
+  const def = GEAR.slots[slot];
+  const r = Math.max(1, Math.floor(rank));
+  const n = def.price.length;
+  return r <= n ? def.price[r - 1]! : Math.round(def.price[n - 1]! * Math.pow(GEAR.priceGrowth, r - n));
 }
 
 /** A plain common piece of the rank: what a shop sells. */
 export function plainGear(id: string, slot: Slot, rank: number): GearItem {
-  const r = Math.min(Math.max(1, rank), GEAR.ranks.length);
+  const r = Math.max(1, Math.floor(rank));
   const def = GEAR.slots[slot];
   const base = `${rankName(r)} ${def.base}`;
-  return { id, slot, rank: r, rarity: 'common', name: base, base: base.toLowerCase(), stats: { [def.stat]: def.perRank[r - 1]! }, affix: null, price: def.price[r - 1]! };
+  return { id, slot, rank: r, rarity: 'common', name: base, base: base.toLowerCase(), stats: { [def.stat]: rankStat(slot, r) }, affix: null, price: rankPrice(slot, r) };
 }
 
 /** A rarity by weight; `boost` skips that many of the lowest rarities (a mini-boss never drops common, a boss nothing under rare). */
@@ -88,12 +105,12 @@ export function rollRarity(rng: Rng, boost: number): Rarity {
  * when the rarity has one, a proper name when it is named. Four to six numbers from the stream.
  */
 export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng): GearItem {
-  const r = Math.min(Math.max(1, rank), GEAR.ranks.length);
+  const r = Math.max(1, Math.floor(rank));
   const def = GEAR.slots[slot];
   const rarity = rollRarity(rng, boost);
   const rar = GEAR.rarities[rarity];
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
-  const value = Math.max(1, Math.round(def.perRank[r - 1]! * rar.mult * swing));
+  const value = Math.max(1, Math.round(rankStat(slot, r) * rar.mult * swing));
   const plain = `${rankName(r)} ${def.base}`;
   let affix: GearItem['affix'] = null;
   if (rar.affix) {
@@ -107,7 +124,7 @@ export function rollGear(id: string, slot: Slot, rank: number, boost: number, rn
     const names = GEAR.names[slot];
     name = names[rng.int(names.length) - 1]!;
   }
-  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affix, price: Math.round(def.price[r - 1]! * rar.priceMult) };
+  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affix, price: Math.round(rankPrice(slot, r) * rar.priceMult) };
 }
 
 /** One line on a piece: "Stormborn, iron sword · epic · +14 attack · +12% crit chance". */

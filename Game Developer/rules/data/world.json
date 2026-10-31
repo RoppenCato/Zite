@@ -87,7 +87,7 @@
         { "id": "frozen",    "kind": "chest",  "name": "Frozen Cairn",    "x": 1600, "y": 800 },
         { "id": "aurora",    "kind": "spell",  "name": "Aurora Shrine",   "x": 2700, "y": 750 },
         { "id": "ridge",     "kind": "normal", "name": "Wind Ridge",      "x": 2150, "y": 600 },
-        { "id": "summit",    "kind": "boss",   "name": "The Summit",      "x": 2150, "y": 250, "boss": "frost-matriarch", "opens": null }
+        { "id": "summit",    "kind": "boss",   "name": "The Summit",      "x": 2700, "y": 300, "boss": "frost-matriarch", "opens": "gen-1" }
       ],
       "roads": [
         { "from": "pass",      "to": "frosthold", "kinds": "nn",   "bow": 0 },
@@ -103,7 +103,8 @@
         { "from": "frozen",    "to": "ridge",     "kinds": "ntn",  "bow": 50 },
         { "from": "hotspring", "to": "ridge",     "kinds": "nnn",  "bow": 0 },
         { "from": "aurora",    "to": "ridge",     "kinds": "npn",  "bow": 50 },
-        { "from": "ridge",     "to": "summit",    "kinds": "nn",   "bow": 0 }
+        { "from": "ridge",     "to": "summit",    "kinds": "nnnn", "bow": 0 },
+        { "from": "aurora",    "to": "summit",    "kinds": "nnn",  "bow": 0 }
       ]
     }
   ],

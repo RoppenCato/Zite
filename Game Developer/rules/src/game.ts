@@ -243,7 +243,7 @@ function surprise(rng: Rng): keyof typeof SURPRISES {
 }
 
 function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, events: GameEvent[]): ApplyResult {
-  const fighting = startFight(c, enemy, space, spawn);
+  const fighting = startFight(c, enemy, space, spawn, state.board.bestiary);
   events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...fighting.fight!.enemy, moves: fighting.fight!.enemy.moves.map((m) => ({ ...m })) }, space });
   return { state: withCharacter(state, fighting), events };
 }

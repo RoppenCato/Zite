@@ -47,4 +47,6 @@ Robin's, 2026-10-31, in his words where they were short enough; what is mine is 
 ## Names
 
 - **The working title is Zite.** World and place names are the Game Developer's to choose for now and can change later.
-- How many areas are laid by hand before the generator is the Game Developer's call (three to start: mine).
+- How many areas are laid by hand before the generator is the Game Developer's call (three to start: mine). The
+  generator was built the same day (mine, from the brief's forever game): the world grows east as bosses fall, a tier
+  an area, eight themes round and round, the hand-laid areas as its shapes (`docs/state/world.md`).

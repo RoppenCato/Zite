@@ -1,5 +1,5 @@
 {
-  "ranks": ["Copper", "Iron", "Steel"],
+  "ranks": ["Copper", "Iron", "Steel", "Mithril", "Adamant", "Runed", "Dragonbone", "Starforged", "Voidsteel", "Sunmetal"],
   "slots": {
     "weapon":  { "base": "Sword",  "stat": "attack",  "perRank": [4, 8, 13],   "price": [30, 90, 220] },
     "armour":  { "base": "Mail",   "stat": "defense", "perRank": [3, 6, 10],   "price": [25, 80, 200] },
@@ -32,5 +32,7 @@
   "dropChance": { "mob": 0.12, "mini": 0.5, "boss": 1 },
   "rarityBoost": { "mob": 0, "mini": 1, "boss": 2 },
   "consumableDrop": { "potion": 0.2, "card": 0.08 },
-  "sellShare": 0.5
+  "sellShare": 0.5,
+  "rankGrowth": 1.35,
+  "priceGrowth": 1.8
 }

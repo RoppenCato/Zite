@@ -18,5 +18,5 @@ const RING = ringJson as unknown as RingData;
 export function ringBoard(): Board {
   const spaces: Board['spaces'] = {};
   for (const s of RING.spaces) spaces[s.id] = { ...s, links: [...s.links] };
-  return { start: RING.start, width: RING.width, height: RING.height, spaces, areas: structuredClone(RING.areas) };
+  return { start: RING.start, width: RING.width, height: RING.height, spaces, areas: structuredClone(RING.areas), bestiary: {} };
 }

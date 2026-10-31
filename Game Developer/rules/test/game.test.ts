@@ -26,7 +26,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('a new game', () => {
   it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(5);
+    expect(s.version).toBe(6);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
@@ -36,7 +36,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(5);
+    expect(s.version).toBe(6);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(me(s)).toEqual({
@@ -365,7 +365,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 6 })).toBeNull();
+    expect(migrate({ version: 7 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -382,10 +382,10 @@ describe('a stored state', () => {
     die: { sides: 6, last: 3 },
   });
 
-  it.each([1, 2, 3, 4] as const)('brings a version-%i state to 5: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
+  it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
     const s = migrate(structuredClone(older(version)));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(5);
+    expect(s!.version).toBe(6);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
     expect(s!.die).toEqual({ sides: 6, last: null });
@@ -419,6 +419,27 @@ describe('a stored state', () => {
     // And it plays on: a roll from the start of the world.
     const { events } = apply(s!, roll(), makeRng('ashford'), NOW);
     expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);
+  });
+
+  it('brings a version-5 state up: the board rebuilt with the Summit leading on, a character kept where it stood in an open area, one on a closed or vanished spot sent to the start', () => {
+    const today = newGame({ seed: 'old-seed', player: 'p1', name: 'Robin', classId: 'warrior' });
+    const oldBoard = structuredClone(today.board) as unknown as Record<string, unknown>;
+    delete oldBoard.bestiary;
+    (oldBoard.spaces as Record<string, { opens?: string | null }>).summit!.opens = null;
+    const p1 = { ...me(today), space: 'pass', steps: 2, gold: 300, opened: ['meadows', 'thornwood', 'frostpeak'], cooldowns: { summit: NOW + 1000 } };
+    const p2 = { ...me(today), id: 'p2', name: 'Ann', space: 'gate-edge-1', steps: 1, opened: ['meadows'] };
+    const p3 = { ...me(today), id: 'p3', name: 'Bo', space: 'nowhere', opened: ['meadows', 'gone'] };
+    const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
+    const s = migrate(structuredClone(v5));
+    expect(s).not.toBeNull();
+    expect(s!.version).toBe(6);
+    expect(s!.board).toEqual(makeBoard());
+    expect(s!.characters.p1).toEqual(p1);
+    expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });
+    expect(s!.characters.p3).toEqual({ ...p3, space: 'ashford', steps: 0, opened: ['meadows'] });
+    expect(s!.spawns).toEqual({ 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW } });
+    expect(s!.die).toEqual({ sides: 6, last: 4 });
+    expect(s!.nextItem).toBe(9);
   });
 
   it('refuses an older state it cannot carry over', () => {

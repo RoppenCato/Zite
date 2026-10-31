@@ -1,5 +1,6 @@
 import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { makeBoard, makeCharacter } from './game.ts';
+import { growBoard } from './generate.ts';
 import { STATE_VERSION, type Board, type Character, type GameState } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
@@ -30,6 +31,16 @@ interface StateV4 {
   characters: Record<string, OldCharacter>;
   die: { sides: number; last: number | null };
 }
+/** A version-5 state: today's shape, with a board that knew no grown areas and no bestiary. */
+interface StateV5 {
+  version: 5;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
 /** What every version before 5 had on a character that version 5 keeps. */
 interface OldCharacter {
   id: string;
@@ -51,15 +62,33 @@ interface OldCharacter {
  * 4 → 5 (2026-10-31): the island became the world in areas, with bosses, gear, mana and abilities. The board is
  * rebuilt; every character keeps its name, class, level, xp, gold and consumables, stands on the start again with full
  * HP and mana, an empty wardrobe, its class's starting abilities and only the first area open.
+ * 5 → 6 (2026-10-31): the world grows. The board is rebuilt from today's data (the Summit now opens the first grown
+ * area) and the areas a character had opened are laid again, so everything else is kept as it was.
  */
 export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
+  if (candidate.version === 5) return fromVersion5(raw as StateV5);
   if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
     return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
   }
   return null;
+}
+
+function fromVersion5(old: StateV5): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  let board = makeBoard();
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    for (const areaId of c.opened ?? []) board = growBoard(board, old.seed, areaId);
+    const opened = (c.opened ?? []).filter((a) => board.areas[a]);
+    const space = board.spaces[c.space] && opened.includes(board.spaces[c.space]!.area) ? c.space : board.start;
+    characters[id] = { ...c, id, opened: opened.length ? opened : [board.spaces[board.start]!.area], space, steps: space === c.space ? c.steps : 0, fight: space === c.space ? c.fight : null };
+  }
+  const spawns = Object.fromEntries(Object.entries(old.spawns ?? {}).filter(([space]) => board.spaces[space]));
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
 }
 
 function fromOlder(old: StateV1 | StateV2 | StateV3 | StateV4): GameState | null {

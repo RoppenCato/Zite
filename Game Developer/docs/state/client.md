@@ -58,7 +58,10 @@ opaque panel that takes every touch, and call the board back when they close (`f
 
 - **The world**: each area's ground in its theme's colour (meadow, forest, ice), its name written large and faint, a thin
   border round the map. **A closed area is covered** by a dark rectangle (you see there is more, not what); the cover
-  lifts when a boss opens it. **Links** are 6-pixel lines in one `Graphics`.
+  lifts when a boss opens it. **Links** are 6-pixel lines in one `Graphics`. **The world grows**: `drawBoard` draws
+  whatever the board has that is not drawn yet (at the start everything; after a fight that laid a grown area, that
+  area's ground, name, roads, spots, boss label and cover), redraws the border and widens the camera's bounds and its
+  minimum zoom; the eight grown themes have their own ground colours (`THEME_COLORS`).
 - **Spots**: circles in a colour per kind with a letter (town T, shop $, chest C, spring +, shrine *, boss B); the wilds
   are smaller (radius 20) and bare, the others radius 26; **a boss spot is big (radius 34), dark red, named, with its
   boss's level under it**, and dims with a countdown while the boss is away. Hubs show their names (bold 13 px) below
@@ -67,7 +70,8 @@ opaque panel that takes every touch, and call the board back when they close (`f
   the boss labels.
 - **The token** is a container (a circle of radius 15 with the class's first letter) just above its spot.
 - **A tap on any spot** that is not lit says what it is (`hintFor`) in the message line and flashes its ring; a tap on
-  the shop or town you stand on opens the shop again.
+  the shop or town you stand on opens the shop again. The tap that closes the fight, the shop or the bag never also
+  counts on the spot under the button (a quarter-second guard), so Continue over a spot keeps the fight's summary.
 - **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then asks the rules
   where the roll can end inside the open areas (`reachable` with `opened`). **One place and no dice card in the bag: the
   token walks at once. Otherwise those spots light up** (a pulsing yellow ring, radius 42), the camera frames them, the
@@ -93,7 +97,8 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - The main camera's viewport is the band (`setViewport(0, 100, 412, 640)`), its bounds the whole map
   (`setBounds(0, 0, board.width, board.height)`, so the covered areas can be looked at), `roundPixels` on.
 - **Follow zoom 0.8**; **minimum zoom** such that **everything open** fits the band (the meadows alone: about 0.37; all
-  three areas: about 0.15, never under 0.12); **maximum 1.4**. The camera starts following the token at the follow zoom
+  three hand-laid areas: about 0.15, never under 0.12; a world grown wider than 0.12 fits may pull back as far as 0.05,
+  where the areas read as patches of colour); **maximum 1.4**. The camera starts following the token at the follow zoom
   (`startFollow(token, true, 0.12, 0.12)`).
 - **A roll with more than one place to go frames the token and every lit spot**: their box plus 80 pixels of padding, the
   zoom clamped between the minimum and the follow zoom, `pan` and `zoomTo` over 350 ms, following stopped. **After the
@@ -137,7 +142,7 @@ button, not while a fight or the shop is up.
 ## The save (`local-game.ts`)
 
 `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On load a save
-of version 1 passes its state through `migrate`, which brings any older state up to version 5; no save, or one we cannot
+of version 1 passes its state through `migrate`, which brings any older state up to version 6; no save, or one we cannot
 read, gives null and the character screen comes up, and `create` makes the game from the name and class chosen with a new
 seed. `act` passes `Date.now()` to the rules as the clock. **The world ticks** (`game.tick()`, the `tick` action) on load,
 once a minute, and when the page comes back to the front. The one local player's id is `local`. `reset()` throws the save
