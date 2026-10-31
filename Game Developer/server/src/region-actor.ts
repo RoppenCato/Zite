@@ -1,5 +1,6 @@
 // A region actor: the one owner of a region's state. It takes actions one at a time through the same rules the
-// client runs, keeps its state and its dice in SQLite, and answers a repeated action id with the stored answer.
+// client runs (with its own clock passed in, for spots that give again and for spawns), keeps its state and its dice
+// in SQLite, and answers a repeated action id with the stored answer.
 // The shape of a Cloudflare Durable Object or a Colyseus room (CLAUDE.md), so the server can move later.
 
 import {
@@ -98,7 +99,7 @@ export class RegionActor {
     const stored = this.getResult.get(this.id, action.id) as { result: string } | undefined;
     if (stored) return { ...(JSON.parse(stored.result) as ActionResult), replayed: true };
 
-    const { state, events } = apply(this.state, action, this.rng);
+    const { state, events } = apply(this.state, action, this.rng, this.now());
     if (state !== this.state) {
       this.state = state;
       this.version += 1;

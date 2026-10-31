@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { DICE_DATA, ISLAND_DATA, SPACE_KINDS } from '../src/data.ts';
+import { DICE_DATA, ENEMIES, SPACE_KINDS, WORLD_DATA } from '../src/data.ts';
 import { makeBoard } from '../src/game.ts';
 import { legalPaths } from '../src/paths.ts';
 import type { Board } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 // Every board the game can play on must be a sound graph and drawable: these checks run over the ring fixture and the
-// built island alike, and the generator that comes later must pass them too.
+// built world alike, and the generator that comes later must pass them too.
 const MIN_LINK = 60; // linked spaces closer than this overlap on the screen
 const MAX_LINK = 200; // further apart than this, a step looks like a jump
 const MIN_APART = 55; // any two spaces, linked or not
@@ -15,21 +15,30 @@ const MARGIN = 40; // from the board's edge, so a space and its ring are never c
 const boards: { name: string; board: Board; maxLink: number }[] = [
   // The ring's chord across the middle is 300 pixels long: it is the fork test, not a map to draw, so it alone may be long.
   { name: 'the twelve-space ring (the test fixture)', board: ringBoard(), maxLink: 300 },
-  { name: 'Ashford Isle (built from rules/data/board.json)', board: makeBoard(), maxLink: MAX_LINK },
+  { name: 'the world (built from rules/data/world.json)', board: makeBoard(), maxLink: MAX_LINK },
 ];
 
 describe.each(boards)('$name', ({ board, maxLink }) => {
   const spaces = Object.values(board.spaces);
   const ids = Object.keys(board.spaces);
 
-  it('has unique ids and a start that exists', () => {
+  it('has unique ids, a start that exists, and an area for every space', () => {
     for (const id of ids) expect(board.spaces[id]!.id).toBe(id);
     expect(new Set(spaces.map((s) => s.id)).size).toBe(spaces.length);
     expect(board.spaces[board.start]).toBeDefined();
+    for (const s of spaces) expect(board.areas[s.area], `${s.id} lies in ${s.area}`).toBeDefined();
   });
 
-  it('only uses known space kinds', () => {
-    for (const s of spaces) expect(SPACE_KINDS).toContain(s.kind);
+  it('only uses known space kinds, and every boss spot names a boss that exists', () => {
+    for (const s of spaces) {
+      expect(SPACE_KINDS).toContain(s.kind);
+      if (s.kind === 'boss') {
+        expect(s.boss && ENEMIES[s.boss]?.role, `${s.id} names a boss`).toBe('boss');
+        if (s.opens) expect(board.areas[s.opens], `${s.id} opens ${s.opens}`).toBeDefined();
+      } else {
+        expect(s.boss).toBeUndefined();
+      }
+    }
   });
 
   it('links both ways, never to itself, never to a space that is not there', () => {
@@ -43,14 +52,30 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
     }
   });
 
-  it('has no dead ends: every space has at least two ways on', () => {
-    for (const s of spaces) expect(s.links.length, s.id).toBeGreaterThanOrEqual(2);
+  it('has no dead ends, except a boss spot at the end of the world with nothing beyond it yet', () => {
+    for (const s of spaces) {
+      if (s.kind === 'boss' && s.opens === null) expect(s.links.length, s.id).toBeGreaterThanOrEqual(1);
+      else expect(s.links.length, s.id).toBeGreaterThanOrEqual(2);
+    }
   });
 
-  it('can always use any roll of the die from any space', () => {
+  it('can always use any roll of the die from any space, with every area open', () => {
     for (const id of ids) {
       for (let steps = 1; steps <= DICE_DATA.sides; steps++) {
         expect(legalPaths(board, id, steps).length, `${id} with ${steps} steps`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('can always use any roll from any space of an area with only that area and the ones before it open', () => {
+    const areas = Object.values(board.areas).sort((a, b) => a.tier - b.tier);
+    const open = new Set<string>();
+    for (const area of areas) {
+      open.add(area.id);
+      for (const s of spaces.filter((x) => x.area === area.id)) {
+        for (let steps = 1; steps <= DICE_DATA.sides; steps++) {
+          expect(legalPaths(board, s.id, steps, open).length, `${s.id} with ${steps} steps, ${[...open].join('+')} open`).toBeGreaterThan(0);
+        }
       }
     }
   });
@@ -76,7 +101,7 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
     }
   });
 
-  it(`keeps every space at least ${MARGIN} pixels inside the board`, () => {
+  it(`keeps every space at least ${MARGIN} pixels inside the board, and inside its area's bounds`, () => {
     expect(board.width).toBeGreaterThan(0);
     expect(board.height).toBeGreaterThan(0);
     for (const s of spaces) {
@@ -84,31 +109,71 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
       expect(s.x, `${s.id} x`).toBeLessThanOrEqual(board.width - MARGIN);
       expect(s.y, `${s.id} y`).toBeGreaterThanOrEqual(MARGIN);
       expect(s.y, `${s.id} y`).toBeLessThanOrEqual(board.height - MARGIN);
+      const b = board.areas[s.area]!.bounds;
+      expect(s.x >= b.x && s.x <= b.x + b.width && s.y >= b.y && s.y <= b.y + b.height, `${s.id} inside ${s.area}`).toBe(true);
     }
   });
 });
 
-describe('the island', () => {
-  it('is Ashford Isle: about sixty spaces, eleven of them named hubs, starting in a town', () => {
-    const board = makeBoard();
-    const spaces = Object.values(board.spaces);
-    expect(ISLAND_DATA.name).toBe('Ashford Isle');
+describe('the world', () => {
+  const board = makeBoard();
+  const spaces = Object.values(board.spaces);
+
+  it('is Zite: three areas by tier, about 180 spots, starting in the town Ashford in the meadows', () => {
+    expect(WORLD_DATA.name).toBe('Zite');
     expect(board.start).toBe('ashford');
-    expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford' });
-    expect(spaces.length).toBeGreaterThanOrEqual(55);
-    expect(spaces.length).toBeLessThanOrEqual(70);
-    expect(spaces.filter((s) => s.name !== '')).toHaveLength(ISLAND_DATA.hubs.length);
-    expect(board.width).toBe(ISLAND_DATA.width);
-    expect(board.height).toBe(ISLAND_DATA.height);
+    expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford', area: 'meadows' });
+    expect(Object.values(board.areas).map((a) => [a.id, a.tier])).toEqual([
+      ['meadows', 1],
+      ['thornwood', 2],
+      ['frostpeak', 3],
+    ]);
+    expect(spaces.length).toBeGreaterThanOrEqual(150);
+    expect(spaces.length).toBeLessThanOrEqual(220);
+    expect(board).toMatchObject({ width: 2800, height: 3800 });
   });
 
-  it('forks at its hubs: six hubs with three or more ways on, the rest corners with two; a road space has exactly two', () => {
-    const board = makeBoard();
-    const forks = ISLAND_DATA.hubs.filter((hub) => board.spaces[hub.id]!.links.length >= 3).map((hub) => hub.id);
-    expect(forks).toEqual(['ashford', 'millford', 'crossroads', 'windy', 'tinker', 'moon']);
-    expect(board.spaces.millford!.links).toHaveLength(5); // the central town, the hub of the four loops
-    for (const s of Object.values(board.spaces)) {
-      if (s.name === '') expect(s.links, s.id).toHaveLength(2);
+  it('keeps each area to its own mobs, every mob of the area within its levels', () => {
+    for (const area of Object.values(board.areas)) {
+      expect(area.mobs.length).toBeGreaterThanOrEqual(3);
+      for (const id of [...area.mobs, ...area.miniBosses]) {
+        const e = ENEMIES[id];
+        expect(e, `${area.id} has ${id}`).toBeDefined();
+        if (area.mobs.includes(id)) {
+          expect(e!.level, `${id} in ${area.id}`).toBeGreaterThanOrEqual(area.levels[0]);
+          expect(e!.level, `${id} in ${area.id}`).toBeLessThanOrEqual(area.levels[1]);
+          expect(e!.role).toBe('mob');
+        } else {
+          expect(e!.role).toBe('mini');
+        }
+      }
+    }
+  });
+
+  it('passes from area to area over a boss spot: the Iron Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit nothing yet', () => {
+    expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'thornwood' });
+    expect(board.spaces.briar).toMatchObject({ kind: 'boss', area: 'thornwood', boss: 'briar-king', opens: 'frostpeak' });
+    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: null });
+    // The road beyond a gate belongs to the next area, so it is closed until the gate's boss falls.
+    expect(board.spaces['gate-edge-1']).toMatchObject({ area: 'thornwood', kind: 'normal' });
+    expect(board.spaces['briar-pass-1']).toMatchObject({ area: 'frostpeak' });
+    // Every area but the first is opened by exactly one boss.
+    for (const area of Object.values(board.areas)) {
+      const gates = spaces.filter((s) => s.opens === area.id);
+      expect(gates.length, area.id).toBe(area.tier === 1 ? 0 : 1);
+    }
+  });
+
+  it('gives every area a town, a shop, a shrine, chests and springs', () => {
+    for (const area of Object.values(board.areas)) {
+      const own = spaces.filter((s) => s.area === area.id);
+      const count = (kind: string) => own.filter((s) => s.kind === kind).length;
+      expect(count('town'), `${area.id} towns`).toBeGreaterThanOrEqual(1);
+      expect(count('shop'), `${area.id} shops`).toBeGreaterThanOrEqual(1);
+      expect(count('spell'), `${area.id} shrines`).toBeGreaterThanOrEqual(1);
+      expect(count('chest'), `${area.id} chests`).toBeGreaterThanOrEqual(2);
+      expect(count('potion'), `${area.id} springs`).toBeGreaterThanOrEqual(2);
+      expect(count('normal') / own.length, `${area.id} is mostly wilds`).toBeGreaterThan(0.6);
     }
   });
 
@@ -122,11 +187,13 @@ describe('the island', () => {
 });
 
 describe('the ring fixture', () => {
-  it('is the first board: twelve spaces round the phone screen, starting at s0', () => {
+  it('is the first board in the shape of today: twelve spaces in one area, a boss spot with nothing beyond, starting at s0', () => {
     const ring = ringBoard();
     expect(Object.keys(ring.spaces)).toHaveLength(12);
     expect(ring.start).toBe('s0');
     expect(ring).toMatchObject({ width: 412, height: 915 });
+    expect(ring.spaces.s10).toMatchObject({ kind: 'boss', boss: 'thornwood-warden', opens: null });
+    expect(Object.keys(ring.areas)).toEqual(['ring']);
     const again = ringBoard();
     ring.spaces.s0!.links.push('s5');
     expect(again.spaces.s0!.links).not.toContain('s5');

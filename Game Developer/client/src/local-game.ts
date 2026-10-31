@@ -20,6 +20,8 @@ export const SAVE_KEY = 'boardworld.save';
 export const SAVE_VERSION = 1;
 /** The one local player. Accounts come with the server. */
 export const PLAYER = 'local';
+/** How often the world ticks (spawns come and go) while the page is open. */
+export const TICK_MS = 60_000;
 
 interface Save {
   version: typeof SAVE_VERSION;
@@ -36,6 +38,8 @@ export class LocalGame {
   readonly player = PLAYER;
   private rng: Rng;
   private readonly storage: Storage | null;
+  /** Called after every action that changed the world's spawns, so the board can redraw its markers. */
+  onSpawns: (() => void) | null = null;
 
   private constructor(state: GameState, rng: Rng, storage: Storage | null) {
     this.state = state;
@@ -70,13 +74,25 @@ export class LocalGame {
     return this.state.characters[PLAYER]!;
   }
 
+  /** The holder's clock: the rules never read one themselves. */
+  now(): number {
+    return Date.now();
+  }
+
   /** Apply what the player wants and save. Returns what happened. */
   act(intent: Intent): GameEvent[] {
     const action = { ...intent, id: newId() } as Action;
-    const result = apply(this.state, action, this.rng);
+    const result = apply(this.state, action, this.rng, this.now());
+    const spawnsBefore = this.state.spawns;
     this.state = result.state;
     this.save();
+    if (this.state.spawns !== spawnsBefore) this.onSpawns?.();
     return result.events;
+  }
+
+  /** The world moves: spawns come and go. The page calls it on load and every minute. */
+  tick(): GameEvent[] {
+    return this.act({ type: 'tick', player: 'world' });
   }
 
   /** Throw the save away; the next load has no game and shows the character screen. */

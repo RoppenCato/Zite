@@ -2,7 +2,7 @@
 // classes must feel different). Four cards with each class's style line and numbers, a Begin button. Layout mine.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, CLASS_IDS, ISLAND_DATA, type ClassId } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, CLASS_IDS, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
 import { LocalGame } from '../local-game.ts';
@@ -55,8 +55,8 @@ export class CreateScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.text(CENTRE, 62, 'Board World', { fontFamily: FONT, fontSize: '32px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.add.text(CENTRE, 100, ISLAND_DATA.name, { fontFamily: FONT, fontSize: '16px', color: COLORS.dim }).setOrigin(0.5);
+    this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT, fontSize: '32px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.text(CENTRE, 100, 'a board world', { fontFamily: FONT, fontSize: '16px', color: COLORS.dim }).setOrigin(0.5);
 
     const { input, begin } = CREATE_LAYOUT;
     this.add.text(input.x - input.w / 2, 140, 'Your name', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
@@ -87,7 +87,7 @@ export class CreateScene extends Phaser.Scene {
 
     makeButton(this, begin.x, begin.y, begin.w, begin.h, 'Begin', COLORS.button, '26px', () => this.begin());
     this.add
-      .text(12, DESIGN_HEIGHT - 8, `build 0.1.0 · ${ISLAND_DATA.name}`, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim })
+      .text(12, DESIGN_HEIGHT - 8, `build 0.2.0 · ${WORLD_DATA.name}`, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim })
       .setOrigin(0, 1)
       .setAlpha(0.7);
     this.log.note('character screen');
@@ -120,7 +120,7 @@ export class CreateScene extends Phaser.Scene {
     const left = CENTRE - CARD_W / 2 + 16;
     this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text });
     this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: COLORS.text });
-    this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}   Attack ${c.attack}   Defense ${c.defense}   ${c.skill.name}`, {
+    this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}  ${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
       fontFamily: FONT,
       fontSize: '13px',
       color: COLORS.dim,

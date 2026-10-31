@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GameLog } from './game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH } from './layout.ts';
-import { LocalGame } from './local-game.ts';
+import { LocalGame, TICK_MS } from './local-game.ts';
 import { CreateScene } from './scenes/CreateScene.ts';
 import { playScenes } from './scenes/play.ts';
 
@@ -38,3 +38,16 @@ declare global {
   }
 }
 window.boardWorld = { game: saved, log, phaser };
+
+// The world ticks once a minute while the page is open, and when it comes back to the front: spawns come and go.
+const tick = (): void => {
+  const game = window.boardWorld.game;
+  if (!game) return;
+  const events = game.tick();
+  for (const e of events) log.note(e.type === 'spawned' ? `spawned ${e.spawn.kind} at ${e.space}` : e.type === 'despawned' ? `despawned at ${e.space}` : e.type);
+};
+window.setInterval(tick, TICK_MS);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') tick();
+});
+if (saved) tick();

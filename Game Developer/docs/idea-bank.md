@@ -22,9 +22,22 @@ the date, and comes off this list.
 9. **The world's form**: decided (Robin, 2026-10-31): (c) the board seen from a raised camera in 2D, and fights on their
    own 2D screen as an instance of where you stand. In the brief and `Art Director/docs/direction.md`.
 
+## Open after the decisions of 2026-10-31 (`docs/decisions-2026-10-31.md`)
+
+10. **Quest givers**: the brief lists them as a space type; Robin's spot list of 2026-10-31 does not. Quests in towns
+    later, or not at all?
+11. **A bag limit**: the gear bag has no limit yet (mine); a limit with a sell-or-drop choice would push players to shops.
+12. **Mana potions** and a mana spot, once the fights show whether mana runs short.
+13. **Trainers in towns** selling ability ranks for gold, beside the shrines that teach for free (Robin: skills are bought,
+    found or earned; only found is built).
+14. **Shared bosses**: a boss's 5-minute return is per character now (mine, for solo play); with the server, is a boss one
+    creature for everyone or one per player?
+15. **The fourth area** (fire, then water) and the generator that lays areas by tier without a hand.
+
 ## Ideas noted in the brief, not decided
 
 - Guilds: a shared home town that members upgrade together.
+- Town liberation and occupied towns: out (Robin, 2026-10-31: no Dokapon-style liberation).
 - A "camp" bonus aura, IRL-only trading and friendly duels for linked players.
 - Real places (OpenStreetMap) as shrines giving dice cards when visited.
 

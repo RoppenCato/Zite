@@ -1,24 +1,31 @@
-// The world: Ashford Isle drawn in world pixels (links, spaces, rings, the token), a camera that follows the
-// character, and the touch input (tap a space, drag to pan, pinch to zoom). The fixed chrome is HudScene, launched
-// from here. No art yet: shapes and labels (the Art Director's sprites come later). Everything here is drawing and
-// input; what happens is decided by the rules through LocalGame.
+// The world: areas by tier drawn in world pixels (each area's ground, the links, the spots, bosses on the board,
+// whatever has spawned), a camera that follows the character, and the touch input (tap a spot for a hint or a choice,
+// drag to pan, pinch to zoom). The fixed chrome is HudScene, launched from here; the fight, the shop and the bag are
+// scenes launched over both. No art yet: shapes and labels. Everything here is drawing and input; what happens is
+// decided by the rules through LocalGame.
 
 import Phaser from 'phaser';
 import {
   CLASS_DATA,
+  countdown,
+  describeGear,
+  ENEMIES,
+  hintFor,
   ITEMS,
   reachable,
   SPACE_KIND_DATA,
+  stats,
+  type Area,
   type Board,
   type GameEvent,
   type Space,
   type SpaceKind,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
 import type { FightOutcome } from './FightScene.ts';
-import type { CardChip, HudScene } from './HudScene.ts';
+import type { Chip, HudScene } from './HudScene.ts';
 
 export interface BoardSceneDeps {
   game: LocalGame;
@@ -26,8 +33,10 @@ export interface BoardSceneDeps {
 }
 
 const SPACE_RADIUS = 26;
+const WILD_RADIUS = 20; // the wilds are the many; they stay small
+const BOSS_RADIUS = 34;
 const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circle
-const RING_RADIUS = 34;
+const RING_RADIUS = 42;
 const TOKEN_RADIUS = 15;
 const STEP_MS = 260;
 const LIT = 0xfff27a;
@@ -35,6 +44,7 @@ const LIT = 0xfff27a;
 // The camera (mine, 2026-10-31: numbers to start with).
 const FOLLOW_ZOOM = 0.8; // walking about
 const MAX_ZOOM = 1.4; // the closest a pinch gets
+const HARD_MIN_ZOOM = 0.12;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
 const CAMERA_MS = 350; // a pan or a zoom
 const FOLLOW_LERP = 0.12;
@@ -43,17 +53,17 @@ const DRAG_START = 8; // design pixels a finger moves before a touch becomes a d
 const TAP_MAX = 10; // a finger that moved less than this on release tapped
 const WHEEL_STEP = 1.1; // one notch of a mouse wheel
 
-// One colour per kind of space (mine, 2026-10-31, placeholders until the art comes).
+// One colour and one letter per kind of spot (mine, 2026-10-31, placeholders until the art comes).
 const KIND_COLORS: Record<SpaceKind, number> = {
   town: 0x4fb06d,
-  battle: 0xd9534f,
   shop: 0xe8b84a,
-  event: 0x8e6ad9,
-  treasure: 0xf0a030,
-  quest: 0x4aa3df,
-  bossgate: 0x8f2f3b,
-  shrine: 0x7fd8d8,
+  normal: 0x5d6678,
+  chest: 0xf0a030,
+  potion: 0x4aa3df,
+  spell: 0x8e6ad9,
+  boss: 0x8f2f3b,
 };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -79,7 +89,11 @@ export class BoardScene extends Phaser.Scene {
   private readonly game_: LocalGame;
   private readonly log: GameLog;
   private readonly rings = new Map<string, Phaser.GameObjects.Arc>();
+  private readonly circles = new Map<string, Phaser.GameObjects.Arc>();
   private readonly names: Phaser.GameObjects.Text[] = [];
+  private readonly bossLabels = new Map<string, Phaser.GameObjects.Text>();
+  private readonly covers = new Map<string, Phaser.GameObjects.Rectangle>();
+  private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
   private token!: Phaser.GameObjects.Container;
   private hud: HudScene | null = null;
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
@@ -103,67 +117,36 @@ export class BoardScene extends Phaser.Scene {
     this.drawGround(board);
     this.drawLinks(board.spaces);
     for (const space of Object.values(board.spaces)) this.drawSpace(space);
+    this.drawCovers(board);
     this.drawToken();
+    this.drawSpawns();
+    this.refreshClocks();
     this.setupCamera(board);
     this.setupInput();
+    this.game_.onSpawns = () => this.drawSpawns();
+    this.time.addEvent({ delay: 1000, loop: true, callback: () => this.refreshClocks() });
     this.log.note(`board scene ready: ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
     this.scene.launch('hud');
   }
 
-  /** The HUD is drawn: show the first message, and re-offer a choice the page was closed in the middle of. */
+  /** The HUD is drawn: show the first message, and take up again whatever the page was closed in the middle of. */
   hudReady(hud: HudScene): void {
     this.hud = hud;
     hud.setFollowing(this.following);
     hud.setBusy(this.busy);
     this.refreshHud();
     const me = this.game_.me;
+    hud.setDie(this.game_.state.die.last === null ? '–' : String(this.game_.state.die.last));
     if (me.fight) {
-      // The page was closed mid-fight: the fight is still on.
-      hud.setDie(String(this.game_.state.die.last ?? '–'));
       this.openFight();
+    } else if (me.offer) {
+      this.offerGamble();
     } else if (me.steps > 0) {
-      // The roll is still owed, so offer the same choice again.
-      hud.setDie(String(this.game_.state.die.last ?? me.steps));
       this.setBusy(true);
       this.offerChoices();
     } else {
-      this.setMessage(`Tap Roll to move ${me.name}.`);
+      this.setMessage(`Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
     }
-  }
-
-  /** A dice card from the HUD's row: change the pending roll and offer the new choices. */
-  useCard(item: string, value?: number): void {
-    if (!this.choices_) return;
-    const events = this.game_.act({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) });
-    const steps = events.find((e) => e.type === 'steps');
-    if (!steps || steps.type !== 'steps') {
-      this.setMessage(this.describe(events));
-      return;
-    }
-    this.log.note(`used ${item}${value !== undefined ? ` ${value}` : ''}: ${steps.steps} steps`);
-    this.hud?.setDie(String(steps.steps), true);
-    this.clearChoices();
-    this.offerChoices(`${ITEMS[item]?.name ?? item}: now ${steps.steps} ${steps.steps === 1 ? 'step' : 'steps'}.`);
-  }
-
-  /** The shop scene is done: close it and give the turn back. */
-  shopLeft(): void {
-    this.scene.stop('shop');
-    const space = this.game_.state.board.spaces[this.game_.me.space];
-    this.finish(`Left ${space?.name || 'the shop'}. Tap it again to go back in.`);
-  }
-
-  /** The fight scene is done: close it, and if the character was beaten, put the token in the town it woke in. */
-  fightOver(outcome: FightOutcome): void {
-    this.scene.stop('fight');
-    const me = this.game_.me;
-    if (outcome.type === 'died') {
-      const town = this.game_.state.board.spaces[me.space]!;
-      this.token.setPosition(town.x, town.y - SPACE_RADIUS - 6);
-      this.follow(true);
-    }
-    this.log.note(`fight over: ${outcome.type}, ${me.hp}/${me.maxHp} hp, ${me.gold} gold, level ${me.level}`);
-    this.finish(outcome.summary);
   }
 
   /** The map of landing space to path while the player is choosing; null otherwise. The pane reads it. */
@@ -188,11 +171,10 @@ export class BoardScene extends Phaser.Scene {
   /** Roll the die; then walk, or light up the places the roll can end and wait for a tap. */
   roll(): void {
     if (this.busy) {
-      if (this.choices_) this.setMessage('Tap a lit space first.');
+      if (this.choices_) this.setMessage('Tap a lit spot first.');
       return;
     }
     this.setBusy(true);
-
     const rolled = this.game_.act({ type: 'roll', player: this.game_.player });
     const roll = rolled.find((e) => e.type === 'rolled');
     if (!roll || roll.type !== 'rolled') {
@@ -204,10 +186,22 @@ export class BoardScene extends Phaser.Scene {
     this.offerChoices();
   }
 
-  /** Map: the whole island; Back: the camera returns to the character. */
+  /** Map: everything open; Back: the camera returns to the character. */
   toggleMap(): void {
     if (this.following) this.overview();
     else this.follow(false);
+  }
+
+  /** The bag: what you wear and carry. Not while a fight or a shop is up. */
+  openBag(): void {
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag')) return;
+    this.scene.launch('bag');
+  }
+
+  /** The bag is closed: the numbers may have changed. */
+  bagClosed(): void {
+    this.scene.stop('bag');
+    this.refreshHud();
   }
 
   downloadLog(): void {
@@ -220,13 +214,72 @@ export class BoardScene extends Phaser.Scene {
     }
   }
 
+  /** A dice card from the HUD's row: change the pending roll and offer the new choices. */
+  useCard(item: string, value?: number): void {
+    if (!this.choices_) return;
+    const events = this.game_.act({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) });
+    const steps = events.find((e) => e.type === 'steps');
+    if (!steps || steps.type !== 'steps') {
+      this.setMessage(this.describe(events));
+      return;
+    }
+    this.log.note(`used ${item}${value !== undefined ? ` ${value}` : ''}: ${steps.steps} steps`);
+    this.hud?.setDie(String(steps.steps), true);
+    this.clearChoices();
+    this.offerChoices(`${ITEMS[item]?.name ?? item}: now ${steps.steps} ${steps.steps === 1 ? 'step' : 'steps'}.`);
+  }
+
+  /** The gambler's answer. */
+  answerGamble(choice: 'high' | 'low' | 'pass'): void {
+    const events = this.game_.act({ type: 'gamble', player: this.game_.player, choice });
+    this.hud?.setChips([]);
+    const gambled = events.find((e) => e.type === 'gambled');
+    if (gambled?.type === 'gambled') {
+      this.log.note(`gambled ${choice}: rolled ${gambled.roll}, ${gambled.won ? 'won' : 'lost'} ${Math.abs(gambled.delta)}`);
+      this.finish(`The die shows ${gambled.roll}: you ${gambled.won ? 'win' : 'lose'} ${Math.abs(gambled.delta)} gold.`);
+    } else {
+      this.finish(this.describe(events) || 'You walk on.');
+    }
+  }
+
+  /** The shop scene is done: close it and give the turn back. */
+  shopLeft(): void {
+    this.scene.stop('shop');
+    const space = this.game_.state.board.spaces[this.game_.me.space];
+    const again = space?.kind === 'shop' || space?.kind === 'town' ? ' Tap it again to go back in.' : '';
+    this.finish(`Left ${space?.name || 'the shop'}.${again}`);
+  }
+
+  /** The fight scene is done: close it; a beaten character wakes in a town; a beaten boss may have opened an area. */
+  fightOver(outcome: FightOutcome): void {
+    this.scene.stop('fight');
+    const me = this.game_.me;
+    if (outcome.type === 'died') {
+      const town = this.game_.state.board.spaces[me.space]!;
+      this.token.setPosition(town.x, town.y - SPACE_RADIUS - 6);
+      this.follow(true);
+    }
+    this.refreshCovers();
+    this.drawSpawns();
+    this.refreshClocks();
+    this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
+    this.finish(outcome.summary);
+  }
+
   // ---- drawing -----------------------------------------------------------------------------------------------------
 
-  /** The island's ground and a thin border on its bounds, so the edge shows when zoomed out. */
+  /** Each area's ground in its theme's colour, its name written large and faint, and a thin border on the world. */
   private drawGround(board: Board): void {
     const g = this.add.graphics().setDepth(0);
-    g.fillStyle(COLORS.ground, 1);
-    g.fillRect(0, 0, board.width, board.height);
+    for (const area of Object.values(board.areas)) {
+      g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
+      g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
+      this.add
+        .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 30, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '34px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
+        .setOrigin(0.5, 0)
+        .setAlpha(0.35)
+        .setDepth(1);
+    }
     g.lineStyle(6, COLORS.border, 1);
     g.strokeRect(3, 3, board.width - 6, board.height - 6);
   }
@@ -246,37 +299,87 @@ export class BoardScene extends Phaser.Scene {
 
   private drawSpace(space: Space): void {
     const color = KIND_COLORS[space.kind];
+    const radius = space.kind === 'boss' ? BOSS_RADIUS : space.kind === 'normal' ? WILD_RADIUS : SPACE_RADIUS;
     const ring = this.add.circle(space.x, space.y, RING_RADIUS);
     ring.setStrokeStyle(4, LIT, 1).setVisible(false).setDepth(4);
     this.rings.set(space.id, ring);
 
-    const circle = this.add.circle(space.x, space.y, SPACE_RADIUS, color, 1).setDepth(5);
-    circle.setStrokeStyle(space.kind === 'bossgate' ? 5 : 3, 0xffffff, space.kind === 'bossgate' ? 0.6 : 0.25);
-    circle.setInteractive(new Phaser.Geom.Circle(SPACE_RADIUS, SPACE_RADIUS, TAP_RADIUS), Phaser.Geom.Circle.Contains);
-    // A tap is a release that did not travel: a drag that ends on a space is not a tap.
+    const circle = this.add.circle(space.x, space.y, radius, color, 1).setDepth(5);
+    circle.setStrokeStyle(space.kind === 'boss' ? 6 : 3, 0xffffff, space.kind === 'boss' ? 0.7 : 0.25);
+    circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
+    // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
     circle.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (pointer.getDistance() < TAP_MAX) this.onSpaceTap(space.id);
     });
+    this.circles.set(space.id, circle);
 
-    const label = SPACE_KIND_DATA[space.kind].label;
-    this.add
-      .text(space.x, space.y, label.charAt(0), { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#101318', resolution: 2 })
-      .setOrigin(0.5)
-      .setDepth(6);
+    const letter = KIND_LETTERS_SHOWN[space.kind];
+    if (letter) {
+      this.add
+        .text(space.x, space.y, letter, { fontFamily: FONT, fontSize: space.kind === 'boss' ? '26px' : '20px', fontStyle: 'bold', color: '#101318', resolution: 2 })
+        .setOrigin(0.5)
+        .setDepth(6);
+    }
     if (space.name) {
-      // Only hubs have names; road spaces show their kind's letter and nothing more.
+      // Only hubs have names; the wilds of the road show their circle and nothing more.
       const name = this.add
-        .text(space.x, space.y + SPACE_RADIUS + 4, space.name, {
-          fontFamily: FONT,
-          fontSize: '13px',
-          fontStyle: 'bold',
-          color: COLORS.text,
-          align: 'center',
-          resolution: 2,
-        })
+        .text(space.x, space.y + radius + 4, space.name, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: COLORS.text, align: 'center', resolution: 2 })
         .setOrigin(0.5, 0)
         .setDepth(6);
       this.names.push(name);
+      if (space.kind === 'boss') {
+        const label = this.add
+          .text(space.x, space.y + radius + 20, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', resolution: 2 })
+          .setOrigin(0.5, 0)
+          .setDepth(6);
+        this.bossLabels.set(space.id, label);
+        this.names.push(label);
+      }
+    }
+  }
+
+  /** A dark cover over every area not yet open: you can see there is more, not what. */
+  private drawCovers(board: Board): void {
+    for (const area of Object.values(board.areas)) {
+      const b = area.bounds;
+      const cover = this.add.rectangle(b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x0b0d14, 0.72).setDepth(8);
+      this.covers.set(area.id, cover);
+    }
+    this.refreshCovers();
+  }
+
+  private refreshCovers(): void {
+    const opened = new Set(this.game_.me.opened);
+    for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
+  }
+
+  /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
+  private drawSpawns(): void {
+    for (const mark of this.spawnMarks.values()) mark.destroy();
+    this.spawnMarks.clear();
+    const { board, spawns } = this.game_.state;
+    for (const [spaceId, spawn] of Object.entries(spawns)) {
+      const space = board.spaces[spaceId];
+      if (!space) continue;
+      const mini = spawn.kind === 'miniboss';
+      const badge = this.add.circle(0, 0, 14, mini ? 0xd9534f : 0xe8b84a, 1).setStrokeStyle(3, 0x101318, 1);
+      const text = this.add.text(0, 0, mini ? '!' : '$', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
+      const mark = this.add.container(space.x + 22, space.y - 24, [badge, text]).setDepth(9);
+      this.tweens.add({ targets: mark, y: mark.y - 6, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      this.spawnMarks.set(spaceId, mark);
+    }
+  }
+
+  /** The boss labels: level, and how long until a beaten boss is back. Once a second. */
+  private refreshClocks(): void {
+    const me = this.game_.me;
+    const now = this.game_.now();
+    for (const [spaceId, label] of this.bossLabels) {
+      const space = this.game_.state.board.spaces[spaceId]!;
+      const boss = space.boss ? ENEMIES[space.boss] : undefined;
+      const left = (me.cooldowns[spaceId] ?? 0) - now;
+      label.setText(left > 0 ? `${boss?.name ?? 'boss'} · back in ${countdown(left)}` : `${boss?.name ?? 'boss'} · level ${boss?.level ?? '?'}`);
+      this.circles.get(spaceId)?.setAlpha(left > 0 ? 0.45 : 1);
     }
   }
 
@@ -299,9 +402,25 @@ export class BoardScene extends Phaser.Scene {
     cam.setViewport(0, HUD_HEIGHT, DESIGN_WIDTH, VIEW_HEIGHT);
     cam.setBounds(0, 0, board.width, board.height);
     cam.setRoundPixels(true);
-    // Zoomed all the way out, the whole island fits the band.
-    this.minZoom = Math.min(cam.width / board.width, cam.height / board.height);
+    this.minZoom = this.overviewZoom();
     this.follow(true);
+  }
+
+  /** The box round everything open, and the zoom that fits it in the band. */
+  private openBounds(): { x: number; y: number; width: number; height: number } {
+    const areas = Object.values(this.game_.state.board.areas).filter((a) => this.game_.me.opened.includes(a.id));
+    const list: Area[] = areas.length ? areas : Object.values(this.game_.state.board.areas);
+    const x = Math.min(...list.map((a) => a.bounds.x));
+    const y = Math.min(...list.map((a) => a.bounds.y));
+    const right = Math.max(...list.map((a) => a.bounds.x + a.bounds.width));
+    const bottom = Math.max(...list.map((a) => a.bounds.y + a.bounds.height));
+    return { x, y, width: right - x, height: bottom - y };
+  }
+
+  private overviewZoom(): number {
+    const cam = this.cameras.main;
+    const b = this.openBounds();
+    return Math.max(HARD_MIN_ZOOM, Math.min(cam.width / b.width, cam.height / b.height));
   }
 
   /** Follow the token at the follow zoom. `snap` puts the camera there at once; otherwise it glides from where it is. */
@@ -332,12 +451,13 @@ export class BoardScene extends Phaser.Scene {
     this.hud?.setFollowing(following);
   }
 
-  /** The whole island in the band, following stopped. */
+  /** Everything open in the band, following stopped. */
   private overview(): void {
     const cam = this.cameras.main;
-    const { board } = this.game_.state;
+    const b = this.openBounds();
+    this.minZoom = this.overviewZoom();
     this.unfollow();
-    cam.pan(board.width / 2, board.height / 2, CAMERA_MS, 'Sine.easeInOut', true);
+    cam.pan(b.x + b.width / 2, b.y + b.height / 2, CAMERA_MS, 'Sine.easeInOut', true);
     cam.zoomTo(this.minZoom, CAMERA_MS, 'Sine.easeInOut', true);
     this.log.note('map overview');
   }
@@ -366,7 +486,7 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private setZoom(zoom: number): void {
-    this.cameras.main.setZoom(Phaser.Math.Clamp(zoom, this.minZoom, MAX_ZOOM));
+    this.cameras.main.setZoom(Phaser.Math.Clamp(zoom, Math.min(this.minZoom, HARD_MIN_ZOOM * 1.5), MAX_ZOOM));
   }
 
   // ---- touch: drag to pan, pinch to zoom, wheel to zoom -----------------------------------------------------------
@@ -447,19 +567,19 @@ export class BoardScene extends Phaser.Scene {
   // ---- play --------------------------------------------------------------------------------------------------------
 
   /**
-   * Light up every space the owed roll can end on. One place to go and no dice card in the bag: walk at once. Otherwise
-   * frame them and wait for a tap, with the dice cards offered in the HUD's row (mine: a card can still change the roll).
+   * Light up every spot the owed roll can end on, inside the open areas. One place to go and no dice card in the bag:
+   * walk at once. Otherwise frame them and wait for a tap, with the dice cards offered in the HUD's row.
    */
   private offerChoices(lead = ''): void {
     const me = this.game_.me;
     const { board } = this.game_.state;
     const value = this.game_.state.die.last ?? me.steps;
-    const options = reachable(board, me.space, me.steps);
+    const options = reachable(board, me.space, me.steps, new Set(me.opened));
     if (options.length === 0) {
       this.finish(`No way to walk ${me.steps} from here.`);
       return;
     }
-    const cards = this.diceCards();
+    const cards = this.diceChips();
     if (options.length === 1 && cards.length === 0) {
       this.setMessage(`Rolled ${value}.`);
       this.go(options[0]!.path);
@@ -473,32 +593,78 @@ export class BoardScene extends Phaser.Scene {
     }
     this.tweens.add({ targets: rings, alpha: 0.25, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.frame([this.token, ...options.map((o) => board.spaces[o.space]!)]);
-    this.hud?.setCards(cards);
-    this.setMessage(`${lead || `Rolled ${value}.`} Tap a lit space to walk there.`);
+    this.hud?.setChips(cards);
+    this.setMessage(`${lead || `Rolled ${value}.`} Tap a lit spot to walk there.`);
   }
 
-  /** The dice cards in the bag, for the HUD's row. */
-  private diceCards(): CardChip[] {
-    return Object.entries(this.game_.me.items)
-      .filter(([id, n]) => n > 0 && ITEMS[id]?.dice)
-      .map(([id, n]) => ({ item: id, label: ITEMS[id]!.name, count: n }));
+  /** The dice cards in the bag, as chips for the HUD's row. Exactly N turns the row into the numbers. */
+  private diceChips(): Chip[] {
+    const me = this.game_.me;
+    const chips: Chip[] = [];
+    for (const [id, n] of Object.entries(me.items)) {
+      const item = ITEMS[id];
+      if (!item?.dice || n <= 0) continue;
+      const text = n > 1 ? `${item.name} ×${n}` : item.name;
+      if (item.dice === 'exact') {
+        chips.push({
+          text,
+          onTap: () => {
+            const sides = this.game_.state.die.sides;
+            const numbers: Chip[] = Array.from({ length: sides }, (_, i) => ({ text: String(i + 1), onTap: () => this.useCard(id, i + 1) }));
+            this.hud?.setChips([...numbers, { text: '×', onTap: () => this.hud?.setChips(this.diceChips()) }]);
+          },
+        });
+      } else {
+        chips.push({ text, onTap: () => this.useCard(id) });
+      }
+    }
+    return chips;
+  }
+
+  /** The gambler's question in the HUD's row. */
+  private offerGamble(): void {
+    const offer = this.game_.me.offer;
+    if (!offer) return;
+    this.setBusy(true);
+    this.setMessage(`A gambler offers double or nothing on ${offer.stake} gold. The die: high (4 to 6) or low (1 to 3)?`);
+    this.hud?.setChips([
+      { text: 'High', onTap: () => this.answerGamble('high') },
+      { text: 'Low', onTap: () => this.answerGamble('low') },
+      { text: 'Walk on', onTap: () => this.answerGamble('pass') },
+    ]);
   }
 
   private onSpaceTap(id: string): void {
+    const me = this.game_.me;
     if (!this.choices_) {
-      // Standing on a shop with nothing pending: a tap on it goes back in.
-      const me = this.game_.me;
-      if (!this.busy && id === me.space && this.game_.state.board.spaces[id]?.kind === 'shop') this.openShop();
+      const space = this.game_.state.board.spaces[id];
+      if (!space) return;
+      // Standing on a shop or a town with nothing pending: a tap on it goes back in. Any other spot tells about itself.
+      if (!this.busy && id === me.space && (space.kind === 'shop' || space.kind === 'town')) {
+        this.openShop(false);
+        return;
+      }
+      this.flashHint(id);
+      this.setMessage(hintFor(this.game_.state, id, this.game_.player, this.game_.now()));
       return;
     }
     const path = this.choices_.get(id);
     if (!path) {
-      this.setMessage(`Not ${this.game_.me.steps} steps away. Tap a lit space.`);
+      this.setMessage(`Not ${me.steps} steps away. Tap a lit spot.`);
       return;
     }
     this.clearChoices();
     this.log.note(`chose ${id}`);
     this.go(path);
+  }
+
+  /** A short flash on a spot the player asked about. */
+  private flashHint(id: string): void {
+    const ring = this.rings.get(id);
+    if (!ring || this.choices_) return;
+    this.tweens.killTweensOf(ring);
+    ring.setVisible(true).setAlpha(1);
+    this.tweens.add({ targets: ring, alpha: 0, duration: 700, ease: 'Quad.easeOut', onComplete: () => ring.setVisible(false).setAlpha(1) });
   }
 
   private clearChoices(): void {
@@ -511,10 +677,10 @@ export class BoardScene extends Phaser.Scene {
       }
     }
     this.choices_ = null;
-    this.hud?.setCards([]);
+    this.hud?.setChips([]);
   }
 
-  /** Send the move, then follow the token as it walks. */
+  /** Send the move, then follow the token as it walks; what the landing brought comes after. */
   private go(path: string[]): void {
     const moved = this.game_.act({ type: 'move', player: this.game_.player, path });
     const landed = moved.find((e) => e.type === 'landed');
@@ -527,19 +693,25 @@ export class BoardScene extends Phaser.Scene {
     this.walk(path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
-      const where = space.name ? `${space.name} (${kind})` : `${/^[aeiou]/.test(kind) ? 'an' : 'a'} ${kind} space`;
-      this.log.note(`landed on ${space.id} (${space.kind}): ${this.describeLanding(moved) || 'nothing'}`);
-      if (this.game_.me.fight) {
+      const where = space.name ? `on ${space.name} (${kind})` : space.kind === 'normal' ? 'in the wilds' : `on a ${kind}`;
+      const story = this.describeLanding(moved);
+      this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
+      const me = this.game_.me;
+      if (me.fight) {
         this.openFight();
         return;
       }
-      if (space.kind === 'shop') {
-        this.setMessage(`Rolled ${value}. Landed on ${where}.`);
-        this.refreshHud();
-        this.openShop();
+      if (me.offer) {
+        this.offerGamble();
         return;
       }
-      this.finish(`Rolled ${value}. Landed on ${where}. ${this.describeLanding(moved)}`.trimEnd());
+      if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
+        this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+        this.refreshHud();
+        this.openShop(moved.some((e) => e.type === 'merchant'));
+        return;
+      }
+      this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
     });
   }
 
@@ -560,15 +732,15 @@ export class BoardScene extends Phaser.Scene {
     const fight = this.game_.me.fight;
     if (!fight) return;
     this.setBusy(true);
-    this.setMessage(`A ${fight.enemy.name} blocks the way.`);
+    this.setMessage(`${fight.enemy.name} (level ${fight.enemy.level}) blocks the way.`);
     this.refreshHud();
     this.scene.launch('fight');
   }
 
   /** The shop is open: the board waits under the shop scene until the player leaves. */
-  private openShop(): void {
+  private openShop(merchant: boolean): void {
     this.setBusy(true);
-    this.scene.launch('shop');
+    this.scene.launch('shop', { merchant });
   }
 
   private finish(message: string): void {
@@ -582,27 +754,60 @@ export class BoardScene extends Phaser.Scene {
     this.hud?.setBusy(busy);
   }
 
-  /** The HUD's stats line: level, HP, gold and where the character stands. The fight scene calls it after each round. */
+  /** The HUD's lines: level, HP, mana, gold; the area and the spot. The fight, shop and bag scenes call it too. */
   refreshHud(): void {
     const me = this.game_.me;
+    const s = stats(me);
     const space = this.game_.state.board.spaces[me.space];
+    const area = space ? this.game_.state.board.areas[space.area] : undefined;
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
-    this.hud?.setStats(`Lv ${me.level}   HP ${me.hp}/${me.maxHp}   Gold ${me.gold}   Space ${where}`);
+    this.hud?.setStats(`Lv ${me.level} · HP ${me.hp}/${s.maxHp} · MP ${me.mana}/${s.maxMana} · Gold ${me.gold}`, `${area?.name ?? ''} · ${where}`);
   }
 
   private setMessage(text: string): void {
     this.hud?.setMessage(text);
   }
 
-  /** What the space did, in words, from the events after `landed`. */
+  /** What the landing brought, in words, from the events after `landed`. */
   private describeLanding(events: GameEvent[]): string {
     const parts: string[] = [];
     for (const e of events) {
-      if (e.type === 'event') parts.push(e.text);
-      else if (e.type === 'gold') parts.push(e.delta > 0 ? `Found ${e.delta} gold.` : e.delta < 0 ? `Lost ${-e.delta} gold.` : 'Your purse was already empty.');
-      else if (e.type === 'healed') parts.push(e.amount > 0 ? `Healed ${e.amount} HP.` : 'HP already full.');
+      switch (e.type) {
+        case 'rested':
+          parts.push('Rested: HP and mana full.');
+          break;
+        case 'chest':
+          parts.push('A chest!');
+          break;
+        case 'gold':
+          parts.push(e.delta > 0 ? `+${e.delta} gold.` : e.delta < 0 ? `−${-e.delta} gold.` : '');
+          break;
+        case 'loot':
+          parts.push(`Found ${describeGear(e.gear)}.`);
+          break;
+        case 'found':
+          parts.push(`+${e.count} ${ITEMS[e.item]?.name ?? e.item}.`);
+          break;
+        case 'healed':
+          parts.push(e.amount > 0 ? `Healed ${e.amount} HP.` : '');
+          break;
+        case 'learned':
+          parts.push(`Learned ${e.ability.replace(/-/g, ' ')}, rank ${e.rank}.`);
+          break;
+        case 'empty':
+          parts.push(`Empty for now; again in ${countdown(e.until - this.game_.now())}.`);
+          break;
+        case 'nothing':
+          parts.push(e.text);
+          break;
+        case 'merchant':
+          parts.push('A wandering merchant has set up here.');
+          break;
+        default:
+          break;
+      }
     }
-    return parts.join(' ');
+    return parts.filter(Boolean).join(' ');
   }
 
   private describe(events: GameEvent[]): string {

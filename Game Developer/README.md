@@ -57,13 +57,13 @@ Also: `npm run typecheck` (TypeScript, strict, both configs), `npm run icons` (r
 ## Where things are
 
 ```
-rules/src        types, rng, data, island, paths, game, save, index
-rules/data       board.json (the island: hubs and roads), dice, classes, spaces, events, enemies, progression, items
-rules/test       rng, game, fight, items, board, island, purity; fixtures/ring (the first twelve-space board)
-client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, play, BoardScene, HudScene, FightScene, ShopScene
+rules/src        types, rng, data, world, paths, gear, fight, common, hints, game, save, index
+rules/data       world.json (areas, hubs, roads), dice, classes, abilities, spaces, enemies, gear, items, surprises, progression
+rules/test       rng, game, fight, items, gear, board, world, purity; fixtures/ring (the first twelve-spot board)
+client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, play, BoardScene, HudScene, FightScene, ShopScene, BagScene
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
 server/src       db, region-actor, index
 server/test      region-actor
 tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size)
-docs/state/      rules.md, client.md, server.md, pages.md
+docs/state/      rules.md, world.md, client.md, server.md, pages.md
 ```

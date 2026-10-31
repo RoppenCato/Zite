@@ -1,9 +1,10 @@
-// The fight screen: its own scene over the board band, one thumb (Robin, 2026-10-31: fights are their own screen, 2D,
-// turn-based with choices among attacks, spells and defending). The enemy at the top, the character below, a message
-// between, four buttons. It decides nothing: each button sends one intent and the events are played back one by one.
+// The fight screen (Robin, 2026-10-31: a turn-based RPG, fights on their own screen, one thumb). The enemy at the top,
+// the character below, a message between. A round is two taps: what you do (Attack, an ability, Charge, a Potion,
+// Flee), then how you take the blow (Block, Dodge, Brace, Counter). Each round is one intent; the events play back one
+// at a time. The layout and the pacing are mine.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, ITEMS, type GameEvent } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, stats, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
@@ -15,14 +16,15 @@ export interface FightSceneDeps {
   log: GameLog;
 }
 
-/** Where the buttons sit, in design pixels (the driver taps them here). */
+/** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
 export const FIGHT_BUTTONS = {
-  attack: { x: 110, y: 672, w: 180, h: 52 },
-  skill: { x: 302, y: 672, w: 180, h: 52 },
-  defend: { x: 110, y: 736, w: 180, h: 52 },
-  flee: { x: 302, y: 736, w: 180, h: 52 },
-  potion: { x: 206, y: 612, w: 220, h: 44 },
-  continue: { x: 206, y: 704, w: 220, h: 56 },
+  a: { x: 110, y: 600, w: 180, h: 46 },
+  b: { x: 302, y: 600, w: 180, h: 46 },
+  c: { x: 110, y: 652, w: 180, h: 46 },
+  d: { x: 302, y: 652, w: 180, h: 46 },
+  e: { x: 110, y: 704, w: 180, h: 40 },
+  f: { x: 302, y: 704, w: 180, h: 40 },
+  continue: { x: 206, y: 652, w: 220, h: 56 },
 } as const;
 
 const STEP_MS = 450; // between two events of a round
@@ -31,10 +33,9 @@ const BAR_W = 260;
 const BAR_H = 18;
 
 const ENEMY_COLORS: Record<string, number> = {
-  slime: 0x6fbf73,
-  wolf: 0x9a8f7a,
-  wisp: 0x7fd8d8,
-  bandit: 0xb0643a,
+  mob: 0x9a8f7a,
+  mini: 0xb0643a,
+  boss: 0x8f2f3b,
 };
 
 const CLASS_COLORS: Record<string, number> = {
@@ -46,22 +47,32 @@ const CLASS_COLORS: Record<string, number> = {
 
 export type FightOutcome = { type: 'won' | 'died' | 'fled'; summary: string };
 
+interface Option {
+  text: string;
+  color: number;
+  enabled: boolean;
+  onTap: () => void;
+}
+
 export class FightScene extends Phaser.Scene {
   private readonly game_: LocalGame;
   private readonly log: GameLog;
   private enemyBody!: Phaser.GameObjects.Arc;
   private enemyBar!: Bar;
+  private enemyStatus!: Phaser.GameObjects.Text;
   private heroBody!: Phaser.GameObjects.Arc;
   private heroBar!: Bar;
+  private manaBar!: Bar;
+  private heroStatus!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
+  private prompt!: Phaser.GameObjects.Text;
   private buttons: Phaser.GameObjects.Container[] = [];
-  private potionButton!: Phaser.GameObjects.Container;
-  private potionLabel!: Phaser.GameObjects.Text;
   private continueButton!: Phaser.GameObjects.Container;
   /** True while a round's events are being played back; the buttons wait. */
   private busy = false;
   private outcome: FightOutcome | null = null;
-  /** Kept from the start, since the fight is gone from the state by the time the last events are shown. */
+  /** The move chosen, waiting for its guard. */
+  private pendingMove: FightMove | null = null;
   private enemyName = '';
   private enemyMaxHp = 1;
 
@@ -80,57 +91,97 @@ export class FightScene extends Phaser.Scene {
     }
     const enemy = fight.enemy;
     const cls = CLASS_DATA[me.classId];
+    const s = stats(me);
     this.busy = false;
     this.outcome = null;
+    this.pendingMove = null;
     this.enemyName = enemy.name;
     this.enemyMaxHp = enemy.maxHp;
 
     // The panel covers the band and takes every touch, so nothing reaches the board under it.
     this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
 
-    this.add.text(CENTRE, 122, enemy.name, { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.enemyBar = new Bar(this, CENTRE, 158, BAR_W, BAR_H, 0xd9534f);
-    this.enemyBody = this.add.circle(CENTRE, 268, 60, ENEMY_COLORS[enemy.id] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
-    this.add.text(CENTRE, 268, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    this.add.text(CENTRE, 128, `${enemy.name} · level ${enemy.level}${enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.enemyBar = new Bar(this, CENTRE, 162, BAR_W, BAR_H, 0xd9534f);
+    this.enemyBody = this.add.circle(CENTRE, 250, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
+    this.add.text(CENTRE, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    this.enemyStatus = this.add.text(CENTRE, 318, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center' }).setOrigin(0.5, 0);
 
     this.message = this.add
-      .text(CENTRE, 362, `A ${enemy.name} blocks the way!`, { fontFamily: FONT, fontSize: '17px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 60 } })
+      .text(CENTRE, 346, `${enemy.name} blocks the way!`, { fontFamily: FONT, fontSize: '16px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
       .setOrigin(0.5, 0);
 
-    this.heroBody = this.add.circle(CENTRE, 470, 30, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
-    this.add.text(CENTRE, 470, cls.name.charAt(0), { fontFamily: FONT, fontSize: '26px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
-    this.heroBar = new Bar(this, CENTRE, 530, BAR_W, BAR_H, COLORS.button);
-    this.add
-      .text(CENTRE, 552, `${me.name} the ${cls.name}, level ${me.level}`, { fontFamily: FONT, fontSize: '13px', color: COLORS.dim })
-      .setOrigin(0.5, 0);
+    this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
+    this.add.text(CENTRE, 440, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    this.heroBar = new Bar(this, CENTRE, 486, BAR_W, BAR_H, COLORS.button);
+    this.manaBar = new Bar(this, CENTRE, 510, BAR_W, 14, COLORS.mana, 0, 'MP');
+    this.heroStatus = this.add.text(CENTRE, 524, '', { fontFamily: FONT, fontSize: '13px', color: '#7fd8d8', align: 'center' }).setOrigin(0.5, 0);
+    this.prompt = this.add.text(CENTRE, 566, '', { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
 
-    const b = FIGHT_BUTTONS;
-    this.buttons = [
-      makeButton(this, b.attack.x, b.attack.y, b.attack.w, b.attack.h, 'Attack', COLORS.button, '20px', () => this.act('attack')).button,
-      makeButton(this, b.skill.x, b.skill.y, b.skill.w, b.skill.h, cls.skill.name, 0x8e6ad9, '20px', () => this.act('skill')).button,
-      makeButton(this, b.defend.x, b.defend.y, b.defend.w, b.defend.h, 'Defend', COLORS.log, '20px', () => this.act('defend')).button,
-      makeButton(this, b.flee.x, b.flee.y, b.flee.w, b.flee.h, 'Flee', COLORS.log, '20px', () => this.act('flee')).button,
-    ];
-    const potion = makeButton(this, b.potion.x, b.potion.y, b.potion.w, b.potion.h, 'Potion', 0x4aa3df, '17px', () => this.act('use', 'potion'));
-    this.potionButton = potion.button;
-    this.potionLabel = potion.label;
-    this.buttons.push(this.potionButton);
-    this.refreshPotion();
-    this.continueButton = makeButton(this, b.continue.x, b.continue.y, b.continue.w, b.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
+    this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);
 
     this.enemyBar.set(enemy.hp, enemy.maxHp, true);
-    this.heroBar.set(me.hp, me.maxHp, true);
-    this.log.note(`fight: ${enemy.name} ${enemy.hp} hp, round ${fight.round}`);
+    this.heroBar.set(me.hp, s.maxHp, true);
+    this.manaBar.set(me.mana, s.maxMana, true);
+    this.refreshStatus();
+    this.showMoves();
+    this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}`);
   }
 
-  // ---- play ----------------------------------------------------------------------------------------------------------
+  // ---- the two taps of a round --------------------------------------------------------------------------------------
 
-  private act(type: 'attack' | 'defend' | 'skill' | 'flee' | 'use', item?: string): void {
-    if (this.busy || this.outcome) return;
+  /** The first row of choices: what you do. */
+  private showMoves(): void {
+    const me = this.game_.me;
+    const potions = me.items.potion ?? 0;
+    this.prompt.setText('Your move');
+    this.setOptions([
+      { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
+      { text: 'Abilities', color: 0x8e6ad9, enabled: Object.keys(me.abilities).length > 0, onTap: () => this.showAbilities() },
+      { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
+      { text: potions > 1 ? `Potion ×${potions}` : 'Potion', color: 0x4aa3df, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: 'potion' }) },
+      { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
+    ]);
+  }
+
+  /** The known abilities with their mana costs; dimmed when mana is short. */
+  private showAbilities(): void {
+    const me = this.game_.me;
+    this.prompt.setText('Which ability?');
+    const options: Option[] = Object.entries(me.abilities).map(([id, rank]) => {
+      const a = ABILITIES[id];
+      return {
+        text: `${a?.name ?? id} ${rank > 1 ? `R${rank} ` : ''}· ${a?.mana ?? 0} MP`,
+        color: 0x8e6ad9,
+        enabled: !!a && me.mana >= a.mana,
+        onTap: () => this.pick({ kind: 'ability', ability: id }),
+      };
+    });
+    options.push({ text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() });
+    this.setOptions(options);
+  }
+
+  /** The move is chosen: now how to take the blow. */
+  private pick(move: FightMove): void {
+    this.pendingMove = move;
+    this.prompt.setText('And when it strikes back?');
+    this.setOptions([
+      { text: 'Block (half)', color: COLORS.log, enabled: true, onTap: () => this.act('block') },
+      { text: 'Dodge (luck)', color: COLORS.log, enabled: true, onTap: () => this.act('dodge') },
+      { text: 'Brace (+mana)', color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
+      { text: 'Counter (hit back)', color: COLORS.log, enabled: true, onTap: () => this.act('counter') },
+      { text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() },
+    ]);
+  }
+
+  private act(guard: Guard): void {
+    if (this.busy || this.outcome || !this.pendingMove) return;
+    const move = this.pendingMove;
+    this.pendingMove = null;
     this.setBusy(true);
-    const events = type === 'use' ? this.game_.act({ type, player: this.game_.player, item: item ?? 'potion' }) : this.game_.act({ type, player: this.game_.player });
-    this.log.note(`fight ${type}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
+    const events = this.game_.act({ type: 'fight', player: this.game_.player, move, guard });
+    this.log.note(`fight ${move.kind}${'ability' in move ? ` ${move.ability}` : ''}/${guard}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
     this.play(events, 0);
   }
 
@@ -138,11 +189,14 @@ export class FightScene extends Phaser.Scene {
   private play(events: GameEvent[], i: number): void {
     if (i >= events.length) {
       this.setBusy(false);
-      this.refreshPotion();
+      this.refreshStatus();
       (this.scene.get('board') as BoardScene).refreshHud();
       if (this.outcome) {
         for (const b of this.buttons) b.setVisible(false);
+        this.prompt.setText('');
         this.continueButton.setVisible(true);
+      } else {
+        this.showMoves();
       }
       return;
     }
@@ -152,6 +206,7 @@ export class FightScene extends Phaser.Scene {
 
   private show(e: GameEvent): void {
     const me = this.game_.me;
+    const s = stats(me);
     switch (e.type) {
       case 'hit':
         if (e.by === 'player') {
@@ -160,22 +215,51 @@ export class FightScene extends Phaser.Scene {
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
         } else {
           this.flash(this.heroBody, e.damage, e.crit);
-          this.heroBar.set(e.hp, me.maxHp);
-          this.say(`${e.move} hits you for ${e.damage}${e.crit ? ', a crit!' : '.'}`);
+          this.heroBar.set(e.hp, s.maxHp);
+          this.say(`${e.move} hits you for ${e.damage}${e.absorbed ? ` (${e.absorbed} soaked)` : ''}${e.crit ? ', a crit!' : '.'}`);
         }
+        break;
+      case 'missed':
+        this.say(e.by === 'enemy' ? `${e.move} misses!` : 'You miss.');
+        break;
+      case 'charged':
+        this.say(e.by === 'player' ? 'You gather power: the next hit lands twice as hard.' : `${this.enemyName} winds up ${e.move}! Guard well.`);
+        this.refreshStatus();
+        break;
+      case 'guarded':
+        this.say({ block: 'You raise your guard.', dodge: 'You step aside…', brace: 'You brace.', counter: 'You wait for the opening…', none: '' }[e.guard]);
+        break;
+      case 'skipped':
+        this.say(`${this.enemyName} is stunned and loses its turn.`);
+        break;
+      case 'effect':
+        this.say(
+          e.target === 'enemy'
+            ? { stunned: `${this.enemyName} is stunned for ${e.rounds}.`, weakened: `${this.enemyName} is weakened for ${e.rounds} rounds.`, poison: `${this.enemyName} is poisoned for ${e.rounds} rounds.`, attackUp: '', barrier: '', evade: '' }[e.kind]
+            : { attackUp: `Your hits land harder for ${e.rounds} rounds.`, barrier: `A barrier of ${e.rounds} forms round you.`, evade: `You slip into the shadows: the next ${e.rounds} blows miss.`, stunned: '', weakened: '', poison: '' }[e.kind],
+        );
+        this.refreshStatus();
+        break;
+      case 'poisoned':
+        this.flash(this.enemyBody, e.damage, false);
+        this.enemyBar.set(e.hp, this.enemyMaxHp);
+        this.say(`The poison bites ${this.enemyName} for ${e.damage}.`);
+        break;
+      case 'countered':
+        this.flash(this.enemyBody, e.damage, false);
+        this.enemyBar.set(e.hp, this.enemyMaxHp);
+        this.say(`You strike back for ${e.damage}.`);
+        break;
+      case 'mana':
+        this.manaBar.set(e.mana, s.maxMana);
+        if (e.delta > 0 && e.delta !== 2) this.say(`+${e.delta} mana.`);
         break;
       case 'used':
         this.say(`You drink a ${ITEMS[e.item]?.name ?? e.item}.`);
         break;
       case 'healed':
-        this.heroBar.set(e.hp, me.maxHp);
-        this.say(e.amount > 0 ? `You feel better: +${e.amount} HP.` : 'Nothing to heal.');
-        break;
-      case 'charged':
-        this.say('You gather power. The next hit will be huge.');
-        break;
-      case 'guarded':
-        this.say('You brace for the blow.');
+        this.heroBar.set(e.hp, s.maxHp);
+        if (e.amount > 0) this.say(`You feel better: +${e.amount} HP.`);
         break;
       case 'fled':
         if (e.ok) this.end({ type: 'fled', summary: 'You got away.' }, 'You got away!');
@@ -184,14 +268,31 @@ export class FightScene extends Phaser.Scene {
       case 'won':
         this.end({ type: 'won', summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
+      case 'loot':
+        this.say(`It drops ${e.gear.name} (${e.gear.rarity})!`);
+        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${e.gear.name} (${e.gear.rarity}).` };
+        break;
+      case 'found':
+        this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
+        break;
       case 'levelled':
-        this.heroBar.set(me.hp, me.maxHp);
-        this.say(`Level ${e.level}! HP ${e.maxHp}, attack ${e.attack}, defense ${e.defense}.`);
+        this.heroBar.set(me.hp, s.maxHp);
+        this.manaBar.set(me.mana, s.maxMana);
+        this.say(`Level ${e.level}! HP ${e.maxHp}, mana ${e.maxMana}, attack ${e.attack}, defense ${e.defense}.`);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} Level ${e.level}!` };
         break;
+      case 'bossDown':
+        this.say(`${this.enemyName} falls. It will be back in five minutes.`);
+        break;
+      case 'opened': {
+        const area = this.game_.state.board.areas[e.area];
+        this.say(`The way to ${area?.name ?? e.area} is open!`);
+        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${area?.name ?? e.area} is open!` };
+        break;
+      }
       case 'died': {
         const town = this.game_.state.board.spaces[e.town]?.name ?? e.town;
-        this.heroBar.set(0, me.maxHp);
+        this.heroBar.set(0, s.maxHp);
         this.end({ type: 'died', summary: `You wake in ${town} with ${e.lostGold} gold less.` }, `You fall. You wake in ${town}, ${e.lostGold} gold lighter.`);
         break;
       }
@@ -215,6 +316,41 @@ export class FightScene extends Phaser.Scene {
 
   // ---- drawing -------------------------------------------------------------------------------------------------------
 
+  /** Up to six choices in the rows a, b, c, d, e, f; the rest of the rows stay empty. */
+  private setOptions(options: Option[]): void {
+    for (const b of this.buttons) b.destroy();
+    this.buttons = [];
+    const slots = [FIGHT_BUTTONS.a, FIGHT_BUTTONS.b, FIGHT_BUTTONS.c, FIGHT_BUTTONS.d, FIGHT_BUTTONS.e, FIGHT_BUTTONS.f];
+    options.slice(0, slots.length).forEach((o, i) => {
+      const slot = slots[i]!;
+      const { button } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, '16px', () => {
+        if (o.enabled && !this.busy) o.onTap();
+      });
+      if (!o.enabled) button.setAlpha(0.4);
+      this.buttons.push(button);
+    });
+  }
+
+  /** What is on each side: wind-ups, stuns, poison, weakening; charges, buffs, barriers, evasion. */
+  private refreshStatus(): void {
+    const f = this.game_.me.fight;
+    if (!f) {
+      this.enemyStatus.setText('');
+      this.heroStatus.setText('');
+      return;
+    }
+    const e = f.enemy;
+    const enemyBits = [
+      e.charged ? `winding up ${e.charged}!` : '',
+      e.stunned ? `stunned ${e.stunned}` : '',
+      e.poison ? `poisoned ${e.poison.rounds}` : '',
+      e.weakened ? `weakened ${e.weakened.rounds}` : '',
+    ].filter(Boolean);
+    this.enemyStatus.setText(enemyBits.join(' · '));
+    const heroBits = [f.charged ? 'charged' : '', f.attackUp ? `hits harder ${f.attackUp.rounds}` : '', f.barrier ? `barrier ${f.barrier}` : '', f.evade ? `evading ${f.evade}` : ''].filter(Boolean);
+    this.heroStatus.setText(heroBits.join(' · '));
+  }
+
   private flash(body: Phaser.GameObjects.Arc, damage: number, crit: boolean): void {
     this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
     const number = this.add
@@ -224,19 +360,11 @@ export class FightScene extends Phaser.Scene {
   }
 
   private say(text: string): void {
-    this.message.setText(text);
-  }
-
-  /** The potion button shows how many are left and hides when there are none. */
-  private refreshPotion(): void {
-    const n = this.game_.me.items.potion ?? 0;
-    this.potionLabel.setText(n > 1 ? `Potion ×${n}` : 'Potion');
-    this.potionButton.setVisible(n > 0);
+    if (text) this.message.setText(text);
   }
 
   private setBusy(busy: boolean): void {
     this.busy = busy;
-    for (const b of this.buttons) b.setAlpha(busy ? 0.5 : 1);
+    for (const b of this.buttons) b.setAlpha(busy ? 0.4 : b.alpha);
   }
-
 }

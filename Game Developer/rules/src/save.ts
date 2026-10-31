@@ -1,89 +1,89 @@
 import { CLASS_DATA, DICE_DATA } from './data.ts';
-import { makeBoard } from './game.ts';
+import { makeBoard, makeCharacter } from './game.ts';
 import { STATE_VERSION, type Board, type Character, type GameState } from './types.ts';
 
-/** A version-1 state: the same shape with the twelve-space ring as its board and no xp, level or fight. */
+/** The older shapes, as far as the migrations need them. */
 interface StateV1 {
   version: 1;
   seed: string;
-  characters: Record<string, CharacterV2>;
+  characters: Record<string, OldCharacter>;
   die: { sides: number; last: number | null };
 }
-
-/** A version-2 state: the island, but characters without xp, level or fight. */
 interface StateV2 {
   version: 2;
   seed: string;
   board: Board;
-  characters: Record<string, CharacterV2>;
+  characters: Record<string, OldCharacter>;
   die: { sides: number; last: number | null };
 }
-
-/** A version-3 state: the fight, but characters without a bag. */
 interface StateV3 {
   version: 3;
   seed: string;
   board: Board;
-  characters: Record<string, CharacterV3>;
+  characters: Record<string, OldCharacter>;
   die: { sides: number; last: number | null };
 }
-
-type CharacterV2 = Omit<Character, 'xp' | 'level' | 'fight' | 'items'>;
-type CharacterV3 = Omit<Character, 'items'>;
+interface StateV4 {
+  version: 4;
+  seed: string;
+  board: Board;
+  characters: Record<string, OldCharacter>;
+  die: { sides: number; last: number | null };
+}
+/** What every version before 5 had on a character that version 5 keeps. */
+interface OldCharacter {
+  id: string;
+  name: string;
+  classId: Character['classId'];
+  hp: number;
+  gold: number;
+  xp?: number;
+  level?: number;
+  items?: Record<string, number>;
+  [key: string]: unknown;
+}
 
 /**
  * Bring a stored state up to the current version, or null for a thing that is not a state we know, so the holder
- * starts a fresh game instead of crashing on it. Each step goes to the next version; a version-1 state takes both.
+ * starts a fresh game instead of crashing on it. Each step goes to the next version; an older state takes them all.
  *
- * 1 → 2 (2026-10-31): the ring became the island. The board is rebuilt; every character is kept (name, class, hp,
- * gold and the rest) but stands on the start space again with no roll owed, and the die is unrolled.
- * 2 → 3 (2026-10-31): the fight came. Every character gains xp 0, level 1 and no fight.
- * 3 → 4 (2026-10-31): items came. Every character gains an empty bag.
+ * 1 → 2 (2026-10-31): the ring became the island. 2 → 3: the fight came (xp, level, fight). 3 → 4: items came (the bag).
+ * 4 → 5 (2026-10-31): the island became the world in areas, with bosses, gear, mana and abilities. The board is
+ * rebuilt; every character keeps its name, class, level, xp, gold and consumables, stands on the start again with full
+ * HP and mana, an empty wardrobe, its class's starting abilities and only the first area open.
  */
 export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  let v3: StateV3 | null = null;
-  if (candidate.version === 1) {
-    const v2 = fromVersion1(raw as StateV1);
-    v3 = v2 ? fromVersion2(v2) : null;
-  } else if (candidate.version === 2) {
-    v3 = fromVersion2(raw as StateV2);
-  } else if (candidate.version === 3) {
-    v3 = raw as StateV3;
+  if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
+    return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
   }
-  return v3 ? fromVersion3(v3) : null;
+  return null;
 }
 
-function fromVersion1(old: StateV1): StateV2 | null {
+function fromOlder(old: StateV1 | StateV2 | StateV3 | StateV4): GameState | null {
   if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
   const board = makeBoard();
-  const characters: Record<string, CharacterV2> = {};
-  for (const [id, c] of Object.entries(old.characters)) {
-    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
-    characters[id] = { ...c, id, space: board.start, steps: 0 };
-  }
-  const sides = typeof old.die?.sides === 'number' ? old.die.sides : DICE_DATA.sides;
-  return { version: 2, seed: old.seed, board, characters, die: { sides, last: null } };
-}
-
-function fromVersion2(old: StateV2): StateV3 | null {
-  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null || !old.board) return null;
-  const characters: Record<string, CharacterV3> = {};
-  for (const [id, c] of Object.entries(old.characters)) {
-    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
-    characters[id] = { ...c, id, xp: 0, level: 1, fight: null };
-  }
-  return { version: 3, seed: old.seed, board: old.board, characters, die: old.die };
-}
-
-function fromVersion3(old: StateV3): GameState | null {
-  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null || !old.board) return null;
   const characters: Record<string, Character> = {};
   for (const [id, c] of Object.entries(old.characters)) {
     if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
-    characters[id] = { ...c, id, items: {} };
+    const fresh = makeCharacter(id, typeof c.name === 'string' ? c.name : id, c.classId, board);
+    const level = Math.max(1, Math.floor(typeof c.level === 'number' ? c.level : 1));
+    const growth = CLASS_DATA[c.classId].growth;
+    const grown: Character = {
+      ...fresh,
+      level,
+      xp: typeof c.xp === 'number' ? c.xp : 0,
+      gold: typeof c.gold === 'number' ? Math.max(0, c.gold) : fresh.gold,
+      items: typeof c.items === 'object' && c.items !== null ? { ...c.items } : {},
+      maxHp: fresh.maxHp + growth.hp * (level - 1),
+      maxMana: fresh.maxMana + growth.mana * (level - 1),
+      attack: fresh.attack + growth.attack * (level - 1),
+      defense: fresh.defense + growth.defense * (level - 1),
+    };
+    characters[id] = { ...grown, hp: grown.maxHp, mana: grown.maxMana };
   }
-  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die };
+  const sides = typeof old.die?.sides === 'number' ? old.die.sides : DICE_DATA.sides;
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: { sides, last: null }, spawns: {}, nextItem: 1 };
 }

@@ -1,22 +1,26 @@
-// The game as a pure function: apply(state, action, rng) -> { state, events }.
-// The state passed in is never changed; a new one comes back.
+// The game as a pure function: apply(state, action, rng, now) -> { state, events }.
+// The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
+// again after a while and for spawns; the rules never read a clock themselves.
 
-import { CLASS_DATA, DICE_DATA, ENEMIES, EVENT_CARDS, ISLAND_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
-import { buildBoard } from './island.ts';
-import { checkPath, nearestTown } from './paths.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
+import { addLoot, giveGold, giveItem, nextGearId, reject, sellPrice, spend, withCharacter } from './common.ts';
+import { fightRound, startFight } from './fight.ts';
+import { plainGear, rollGear, stats } from './gear.ts';
+import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
+import { buildBoard } from './world.ts';
 import {
+  SLOTS,
   STATE_VERSION,
   type Action,
   type ApplyResult,
   type Board,
   type Character,
   type ClassId,
-  type Enemy,
   type GameEvent,
   type GameState,
-  type RejectReason,
   type Space,
+  type Spawn,
 } from './types.ts';
 
 export interface NewGameOptions {
@@ -24,104 +28,121 @@ export interface NewGameOptions {
   player: string;
   name: string;
   classId: ClassId;
-  /** The board to play on. Left out, the island from rules/data/board.json; the tests pass the small ring. */
+  /** The board to play on. Left out, the world from rules/data/world.json; the tests pass the small ring. */
   board?: Board;
 }
 
 type MoveAction = Extract<Action, { type: 'move' }>;
-type FightAction = Extract<Action, { type: 'attack' | 'defend' | 'skill' | 'flee' | 'use' }>;
 type BuyAction = Extract<Action, { type: 'buy' }>;
+type SellAction = Extract<Action, { type: 'sell' }>;
+type EquipAction = Extract<Action, { type: 'equip' }>;
+type UnequipAction = Extract<Action, { type: 'unequip' }>;
+type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
+type GambleAction = Extract<Action, { type: 'gamble' }>;
 
-/** The island from rules/data/board.json, built fresh so the state owns it. */
+/** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
-  return buildBoard(ISLAND_DATA);
+  return buildBoard(WORLD_DATA);
 }
 
-export function makeCharacter(id: string, name: string, classId: ClassId, space: string): Character {
+export function makeCharacter(id: string, name: string, classId: ClassId, board: Board): Character {
   const c = CLASS_DATA[classId];
+  const start = board.spaces[board.start]!;
+  const abilities: Record<string, number> = {};
+  for (const ability of c.kit) abilities[ability] = 1;
   return {
     id,
     name,
     classId,
+    level: 1,
+    xp: 0,
+    gold: c.gold,
     hp: c.hp,
+    mana: c.mana,
     maxHp: c.hp,
+    maxMana: c.mana,
     attack: c.attack,
     defense: c.defense,
-    gold: c.gold,
-    space,
+    space: board.start,
     steps: 0,
-    xp: 0,
-    level: 1,
     fight: null,
     items: {},
+    equipment: { weapon: null, armour: null, helm: null, boots: null, trinket: null },
+    bag: [],
+    abilities,
+    opened: [start.area],
+    cooldowns: {},
+    bossKills: {},
+    offer: null,
   };
 }
 
-/** The level a total of `xp` gives, from the progression table: 1 at 0 xp, the table's length at most. */
-export function levelFor(xp: number): number {
-  const table = PROGRESSION.xpForLevel;
-  let level = 1;
-  for (let i = 1; i < table.length; i++) {
-    if (xp >= table[i]!) level = i + 1;
-  }
-  return level;
-}
-
-/** A fresh game: the board, one character on the start space, the die unrolled. */
+/** A fresh game: the board, one character on the start space, the die unrolled, nothing spawned. */
 export function newGame(o: NewGameOptions): GameState {
   const board = o.board ?? makeBoard();
   return {
     version: STATE_VERSION,
     seed: o.seed,
     board,
-    characters: { [o.player]: makeCharacter(o.player, o.name, o.classId, board.start) },
+    characters: { [o.player]: makeCharacter(o.player, o.name, o.classId, board) },
     die: { sides: DICE_DATA.sides, last: null },
+    spawns: {},
+    nextItem: 1,
   };
 }
 
-export function apply(state: GameState, action: Action, rng: Rng): ApplyResult {
+export function apply(state: GameState, action: Action, rng: Rng, now = 0): ApplyResult {
+  if (action.type === 'tick') return tick(state, action, rng, now);
   const character = state.characters[action.player];
   if (!character) return reject(state, action, 'unknown player');
   switch (action.type) {
     case 'roll':
       return roll(state, action, character, rng);
     case 'move':
-      return move(state, action, character, rng);
-    case 'attack':
-    case 'defend':
-    case 'skill':
-    case 'flee':
-      return fight(state, action, character, rng);
+      return move(state, action, character, rng, now);
+    case 'fight':
+      return fightRound(state, action, character, rng, now);
     case 'buy':
       return buy(state, action, character);
+    case 'sell':
+      return sell(state, action, character);
+    case 'equip':
+      return equip(state, action, character);
+    case 'unequip':
+      return unequip(state, action, character);
+    case 'drop':
+      return drop(state, action, character);
     case 'use':
-      return use(state, action, character, rng);
+      return useCard(state, action, character, rng);
+    case 'gamble':
+      return gamble(state, action, character, rng);
   }
 }
 
-function reject(state: GameState, action: Action, reason: RejectReason): ApplyResult {
-  return { state, events: [{ type: 'rejected', action: action.id, player: action.player, reason }] };
+/** Why the board will not take a turn right now, or null. */
+function boardBusy(c: Character): 'finish the fight first' | 'answer first' | null {
+  if (c.fight) return 'finish the fight first';
+  if (c.offer) return 'answer first';
+  return null;
 }
 
-function withCharacter(state: GameState, character: Character): GameState {
-  return { ...state, characters: { ...state.characters, [character.id]: character } };
-}
-
-// ---- the board ---------------------------------------------------------------------------------------------------
+// ---- the board -------------------------------------------------------------------------------------------------------
 
 function roll(state: GameState, action: Action, character: Character, rng: Rng): ApplyResult {
-  if (character.fight) return reject(state, action, 'finish the fight first');
+  const busy = boardBusy(character);
+  if (busy) return reject(state, action, busy);
   if (character.steps > 0) return reject(state, action, 'finish your move first');
   const value = rng.int(state.die.sides);
   const next = withCharacter({ ...state, die: { ...state.die, last: value } }, { ...character, steps: value });
   return { state: next, events: [{ type: 'rolled', action: action.id, player: action.player, value }] };
 }
 
-function move(state: GameState, action: MoveAction, character: Character, rng: Rng): ApplyResult {
-  if (character.fight) return reject(state, action, 'finish the fight first');
+function move(state: GameState, action: MoveAction, character: Character, rng: Rng, now: number): ApplyResult {
+  const busy = boardBusy(character);
+  if (busy) return reject(state, action, busy);
   if (character.steps === 0) return reject(state, action, 'roll first');
-  const problem = checkPath(state.board, character.space, character.steps, action.path);
+  const problem = checkPath(state.board, character.space, character.steps, action.path, new Set(character.opened));
   if (problem) return reject(state, action, problem);
   const landing = action.path[action.path.length - 1]!;
   const space = state.board.spaces[landing]!;
@@ -129,79 +150,223 @@ function move(state: GameState, action: MoveAction, character: Character, rng: R
     { type: 'moved', action: action.id, player: action.player, from: character.space, path: [...action.path] },
     { type: 'landed', action: action.id, player: action.player, space: landing, kind: space.kind },
   ];
-  const arrived = land({ ...character, space: landing, steps: 0 }, space, action, rng, events);
-  return { state: withCharacter(state, arrived), events };
+  return land(state, { ...character, space: landing, steps: 0 }, space, action, rng, now, events);
 }
 
 /**
- * What landing on a space does (mine, 2026-10-31; numbers in data/spaces.json, events.json and enemies.json): a battle
- * draws an enemy and the fight begins, a treasure gives gold, a town heals to full, a shrine heals some, an event draws a
- * card. A shop, a quest giver and a boss gate do nothing yet. Every random draw comes from the stream, so the holder of
- * the state decides (shared-world rule 5).
+ * What landing on a spot does (mine, 2026-10-31, after Robin's spot list of the same day): a town rests you; a chest,
+ * a spring and a shrine give once and then again after a while; a boss spot starts the boss fight if the boss is back;
+ * the wilds roll what turns up: a fight with the area's creatures most of the time, else a chest, a merchant, a gamble
+ * or a mini-boss, or whatever has spawned there. A shop does nothing on landing: the shop is open while you stand there.
  */
-function land(character: Character, space: Space, action: Action, rng: Rng, events: GameEvent[]): Character {
+function land(state: GameState, c: Character, space: Space, action: Action, rng: Rng, now: number, events: GameEvent[]): ApplyResult {
+  const id = action.id;
+  const player = action.player;
+  const area = state.board.areas[space.area];
+  const tier = area?.tier ?? 1;
   const kind = SPACE_KIND_DATA[space.kind];
-  let c = character;
-  if (space.kind === 'battle') {
-    const data = ENEMIES[rng.int(ENEMIES.length) - 1]!;
-    const enemy: Enemy = { id: data.id, name: data.name, hp: data.hp, maxHp: data.hp, attack: data.attack, defense: data.defense, xp: data.xp, gold: data.gold };
-    events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...enemy } });
-    return { ...c, fight: { enemy, round: 1, charged: false } };
+  const onCooldown = (c.cooldowns[space.id] ?? 0) > now;
+  const cooled = (ch: Character): Character => (kind.cooldownMs ? { ...ch, cooldowns: { ...ch.cooldowns, [space.id]: now + kind.cooldownMs } } : ch);
+  const empty = (): ApplyResult => {
+    events.push({ type: 'empty', action: id, player, space: space.id, until: c.cooldowns[space.id] ?? now });
+    return { state: withCharacter(state, c), events };
+  };
+
+  switch (space.kind) {
+    case 'town': {
+      const s = stats(c);
+      const rested = { ...c, hp: s.maxHp, mana: s.maxMana };
+      events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
+      return { state: withCharacter(state, rested), events };
+    }
+    case 'shop':
+      return { state: withCharacter(state, c), events };
+    case 'chest': {
+      if (onCooldown) return empty();
+      return openChest(state, cooled(c), tier, action, rng, events);
+    }
+    case 'potion': {
+      if (onCooldown) return empty();
+      return { state: withCharacter(state, giveItem(cooled(c), 'potion', 1, action, events)), events };
+    }
+    case 'spell': {
+      if (onCooldown) return empty();
+      return { state: withCharacter(state, learn(cooled(c), action, rng, events)), events };
+    }
+    case 'boss': {
+      if (!space.boss) return { state: withCharacter(state, c), events };
+      if (onCooldown) {
+        events.push({ type: 'nothing', action: id, player, text: `${space.name} is quiet: the boss is not back yet.` });
+        return { state: withCharacter(state, c), events };
+      }
+      return begin(state, c, space.boss, space.id, false, action, events);
+    }
+    case 'normal': {
+      const spawn = state.spawns[space.id];
+      if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, events);
+      if (spawn?.kind === 'merchant') {
+        events.push({ type: 'merchant', action: id, player });
+        return { state: withCharacter(state, c), events };
+      }
+      const what = surprise(rng);
+      if (what === 'chest') return openChest(state, c, tier, action, rng, events);
+      if (what === 'merchant') {
+        events.push({ type: 'merchant', action: id, player });
+        return { state: withCharacter(state, c), events };
+      }
+      if (what === 'gamble' && c.gold > 0) {
+        const stake = Math.min(c.gold, PROGRESSION.gamble.stakePerTier * tier);
+        const offered = { ...c, offer: { kind: 'gamble' as const, stake } };
+        events.push({ type: 'offer', action: id, player, offer: offered.offer! });
+        return { state: withCharacter(state, offered), events };
+      }
+      if (what === 'miniboss' && area && area.miniBosses.length) {
+        return begin(state, c, area.miniBosses[rng.int(area.miniBosses.length) - 1]!, space.id, false, action, events);
+      }
+      const mobs = area?.mobs ?? [];
+      if (!mobs.length) return { state: withCharacter(state, c), events };
+      return begin(state, c, mobs[rng.int(mobs.length) - 1]!, space.id, false, action, events);
+    }
   }
-  if (space.kind === 'event') {
-    const card = EVENT_CARDS[rng.int(EVENT_CARDS.length) - 1]!;
-    events.push({ type: 'event', action: action.id, player: action.player, card: card.id, text: card.text });
-    if (card.gold) c = giveGold(c, card.gold, action, events);
-    if (card.heal) c = heal(c, card.heal, action, events);
-    return c;
+}
+
+/** What a normal spot holds this time, by the weights in surprises.json. One number from the stream. */
+function surprise(rng: Rng): keyof typeof SURPRISES {
+  const entries = Object.entries(SURPRISES) as [keyof typeof SURPRISES, number][];
+  const total = entries.reduce((sum, [, w]) => sum + w, 0);
+  let pick = rng.next() * total;
+  for (const [what, w] of entries) {
+    pick -= w;
+    if (pick < 0) return what;
   }
-  if (kind.gold) c = giveGold(c, kind.gold.min + rng.int(kind.gold.max - kind.gold.min + 1) - 1, action, events);
-  if (kind.heal !== undefined) c = heal(c, kind.heal === 'full' ? c.maxHp : kind.heal, action, events);
+  return 'fight';
+}
+
+function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, events: GameEvent[]): ApplyResult {
+  const fighting = startFight(c, enemy, space, spawn);
+  events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...fighting.fight!.enemy, moves: fighting.fight!.enemy.moves.map((m) => ({ ...m })) }, space });
+  return { state: withCharacter(state, fighting), events };
+}
+
+/** A chest: gold by the tier, maybe gear of the tier's rank, maybe a potion or a card. */
+function openChest(state: GameState, c: Character, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+  events.push({ type: 'chest', action: action.id, player: action.player });
+  const [lo, hi] = PROGRESSION.chest.gold;
+  let next = giveGold(c, tier * (lo + rng.int(hi - lo + 1) - 1), action, events);
+  let s = state;
+  if (rng.next() < PROGRESSION.chest.gearChance) {
+    const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
+    const got = nextGearId(s);
+    s = got.state;
+    next = addLoot(next, rollGear(got.id, slot, tier, 0, rng), action, events);
+  }
+  if (rng.next() < PROGRESSION.chest.consumableChance) {
+    const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
+    next = rng.next() < 0.6 ? giveItem(next, 'potion', 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
+  }
+  return { state: withCharacter(s, next), events };
+}
+
+/** A shrine: a new ability of the class if one is left, else a rank for one known, else nothing. */
+function learn(c: Character, action: Action, rng: Rng, events: GameEvent[]): Character {
+  const mine = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === c.classId);
+  const unknown = mine.filter((a) => !c.abilities[a]);
+  if (unknown.length) {
+    const ability = unknown[rng.int(unknown.length) - 1]!;
+    events.push({ type: 'learned', action: action.id, player: action.player, ability, rank: 1 });
+    return { ...c, abilities: { ...c.abilities, [ability]: 1 } };
+  }
+  const improvable = mine.filter((a) => (c.abilities[a] ?? 0) < ABILITIES[a]!.ranks.length);
+  if (improvable.length) {
+    const ability = improvable[rng.int(improvable.length) - 1]!;
+    const rank = (c.abilities[ability] ?? 0) + 1;
+    events.push({ type: 'learned', action: action.id, player: action.player, ability, rank });
+    return { ...c, abilities: { ...c.abilities, [ability]: rank } };
+  }
+  events.push({ type: 'nothing', action: action.id, player: action.player, text: 'The shrine has nothing more to teach you.' });
   return c;
 }
 
-/** Gold never goes below 0: a loss takes what there is. */
-function giveGold(c: Character, delta: number, action: Action, events: GameEvent[]): Character {
-  const gold = Math.max(0, c.gold + delta);
-  events.push({ type: 'gold', action: action.id, player: action.player, delta: gold - c.gold, gold });
-  return { ...c, gold };
+// ---- the shop and the bag ---------------------------------------------------------------------------------------------
+
+/** A shop is where you stand on one, in a town, or where a merchant has camped. */
+function atShop(state: GameState, c: Character): boolean {
+  const kind = state.board.spaces[c.space]?.kind;
+  return kind === 'shop' || kind === 'town' || state.spawns[c.space]?.kind === 'merchant';
 }
 
-/** HP never goes above maxHp. */
-function heal(c: Character, amount: number, action: Action, events: GameEvent[]): Character {
-  const hp = Math.min(c.maxHp, c.hp + amount);
-  events.push({ type: 'healed', action: action.id, player: action.player, amount: hp - c.hp, hp });
-  return { ...c, hp };
-}
-
-// ---- items -----------------------------------------------------------------------------------------------------------
-
-/** At a shop and out of a fight: one of the item for its price (mine, 2026-10-31; prices in data/items.json). */
 function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
-  const item = ITEMS[action.item];
-  if (!item) return reject(state, action, 'no such item');
   if (character.fight) return reject(state, action, 'finish the fight first');
-  if (state.board.spaces[character.space]?.kind !== 'shop') return reject(state, action, 'not at a shop');
-  if (character.gold < item.price) return reject(state, action, 'not enough gold');
-  const gold = character.gold - item.price;
-  const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
-  return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, price: item.price, gold }] };
+  if (!atShop(state, character)) return reject(state, action, 'not at a shop');
+  if (action.item !== undefined) {
+    const item = ITEMS[action.item];
+    if (!item) return reject(state, action, 'no such item');
+    if (character.gold < item.price) return reject(state, action, 'not enough gold');
+    const gold = character.gold - item.price;
+    const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
+    return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, gear: null, price: item.price, gold }] };
+  }
+  if (action.slot !== undefined && SLOTS.includes(action.slot)) {
+    const tier = state.board.areas[state.board.spaces[character.space]!.area]?.tier ?? 1;
+    const got = nextGearId(state);
+    const gear = plainGear(got.id, action.slot, tier);
+    if (character.gold < gear.price) return reject(state, action, 'not enough gold');
+    const gold = character.gold - gear.price;
+    return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
+  }
+  return reject(state, action, 'no such item');
 }
 
-/**
- * Use an item. A potion is a round of the fight (the enemy strikes back) and is refused outside one. A dice card needs a
- * roll pending and no fight: it changes the steps owed, and the die shows the new number.
- */
-function use(state: GameState, action: UseAction, character: Character, rng: Rng): ApplyResult {
+function sell(state: GameState, action: SellAction, character: Character): ApplyResult {
+  if (character.fight) return reject(state, action, 'finish the fight first');
+  if (!atShop(state, character)) return reject(state, action, 'not at a shop');
+  const gear = character.bag.find((g) => g.id === action.gear);
+  if (!gear) return reject(state, action, 'no such gear');
+  const price = sellPrice(gear);
+  const gold = character.gold + price;
+  return { state: withCharacter(state, { ...character, gold, bag: character.bag.filter((g) => g.id !== gear.id) }), events: [{ type: 'sold', action: action.id, player: action.player, gear, price, gold }] };
+}
+
+/** HP and mana never above the maximum after a change of gear. */
+function capped(c: Character): Character {
+  const s = stats(c);
+  return { ...c, hp: Math.min(c.hp, s.maxHp), mana: Math.min(c.mana, s.maxMana) };
+}
+
+function equip(state: GameState, action: EquipAction, character: Character): ApplyResult {
+  if (character.fight) return reject(state, action, 'finish the fight first');
+  const gear = character.bag.find((g) => g.id === action.gear);
+  if (!gear) return reject(state, action, 'no such gear');
+  const replaced = character.equipment[gear.slot];
+  const bag = character.bag.filter((g) => g.id !== gear.id);
+  if (replaced) bag.push(replaced);
+  const next = capped({ ...character, bag, equipment: { ...character.equipment, [gear.slot]: gear } });
+  return { state: withCharacter(state, next), events: [{ type: 'equipped', action: action.id, player: action.player, gear, replaced }] };
+}
+
+function unequip(state: GameState, action: UnequipAction, character: Character): ApplyResult {
+  if (character.fight) return reject(state, action, 'finish the fight first');
+  const gear = SLOTS.includes(action.slot) ? character.equipment[action.slot] : null;
+  if (!gear) return reject(state, action, 'no such gear');
+  const next = capped({ ...character, bag: [...character.bag, gear], equipment: { ...character.equipment, [action.slot]: null } });
+  return { state: withCharacter(state, next), events: [{ type: 'unequipped', action: action.id, player: action.player, gear }] };
+}
+
+function drop(state: GameState, action: DropAction, character: Character): ApplyResult {
+  const gear = character.bag.find((g) => g.id === action.gear);
+  if (!gear) return reject(state, action, 'no such gear');
+  return { state: withCharacter(state, { ...character, bag: character.bag.filter((g) => g.id !== gear.id) }), events: [{ type: 'dropped', action: action.id, player: action.player, gear }] };
+}
+
+/** A dice card: a roll must be pending and the board free. It changes the steps owed and the die shows the new number. */
+function useCard(state: GameState, action: UseAction, character: Character, rng: Rng): ApplyResult {
   const item = ITEMS[action.item];
   if (!item) return reject(state, action, 'no such item');
   if ((character.items[action.item] ?? 0) <= 0) return reject(state, action, 'none left');
-  if (item.heal) {
-    if (!character.fight) return reject(state, action, 'not now');
-    return fight(state, action, character, rng);
-  }
   if (!item.dice) return reject(state, action, 'not now');
-  if (character.fight || character.steps === 0) return reject(state, action, 'not now');
+  const busy = boardBusy(character);
+  if (busy) return reject(state, action, busy);
+  if (character.steps === 0) return reject(state, action, 'not now');
   let steps = character.steps;
   switch (item.dice) {
     case 'reroll':
@@ -229,128 +394,61 @@ function use(state: GameState, action: UseAction, character: Character, rng: Rng
   };
 }
 
-/** One fewer of the item; a count of 0 is dropped from the bag. */
-function spend(c: Character, item: string): Character {
-  const items = { ...c.items, [item]: (c.items[item] ?? 0) - 1 };
-  if (items[item]! <= 0) delete items[item];
-  return { ...c, items };
+/** The gambler's offer: double or nothing on a die, high (4 to 6) or low (1 to 3); or walk on. */
+function gamble(state: GameState, action: GambleAction, character: Character, rng: Rng): ApplyResult {
+  const offer = character.offer;
+  if (!offer) return reject(state, action, 'nothing to answer');
+  if (action.choice === 'pass') {
+    return { state: withCharacter(state, { ...character, offer: null }), events: [{ type: 'nothing', action: action.id, player: action.player, text: 'You walk on.' }] };
+  }
+  const roll = rng.int(state.die.sides);
+  const high = roll > state.die.sides / 2;
+  const won = action.choice === 'high' ? high : !high;
+  const stake = Math.min(offer.stake, character.gold);
+  const delta = won ? stake : -stake;
+  const gold = character.gold + delta;
+  return { state: withCharacter(state, { ...character, gold, offer: null }), events: [{ type: 'gambled', action: action.id, player: action.player, choice: action.choice, roll, won, delta, gold }] };
 }
 
-// ---- the fight -----------------------------------------------------------------------------------------------------
+// ---- the world's tick ---------------------------------------------------------------------------------------------------
 
 /**
- * One round of a fight (Robin, 2026-10-31: turn-based, choices among attacks, spells and defending; the moves and the
- * numbers are mine, first settings). The player acts (a move, a guard, a potion); then the enemy strikes back, unless it
- * is dead, the player got away, or it is the first round against a class that strikes first. A hit is the attack times the move's power, less
- * half the defense, plus a swing of -2 to +2 from the stream, doubled on a crit, never under 1. A guard halves the
- * enemy's hit. Beating the enemy gives its xp and gold, and levels when the table says so; being beaten puts the
- * character on its feet in the nearest town, a fifth of the gold gone.
+ * Spawns come and go (Robin, 2026-10-31: random mini-bosses and events on random normal spots from time to time).
+ * Expired ones leave; with room under the cap, a coin from the stream puts a mini-boss or a merchant on a free wild
+ * spot of an open area for a while. Nothing to do gives the same state back.
  */
-function fight(state: GameState, action: FightAction, character: Character, rng: Rng): ApplyResult {
-  if (!character.fight) return reject(state, action, 'not in a fight');
-  const cls = CLASS_DATA[character.classId];
+function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyResult {
   const events: GameEvent[] = [];
-  // Fresh copies of the fight and the enemy: this round scribbles on them, never on the state passed in.
-  const f = { ...character.fight, enemy: { ...character.fight.enemy } };
-  let c: Character = { ...character, fight: f };
-  let guard = false;
-
-  switch (action.type) {
-    case 'attack':
-      c = strike(c, 'Attack', 1, 1, PROGRESSION.baseCrit, action, rng, events);
-      break;
-    case 'defend':
-      guard = true;
-      events.push({ type: 'guarded', action: action.id, player: action.player });
-      break;
-    case 'skill': {
-      const skill = cls.skill;
-      if (skill.charge) {
-        if (!f.charged) {
-          f.charged = true;
-          events.push({ type: 'charged', action: action.id, player: action.player });
-        } else {
-          c = strike(c, skill.name, 1, 1, skill.crit ?? PROGRESSION.baseCrit, action, rng, events);
-        }
-      } else {
-        c = strike(c, skill.name, skill.power, skill.hits ?? 1, skill.crit ?? PROGRESSION.baseCrit, action, rng, events);
-      }
-      break;
-    }
-    case 'flee': {
-      const ok = rng.next() < PROGRESSION.fleeChance;
-      events.push({ type: 'fled', action: action.id, player: action.player, ok });
-      if (ok) return { state: withCharacter(state, { ...c, fight: null }), events };
-      break;
-    }
-    case 'use': {
-      // A potion: checked by use() before it gets here. Drinking it is the round; the enemy still strikes.
-      const amount = ITEMS[action.item]?.heal ?? 0;
-      c = spend(c, action.item);
-      events.push({ type: 'used', action: action.id, player: action.player, item: action.item });
-      c = heal(c, amount, action, events);
-      break;
+  const spawns: Record<string, Spawn> = { ...state.spawns };
+  let changed = false;
+  for (const [space, spawn] of Object.entries(spawns)) {
+    if (spawn.until <= now) {
+      delete spawns[space];
+      changed = true;
+      events.push({ type: 'despawned', action: action.id, player: action.player, space });
     }
   }
-
-  if (f.enemy.hp <= 0) return win(state, c, action, events);
-
-  if (!(f.round === 1 && cls.firstStrike)) {
-    const blow = damage(f.enemy.attack, 1, c.defense, PROGRESSION.baseCrit, rng);
-    const dealt = guard ? Math.ceil(blow.damage / 2) : blow.damage;
-    c = { ...c, hp: Math.max(0, c.hp - dealt) };
-    events.push({ type: 'hit', action: action.id, player: action.player, by: 'enemy', move: f.enemy.name, damage: dealt, crit: blow.crit, hp: c.hp });
-    if (c.hp <= 0) return die(state, c, action, events);
+  const settings = PROGRESSION.spawns;
+  if (Object.keys(spawns).length < settings.cap && rng.next() < settings.chancePerTick) {
+    const open = new Set<string>();
+    const standing = new Set<string>();
+    for (const c of Object.values(state.characters)) {
+      for (const a of c.opened) open.add(a);
+      standing.add(c.space);
+    }
+    const candidates = Object.values(state.board.spaces)
+      .filter((s) => s.kind === 'normal' && open.has(s.area) && !spawns[s.id] && !standing.has(s.id))
+      .map((s) => s.id)
+      .sort();
+    if (candidates.length) {
+      const space = candidates[rng.int(candidates.length) - 1]!;
+      const area = state.board.areas[state.board.spaces[space]!.area];
+      const mini = rng.next() < settings.miniboss && area && area.miniBosses.length > 0;
+      const spawn: Spawn = mini ? { kind: 'miniboss', enemy: area.miniBosses[rng.int(area.miniBosses.length) - 1]!, until: now + settings.lifeMs } : { kind: 'merchant', enemy: null, until: now + settings.lifeMs };
+      spawns[space] = spawn;
+      changed = true;
+      events.push({ type: 'spawned', action: action.id, player: action.player, space, spawn });
+    }
   }
-  f.round += 1;
-  return { state: withCharacter(state, c), events };
-}
-
-/** The player hits the enemy `hits` times at `power`; a charge held from before multiplies the move and is spent. */
-function strike(c: Character, move: string, power: number, hits: number, crit: number, action: Action, rng: Rng, events: GameEvent[]): Character {
-  const f = c.fight!;
-  if (f.charged) {
-    power *= CLASS_DATA[c.classId].skill.power;
-    f.charged = false;
-  }
-  for (let i = 0; i < hits && f.enemy.hp > 0; i++) {
-    const blow = damage(c.attack, power, f.enemy.defense, crit, rng);
-    f.enemy.hp = Math.max(0, f.enemy.hp - blow.damage);
-    events.push({ type: 'hit', action: action.id, player: action.player, by: 'player', move, damage: blow.damage, crit: blow.crit, hp: f.enemy.hp });
-  }
-  return c;
-}
-
-/** One blow: two numbers from the stream, the swing then the crit. */
-function damage(attack: number, power: number, defense: number, critChance: number, rng: Rng): { damage: number; crit: boolean } {
-  const base = Math.max(1, Math.round(attack * power) - Math.floor(defense / 2));
-  const swing = rng.int(5) - 3;
-  const crit = rng.next() < critChance;
-  return { damage: Math.max(1, Math.round((base + swing) * (crit ? PROGRESSION.critPower : 1))), crit };
-}
-
-function win(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
-  const enemy = c.fight!.enemy;
-  events.push({ type: 'won', action: action.id, player: action.player, xp: enemy.xp, gold: enemy.gold });
-  let next: Character = { ...c, gold: c.gold + enemy.gold, xp: c.xp + enemy.xp, fight: null };
-  const growth = CLASS_DATA[c.classId].growth;
-  for (let level = c.level + 1; level <= levelFor(next.xp); level++) {
-    next = {
-      ...next,
-      level,
-      maxHp: next.maxHp + growth.hp,
-      hp: next.hp + growth.hp,
-      attack: next.attack + growth.attack,
-      defense: next.defense + growth.defense,
-    };
-    events.push({ type: 'levelled', action: action.id, player: action.player, level, maxHp: next.maxHp, attack: next.attack, defense: next.defense });
-  }
-  return { state: withCharacter(state, next), events };
-}
-
-function die(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
-  const lostGold = Math.floor(c.gold * PROGRESSION.deathGoldLoss);
-  const town = nearestTown(state.board, c.space);
-  events.push({ type: 'died', action: action.id, player: action.player, town, lostGold });
-  return { state: withCharacter(state, { ...c, hp: c.maxHp, gold: c.gold - lostGold, space: town, steps: 0, fight: null }), events };
+  return changed ? { state: { ...state, spawns }, events } : { state, events };
 }

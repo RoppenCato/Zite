@@ -40,20 +40,22 @@ export class Bar {
   private readonly fill: Phaser.GameObjects.Rectangle;
   private readonly text: Phaser.GameObjects.Text;
   private readonly scene: Phaser.Scene;
+  private readonly label: string;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, color: number, depth = 0) {
+  constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, color: number, depth = 0, label = 'HP') {
     this.scene = scene;
+    this.label = label;
     scene.add.rectangle(x, y, w, h, 0x2b3245, 1).setDepth(depth);
     this.fill = scene.add.rectangle(x - w / 2, y, w, h, color, 1).setOrigin(0, 0.5).setDepth(depth + 1);
     this.text = scene.add
-      .text(x, y, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: COLORS.text })
+      .text(x, y, '', { fontFamily: FONT, fontSize: h < 16 ? '11px' : '13px', fontStyle: 'bold', color: COLORS.text })
       .setOrigin(0.5)
       .setDepth(depth + 2);
   }
 
   set(value: number, max: number, now = false): void {
     const scaleX = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-    this.text.setText(`HP ${value}/${max}`);
+    this.text.setText(`${this.label} ${value}/${max}`);
     this.scene.tweens.killTweensOf(this.fill);
     if (now) this.fill.setScale(scaleX, 1);
     else this.scene.tweens.add({ targets: this.fill, scaleX, duration: 220, ease: 'Quad.easeOut' });

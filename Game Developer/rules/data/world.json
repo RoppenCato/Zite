@@ -1,0 +1,114 @@
+{
+  "name": "Zite",
+  "width": 2800,
+  "height": 3800,
+  "start": "ashford",
+  "areas": [
+    {
+      "id": "meadows", "name": "Ashford Meadows", "theme": "meadow", "tier": 1, "levels": [1, 4],
+      "mobs": ["slime", "wolf", "bandit", "wisp"], "miniBosses": ["wolf-alpha"],
+      "hubs": [
+        { "id": "ashford",    "kind": "town",   "name": "Ashford",     "x": 700,  "y": 3510 },
+        { "id": "millford",   "kind": "town",   "name": "Millford",    "x": 700,  "y": 2770 },
+        { "id": "crossroads", "kind": "normal", "name": "Crossroads",  "x": 400,  "y": 3110 },
+        { "id": "windy",      "kind": "normal", "name": "Windy Ridge", "x": 1000, "y": 3110 },
+        { "id": "tinker",     "kind": "shop",   "name": "Tinker Cart", "x": 250,  "y": 2690 },
+        { "id": "hermit",     "kind": "potion", "name": "Hermit Hut",  "x": 1150, "y": 2690 },
+        { "id": "cairn",      "kind": "chest",  "name": "Old Cairn",   "x": 250,  "y": 2250 },
+        { "id": "moon",       "kind": "spell",  "name": "Moon Shrine", "x": 700,  "y": 2210 },
+        { "id": "gate",       "kind": "boss",   "name": "Iron Gate",   "x": 1150, "y": 2250, "boss": "thornwood-warden", "opens": "thornwood" },
+        { "id": "saltmarsh",  "kind": "normal", "name": "Saltmarsh",   "x": 250,  "y": 3450 },
+        { "id": "ravine",     "kind": "normal", "name": "Ravine",      "x": 1150, "y": 3450 }
+      ],
+      "roads": [
+        { "from": "ashford",    "to": "millford",   "kinds": "nnptnn", "bow": 0 },
+        { "from": "ashford",    "to": "saltmarsh",  "kinds": "ntn",    "bow": 50 },
+        { "from": "ashford",    "to": "ravine",     "kinds": "nnn",    "bow": 50 },
+        { "from": "saltmarsh",  "to": "crossroads", "kinds": "npn",    "bow": 50 },
+        { "from": "ravine",     "to": "windy",      "kinds": "nnn",    "bow": 50 },
+        { "from": "crossroads", "to": "millford",   "kinds": "nnn",    "bow": 30 },
+        { "from": "windy",      "to": "millford",   "kinds": "nnn",    "bow": 30 },
+        { "from": "crossroads", "to": "tinker",     "kinds": "nnn",    "bow": 50 },
+        { "from": "windy",      "to": "hermit",     "kinds": "nsn",    "bow": 50 },
+        { "from": "tinker",     "to": "cairn",      "kinds": "nnn",    "bow": 50 },
+        { "from": "hermit",     "to": "gate",       "kinds": "nnn",    "bow": 50 },
+        { "from": "cairn",      "to": "moon",       "kinds": "ntn",    "bow": 50 },
+        { "from": "moon",       "to": "gate",       "kinds": "nnn",    "bow": 50 },
+        { "from": "millford",   "to": "moon",       "kinds": "nnnn",   "bow": 0 },
+        { "from": "tinker",     "to": "millford",   "kinds": "nnn",    "bow": 40 }
+      ]
+    },
+    {
+      "id": "thornwood", "name": "Thornwood", "theme": "forest", "tier": 2, "levels": [4, 8],
+      "mobs": ["spider", "treant", "outlaw", "wraith"], "miniBosses": ["spider-queen"],
+      "hubs": [
+        { "id": "edge",        "kind": "normal", "name": "Thornwood Edge", "x": 1600, "y": 2500 },
+        { "id": "thicket",     "kind": "normal", "name": "Dark Thicket",   "x": 1650, "y": 2050 },
+        { "id": "briar",       "kind": "boss",   "name": "Briar Gate",     "x": 2150, "y": 2100, "boss": "briar-king", "opens": "frostpeak" },
+        { "id": "elder",       "kind": "spell",  "name": "Elder Stone",    "x": 2650, "y": 2300 },
+        { "id": "hollow",      "kind": "normal", "name": "Hollow Oak",     "x": 2150, "y": 2750 },
+        { "id": "pond",        "kind": "normal", "name": "Still Pond",     "x": 2700, "y": 2850 },
+        { "id": "mossy",       "kind": "shop",   "name": "Mossy Stall",    "x": 1650, "y": 3050 },
+        { "id": "weaver",      "kind": "chest",  "name": "Weaver's Hoard", "x": 2700, "y": 3350 },
+        { "id": "brambleford", "kind": "town",   "name": "Brambleford",    "x": 2150, "y": 3400 },
+        { "id": "dusk",        "kind": "potion", "name": "Dusk Pool",      "x": 1650, "y": 3600 },
+        { "id": "barrow",      "kind": "normal", "name": "Barrow Hill",    "x": 2650, "y": 3700 }
+      ],
+      "roads": [
+        { "from": "edge",        "to": "thicket",     "kinds": "nnn",   "bow": 40 },
+        { "from": "thicket",     "to": "briar",       "kinds": "ntn",   "bow": 40 },
+        { "from": "briar",       "to": "elder",       "kinds": "nnn",   "bow": 40 },
+        { "from": "edge",        "to": "hollow",      "kinds": "nnnn",  "bow": 30 },
+        { "from": "briar",       "to": "hollow",      "kinds": "nnnnn", "bow": 0 },
+        { "from": "elder",       "to": "pond",        "kinds": "npn",   "bow": 40 },
+        { "from": "hollow",      "to": "pond",        "kinds": "nnn",   "bow": 30 },
+        { "from": "edge",        "to": "mossy",       "kinds": "nnnn",  "bow": 40 },
+        { "from": "mossy",       "to": "brambleford", "kinds": "nnn",   "bow": 30 },
+        { "from": "hollow",      "to": "brambleford", "kinds": "nnnn",  "bow": 0 },
+        { "from": "pond",        "to": "weaver",      "kinds": "ntn",   "bow": 40 },
+        { "from": "weaver",      "to": "brambleford", "kinds": "nnn",   "bow": 30 },
+        { "from": "brambleford", "to": "dusk",        "kinds": "nnn",   "bow": 40 },
+        { "from": "mossy",       "to": "dusk",        "kinds": "npn",   "bow": 40 },
+        { "from": "brambleford", "to": "barrow",      "kinds": "nnn",   "bow": 30 },
+        { "from": "weaver",      "to": "barrow",      "kinds": "nn",    "bow": 40 },
+        { "from": "dusk",        "to": "barrow",      "kinds": "nnnnn", "bow": 90 }
+      ]
+    },
+    {
+      "id": "frostpeak", "name": "Frostpeak", "theme": "ice", "tier": 3, "levels": [8, 12],
+      "mobs": ["ice-wolf", "yeti", "frost-wisp", "ice-golem"], "miniBosses": ["yeti-elder"],
+      "hubs": [
+        { "id": "pass",      "kind": "normal", "name": "Snowy Pass",      "x": 2150, "y": 1850 },
+        { "id": "frosthold", "kind": "town",   "name": "Frosthold",       "x": 2150, "y": 1500 },
+        { "id": "trader",    "kind": "shop",   "name": "Fur Trader",      "x": 2650, "y": 1700 },
+        { "id": "icefall",   "kind": "normal", "name": "Icefall",         "x": 1600, "y": 1350 },
+        { "id": "glacier",   "kind": "normal", "name": "Glacier Tongue",  "x": 2700, "y": 1250 },
+        { "id": "hotspring", "kind": "potion", "name": "Hot Spring",      "x": 2150, "y": 1100 },
+        { "id": "frozen",    "kind": "chest",  "name": "Frozen Cairn",    "x": 1600, "y": 800 },
+        { "id": "aurora",    "kind": "spell",  "name": "Aurora Shrine",   "x": 2700, "y": 750 },
+        { "id": "ridge",     "kind": "normal", "name": "Wind Ridge",      "x": 2150, "y": 600 },
+        { "id": "summit",    "kind": "boss",   "name": "The Summit",      "x": 2150, "y": 250, "boss": "frost-matriarch", "opens": null }
+      ],
+      "roads": [
+        { "from": "pass",      "to": "frosthold", "kinds": "nn",   "bow": 0 },
+        { "from": "pass",      "to": "trader",    "kinds": "nnn",  "bow": 40 },
+        { "from": "frosthold", "to": "trader",    "kinds": "nnn",  "bow": 30 },
+        { "from": "frosthold", "to": "icefall",   "kinds": "nnn",  "bow": 30 },
+        { "from": "frosthold", "to": "hotspring", "kinds": "nnn",  "bow": 0 },
+        { "from": "trader",    "to": "glacier",   "kinds": "nnn",  "bow": 40 },
+        { "from": "icefall",   "to": "frozen",    "kinds": "nnnn", "bow": 50 },
+        { "from": "hotspring", "to": "glacier",   "kinds": "ntn",  "bow": 30 },
+        { "from": "icefall",   "to": "hotspring", "kinds": "npn",  "bow": 30 },
+        { "from": "glacier",   "to": "aurora",    "kinds": "nnn",  "bow": 40 },
+        { "from": "frozen",    "to": "ridge",     "kinds": "ntn",  "bow": 50 },
+        { "from": "hotspring", "to": "ridge",     "kinds": "nnn",  "bow": 0 },
+        { "from": "aurora",    "to": "ridge",     "kinds": "npn",  "bow": 50 },
+        { "from": "ridge",     "to": "summit",    "kinds": "nn",   "bow": 0 }
+      ]
+    }
+  ],
+  "roads": [
+    { "from": "gate",  "to": "edge", "kinds": "nn", "bow": 0, "area": "thornwood" },
+    { "from": "briar", "to": "pass", "kinds": "n",  "bow": 0, "area": "frostpeak" }
+  ]
+}

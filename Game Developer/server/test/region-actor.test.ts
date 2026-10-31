@@ -51,15 +51,17 @@ describe('a region actor', () => {
     const { actor } = freshActor();
     const results = await Promise.all([
       actor.submit(roll('a1')), // 2
-      actor.submit(move('a2', ['s1', 's2'])),
-      actor.submit(roll('a3')), // 1
-      actor.submit(move('a4', ['s3'])), // Crossroads, an event: its card takes the seed's 5
-      actor.submit(roll('a5')), // 6
+      actor.submit(move('a2', ['s1', 's2'])), // Tinker Cart, the shop
+      actor.submit({ type: 'buy', id: 'a3', player: P, item: 'potion' }),
+      actor.submit(roll('a4')), // 1
+      actor.submit(move('a5', ['s3'])), // Crossroads, the wilds: whatever turns up there
     ]);
     expect(results.map((r) => r.version)).toEqual([1, 2, 3, 4, 5]);
-    expect(results.map((r) => r.events[0]?.type)).toEqual(['rolled', 'moved', 'rolled', 'moved', 'rolled']);
-    expect(results[3]?.events[2]?.type).toBe('event');
-    expect(actor.snapshot().state.characters[P]).toMatchObject({ space: 's3', steps: 6 });
+    expect(results.map((r) => r.events[0]?.type)).toEqual(['rolled', 'moved', 'bought', 'rolled', 'moved']);
+    const me = actor.snapshot().state.characters[P]!;
+    expect(me).toMatchObject({ space: 's3', steps: 0 });
+    expect(me.items.potion).toBeGreaterThanOrEqual(1); // whatever the wilds held, the potion bought is still there
+    expect(me.gold).toBeGreaterThanOrEqual(35);
   });
 
   it('remembers a refused action without bumping the version', async () => {

@@ -1,8 +1,0 @@
-[
-  { "id": "purse",      "text": "A purse lies in the grass.",             "gold": 15 },
-  { "id": "merchant",   "text": "A passing merchant buys your trinkets.", "gold": 25 },
-  { "id": "spring",     "text": "A clear spring. You feel better.",       "heal": 20 },
-  { "id": "quiet",      "text": "A quiet road. Nothing happens." },
-  { "id": "toll",       "text": "A toll keeper takes a cut.",             "gold": -10 },
-  { "id": "pickpocket", "text": "A pickpocket brushes past you.",         "gold": -15 }
-]
