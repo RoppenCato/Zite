@@ -13,7 +13,7 @@
 
 ```js
 boardWorld.phaser.scene.isActive('create')                 // the character screen (no save)
-boardWorld.phaser.scene.getScene('create').choose('mage')  // or tap a card; Begin at (206, 812), the cards at y 292, 408, 524, 640
+boardWorld.phaser.scene.getScene('create').choose('mage')  // or tap a card; Begin at (206, 812), the cards at y 304, 420, 536, 652
 boardWorld.phaser.scene.getScene('create').begin()         // the name is read from the <input> inside #game
 boardWorld.game.me                       // the character: space, steps, hp, gold, xp, level, fight
 boardWorld.game.act({ type: 'roll', player: 'local' })

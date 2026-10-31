@@ -20,7 +20,7 @@ const CENTRE = DESIGN_WIDTH / 2;
 const CARD_W = 340;
 const CARD_H = 104;
 const CARD_GAP = 12;
-const FIRST_CARD_Y = 292;
+const FIRST_CARD_Y = 304;
 export const DEFAULT_NAME = 'Robin';
 export const MAX_NAME = 12;
 
@@ -81,7 +81,7 @@ export class CreateScene extends Phaser.Scene {
     ].join(';'));
     this.add.dom(input.x, input.y, this.nameField);
 
-    this.add.text(CENTRE, 232, 'Pick a class. Each one fights its own way.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
+    this.add.text(CENTRE, 234, 'Pick a class. Each one fights its own way.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
     CLASS_IDS.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
     this.select(this.chosen);
 

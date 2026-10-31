@@ -36,7 +36,7 @@ button (72 by 50, centred at x 362); a tiny build-island-and-seed line at the bo
 
 Shown when there is no save. "Board World" and the island's name at the top; **a name field** (a real `<input>` through
 Phaser's DOM container, 300 by 44 at y 180, at most 12 characters, "Robin" to start, so the phone's keyboard comes up);
-**four cards** (340 by 104, from y 292, 12 apart) with each class's name, its style line from the brief ("Steady, high
+**four cards** (340 by 104, centred at y 304, 420, 536 and 652) with each class's name, its style line from the brief ("Steady, high
 base damage, tough." and so on, in `classes.json`) and its HP, attack, defense and move; the chosen card is lit with a
 yellow border; **Begin** (220 by 66 at y 812) makes the game (`LocalGame.create`), adds the three play scenes and starts
 the board. An empty name becomes "Robin". The pane can call `choose(classId)` and `begin()` on the scene.

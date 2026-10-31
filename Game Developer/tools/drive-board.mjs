@@ -78,7 +78,7 @@ const createShown = await page.evaluate(() => ({ create: boardWorld.phaser.scene
 check('no save: the character screen comes first, the name field filled with the default', createShown.create && createShown.game === null && createShown.input === 'Robin', JSON.stringify(createShown));
 await shot('0-character-screen');
 await page.fill('#game input', 'Driver');
-await touch('touchStart', [{ x: 206, y: 524 }]); // the third card: Mage
+await touch('touchStart', [{ x: 206, y: 536 }]); // the third card: Mage
 await sleep(40);
 await touch('touchEnd', []);
 await sleep(100);
