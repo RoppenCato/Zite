@@ -173,6 +173,17 @@ hangs plainly along the far side with its fist at the hip; the boots have a toe 
 sole; the eyes white with a dark pupil and a catchlight, a small nose; the fringe's locks end above the eyes. Sent to
 Robin the same evening.
 
+## Colin, AD's own Warrior, for comparison (2026-10-31, evening)
+
+Robin asked Colin to make a hero from his own skills to my direction (C:\dev\SG\Art Director\out\zite_hero): Blender
+volumes (parts swept along paths and voxel-merged into one skin, bound to bones with IK on the legs, four hard tones, the
+face projected), the same colours, frame counts and rates, 99.8 CSS px tall; packed with the studio's packer it is a
+1024-square atlas, 146 KB as a palette PNG (mine 120 KB in 1024 by 2048). My verdict to Robin: take Colin's construction
+for the body (it cannot come apart, it is rounder and its hair is a cap of soft locks that reads as hair, the face is
+alive) and his lesson that the sword belongs in the far hand at a three-quarter view; keep from mine the upright stance
+with feet apart, the long clear blade, the bigger strike and hit shapes, the strike's trail and the hard flat tones that
+match the turnip; reject his crouched knobby legs and his short foreshortened blade. Robin decides.
+
 ## For Robin to decide
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the
