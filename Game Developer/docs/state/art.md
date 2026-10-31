@@ -1,9 +1,24 @@
 # The art
 
-No art is in the game yet (2026-10-31): the board scene draws shapes and labels. This file holds the budgets the Art
-Director (Perry, AD) builds to, set by me on 2026-10-31 when Perry asked, from Robin's rule that the art must stay small
-for the phone (Robin, 2026-10-31). Deliveries arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole
-folder is copied into `assets/` and committed here.
+The board scene still draws shapes and labels (2026-10-31); the first delivered piece sits in `assets/` and is not drawn
+yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
+2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
+arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
+here, so the game builds without the studios' folders.
+
+## What is in the game
+
+| Folder | What | Since | Drawn by the client? |
+| --- | --- | --- | --- |
+| `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet |
+
+The Warrior's animations (Perry, AD's NOTES.md; the names and rates go into data when he is wired in): `warrior/stand`
+4 frames at 100 ms looping; `warrior/move` 6 at 100 ms looping, stride about 67 CSS px a second in a fight and 40 on the
+board; `warrior/attack1` 6 at 67 ms with frames 2 and 4 held 134 ms, the blow landing on frame 4; `warrior/hit1` 1 frame
+held 600 ms; `warrior/die1` 6 at 83 ms, the last three fading. Files are 2x: he stands 100 CSS px tall, drawn facing left
+and flipped to face right, at 0.6 on the board; the game lays the contact shadow (an ellipse about 60 by 16 CSS px at 0.22
+black). **Wiring him in** (the atlas loaded by the client, the board token and the fight sprite) waits for the camera
+branch to land, since both change `BoardScene.ts`.
 
 ## What is coming
 
