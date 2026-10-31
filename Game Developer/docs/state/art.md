@@ -11,6 +11,16 @@ here, so the game builds without the studios' folders.
 | Folder | What | Since | Drawn by the client? |
 | --- | --- | --- | --- |
 | `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet |
+| `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet |
+| `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet |
+| `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet |
+
+The three monsters share one form (Perry, AD's NOTES.md in each folder): `<name>/stand` 6 frames at 100 ms looping,
+`<name>/move` 6 at 100 ms looping, `<name>/hit1` 1 frame held 600 ms, `<name>/die1` 8 at 83 ms with the last three fading,
+`<name>/attack1` 12 at 67 ms with frames 4 and 7 held 134 ms (4 and 8 for the Bramble Bun); the blow lands on the second
+held frame. Drawn facing left, toward the player; `flipX` to face right; 2x files at half size; `stand` at 0.6 on the board;
+the game lays the shadow. Each folder also carries the loose frames, sheets, a gif and the build scripts, for looking and
+making.
 
 The Warrior's animations (Perry, AD's NOTES.md; the names and rates go into data when he is wired in): `warrior/stand`
 4 frames at 100 ms looping; `warrior/move` 6 at 100 ms looping, stride about 67 CSS px a second in a fight and 40 on the
@@ -24,10 +34,10 @@ branch to land, since both change `BoardScene.ts`.
 
 Perry, AD builds to these budgets since 2026-10-31: the packer writes the Phaser 3 JSON hash with names
 `<sprite>/<action>/0001`, 2 px padding, a pivot at the feet per frame, power-of-two sides; every delivery goes through a
-palette shrink. The first drops will be the **Turnip Grump** (the first monster), the **Warrior** and the **meadow's fight
-kit** (one atlas of tiles and props plus three background strips, the sky left to code), after a repaint pass to a stricter
-recipe; the board kit comes as one atlas plus horizon strips. **The files in the Art Director's `out/` on 2026-10-31 are
-not those drops and are not to be copied**; Perry, AD messages when a drop is ready.
+palette shrink. Still to come: the **meadow's fight kit** (one atlas of tiles and props plus three background strips, the
+sky left to code) and the board kit (one atlas plus horizon strips), and the **Turnip Grump**, whose folder in `out/turnip`
+is still the older 3D-rendered one and is held until it is repainted in the same hand as the three monsters above. Perry,
+AD messages when a drop is ready; nothing is copied before that.
 
 ## Where art lives and how it reaches the phone
 
