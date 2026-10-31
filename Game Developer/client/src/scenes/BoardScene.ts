@@ -274,10 +274,11 @@ export class BoardScene extends Phaser.Scene {
     for (const area of Object.values(board.areas)) {
       g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
       g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
+      // The name sits in the margin above the area's top spots, faint, readable from the overview.
       this.add
-        .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 30, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '34px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
+        .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 6, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '26px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
         .setOrigin(0.5, 0)
-        .setAlpha(0.35)
+        .setAlpha(0.4)
         .setDepth(1);
     }
     g.lineStyle(6, COLORS.border, 1);
