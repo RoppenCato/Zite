@@ -218,6 +218,16 @@ death freeing the sword). 23 frames, a 1024-square atlas, 441 KB before the pale
 with the animation names, rates, pivots and stride) and sent to Miles, GD to copy. Left for later: the hair's locks, the far
 leg in the walk, the turnip's eyes, the three other classes on the same rig.
 
+## A try in the cartoon-vector hand (2026-10-31, late night)
+
+Robin: "Honestly I think we need to rethink the whole art direction. Try creating a hero in this art style", with a stock
+picture of a night village: stone towers, round trees, no ink line, every shape cut by tone against tone, cool blue-violet
+shadows, crisp lighter highlight patches, saturated colour. `tools/vector.js` holds that hand (a tone set from one base
+colour; a shaded shape with a shade crescent away from the light and lighter patches toward it; scalloped foliage; stone
+blocks) and `tools/hero_vector.js` paints the Warrior with it on the same rig as the puppet; `tools/vector_stage.js` sketches a
+meadow stage in it by day and night. Sent to Robin beside the ink Warrior. If he chooses this hand, the recipe, the kit,
+the monsters and the ink Warrior all change to it; the rigs and the poses stay.
+
 ## For Robin to decide (later)
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the
