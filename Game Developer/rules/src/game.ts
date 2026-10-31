@@ -1,7 +1,7 @@
 // The game as a pure function: apply(state, action, rng) -> { state, events }.
 // The state passed in is never changed; a new one comes back.
 
-import { CLASS_DATA, DICE_DATA, ENEMIES, EVENT_CARDS, ISLAND_DATA, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
+import { CLASS_DATA, DICE_DATA, ENEMIES, EVENT_CARDS, ISLAND_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
 import { buildBoard } from './island.ts';
 import { checkPath, nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -29,7 +29,9 @@ export interface NewGameOptions {
 }
 
 type MoveAction = Extract<Action, { type: 'move' }>;
-type FightAction = Extract<Action, { type: 'attack' | 'defend' | 'skill' | 'flee' }>;
+type FightAction = Extract<Action, { type: 'attack' | 'defend' | 'skill' | 'flee' | 'use' }>;
+type BuyAction = Extract<Action, { type: 'buy' }>;
+type UseAction = Extract<Action, { type: 'use' }>;
 
 /** The island from rules/data/board.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
@@ -52,6 +54,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, space:
     xp: 0,
     level: 1,
     fight: null,
+    items: {},
   };
 }
 
@@ -90,6 +93,10 @@ export function apply(state: GameState, action: Action, rng: Rng): ApplyResult {
     case 'skill':
     case 'flee':
       return fight(state, action, character, rng);
+    case 'buy':
+      return buy(state, action, character);
+    case 'use':
+      return use(state, action, character, rng);
   }
 }
 
@@ -167,12 +174,74 @@ function heal(c: Character, amount: number, action: Action, events: GameEvent[])
   return { ...c, hp };
 }
 
+// ---- items -----------------------------------------------------------------------------------------------------------
+
+/** At a shop and out of a fight: one of the item for its price (mine, 2026-10-31; prices in data/items.json). */
+function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
+  const item = ITEMS[action.item];
+  if (!item) return reject(state, action, 'no such item');
+  if (character.fight) return reject(state, action, 'finish the fight first');
+  if (state.board.spaces[character.space]?.kind !== 'shop') return reject(state, action, 'not at a shop');
+  if (character.gold < item.price) return reject(state, action, 'not enough gold');
+  const gold = character.gold - item.price;
+  const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
+  return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, price: item.price, gold }] };
+}
+
+/**
+ * Use an item. A potion is a round of the fight (the enemy strikes back) and is refused outside one. A dice card needs a
+ * roll pending and no fight: it changes the steps owed, and the die shows the new number.
+ */
+function use(state: GameState, action: UseAction, character: Character, rng: Rng): ApplyResult {
+  const item = ITEMS[action.item];
+  if (!item) return reject(state, action, 'no such item');
+  if ((character.items[action.item] ?? 0) <= 0) return reject(state, action, 'none left');
+  if (item.heal) {
+    if (!character.fight) return reject(state, action, 'not now');
+    return fight(state, action, character, rng);
+  }
+  if (!item.dice) return reject(state, action, 'not now');
+  if (character.fight || character.steps === 0) return reject(state, action, 'not now');
+  let steps = character.steps;
+  switch (item.dice) {
+    case 'reroll':
+      steps = rng.int(state.die.sides);
+      break;
+    case 'plus':
+      steps += 1;
+      break;
+    case 'minus':
+      steps = Math.max(1, steps - 1);
+      break;
+    case 'exact':
+      if (!Number.isInteger(action.value) || action.value! < 1 || action.value! > state.die.sides) return reject(state, action, 'bad value');
+      steps = action.value!;
+      break;
+  }
+  const c = spend({ ...character, steps }, action.item);
+  const next = withCharacter({ ...state, die: { ...state.die, last: steps } }, c);
+  return {
+    state: next,
+    events: [
+      { type: 'used', action: action.id, player: action.player, item: action.item },
+      { type: 'steps', action: action.id, player: action.player, steps },
+    ],
+  };
+}
+
+/** One fewer of the item; a count of 0 is dropped from the bag. */
+function spend(c: Character, item: string): Character {
+  const items = { ...c.items, [item]: (c.items[item] ?? 0) - 1 };
+  if (items[item]! <= 0) delete items[item];
+  return { ...c, items };
+}
+
 // ---- the fight -----------------------------------------------------------------------------------------------------
 
 /**
  * One round of a fight (Robin, 2026-10-31: turn-based, choices among attacks, spells and defending; the moves and the
- * numbers are mine, first settings). The player acts; then the enemy strikes back, unless it is dead, the player got
- * away, or it is the first round against a class that strikes first. A hit is the attack times the move's power, less
+ * numbers are mine, first settings). The player acts (a move, a guard, a potion); then the enemy strikes back, unless it
+ * is dead, the player got away, or it is the first round against a class that strikes first. A hit is the attack times the move's power, less
  * half the defense, plus a swing of -2 to +2 from the stream, doubled on a crit, never under 1. A guard halves the
  * enemy's hit. Beating the enemy gives its xp and gold, and levels when the table says so; being beaten puts the
  * character on its feet in the nearest town, a fifth of the gold gone.
@@ -212,6 +281,14 @@ function fight(state: GameState, action: FightAction, character: Character, rng:
       const ok = rng.next() < PROGRESSION.fleeChance;
       events.push({ type: 'fled', action: action.id, player: action.player, ok });
       if (ok) return { state: withCharacter(state, { ...c, fight: null }), events };
+      break;
+    }
+    case 'use': {
+      // A potion: checked by use() before it gets here. Drinking it is the round; the enemy still strikes.
+      const amount = ITEMS[action.item]?.heal ?? 0;
+      c = spend(c, action.item);
+      events.push({ type: 'used', action: action.id, player: action.player, item: action.item });
+      c = heal(c, amount, action, events);
       break;
     }
   }

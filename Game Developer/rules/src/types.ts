@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 3;
+export const STATE_VERSION = 4;
 
 export type SpaceKind = 'town' | 'battle' | 'shop' | 'event' | 'treasure' | 'quest' | 'bossgate' | 'shrine';
 
@@ -47,6 +47,8 @@ export interface Character {
   level: number;
   /** The fight the character is in, or null. While it lasts, roll and move are refused. */
   fight: Fight | null;
+  /** What the character carries: item id to count (rules/data/items.json). */
+  items: Record<string, number>;
 }
 
 /** The enemy as it stands in a fight. */
@@ -91,7 +93,11 @@ export type Action =
   | { type: 'attack'; id: string; player: string }
   | { type: 'defend'; id: string; player: string }
   | { type: 'skill'; id: string; player: string }
-  | { type: 'flee'; id: string; player: string };
+  | { type: 'flee'; id: string; player: string }
+  /** At a shop: buy one of an item. */
+  | { type: 'buy'; id: string; player: string; item: string }
+  /** Use an item: a potion in a fight (it takes the turn), a dice card while a roll is pending; `value` is the number for Exactly N. */
+  | { type: 'use'; id: string; player: string; item: string; value?: number };
 
 export type RejectReason =
   | 'unknown player'
@@ -102,7 +108,13 @@ export type RejectReason =
   | 'not connected'
   | 'no turning back'
   | 'finish the fight first'
-  | 'not in a fight';
+  | 'not in a fight'
+  | 'not at a shop'
+  | 'not enough gold'
+  | 'no such item'
+  | 'none left'
+  | 'not now'
+  | 'bad value';
 
 /** What happened. The client plays these back; the server will send them on. */
 export type GameEvent =
@@ -126,6 +138,11 @@ export type GameEvent =
   | { type: 'levelled'; action: string; player: string; level: number; maxHp: number; attack: number; defense: number }
   /** Beaten: back on your feet in the nearest town, a share of the gold gone. */
   | { type: 'died'; action: string; player: string; town: string; lostGold: number }
+  | { type: 'bought'; action: string; player: string; item: string; price: number; gold: number }
+  /** An item spent; what it did follows (healed, or steps). */
+  | { type: 'used'; action: string; player: string; item: string }
+  /** The steps owed from the pending roll changed (a dice card); the die shows the new number. */
+  | { type: 'steps'; action: string; player: string; steps: number }
   | { type: 'rejected'; action: string; player: string; reason: RejectReason };
 
 export interface ApplyResult {

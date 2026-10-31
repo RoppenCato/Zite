@@ -7,18 +7,19 @@ server's region actor (`server/src/region-actor.ts`). Import from `rules/src/ind
 
 | File | What it holds |
 | --- | --- |
-| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (3) |
+| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (4) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
-| `src/data.ts` | the numbers from `data/*.json`, typed: `ISLAND_DATA`, `DICE_DATA`, `CLASS_DATA`, `SPACE_KIND_DATA`, `EVENT_CARDS`, `ENEMIES`, `PROGRESSION` |
+| `src/data.ts` | the numbers from `data/*.json`, typed: `ISLAND_DATA`, `DICE_DATA`, `CLASS_DATA`, `SPACE_KIND_DATA`, `EVENT_CARDS`, `ENEMIES`, `PROGRESSION`, `ITEMS` |
 | `src/island.ts` | `buildBoard(island)`: the board from an island description (hubs and roads); `KIND_LETTERS`, `roadSpaceId` |
 | `src/paths.ts` | `legalPaths` (every walk a roll allows), `reachable` (where it can end, each space once), `checkPath` (why a walk is not allowed), `nearestTown` |
-| `src/game.ts` | `newGame`, `apply` (roll, move and what landing does, the fight's four actions), `makeBoard` (the island), `makeCharacter`, `levelFor` |
-| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 → 2 → 3 are written), or null |
+| `src/game.ts` | `newGame`, `apply` (roll, move and what landing does, the fight's four actions, buy, use), `makeBoard` (the island), `makeCharacter`, `levelFor` |
+| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 → 2 → 3 → 4 are written), or null |
 | `data/board.json` | the island: Ashford Isle, 1400 by 1850, eleven hubs and fifteen roads |
 | `data/dice.json` | the die: 6 sides |
 | `data/classes.json` | each class's hp, attack, defense, starting gold, its own move, and what a level brings |
 | `data/enemies.json` | the enemies a battle space can draw: hp, attack, defense, the xp and gold for beating them |
 | `data/progression.json` | the xp table for levels, the crit chance and power, the flee chance, the share of gold lost on death |
+| `data/items.json` | what a shop sells: the potion and the four dice cards, with text and price |
 | `data/spaces.json` | the kinds of space, their labels, and what landing does (heal, gold) |
 | `data/events.json` | the cards an event space can draw: text, gold, heal |
 | `test/fixtures/ring.json`, `ring.ts` | the first twelve-space ring, kept as a test board: `ringBoard()` |
@@ -26,14 +27,16 @@ server's region actor (`server/src/region-actor.ts`). Import from `rules/src/ind
 ## The state
 
 ```
-GameState { version: 3, seed, board, characters: { [id]: Character }, die }
+GameState { version: 4, seed, board, characters: { [id]: Character }, die }
 Board     { start, width, height, spaces: { [id]: Space } }   a graph: spaces and links, never a grid
 Space     { id, kind, name, x, y, links: string[] }           x, y in world pixels inside width by height; a road space's name is ""
-Character { id, name, classId, hp, maxHp, attack, defense, gold, space, steps, xp, level, fight }
+Character { id, name, classId, hp, maxHp, attack, defense, gold, space, steps, xp, level, fight, items }
 Fight     { enemy, round, charged }                            null on the character when there is none
 Enemy     { id, name, hp, maxHp, attack, defense, xp, gold }  as it stands now
-Die       { sides, last }                                      last: the value rolled, null before the first roll
+Die       { sides, last }                                      last: the value rolled (or set by a dice card), null before the first roll
 ```
+
+`items` is the bag: item id to count, from `data/items.json`.
 
 `steps` is what the character still owes from the last roll; 0 means no roll is pending. The random stream is **not** in the
 state: whoever holds the state holds the stream (shared-world rule 5: a seed is never sent to a client before its roll is
@@ -42,8 +45,8 @@ client's camera is bounded by them.
 
 **Versions.** 2 (2026-10-31) replaced the ring with the island: `migrate` rebuilds the board from the island, keeps every
 character (name, class, hp, gold and the rest) but stands it on the start space with `steps` 0, and unrolls the die.
-3 (2026-10-31) brought the fight: every character gains `xp` 0, `level` 1 and `fight` null. A version-1 state takes both
-steps. A state missing its seed or characters, or with a character of an unknown class, gives null, as does anything that is
+3 (2026-10-31) brought the fight: every character gains `xp` 0, `level` 1 and `fight` null. 4 (2026-10-31) brought
+items: every character gains an empty bag. An older state takes every step up. A state missing its seed or characters, or with a character of an unknown class, gives null, as does anything that is
 not a state we know; the holder then starts a fresh game.
 
 ## The actions and what they do
@@ -61,6 +64,7 @@ Every action carries `id` (made by the client, a UUID) and `player`. A repeat of
   (below), all in the one action.
 - **`attack`, `defend`, `skill`, `flee`**: one round of a fight (below). Refused with `not in a fight` otherwise; and
   `roll` and `move` are refused with `finish the fight first` while a fight lasts.
+- **`buy { item }`**: at a shop (below). **`use { item, value? }`**: a potion in a fight, a dice card on a pending roll.
 - Any action for a player not in the game: `unknown player`.
 
 A refused action returns the **same** state object and one `rejected { action, player, reason }` event. Nothing throws.
@@ -83,17 +87,35 @@ rule 5). The numbers live in `data/spaces.json` and `data/events.json`.
 | town | HP back to full | `healed { amount, hp }` (amount 0 when already full) |
 | shrine | 30 HP back, never above the maximum | `healed { amount, hp }` |
 | event | one card drawn from the stream (`EVENT_CARDS`): a purse (+15 gold), a merchant (+25), a spring (+20 HP), a quiet road (nothing), a toll (−10 gold), a pickpocket (−15) | `event { card, text }`, then `gold` or `healed` if the card has one |
-| shop, quest, boss gate | nothing yet: the shop, quests and the gate are the next pieces | none |
+| shop | nothing on landing; the shop is open while the character stands there (`buy`) | none |
+| quest, boss gate | nothing yet: quests and the gate are the next pieces | none |
 
 Gold never goes below 0 (a loss takes what there is; `delta` says what was taken) and HP never above `maxHp`. An event's
 card draw, a treasure's amount and a battle's enemy each take one number from the stream, so a walk that lands on one
 shifts the dice that follow; the tests pin that.
 
+## Items: the shop, the potion, the dice cards (mine, 2026-10-31; the brief's dice cards, "found or bought")
+
+`data/items.json` holds what a shop sells, with a price (first settings): a **Potion** (15 gold, heals 40 in a fight),
+and four dice cards: **Reroll** (20), **+1** (12), **−1** (12), **Exactly N** (40). Nothing is found yet; the shop is
+the one source.
+
+- **`buy { item }`**: standing on a shop space and not in a fight, one of the item for its price; event
+  `bought { item, price, gold }`. Refused with `no such item`, `finish the fight first`, `not at a shop`, `not enough gold`.
+- **`use { item }` with a potion**: in a fight only (`not now` otherwise). Drinking it is the round: event `used`, then
+  `healed { amount, hp }` (never above the maximum), then the enemy strikes back as after any move.
+- **`use { item, value? }` with a dice card**: a roll must be pending and no fight on (`not now` otherwise). It changes
+  the steps owed and the die shows the new number: **Reroll** draws `rng.int(sides)` again; **+1** adds one (a 6 becomes
+  a walk of 7, which every board allows); **−1** takes one, never below 1; **Exactly N** sets `value`, which must be a
+  whole number from 1 to the die's sides (`bad value`). Events `used { item }`, `steps { steps }`.
+- One fewer of the item each use; a count of 0 leaves the bag. `none left` when there is none, `no such item` when the id
+  is unknown.
+
 ## The fight (Robin, 2026-10-31: turn-based, choices among attacks, spells and defending; the moves and numbers are mine)
 
 A fight is one character against one enemy, held on the character as `fight` until it ends. Each action is one round:
-**the player acts, then the enemy strikes back**, unless it is dead, the player got away, or it is the first round against
-a class that strikes first. All in one `apply`, every number from the stream.
+**the player acts (a move, a guard, a potion), then the enemy strikes back**, unless it is dead, the player got away, or
+it is the first round against a class that strikes first. All in one `apply`, every number from the stream.
 
 - **A hit**: `round(attack × power) − floor(defense / 2)`, at least 1, plus a swing of −2 to +2 from the stream, doubled on
   a crit (`baseCrit` 0.1, `critPower` 2), never under 1. Two numbers from the stream per hit: the swing, then the crit.
@@ -182,7 +204,8 @@ Each class's own move and growth are under the fight, above.
 | File | Covers |
 | --- | --- |
 | `test/rng.test.ts` | the pinned sequences, resume from a stored state, every face comes up, `next()` stays in [0, 1) |
-| `test/game.test.ts` | a new game on the island and on the ring; roll and its refusals; a roll replays from its seed; move, each refusal, the state untouched when refused; landing on each kind (the battle's enemy and the board refusing while it lasts, the treasure's draw, the town's and shrine's heal, the event's card and every card over many seeds, gold never below 0, the stream spent); `legalPaths` agrees with `move`; three turns from one seed always play the same; `migrate`, with hand-made version-1 and version-2 states |
+| `test/game.test.ts` | a new game on the island and on the ring; roll and its refusals; a roll replays from its seed; move, each refusal, the state untouched when refused; landing on each kind (the battle's enemy and the board refusing while it lasts, the treasure's draw, the town's and shrine's heal, the event's card and every card over many seeds, gold never below 0, the stream spent); `legalPaths` agrees with `move`; three turns from one seed always play the same; `migrate`, with hand-made version-1, version-2 and version-3 states |
+| `test/items.test.ts` | the shop (a buy, its refusals, every item priced and either a potion or a dice card); the potion in a fight (the heal, the enemy's blow, the count down to none, the cap, refused outside a fight); each dice card (Reroll from the seed, +1 to a walk of seven that `move` accepts, −1 never below one, Exactly N and its bad values), their refusals, the state untouched |
 | `test/fight.test.ts` | a fight from the seed, pinned round by round for each class's move; a held charge into a plain attack; a volley stopping at the kill; defend halving the blow; flee, failed and not, and its odds over 200 seeds; death to the nearest town with the gold lost; xp and one or two levels at once; `levelFor`; the refusals in and out of a fight; `nearestTown` on both boards and on a board with no town |
 | `test/board.test.ts` | the checks above over the ring fixture and the built island; the island's shape (hubs, forks, fresh copies) |
 | `test/island.test.ts` | `buildBoard`: ids and chaining, link order at hubs, a straight road, the bow and its direction, the kind letters, the errors, determinism |

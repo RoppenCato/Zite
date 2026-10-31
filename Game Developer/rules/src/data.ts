@@ -7,6 +7,7 @@ import spacesJson from '../data/spaces.json' with { type: 'json' };
 import eventsJson from '../data/events.json' with { type: 'json' };
 import enemiesJson from '../data/enemies.json' with { type: 'json' };
 import progressionJson from '../data/progression.json' with { type: 'json' };
+import itemsJson from '../data/items.json' with { type: 'json' };
 import type { Island } from './island.ts';
 import type { ClassId, SpaceKind } from './types.ts';
 
@@ -50,6 +51,18 @@ export interface EnemyData {
   gold: number;
 }
 
+/**
+ * A thing to carry (the brief: dice cards, found or bought). A potion heals in a fight; a dice card changes a pending
+ * roll: `reroll` rolls again, `plus` and `minus` step it by one, `exact` sets it to the number chosen.
+ */
+export interface ItemData {
+  name: string;
+  text: string;
+  price: number;
+  heal?: number;
+  dice?: 'reroll' | 'plus' | 'minus' | 'exact';
+}
+
 export interface ProgressionData {
   /** Total xp needed to be at level n + 1, by index; the last entry is the top level. */
   xpForLevel: number[];
@@ -86,6 +99,8 @@ export const SPACE_KIND_DATA = spacesJson as Record<SpaceKind, SpaceKindData>;
 export const EVENT_CARDS = eventsJson as EventCardData[];
 export const ENEMIES = enemiesJson as EnemyData[];
 export const PROGRESSION = progressionJson as ProgressionData;
+export const ITEMS = itemsJson as Record<string, ItemData>;
+export const ITEM_IDS = Object.keys(ITEMS);
 
 export const SPACE_KINDS = Object.keys(SPACE_KIND_DATA) as SpaceKind[];
 export const CLASS_IDS = Object.keys(CLASS_DATA) as ClassId[];

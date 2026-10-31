@@ -20,7 +20,7 @@ const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player:
 describe('a new game', () => {
   it('plays on the island unless given a board: Ashford Isle, starting in the town Ashford', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(3);
+    expect(s.version).toBe(4);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(s.board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford' });
@@ -32,7 +32,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start space and an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(3);
+    expect(s.version).toBe(4);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(s.board.start).toBe('s0');
@@ -52,6 +52,7 @@ describe('a new game', () => {
       xp: 0,
       level: 1,
       fight: null,
+      items: {},
     });
     expect(s.die).toEqual({ sides: 6, last: null });
   });
@@ -308,7 +309,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 4 })).toBeNull();
+    expect(migrate({ version: 5 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -331,15 +332,15 @@ describe('a stored state', () => {
     die: { sides: 6, last: 3 },
   });
 
-  it('brings a version-1 state up through 2 to 3: the island, every character kept and stood on the start, the die unrolled, no xp yet', () => {
+  it('brings a version-1 state up through 2 and 3 to 4: the island, every character kept and stood on the start, the die unrolled, no xp, an empty bag', () => {
     const old = versionOne();
     const s = migrate(structuredClone(old));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(3);
+    expect(s!.version).toBe(4);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
-    expect(s!.characters.p1).toEqual({ ...old.characters.p1, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null });
-    expect(s!.characters.p2).toEqual({ ...old.characters.p2, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null });
+    expect(s!.characters.p1).toEqual({ ...old.characters.p1, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null, items: {} });
+    expect(s!.characters.p2).toEqual({ ...old.characters.p2, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null, items: {} });
     expect(s!.die).toEqual({ sides: 6, last: null });
     // And it plays on: a roll from the start of the island.
     const { state, events } = apply(s!, roll(), makeRng('ashford'));
@@ -347,7 +348,7 @@ describe('a stored state', () => {
     expect(reachable(state.board, 'ashford', 2).map((r) => r.space)).toEqual(['ashford-millford-2', 'ashford-saltmarsh-2', 'ashford-ravine-2']);
   });
 
-  it('brings a version-2 state to 3: the same board and places, every character gaining xp 0, level 1 and no fight', () => {
+  it('brings a version-2 state to 4: the same board and places, every character gaining xp 0, level 1, no fight and an empty bag', () => {
     const current = fresh();
     const v2 = {
       ...structuredClone(current),
@@ -358,10 +359,21 @@ describe('a stored state', () => {
     const s = migrate(structuredClone(v2));
     expect(s).toEqual({
       ...v2,
-      version: 3,
-      characters: { [P]: { ...v2.characters[P], xp: 0, level: 1, fight: null } },
+      version: 4,
+      characters: { [P]: { ...v2.characters[P], xp: 0, level: 1, fight: null, items: {} } },
     });
     expect(migrate({ version: 2, seed: 'x', board: current.board, characters: { p: { classId: 'bard' } }, die: current.die })).toBeNull();
+  });
+
+  it('brings a version-3 state to 4: the fight kept as it stands, an empty bag added', () => {
+    const current = fresh();
+    const fightState = apply({ ...current, characters: { [P]: { ...current.characters[P]!, steps: 1 } } }, move(['s1']), makeRng('ashford')).state;
+    const { items: _items, ...noBag } = fightState.characters[P]!;
+    const v3 = { ...structuredClone(fightState), version: 3, characters: { [P]: noBag } };
+    const s = migrate(structuredClone(v3));
+    expect(s).toEqual({ ...fightState, version: 4 });
+    expect(s!.characters[P]!.fight!.enemy.name).toBe('Moor Wolf');
+    expect(migrate({ version: 3, seed: 'x', board: current.board, characters: { p: { classId: 'bard' } }, die: current.die })).toBeNull();
   });
 
   it('refuses a version-1 state it cannot carry over', () => {

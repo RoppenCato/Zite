@@ -1,8 +1,8 @@
 // The rules package: the game as a pure function. Import from here, never from the files inside.
 export * from './types.ts';
 export { makeRng, resumeRng, hashSeed, type Rng } from './rng.ts';
-export { ISLAND_DATA, CLASS_DATA, DICE_DATA, SPACE_KIND_DATA, EVENT_CARDS, ENEMIES, PROGRESSION, SPACE_KINDS, CLASS_IDS } from './data.ts';
-export type { ClassData, SkillData, SpaceKindData, EventCardData, EnemyData, ProgressionData } from './data.ts';
+export { ISLAND_DATA, CLASS_DATA, DICE_DATA, SPACE_KIND_DATA, EVENT_CARDS, ENEMIES, PROGRESSION, ITEMS, ITEM_IDS, SPACE_KINDS, CLASS_IDS } from './data.ts';
+export type { ClassData, SkillData, SpaceKindData, EventCardData, EnemyData, ProgressionData, ItemData } from './data.ts';
 export { buildBoard, roadSpaceId, KIND_LETTERS, type Island, type IslandHub, type IslandRoad } from './island.ts';
 export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type Reach } from './paths.ts';
 export { newGame, apply, makeBoard, makeCharacter, levelFor, type NewGameOptions } from './game.ts';
