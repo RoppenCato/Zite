@@ -64,3 +64,25 @@ export function checkPath(board: Board, from: string, steps: number, path: strin
   }
   return null;
 }
+
+/** The nearest town by steps from `from` (the first found at the shortest distance, in link order), or the start. */
+export function nearestTown(board: Board, from: string): string {
+  const seen = new Set<string>([from]);
+  let frontier = [from];
+  while (frontier.length > 0) {
+    const next: string[] = [];
+    for (const id of frontier) {
+      const space = board.spaces[id];
+      if (!space) continue;
+      if (space.kind === 'town') return id;
+      for (const link of space.links) {
+        if (!seen.has(link)) {
+          seen.add(link);
+          next.push(link);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return board.start;
+}

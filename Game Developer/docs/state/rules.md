@@ -7,16 +7,18 @@ server's region actor (`server/src/region-actor.ts`). Import from `rules/src/ind
 
 | File | What it holds |
 | --- | --- |
-| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (2) |
+| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (3) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
-| `src/data.ts` | the numbers from `data/*.json`, typed: `ISLAND_DATA`, `DICE_DATA`, `CLASS_DATA`, `SPACE_KIND_DATA`, `EVENT_CARDS` |
+| `src/data.ts` | the numbers from `data/*.json`, typed: `ISLAND_DATA`, `DICE_DATA`, `CLASS_DATA`, `SPACE_KIND_DATA`, `EVENT_CARDS`, `ENEMIES`, `PROGRESSION` |
 | `src/island.ts` | `buildBoard(island)`: the board from an island description (hubs and roads); `KIND_LETTERS`, `roadSpaceId` |
-| `src/paths.ts` | `legalPaths` (every walk a roll allows), `reachable` (where it can end, each space once), `checkPath` (why a walk is not allowed) |
-| `src/game.ts` | `newGame`, `apply` (roll, move and what landing does), `makeBoard` (the island), `makeCharacter` |
-| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 → 2 is written), or null |
+| `src/paths.ts` | `legalPaths` (every walk a roll allows), `reachable` (where it can end, each space once), `checkPath` (why a walk is not allowed), `nearestTown` |
+| `src/game.ts` | `newGame`, `apply` (roll, move and what landing does, the fight's four actions), `makeBoard` (the island), `makeCharacter`, `levelFor` |
+| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 → 2 → 3 are written), or null |
 | `data/board.json` | the island: Ashford Isle, 1400 by 1850, eleven hubs and fifteen roads |
 | `data/dice.json` | the die: 6 sides |
-| `data/classes.json` | each class's hp, attack, defense and starting gold |
+| `data/classes.json` | each class's hp, attack, defense, starting gold, its own move, and what a level brings |
+| `data/enemies.json` | the enemies a battle space can draw: hp, attack, defense, the xp and gold for beating them |
+| `data/progression.json` | the xp table for levels, the crit chance and power, the flee chance, the share of gold lost on death |
 | `data/spaces.json` | the kinds of space, their labels, and what landing does (heal, gold) |
 | `data/events.json` | the cards an event space can draw: text, gold, heal |
 | `test/fixtures/ring.json`, `ring.ts` | the first twelve-space ring, kept as a test board: `ringBoard()` |
@@ -24,10 +26,12 @@ server's region actor (`server/src/region-actor.ts`). Import from `rules/src/ind
 ## The state
 
 ```
-GameState { version: 2, seed, board, characters: { [id]: Character }, die }
+GameState { version: 3, seed, board, characters: { [id]: Character }, die }
 Board     { start, width, height, spaces: { [id]: Space } }   a graph: spaces and links, never a grid
 Space     { id, kind, name, x, y, links: string[] }           x, y in world pixels inside width by height; a road space's name is ""
-Character { id, name, classId, hp, maxHp, attack, defense, gold, space, steps }
+Character { id, name, classId, hp, maxHp, attack, defense, gold, space, steps, xp, level, fight }
+Fight     { enemy, round, charged }                            null on the character when there is none
+Enemy     { id, name, hp, maxHp, attack, defense, xp, gold }  as it stands now
 Die       { sides, last }                                      last: the value rolled, null before the first roll
 ```
 
@@ -36,10 +40,11 @@ state: whoever holds the state holds the stream (shared-world rule 5: a seed is 
 spent). `seed` in the state is the world's seed, for the generator to come. `width` and `height` are the world's size: the
 client's camera is bounded by them.
 
-**Version 2 (2026-10-31)** replaced the ring with the island. `migrate` brings a version-1 state up: the board is rebuilt
-from the island, every character is kept (name, class, hp, gold and the rest) but stands on the start space with `steps` 0,
-and the die is unrolled (`last` null). A version-1 state missing its seed or characters, or with a character of an unknown
-class, gives null, as does anything that is not a state we know; the holder then starts a fresh game.
+**Versions.** 2 (2026-10-31) replaced the ring with the island: `migrate` rebuilds the board from the island, keeps every
+character (name, class, hp, gold and the rest) but stands it on the start space with `steps` 0, and unrolls the die.
+3 (2026-10-31) brought the fight: every character gains `xp` 0, `level` 1 and `fight` null. A version-1 state takes both
+steps. A state missing its seed or characters, or with a character of an unknown class, gives null, as does anything that is
+not a state we know; the holder then starts a fresh game.
 
 ## The actions and what they do
 
@@ -54,6 +59,8 @@ Every action carries `id` (made by the client, a UUID) and `player`. A repeat of
   2026-10-31: the Dokapon rule, so a roll cannot be wasted by shuffling back and forth). On success the character stands on
   the last space, `steps` is 0, events `moved { from, path }` then `landed { space, kind }`, then what the space does
   (below), all in the one action.
+- **`attack`, `defend`, `skill`, `flee`**: one round of a fight (below). Refused with `not in a fight` otherwise; and
+  `roll` and `move` are refused with `finish the fight first` while a fight lasts.
 - Any action for a player not in the game: `unknown player`.
 
 A refused action returns the **same** state object and one `rejected { action, player, reason }` event. Nothing throws.
@@ -71,15 +78,46 @@ rule 5). The numbers live in `data/spaces.json` and `data/events.json`.
 
 | Kind | On landing | Events after `landed` |
 | --- | --- | --- |
+| battle | an enemy drawn from the stream (`ENEMIES`, evenly); the fight begins | `fight { enemy }` |
 | treasure | gold found, drawn from the stream between 10 and 40 | `gold { delta, gold }` |
 | town | HP back to full | `healed { amount, hp }` (amount 0 when already full) |
 | shrine | 30 HP back, never above the maximum | `healed { amount, hp }` |
 | event | one card drawn from the stream (`EVENT_CARDS`): a purse (+15 gold), a merchant (+25), a spring (+20 HP), a quiet road (nothing), a toll (−10 gold), a pickpocket (−15) | `event { card, text }`, then `gold` or `healed` if the card has one |
-| battle, shop, quest, boss gate | nothing yet: the fight, the shop, quests and the gate are the next pieces | none |
+| shop, quest, boss gate | nothing yet: the shop, quests and the gate are the next pieces | none |
 
 Gold never goes below 0 (a loss takes what there is; `delta` says what was taken) and HP never above `maxHp`. An event's
-card draw and a treasure's amount each take one number from the stream, so a walk that lands on one shifts the dice that
-follow; the tests pin that.
+card draw, a treasure's amount and a battle's enemy each take one number from the stream, so a walk that lands on one
+shifts the dice that follow; the tests pin that.
+
+## The fight (Robin, 2026-10-31: turn-based, choices among attacks, spells and defending; the moves and numbers are mine)
+
+A fight is one character against one enemy, held on the character as `fight` until it ends. Each action is one round:
+**the player acts, then the enemy strikes back**, unless it is dead, the player got away, or it is the first round against
+a class that strikes first. All in one `apply`, every number from the stream.
+
+- **A hit**: `round(attack × power) − floor(defense / 2)`, at least 1, plus a swing of −2 to +2 from the stream, doubled on
+  a crit (`baseCrit` 0.1, `critPower` 2), never under 1. Two numbers from the stream per hit: the swing, then the crit.
+  Event `hit { by: player | enemy, move, damage, crit, hp }` where `hp` is what the one hit has left.
+- **`attack`**: one hit at power 1.
+- **`defend`**: event `guarded`; the enemy's hit this round is halved, rounded up.
+- **`skill`**, the class's own move (`classes.json`): Warrior **Heavy Blow**, one hit at 1.6; Rogue **Backstab**, one hit at
+  1.2 with a crit chance of 0.5; Mage **Charge**, the first use charges (event `charged`, the enemy still strikes) and the
+  next hit of any kind, `attack` or `skill`, is 3 times as strong and spends the charge; Ranger **Volley**, three hits at
+  0.7 each, stopping at the kill, and the Ranger **strikes first**: the enemy does not strike back in round 1.
+- **`flee`**: `fleeChance` 0.5 from the stream; event `fled { ok }`. Got away: the fight ends, the character stays on the
+  space. Failed: the enemy's blow lands.
+- **Winning** (the enemy's hp 0): event `won { xp, gold }`, both added. Then every level the xp table gives (`levelFor`:
+  level 2 at 20 xp, 3 at 50, 4 at 90, 5 at 140, 6 at 200, 7 at 270, 8 at 350, 9 at 440, 10 at 540, the top) comes with
+  `levelled { level, maxHp, attack, defense }`: the class's `growth` added to maxHp, attack and defense, and the HP gained
+  healed.
+- **Being beaten** (the character's hp 0): event `died { town, lostGold }`: back on your feet in the nearest town by steps
+  (`nearestTown`; the start when a board has none), HP full, a fifth of the gold gone (`deathGoldLoss` 0.2, rounded
+  down), no roll owed, no fight. Gear is kept (there is none yet).
+
+The enemies (first settings): Slime 30 hp, 6 attack, 2 defense, 6 xp, 8 gold; Moor Wolf 45 / 9 / 3, 10 xp, 12 gold; Marsh
+Wisp 35 / 12 / 1, 12 xp, 10 gold; Bandit 60 / 11 / 5, 15 xp, 20 gold. Drawn evenly; difficulty by distance comes with the
+generator. The classes' growth a level: Warrior +12 hp, +2 attack, +1 defense; Rogue +8, +2, +1; Mage +7, +3, +1; Ranger
++9, +2, +1.
 
 ## The board: an island of hubs and roads
 
@@ -137,14 +175,15 @@ SQLite row can store it and `resumeRng` carries on with the same dice. A string 
 | Mage | 80 | 14 | 4 | 50 |
 | Ranger | 95 | 8 | 6 | 50 |
 
-Attack and defense are not used by any action yet; they are there so the fight can be written against them.
+Each class's own move and growth are under the fight, above.
 
 ## The tests (`npm test`, Vitest, in Node)
 
 | File | Covers |
 | --- | --- |
 | `test/rng.test.ts` | the pinned sequences, resume from a stored state, every face comes up, `next()` stays in [0, 1) |
-| `test/game.test.ts` | a new game on the island and on the ring; roll and its refusals; a roll replays from its seed; move, each refusal, the state untouched when refused; landing on each kind (the treasure's draw, the town's and shrine's heal, the event's card and every card over many seeds, gold never below 0, the stream spent); `legalPaths` agrees with `move`; three turns from one seed always play the same; `migrate`, with a hand-made version-1 state |
+| `test/game.test.ts` | a new game on the island and on the ring; roll and its refusals; a roll replays from its seed; move, each refusal, the state untouched when refused; landing on each kind (the battle's enemy and the board refusing while it lasts, the treasure's draw, the town's and shrine's heal, the event's card and every card over many seeds, gold never below 0, the stream spent); `legalPaths` agrees with `move`; three turns from one seed always play the same; `migrate`, with hand-made version-1 and version-2 states |
+| `test/fight.test.ts` | a fight from the seed, pinned round by round for each class's move; a held charge into a plain attack; a volley stopping at the kill; defend halving the blow; flee, failed and not, and its odds over 200 seeds; death to the nearest town with the gold lost; xp and one or two levels at once; `levelFor`; the refusals in and out of a fight; `nearestTown` on both boards and on a board with no town |
 | `test/board.test.ts` | the checks above over the ring fixture and the built island; the island's shape (hubs, forks, fresh copies) |
 | `test/island.test.ts` | `buildBoard`: ids and chaining, link order at hubs, a straight road, the bow and its direction, the kind letters, the errors, determinism |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |

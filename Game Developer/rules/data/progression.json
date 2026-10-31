@@ -1,0 +1,7 @@
+{
+  "xpForLevel": [0, 20, 50, 90, 140, 200, 270, 350, 440, 540],
+  "baseCrit": 0.1,
+  "critPower": 2,
+  "fleeChance": 0.5,
+  "deathGoldLoss": 0.2
+}

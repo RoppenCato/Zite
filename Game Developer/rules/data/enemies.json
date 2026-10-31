@@ -1,0 +1,6 @@
+[
+  { "id": "slime",  "name": "Slime",      "hp": 30, "attack": 6,  "defense": 2, "xp": 6,  "gold": 8 },
+  { "id": "wolf",   "name": "Moor Wolf",  "hp": 45, "attack": 9,  "defense": 3, "xp": 10, "gold": 12 },
+  { "id": "wisp",   "name": "Marsh Wisp", "hp": 35, "attack": 12, "defense": 1, "xp": 12, "gold": 10 },
+  { "id": "bandit", "name": "Bandit",     "hp": 60, "attack": 11, "defense": 5, "xp": 15, "gold": 20 }
+]

@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 2;
+export const STATE_VERSION = 3;
 
 export type SpaceKind = 'town' | 'battle' | 'shop' | 'event' | 'treasure' | 'quest' | 'bossgate' | 'shrine';
 
@@ -43,6 +43,30 @@ export interface Character {
   space: string;
   /** Steps still to walk from the last roll; 0 means no roll is pending. */
   steps: number;
+  xp: number;
+  level: number;
+  /** The fight the character is in, or null. While it lasts, roll and move are refused. */
+  fight: Fight | null;
+}
+
+/** The enemy as it stands in a fight. */
+export interface Enemy {
+  id: string;
+  name: string;
+  hp: number;
+  maxHp: number;
+  attack: number;
+  defense: number;
+  xp: number;
+  gold: number;
+}
+
+export interface Fight {
+  enemy: Enemy;
+  /** The round about to be fought, from 1. */
+  round: number;
+  /** True after a charging skill: the next hit is multiplied by the skill's power. */
+  charged: boolean;
 }
 
 export interface Die {
@@ -62,7 +86,12 @@ export interface GameState {
 /** What a player wants. Every action carries a client-made id so a retry never acts twice. */
 export type Action =
   | { type: 'roll'; id: string; player: string }
-  | { type: 'move'; id: string; player: string; path: string[] };
+  | { type: 'move'; id: string; player: string; path: string[] }
+  /** In a fight: a plain hit, a guard that halves the enemy's next hit, the class's own move, or a try at running. */
+  | { type: 'attack'; id: string; player: string }
+  | { type: 'defend'; id: string; player: string }
+  | { type: 'skill'; id: string; player: string }
+  | { type: 'flee'; id: string; player: string };
 
 export type RejectReason =
   | 'unknown player'
@@ -71,7 +100,9 @@ export type RejectReason =
   | 'wrong number of steps'
   | 'no such space'
   | 'not connected'
-  | 'no turning back';
+  | 'no turning back'
+  | 'finish the fight first'
+  | 'not in a fight';
 
 /** What happened. The client plays these back; the server will send them on. */
 export type GameEvent =
@@ -84,6 +115,17 @@ export type GameEvent =
   | { type: 'healed'; action: string; player: string; amount: number; hp: number }
   /** The card an event space drew; what it did follows as gold or healed events. */
   | { type: 'event'; action: string; player: string; card: string; text: string }
+  /** A fight began on a battle space, against this enemy. */
+  | { type: 'fight'; action: string; player: string; enemy: Enemy }
+  /** One hit landed; `hp` is what the one hit has left. `by` says who struck; `move` names the move. */
+  | { type: 'hit'; action: string; player: string; by: 'player' | 'enemy'; move: string; damage: number; crit: boolean; hp: number }
+  | { type: 'charged'; action: string; player: string }
+  | { type: 'guarded'; action: string; player: string }
+  | { type: 'fled'; action: string; player: string; ok: boolean }
+  | { type: 'won'; action: string; player: string; xp: number; gold: number }
+  | { type: 'levelled'; action: string; player: string; level: number; maxHp: number; attack: number; defense: number }
+  /** Beaten: back on your feet in the nearest town, a share of the gold gone. */
+  | { type: 'died'; action: string; player: string; town: string; lostGold: number }
   | { type: 'rejected'; action: string; player: string; reason: RejectReason };
 
 export interface ApplyResult {

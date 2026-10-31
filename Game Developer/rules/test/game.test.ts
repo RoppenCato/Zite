@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EVENT_CARDS } from '../src/data.ts';
+import { ENEMIES, EVENT_CARDS } from '../src/data.ts';
 import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
@@ -20,7 +20,7 @@ const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player:
 describe('a new game', () => {
   it('plays on the island unless given a board: Ashford Isle, starting in the town Ashford', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(2);
+    expect(s.version).toBe(3);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(s.board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford' });
@@ -32,7 +32,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start space and an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(2);
+    expect(s.version).toBe(3);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(s.board.start).toBe('s0');
@@ -49,6 +49,9 @@ describe('a new game', () => {
       gold: 50,
       space: 's0',
       steps: 0,
+      xp: 0,
+      level: 1,
+      fight: null,
     });
     expect(s.die).toEqual({ sides: 6, last: null });
   });
@@ -210,8 +213,19 @@ describe('landing', () => {
     expect(drawn).toEqual(new Set(EVENT_CARDS.map((c) => c.id)));
   });
 
-  it('does nothing yet on a battle, a shop, a quest giver or a boss gate', () => {
-    for (const [from, to] of [['s0', 's1'], ['s1', 's2'], ['s7', 's8'], ['s9', 's10']] as const) {
+  it('on a battle draws an enemy from the seed and the fight begins', () => {
+    const { state, events } = apply(about('s0'), move(['s1']), makeRng('ashford'));
+    const data = ENEMIES[makeRng('ashford').int(ENEMIES.length) - 1]!;
+    const enemy = { id: data.id, name: data.name, hp: data.hp, maxHp: data.hp, attack: data.attack, defense: data.defense, xp: data.xp, gold: data.gold };
+    expect(events[2]).toEqual({ type: 'fight', action: 'm1', player: P, enemy });
+    expect(state.characters[P]!.fight).toEqual({ enemy, round: 1, charged: false });
+    // While it lasts, the board waits.
+    expect(apply(state, roll('r2'), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'finish the fight first' });
+    expect(apply({ ...state, characters: { [P]: { ...state.characters[P]!, steps: 1 } } }, move(['s2'], 'm2'), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'finish the fight first' });
+  });
+
+  it('does nothing yet on a shop, a quest giver or a boss gate', () => {
+    for (const [from, to] of [['s1', 's2'], ['s7', 's8'], ['s9', 's10']] as const) {
       const { state, events } = apply(about(from, { hp: 50, gold: 50 }), move([to]), makeRng('x'));
       expect(events.map((e) => e.type)).toEqual(['moved', 'landed']);
       expect(state.characters[P]).toMatchObject({ hp: 50, gold: 50, space: to });
@@ -294,7 +308,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 3 })).toBeNull();
+    expect(migrate({ version: 4 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -317,20 +331,37 @@ describe('a stored state', () => {
     die: { sides: 6, last: 3 },
   });
 
-  it('brings a version-1 state to version 2: the island, every character kept and stood on the start, the die unrolled', () => {
+  it('brings a version-1 state up through 2 to 3: the island, every character kept and stood on the start, the die unrolled, no xp yet', () => {
     const old = versionOne();
     const s = migrate(structuredClone(old));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(2);
+    expect(s!.version).toBe(3);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
-    expect(s!.characters.p1).toEqual({ ...old.characters.p1, space: 'ashford', steps: 0 });
-    expect(s!.characters.p2).toEqual({ ...old.characters.p2, space: 'ashford', steps: 0 });
+    expect(s!.characters.p1).toEqual({ ...old.characters.p1, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null });
+    expect(s!.characters.p2).toEqual({ ...old.characters.p2, space: 'ashford', steps: 0, xp: 0, level: 1, fight: null });
     expect(s!.die).toEqual({ sides: 6, last: null });
     // And it plays on: a roll from the start of the island.
     const { state, events } = apply(s!, roll(), makeRng('ashford'));
     expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);
     expect(reachable(state.board, 'ashford', 2).map((r) => r.space)).toEqual(['ashford-millford-2', 'ashford-saltmarsh-2', 'ashford-ravine-2']);
+  });
+
+  it('brings a version-2 state to 3: the same board and places, every character gaining xp 0, level 1 and no fight', () => {
+    const current = fresh();
+    const v2 = {
+      ...structuredClone(current),
+      version: 2,
+      characters: { [P]: { id: P, name: 'Robin', classId: 'warrior', hp: 61, maxHp: 120, attack: 12, defense: 8, gold: 33, space: 's7', steps: 2 } },
+      die: { sides: 6, last: 2 },
+    };
+    const s = migrate(structuredClone(v2));
+    expect(s).toEqual({
+      ...v2,
+      version: 3,
+      characters: { [P]: { ...v2.characters[P], xp: 0, level: 1, fight: null } },
+    });
+    expect(migrate({ version: 2, seed: 'x', board: current.board, characters: { p: { classId: 'bard' } }, die: current.die })).toBeNull();
   });
 
   it('refuses a version-1 state it cannot carry over', () => {
