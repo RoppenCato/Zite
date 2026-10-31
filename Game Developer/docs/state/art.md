@@ -5,6 +5,15 @@ Director (Perry, AD) builds to, set by me on 2026-10-31 when Perry asked, from R
 for the phone (Robin, 2026-10-31). Deliveries arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole
 folder is copied into `assets/` and committed here.
 
+## What is coming
+
+Perry, AD builds to these budgets since 2026-10-31: the packer writes the Phaser 3 JSON hash with names
+`<sprite>/<action>/0001`, 2 px padding, a pivot at the feet per frame, power-of-two sides; every delivery goes through a
+palette shrink. The first drops will be the **Turnip Grump** (the first monster), the **Warrior** and the **meadow's fight
+kit** (one atlas of tiles and props plus three background strips, the sky left to code), after a repaint pass to a stricter
+recipe; the board kit comes as one atlas plus horizon strips. **The files in the Art Director's `out/` on 2026-10-31 are
+not those drops and are not to be copied**; Perry, AD messages when a drop is ready.
+
 ## Where art lives and how it reaches the phone
 
 Art never goes through the game server. It is static files next to the client, served by the PWA host and kept on the
