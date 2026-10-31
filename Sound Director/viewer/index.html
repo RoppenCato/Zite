@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zite Sound</title>
+<style>
+  :root { --bg: #f4efe4; --card: #fbf8f1; --ink: #2a211b; --muted: #6f6257; --line: #d9cfbf; --accent: #9a4a1f; --accent-ink: #fff; --calm: #4f7a3a; --danger: #a8352c; --base: #5a6b8c; --track: #e6dccb; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1a17; --card: #26221e; --ink: #ece4d6; --muted: #a79a89; --line: #3b342d; --accent: #d9793f; --accent-ink: #1d1a17; --calm: #7fb36a; --danger: #e0695d; --base: #8ea2c9; --track: #332d27; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 Georgia, "Times New Roman", serif; }
+  header { padding: 22px 24px 10px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
+  header .sub { color: var(--muted); font-style: italic; }
+  header .vol { margin-left: auto; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 18px 24px 60px; }
+  h2 { font-size: 17px; margin: 26px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+  #music { display: block; }
+  .group { margin-bottom: 16px; }
+  .group-title { font-size: 15px; margin: 10px 0 6px; color: var(--muted); border: 0; padding: 0; }
+  .pill { display: inline-block; font: 11px/1 Consolas, monospace; letter-spacing: .04em; padding: 3px 7px; border-radius: 10px; background: var(--track); color: var(--muted); vertical-align: middle; margin-left: 6px; }
+  .pill.current { background: var(--accent); color: var(--accent-ink); } .pill.kept { background: var(--calm); color: #fff; } .pill.candidate { background: var(--base); color: #fff; } .pill.updated { background: var(--ink); color: var(--bg); outline: 2px solid var(--accent); outline-offset: 1px; }
+  .card.old { opacity: .8; }
+  .older { margin-top: 8px; } .older summary { font-size: 13px; }
+  .verdict { font-style: italic; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; cursor: pointer; }
+  .card.active { outline: 2px solid var(--accent); }
+  .card h3 { margin: 0 0 4px; font-size: 16px; }
+  .card .meta { color: var(--muted); font-size: 13px; }
+  .player { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-top: 14px; }
+  .row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+  button { font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--track); color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button.on { outline: 2px solid var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-radius: 0; }
+  .seg button.on { background: var(--accent); color: var(--accent-ink); outline: none; }
+  .pos { position: relative; height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; flex: 1; min-width: 200px; }
+  .pos i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); }
+  .pos b { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .mono { font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  .stems { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 12px; align-items: center; margin-top: 10px; }
+  .stems label { font-size: 14px; }
+  .stems .lv { height: 8px; border-radius: 4px; background: var(--track); position: relative; }
+  .stems .lv i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .stems .base i { background: var(--base); } .stems .calm i { background: var(--calm); } .stems .danger i { background: var(--danger); }
+  input[type=range] { accent-color: var(--accent); }
+  .bars { display: grid; grid-template-columns: repeat(40, 1fr); gap: 2px; height: 46px; align-items: end; margin-top: 10px; }
+  .bars i { display: block; background: var(--base); border-radius: 2px 2px 0 0; min-height: 2px; }
+  .bars i.now { background: var(--accent); }
+  .notes { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .notes h1, .notes h2, .notes h3 { font-size: 15px; margin: 14px 0 6px; border: 0; padding: 0; }
+  .notes table { border-collapse: collapse; font-size: 13px; margin: 6px 0; }
+  .notes td, .notes th { border: 1px solid var(--line); padding: 3px 8px; text-align: left; vertical-align: top; }
+  .notes code { font-family: Consolas, monospace; font-size: 13px; background: var(--track); padding: 0 4px; border-radius: 3px; }
+  .notes li { margin: 3px 0; }
+  .sfx .vars { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .status { color: var(--muted); font-size: 13px; }
+  .empty { color: var(--muted); font-style: italic; }
+  details summary { cursor: pointer; color: var(--muted); }
+  pre { white-space: pre-wrap; font-size: 12px; max-height: 400px; overflow: auto; background: var(--track); padding: 10px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Zite Sound</h1>
+  <span class="sub">the studio's tracks and sounds for the Viking survival game: try them as the game would play them</span>
+  <span class="vol">volume <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8"></span>
+</header>
+<main>
+  <h2>Music</h2>
+  <div id="music"><span class="empty">loading...</span></div>
+  <div id="player" class="player" hidden></div>
+
+  <h2>Sounds</h2>
+  <div id="sfx" class="cards"><span class="empty">loading...</span></div>
+</main>
+<script>
+'use strict';
+const $ = (s, el) => (el || document).querySelector(s);
+const el = (tag, attrs, ...kids) => { const e = document.createElement(tag); for (const k in attrs || {}) { if (k === 'class') e.className = attrs[k]; else if (k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]); else if (k === 'html') e.innerHTML = attrs[k]; else e.setAttribute(k, attrs[k]); } for (const k of kids) if (k != null) e.append(k); return e; };
+const db = (x) => x > 0 ? (20 * Math.log10(x)).toFixed(1) : '-inf';
+
+// ---- audio ----
+let ctx = null, master = null; const bufCache = {};
+function ac() { if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = +$('#vol').value; master.connect(ctx.destination); } if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+$('#vol').addEventListener('input', e => { if (master) master.gain.setTargetAtTime(+e.target.value, ctx.currentTime, 0.03); });
+async function buffer(url) { if (bufCache[url]) return bufCache[url]; const r = await fetch(url); if (!r.ok) throw new Error(url + ': ' + r.status); const ab = await r.arrayBuffer(); return (bufCache[url] = await ac().decodeAudioData(ab)); }
+function ramp(g, v, secs) { g.gain.cancelScheduledValues(ctx.currentTime); g.gain.setTargetAtTime(v, ctx.currentTime, Math.max(0.01, secs / 3)); }
+
+// the game's crossfade: calm 1 -> 0.15 and danger 0 -> 1 over 1.2 s into a fight, back over 4 s
+const GAINS = { peace: { base: 1, calm: 1, danger: 0 }, danger: { base: 1, calm: 0.15, danger: 1 } };
+
+// ---- the player ----
+const P = { track: null, nodes: null, playing: false, state: 'peace', version: 'studio', startAt: 0, timer: null, manual: {} };
+
+function stopAll() { if (P.nodes) { for (const n of Object.values(P.nodes.src)) try { n.stop(); } catch (e) {} P.nodes = null; } P.playing = false; clearInterval(P.timer); }
+
+async function openTrack(t) {
+  stopAll(); P.track = t; P.manual = {};
+  document.querySelectorAll('#music .card').forEach(c => c.classList.toggle('active', c.dataset.name === t.name));
+  const m = t.manifest, box = $('#player'); box.hidden = false; box.innerHTML = '';
+  const stemNames = Object.keys(m.stems).filter(s => s !== 'full');
+  const status = el('div', { class: 'status' }, 'loading the stems...');
+  const btnPlay = el('button', { class: 'primary', onclick: () => P.playing ? pause() : play() }, 'Play');
+  const segVersion = el('div', { class: 'seg' },
+    el('button', { class: 'on', 'data-v': 'studio', onclick: () => setVersion('studio') }, 'Studio (Sonic Pi)'),
+    t.before ? el('button', { 'data-v': 'game', onclick: () => setVersion('game') }, 'Game (as it is now)') : null);
+  // the peace/danger crossfade only for a delivery that still has a danger stem (the idea was dropped 2026-10-14)
+  const segState = m.stems.danger ? el('div', { class: 'seg' },
+    el('button', { class: 'on', 'data-s': 'peace', onclick: () => setState('peace') }, 'Peace'),
+    el('button', { 'data-s': 'danger', onclick: () => setState('danger') }, 'Danger (a beast turns on you)')) : el('span');
+  const pos = el('div', { class: 'pos' }, el('i')); const posText = el('span', { class: 'mono' }, 'bar 1 · loop 1');
+  for (let b = 1; b < m.bars; b++) pos.append(el('b', { style: `left:${(b / m.bars) * 100}%` }));
+  const stems = el('div', { class: 'stems' });
+  for (const s of stemNames) {
+    const info = m.stems[s];
+    stems.append(el('label', {}, s), el('div', { class: 'lv ' + s }, el('i', { id: 'lv-' + s, style: 'width:0%' })),
+      el('span', { class: 'mono' }, `peak ${info.peak_dbfs} · rms ${info.rms_dbfs} dBFS · peace ${info.gain_peace} · danger ${info.gain_danger}`));
+  }
+  const bars = el('div', { class: 'bars', title: 'the loudness of every bar of the mix (from the delivery notes)' });
+  box.append(...[
+    el('div', { class: 'row' }, el('h3', { style: 'margin:0' }, t.name), el('span', { class: 'meta mono' }, `${m.bpm} bpm · ${m.bars} bars · ${m.loop_seconds.toFixed(2)} s a loop · ${m.loop_frames} samples at ${m.sample_rate} Hz${m.seamless === false ? ' · not seamless (quick render)' : ''}`)),
+    el('div', { class: 'row' }, btnPlay, segVersion, segState, status),
+    el('div', { class: 'row' }, pos, posText),
+    stemNames.length ? el('div', { class: 'row' }, el('span', { class: 'meta' }, m.stems.danger ? 'The stems the game would crossfade (base always; calm in peace; danger in a fight):' : 'The stems:')) : null,
+    stemNames.length ? stems : null, bars,
+    el('details', { style: 'margin-top:12px' }, el('summary', {}, 'the Sonic Pi source'), el('pre', { id: 'src' }, 'loading...')),
+    el('div', { class: 'notes', id: 'notes' })].filter(Boolean));   // a null would render as the text "null"
+  if (t.notes) fetch(t.notes).then(r => r.text()).then(md => { $('#notes').innerHTML = markdown(md); fillBars(bars, md, m.bars); });
+  if (t.source) fetch(t.source).then(r => r.text()).then(s => { $('#src').textContent = s; });
+  P.ui = { btnPlay, pos: $('i', pos), posText, status, segVersion, segState };
+  try {
+    const urls = {}; for (const s of (stemNames.length ? stemNames : ['full'])) urls[s] = `${t.dir}/${m.stems[s].file}`;   // one mix, or the stems
+    if (t.before) { urls.before = t.before; if (t.beforeDanger) urls.beforeDanger = t.beforeDanger; }
+    P.buffers = {}; let n = 0; const total = Object.keys(urls).length;
+    for (const k in urls) { P.buffers[k] = await buffer(urls[k]); status.textContent = `loaded ${++n} of ${total}`; }
+    status.textContent = 'ready';
+  } catch (e) { status.textContent = 'could not load: ' + e.message; }
+}
+
+function play() {
+  if (!P.buffers) return; ac(); stopAll();
+  const t0 = ctx.currentTime + 0.05, src = {}, gain = {}, g = GAINS[P.state];
+  const vs = ctx.createGain(), vg = ctx.createGain(); vs.gain.value = P.version === 'studio' ? 1 : 0; vg.gain.value = P.version === 'game' ? 1 : 0; vs.connect(master); vg.connect(master);
+  for (const k in P.buffers) {
+    const s = ctx.createBufferSource(); s.buffer = P.buffers[k]; s.loop = true; const gn = ctx.createGain();
+    if (k === 'before') gn.gain.value = P.state === 'peace' || !P.buffers.beforeDanger ? 1 : 0;
+    else if (k === 'beforeDanger') gn.gain.value = P.state === 'danger' ? 1 : 0;
+    else gn.gain.value = P.manual[k] != null ? P.manual[k] : (g[k] == null ? 1 : g[k]);
+    s.connect(gn); gn.connect(k.startsWith('before') ? vg : vs); s.start(t0); src[k] = s; gain[k] = gn;
+  }
+  P.nodes = { src, gain, vs, vg }; P.startAt = t0; P.playing = true; P.ui.btnPlay.textContent = 'Pause';
+  P.timer = setInterval(tick, 60);
+}
+function pause() { stopAll(); P.ui.btnPlay.textContent = 'Play'; }
+function setState(s) {
+  P.state = s; P.manual = {}; P.ui.segState.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+  if (!P.nodes) return; const g = GAINS[s], secs = s === 'danger' ? 1.2 : 4;
+  for (const k in P.nodes.gain) {
+    if (k === 'before') ramp(P.nodes.gain[k], s === 'peace' || !P.buffers.beforeDanger ? 1 : 0, secs);
+    else if (k === 'beforeDanger') ramp(P.nodes.gain[k], s === 'danger' ? 1 : 0, secs);
+    else if (g[k] != null) ramp(P.nodes.gain[k], g[k], secs);
+  }
+}
+function setVersion(v) {
+  P.version = v; P.ui.segVersion.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  if (P.nodes) { ramp(P.nodes.vs, v === 'studio' ? 1 : 0, 0.4); ramp(P.nodes.vg, v === 'game' ? 1 : 0, 0.4); }
+}
+function tick() {
+  if (!P.nodes) return; const m = P.track.manifest, L = m.loop_seconds, t = Math.max(0, ctx.currentTime - P.startAt), pos = t % L, loop = Math.floor(t / L) + 1;
+  const bar = Math.min(m.bars, Math.floor(pos / (L / m.bars)) + 1);
+  P.ui.pos.style.width = (pos / L * 100) + '%'; P.ui.posText.textContent = `bar ${bar} · loop ${loop}`;
+  for (const k in P.nodes.gain) { const lv = document.getElementById('lv-' + k); if (lv) lv.style.width = (P.nodes.gain[k].gain.value * 100) + '%'; }
+  document.querySelectorAll('.bars i').forEach((b, i) => b.classList.toggle('now', i === bar - 1));
+}
+// the per-bar loudness table from the notes (" 1: -33.0   2: -31.1 ...") drawn as little columns
+function fillBars(box, md, bars) {
+  const vals = []; const re = /(\d+):\s*(-?\d+\.\d)/g; let m;
+  const sect = md.split('## The measurements')[1] || '';
+  while ((m = re.exec(sect)) && vals.length < bars) if (+m[1] === vals.length + 1) vals.push(+m[2]);
+  if (vals.length < bars) { box.remove(); return; }
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  vals.forEach(v => box.append(el('i', { style: `height:${Math.round(8 + 38 * (v - lo) / Math.max(1, hi - lo))}px`, title: `${v} dBFS` })));
+}
+// a small markdown: headings, lists, tables, bold, code, paragraphs
+function markdown(md) {
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const inline = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  const lines = md.split('\n'), out = []; let list = null, table = null;
+  const flush = () => { if (list) { out.push(`</${list}>`); list = null; } if (table) { out.push('</table>'); table = null; } };
+  for (const raw of lines) {
+    const l = raw.trimEnd();
+    if (/^#{1,3} /.test(l)) { flush(); const n = l.match(/^#+/)[0].length; out.push(`<h${n}>${inline(l.slice(n + 1))}</h${n}>`); }
+    else if (/^\|/.test(l)) { if (/^\|\s*-/.test(l)) continue; if (!table) { table = true; out.push('<table>'); } const cells = l.split('|').slice(1, -1); out.push('<tr>' + cells.map(c => `<td>${inline(c.trim())}</td>`).join('') + '</tr>'); }
+    else if (/^(\d+)\. /.test(l)) { if (list !== 'ol') { flush(); list = 'ol'; out.push('<ol>'); } out.push(`<li>${inline(l.replace(/^\d+\. /, ''))}</li>`); }
+    else if (/^- /.test(l)) { if (list !== 'ul') { flush(); list = 'ul'; out.push('<ul>'); } out.push(`<li>${inline(l.slice(2))}</li>`); }
+    else if (/^\s+\S/.test(raw) && list) { out[out.length - 1] = out[out.length - 1].replace(/<\/li>$/, ' ' + inline(l.trim()) + '</li>'); }
+    else if (l === '') { flush(); }
+    else { if (out.length && out[out.length - 1].startsWith('<p>') && !out[out.length - 1].endsWith('</p>')) out[out.length - 1] += ' ' + inline(l); else { flush(); out.push('<p>' + inline(l)); } }
+  }
+  flush(); return out.join('\n').replace(/<p>([^]*?)(?=\n<|$)/g, '<p>$1</p>');
+}
+
+// ---- sounds ----
+async function playSfx(url) { try { const b = await buffer(url); const s = ctx.createBufferSource(); s.buffer = b; s.connect(master); s.start(); } catch (e) { console.error(e); } }
+
+// ---- the index ----
+fetch('/api/index').then(r => r.json()).then(ix => {
+  const mbox = $('#music'); mbox.innerHTML = '';
+  if (!ix.music.length) mbox.append(el('span', { class: 'empty' }, 'no tracks delivered yet'));
+  const groups = [...(ix.groups || []), ...ix.music.map(t => t.group).filter((g, i, a) => !(ix.groups || []).includes(g) && a.indexOf(g) === i)];
+  for (const g of groups) {
+    const items = ix.music.filter(t => t.group === g); if (!items.length) continue;
+    const live = items.filter(t => t.status !== 'archived'), old = items.filter(t => t.status === 'archived');
+    const card = (t) => { const m = t.manifest; return el('div', { class: 'card' + (t.status === 'archived' ? ' old' : ''), 'data-name': t.name, onclick: () => openTrack(t) },
+      el('h3', {}, t.title, ' ', el('span', { class: 'pill ' + t.status }, t.status)),
+      el('div', { class: 'meta' }, t.line || `${m.bpm} bpm · ${m.bars} bars · ${m.loop_seconds.toFixed(1)} s`),
+      t.verdict ? el('div', { class: 'meta verdict' }, t.verdict) : null); };
+    const sec = el('section', { class: 'group' }, el('h3', { class: 'group-title' }, g), el('div', { class: 'cards' }, ...live.map(card)));
+    if (old.length) sec.append(el('details', { class: 'older' }, el('summary', {}, `${old.length} older version${old.length > 1 ? 's' : ''}`), el('div', { class: 'cards' }, ...old.map(card))));
+    mbox.append(sec);
+  }
+  const sbox = $('#sfx'); sbox.innerHTML = '';
+  if (!ix.sfx.length) sbox.append(el('span', { class: 'empty' }, 'no sounds delivered yet'));
+  for (const s of ix.sfx) {
+    const vars = el('div', { class: 'vars' });
+    s.variations.forEach((v, i) => vars.append(el('button', { onclick: (e) => { e.stopPropagation(); ac(); playSfx(`${s.dir}/${v.file}`); } }, `${i + 1} · ${v.seconds ? v.seconds.toFixed(2) + ' s' : ''}`)));
+    sbox.append(el('div', { class: 'card sfx' }, el('h3', {}, s.title || s.name), el('div', { class: 'meta' }, `${s.category}${s.verdict ? ' · ' + s.verdict : ''}`), vars));
+  }
+  const first = ix.music.find(t => t.status === 'current'); if (first) openTrack(first);
+}).catch(e => { $('#music').textContent = 'could not read the index: ' + e.message; });
+</script>
+</body>
+</html>
