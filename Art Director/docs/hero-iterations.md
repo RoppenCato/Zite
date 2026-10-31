@@ -163,6 +163,16 @@ Colin, AD, 2026-10-31 (the picture, the sheet and the screen; stills):
 Pictures: `work/hero/iterations/final.png` (the work folder is not in git; the pictures were sent into the chat on 2026-10-31) (the fight screen, every key pose), `final_poses.png` (the rest, the windup,
 the strike and the hit, big), `final_sheet.png`, `final.gif`, `final_screen.png`.
 
+## After Robin's second look (2026-10-31, the same evening)
+
+Robin on the final: "he still looks strange: his neck and mouth are under his shoulder, his arm with the sword is on the
+front of his body, his other arm looks twisted, his feet face forward", with a chibi reference where the body reads right.
+Reworked: the head lifted onto a neck so the chin sits above the shoulders and the shoulder caps are smaller and lower;
+the sword arm hangs at the side with the forearm out and the blade up and forward, nothing across the chest; the far arm
+hangs plainly along the far side with its fist at the hip; the boots have a toe pointing the way he faces and a flat
+sole; the eyes white with a dark pupil and a catchlight, a small nose; the fringe's locks end above the eyes. Sent to
+Robin the same evening.
+
 ## For Robin to decide
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the

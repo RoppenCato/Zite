@@ -18,8 +18,8 @@ const rad = d => d * Math.PI / 180;
 function leg(g, near, swing) {                                  // the hip at (0, 0); + swings the foot forward (left)
   g.save(); g.rotate(rad(swing));
   g.beginPath(); P.rr(g, -12, -6, 24, 40, 8); g.fillStyle = near ? PANTS.mid : PANTS.dark; g.fill(); ink(g);
-  g.beginPath(); g.moveTo(-15, 30); g.quadraticCurveTo(-22, 46, -12, 48); g.lineTo(14, 48); g.quadraticCurveTo(18, 42, 13, 30); g.closePath(); g.fillStyle = near ? BOOT.mid : BOOT.dark; g.fill(); ink(g);
-  g.beginPath(); g.ellipse(-2, 33, 9, 3.5, 0, 0, 7); g.fillStyle = BOOT.light; g.fill(); g.restore();
+  g.beginPath(); g.moveTo(-12, 28); g.quadraticCurveTo(-30, 30, -32, 42); g.quadraticCurveTo(-30, 49, -20, 49); g.lineTo(12, 49); g.quadraticCurveTo(16, 44, 13, 28); g.closePath(); g.fillStyle = near ? BOOT.mid : BOOT.dark; g.fill(); ink(g);   // the toe forward, a flat sole
+  g.beginPath(); g.moveTo(-12, 31); g.quadraticCurveTo(-24, 33, -26, 40); g.lineWidth = 3; g.strokeStyle = BOOT.light; g.stroke(); g.restore();
 }
 function body(g, hem = 0) {                                     // the hips at (0, 0), the tunic up to the shoulders at -50, flaring at the hem
   const path = () => { g.beginPath(); g.moveTo(-34, -50); g.quadraticCurveTo(-38, -22, -38 + hem, 4); g.quadraticCurveTo(-2 + hem, 12, 34 + hem, 4); g.quadraticCurveTo(36, -22, 30, -50); g.quadraticCurveTo(-2, -58, -34, -50); g.closePath(); };
@@ -57,8 +57,9 @@ function blade(g) {                                             // the hilt's mi
   g.beginPath(); g.moveTo(-7, 18); g.lineTo(7, 18); g.lineTo(4, 88); g.lineTo(0, 98); g.lineTo(-4, 88); g.closePath(); g.fillStyle = B.steps(g, -7, 0, 7, 0, STEEL, [0.4, 0.7]); g.fill(); ink(g); g.strokeStyle = alpha(STEEL.dark, 0.7); g.lineWidth = 1.5; g.beginPath(); g.moveTo(0, 22); g.lineTo(0, 84); g.stroke();
 }
 function head(g, p) {                                           // the neck at (0, 0); the head above; p: eyes 1 open .. 0.15 shut or 'shock'; mouth smile|o|big|grr|flat; tilt; brow; hairLag
-  g.save(); g.rotate(rad(p.tilt || 0)); const hy = -48, lag = p.hairLag || 0;
-  g.beginPath(); g.ellipse(0, hy, 54, 48, 0, 0, 7); g.fillStyle = B.steps(g, -40, hy - 48, 30, hy + 48, SKIN, [0.5, 0.86]); g.fill(); ink(g);
+  g.save(); g.rotate(rad(p.tilt || 0)); const hy = -58, lag = p.hairLag || 0;
+  g.beginPath(); P.rr(g, -11, -14, 22, 20, 6); g.fillStyle = SKIN.dark; g.fill(); ink(g);   // the neck
+  g.beginPath(); g.ellipse(0, hy, 52, 46, 0, 0, 7); g.fillStyle = B.steps(g, -40, hy - 46, 30, hy + 46, SKIN, [0.5, 0.86]); g.fill(); ink(g);
   g.beginPath(); g.ellipse(48, hy + 8, 7, 9, 0, 0, 7); g.fillStyle = SKIN.mid; g.fill(); ink(g, 2);          // the far ear
   // the hair: a cap with four big uneven tufts sweeping back, the leading edges curved; three locks over the brow; one mass lit from the upper left
   const hair = () => { g.beginPath(); g.moveTo(50, hy + 16); g.quadraticCurveTo(66, hy + 2, 60, hy - 16);
@@ -67,14 +68,14 @@ function head(g, p) {                                           // the neck at (
     g.quadraticCurveTo(32, hy - 72, 12, hy - 74); g.quadraticCurveTo(2, hy - 64, -10, hy - 60);                // tuft 3, the top, swept back
     g.quadraticCurveTo(-26, hy - 74, -50, hy - 64); g.quadraticCurveTo(-54, hy - 52, -58, hy - 42);            // tuft 4, front, curling forward
     g.quadraticCurveTo(-64, hy - 24, -60, hy - 6);
-    g.lineTo(-48 + lag, hy + 6); g.lineTo(-36 + lag * 0.8, hy - 12); g.lineTo(-14 + lag * 0.8, hy + 8); g.lineTo(2 + lag * 0.6, hy - 12); g.lineTo(18 + lag * 0.6, hy + 2); g.lineTo(30, hy - 14); g.lineTo(42, hy - 4); g.closePath(); };
+    g.lineTo(-48 + lag, hy - 2); g.lineTo(-36 + lag * 0.8, hy - 16); g.lineTo(-14 + lag * 0.8, hy); g.lineTo(2 + lag * 0.6, hy - 16); g.lineTo(18 + lag * 0.6, hy - 6); g.lineTo(30, hy - 18); g.lineTo(42, hy - 8); g.closePath(); };   // the locks end above the eyes
   hair(); g.fillStyle = HAIR.mid; g.fill();
   g.save(); hair(); g.clip();
   g.beginPath(); g.moveTo(-66, hy - 36); g.quadraticCurveTo(-30, hy - 84, 30, hy - 70); g.quadraticCurveTo(10, hy - 56, -20, hy - 50); g.quadraticCurveTo(-50, hy - 42, -66, hy - 36); g.closePath(); g.fillStyle = HAIR.light; g.fill();   // the light on the crown's near side
   g.beginPath(); g.moveTo(34, hy - 46); g.quadraticCurveTo(72, hy - 26, 60, hy + 20); g.lineTo(90, hy + 20); g.lineTo(90, hy - 60); g.closePath(); g.fillStyle = HAIR.dark; g.fill();   // the shade at the back
-  g.beginPath(); g.moveTo(-62, hy - 10); g.quadraticCurveTo(-10, hy + 4, 44, hy - 6); g.lineTo(44, hy + 20); g.lineTo(-62, hy + 20); g.closePath(); g.fillStyle = HAIR.dark; g.fill();   // the shade under the fringe
+  g.beginPath(); g.moveTo(-62, hy - 16); g.quadraticCurveTo(-10, hy - 4, 44, hy - 12); g.lineTo(44, hy + 20); g.lineTo(-62, hy + 20); g.closePath(); g.fillStyle = HAIR.dark; g.fill();   // the shade under the fringe
   g.strokeStyle = HAIR.deep; g.lineWidth = 2.5; g.lineCap = 'round';
-  for (const [x0, y0, x1, y1] of [[56, hy - 44, 42, hy - 22], [34, hy - 60, 26, hy - 34], [-10, hy - 66, -8, hy - 38], [-36 + lag * 0.8, hy - 12, -42 + lag, hy], [2 + lag * 0.6, hy - 12, -6 + lag * 0.7, hy + 2]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 + 4, (y0 + y1) / 2, x1, y1); g.stroke(); }   // the partings
+  for (const [x0, y0, x1, y1] of [[56, hy - 44, 42, hy - 22], [34, hy - 60, 26, hy - 34], [-10, hy - 66, -8, hy - 38], [-36 + lag * 0.8, hy - 16, -42 + lag, hy - 6], [2 + lag * 0.6, hy - 16, -6 + lag * 0.7, hy - 6]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 + 4, (y0 + y1) / 2, x1, y1); g.stroke(); }   // the partings
   g.restore(); hair(); ink(g);
   // the face: both eyes the same size, a little apart, both looking the way he faces; a catchlight each; brows; a mouth; blush
   const ez = p.eyes === undefined ? 1 : p.eyes, shock = ez === 'shock', rx = 12, ry = 17;
@@ -83,9 +84,10 @@ function head(g, p) {                                           // the neck at (
     const kx = shock ? 1.25 : 1, ky = shock ? 1.2 : ez;
     g.beginPath(); g.ellipse(ex, ey, rx * kx, ry * ky, 0, 0, 7); g.fillStyle = '#fffaf2'; g.fill(); ink(g, 1.2);
     if (shock) { g.beginPath(); g.ellipse(ex - 1, ey + 2, rx * 0.3, ry * 0.36, 0, 0, 7); g.fillStyle = '#1e1612'; g.fill(); }
-    else { g.beginPath(); g.ellipse(ex - 3, ey + 1, rx * 0.72, ry * 0.78 * ez, 0, 0, 7); g.fillStyle = '#4a2e22'; g.fill(); g.beginPath(); g.ellipse(ex - 3, ey + 2, rx * 0.44, ry * 0.5 * ez, 0, 0, 7); g.fillStyle = '#1e1612'; g.fill(); g.beginPath(); g.ellipse(ex - 7, ey - 5 * ez, 3.6, 4.2, 0, 0, 7); g.fillStyle = '#ffffff'; g.fill(); g.beginPath(); g.arc(ex + 2, ey + 7 * ez, 1.8, 0, 7); g.fillStyle = '#ffffff'; g.fill(); }
+    else { g.beginPath(); g.ellipse(ex - 3, ey + 2, rx * 0.5, ry * 0.56 * ez, 0, 0, 7); g.fillStyle = '#3a2418'; g.fill(); g.beginPath(); g.ellipse(ex - 3, ey + 3, rx * 0.3, ry * 0.36 * ez, 0, 0, 7); g.fillStyle = '#1a1210'; g.fill(); g.beginPath(); g.ellipse(ex - 6, ey - 3 * ez, 3, 3.6, 0, 0, 7); g.fillStyle = '#ffffff'; g.fill(); }   // a white eye with a dark pupil, as Robin's example
     const bu = (p.brow || 0) + (shock ? -10 : 0); g.beginPath(); g.moveTo(ex - rx + 2, ey - ry - 4 + bu); g.quadraticCurveTo(ex, ey - ry - 7 + bu, ex + rx * 0.7, ey - ry - 4 + bu); g.lineWidth = 2.5; g.strokeStyle = HAIR.deep; g.stroke();
   }
+  g.beginPath(); g.moveTo(-14, hy + 22); g.quadraticCurveTo(-18, hy + 27, -12, hy + 28); ink(g, 2);   // a small nose
   const m = p.mouth || 'smile', mx = -18;
   if (m === 'smile') { g.beginPath(); g.arc(mx, hy + 34, 7, 0.3, Math.PI - 0.3); ink(g, 2.5); }
   else if (m === 'o') { g.beginPath(); g.ellipse(mx, hy + 36, 6, 8, 0, 0, 7); g.fillStyle = '#7a3a3a'; g.fill(); ink(g, 2); }
@@ -111,7 +113,7 @@ function smear(g, sx, sy, a0, a1, R, ground) {
 // shoulder swings), elbows [near, far], sword (the blade's angle to the forearm), eyes, mouth, tilt, brow, hairLag, hem,
 // lying (turned onto the back), squash, swordLoose [x, y] (dropped), flash [a0, a1], hold (a multiple of the clip's delay)
 function drawPose(g, p) {
-  const hipY = -52, shY = -96, L = p.legs || [0, 0], A = p.arms || [0, 0], E = p.elbows || [40, 30], SW = p.sword === undefined ? 30 : p.sword;
+  const hipY = -52, shY = -96, L = p.legs || [0, 0], A = p.arms || [0, 0], E = p.elbows || [40, 8], SW = p.sword === undefined ? 30 : p.sword;
   g.save(); g.translate(p.x || 0, p.y || 0);
   if (p.lying) { g.translate(60, 0); g.rotate(rad(p.lying)); }
   if (p.squash) g.scale(1, p.squash);
@@ -120,11 +122,11 @@ function drawPose(g, p) {
   g.save(); g.translate(-16, hipY); leg(g, true, L[0]); g.restore();           // the near leg
   g.translate(0, -(p.bob || 0));                                                  // the body rises, the feet do not
   g.save(); g.translate(0, hipY); body(g, p.hem || 0); g.restore();
-  g.save(); g.translate(28, shY + 2); arm(g, false, A[1], E[1], null); g.beginPath(); g.ellipse(0, 0, 13, 10, 0.3, Math.PI * 0.95, Math.PI * 2.05); g.closePath(); g.fillStyle = TUNIC.dark; g.fill(); ink(g); g.restore();   // the far arm, along the far side of the body, its shoulder cap on top
-  const nearArm = () => { g.save(); g.translate(-30, shY + 4); arm(g, true, A[0], E[0], p.swordLoose ? null : SW); g.beginPath(); g.ellipse(0, 0, 15, 11, -0.3, Math.PI * 0.95, Math.PI * 2.05); g.closePath(); g.fillStyle = TUNIC.light; g.fill(); ink(g); g.restore(); };
+  g.save(); g.translate(28, shY + 4); arm(g, false, A[1], E[1], null); g.beginPath(); g.ellipse(0, 0, 12, 9, 0.3, Math.PI * 0.95, Math.PI * 2.05); g.closePath(); g.fillStyle = TUNIC.dark; g.fill(); ink(g); g.restore();   // the far arm, along the far side of the body, its shoulder cap on top
+  const nearArm = () => { g.save(); g.translate(-30, shY + 6); arm(g, true, A[0], E[0], p.swordLoose ? null : SW); g.beginPath(); g.ellipse(0, 0, 14, 10, -0.3, Math.PI * 0.95, Math.PI * 2.05); g.closePath(); g.fillStyle = TUNIC.light; g.fill(); ink(g); g.restore(); };
   if (p.flash) smear(g, -30, shY + 4, p.flash[0], p.flash[1], 146, (p.bob || 0) - 2);
   if (A[0] < -100) nearArm();                                                   // raised behind: the arm and the sword go behind the head
-  g.save(); g.translate(-6, shY - 2); head(g, p); g.restore();
+  g.save(); g.translate(-6, shY + 2); head(g, p); g.restore();
   if (A[0] >= -100) nearArm();
   g.restore();
   if (p.swordLoose) { g.save(); g.translate((p.x || 0) + p.swordLoose[0], (p.y || 0) + p.swordLoose[1]); g.rotate(rad(78)); blade(g); g.restore(); }
@@ -132,14 +134,14 @@ function drawPose(g, p) {
 // ---- the clips ----
 // REST: feet apart, the near foot forward, a slight lean; the near elbow bent so the fist sits before the chest and the blade
 // rises up and forward, clear of the body (Robin's first example); the far arm bent along the far side with its fist at the hip
-const REST = { legs: [12, -10], arms: [22, -6], elbows: [100, 30], lean: -3, sword: 30 };
+const REST = { legs: [12, -10], arms: [2, -4], elbows: [84, 8], lean: -3, sword: 60 };
 const CLIPS = {
-  stand: { delay: 100, frames: [{ ...REST, bob: 0 }, { ...REST, bob: 3, arms: [24, -6], tilt: 1, hairLag: 1, hem: 1 }, { ...REST, bob: 6, arms: [26, -7], tilt: 2, hairLag: 2, hem: 2 }, { ...REST, bob: 3, arms: [24, -6], tilt: 1, hairLag: 1, hem: 1 }] },
+  stand: { delay: 100, frames: [{ ...REST, bob: 0 }, { ...REST, bob: 3, arms: [4, -4], tilt: 1, hairLag: 1, hem: 1 }, { ...REST, bob: 6, arms: [6, -5], tilt: 2, hairLag: 2, hem: 2 }, { ...REST, bob: 3, arms: [4, -4], tilt: 1, hairLag: 1, hem: 1 }] },
   // the walk against the Mixamo guide (work/hero/guide/walk): thighs about 30 degrees each way, hips lowest at contact and
   // highest at the passing step, the arms counter-swinging; the sword arm keeps its bend so the blade stays up and forward
   move: { delay: 100, frames: [
-    { legs: [40, -40], arms: [4, 26], elbows: [100, 30], lean: -5, bob: 0, tilt: 2, hairLag: 3, hem: -3, sword: 30 }, { legs: [18, -18], arms: [12, 12], elbows: [100, 30], lean: -5, bob: 5, hairLag: 1, sword: 30 }, { legs: [-6, 6], arms: [22, -6], elbows: [100, 30], lean: -5, bob: 9, tilt: -2, hem: 3, sword: 30 },
-    { legs: [-40, 40], arms: [40, -30], elbows: [100, 30], lean: -5, bob: 0, tilt: 2, hairLag: 3, hem: 3, sword: 30 }, { legs: [-18, 18], arms: [32, -16], elbows: [100, 30], lean: -5, bob: 5, hairLag: 1, sword: 30 }, { legs: [6, -6], arms: [18, 4], elbows: [100, 30], lean: -5, bob: 9, tilt: -2, hem: -3, sword: 30 }] },
+    { legs: [40, -40], arms: [-18, 28], elbows: [84, 8], lean: -5, bob: 0, tilt: 2, hairLag: 3, hem: -3, sword: 60 }, { legs: [18, -18], arms: [-8, 12], elbows: [84, 8], lean: -5, bob: 5, hairLag: 1, sword: 60 }, { legs: [-6, 6], arms: [2, -4], elbows: [84, 8], lean: -5, bob: 9, tilt: -2, hem: 3, sword: 60 },
+    { legs: [-40, 40], arms: [22, -30], elbows: [84, 8], lean: -5, bob: 0, tilt: 2, hairLag: 3, hem: 3, sword: 60 }, { legs: [-18, 18], arms: [12, -16], elbows: [84, 8], lean: -5, bob: 5, hairLag: 1, sword: 60 }, { legs: [6, -6], arms: [-2, 4], elbows: [84, 8], lean: -5, bob: 9, tilt: -2, hem: -3, sword: 60 }] },
   // the overhead cut against the guide (work/hero/guide/mine): the windup twice as long as the cut, the blade standing clear
   // above the hair; then the arm comes over straight and ends low in front with the body bent forward and the front leg lunging;
   // the strike frame held two beats so the blow lands
