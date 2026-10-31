@@ -1,3 +1,7 @@
+> **Superseded, 2026-10-31.** Robin pointed the studio at the MapleStory reference library the same day ("you're gonna do the
+> art a lot different"); the direction is now `docs/direction.md`. This file and its pictures are kept as the record of the
+> options that were on the table.
+
 # The art direction: three proposals for Robin
 
 Perry, AD, 2026-10-31. **Waiting for Robin's pick.** Nothing is drawn for the game until he has picked; then `docs/direction.md`

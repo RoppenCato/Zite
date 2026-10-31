@@ -38,6 +38,10 @@ Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
 - A big, beautiful world map: the thing the player looks at most.
 - Generated, and big enough never to run out. Each area of the map has its own look and its own fight background (Robin, 2026-10-31).
 
+## The look
+- **The art follows the MapleStory reference library** at `C:\dev\MapleStoryPlus\Settings\Inspiration` and its `Instructions.md` (Robin, 2026-10-31): painted, cute and chunky, dark outlines, layered parallax backgrounds, tile and prop kits, monsters as named actions with frame data. We learn from it and make our own; nothing from it is ever copied into the game or committed (both repositories are public). The Art Director's `docs/direction.md` is the direction drawn from it.
+- Open: whether the world itself is a side-view MapleStory-like place with the board's spaces along its ground, or a top-down map with side-view fights (the Art Director recommends the first).
+
 ## Combat
 - Turn-based RPG combat, not Dokapon's rock-paper-scissors (Robin, 2026-10-31): you choose among attacks, spells and defending; stats such as attack, defense and health decide the outcome.
 - Must be playable with one thumb on a phone: the play is making choices (buttons, or gestures).

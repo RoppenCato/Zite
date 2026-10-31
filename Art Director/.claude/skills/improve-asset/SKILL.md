@@ -13,8 +13,9 @@ The copy-work-judge-deliver loop. Never touch `C:\dev\Zite\Game Developer`. The 
 - Look at it at phone size: copy it into `work/<name>/` with the game's version as `before/`, make `before.png` at game scale
   beside the hero, and Read the picture. Write down in `work/<name>/NOTES.md` three to five things that are wrong, each
   against a rule of the check in `docs/direction.md`. Lead with the silhouette.
-- Look at the reference: a real animal's proportion for a beast, the board in `docs/reference/` for the style,
-  `docs/techniques.md` section 4 for a gait. Say in the notes what the one thing is that carries its silhouette.
+- Look at the reference: the library's monster of the same level band and kind for proportion and motion
+  (`Monsters/Sheets/`, `Monsters/Animations/`), its place for the palette (`Maps/Places/`); `docs/techniques.md` section 4
+  for a gait. Say in the notes what the one thing is that carries its silhouette, and what `hit1` exaggerates.
 - Run the readability tests of `docs/techniques.md` section 1 on the before picture and write the answers down: grayscale,
   quarter size, the windup's silhouette against the idle's. The after must pass what the before failed.
 
@@ -31,6 +32,8 @@ The copy-work-judge-deliver loop. Never touch `C:\dev\Zite\Game Developer`. The 
 - `work/<name>/compare.png`: before and after at game scale on the real screen (the map, or the fight background it stands
   in) with the hero beside, then the clips at 2x. Read it. Then the check, each point answered in the notes, honestly.
 - Shrink to a quarter (the thumbnail test) and look again.
+- The library's hand-over list (`docs/direction.md` section 8): beside the player, on its background, tiled 3 by 3,
+  played at real delays, its data complete.
 - The weight: not heavier than before without a reason; within the budget in `docs/direction.md`.
 
 ## 4. Deliver
