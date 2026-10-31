@@ -53,12 +53,13 @@ describe('a region actor', () => {
       actor.submit(roll('a1')), // 2
       actor.submit(move('a2', ['s1', 's2'])),
       actor.submit(roll('a3')), // 1
-      actor.submit(move('a4', ['s3'])),
-      actor.submit(roll('a5')), // 5
+      actor.submit(move('a4', ['s3'])), // Crossroads, an event: its card takes the seed's 5
+      actor.submit(roll('a5')), // 6
     ]);
     expect(results.map((r) => r.version)).toEqual([1, 2, 3, 4, 5]);
     expect(results.map((r) => r.events[0]?.type)).toEqual(['rolled', 'moved', 'rolled', 'moved', 'rolled']);
-    expect(actor.snapshot().state.characters[P]).toMatchObject({ space: 's3', steps: 5 });
+    expect(results[3]?.events[2]?.type).toBe('event');
+    expect(actor.snapshot().state.characters[P]).toMatchObject({ space: 's3', steps: 6 });
   });
 
   it('remembers a refused action without bumping the version', async () => {

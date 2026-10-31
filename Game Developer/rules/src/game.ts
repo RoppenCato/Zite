@@ -1,7 +1,7 @@
 // The game as a pure function: apply(state, action, rng) -> { state, events }.
 // The state passed in is never changed; a new one comes back.
 
-import { CLASS_DATA, DICE_DATA, ISLAND_DATA } from './data.ts';
+import { CLASS_DATA, DICE_DATA, EVENT_CARDS, ISLAND_DATA, SPACE_KIND_DATA } from './data.ts';
 import { buildBoard } from './island.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -15,6 +15,7 @@ import {
   type GameEvent,
   type GameState,
   type RejectReason,
+  type Space,
 } from './types.ts';
 
 export interface NewGameOptions {
@@ -68,7 +69,7 @@ export function apply(state: GameState, action: Action, rng: Rng): ApplyResult {
     case 'roll':
       return roll(state, action, character, rng);
     case 'move':
-      return move(state, action, character);
+      return move(state, action, character, rng);
   }
 }
 
@@ -87,16 +88,50 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   return { state: next, events: [{ type: 'rolled', action: action.id, player: action.player, value }] };
 }
 
-function move(state: GameState, action: MoveAction, character: Character): ApplyResult {
+function move(state: GameState, action: MoveAction, character: Character, rng: Rng): ApplyResult {
   if (character.steps === 0) return reject(state, action, 'roll first');
   const problem = checkPath(state.board, character.space, character.steps, action.path);
   if (problem) return reject(state, action, problem);
   const landing = action.path[action.path.length - 1]!;
   const space = state.board.spaces[landing]!;
-  const next = withCharacter(state, { ...character, space: landing, steps: 0 });
   const events: GameEvent[] = [
     { type: 'moved', action: action.id, player: action.player, from: character.space, path: [...action.path] },
     { type: 'landed', action: action.id, player: action.player, space: landing, kind: space.kind },
   ];
-  return { state: next, events };
+  const arrived = land({ ...character, space: landing, steps: 0 }, space, action, rng, events);
+  return { state: withCharacter(state, arrived), events };
+}
+
+/**
+ * What landing on a space does (mine, 2026-10-31; numbers in data/spaces.json and data/events.json): a treasure gives
+ * gold, a town heals to full, a shrine heals some, an event draws a card. A battle, shop, quest giver and boss gate do
+ * nothing yet. Every random draw comes from the stream, so the holder of the state decides (shared-world rule 5).
+ */
+function land(character: Character, space: Space, action: Action, rng: Rng, events: GameEvent[]): Character {
+  const kind = SPACE_KIND_DATA[space.kind];
+  let c = character;
+  if (space.kind === 'event') {
+    const card = EVENT_CARDS[rng.int(EVENT_CARDS.length) - 1]!;
+    events.push({ type: 'event', action: action.id, player: action.player, card: card.id, text: card.text });
+    if (card.gold) c = giveGold(c, card.gold, action, events);
+    if (card.heal) c = heal(c, card.heal, action, events);
+    return c;
+  }
+  if (kind.gold) c = giveGold(c, kind.gold.min + rng.int(kind.gold.max - kind.gold.min + 1) - 1, action, events);
+  if (kind.heal !== undefined) c = heal(c, kind.heal === 'full' ? c.maxHp : kind.heal, action, events);
+  return c;
+}
+
+/** Gold never goes below 0: a loss takes what there is. */
+function giveGold(c: Character, delta: number, action: Action, events: GameEvent[]): Character {
+  const gold = Math.max(0, c.gold + delta);
+  events.push({ type: 'gold', action: action.id, player: action.player, delta: gold - c.gold, gold });
+  return { ...c, gold };
+}
+
+/** HP never goes above maxHp. */
+function heal(c: Character, amount: number, action: Action, events: GameEvent[]): Character {
+  const hp = Math.min(c.maxHp, c.hp + amount);
+  events.push({ type: 'healed', action: action.id, player: action.player, amount: hp - c.hp, hp });
+  return { ...c, hp };
 }

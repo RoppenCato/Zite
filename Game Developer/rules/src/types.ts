@@ -78,6 +78,12 @@ export type GameEvent =
   | { type: 'rolled'; action: string; player: string; value: number }
   | { type: 'moved'; action: string; player: string; from: string; path: string[] }
   | { type: 'landed'; action: string; player: string; space: string; kind: SpaceKind }
+  /** Gold found (delta > 0) or lost (delta < 0); `gold` is the new total. */
+  | { type: 'gold'; action: string; player: string; delta: number; gold: number }
+  /** HP given back; `amount` is 0 when there was nothing to heal. `hp` is the new value. */
+  | { type: 'healed'; action: string; player: string; amount: number; hp: number }
+  /** The card an event space drew; what it did follows as gold or healed events. */
+  | { type: 'event'; action: string; player: string; card: string; text: string }
   | { type: 'rejected'; action: string; player: string; reason: RejectReason };
 
 export interface ApplyResult {

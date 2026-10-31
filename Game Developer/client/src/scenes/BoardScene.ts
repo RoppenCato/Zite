@@ -468,8 +468,9 @@ export class BoardScene extends Phaser.Scene {
     this.walk(path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
-      this.finish(`Rolled ${value}. Landed on ${space.name ? `${space.name} (${kind})` : `a ${kind} space`}.`);
-      this.log.note(`landed on ${space.id} (${space.kind})`);
+      const where = space.name ? `${space.name} (${kind})` : `a ${kind} space`;
+      this.finish(`Rolled ${value}. Landed on ${where}. ${this.describeLanding(moved)}`.trimEnd());
+      this.log.note(`landed on ${space.id} (${space.kind}): ${this.describeLanding(moved) || 'nothing'}`);
     });
   }
 
@@ -505,6 +506,17 @@ export class BoardScene extends Phaser.Scene {
 
   private setMessage(text: string): void {
     this.hud?.setMessage(text);
+  }
+
+  /** What the space did, in words, from the events after `landed`. */
+  private describeLanding(events: GameEvent[]): string {
+    const parts: string[] = [];
+    for (const e of events) {
+      if (e.type === 'event') parts.push(e.text);
+      else if (e.type === 'gold') parts.push(e.delta > 0 ? `Found ${e.delta} gold.` : e.delta < 0 ? `Lost ${-e.delta} gold.` : 'Your purse was already empty.');
+      else if (e.type === 'healed') parts.push(e.amount > 0 ? `Healed ${e.amount} HP.` : 'HP already full.');
+    }
+    return parts.join(' ');
   }
 
   private describe(events: GameEvent[]): string {

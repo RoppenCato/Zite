@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { EVENT_CARDS } from '../src/data.ts';
 import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
 import { migrate } from '../src/save.ts';
-import type { Action, GameState } from '../src/types.ts';
+import type { Action, Character, GameState } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
@@ -148,6 +149,83 @@ describe('move', () => {
   });
 });
 
+describe('landing', () => {
+  // The ring: s0 town, s1 battle, s2 shop, s3 event, s4 battle, s5 treasure, s6 shrine, s8 quest, s10 boss gate.
+  /** A game with the character standing on `space`, one step owed, so `move([next])` lands on a chosen neighbour. */
+  function about(space: string, patch: Partial<Character> = {}): GameState {
+    const s = fresh();
+    return { ...s, characters: { [P]: { ...s.characters[P]!, space, steps: 1, ...patch } }, die: { ...s.die, last: 1 } };
+  }
+
+  it('on a treasure finds gold drawn from the seed, between the data\'s min and max', () => {
+    const { state, events } = apply(about('s4', { gold: 50 }), move(['s5']), makeRng('ashford'));
+    const found = 10 + makeRng('ashford').int(31) - 1;
+    expect(found).toBeGreaterThanOrEqual(10);
+    expect(found).toBeLessThanOrEqual(40);
+    expect(events).toEqual([
+      { type: 'moved', action: 'm1', player: P, from: 's4', path: ['s5'] },
+      { type: 'landed', action: 'm1', player: P, space: 's5', kind: 'treasure' },
+      { type: 'gold', action: 'm1', player: P, delta: found, gold: 50 + found },
+    ]);
+    expect(state.characters[P]?.gold).toBe(50 + found);
+    expect(apply(about('s4', { gold: 50 }), move(['s5']), makeRng('ashford'))).toEqual({ state, events });
+  });
+
+  it('in a town heals to full, and says so even with nothing to heal', () => {
+    const hurt = apply(about('s1', { hp: 50 }), move(['s0']), makeRng('x'));
+    expect(hurt.events[2]).toEqual({ type: 'healed', action: 'm1', player: P, amount: 70, hp: 120 });
+    expect(hurt.state.characters[P]?.hp).toBe(120);
+    const fine = apply(about('s1'), move(['s0']), makeRng('x'));
+    expect(fine.events[2]).toEqual({ type: 'healed', action: 'm1', player: P, amount: 0, hp: 120 });
+  });
+
+  it('at a shrine heals thirty, never above the maximum', () => {
+    expect(apply(about('s5', { hp: 50 }), move(['s6']), makeRng('x')).events[2]).toMatchObject({ type: 'healed', amount: 30, hp: 80 });
+    expect(apply(about('s5', { hp: 100 }), move(['s6']), makeRng('x')).events[2]).toMatchObject({ type: 'healed', amount: 20, hp: 120 });
+  });
+
+  it('on an event draws a card from the seed and applies it', () => {
+    const seed = 'ashford';
+    const card = EVENT_CARDS[makeRng(seed).int(EVENT_CARDS.length) - 1]!;
+    const { state, events } = apply(about('s2', { hp: 60, gold: 20 }), move(['s3']), makeRng(seed));
+    expect(events[2]).toEqual({ type: 'event', action: 'm1', player: P, card: card.id, text: card.text });
+    const me = state.characters[P]!;
+    if (card.gold) expect(events[3]).toEqual({ type: 'gold', action: 'm1', player: P, delta: Math.max(card.gold, -20), gold: Math.max(0, 20 + card.gold) });
+    if (card.heal) expect(events[3]).toEqual({ type: 'healed', action: 'm1', player: P, amount: card.heal, hp: 60 + card.heal });
+    if (!card.gold && !card.heal) expect(events).toHaveLength(3);
+    expect(me.gold).toBe(Math.max(0, 20 + (card.gold ?? 0)));
+    expect(me.hp).toBe(60 + (card.heal ?? 0));
+  });
+
+  it('draws every card over many seeds, and a loss never takes gold below zero', () => {
+    const drawn = new Set<string>();
+    for (let i = 0; i < 200; i++) {
+      const { state, events } = apply(about('s2', { gold: 5 }), move(['s3']), makeRng(i));
+      const event = events[2];
+      if (event?.type === 'event') drawn.add(event.card);
+      expect(state.characters[P]!.gold).toBeGreaterThanOrEqual(0);
+      const gold = events.find((e) => e.type === 'gold');
+      if (gold?.type === 'gold' && gold.delta < 0) expect(gold).toMatchObject({ delta: -5, gold: 0 });
+    }
+    expect(drawn).toEqual(new Set(EVENT_CARDS.map((c) => c.id)));
+  });
+
+  it('does nothing yet on a battle, a shop, a quest giver or a boss gate', () => {
+    for (const [from, to] of [['s0', 's1'], ['s1', 's2'], ['s7', 's8'], ['s9', 's10']] as const) {
+      const { state, events } = apply(about(from, { hp: 50, gold: 50 }), move([to]), makeRng('x'));
+      expect(events.map((e) => e.type)).toEqual(['moved', 'landed']);
+      expect(state.characters[P]).toMatchObject({ hp: 50, gold: 50, space: to });
+    }
+  });
+
+  it('spends the random stream, so the next roll is the seed\'s next number', () => {
+    const rng = makeRng('ashford'); // 2, 1, 5, 6, …
+    const landed = apply(about('s4'), move(['s5']), rng).state; // the treasure draw takes the first number
+    const { events } = apply(landed, roll(), rng);
+    expect(events[0]).toMatchObject({ type: 'rolled', value: 1 });
+  });
+});
+
 describe('the legal paths', () => {
   it('lists every walk of the rolled length, in link order, never turning back', () => {
     const { board } = fresh();
@@ -204,7 +282,8 @@ describe('a few turns from one seed', () => {
       return { rolls, space: state.characters[P]?.space };
     };
     const a = play();
-    expect(a.rolls).toEqual([2, 1, 5]);
+    // The seed rolls 2, 1, 5, 6, …; the second walk lands on Windy Ridge (event), whose card takes the 5, so the third roll is the 6.
+    expect(a.rolls).toEqual([2, 1, 6]);
     expect(play()).toEqual(a);
   });
 });

@@ -1,10 +1,10 @@
 {
-  "town":     { "label": "Town" },
+  "town":     { "label": "Town", "heal": "full" },
   "battle":   { "label": "Battle" },
   "shop":     { "label": "Shop" },
   "event":    { "label": "Event" },
-  "treasure": { "label": "Treasure" },
+  "treasure": { "label": "Treasure", "gold": { "min": 10, "max": 40 } },
   "quest":    { "label": "Quest" },
   "bossgate": { "label": "Boss gate" },
-  "shrine":   { "label": "Shrine" }
+  "shrine":   { "label": "Shrine", "heal": 30 }
 }

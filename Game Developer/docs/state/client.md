@@ -54,7 +54,9 @@ inside the band).
   chain, 260 ms per step, Sine in-out, the camera following. The state is therefore ahead of the picture during the walk,
   as it will be with a server: the picture is playback. While choosing or walking, the Roll button is dimmed.
 - The landed message names the space ("Landed on Ashford (town)") or, for a road space, its kind ("Landed on a battle
-  space"); the HUD's Space shows the name or the kind the same way.
+  space"), then what the space did from the events: an event card's text, "Found 23 gold." or "Lost 10 gold.",
+  "Healed 30 HP." or "HP already full." The HUD's Space shows the name or the kind the same way, and HP and gold are
+  refreshed after the walk.
 - **A page closed mid-choice** opens with the same choice lit and framed again: the save holds the owed steps and the die's
   last value, and `hudReady` offers the choice when `steps > 0`.
 - A refusal shows as "Not allowed: <reason>." in the message line.
