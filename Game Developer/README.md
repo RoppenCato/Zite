@@ -31,9 +31,9 @@ npm run dev
 serves the game at http://localhost:5173/ (and on the LAN at the address Vite prints, for a phone on the same Wi-Fi). Open
 it at phone size: in the Claude desktop app, the browser pane with its mobile preset, through `.claude/launch.json`
 (entry `game`) when the session's folder is this one. Tap **Roll**: the die rolls; with more than one place to go the
-camera frames the lit spaces and you tap one; the character walks and the camera follows. Drag to look around, pinch to
-zoom; **Map** shows the whole island and **Back** returns to the character. **Log** downloads the frame log and error log
-as a text file.
+camera frames the lit spaces and you tap one; the character walks and the camera follows. A battle space opens the fight
+screen: Attack, your class's move, Defend or Flee, one round a tap. Drag to look around, pinch to zoom; **Map** shows the
+whole island and **Back** returns to the character. **Log** downloads the frame log and error log as a text file.
 
 ```bash
 npm run build && npm run preview
@@ -56,12 +56,12 @@ Also: `npm run typecheck` (TypeScript, strict, both configs), `npm run icons` (r
 
 ```
 rules/src        types, rng, data, island, paths, game, save, index
-rules/data       board.json (the island: hubs and roads), dice.json, classes.json, spaces.json
-rules/test       rng, game, board, island, purity; fixtures/ring (the first twelve-space board)
-client/src       main, layout, local-game, game-log, scenes/BoardScene, scenes/HudScene
+rules/data       board.json (the island: hubs and roads), dice, classes, spaces, events, enemies, progression
+rules/test       rng, game, fight, board, island, purity; fixtures/ring (the first twelve-space board)
+client/src       main, layout, ui, local-game, game-log, scenes/BoardScene, scenes/HudScene, scenes/FightScene
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
 server/src       db, region-actor, index
 server/test      region-actor
-tools/           make-icons.mjs
+tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size)
 docs/state/      rules.md, client.md, server.md, pages.md
 ```

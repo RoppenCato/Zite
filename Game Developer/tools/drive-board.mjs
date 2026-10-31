@@ -23,6 +23,8 @@ const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); c
 const browser = await chromium.launch({ args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const context = await browser.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
 const page = await context.newPage();
+const cdp = await context.newCDPSession(page);
+const touch = (type, points) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points.map((p) => ({ x: p.x, y: p.y, id: p.id ?? 0 })) });
 const errors = [];
 page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
@@ -36,6 +38,33 @@ const worldToScreen = async (wx, wy) => { const c = await cam(); return { x: (wx
 const settle = async () => { let last = ''; for (let i = 0; i < 40; i++) { await sleep(150); const now = JSON.stringify(await cam()); if (now === last) return; last = now; } };
 const clampedCentre = (c, target) => { const dw = 412 / c.zoom, dh = 680 / c.zoom; return { x: dw >= 1400 ? 700 : Math.min(Math.max(target.x, dw / 2), 1400 - dw / 2), y: dh >= 1850 ? 925 : Math.min(Math.max(target.y, dh / 2), 1850 - dh / 2) }; };
 const centredOn = (c, target, tol = 3) => { const e = clampedCentre(c, target); return Math.abs(c.wv.x + c.wv.w / 2 - e.x) < tol && Math.abs(c.wv.y + c.wv.h / 2 - e.y) < tol; };
+const tapAt = async (x, y) => { await touch('touchStart', [{ x, y }]); await sleep(40); await touch('touchEnd', []); };
+const inFight = () => page.evaluate(() => !!boardWorld.game.me.fight);
+/** Attack until a fight that opened is over, then Continue; nothing when there is none. Returns how many rounds it took. */
+const finishFight = async () => {
+  let rounds = 0;
+  if (!(await inFight())) return 0;
+  await page.waitForFunction(() => boardWorld.phaser.scene.isActive('fight') && !boardWorld.phaser.scene.getScene('fight').busy, null, { timeout: 15000 });
+  await sleep(300);
+  while (rounds < 20 && (await inFight())) {
+    await tapAt(110, 672);
+    rounds++;
+    await sleep(100);
+    await page.waitForFunction(() => !boardWorld.phaser.scene.getScene('fight').busy, null, { timeout: 15000 });
+    await sleep(100);
+  }
+  await tapAt(206, 704);
+  await sleep(400);
+  return rounds;
+};
+/** Of the lit choices, the first whose kind is in `prefer`, else the first; null when there is no choice. */
+const pickChoice = async (prefer) => {
+  const c = await cam();
+  if (!c.choices) return null;
+  const kinds = await page.evaluate((ids) => ids.map((id) => boardWorld.game.state.board.spaces[id].kind), c.choices);
+  const i = kinds.findIndex((k) => prefer.includes(k));
+  return c.choices[i < 0 ? 0 : i];
+};
 const shot = (name) => page.screenshot({ path: `${OUT}/${name}.png` });
 const ready = async () => { await page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.getScene('hud')?.message?.text, null, { timeout: 15000 }); await sleep(600); };
 
@@ -72,8 +101,6 @@ await shot('3-roll-framed');
 
 // Drag: the camera moves by the finger's travel over the zoom, and a drag that ends on a space is no tap.
 const before = await cam();
-const cdp = await context.newCDPSession(page);
-const touch = (type, points) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points.map((p) => ({ x: p.x, y: p.y, id: p.id ?? 0 })) });
 await touch('touchStart', [{ x: 200, y: 400 }]);
 for (let i = 1; i <= 8; i++) { await touch('touchMove', [{ x: 200 + i * 10, y: 400 + i * 15 }]); await sleep(20); }
 await touch('touchEnd', []);
@@ -99,7 +126,7 @@ check('a drag ending on a lit space is not a tap', c.choices && c.choices.length
 await page.evaluate(() => { const s = boardWorld.phaser.scene.getScene('board'); s.frame([s.token, ...[...s.choices.keys()].map((id) => boardWorld.game.state.board.spaces[id])]); });
 await settle();
 c = await cam();
-target = c.choices[1];
+target = (await pickChoice(['treasure', 'event', 'shrine', 'town', 'shop', 'quest', 'bossgate'])) ?? c.choices[1];
 pos = await worldToScreen(spaces[target].x, spaces[target].y);
 console.log('tapping', target, 'at', pos, 'view', c.wv);
 await touch('touchStart', [{ x: pos.x, y: pos.y }]);
@@ -110,8 +137,10 @@ c = await cam();
 check('tap sends the move at once and follows again', c.me === target && c.steps === 0 && c.following === true && c.choices === null, JSON.stringify({ me: c.me, following: c.following }));
 await sleep(2200);
 await settle();
+const fought = await finishFight();
+await settle();
 c = await cam();
-check('after the walk: follow zoom, token centred, landed message', c.zoom === 0.8 && centredOn(c, c.token, 4) && /Landed on/.test(c.message), JSON.stringify(c));
+check('after the walk: follow zoom, token centred, the outcome in the message', c.zoom === 0.8 && centredOn(c, c.token, 4) && /Landed on|Beat the|wake in|got away/.test(c.message), JSON.stringify({ fought, ...c }));
 await shot('5-after-walk');
 
 // Pinch: two fingers apart zooms in, clamped at 1.4; together zooms out.
@@ -154,7 +183,15 @@ await sleep(600);
 await page.evaluate(() => boardWorld.phaser.scene.getScene('board').roll());
 await settle();
 c = await cam();
-if (!c.choices) { console.log('single path roll; rolling again after the walk'); await sleep(2500); await page.evaluate(() => boardWorld.phaser.scene.getScene('board').roll()); await sleep(500); c = await cam(); }
+for (let i = 0; i < 5 && !c.choices; i++) {
+  console.log('single path roll; rolling again after the walk');
+  await sleep(2500);
+  await settle();
+  await finishFight();
+  await page.evaluate(() => boardWorld.phaser.scene.getScene('board').roll());
+  await settle();
+  c = await cam();
+}
 const litBefore = c.choices;
 await page.reload();
 await ready();
@@ -171,17 +208,68 @@ await page.evaluate(() => {
 await page.reload();
 await ready();
 const migrated = await page.evaluate(() => ({ version: boardWorld.game.state.version, space: boardWorld.game.me.space, hp: boardWorld.game.me.hp, gold: boardWorld.game.me.gold, steps: boardWorld.game.me.steps, seed: boardWorld.game.state.seed, start: boardWorld.game.state.board.start, stats: boardWorld.phaser.scene.getScene('hud').stats.text }));
-check('a version-1 save opens as version 2 on the island with hp and gold kept', migrated.version === 2 && migrated.space === 'ashford' && migrated.hp === 77 && migrated.gold === 95 && migrated.steps === 0 && migrated.seed === 'old-seed', JSON.stringify(migrated));
+check('a version-1 save opens at the current version on the island with hp and gold kept', migrated.version === 3 && migrated.space === 'ashford' && migrated.hp === 77 && migrated.gold === 95 && migrated.steps === 0 && migrated.seed === 'old-seed', JSON.stringify(migrated));
 
 // HUD: the Space line shows a kind for an unnamed space.
 await page.evaluate(() => boardWorld.phaser.scene.getScene('board').roll());
 await settle();
 c = await cam();
-if (c.choices) { const id = c.choices[0]; const p = await worldToScreen(spaces[id].x, spaces[id].y); await touch('touchStart', [{ x: p.x, y: p.y }]); await sleep(40); await touch('touchEnd', []); }
+if (c.choices) {
+  const id = (await pickChoice(['treasure', 'event', 'shrine'])) ?? c.choices[0];
+  await page.evaluate((id) => { const s = boardWorld.phaser.scene.getScene('board'); s.frame([s.token, boardWorld.game.state.board.spaces[id]]); }, id);
+  await settle();
+  const p = await worldToScreen(spaces[id].x, spaces[id].y);
+  await tapAt(p.x, p.y);
+}
 await sleep(2400);
+await settle();
+const hudFought = await finishFight();
 const hud = await page.evaluate(() => ({ stats: boardWorld.phaser.scene.getScene('hud').stats.text, message: boardWorld.phaser.scene.getScene('hud').message.text, me: boardWorld.game.me.space }));
-check('HUD shows the kind for an unnamed space and the landed message names it', /Space (Battle|Event|Treasure|Shop|Quest|Shrine|Boss gate|Town)/.test(hud.stats) && /Landed on (a \w+( gate)? space|\w+)/.test(hud.message), JSON.stringify(hud));
+check('HUD shows the kind for an unnamed space and the message says the landing or the fight', /Space (Battle|Event|Treasure|Shop|Quest|Shrine|Boss gate|Town)/.test(hud.stats) && /Landed on (a \w+( gate)? space|\w+)|Beat the|wake in|got away/.test(hud.message), JSON.stringify({ hudFought, ...hud }));
 await shot('8-landed-road-space');
+
+// The fight: walk onto a battle space (from Ashford most rolls offer one), fight it out with Attack, continue.
+for (let i = 0; i < 10 && !(await inFight()); i++) {
+  await page.evaluate(() => boardWorld.phaser.scene.getScene('board').roll());
+  await settle();
+  const pick = await pickChoice(['battle']);
+  if (pick) {
+    await page.evaluate((id) => { const s = boardWorld.phaser.scene.getScene('board'); s.frame([s.token, boardWorld.game.state.board.spaces[id]]); }, pick);
+    await settle();
+    const p = await worldToScreen(spaces[pick].x, spaces[pick].y);
+    await tapAt(p.x, p.y);
+  }
+  await sleep(6 * 260 + 600);
+  await settle();
+}
+await sleep(500);
+const fightOn = await page.evaluate(() => ({ active: boardWorld.phaser.scene.isActive('fight'), enemy: boardWorld.game.me.fight?.enemy.name, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha, message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('landing on a battle opens the fight screen and dims Roll', fightOn.active && !!fightOn.enemy && fightOn.rollAlpha < 1 && /blocks the way/.test(fightOn.message), JSON.stringify(fightOn));
+await shot('9-fight-open');
+await page.reload();
+await ready();
+await sleep(400);
+const reopened = await page.evaluate(() => ({ active: boardWorld.phaser.scene.isActive('fight'), enemy: boardWorld.game.me.fight?.enemy.name }));
+check('a reload mid-fight reopens the fight against the same enemy', reopened.active && reopened.enemy === fightOn.enemy, JSON.stringify(reopened));
+const beforeFight = await page.evaluate(() => ({ gold: boardWorld.game.me.gold, xp: boardWorld.game.me.xp, hp: boardWorld.game.me.hp, space: boardWorld.game.me.space }));
+let roundsPlayed = 0;
+await page.waitForFunction(() => !boardWorld.phaser.scene.getScene('fight').busy, null, { timeout: 15000 });
+while (roundsPlayed < 20 && (await inFight())) {
+  await tapAt(110, 672); // Attack
+  roundsPlayed++;
+  await sleep(100);
+  await page.waitForFunction(() => !boardWorld.phaser.scene.getScene('fight').busy, null, { timeout: 15000 });
+  await sleep(100);
+}
+const afterFight = await page.evaluate(() => ({ fight: boardWorld.game.me.fight, gold: boardWorld.game.me.gold, xp: boardWorld.game.me.xp, hp: boardWorld.game.me.hp, space: boardWorld.game.me.space, outcome: boardWorld.phaser.scene.getScene('fight').outcome?.type, continueVisible: boardWorld.phaser.scene.getScene('fight').continueButton.visible, fightMessage: boardWorld.phaser.scene.getScene('fight').message.text }));
+const consistent = afterFight.outcome === 'won' ? afterFight.gold > beforeFight.gold && afterFight.xp > beforeFight.xp : afterFight.outcome === 'died' ? afterFight.gold <= beforeFight.gold && afterFight.space !== beforeFight.space : false;
+check('Attack plays rounds until the fight ends and Continue shows; gold and xp follow the outcome', afterFight.fight === null && consistent && afterFight.continueVisible, JSON.stringify({ roundsPlayed, before: beforeFight, after: afterFight }));
+await shot('10-fight-over');
+await tapAt(206, 704); // Continue
+await sleep(400);
+const back = await page.evaluate(() => { const s = boardWorld.phaser.scene.getScene('board'); const sp = boardWorld.game.state.board.spaces[boardWorld.game.me.space]; return { active: boardWorld.phaser.scene.isActive('fight'), stats: boardWorld.phaser.scene.getScene('hud').stats.text, message: boardWorld.phaser.scene.getScene('hud').message.text, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha, tokenOnMe: Math.abs(s.token.x - sp.x) < 1 && Math.abs(s.token.y - (sp.y - 32)) < 1 }; });
+check('Continue closes the fight: Roll is back, the HUD shows the level, the token stands where the character is', !back.active && /^Lv \d+ /.test(back.stats) && back.rollAlpha === 1 && /(Beat the|wake in)/.test(back.message) && back.tokenOnMe, JSON.stringify(back));
+await shot('11-after-fight');
 
 const logErrors = await page.evaluate(() => boardWorld.log.errorCount);
 const fps = await page.evaluate(() => boardWorld.phaser.loop.actualFps.toFixed(0));

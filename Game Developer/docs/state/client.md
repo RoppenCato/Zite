@@ -1,9 +1,10 @@
 # The client (`client/`)
 
-Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Two scenes: the **board** (the world,
-drawn in world pixels under a camera that follows the character) and the **HUD** over it (the fixed chrome, which never
-scrolls or zooms). Shapes and labels only; the Art Director's sprites come later. The client never decides anything: it
-sends intents to the holder of the state (`LocalGame` today, the server from MVP step 2) and plays back the events.
+Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Three scenes: the **board** (the world,
+drawn in world pixels under a camera that follows the character), the **HUD** over it (the fixed chrome, which never
+scrolls or zooms), and the **fight**, launched over both when a fight begins and stopped when it ends. Shapes and labels
+only; the Art Director's sprites come later. The client never decides anything: it sends intents to the holder of the
+state (`LocalGame` today, the server from MVP step 2) and plays back the events.
 
 | File | What it does |
 | --- | --- |
@@ -14,6 +15,8 @@ sends intents to the holder of the state (`LocalGame` today, the server from MVP
 | `src/game-log.ts` | the frame log and error log, downloadable |
 | `src/scenes/BoardScene.ts` | the island, the token, the rings, the camera, the touch input; `roll`, `toggleMap`, `downloadLog` |
 | `src/scenes/HudScene.ts` | the top panel, the message line, the Map, Roll and Log buttons; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing` |
+| `src/scenes/FightScene.ts` | the fight screen over the band: the enemy, the character, their HP bars, the message, Attack, the class's move, Defend, Flee, Continue |
+| `src/ui.ts` | `makeButton` and the HP `Bar`, shared by the scenes |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
 
 ## Size and scaling (mine, 2026-10-31)
@@ -58,7 +61,11 @@ inside the band).
   "Healed 30 HP." or "HP already full." The HUD's Space shows the name or the kind the same way, and HP and gold are
   refreshed after the walk.
 - **A page closed mid-choice** opens with the same choice lit and framed again: the save holds the owed steps and the die's
-  last value, and `hudReady` offers the choice when `steps > 0`.
+  last value, and `hudReady` offers the choice when `steps > 0`. **A page closed mid-fight** opens on the fight again.
+- **A walk that ends on a battle space** opens the fight scene instead of finishing the turn: the Roll button stays dimmed
+  and the HUD message says "A Moor Wolf blocks the way." When the fight scene calls `fightOver`, the board stops it,
+  puts the token in the town the character woke in if it was beaten, and finishes the turn with the outcome as the message.
+- The HUD's stats line reads `Lv 1   HP 120/120   Gold 50   Space Ashford` (14 px).
 - A refusal shows as "Not allowed: <reason>." in the message line.
 - A hidden tab or a hidden browser pane pauses Phaser (no animation frames), so a walk finishes when the page is shown
   again. The state is already saved by then.
@@ -86,11 +93,25 @@ inside the band).
 - **Hub names are hidden below zoom 0.45**; the check runs in `update` only when the zoom changed.
 - Nothing reads the canvas back and nothing filters per frame; the per-frame work is the frame log and the zoom check.
 
+## The fight scene (mine, 2026-10-31: first layout; Robin, 2026-10-31: fights are their own screen, turn-based, one thumb)
+
+An opaque panel over the band (y 90 to 770) that takes every touch, so nothing reaches the board under it; the HUD stays
+above with name, HP, gold and the die. From the top: the enemy's name (22 px), its HP bar (260 by 18, red), the enemy as
+a circle of radius 60 with its initial; the message line at y 362; the character as a circle of radius 30 with the
+class's letter, its HP bar (green) and "Robin the Warrior, level 1"; then four buttons, 180 by 52: **Attack** and the
+class's move (**Heavy Blow**, **Backstab**, **Charge**, **Volley**) at y 672, **Defend** and **Flee** at y 736. Each
+button sends one intent (`game.act({ type })`) and the round's events are **played back one at a time, 450 ms apart**:
+a hit flashes the one struck and floats the damage up (bigger and yellow on a crit), the bar tweens to the hit's `hp`,
+the message says the blow; `charged`, `guarded`, `fled` and `levelled` are said in words. While a round plays the buttons
+are dimmed. On `won`, `died` or a successful `fled` the four buttons give way to **Continue** (220 by 56 at y 704), which
+calls the board's `fightOver` with a one-line summary for the HUD's message line. On death the bar goes to 0 and the
+message says where the character wakes and what it cost.
+
 ## The save (`local-game.ts`)
 
 `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On load a save
-of version 1 passes its state through `migrate`, which brings a version-1 state (the ring) up to version 2 (the island,
-the character on Ashford again); anything else starts a fresh game from a new seed (`crypto.randomUUID`, or a
+of version 1 passes its state through `migrate`, which brings a version-1 state (the ring) or a version-2 state (no xp
+yet) up to version 3; anything else starts a fresh game from a new seed (`crypto.randomUUID`, or a
 timestamp-and-random fallback where that is missing). The one local player's id is `local`, named Robin, a Warrior (mine,
 until there is a character screen). `reset()` throws the save away. A save made in the pane is not Robin's: he plays on his
 phone.
@@ -116,6 +137,6 @@ above 1.5 MB per chunk.
 
 ## Not here yet
 
-A fight screen, the space resolutions, a second island and the world beyond it (the generator), a character screen, sound
+The shop, the quest giver and the boss gate, a second island and the world beyond it (the generator), a character screen, sound
 (`?mute=1` is the convention for test pages once sound exists), the socket client (after `docs/state/protocol.md` is
 written), reconnect on `visibilitychange` and `pageshow`.

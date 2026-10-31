@@ -16,6 +16,7 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
+import type { FightOutcome } from './FightScene.ts';
 import type { HudScene } from './HudScene.ts';
 
 export interface BoardSceneDeps {
@@ -115,7 +116,11 @@ export class BoardScene extends Phaser.Scene {
     hud.setBusy(this.busy);
     this.refreshHud();
     const me = this.game_.me;
-    if (me.steps > 0) {
+    if (me.fight) {
+      // The page was closed mid-fight: the fight is still on.
+      hud.setDie(String(this.game_.state.die.last ?? '–'));
+      this.openFight();
+    } else if (me.steps > 0) {
       // The roll is still owed, so offer the same choice again.
       hud.setDie(String(this.game_.state.die.last ?? me.steps));
       this.setBusy(true);
@@ -123,6 +128,19 @@ export class BoardScene extends Phaser.Scene {
     } else {
       this.setMessage(`Tap Roll to move ${me.name}.`);
     }
+  }
+
+  /** The fight scene is done: close it, and if the character was beaten, put the token in the town it woke in. */
+  fightOver(outcome: FightOutcome): void {
+    this.scene.stop('fight');
+    const me = this.game_.me;
+    if (outcome.type === 'died') {
+      const town = this.game_.state.board.spaces[me.space]!;
+      this.token.setPosition(town.x, town.y - SPACE_RADIUS - 6);
+      this.follow(true);
+    }
+    this.log.note(`fight over: ${outcome.type}, ${me.hp}/${me.maxHp} hp, ${me.gold} gold, level ${me.level}`);
+    this.finish(outcome.summary);
   }
 
   /** The map of landing space to path while the player is choosing; null otherwise. The pane reads it. */
@@ -469,8 +487,12 @@ export class BoardScene extends Phaser.Scene {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
       const where = space.name ? `${space.name} (${kind})` : `a ${kind} space`;
-      this.finish(`Rolled ${value}. Landed on ${where}. ${this.describeLanding(moved)}`.trimEnd());
       this.log.note(`landed on ${space.id} (${space.kind}): ${this.describeLanding(moved) || 'nothing'}`);
+      if (this.game_.me.fight) {
+        this.openFight();
+        return;
+      }
+      this.finish(`Rolled ${value}. Landed on ${where}. ${this.describeLanding(moved)}`.trimEnd());
     });
   }
 
@@ -486,6 +508,16 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
+  /** A fight is on: the board waits under the fight scene until it is over. */
+  private openFight(): void {
+    const fight = this.game_.me.fight;
+    if (!fight) return;
+    this.setBusy(true);
+    this.setMessage(`A ${fight.enemy.name} blocks the way.`);
+    this.refreshHud();
+    this.scene.launch('fight');
+  }
+
   private finish(message: string): void {
     this.setMessage(message);
     this.refreshHud();
@@ -497,11 +529,12 @@ export class BoardScene extends Phaser.Scene {
     this.hud?.setBusy(busy);
   }
 
-  private refreshHud(): void {
+  /** The HUD's stats line: level, HP, gold and where the character stands. The fight scene calls it after each round. */
+  refreshHud(): void {
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space];
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
-    this.hud?.setStats(`HP ${me.hp}/${me.maxHp}   Gold ${me.gold}   Space ${where}`);
+    this.hud?.setStats(`Lv ${me.level}   HP ${me.hp}/${me.maxHp}   Gold ${me.gold}   Space ${where}`);
   }
 
   private setMessage(text: string): void {

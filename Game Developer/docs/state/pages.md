@@ -27,6 +27,9 @@ board.choices                            // landing space → path while the pla
 board.cameras.main.zoom                  // 0.8 following, about 0.29 in the overview, up to 1.4 pinched
 board.cameras.main.worldView             // the world rectangle in view: x, y, width, height
 boardWorld.phaser.scene.getScene('hud')  // the chrome: setMessage, setStats, setDie, setBusy, setFollowing
+boardWorld.phaser.scene.isActive('fight') // true while the fight screen is up
+boardWorld.game.me.fight                 // the enemy and the round, or null
+boardWorld.game.act({ type: 'attack', player: 'local' })   // or defend, skill, flee: one round, the events back
 ```
 
 **Where things are on the screen.** The buttons sit at y 862 in design pixels: Map at x 50, Roll at x 206, Log at x 362.
@@ -36,10 +39,17 @@ and (326, 765). A space at world (wx, wy) is on the screen at design
 5 pixels for the preset; it is tappable only while inside the band (y 90 to 770 in design pixels). `board.frame([...])`
 and `board.overview()` are private but callable from a script when a test needs the lit spaces in view.
 
+**The fight screen's buttons**, in design pixels: Attack (110, 672), the class's move (302, 672), Defend (110, 736),
+Flee (302, 736), each 180 by 52; Continue (206, 704) once the fight is over. A round's events play 450 ms apart; the
+scene's `busy` is true meanwhile. From Ashford every roll but a 2 offers a battle space, so the driver reaches a fight in
+a roll or two.
+
 **Gestures from a script**: a tap is a touch down and up at one point; a drag is a touch that moves more than 8 pixels
 before it lifts (it pans the camera, and lifting it on a space is not a tap); a pinch is two touches moving apart or
-together; a mouse wheel over the band zooms by a tenth a notch. In Playwright these are `page.touchscreen.tap`, or CDP's
-`Input.dispatchTouchEvent` for drags and pinches; `tools/` has no driver script yet.
+together; a mouse wheel over the band zooms by a tenth a notch. `tools/drive-board.mjs` does all of this headless against
+the built game (`node tools/drive-board.mjs [url]`, Chromium through Playwright, CDP touch events for drags and pinches):
+the camera, the gestures, a reload mid-choice, a version-1 save, the landed message and a whole fight, with screenshots
+in `tools/out/shots/`. It clears the page's save first.
 
 ## Things the pane does to a page
 

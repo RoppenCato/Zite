@@ -7,6 +7,7 @@ import { CLASS_DATA, ISLAND_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
+import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface HudSceneDeps {
@@ -84,7 +85,7 @@ export class HudScene extends Phaser.Scene {
       fontStyle: 'bold',
       color: COLORS.text,
     });
-    this.stats = this.add.text(16, 50, '', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
+    this.stats = this.add.text(16, 50, '', { fontFamily: FONT, fontSize: '14px', color: COLORS.dim });
 
     const box = this.add.graphics();
     box.fillStyle(0xe8e4d8, 1);
@@ -112,9 +113,9 @@ export class HudScene extends Phaser.Scene {
 
     const board = (): BoardScene => this.scene.get('board') as BoardScene;
     const { map, roll, log } = BUTTONS;
-    this.mapLabel = this.makeButton(map.x, map.y, map.w, map.h, 'Map', COLORS.log, '17px', () => board().toggleMap()).label;
-    this.rollButton = this.makeButton(roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '26px', () => board().roll()).button;
-    this.makeButton(log.x, log.y, log.w, log.h, 'Log', COLORS.log, '17px', () => board().downloadLog());
+    this.mapLabel = makeButton(this, map.x, map.y, map.w, map.h, 'Map', COLORS.log, '17px', () => board().toggleMap()).label;
+    this.rollButton = makeButton(this, roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '26px', () => board().roll()).button;
+    makeButton(this, log.x, log.y, log.w, log.h, 'Log', COLORS.log, '17px', () => board().downloadLog());
 
     this.add
       .text(12, DESIGN_HEIGHT - 8, `build 0.1.0 · ${ISLAND_DATA.name} · seed ${this.game_.state.seed.slice(0, 8)}`, {
@@ -124,30 +125,5 @@ export class HudScene extends Phaser.Scene {
       })
       .setOrigin(0, 1)
       .setAlpha(0.7);
-  }
-
-  private makeButton(
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    text: string,
-    color: number,
-    fontSize: string,
-    onTap: () => void,
-  ): { button: Phaser.GameObjects.Container; label: Phaser.GameObjects.Text } {
-    const g = this.add.graphics();
-    g.fillStyle(color, 1);
-    g.fillRoundedRect(-w / 2, -h / 2, w, h, 16);
-    const label = this.add
-      .text(0, 0, text, { fontFamily: FONT, fontSize, fontStyle: 'bold', color: color === COLORS.button ? COLORS.buttonText : COLORS.text })
-      .setOrigin(0.5);
-    const button = this.add.container(x, y, [g, label]).setSize(w, h);
-    button.setInteractive({ useHandCursor: true });
-    button.on('pointerdown', () => {
-      this.tweens.add({ targets: button, scaleX: 0.95, scaleY: 0.95, duration: 70, yoyo: true });
-      onTap();
-    });
-    return { button, label };
   }
 }
