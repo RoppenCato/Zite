@@ -12,3 +12,4 @@
 - 2026-10-31 (night): Miles, GD copied the Warrior into the game (commit 9681845, assets/warrior); it is drawn once the board scene's rewrite lands. Perry, AD.
 - 2026-10-31 (night): Robin: no more checks with Colin, AD unless he says so. New art goes to Robin directly. Perry, AD.
 - 2026-10-31 (night): Robin: create three new monsters. The Puffwort (hops), the Honey Bumble (flies) and the Bramble Bun (rolls), painted 2D in code (tools/monster_paint.js, tools/monsters/<name>.js) with the reference's counts, delivered into out/<name>/ and sent to Miles, GD; a moving page https://claude.ai/artifact/5jqqUC9CzAgF8dzZLfZ4gz. slice.js --empty gives the stage without fighters for pages and gifs. Perry, AD.
+- 2026-10-31 (night): Miles, GD copied the three monsters into the game (commit b47c4fa); drawn once the camera branch lands. Perry, AD.
