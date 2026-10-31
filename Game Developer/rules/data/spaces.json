@@ -1,0 +1,10 @@
+{
+  "town":     { "label": "Town" },
+  "battle":   { "label": "Battle" },
+  "shop":     { "label": "Shop" },
+  "event":    { "label": "Event" },
+  "treasure": { "label": "Treasure" },
+  "quest":    { "label": "Quest" },
+  "bossgate": { "label": "Boss gate" },
+  "shrine":   { "label": "Shrine" }
+}

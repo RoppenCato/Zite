@@ -46,7 +46,7 @@ headless in Node. The client sends **intents** ("roll", "move to space 1234", "c
 locally; co-op is the same code with the state held by the server. That is what "solo first, with co-op in mind" means in
 code (Robin, 2026-10-31): nothing in `rules/` ever touches the screen, a socket or `Math.random`.
 
-**The client.** Phaser 4 (4.2.0, June 2026: WebGL, scenes, input, tweens, audio, sprite batching) with TypeScript and Vite,
+**The client.** Phaser 4 (4.2.1, in use since 2026-10-31: WebGL, scenes, input, tweens, audio, sprite batching) with TypeScript and Vite,
 built as a PWA (`vite-plugin-pwa`), hosted as static files (Cloudflare Pages, free). PixiJS is the lighter alternative (a
 renderer only, about a third of the size) if Phaser's weight ever shows on a phone. One codebase for phone and browser;
 phone first.
@@ -108,8 +108,8 @@ folders. **Robin's PC is where the game is run and played** (the server, the tun
 independent pieces of code are built**, one session per piece, each on its own branch, each ending in a PR with its tests
 passing. A cloud session cannot see Robin's PC: no Sonic Pi, no Blender, no running server, no phone. So:
 
-- The skeleton is made locally first (Vite, Phaser, `rules/`, the test runner, one passing test, one drawn screen), so
-  every cloud session starts from a working example in the same stack.
+- The skeleton was made locally first (2026-10-31: Vite, Phaser, `rules/` with its tests, the region actor with its test,
+  one drawn screen), so every cloud session starts from a working example in the same stack.
 - A cloud session gets one area and touches only its files: `rules/` and its tests; the world generator; the server's
   actors; one client screen. Two writers never share files. A doc change it needs goes in its PR, and the local session
   merges it into `CLAUDE.md` or the brief.
@@ -132,9 +132,18 @@ passing. A cloud session cannot see Robin's PC: no Sonic Pi, no Blender, no runn
 
 ## Commands
 
-Nothing is built yet (2026-10-31). When the project is set up, write them here: `npm run dev` (Vite), `npm test` (Vitest
-over `rules/`), `npm run build`, `npm run server` (the Node server), `npm run tunnel` (cloudflared), and `.claude/launch.json` for the
-browser pane.
+One npm project at this folder's root (Node 22.12 or newer; built with 24). `README.md` says the same at more length.
+
+- `npm install`: the dependencies; `better-sqlite3`'s native build is allowed in `package.json` (`allowScripts`).
+- `npm test`: Vitest over `rules/test` and `server/test`, headless in Node. `npm run test:watch` keeps it running.
+- `npm run dev`: Vite at http://localhost:5173/ (and on the LAN for a phone); in the browser pane through
+  `.claude/launch.json`, entry `game`, when the session's folder is this one; otherwise start it yourself and open the URL.
+- `npm run build`: the PWA into `dist/` (manifest, icons, service worker); `npm run preview` serves it at
+  http://localhost:4173/, the build that installs on a phone.
+- `npm run server`: the Node server (ws://localhost:8787, SQLite in `server/data/world.db`); Node runs the TypeScript
+  straight, no build.
+- `npm run typecheck`: TypeScript strict, `rules/tsconfig.json` (no DOM) then `tsconfig.json` (everything).
+- `npm run icons`: remakes the placeholder icons; `npm run tunnel`: cloudflared in front of the server (not used yet).
 
 ## Things to know before changing code
 

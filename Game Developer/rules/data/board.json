@@ -1,0 +1,139 @@
+{
+  "start": "s0",
+  "spaces": [
+    {
+      "id": "s0",
+      "kind": "town",
+      "name": "Ashford",
+      "x": 206,
+      "y": 715,
+      "links": [
+        "s11",
+        "s1"
+      ]
+    },
+    {
+      "id": "s1",
+      "kind": "battle",
+      "name": "Moor Edge",
+      "x": 131,
+      "y": 677,
+      "links": [
+        "s0",
+        "s2"
+      ]
+    },
+    {
+      "id": "s2",
+      "kind": "shop",
+      "name": "Tinker Cart",
+      "x": 76,
+      "y": 573,
+      "links": [
+        "s1",
+        "s3"
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "event",
+      "name": "Crossroads",
+      "x": 56,
+      "y": 430,
+      "links": [
+        "s2",
+        "s4",
+        "s9"
+      ]
+    },
+    {
+      "id": "s4",
+      "kind": "battle",
+      "name": "Thornwood",
+      "x": 76,
+      "y": 288,
+      "links": [
+        "s3",
+        "s5"
+      ]
+    },
+    {
+      "id": "s5",
+      "kind": "treasure",
+      "name": "Old Cairn",
+      "x": 131,
+      "y": 183,
+      "links": [
+        "s4",
+        "s6"
+      ]
+    },
+    {
+      "id": "s6",
+      "kind": "shrine",
+      "name": "Moon Shrine",
+      "x": 206,
+      "y": 145,
+      "links": [
+        "s5",
+        "s7"
+      ]
+    },
+    {
+      "id": "s7",
+      "kind": "battle",
+      "name": "Fen Path",
+      "x": 281,
+      "y": 183,
+      "links": [
+        "s6",
+        "s8"
+      ]
+    },
+    {
+      "id": "s8",
+      "kind": "quest",
+      "name": "Hermit Hut",
+      "x": 336,
+      "y": 287,
+      "links": [
+        "s7",
+        "s9"
+      ]
+    },
+    {
+      "id": "s9",
+      "kind": "event",
+      "name": "Windy Ridge",
+      "x": 356,
+      "y": 430,
+      "links": [
+        "s8",
+        "s10",
+        "s3"
+      ]
+    },
+    {
+      "id": "s10",
+      "kind": "bossgate",
+      "name": "Iron Gate",
+      "x": 336,
+      "y": 572,
+      "links": [
+        "s9",
+        "s11"
+      ]
+    },
+    {
+      "id": "s11",
+      "kind": "battle",
+      "name": "Ravine",
+      "x": 281,
+      "y": 677,
+      "links": [
+        "s10",
+        "s0"
+      ]
+    }
+  ]
+}
