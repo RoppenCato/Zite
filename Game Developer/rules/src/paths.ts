@@ -73,8 +73,11 @@ export function checkPath(board: Board, from: string, steps: number, path: strin
   return null;
 }
 
-/** The nearest town by steps from `from` (the first found at the shortest distance, in link order), or the start. */
-export function nearestTown(board: Board, from: string): string {
+/**
+ * The nearest town by steps from `from` (the first found at the shortest distance, in link order), walking only through
+ * open areas when `open` is given, so a beaten character never wakes behind a boss it has not beaten; or the start.
+ */
+export function nearestTown(board: Board, from: string, open: ReadonlySet<string> | null = null): string {
   const seen = new Set<string>([from]);
   let frontier = [from];
   while (frontier.length > 0) {
@@ -82,9 +85,9 @@ export function nearestTown(board: Board, from: string): string {
     for (const id of frontier) {
       const space = board.spaces[id];
       if (!space) continue;
-      if (space.kind === 'town') return id;
+      if (space.kind === 'town' && allowed(board, id, open)) return id;
       for (const link of space.links) {
-        if (!seen.has(link)) {
+        if (!seen.has(link) && allowed(board, link, open)) {
           seen.add(link);
           next.push(link);
         }

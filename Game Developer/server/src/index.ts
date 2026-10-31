@@ -2,6 +2,7 @@
 // WebSocket. The client is not wired to it yet: that is MVP step 2, and the protocol is written in
 // docs/state/protocol.md before any intent travels. Run: npm run server (ws://localhost:8787).
 
+import { randomUUID } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { WebSocketServer, type WebSocket } from 'ws';
@@ -12,6 +13,7 @@ import { RegionActor } from './region-actor.ts';
 const PORT = Number(process.env.PORT ?? 8787);
 const DB_PATH = process.env.DB_PATH ?? join(import.meta.dirname, '..', 'data', 'world.db');
 const HEARTBEAT_MS = 25_000; // the Cloudflare proxy closes idle sockets; keep them warm
+const TICK_MS = 60_000; // the world moves once a minute: spawns come and go
 
 mkdirSync(dirname(DB_PATH), { recursive: true });
 const db = openDb(DB_PATH);
@@ -45,6 +47,13 @@ wss.on('connection', (ws, req) => {
   });
 });
 
+// The region's world ticks on the server's clock, whoever is connected (shared-world rule 4: the world keeps moving).
+const ticker = setInterval(() => {
+  void region.submit({ type: 'tick', id: randomUUID(), player: 'world' }).then((r) => {
+    for (const e of r.events) console.log(`[server] ${e.type === 'spawned' ? `${e.spawn.kind} spawned at ${e.space}` : e.type === 'despawned' ? `despawned at ${e.space}` : e.type}`);
+  });
+}, TICK_MS);
+
 const heartbeat = setInterval(() => {
   for (const ws of wss.clients) {
     if (!alive.has(ws)) {
@@ -60,6 +69,7 @@ wss.on('listening', () => console.log(`[server] listening on ws://localhost:${PO
 
 function shutdown(): void {
   clearInterval(heartbeat);
+  clearInterval(ticker);
   wss.close();
   for (const ws of wss.clients) ws.terminate();
   db.close();

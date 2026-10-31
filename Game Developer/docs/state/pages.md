@@ -63,6 +63,12 @@ the camera, hints, the covered areas and the bosses, a reload mid-choice, an old
 mid-fight, the shop, the bag, a dice card, a potion, the Iron Gate's boss and Thornwood opening, and a reset, with
 screenshots in `tools/out/shots/`. It clears the page's save first and plants saves of its own.
 
+## The balance simulation
+
+`node tools/simulate.ts [turns] [seeds]` needs no browser: bots of each class play from Ashford and each boss is fought
+level by level (`docs/state/rules.md`, Balance). A minute for the defaults. Rerun it after changing any number in
+`rules/data`.
+
 ## Things the pane does to a page
 
 - A **hidden pane pauses Phaser**: no animation frames, so a walk started by Roll finishes only when the pane is shown

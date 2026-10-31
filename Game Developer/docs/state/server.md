@@ -8,7 +8,7 @@ is written before the first intent travels (the skill `shared-world`, rule 8).
 | --- | --- |
 | `src/db.ts` | opens SQLite (`better-sqlite3`), creates the schema, checks the schema version, `pruneResults` |
 | `src/region-actor.ts` | `RegionActor`: the owner of one region's state; a queue, the rules, SQLite |
-| `src/index.ts` | `npm run server`: opens `server/data/world.db`, wakes `region-0`, listens on ws://localhost:8787 |
+| `src/index.ts` | `npm run server`: opens `server/data/world.db`, wakes `region-0`, ticks its world once a minute, listens on ws://localhost:8787 |
 | `test/region-actor.test.ts` | the actor against an in-memory database |
 
 Node 24 runs the TypeScript straight (`node server/src/index.ts`): no build step. That needs `.ts` in relative imports and
@@ -18,8 +18,12 @@ only erasable syntax (no enums, no parameter properties), which `tsconfig.json` 
 
 - `new RegionActor({ id, db, now?, create? })` loads its row from `regions` or, when there is none, makes a fresh game
   (`create`, or `newGame` seeded with the region's id) at version 0 and stores it.
-- `submit(action)` queues the action behind every earlier one; each is applied through `apply(state, action, rng)` with the
-  actor's own random stream, so a region never needs a lock and two phones never roll the same die.
+- `submit(action)` queues the action behind every earlier one; each is applied through `apply(state, action, rng, now())`
+  with the actor's own random stream and its own clock (so spots that give again, bosses' returns and spawns run on the
+  server's time), so a region never needs a lock and two phones never roll the same die.
+- **The world ticks on the server**: `index.ts` submits a `tick` action every minute (`TICK_MS`), whoever is connected;
+  spawns come and go on the region's clock (shared-world rule 4: the world keeps moving when a player drops). A tick
+  that changes nothing leaves the version alone.
 - **A repeated action id gets the stored answer** (`results` table, keyed by region and action id) and is marked
   `replayed: true`; the rules are not run again, the dice are not spent again.
 - An action that changes the state bumps `version` by one; a refused action is answered, stored, and leaves the version

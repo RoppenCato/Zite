@@ -116,8 +116,8 @@ is short, and Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed w
 **Block (half)**, **Dodge (luck)**, **Brace (+mana)**, **Counter (hit back)**, and Back. The round is one intent
 (`game.act({ type: 'fight', move, guard })`) and its events are **played back one at a time, 450 ms apart**: a hit
 flashes the one struck and floats the damage up (bigger and yellow on a crit), the bars tween, the message says the blow,
-the miss, the wind-up, the stun, the poison, the counter, the drink, the loot, the level, the boss falling, the area
-opening. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
+the miss, the wind-up, the stun (or a boss shrugging it off), the poison, the counter, the drink, the loot, the level,
+the boss falling, the area opening. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
 
 ## The shop scene (mine, 2026-10-31)
 

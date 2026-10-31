@@ -1,14 +1,50 @@
 {
-  "xpForLevel": [0, 20, 50, 90, 140, 200, 270, 350, 440, 540, 660, 800, 960, 1140, 1340],
+  "xpForLevel": [
+    0,
+    30,
+    80,
+    160,
+    280,
+    440,
+    650,
+    920,
+    1250,
+    1650,
+    2100,
+    2650,
+    3300,
+    4050,
+    4900
+  ],
   "baseCrit": 0.1,
   "critPower": 2,
   "fleeChance": 0.5,
   "deathGoldLoss": 0.2,
   "charge": 2,
-  "enemyCharge": 2,
+  "enemyCharge": 2.5,
   "manaPerRound": 2,
-  "guards": { "block": 0.5, "dodge": 0.35, "brace": 0.75, "braceMana": 4, "counter": 0.7 },
-  "chest": { "gold": [15, 40], "gearChance": 0.35, "consumableChance": 0.3 },
-  "gamble": { "stakePerTier": 20 },
-  "spawns": { "cap": 2, "chancePerTick": 0.5, "lifeMs": 600000, "miniboss": 0.7 }
+  "guards": {
+    "block": 0.5,
+    "dodge": 0.3,
+    "brace": 0.75,
+    "braceMana": 4,
+    "counter": 0.5
+  },
+  "chest": {
+    "gold": [
+      15,
+      40
+    ],
+    "gearChance": 0.35,
+    "consumableChance": 0.3
+  },
+  "gamble": {
+    "stakePerTier": 20
+  },
+  "spawns": {
+    "cap": 2,
+    "chancePerTick": 0.5,
+    "lifeMs": 600000,
+    "miniboss": 0.7
+  }
 }

@@ -232,6 +232,9 @@ export class FightScene extends Phaser.Scene {
       case 'skipped':
         this.say(`${this.enemyName} is stunned and loses its turn.`);
         break;
+      case 'resisted':
+        this.say(`${this.enemyName} shrugs it off.`);
+        break;
       case 'effect':
         this.say(
           e.target === 'enemy'

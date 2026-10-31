@@ -64,6 +64,6 @@ client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, pla
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
 server/src       db, region-actor, index
 server/test      region-actor
-tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size)
+tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size), simulate.ts (the balance bots)
 docs/state/      rules.md, world.md, client.md, server.md, pages.md
 ```

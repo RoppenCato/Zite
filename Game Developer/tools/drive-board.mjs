@@ -290,11 +290,19 @@ check('Continue closes the fight: Roll is back, the HUD shows the level, the tok
 await shot('11-after-fight');
 
 // The shop: a save standing on Tinker Cart with gold; tap the shop you stand on, buy a potion, a +1 and a sword, leave.
-const stockSave = (patch) => ev((patch) => {
+/** Plant a save: the current state with the character patched (and the state itself, for spawns and the die). */
+const stockSave = (patch, statePatch = {}) => ev(({ patch, statePatch }) => {
   const state = structuredClone(boardWorld.game.state);
   Object.assign(state.characters.local, patch);
+  Object.assign(state, statePatch);
   localStorage.setItem('boardworld.save', JSON.stringify({ version: 1, state, rng: 424242 }));
-}, patch);
+  // The page ticks the world once a minute and saves after it; the planted state must be what it saves.
+  boardWorld.game.state = state;
+}, { patch, statePatch });
+/** A fight against `enemy` as the rules would start it, with the enemy patched. */
+const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => ({ enemy: { ...boardWorld.rules.makeEnemy(enemy), ...enemyPatch }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn: false }), { enemy, space, enemyPatch });
+const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
+const STRONG = { level: 10, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, fight: null, offer: null, steps: 0, items: {}, equipment: NO_GEAR };
 await stockSave({ space: 'tinker', steps: 0, gold: 150, items: {}, fight: null, offer: null, hp: 60, bag: [] });
 await page.reload();
 await ready();
@@ -308,7 +316,7 @@ await tapAt(SHOP.buyX, SHOP.row(5)); // the potion
 await tapAt(SHOP.buyX, SHOP.row(7)); // +1
 await tapAt(SHOP.buyX, SHOP.row(0)); // the copper sword
 const bought = await ev(() => ({ gold: boardWorld.game.me.gold, items: boardWorld.game.me.items, bag: boardWorld.game.me.bag.map((g) => g.name), message: boardWorld.phaser.scene.getScene('shop').message.text, stats: boardWorld.phaser.scene.getScene('hud').stats.text }));
-check('Buy takes the gold and fills the bag; the HUD follows', bought.gold === 150 - 15 - 12 - 30 && bought.items.potion === 1 && bought.items['plus-one'] === 1 && bought.bag[0] === 'Copper Sword' && /Gold 93/.test(bought.stats) && /Bought Copper Sword for 30 gold/.test(bought.message), JSON.stringify(bought));
+check('Buy takes the gold and fills the bag; the HUD follows', bought.gold === 150 - 25 - 12 - 30 && bought.items.potion === 1 && bought.items['plus-one'] === 1 && bought.bag[0] === 'Copper Sword' && /Gold 83/.test(bought.stats) && /Bought Copper Sword for 30 gold/.test(bought.message), JSON.stringify(bought));
 await tapAt(...SHOP.tabSell);
 await sleep(150);
 const sellTab = await ev(() => boardWorld.phaser.scene.getScene('shop').rows.filter((r) => r.text).map((r) => r.text));
@@ -362,6 +370,208 @@ check('Potion heals, is spent and dims in the row, and the enemy still struck', 
 await shot('15-fight-potion');
 await finishFight();
 
+// The fight's other buttons: an ability from the menu, Charge then a Counter, Flee.
+await stockSave({ ...STRONG, space: 'ashford-millford-3', abilities: { 'heavy-blow': 1, 'shield-bash': 1 }, fight: await plantedFight('bandit', 'ashford-millford-3', { hp: 900, maxHp: 900 }) });
+await page.reload();
+await ready();
+await sleep(400);
+await tapAt(...F.b); // Abilities
+await sleep(200);
+const menu = await ev(() => boardWorld.phaser.scene.getScene('fight').buttons.map((b) => b.list[1].text));
+check('Abilities opens the menu with the kit and the mana costs', menu[0]?.startsWith('Heavy Blow') && /4 MP/.test(menu[0]) && menu[1]?.startsWith('Shield Bash') && menu.at(-1) === 'Back', JSON.stringify(menu));
+await tapAt(...F.a); // Heavy Blow
+await sleep(150);
+await tapAt(...F.b); // Dodge
+await sleep(100);
+await fightBusy();
+await sleep(100);
+const cast = await ev(() => ({ mana: boardWorld.game.me.mana, round: boardWorld.game.me.fight?.round, log: boardWorld.log.text().split('\n').filter((l) => /fight ability/.test(l)).at(-1) }));
+check('Heavy Blow with a Dodge: the mana is spent and the round played', cast.mana === 58 && cast.round === 2 && /heavy-blow\/dodge/.test(cast.log ?? ''), JSON.stringify(cast));
+await tapAt(...F.c); // Charge
+await sleep(150);
+await tapAt(...F.c); // Brace
+await sleep(100);
+await fightBusy();
+await sleep(100);
+const charged = await ev(() => ({ charged: boardWorld.game.me.fight?.charged, status: boardWorld.phaser.scene.getScene('fight').heroStatus.text, chargeLabel: boardWorld.phaser.scene.getScene('fight').buttons[2].list[1].text, mana: boardWorld.game.me.mana }));
+check('Charge with a Brace: the charge is held and shown, the button reads Charged, brace gave mana back', charged.charged === true && /charged/.test(charged.status) && charged.chargeLabel === 'Charged' && charged.mana === 60, JSON.stringify(charged));
+await tapAt(...F.a); // Attack
+await sleep(150);
+await tapAt(...F.d); // Counter
+await sleep(100);
+await fightBusy();
+await sleep(100);
+const struck = await ev(() => ({ charged: boardWorld.game.me.fight?.charged, log: boardWorld.log.text().split('\n').filter((l) => /fight attack\/counter/.test(l)).at(-1) }));
+check('the charged Attack with a Counter lands twice as hard and spends the charge', struck.charged === false && /player (\d+)/.test(struck.log ?? '') && Number(/player (\d+)/.exec(struck.log)[1]) >= 90, JSON.stringify(struck));
+await shot('18-fight-abilities');
+await tapAt(...F.e); // Flee
+await sleep(150);
+await tapAt(...F.a); // Block
+await sleep(100);
+await fightBusy();
+await sleep(100);
+const fled = await ev(() => ({ fight: !!boardWorld.game.me.fight, outcome: boardWorld.phaser.scene.getScene('fight').outcome?.type, message: boardWorld.phaser.scene.getScene('fight').message.text }));
+check('Flee with a Block either gets away or costs the blow', (fled.fight === false && fled.outcome === 'fled') || (fled.fight === true && /No escape|hits you|misses/.test(fled.message)), JSON.stringify(fled));
+if (!fled.fight) { await tapAt(...F.cont); await sleep(300); } else await finishFight();
+
+// Exactly N: the chip becomes the numbers.
+await stockSave({ ...STRONG, space: 'ashford', steps: 3, items: { exact: 1 } }, { die: { sides: 6, last: 3 } });
+await page.reload();
+await ready();
+await settle();
+const exactChip = await ev(() => boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text));
+check('a pending roll with Exactly N in the bag offers its chip', JSON.stringify(exactChip) === '["Exactly N"]', JSON.stringify(exactChip));
+let chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[0].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y);
+await sleep(200);
+const numbers = await ev(() => boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text));
+check('tapping it turns the row into the numbers one to six and a way back', JSON.stringify(numbers) === '["1","2","3","4","5","6","×"]', JSON.stringify(numbers));
+chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[4].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y); // 5
+await sleep(300);
+await settle();
+const exact = await ev(() => ({ steps: boardWorld.game.me.steps, die: boardWorld.phaser.scene.getScene('hud').dieText.text, items: boardWorld.game.me.items, message: boardWorld.phaser.scene.getScene('hud').message.text, choices: boardWorld.phaser.scene.getScene('board').choices?.size }));
+check('the 5 makes it a walk of five, spends the card and relights the choices', exact.steps === 5 && exact.die === '5' && exact.items.exact === undefined && /Exactly N: now 5 steps/.test(exact.message) && exact.choices > 0, JSON.stringify(exact));
+await shot('19-exactly-n');
+
+// The gambler: the question in the chips, answered Low.
+await stockSave({ ...STRONG, space: 'ashford-millford-2', gold: 100, offer: { kind: 'gamble', stake: 10 } });
+await page.reload();
+await ready();
+const asked = await ev(() => ({ chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha }));
+check('a page opened mid-question asks it again in the chips, Roll dimmed', JSON.stringify(asked.chips) === '["High","Low","Walk on"]' && /double or nothing on 10 gold/.test(asked.message) && asked.rollAlpha < 1, JSON.stringify(asked));
+chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[1].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y); // Low
+await sleep(300);
+const answered = await ev(() => ({ offer: boardWorld.game.me.offer, gold: boardWorld.game.me.gold, message: boardWorld.phaser.scene.getScene('hud').message.text, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.length, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha }));
+check('Low answers it: the die shows, ten gold won or lost, Roll back', answered.offer === null && (answered.gold === 90 || answered.gold === 110) && /The die shows \d: you (win|lose) 10 gold/.test(answered.message) && answered.chips === 0 && answered.rollAlpha === 1, JSON.stringify(answered));
+
+// A wandering merchant camped on the next spot: the walk opens his shop.
+await stockSave({ ...STRONG, space: 'ashford', steps: 1, gold: 100 }, { die: { sides: 6, last: 1 }, spawns: { 'ashford-millford-1': { kind: 'merchant', enemy: null, until: Date.now() + 600000 } } });
+await page.reload();
+await ready();
+await settle();
+const badge = await ev(() => boardWorld.phaser.scene.getScene('board').spawnMarks.has('ashford-millford-1'));
+await frameChoice('ashford-millford-1');
+await tapSpace('ashford-millford-1', spaces);
+await sleep(1200);
+await settle();
+const merchant = await ev(() => ({ shop: boardWorld.phaser.scene.isActive('shop'), title: boardWorld.phaser.scene.getScene('shop').children.list.find((o) => o.text && /Merchant/.test(o.text))?.text }));
+check('a merchant camped shows a badge, and landing there opens his shop', badge && merchant.shop && merchant.title === 'Wandering Merchant', JSON.stringify({ badge, ...merchant }));
+await tapAt(SHOP.buyX, SHOP.row(5)); // a potion from the merchant
+const fromMerchant = await ev(() => ({ gold: boardWorld.game.me.gold, potion: boardWorld.game.me.items.potion }));
+check('the merchant sells like a shop', fromMerchant.gold === 75 && fromMerchant.potion === 1, JSON.stringify(fromMerchant));
+await tapAt(...SHOP.leave);
+await sleep(300);
+
+// Sell: press it.
+const sword = await ev(() => boardWorld.rules.plainGear('g9', 'weapon', 1));
+await stockSave({ ...STRONG, space: 'tinker', gold: 10, bag: [sword] });
+await page.reload();
+await ready();
+await settle();
+await tapSpace('tinker', spaces);
+await sleep(400);
+await tapAt(...SHOP.tabSell);
+await sleep(150);
+await tapAt(SHOP.buyX, SHOP.row(0)); // Sell the sword
+const sold = await ev(() => ({ gold: boardWorld.game.me.gold, bag: boardWorld.game.me.bag.length, message: boardWorld.phaser.scene.getScene('shop').message.text }));
+check('Sell takes the piece and pays half', sold.gold === 25 && sold.bag === 0 && /Sold Copper Sword for 15 gold/.test(sold.message), JSON.stringify(sold));
+await tapAt(...SHOP.leave);
+await sleep(300);
+
+// The bag: Take off and Drop.
+const helm = await ev(() => boardWorld.rules.plainGear('g8', 'helm', 1));
+await stockSave({ ...STRONG, space: 'ashford', equipment: { ...NO_GEAR, weapon: sword }, bag: [helm] });
+await page.reload();
+await ready();
+await tapAt(...B.bag);
+await sleep(400);
+await tapAt(364, 212); // Take off the weapon
+await sleep(200);
+const tookOff = await ev(() => ({ weapon: boardWorld.game.me.equipment.weapon, bag: boardWorld.game.me.bag.map((g) => g.name), message: boardWorld.phaser.scene.getScene('bag').message.text }));
+check('Take off puts the weapon back in the bag', tookOff.weapon === null && tookOff.bag.length === 2 && /Took off Copper Sword/.test(tookOff.message), JSON.stringify(tookOff));
+await tapAt(288, 456); // Drop the first carried piece
+await sleep(200);
+const dropped = await ev(() => ({ bag: boardWorld.game.me.bag.map((g) => g.name), message: boardWorld.phaser.scene.getScene('bag').message.text }));
+check('Drop throws it away', dropped.bag.length === 1 && /Dropped/.test(dropped.message), JSON.stringify(dropped));
+await tapAt(...BAG.close);
+await sleep(300);
+
+// A shrine, a level, a death, through the screen.
+await stockSave({ ...STRONG, space: 'moon-gate-1', steps: 1, abilities: { 'heavy-blow': 1, 'shield-bash': 1 }, cooldowns: {} }, { die: { sides: 6, last: 1 } });
+await page.reload();
+await ready();
+await settle();
+await frameChoice('moon');
+await tapSpace('moon', spaces);
+await sleep(1000);
+await settle();
+const learned = await ev(() => ({ abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('landing on the Moon Shrine teaches the third ability', learned.abilities['war-cry'] === 1 && /Learned war cry, rank 1/.test(learned.message), JSON.stringify(learned));
+await stockSave({ ...STRONG, space: 'ashford-millford-1', xp: 29, level: 1, fight: await plantedFight('slime', 'ashford-millford-1', { hp: 1 }) });
+await page.reload();
+await ready();
+await sleep(400);
+await attackRound();
+const levelled = await ev(() => ({ level: boardWorld.game.me.level, summary: boardWorld.phaser.scene.getScene('fight').outcome?.summary, cont: boardWorld.phaser.scene.getScene('fight').continueButton.visible }));
+check('a win that crosses a level says so and offers Continue', levelled.level === 2 && /Level 2!/.test(levelled.summary ?? '') && levelled.cont, JSON.stringify(levelled));
+await tapAt(...F.cont);
+await sleep(300);
+const hudLevel = await ev(() => boardWorld.phaser.scene.getScene('hud').stats.text);
+check('the HUD shows the new level', /^Lv 2 /.test(hudLevel), hudLevel);
+await stockSave({ ...STRONG, space: 'ashford-millford-3', hp: 1, gold: 100, fight: await plantedFight('bandit', 'ashford-millford-3') });
+await page.reload();
+await ready();
+await sleep(400);
+await attackRound();
+const dead = await ev(() => ({ outcome: boardWorld.phaser.scene.getScene('fight').outcome?.type, message: boardWorld.phaser.scene.getScene('fight').message.text, space: boardWorld.game.me.space, gold: boardWorld.game.me.gold, hp: boardWorld.game.me.hp }));
+check('beaten: the fight screen says where you wake and what it cost', dead.outcome === 'died' && /wake in Ashford, 20 gold lighter/.test(dead.message) && dead.space === 'ashford' && dead.gold === 80 && dead.hp === 400, JSON.stringify(dead));
+await tapAt(...F.cont);
+await sleep(500);
+const woke = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const sp = boardWorld.game.state.board.spaces.ashford; return { tokenOnTown: Math.abs(s.token.x - sp.x) < 1, message: boardWorld.phaser.scene.getScene('hud').message.text, following: s.following }; });
+check('Continue puts the token in Ashford and the camera on it', woke.tokenOnTown && /wake in Ashford/.test(woke.message) && woke.following, JSON.stringify(woke));
+
+// Hints on a boss and on a covered spot.
+await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); s.frame([boardWorld.game.state.board.spaces.gate, boardWorld.game.state.board.spaces.edge]); });
+await settle();
+await tapSpace('gate', spaces);
+await sleep(300);
+const bossHint = await ev(() => boardWorld.phaser.scene.getScene('hud').message.text);
+check('tapping the Iron Gate names the Warden, its level and what it opens', /Thornwood Warden, level 6, at Iron Gate/.test(bossHint) && /open Thornwood/.test(bossHint), bossHint);
+await tapSpace('edge', spaces);
+await sleep(300);
+const coveredHint = await ev(() => boardWorld.phaser.scene.getScene('hud').message.text);
+check('tapping a spot under a cover says the area is closed and which boss opens it', /Thornwood \(tier 2, levels 4 to 8\): closed/.test(coveredHint) && /Beat Thornwood Warden at Iron Gate/.test(coveredHint), coveredHint);
+
+// A level-one Warrior cannot beat the Warden: the wall.
+await stockSave({ level: 1, hp: 120, maxHp: 120, mana: 20, maxMana: 20, attack: 12, defense: 8, space: 'moon-gate-3', steps: 1, fight: null, offer: null, items: {}, equipment: NO_GEAR, cooldowns: {}, bossKills: {}, opened: ['meadows'] }, { die: { sides: 6, last: 1 } });
+await page.reload();
+await ready();
+await settle();
+await frameChoice('gate');
+await tapSpace('gate', spaces);
+await sleep(1200);
+await settle();
+const wallRounds = await finishFight();
+const wall = await ev(() => ({ space: boardWorld.game.me.space, kills: boardWorld.game.me.bossKills.gate, opened: boardWorld.game.me.opened, message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('a level-one Warrior with no gear is beaten by the Warden and wakes in Millford', wall.kills === undefined && wall.space === 'millford' && !wall.opened.includes('thornwood') && /wake in Millford/.test(wall.message), JSON.stringify({ wallRounds, ...wall }));
+
+// A spawned mini-boss: land on it, beat it, it leaves the board.
+await stockSave({ ...STRONG, space: 'ashford', steps: 1 }, { die: { sides: 6, last: 1 }, spawns: { 'ashford-millford-1': { kind: 'miniboss', enemy: 'wolf-alpha', until: Date.now() + 600000 } } });
+await page.reload();
+await ready();
+await settle();
+await frameChoice('ashford-millford-1');
+await tapSpace('ashford-millford-1', spaces);
+await sleep(1200);
+await settle();
+const miniFight = await ev(() => ({ enemy: boardWorld.game.me.fight?.enemy.name, spawn: boardWorld.game.me.fight?.spawn }));
+check('landing where a mini-boss prowls fights it', miniFight.enemy === 'Wolf Alpha' && miniFight.spawn === true, JSON.stringify(miniFight));
+await finishFight();
+const miniGone = await ev(() => ({ spawns: Object.keys(boardWorld.game.state.spawns), badges: [...boardWorld.phaser.scene.getScene('board').spawnMarks.keys()] }));
+check('beaten, it leaves the board and its badge goes (the world may have spawned elsewhere meanwhile)', !miniGone.spawns.includes('ashford-millford-1') && !miniGone.badges.includes('ashford-millford-1') && miniGone.badges.length === miniGone.spawns.length, JSON.stringify(miniGone));
+
 // The boss on the board: a save next to the Iron Gate, strong enough; land exactly on it; beat it; Thornwood opens.
 await stockSave({ space: 'moon-gate-3', steps: 1, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, level: 10, fight: null, offer: null, opened: ['meadows'], cooldowns: {} });
 await ev(() => { const s = JSON.parse(localStorage.getItem('boardworld.save')); s.state.die.last = 1; localStorage.setItem('boardworld.save', JSON.stringify(s)); });
@@ -381,6 +591,30 @@ const bossRounds = await finishFight();
 const opened = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, kills: boardWorld.game.me.bossKills, coverThornwood: s.covers.get('thornwood').visible, label: s.bossLabels.get('gate').text, message: boardWorld.phaser.scene.getScene('hud').message.text }; });
 check('the Warden falls: Thornwood opens, its cover lifts, the gate counts down to the boss\'s return', opened.opened.includes('thornwood') && opened.kills.gate === 1 && opened.coverThornwood === false && /back in \d+:\d\d/.test(opened.label) && /Thornwood is open/.test(opened.message), JSON.stringify({ bossRounds, ...opened }));
 await shot('17-area-opened');
+
+// The Briar Gate opens Frostpeak; then a look at the two further areas.
+await stockSave({ ...STRONG, attack: 90, defense: 40, hp: 600, maxHp: 600, space: 'thicket-briar-3', steps: 1, opened: ['meadows', 'thornwood'], cooldowns: {}, bossKills: {} }, { die: { sides: 6, last: 1 } });
+await page.reload();
+await ready();
+await settle();
+await frameChoice('briar');
+await tapSpace('briar', spaces);
+await sleep(1200);
+await settle();
+const briarFight = await ev(() => boardWorld.game.me.fight?.enemy.name);
+check('landing exactly on the Briar Gate starts the Briar King', briarFight === 'Briar King', String(briarFight));
+await finishFight();
+const frost = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, cover: s.covers.get('frostpeak').visible, message: boardWorld.phaser.scene.getScene('hud').message.text }; });
+check('the Briar King falls and Frostpeak opens', frost.opened.includes('frostpeak') && frost.cover === false && /Frostpeak is open/.test(frost.message), JSON.stringify(frost));
+await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
+await sleep(400);
+await settle();
+await shot('20-overview-all-open');
+const frameArea = async (id) => { await ev((id) => { const b = boardWorld.game.state.board.areas[id].bounds; boardWorld.phaser.scene.getScene('board').frame([{ x: b.x, y: b.y }, { x: b.x + b.width, y: b.y + b.height }]); }, id); await settle(); };
+await frameArea('thornwood');
+await shot('21-thornwood');
+await frameArea('frostpeak');
+await shot('22-frostpeak');
 
 // reset() throws the save away: the next load is the character screen again.
 await ev(() => boardWorld.game.reset());

@@ -1,7 +1,7 @@
 // Gear (Robin, 2026-10-31): a rank by tier (copper, iron, steel), a rarity from common to legendary with rolled
 // numbers, and named pieces with a special effect. What is worn adds to the character's base numbers.
 
-import { GEAR, PROGRESSION } from './data.ts';
+import { CLASS_DATA, GEAR, PROGRESSION } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type AffixKind, type Character, type GearItem, type Rarity, type Slot } from './types.ts';
 
@@ -18,12 +18,13 @@ export interface Stats {
 }
 
 export function stats(c: Character): Stats {
+  const cls = CLASS_DATA[c.classId];
   let attack = c.attack;
   let defense = c.defense;
   let maxHp = c.maxHp;
   let maxMana = c.maxMana;
-  let crit = PROGRESSION.baseCrit;
-  let dodge = 0;
+  let crit = cls?.crit ?? PROGRESSION.baseCrit;
+  let dodge = cls?.dodge ?? 0;
   let lifesteal = 0;
   let thorns = 0;
   let vigor = 0;

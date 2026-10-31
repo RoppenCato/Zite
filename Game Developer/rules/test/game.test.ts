@@ -68,9 +68,9 @@ describe('a new game', () => {
   });
 
   it('gives each class its own numbers and kit from the data', () => {
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'mage' }).characters[P]).toMatchObject({ hp: 80, mana: 40, attack: 14, defense: 4, gold: 50, abilities: { fireball: 1, 'frost-bolt': 1 } });
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'rogue' }).characters[P]).toMatchObject({ hp: 90, gold: 60, abilities: { backstab: 1, 'poison-blade': 1 } });
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 95, attack: 8, abilities: { volley: 1, 'aimed-shot': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'mage' }).characters[P]).toMatchObject({ hp: 85, mana: 40, attack: 14, defense: 4, gold: 50, abilities: { fireball: 1, 'frost-bolt': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'rogue' }).characters[P]).toMatchObject({ hp: 100, gold: 60, abilities: { backstab: 1, 'poison-blade': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 100, attack: 8, abilities: { volley: 1, 'aimed-shot': 1 } });
   });
 });
 
@@ -203,7 +203,7 @@ describe('landing', () => {
 
   it('on a boss spot starts the boss fight, unless the boss is away for its five minutes', () => {
     const { state, events } = apply(about('s9'), move(['s10']), makeRng('x'), NOW);
-    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 220 }) });
+    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 500 }) });
     expect(me(state).fight).toMatchObject({ space: 's10', spawn: false, round: 1 });
     const away = apply(about('s9', { cooldowns: { s10: NOW + 1000 } }), move(['s10']), makeRng('x'), NOW);
     expect(away.events[2]).toMatchObject({ type: 'nothing', text: expect.stringContaining('not back yet') });
@@ -415,7 +415,7 @@ describe('a stored state', () => {
       bossKills: {},
       offer: null,
     });
-    expect(s!.characters.p2).toMatchObject({ name: 'Ann', classId: 'mage', level: 1, xp: 0, gold: 12, hp: 80, mana: 40, items: {}, abilities: { fireball: 1, 'frost-bolt': 1 } });
+    expect(s!.characters.p2).toMatchObject({ name: 'Ann', classId: 'mage', level: 1, xp: 0, gold: 12, hp: 85, mana: 40, items: {}, abilities: { fireball: 1, 'frost-bolt': 1 } });
     // And it plays on: a roll from the start of the world.
     const { events } = apply(s!, roll(), makeRng('ashford'), NOW);
     expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);

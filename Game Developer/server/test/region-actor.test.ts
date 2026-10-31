@@ -98,6 +98,30 @@ describe('a region actor', () => {
     expect(bFirst.version).toBe(1);
   });
 
+  it('ticks the world on its own clock: a spawn comes, the version moves; a quiet tick moves nothing; the spawn goes when its time is up', async () => {
+    const { actor, tick } = freshActor();
+    let spawnedAt: string | null = null;
+    let version = 0;
+    for (let i = 0; i < 40 && !spawnedAt; i++) {
+      const r = await actor.submit({ type: 'tick', id: `t${i}`, player: 'world' });
+      const spawned = r.events.find((e) => e.type === 'spawned');
+      if (spawned?.type === 'spawned') {
+        spawnedAt = spawned.space;
+        expect(r.version).toBe(version + 1);
+      } else {
+        expect(r.events).toEqual([]);
+        expect(r.version).toBe(version);
+      }
+      version = r.version;
+    }
+    expect(spawnedAt).not.toBeNull();
+    expect(actor.snapshot().state.spawns[spawnedAt!]).toMatchObject({ until: 1000 + 600000 });
+    tick(11 * 60 * 1000);
+    const later = await actor.submit({ type: 'tick', id: 'late', player: 'world' });
+    expect(later.events[0]).toEqual({ type: 'despawned', action: 'late', player: 'world', space: spawnedAt });
+    expect(later.version).toBe(version + 1);
+  });
+
   it('forgets old answers when asked, keeps recent ones', async () => {
     const { actor, db, now, tick } = freshActor();
     await actor.submit(roll('a1'));

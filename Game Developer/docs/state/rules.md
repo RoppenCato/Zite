@@ -104,7 +104,7 @@ answered the board waits. Every draw comes from the stream, so a walk that lands
 
 ## Items: the shop, the potion, the dice cards (the brief's dice cards, "found or bought")
 
-`data/items.json`: a **Potion** (15 gold, heals 40 in a fight; drinking it is the round) and four dice cards: **Reroll**
+`data/items.json`: a **Potion** (25 gold, heals 50 in a fight; drinking it is the round) and four dice cards: **Reroll**
 (20), **+1** (12), **−1** (12, never below one), **Exactly N** (40). A dice card needs a roll pending and the board free
 (`not now` otherwise): Reroll draws `rng.int(sides)` again; +1 adds one (a walk of seven is allowed, no board has a dead
 end that would strand it); −1 takes one; Exactly N sets `value`, a whole number from 1 to the die's sides (`bad value`).
@@ -130,32 +130,36 @@ the player got away, it is stunned, or it is the first round against a class tha
 is read when the blow comes. Effects count down at the end; `manaPerRound` (2) trickles back.
 
 - **A hit**: `round(attack × power) − floor(defense / 2)`, at least 1, plus a swing of −2 to +2 from the stream, doubled
-  on a crit (`baseCrit` 0.1 plus the gear's, `critPower` 2), never under 1. `hit { by, move, damage, crit, hp, absorbed }`.
+  on a crit (the class's crit, else `baseCrit` 0.1, plus the gear's; `critPower` 2), never under 1.
+  `hit { by, move, damage, crit, hp, absorbed }`.
 - **The moves**: `attack` (power 1); `charge` (anyone: the next hit of any kind lands `charge` 2 times as hard, then the
   charge is spent; charging twice is `not now`); `ability { ability }` (below; `not enough mana`, `no such ability`);
   `item { item }` (a potion: `used`, `healed`, then the enemy's turn); `flee` (`fleeChance` 0.5; `fled { ok }`; a failed
   try costs the blow).
-- **The guards**, chosen before the blow: `block` halves it (`guards.block` 0.5); `dodge` misses it `guards.dodge` 0.35
-  plus the gear's dodge of the time (`missed`), else full; `brace` takes three quarters and gives `braceMana` 4; `counter`
-  takes it in full and strikes back at `guards.counter` 0.7 (`countered { damage, hp }`); `none` for a script. A barrier
-  soaks first (`absorbed`); thorns bite back a share of what landed.
+- **The guards**, chosen before the blow: `block` halves it (`guards.block` 0.5); `dodge` misses it `guards.dodge` 0.3
+  plus the class's and the gear's dodge of the time (`missed`), else full (the Rogue's 0.25 makes dodging its guard);
+  `brace` takes three quarters and gives `braceMana` 4; `counter` takes it in full and strikes back at `guards.counter`
+  0.5 (`countered { damage, hp }`); `none` for a script. A barrier soaks first (`absorbed`); thorns bite back a share of
+  what landed.
 - **The enemy's turn**: a move by weight from `enemies.json`. A move marked `charge` is a **wind-up**: no blow this
-  round (`charged { by: 'enemy', move }`), and the next blow carries that move's name and hits `enemyCharge` 2 times as
-  hard. Every mini-boss and boss has one; read the status and guard. A stunned enemy skips (`skipped`); a weakened one
-  hits for `mult` of its power.
+  round (`charged { by: 'enemy', move }`), and the next blow carries that move's name and hits `enemyCharge` 2.5 times
+  as hard. Every mini-boss and boss has one; read the status and block it. A stunned enemy skips (`skipped`); a weakened
+  one hits for `mult` of its power. **Mini-bosses and bosses shrug off stuns** (`resisted`): the simulation found a
+  Shield Bash every other round robbed the Warden of the fight.
 - **Abilities** (`abilities.json`, three ranks each; the class's kit at rank 1 from the start, the rest learned at
-  shrines): Warrior **Heavy Blow** (1.6 / 1.85 / 2.1, 4 mana), **Shield Bash** (0.8 and a stun, 6), **War Cry** (hits
-  harder ×1.3 for 3 rounds, 5); Rogue **Backstab** (1.2 with a 50 percent crit, 4), **Poison Blade** (0.8 and a poison
-  of 0.4 of the attack for 3 rounds, 5), **Shadowstep** (the next two blows miss, 6); Mage **Fireball** (2.0 / 2.3 /
-  2.6, 8), **Frost Bolt** (1.1 and weakens to 0.7 for 2 rounds, 6), **Arcane Shield** (a barrier of 30, 7); Ranger
-  **Volley** (three arrows at 0.7, 5), **Aimed Shot** (1.5 with a 35 percent crit, 5), **Snare** (a stun, 6). Events
+  shrines): Warrior **Heavy Blow** (1.6 / 1.85 / 2.1, 4 mana), **Shield Bash** (0.8 and a stun on a mob, 6), **War Cry**
+  (hits harder ×1.3 for 3 rounds, 5); Rogue **Backstab** (1.2 with a 60 percent crit, 4), **Poison Blade** (0.8 and a
+  poison of 0.5 of the attack for 3 rounds, 5), **Shadowstep** (the next two blows miss, 6); Mage **Fireball** (2.0 /
+  2.3 / 2.6, 8), **Frost Bolt** (1.1 and weakens to 0.7 for 2 rounds, 6), **Arcane Shield** (a barrier of 30, 7); Ranger
+  **Volley** (three arrows at 0.7, 5), **Aimed Shot** (1.5 with a 35 percent crit, 5), **Snare** (a stun on a mob, 6). Events
   `mana { delta, mana }`, `effect { target, kind, rounds }`, `poisoned`.
 - **Winning**: `won { xp, gold }`; the levels the xp table gives (`levelled`: the class's growth to HP, mana, attack and
   defense, the gains healed); the loot (above: `loot { gear }`, `found { item }`). A **boss on its spot**: `bossDown
   { space, until }` (5 minutes, per character), `bossKills` counted, and the area it opens added to `opened` with
   `opened { area }` the first time. A **spawned** mini-boss leaves the board (`despawned`).
-- **Being beaten**: `died { town, lostGold }`: back on your feet in the nearest town by steps, HP and mana full, a fifth
-  of the gold gone (`deathGoldLoss`), gear kept (the brief's rule).
+- **Being beaten**: `died { town, lostGold }`: back on your feet in the nearest town by steps **through open areas**
+  (the simulation found a character waking behind the Briar Gate), HP and mana full, a fifth of the gold gone
+  (`deathGoldLoss`), gear kept (the brief's rule).
 
 ## The world's tick (Robin, 2026-10-31: random mini-bosses and events spawn from time to time)
 
@@ -180,14 +184,34 @@ SQLite row can store it and `resumeRng` carries on with the same dice. A string 
 
 ## The classes (mine, 2026-10-31: first settings)
 
-| Class | HP | Mana | Attack | Defense | Gold | A level brings | Kit |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Warrior | 120 | 20 | 12 | 8 | 50 | +12 HP, +2 mana, +2 attack, +1 defense | Heavy Blow, Shield Bash |
-| Rogue | 90 | 25 | 9 | 5 | 60 | +8, +3, +2, +1 | Backstab, Poison Blade |
-| Mage | 80 | 40 | 14 | 4 | 50 | +7, +5, +3, +1 | Fireball, Frost Bolt |
-| Ranger | 95 | 25 | 8 | 6 | 50 | +9, +3, +2, +1 | Volley, Aimed Shot; strikes first |
+| Class | HP | Mana | Attack | Defense | Crit | Dodge | Gold | A level brings | Kit |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Warrior | 120 | 20 | 12 | 8 | 10 % | – | 50 | +12 HP, +2 mana, +2 attack, +1 defense | Heavy Blow, Shield Bash |
+| Rogue | 100 | 25 | 9 | 6 | 25 % | 25 % | 60 | +10, +3, +2, +1 | Backstab, Poison Blade |
+| Mage | 85 | 40 | 14 | 4 | 10 % | – | 50 | +9, +5, +2, +1 | Fireball, Frost Bolt |
+| Ranger | 100 | 25 | 8 | 6 | 15 % | 5 % | 50 | +10, +3, +2, +1 | Volley, Aimed Shot; strikes first |
 
-Levels: 2 at 20 xp, 3 at 50, 4 at 90, 5 at 140, 6 at 200, 7 at 270, 8 at 350, 9 at 440, 10 at 540, up to 15 at 1340.
+Levels: 2 at 30 xp, 3 at 80, 4 at 160, 5 at 280, 6 at 440, 7 at 650, 8 at 920, 9 at 1250, 10 at 1650, up to 15 at 4900.
+
+## Balance (mine, 2026-10-31, from `tools/simulate.ts`)
+
+`node tools/simulate.ts [turns] [seeds]` plays a bot of each class from Ashford under a plain policy (fight, rest when
+worn, buy the plain gear of the area, learn at shrines) and then throws each class at each boss, level by level, in the
+plain gear of the rank with two potions. It found the first numbers far too easy (no deaths, the level cap in a hundred
+turns, a level-one character beating the Warden) and a stun-lock; the numbers above are the retune. Where it stands:
+
+- A bot reaches level 5 around turn 55 and level 8 around turn 160; a careful bot rarely dies in the wilds of its own
+  level and leaves a level-appropriate fight with nine tenths of its HP.
+- **The Thornwood Warden** (level 6): nobody wins at level 1 or 2; at level 4 in copper the Warrior and the Mage win
+  nine times in ten, the Ranger four, the Rogue three; at level 5 everyone but the Rogue wins nine in ten, the Rogue eight.
+  Without gear at level 6 the Warrior and the Mage still win; the Rogue and the Ranger win three in ten.
+- **The Briar King** (level 10): at level 9 in iron the Warrior, the Mage and the Ranger win six to nine in ten, the
+  Rogue two; the Rogue catches up at 11.
+- **The Frost Matriarch** (level 14): at level 14 in steel the Warrior, the Mage and the Ranger win eight to nine in
+  ten, the Rogue four. The Rogue is the weakest against bosses and the safest in the wilds; a thing to feel, not to fix
+  from a table.
+
+Nothing here has been played; these are the first numbers to be felt and changed in `rules/data`.
 
 ## The tests (`npm test`, Vitest, in Node)
 
@@ -198,7 +222,7 @@ Levels: 2 at 20 xp, 3 at 50, 4 at 90, 5 at 140, 6 at 200, 7 at 270, 8 at 350, 9 
 | `test/board.test.ts` | both boards sound and drawable (`docs/state/world.md`); the world's shape; the ring fixture |
 | `test/gear.test.ts` | rank names, plain pieces, rarity odds and the boost, rolled pieces within their bounds, `describeGear`, `stats` with every affix |
 | `test/game.test.ts` | new games; roll, move and every refusal including a closed area; landing on every kind with its cooldown; the surprises' odds; the gamble; spawns on tick; `legalPaths` and `reachable`; three turns from a seed, whatever turns up; `migrate` from versions 1 to 4 |
-| `test/fight.test.ts` | a round pinned from one seed for each class's kit; charge; the guards' arithmetic and the dodge's odds; shadowstep, barrier, war cry; mana and unknown abilities; wind-ups; lifesteal and thorns; flee; death with gear kept; levels; loot by role; a boss opening an area and counting its falls; a spawn cleared; the refusals |
+| `test/fight.test.ts` | a round pinned from one seed for each class's kit; charge; the guards' arithmetic and the dodge's odds; shadowstep, barrier, war cry; mana and unknown abilities; wind-ups; lifesteal and thorns; flee; death with gear kept, waking only in an open area; levels; loot by role; a boss opening an area and counting its falls; a spawn cleared; the refusals |
 | `test/items.test.ts` | the shop (consumables, plain gear by rank, towns and merchants, refusals), selling, equip, unequip, drop, the dice cards |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |
 

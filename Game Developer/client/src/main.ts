@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import * as rules from '../../rules/src/index.ts';
 import { GameLog } from './game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH } from './layout.ts';
 import { LocalGame, TICK_MS } from './local-game.ts';
@@ -30,14 +31,14 @@ const phaser = new Phaser.Game({
     : [new CreateScene({ log, storage, onCreated: (game) => (window.boardWorld.game = game) })],
 });
 
-// For the browser pane and the tools in tools/: drive the game from a script, read the log. `game` is null on the
-// character screen.
+// For the browser pane and the tools in tools/: drive the game from a script, read the log, reach the rules (to plant a
+// state or look a creature up). `game` is null on the character screen.
 declare global {
   interface Window {
-    boardWorld: { game: LocalGame | null; log: GameLog; phaser: Phaser.Game };
+    boardWorld: { game: LocalGame | null; log: GameLog; phaser: Phaser.Game; rules: typeof rules };
   }
 }
-window.boardWorld = { game: saved, log, phaser };
+window.boardWorld = { game: saved, log, phaser, rules };
 
 // The world ticks once a minute while the page is open, and when it comes back to the front: spawns come and go.
 const tick = (): void => {

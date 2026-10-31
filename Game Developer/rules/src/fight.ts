@@ -101,8 +101,13 @@ export function fightRound(state: GameState, action: FightAction, character: Cha
       if (r.power) c = strike(c, s, ability.name, r.power, r.hits ?? 1, r.crit ?? s.crit, id, player, rng, events);
       if (f.enemy.hp > 0) {
         if (r.stun) {
-          f.enemy.stunned += r.stun;
-          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'stunned', rounds: r.stun });
+          // Mobs are stunned; minis and bosses shrug it off, or a stun every other round would rob them of the fight.
+          if (f.enemy.role === 'mob') {
+            f.enemy.stunned += r.stun;
+            events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'stunned', rounds: r.stun });
+          } else {
+            events.push({ type: 'resisted', action: id, player, kind: 'stunned' });
+          }
         }
         if (r.weaken) {
           f.enemy.weakened = { ...r.weaken };
@@ -284,7 +289,7 @@ function win(state: GameState, c: Character, action: Action, rng: Rng, events: G
 /** Beaten: back on your feet in the nearest town, HP and mana full, a fifth of the gold gone, gear kept. */
 function die(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
   const lostGold = Math.floor(c.gold * PROGRESSION.deathGoldLoss);
-  const town = nearestTown(state.board, c.space);
+  const town = nearestTown(state.board, c.space, new Set(c.opened));
   events.push({ type: 'died', action: action.id, player: action.player, town, lostGold });
   const woke: Character = { ...c, gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null };
   const s = stats(woke);

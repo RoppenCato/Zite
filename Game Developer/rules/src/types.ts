@@ -270,6 +270,8 @@ export type GameEvent =
   | { type: 'guarded'; action: string; player: string; guard: Guard }
   /** The enemy lost its turn. */
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' }
+  /** A mini-boss or a boss shrugged an effect off. */
+  | { type: 'resisted'; action: string; player: string; kind: 'stunned' }
   | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade'; rounds: number }
   /** The enemy's poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; damage: number; hp: number }

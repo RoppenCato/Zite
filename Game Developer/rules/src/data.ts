@@ -22,6 +22,9 @@ export interface ClassData {
   attack: number;
   defense: number;
   gold: number;
+  /** The class's own crit chance and dodge chance, in place of or on top of the base; left out, the base and none. */
+  crit?: number;
+  dodge?: number;
   /** What a level brings. */
   growth: { hp: number; mana: number; attack: number; defense: number };
   /** The abilities known from the start, at rank 1. */

@@ -21,10 +21,10 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('the shop', () => {
   it('sells a consumable for its price and the plain gear of its area\'s rank for a slot, when standing on a shop or in a town', () => {
     const { state, events } = apply(at('s2', { gold: 200 }), buy({ item: 'potion' }), makeRng('x'), NOW);
-    expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 15, gold: 185 }]);
-    expect(me(state)).toMatchObject({ gold: 185, items: { potion: 1 } });
+    expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 25, gold: 175 }]);
+    expect(me(state)).toMatchObject({ gold: 175, items: { potion: 1 } });
     const sword = apply(state, buy({ slot: 'weapon' }, 'b2'), makeRng('x'), NOW);
-    expect(sword.events).toEqual([{ type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 155 }]);
+    expect(sword.events).toEqual([{ type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 145 }]);
     expect(me(sword.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
     expect(sword.state.nextItem).toBe(2);
     const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
