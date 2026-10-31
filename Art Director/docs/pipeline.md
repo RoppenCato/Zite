@@ -153,3 +153,24 @@ then `pack.js`, `sheet.js`, `slice.js --monster <atlas.json>`, `compare.js`, `an
   `--keep 1` recomputes the data without re-rendering.
 - `@napi-rs/canvas` reads straight (unpremultiplied) pixels: the edge hardening in `paint.js` rescales colour by alpha,
   which is right for an opaque figure over a dark line and leaves no fringe on the renders so far.
+
+## The fresh Warrior doll (2026-11-01)
+
+The playable character is studied from the client, since the library holds only monsters and maps. The study export lives
+in my scratch folder, never the repo (both repositories are public): `Export-Character.ps1` reads `Client/MapleStory/Character.wz`
+with MapleLib (`Tools/HaRepacker-4.1.0/AnyCPU/MapleLib.dll`) the way `Settings/Scripts/Export-Inspiration.ps1` does, saving
+each part's picture once and `parts.json` (per part, action and frame: delay, every canvas with its z, origin and map
+points); `assemble.js <parts>` builds whole frames the game's way (body at the feet, arm on the navel, head on the neck,
+face and hair on the brow, weapon in the hand, the zmap's order) into a 4x sheet; `measure_ref.js` prints the joints,
+stride and sword angle per frame. If the scratch folder is gone, they are quick to rewrite from this description.
+
+The doll itself:
+
+    node tools/doll.js work/doll/paint --sheet work/doll/sheet.png      # the frames and meta.json from the pose dictionaries
+    node tools/smear.js work/doll/paint --action attack1 --frames 2,3    # the strike's trail on the two cut frames
+    node tools/pack.js warrior work/doll/paint work/doll/sheets           # the atlas (1024 by 2048 before shrinking)
+    node tools/slice.js --player work/doll/sheets/warrior.json --monster out/bramble/bramble.json --out work/doll/screen.png
+    node tools/slice.js --empty true --out work/doll/stage.png            # the stage alone, for the moving page
+
+Judge on the phone screen, in the before/after (`work/doll/compare.png`), and head to head beside the reference at the same
+height (scratch only). The page is the vector page's with the new atlas.

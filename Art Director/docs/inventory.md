@@ -25,6 +25,7 @@ Nothing is in the game yet (2026-10-31): the client draws shapes and labels.
 | Asset | Where | State | What needs work |
 | --- | --- | --- | --- |
 | Warrior (the player's first class) | `out/warrior/` (atlas 1024 square, 100 KB; json; frames; sheet; compare; screen; gif; build) | in the game 2026-10-31 (commit 9681845, `Game Developer/assets/warrior`; not drawn until the board scene's rewrite lands) | the hair's locks; the far leg short in the walk's passing frames; a shield or gear layers later; Rogue, Mage and Ranger on the same rig (`tools/build/warrior_vol.py --skeleton` plus `tools/hero_puppet.js`) |
+| Warrior, the fresh doll (2026-11-01) | `work/doll/` (paint, sheets, sheet, screen, compare; `tools/doll.js`) | shown to Robin 2026-11-01, not delivered; built the reference's way (docs/hero-iterations.md, the fresh attempt) | Robin's word; then shrink, deliver to `out/warrior/`, and the monsters' faces to the same rules if he wants them matched |
 
 Our player in every judging picture is this atlas (`tools/player.js` loads `out/warrior`).
 
