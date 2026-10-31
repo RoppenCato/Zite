@@ -19,8 +19,11 @@ Nothing is in the game yet (2026-10-31): the client draws shapes and labels.
 
 ## Characters
 
-None yet. Our player is drawn in code for scale only (`tools/player.js`); the four classes are to be built after the
-pipeline trial, in the same manner (facing left, the reference's actions).
+| Asset | Where | State | What needs work |
+| --- | --- | --- | --- |
+| Warrior (the player's first class) | `out/warrior/` (atlas 1024 square, 100 KB; json; frames; sheet; compare; screen; gif; build) | delivered 2026-10-31 (Robin: "go with that for now") | the hair's locks; the far leg short in the walk's passing frames; a shield or gear layers later; Rogue, Mage and Ranger on the same rig (`tools/build/warrior_vol.py --skeleton` plus `tools/hero_puppet.js`) |
+
+Our player in every judging picture is this atlas (`tools/player.js` loads `out/warrior`).
 
 ## Interface
 

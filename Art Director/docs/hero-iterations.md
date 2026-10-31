@@ -211,7 +211,14 @@ farthest first by depth, so the near arm covers the body and the far one shows b
 variants' (the sword in the far hand, upright with feet apart, the overhead cut landing low, the thrown-back hit, the
 death freeing the sword). 23 frames, a 1024-square atlas, 441 KB before the palette shrink. Sent into the chat.
 
-## For Robin to decide
+## Decided (Robin, 2026-10-31, night)
+
+"Let's go with that for now. We can get back to it later." The painted puppet on Colin's rig is the Warrior. Delivered as
+`out/warrior/` (a 1024-square palette atlas of 100 KB with its json, the frames, the pictures, the build scripts, NOTES.md
+with the animation names, rates, pivots and stride) and sent to Miles, GD to copy. Left for later: the hair's locks, the far
+leg in the walk, the turnip's eyes, the three other classes on the same rig.
+
+## For Robin to decide (later)
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the
    character's look and his height on screen.
