@@ -199,6 +199,18 @@ headband, a smaller head and longer legs), C cap (a steel cap with a leather rim
 leather shoulder pads). Each 23 frames, a 1024-square atlas (C 1024 by 2048), about 650 KB before the palette shrink. The
 pictures were sent into the chat; `tools/variants_board.js` draws the board. Robin picks.
 
+## The painted look on Colin's skeleton (2026-10-31, night)
+
+Robin on the three volume variants: "use your original art style but with his better skeleton; I don't like the 3D
+computer graphics look for this game". So the hero is a puppet: `tools/build/warrior_vol.py --skeleton` writes where every
+joint of Colin's rig lands in each frame (the hips, neck, head, both shoulders, elbows, wrists and fists, both hips, knees,
+ankles, toes and heels, the sword's grip, guard and tip, with a depth each), and `tools/hero_puppet.js` paints my flat-toned,
+ink-lined parts between those joints: the tunic from hips to neck, the head and hair on the neck, each arm as a sleeved
+upper arm, a forearm and a fist, each leg as a trouser leg and a boot with a toe, the sword from grip to tip; parts drawn
+farthest first by depth, so the near arm covers the body and the far one shows behind. The rig's poses are the volume
+variants' (the sword in the far hand, upright with feet apart, the overhead cut landing low, the thrown-back hit, the
+death freeing the sword). 23 frames, a 1024-square atlas, 441 KB before the palette shrink. Sent into the chat.
+
 ## For Robin to decide
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the

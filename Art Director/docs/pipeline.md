@@ -110,7 +110,7 @@ optimising (a `pngquant` pass would halve it; not done yet).
 - **One slice before a kit:** `node tools/slice.js` paints one fight slice straight with the brushes (one tree, one bush,
   the ground, our player and the Turnip Grump) into `work/slice/slice.png`; measure it against the reference before
   repainting anything else.
-- **The player is painted 2D parts:** `node tools/hero_paint.js` paints the Warrior's stand (head, hair, face, body, legs,
+- **The player is painted 2D parts on Colin, AD's rig (the puppet, 2026-10-31 night):** `node tools/blender.js tools/build/warrior_vol.py -- work/puppet all --variant A --skeleton work/puppet/skeleton.json` writes the joints of every frame, `node tools/hero_puppet.js work/puppet/skeleton.json work/puppet/paint` paints the parts between them, `node tools/smear.js work/puppet/paint --frames 2,3` adds the strike trail, then pack, slice --player, compare and anim_gif as below. The earlier hand-posed version: `node tools/hero_paint.js` paints the Warrior's stand (head, hair, face, body, legs,
   arms, sword as separate functions, so a rig moves them later) and writes a `meta.json` the packer reads; `node
   tools/pack.js warrior work/hero/paint work/warrior/sheets` makes its atlas, and `tools/player.js` draws it in every
   picture from then on. The Blender ways (`warrior_build.py` on primitives, `hero_skin_build.py` on `skin.py`) are kept as

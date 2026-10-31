@@ -17,6 +17,7 @@ from mathutils.bvhtree import BVHTree
 argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 OUT = os.path.abspath(argv[0] if argv else 'render'); WHICH = argv[1] if len(argv) > 1 and not argv[1].startswith('--') else 'stills'
 VAR = argv[argv.index('--variant') + 1] if '--variant' in argv else 'A'
+SKEL = argv[argv.index('--skeleton') + 1] if '--skeleton' in argv else None   # write the joints' pixels per frame instead of rendering: the painted puppet (tools/hero_puppet.js) draws on them
 PX_UNIT = 200; FW, FH = 2.6, 1.7; FEET_UP = 0.3; ELEV = 12.0; TURN = -50.0
 INK = '#2b2320'
 rad = math.radians
@@ -183,79 +184,80 @@ def fill_pommel(b): add_ball(b, G + Vector((0, 0.07, 0)), 0.024)
 PARTS = {}
 def rigid(o, bone): PARTS[o] = ('rigid', bone); return o
 def chain(o, bones, joint, axis, blend=0.03): PARTS[o] = ('chain', bones, joint, axis, blend); return o
-head = rigid(merged('head', fill_head, SKIN, voxel=0.005), 'head')
-if VAR == 'A': rigid(merged('hair', fill_hair_A, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'head'); rigid(merged('hair_back', fill_hair_back_A, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair')
-if VAR == 'B': rigid(merged('hair', fill_hair_B, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('band', fill_band_B, BAND, voxel=0.004, smooth=3), 'head')
-if VAR == 'C': rigid(merged('hair', fill_hair_C, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('cap', fill_cap_C, STEEL, voxel=0.0045, smooth=4, fac=0.5), 'head'); rigid(merged('plume', fill_plume_C, RED, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('rim', fill_rim_C, LEATHER, voxel=0.0045, smooth=3), 'head')
-rigid(merged('neck', fill_neck, SKIN), 'chest')
-chain(merged('torso', fill_torso, TUNIC), ('hips', 'chest'), Vector((0, 0, HIPZ + 0.06)), Vector((0, 0, 1)), 0.035)
-rigid(merged('collar', fill_collar, CUFF, voxel=0.005, smooth=3), 'chest')
-rigid(merged('belt', fill_belt, LEATHER, voxel=0.005, smooth=3), 'hips')
-rigid(obj('buckle', (lambda b: (fill_buckle(b), b)[1])(bmesh.new()), GOLD, smooth=False), 'hips')
-for s in 'NF':
-    A, B, H = 'armU' + s, 'armL' + s, 'hand' + s
-    rigid(merged('pad' + s, fill_pad(s), (LEATHER if VAR == 'C' else (TUNIC if s == 'F' else CUFF)), voxel=0.005), A)
-    rigid(merged('sleeve' + s, fill_sleeve(s), TUNIC if s == 'F' else CUFF), A)
-    rigid(merged('fore' + s, fill_fore(s), SKIN), B); rigid(merged('bracer' + s, fill_bracer(s), LEATHER), B)
-    rigid(merged('fist' + s, fill_fist(s), SKIN, voxel=0.005), H); rigid(obj('fing' + s, fingers(s), SKIN), H)
-    chain(merged('leg' + s, fill_leg(s), PANTS), ('legU' + s, 'legL' + s), KN[s], (AN[s] - HJ[s]).normalized(), 0.03)
-    rigid(merged('boot' + s, fill_boot(s), BOOT, voxel=0.0055, smooth=4), 'foot' + s); rigid(merged('cuffb' + s, fill_cuff(s), LEATHER, voxel=0.005, smooth=3), 'foot' + s)
-bm = bmesh.new(); fill_blade(bm); blade = obj('blade', bm, STEEL, smooth=False); rigid(blade, 'sword')
-rigid(merged('guard', fill_guard, GOLD, voxel=0.0045), 'sword'); rigid(merged('grip', fill_grip, LEATHER, voxel=0.0045), 'sword'); rigid(merged('pommel', fill_pommel, GOLD, voxel=0.0045), 'sword')
+if not SKEL:
+  head = rigid(merged('head', fill_head, SKIN, voxel=0.005), 'head')
+  if VAR == 'A': rigid(merged('hair', fill_hair_A, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'head'); rigid(merged('hair_back', fill_hair_back_A, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair')
+  if VAR == 'B': rigid(merged('hair', fill_hair_B, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('band', fill_band_B, BAND, voxel=0.004, smooth=3), 'head')
+  if VAR == 'C': rigid(merged('hair', fill_hair_C, HAIR, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('cap', fill_cap_C, STEEL, voxel=0.0045, smooth=4, fac=0.5), 'head'); rigid(merged('plume', fill_plume_C, RED, voxel=0.0045, smooth=4, fac=0.5), 'hair'); rigid(merged('rim', fill_rim_C, LEATHER, voxel=0.0045, smooth=3), 'head')
+  rigid(merged('neck', fill_neck, SKIN), 'chest')
+  chain(merged('torso', fill_torso, TUNIC), ('hips', 'chest'), Vector((0, 0, HIPZ + 0.06)), Vector((0, 0, 1)), 0.035)
+  rigid(merged('collar', fill_collar, CUFF, voxel=0.005, smooth=3), 'chest')
+  rigid(merged('belt', fill_belt, LEATHER, voxel=0.005, smooth=3), 'hips')
+  rigid(obj('buckle', (lambda b: (fill_buckle(b), b)[1])(bmesh.new()), GOLD, smooth=False), 'hips')
+  for s in 'NF':
+      A, B, H = 'armU' + s, 'armL' + s, 'hand' + s
+      rigid(merged('pad' + s, fill_pad(s), (LEATHER if VAR == 'C' else (TUNIC if s == 'F' else CUFF)), voxel=0.005), A)
+      rigid(merged('sleeve' + s, fill_sleeve(s), TUNIC if s == 'F' else CUFF), A)
+      rigid(merged('fore' + s, fill_fore(s), SKIN), B); rigid(merged('bracer' + s, fill_bracer(s), LEATHER), B)
+      rigid(merged('fist' + s, fill_fist(s), SKIN, voxel=0.005), H); rigid(obj('fing' + s, fingers(s), SKIN), H)
+      chain(merged('leg' + s, fill_leg(s), PANTS), ('legU' + s, 'legL' + s), KN[s], (AN[s] - HJ[s]).normalized(), 0.03)
+      rigid(merged('boot' + s, fill_boot(s), BOOT, voxel=0.0055, smooth=4), 'foot' + s); rigid(merged('cuffb' + s, fill_cuff(s), LEATHER, voxel=0.005, smooth=3), 'foot' + s)
+  bm = bmesh.new(); fill_blade(bm); blade = obj('blade', bm, STEEL, smooth=False); rigid(blade, 'sword')
+  rigid(merged('guard', fill_guard, GOLD, voxel=0.0045), 'sword'); rigid(merged('grip', fill_grip, LEATHER, voxel=0.0045), 'sword'); rigid(merged('pommel', fill_pommel, GOLD, voxel=0.0045), 'sword')
 
-# the face, projected along +Y onto the head from the front
-dg = bpy.context.evaluated_depsgraph_get(); tree = BVHTree.FromObject(head, dg)
-def on_head(x, z, lift):
-    hit = tree.ray_cast(Vector((x, -2, z)), Vector((0, 1, 0)))
-    if hit[0] is None:
-        loc, n, _, _ = tree.find_nearest(Vector((x, -0.22, z))); return loc + Vector((0, -lift, 0))
-    return hit[0] + Vector((0, -lift, 0))
-FACES = {}
-def poly(mood, name, mk, pts, lift):
-    b = bmesh.new(); cx = sum(p[0] for p in pts) / len(pts); cz = sum(p[1] for p in pts) / len(pts); rings = []
-    for k in (1.0, 0.72, 0.4): rings.append([b.verts.new(on_head(cx + (p[0] - cx) * k, cz + (p[1] - cz) * k, lift)) for p in pts])
-    c = b.verts.new(on_head(cx, cz, lift)); n = len(pts)
-    for r0, r1 in zip(rings, rings[1:]):
-        for i in range(n): b.faces.new((r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]))
-    for i in range(n): b.faces.new((rings[-1][i], rings[-1][(i + 1) % n], c))
-    o = obj('%s_%s' % (mood, name), b, F[mk], CF, smooth=False); PARTS[o] = ('rigid', 'head'); FACES.setdefault(mood, []).append(o); return o
-def oval(cx, cz, rx, rz, n=18, rot=0.0):
-    c, s = math.cos(rot), math.sin(rot); return [(cx + c * rx * math.cos(2 * math.pi * i / n) - s * rz * math.sin(2 * math.pi * i / n), cz + s * rx * math.cos(2 * math.pi * i / n) + c * rz * math.sin(2 * math.pi * i / n)) for i in range(n)]
-def stroke(mood, name, mk, pts, w0, w1, lift):
-    n = len(pts); up = []; dn = []
-    for i, p in enumerate(pts):
-        a = pts[max(0, i - 1)]; c = pts[min(n - 1, i + 1)]; dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1; w = w0 * math.sin(math.pi * (i + 0.7) / (n + 0.4)) ** 0.6 + w1
-        up.append((p[0] - dz / L * w, p[1] + dx / L * w)); dn.append((p[0] + dz / L * w, p[1] - dx / L * w))
-    b = bmesh.new(); U = [b.verts.new(on_head(*q, lift)) for q in up]; D = [b.verts.new(on_head(*q, lift)) for q in dn]
-    for i in range(n - 1): b.faces.new((U[i], D[i], D[i + 1], U[i + 1]))
-    o = obj('%s_%s' % (mood, name), b, F[mk], CF, smooth=False); PARTS[o] = ('rigid', 'head'); FACES.setdefault(mood, []).append(o); return o
-def arc(x0, x1, z, h, n=9, skew=0.0): return [(x0 + (x1 - x0) * i / (n - 1), z + h * math.sin(math.pi * i / (n - 1)) + skew * (i / (n - 1) - 0.5)) for i in range(n)]
-EX, EZ = 0.1 * HEADR / 0.232, HZ - 0.042; ERX, ERZ = 0.06 * HEADR / 0.232, 0.08 * HEADR / 0.232; MZ = HZ - 0.126
-def cheeks(m):
-    for s in (-1, 1): poly(m, 'blush%d' % s, 'blush', oval(s * 0.158, HZ - 0.11, 0.035, 0.02), 0.002)
-def eye(m, s, look=-0.006, wide=1.0, small=1.0):
-    x = s * EX; rx, rz = ERX * wide, ERZ * wide; poly(m, 'white%d' % s, 'white', oval(x, EZ, rx, rz, 22), 0.002)
-    ix = x + look; poly(m, 'iris%d' % s, 'iris', oval(ix, EZ - 0.006 * small, rx * 0.8 * small, rz * 0.82 * small), 0.004); poly(m, 'irisd%d' % s, 'irisd', oval(ix, EZ + 0.016 * small, rx * 0.74 * small, rz * 0.5 * small), 0.005); poly(m, 'pupil%d' % s, 'pupil', oval(ix, EZ - 0.002, rx * 0.45 * small, rz * 0.5 * small), 0.006)
-    poly(m, 'catch%d' % s, 'white', oval(ix + 0.014, EZ + 0.024 * small, 0.0135 * small, 0.0165 * small), 0.008); poly(m, 'catchb%d' % s, 'white', oval(ix - 0.014, EZ - 0.022 * small, 0.0065 * small, 0.0075 * small), 0.008)
-    stroke(m, 'lash%d' % s, 'ink', arc(x - rx * 1.06, x + rx * 1.06, EZ + rz * 0.8, rz * 0.3), 0.0085, 0.002, 0.009)
-def brows(m, up=0.0, tilt=0.0):
-    for s in (-1, 1): stroke(m, 'brow%d' % s, 'brow', [(s * (0.045 + 0.018 * i), EZ + 0.099 + up + tilt * (i - 2.5) * 0.008 + 0.013 * math.sin(math.pi * i / 5)) for i in range(6)], 0.0085, 0.002, 0.004)
-def mouth_smile(m): stroke(m, 'mouth', 'mouth', [(-0.024 + 0.008 * i, MZ - 0.011 * math.sin(math.pi * i / 6)) for i in range(7)], 0.0045, 0.002, 0.003)
-eye('open', -1); eye('open', 1); brows('open'); mouth_smile('open'); cheeks('open')
-for s in (-1, 1): stroke('blink', 'shut%d' % s, 'ink', arc(s * EX - ERX, s * EX + ERX, EZ - 0.012, -0.018), 0.007, 0.002, 0.004)
-brows('blink'); mouth_smile('blink'); cheeks('blink')
-eye('grr', -1, wide=0.86); eye('grr', 1, wide=0.86)
-for s in (-1, 1):
-    poly('grr', 'lid%d' % s, 'lid', [(s * EX - 0.066, EZ + 0.066), (s * EX + 0.066, EZ + 0.066), (s * EX + 0.066, EZ + 0.022 + s * -0.012), (s * EX - 0.066, EZ + 0.022 + s * 0.012)], 0.0095)
-    stroke('grr', 'browg%d' % s, 'brow', [(s * (0.03 + 0.024 * i), EZ + 0.037 + 0.012 * i) for i in range(6)], 0.012, 0.004, 0.01)
-poly('grr', 'mouth', 'mouth', [(-0.034, MZ + 0.011), (0.034, MZ + 0.011), (0.028, MZ - 0.016), (-0.028, MZ - 0.016)], 0.003); poly('grr', 'teeth', 'white', [(-0.03, MZ + 0.008), (0.03, MZ + 0.008), (0.027, MZ - 0.005), (-0.027, MZ - 0.005)], 0.004); cheeks('grr')
-eye('shock', -1, wide=1.14, small=0.55, look=0.0); eye('shock', 1, wide=1.14, small=0.55, look=0.0); brows('shock', up=0.03, tilt=-1.0)
-poly('shock', 'mouth', 'mouth', oval(0, MZ - 0.012, 0.038, 0.042), 0.003); poly('shock', 'tongue', 'tongue', oval(0, MZ - 0.036, 0.026, 0.018), 0.004); cheeks('shock')
-for s in (-1, 1):
-    stroke('hurt', 'sa%d' % s, 'ink', [(s * (EX - 0.05 + 0.02 * i), EZ - 0.018 + 0.016 * i) for i in range(6)], 0.0065, 0.002, 0.004); stroke('hurt', 'sb%d' % s, 'ink', [(s * (EX - 0.05 + 0.02 * i), EZ + 0.022 - 0.008 * i) for i in range(6)], 0.0065, 0.002, 0.004)
-brows('hurt', up=0.01, tilt=-1.0); poly('hurt', 'mouth', 'mouth', oval(0, MZ - 0.006, 0.026, 0.02), 0.003); cheeks('hurt')
-for s in (-1, 1): stroke('dead', 'shut%d' % s, 'ink', arc(s * EX - ERX, s * EX + ERX, EZ + 0.004, 0.02), 0.007, 0.002, 0.004)
-stroke('dead', 'mouth', 'mouth', [(-0.02 + 0.008 * i, MZ - 0.006 + 0.007 * math.sin(math.pi * i / 5)) for i in range(6)], 0.004, 0.002, 0.003); cheeks('dead')
+  # the face, projected along +Y onto the head from the front
+  dg = bpy.context.evaluated_depsgraph_get(); tree = BVHTree.FromObject(head, dg)
+  def on_head(x, z, lift):
+      hit = tree.ray_cast(Vector((x, -2, z)), Vector((0, 1, 0)))
+      if hit[0] is None:
+          loc, n, _, _ = tree.find_nearest(Vector((x, -0.22, z))); return loc + Vector((0, -lift, 0))
+      return hit[0] + Vector((0, -lift, 0))
+  FACES = {}
+  def poly(mood, name, mk, pts, lift):
+      b = bmesh.new(); cx = sum(p[0] for p in pts) / len(pts); cz = sum(p[1] for p in pts) / len(pts); rings = []
+      for k in (1.0, 0.72, 0.4): rings.append([b.verts.new(on_head(cx + (p[0] - cx) * k, cz + (p[1] - cz) * k, lift)) for p in pts])
+      c = b.verts.new(on_head(cx, cz, lift)); n = len(pts)
+      for r0, r1 in zip(rings, rings[1:]):
+          for i in range(n): b.faces.new((r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]))
+      for i in range(n): b.faces.new((rings[-1][i], rings[-1][(i + 1) % n], c))
+      o = obj('%s_%s' % (mood, name), b, F[mk], CF, smooth=False); PARTS[o] = ('rigid', 'head'); FACES.setdefault(mood, []).append(o); return o
+  def oval(cx, cz, rx, rz, n=18, rot=0.0):
+      c, s = math.cos(rot), math.sin(rot); return [(cx + c * rx * math.cos(2 * math.pi * i / n) - s * rz * math.sin(2 * math.pi * i / n), cz + s * rx * math.cos(2 * math.pi * i / n) + c * rz * math.sin(2 * math.pi * i / n)) for i in range(n)]
+  def stroke(mood, name, mk, pts, w0, w1, lift):
+      n = len(pts); up = []; dn = []
+      for i, p in enumerate(pts):
+          a = pts[max(0, i - 1)]; c = pts[min(n - 1, i + 1)]; dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1; w = w0 * math.sin(math.pi * (i + 0.7) / (n + 0.4)) ** 0.6 + w1
+          up.append((p[0] - dz / L * w, p[1] + dx / L * w)); dn.append((p[0] + dz / L * w, p[1] - dx / L * w))
+      b = bmesh.new(); U = [b.verts.new(on_head(*q, lift)) for q in up]; D = [b.verts.new(on_head(*q, lift)) for q in dn]
+      for i in range(n - 1): b.faces.new((U[i], D[i], D[i + 1], U[i + 1]))
+      o = obj('%s_%s' % (mood, name), b, F[mk], CF, smooth=False); PARTS[o] = ('rigid', 'head'); FACES.setdefault(mood, []).append(o); return o
+  def arc(x0, x1, z, h, n=9, skew=0.0): return [(x0 + (x1 - x0) * i / (n - 1), z + h * math.sin(math.pi * i / (n - 1)) + skew * (i / (n - 1) - 0.5)) for i in range(n)]
+  EX, EZ = 0.1 * HEADR / 0.232, HZ - 0.042; ERX, ERZ = 0.06 * HEADR / 0.232, 0.08 * HEADR / 0.232; MZ = HZ - 0.126
+  def cheeks(m):
+      for s in (-1, 1): poly(m, 'blush%d' % s, 'blush', oval(s * 0.158, HZ - 0.11, 0.035, 0.02), 0.002)
+  def eye(m, s, look=-0.006, wide=1.0, small=1.0):
+      x = s * EX; rx, rz = ERX * wide, ERZ * wide; poly(m, 'white%d' % s, 'white', oval(x, EZ, rx, rz, 22), 0.002)
+      ix = x + look; poly(m, 'iris%d' % s, 'iris', oval(ix, EZ - 0.006 * small, rx * 0.8 * small, rz * 0.82 * small), 0.004); poly(m, 'irisd%d' % s, 'irisd', oval(ix, EZ + 0.016 * small, rx * 0.74 * small, rz * 0.5 * small), 0.005); poly(m, 'pupil%d' % s, 'pupil', oval(ix, EZ - 0.002, rx * 0.45 * small, rz * 0.5 * small), 0.006)
+      poly(m, 'catch%d' % s, 'white', oval(ix + 0.014, EZ + 0.024 * small, 0.0135 * small, 0.0165 * small), 0.008); poly(m, 'catchb%d' % s, 'white', oval(ix - 0.014, EZ - 0.022 * small, 0.0065 * small, 0.0075 * small), 0.008)
+      stroke(m, 'lash%d' % s, 'ink', arc(x - rx * 1.06, x + rx * 1.06, EZ + rz * 0.8, rz * 0.3), 0.0085, 0.002, 0.009)
+  def brows(m, up=0.0, tilt=0.0):
+      for s in (-1, 1): stroke(m, 'brow%d' % s, 'brow', [(s * (0.045 + 0.018 * i), EZ + 0.099 + up + tilt * (i - 2.5) * 0.008 + 0.013 * math.sin(math.pi * i / 5)) for i in range(6)], 0.0085, 0.002, 0.004)
+  def mouth_smile(m): stroke(m, 'mouth', 'mouth', [(-0.024 + 0.008 * i, MZ - 0.011 * math.sin(math.pi * i / 6)) for i in range(7)], 0.0045, 0.002, 0.003)
+  eye('open', -1); eye('open', 1); brows('open'); mouth_smile('open'); cheeks('open')
+  for s in (-1, 1): stroke('blink', 'shut%d' % s, 'ink', arc(s * EX - ERX, s * EX + ERX, EZ - 0.012, -0.018), 0.007, 0.002, 0.004)
+  brows('blink'); mouth_smile('blink'); cheeks('blink')
+  eye('grr', -1, wide=0.86); eye('grr', 1, wide=0.86)
+  for s in (-1, 1):
+      poly('grr', 'lid%d' % s, 'lid', [(s * EX - 0.066, EZ + 0.066), (s * EX + 0.066, EZ + 0.066), (s * EX + 0.066, EZ + 0.022 + s * -0.012), (s * EX - 0.066, EZ + 0.022 + s * 0.012)], 0.0095)
+      stroke('grr', 'browg%d' % s, 'brow', [(s * (0.03 + 0.024 * i), EZ + 0.037 + 0.012 * i) for i in range(6)], 0.012, 0.004, 0.01)
+  poly('grr', 'mouth', 'mouth', [(-0.034, MZ + 0.011), (0.034, MZ + 0.011), (0.028, MZ - 0.016), (-0.028, MZ - 0.016)], 0.003); poly('grr', 'teeth', 'white', [(-0.03, MZ + 0.008), (0.03, MZ + 0.008), (0.027, MZ - 0.005), (-0.027, MZ - 0.005)], 0.004); cheeks('grr')
+  eye('shock', -1, wide=1.14, small=0.55, look=0.0); eye('shock', 1, wide=1.14, small=0.55, look=0.0); brows('shock', up=0.03, tilt=-1.0)
+  poly('shock', 'mouth', 'mouth', oval(0, MZ - 0.012, 0.038, 0.042), 0.003); poly('shock', 'tongue', 'tongue', oval(0, MZ - 0.036, 0.026, 0.018), 0.004); cheeks('shock')
+  for s in (-1, 1):
+      stroke('hurt', 'sa%d' % s, 'ink', [(s * (EX - 0.05 + 0.02 * i), EZ - 0.018 + 0.016 * i) for i in range(6)], 0.0065, 0.002, 0.004); stroke('hurt', 'sb%d' % s, 'ink', [(s * (EX - 0.05 + 0.02 * i), EZ + 0.022 - 0.008 * i) for i in range(6)], 0.0065, 0.002, 0.004)
+  brows('hurt', up=0.01, tilt=-1.0); poly('hurt', 'mouth', 'mouth', oval(0, MZ - 0.006, 0.026, 0.02), 0.003); cheeks('hurt')
+  for s in (-1, 1): stroke('dead', 'shut%d' % s, 'ink', arc(s * EX - ERX, s * EX + ERX, EZ + 0.004, 0.02), 0.007, 0.002, 0.004)
+  stroke('dead', 'mouth', 'mouth', [(-0.02 + 0.008 * i, MZ - 0.006 + 0.007 * math.sin(math.pi * i / 5)) for i in range(6)], 0.004, 0.002, 0.003); cheeks('dead')
 
 # ---------------------------------------------------------------- the rig
 PIV = {'hips': HIP, 'chest': CHEST, 'head': HEADP, 'hair': HEAD + Vector((0, 0.1, 0.05)), 'sword': G}
@@ -276,6 +278,9 @@ for o, rule in PARTS.items():
             o.vertex_groups[hi].add([v.index], w, 'REPLACE'); o.vertex_groups[lo].add([v.index], 1 - w, 'REPLACE')
 rig.rotation_euler = (0, 0, rad(TURN))
 for o in PARTS: o.parent = rig
+JOINTS = lambda M: {'hips': M['hips'] @ HIP, 'neck': M['chest'] @ Vector((0, 0, NECKZ)), 'chest': M['chest'] @ CHEST, 'headC': M['head'] @ HEAD, 'headTop': M['head'] @ (HEAD + Vector((0, 0, HEADR))), 'nose': M['head'] @ (HEAD + Vector((0, -HEADR, -0.04))), 'earN': M['head'] @ (HEAD + Vector((-HEADR, 0, 0))), 'earF': M['head'] @ (HEAD + Vector((HEADR, 0, 0))),
+  **{k + s: v for s in 'NF' for k, v in {'shoulder': M['armU' + s] @ SH[s], 'elbow': M['armL' + s] @ EL[s], 'wrist': M['hand' + s] @ WR[s], 'fist': M['hand' + s] @ (WR[s] + Vector((0, 0, -0.032))), 'hip': M['legU' + s] @ HJ[s], 'knee': M['legL' + s] @ KN[s], 'ankle': M['foot' + s] @ AN[s], 'toe': M['foot' + s] @ (AN[s] + Vector((0, -0.098, -0.044))), 'heel': M['foot' + s] @ (AN[s] + Vector((0, 0.03, -0.044)))}.items()},
+  'grip': M['sword'] @ G, 'tip': M['sword'] @ (G + Vector((0, -0.5, 0))), 'pommel': M['sword'] @ (G + Vector((0, 0.07, 0))), 'guard': M['sword'] @ (G + Vector((0, -0.078, 0)))}
 def rot(rx=0, ry=0, rz=0): return Matrix.Rotation(rad(rz), 4, 'Z') @ Matrix.Rotation(rad(ry), 4, 'Y') @ Matrix.Rotation(rad(rx), 4, 'X')
 def about(p, R): return Matrix.Translation(p) @ R @ Matrix.Translation(-p)
 def pose(P):
@@ -361,6 +366,21 @@ meta.update(size=int(FH * PX_UNIT / 2), px=2, variant=VAR, origin=px_of(Vector((
 if WHICH == 'stills': names = ['stand_00', 'attack1_01', 'attack1_03', 'hit1_00']
 elif WHICH == 'all': names = ['%s_%02d' % (c, i) for c, L in CLIPS.items() if c != 'test' for i in range(len(L))]
 else: names = WHICH.split(',')
+if SKEL:
+    from bpy_extras.object_utils import world_to_camera_view as w2c
+    sk = {'px_unit': PX_UNIT, 'w': r.resolution_x, 'h': r.resolution_y, 'origin': px_of(Vector((0, 0, 0))), 'variant': VAR, 'headR': HEADR, 'clips': {}}
+    for c, L in CLIPS.items():
+        if c == 'test': continue
+        sk['clips'][c] = {'delay': DELAY[c], 'frames': []}
+        for i, (Pz, m, hold) in enumerate(L):
+            W, Ms = pose(Pz); R = rig.matrix_world; J = {}
+            for k, v in JOINTS(Ms).items():
+                p = R @ W @ v if not (k in ('grip', 'tip', 'pommel', 'guard') and Pz.get('sword') is not None) else R @ v
+                cv = w2c(sc, cam, p); J[k] = [round(cv.x * r.resolution_x, 1), round((1 - cv.y) * r.resolution_y, 1), round(cv.z, 4)]
+            fr = {'joints': J, 'face': m, 'hold': hold, 'swordFree': Pz.get('sword') is not None}
+            if c in ALPHA: fr['a0'] = ALPHA[c][i]; fr['a1'] = ALPHA[c][min(i + 1, len(ALPHA[c]) - 1)]
+            sk['clips'][c]['frames'].append(fr)
+    os.makedirs(os.path.dirname(os.path.abspath(SKEL)), exist_ok=True); json.dump(sk, open(SKEL, 'w'), indent=0); print('skeleton', SKEL, sum(len(v['frames']) for v in sk['clips'].values()), 'frames'); sys.exit(0)
 for n in names:
     c, i = n.rsplit('_', 1); i = int(i); Pz, m, hold = CLIPS[c][i]; face(m); W, Ms = pose(Pz); R = rig.matrix_world
     r.filepath = os.path.join(OUT, n + '.png'); bpy.ops.render.render(write_still=True)
