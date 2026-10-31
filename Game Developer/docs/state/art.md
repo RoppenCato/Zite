@@ -1,62 +1,84 @@
-# Art: how the art is built, and the data the client must carry
+# The art
 
-Written by Perry, AD on 2026-10-31 for Miles, GD, from Robin's decision of the same day: the art follows the MapleStory
-reference library (`C:\dev\MapleStoryPlus\Settings\Inspiration\Instructions.md`; the studio's `Art Director/docs/direction.md`
-is the direction drawn from it). Nothing of the library is in the game; this is the data model the deliveries use. Miles, GD
-owns how the client reads it; keep this file true as the loader is built.
+The board scene still draws shapes and labels (2026-10-31); the first delivered piece sits in `assets/` and is not drawn
+yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
+2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
+arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
+here, so the game builds without the studios' folders.
 
-## The scale
+## What is in the game
 
-Assets are drawn at 2x CSS pixels. The player is 100 CSS pixels tall on the 412 by 915 phone (200 in the file); monsters,
-bosses, ground and props follow the reference's ratios (`direction.md` section 2). One row of ground is 138 by 92 CSS (276 by
-184 in the file).
+| Folder | What | Since | Drawn by the client? |
+| --- | --- | --- | --- |
+| `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet |
+| `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet |
+| `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet |
+| `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet |
 
-## A monster or a character: actions with frame data
+The three monsters share one form (Perry, AD's NOTES.md in each folder): `<name>/stand` 6 frames at 100 ms looping,
+`<name>/move` 6 at 100 ms looping, `<name>/hit1` 1 frame held 600 ms, `<name>/die1` 8 at 83 ms with the last three fading,
+`<name>/attack1` 12 at 67 ms with frames 4 and 7 held 134 ms (4 and 8 for the Bramble Bun); the blow lands on the second
+held frame. Drawn facing left, toward the player; `flipX` to face right; 2x files at half size; `stand` at 0.6 on the board;
+the game lays the shadow. Each folder also carries the loose frames, sheets, a gif and the build scripts, for looking and
+making.
 
-A sprite is a set of named actions (`stand`, `move`, `fly`, `jump`, `hit1`, `die1`, `attack1`, `attack2`, `skill1`), each a
-list of frames. Each frame has: `origin` (the point placed at the sprite's position: at the feet, horizontally centred),
-`delay` (ms on screen), `lt` and `rb` (the hit box, relative to the origin), `head` (the top of the head, for things placed
-above it), optional `a0` and `a1` (opacity at the frame's start and end, 0 to 255, for fades). Frames may differ in size.
-**Drawn facing left; the game flips to face right.** In Phaser: a texture atlas per sprite, an Animation per action with
-per-frame `duration` from `delay`, `setOrigin` per frame from `origin` (or a custom origin per frame in the atlas JSON),
-`flipX` for right, the hit box kept in data for the rules, not read from the texture.
+The Warrior's animations (Perry, AD's NOTES.md; the names and rates go into data when he is wired in): `warrior/stand`
+4 frames at 100 ms looping; `warrior/move` 6 at 100 ms looping, stride about 67 CSS px a second in a fight and 40 on the
+board; `warrior/attack1` 6 at 67 ms with frames 2 and 4 held 134 ms, the blow landing on frame 4; `warrior/hit1` 1 frame
+held 600 ms; `warrior/die1` 6 at 83 ms, the last three fading. Files are 2x: he stands 100 CSS px tall, drawn facing left
+and flipped to face right, at 0.6 on the board; the game lays the contact shadow (an ellipse about 60 by 16 CSS px at 0.22
+black). **Wiring him in** (the atlas loaded by the client, the board token and the fight sprite) waits for the camera
+branch to land, since both change `BoardScene.ts`.
 
-## Ground: tile kits on a grid
+## What is coming
 
-A set is named pieces on a grid of 138 by 92 CSS: `bsc` (the body, seamless both ways, origin top left), `enH0` (the top
-surface above the grid line, origin bottom left), `enH1` (the underside below the line, origin top left), `enV0` and `enV1`
-(the sides; origin top right and top left), `edU` and `edD` (end caps), `slLU`, `slRU`, `slLD`, `slRD` (slopes rising one
-grid step over one width; origin at the corner). Each main piece has variants (6, 3, 3, 2, 1) chosen by the generator so
-ground is not stamped. Draw order: caps, then edges and slopes, then sides, then the body on top. The walking line is data,
-not art: feet stand a few pixels into the top edge.
+Perry, AD builds to these budgets since 2026-10-31: the packer writes the Phaser 3 JSON hash with names
+`<sprite>/<action>/0001`, 2 px padding, a pivot at the feet per frame, power-of-two sides; every delivery goes through a
+palette shrink. Still to come: the **meadow's fight kit** (one atlas of tiles and props plus three background strips, the
+sky left to code) and the board kit (one atlas plus horizon strips), and the **Turnip Grump**, whose folder in `out/turnip`
+is still the older 3D-rendered one and is held until it is repainted in the same hand as the three monsters above. Perry,
+AD messages when a drop is ready; nothing is copied before that.
 
-## Backgrounds: layers with a scroll factor
+## Where art lives and how it reaches the phone
 
-A background is a stack of layers, back to front. Each layer: `file`, `type` (0 placed once; 1 repeats sideways; 2 up and
-down; 3 both; 4 repeats sideways and drifts sideways; 5 repeats up and down and drifts; 6 and 7 both and drift), `x`, `y`,
-`factor` (the scroll factor, 0 far to 1 locked to the ground; on drifting types the drift speed instead), `cx`, `cy`
-(spacing when repeating; 0 is the image's size), `a` (opacity), `front` (1 draws over the characters), `ani` (frames and
-delays). In Phaser: `setScrollFactor(factor)`, `TileSprite` for repeating layers, `tilePositionX` for drift, depth above
-the characters for `front`. The screen size decides what shows: far layers repeat; a placed picture must leave no gap.
+Art never goes through the game server. It is static files next to the client, served by the PWA host and kept on the
+phone by the service worker after the first load, so a kit is downloaded once. The only sizes that matter are the first
+load and what one scene holds in memory. Later areas load when the player enters them, never at start.
 
-## Objects: props placed freely
+## Scale
 
-Each prop: `file`, `origin` (the centre, so the base is computed), `layer` (0 to 7; objects then tiles per layer), `z`
-(order within the layer), optional animation (frames, delays). Kits per area; many small props per large one.
+The design size is 412 by 915 CSS pixels, portrait. Files are made at **2x** of design pixels; the canvas renders at 2x on
+phones whose pixel ratio is 2 or more (most Android phones are 2.6 to 3), so 2x files draw one to one. No 1.5x. A "fewer
+effects" switch may render at 1x on weak phones later; it needs no extra files.
 
-## The delivery shape
+## Atlases
 
-`Art Director/out/<area>/kit.json` holds every piece of an area with the data above; `out/<monster>/<monster>.json` holds
-a sprite's actions and frame data beside its atlas. The game copies a drop as the whole folder into `assets/` and commits it.
+- Always atlases, never loose PNGs: one per monster, one per class character, one for an area's board kit, one for its
+  fight kit, one for UI and icons. Multi-pack only when a cap forces it.
+- Format: TexturePacker "Phaser 3" JSON hash (free-tex-packer gives the same). Trimming on, rotation off, padding 2,
+  extrude 1 (no bleeding when the camera zooms). Frame names `<thing>/<animation>/<nnnn>` with four digits, so the loader
+  builds animations by name. Pivot at the feet (bottom centre) for every character and monster frame, so trimmed frames
+  do not jump; for a board piece, the point that sits on the space.
+- Sides are powers of two (512, 1024, 2048), never over 2048 by 2048. Only power-of-two textures get mipmaps, and the board
+  camera zooms out to about 0.3 to show a whole island; anything else shimmers when small.
+- Characters and monsters: at most 1024 by 2048 each.
 
-## The two scenes (decided: Robin, 2026-10-31)
+## Budgets
 
-**The board** is seen from a raised camera, in 2D: a tilted ground (flat pieces: ground plates, road pieces, shore, cliff
-faces, the space plates; each with `file`, `origin` and a draw order), a horizon band of layers with scroll factors above it,
-and upright pieces (props, players, monsters) whose depth is the y of their base: one sort by y, `setDepth(y)` in Phaser.
-The camera follows the token and can pull back. The board scene is what the generator lays from the board kit.
+| What | On disk | Decoded (width × height × 4 bytes, whatever the PNG does) |
+| --- | --- | --- |
+| One monster (about 33 frames: stand 6, move 6, hit 1, die 8, attack 12) | 300 KB | 8 MB (1024 by 2048) |
+| One class character (about 25 frames) | 400 KB | 8 MB |
+| One area's kit, board plus fight (about 100 pieces) | 2.5 MB, aim for 2 | board kit 16 MB; fight kit at most 2 atlases, 32 MB |
+| The first load: code (Phaser is 0.4 MB compressed), the meadow kit, the Warrior, one monster, the icons | 4 MB in all, so art under 3.5 MB | |
+| One scene in memory | | aim for 48 MB, hard cap 64 MB |
 
-**A fight** is its own scene, 2D, outside the map: an instance of where the token stands, built from that area's fight kit:
-the layers with scroll factors above, a ground band (the side-view tile pieces), props, the fighters. The same monster sprites
-and frame data serve both scenes. In Phaser: two Scenes, `Board` and `Fight`; the fight scene is given the area and the
-space, and returns to the board.
+- No single piece over 2048 on a side. Fight backgrounds are layers, not one picture: a sky gradient drawn by code, two or
+  three strips of at most 2048 by 1024 that tile or stretch, then the ground. At most 4 full-screen layers in a fight and 3
+  on the board (fill rate on a middling phone).
+- Sizes on screen, in design pixels (double for the files): a board token about 40 tall; in a fight the player about 160
+  tall, a monster 120 to 240, a boss up to 400 (a boss may take two atlases). Board pieces are seen at 30 percent in the
+  overview: strong silhouettes, little fine detail.
+- Frame rates: stand and move 10 a second, attack 15, die 12, hit one frame held 150 ms. The names and rates of each
+  drop's animations are in its NOTES.md and go into data here.
+- PNG-8 palette where it holds up, PNG-32 where gradients band; WebP (Chrome on Android reads it) if a kit will not fit.

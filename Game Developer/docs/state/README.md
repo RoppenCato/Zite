@@ -10,5 +10,6 @@ world, protocol, art, sound, pages). Read the file before changing its system; w
 | `server.md` | 2026-10-31 | the Node server: the region actor, SQLite, the socket that only answers pings |
 | `world.md` | 2026-10-31 | the world: areas by tier, hubs and roads, passages and bosses, the three hand-laid areas, the grown areas (themes, cells, shapes, creatures, passages), what is static and what is live |
 | `pages.md` | 2026-10-31 | what the browser pane can open, how to drive the game from it, where every button sits, the headless driver |
+| `art.md` | 2026-10-31 | no art yet; the budgets the Art Director builds to: 2x files, atlases, caps on disk and in memory |
 
 Not yet: `protocol.md` (written before the first client-server message), `sound.md`.

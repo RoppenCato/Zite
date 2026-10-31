@@ -1,0 +1,1341 @@
+{
+ "area": "meadow",
+ "name": "Sunny Meadow",
+ "scale": 2,
+ "palette": {
+  "sky": "#4a9ee8",
+  "skyLow": "#c3e8fb",
+  "cloud": "#ffffff",
+  "cloudShade": "#d6e7f4",
+  "far": "#a9d1c1",
+  "farShade": "#8fbcae",
+  "farLight": "#cfe6da",
+  "mid": "#6fc25c",
+  "midShade": "#44953e",
+  "midLight": "#a8e37a",
+  "trunk": "#8a5f3a",
+  "lip": "#d6f98c",
+  "grass": "#8fd84a",
+  "grassLight": "#a9e86a",
+  "grassShade": "#5fb04a",
+  "grassDeep": "#3f8a2e",
+  "earth": "#a87c4c",
+  "earthMid": "#7d5532",
+  "earthDeep": "#55381f",
+  "earthLight": "#c89a66",
+  "sand": "#efdfae",
+  "sandShade": "#d9c48a",
+  "sea": "#2f86d0",
+  "seaDeep": "#1f5fa8",
+  "seaLight": "#86cdf0",
+  "road": "#dcbb74",
+  "roadLight": "#ecd394",
+  "roadShade": "#b8955a",
+  "plank": "#c58a4a",
+  "plankDark": "#8a5a2e",
+  "gold": "#f2c23a",
+  "goldLight": "#fff3b0",
+  "goldDeep": "#b8860b",
+  "cream": "#f8ecc6",
+  "ink": "#2b2320"
+ },
+ "kinds": {
+  "town": "#e08a3b",
+  "battle": "#e8503e",
+  "shop": "#ffcc33",
+  "event": "#9b5de5",
+  "treasure": "#c98a3a",
+  "quest": "#4f8fe0",
+  "boss": "#3a3a3a",
+  "shrine": "#39b8a8"
+ },
+ "grid": {
+  "w": 276,
+  "h": 184
+ },
+ "fight": {
+  "tiles": {
+   "bsc": [
+    {
+     "name": "bsc 0",
+     "file": "tiles/bsc 0.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    },
+    {
+     "name": "bsc 1",
+     "file": "tiles/bsc 1.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    },
+    {
+     "name": "bsc 2",
+     "file": "tiles/bsc 2.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    },
+    {
+     "name": "bsc 3",
+     "file": "tiles/bsc 3.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    },
+    {
+     "name": "bsc 4",
+     "file": "tiles/bsc 4.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    },
+    {
+     "name": "bsc 5",
+     "file": "tiles/bsc 5.png",
+     "w": 276,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "both"
+    }
+   ],
+   "enH0": [
+    {
+     "name": "enH0 0",
+     "file": "tiles/enH0 0.png",
+     "w": 276,
+     "h": 96,
+     "origin": "bottom-left",
+     "repeat": "x",
+     "walk": 20
+    },
+    {
+     "name": "enH0 1",
+     "file": "tiles/enH0 1.png",
+     "w": 276,
+     "h": 96,
+     "origin": "bottom-left",
+     "repeat": "x",
+     "walk": 20
+    },
+    {
+     "name": "enH0 2",
+     "file": "tiles/enH0 2.png",
+     "w": 276,
+     "h": 96,
+     "origin": "bottom-left",
+     "repeat": "x",
+     "walk": 20
+    }
+   ],
+   "enH1": [
+    {
+     "name": "enH1 0",
+     "file": "tiles/enH1 0.png",
+     "w": 276,
+     "h": 50,
+     "origin": "top-left",
+     "repeat": "x"
+    },
+    {
+     "name": "enH1 1",
+     "file": "tiles/enH1 1.png",
+     "w": 276,
+     "h": 50,
+     "origin": "top-left",
+     "repeat": "x"
+    },
+    {
+     "name": "enH1 2",
+     "file": "tiles/enH1 2.png",
+     "w": 276,
+     "h": 50,
+     "origin": "top-left",
+     "repeat": "x"
+    }
+   ],
+   "enV0": [
+    {
+     "name": "enV0 0",
+     "file": "tiles/enV0 0.png",
+     "w": 60,
+     "h": 184,
+     "origin": "top-right",
+     "repeat": "y"
+    },
+    {
+     "name": "enV0 1",
+     "file": "tiles/enV0 1.png",
+     "w": 60,
+     "h": 184,
+     "origin": "top-right",
+     "repeat": "y"
+    }
+   ],
+   "enV1": [
+    {
+     "name": "enV1 0",
+     "file": "tiles/enV1 0.png",
+     "w": 60,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "y"
+    },
+    {
+     "name": "enV1 1",
+     "file": "tiles/enV1 1.png",
+     "w": 60,
+     "h": 184,
+     "origin": "top-left",
+     "repeat": "y"
+    }
+   ],
+   "edU": [
+    {
+     "name": "edU 0",
+     "file": "tiles/edU 0.png",
+     "w": 100,
+     "h": 96,
+     "origin": "bottom-right",
+     "side": "left"
+    },
+    {
+     "name": "edU 1",
+     "file": "tiles/edU 1.png",
+     "w": 100,
+     "h": 96,
+     "origin": "bottom-left",
+     "side": "right"
+    }
+   ],
+   "edD": [
+    {
+     "name": "edD 0",
+     "file": "tiles/edD 0.png",
+     "w": 100,
+     "h": 70,
+     "origin": "top-right",
+     "side": "left"
+    },
+    {
+     "name": "edD 1",
+     "file": "tiles/edD 1.png",
+     "w": 100,
+     "h": 70,
+     "origin": "top-left",
+     "side": "right"
+    }
+   ],
+   "slRU": [
+    {
+     "name": "slRU 0",
+     "file": "tiles/slRU 0.png",
+     "w": 276,
+     "h": 280,
+     "origin": "bottom-left",
+     "rise": 184
+    }
+   ],
+   "slLU": [
+    {
+     "name": "slLU 0",
+     "file": "tiles/slLU 0.png",
+     "w": 276,
+     "h": 280,
+     "origin": "bottom-right",
+     "rise": 184
+    }
+   ],
+   "slRD": [
+    {
+     "name": "slRD 0",
+     "file": "tiles/slRD 0.png",
+     "w": 276,
+     "h": 234,
+     "origin": "top-left"
+    }
+   ],
+   "slLD": [
+    {
+     "name": "slLD 0",
+     "file": "tiles/slLD 0.png",
+     "w": 276,
+     "h": 234,
+     "origin": "top-right"
+    }
+   ]
+  },
+  "background": [
+   {
+    "name": "sky",
+    "file": "background/sky.png",
+    "w": 64,
+    "h": 1830,
+    "type": 1,
+    "factor": 0,
+    "y": 0,
+    "note": "repeats sideways; the sky, at infinity"
+   },
+   {
+    "name": "clouds",
+    "file": "background/clouds.png",
+    "w": 1648,
+    "h": 560,
+    "type": 4,
+    "factor": 0.05,
+    "drift": 6,
+    "y": 60,
+    "note": "repeats sideways and drifts slowly to the right (6 px a second at 1x)"
+   },
+   {
+    "name": "hills_far",
+    "file": "background/hills_far.png",
+    "w": 1648,
+    "h": 520,
+    "type": 1,
+    "factor": 0.2,
+    "y": 560,
+    "note": "repeats sideways; two pale ridges with soft tree dots, hazed toward the sky"
+   },
+   {
+    "name": "treeline",
+    "file": "background/treeline.png",
+    "w": 1648,
+    "h": 600,
+    "type": 1,
+    "factor": 0.5,
+    "y": 700,
+    "note": "repeats sideways; a row of round trees and bushes over plain grass; the bottom 270 px are calm for the fighters"
+   },
+   {
+    "name": "meadow_near",
+    "file": "background/meadow_near.png",
+    "w": 1648,
+    "h": 240,
+    "type": 1,
+    "factor": 0.8,
+    "y": 1130,
+    "note": "repeats sideways; tall grass and flowers just behind the ground band; its bottom hides under the ground"
+   }
+  ],
+  "objects": [
+   {
+    "name": "tree",
+    "file": "objects/fight/tree.png",
+    "w": 338,
+    "h": 448,
+    "origin": [
+     169,
+     224
+    ],
+    "foot": [
+     167,
+     439
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "tree_small",
+    "file": "objects/fight/tree_small.png",
+    "w": 238,
+    "h": 304,
+    "origin": [
+     119,
+     152
+    ],
+    "foot": [
+     119,
+     295
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "bush",
+    "file": "objects/fight/bush.png",
+    "w": 206,
+    "h": 156,
+    "origin": [
+     103,
+     78
+    ],
+    "foot": [
+     103,
+     147
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "bush_wide",
+    "file": "objects/fight/bush_wide.png",
+    "w": 300,
+    "h": 138,
+    "origin": [
+     150,
+     69
+    ],
+    "foot": [
+     150,
+     123
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "house",
+    "file": "objects/fight/house.png",
+    "w": 406,
+    "h": 396,
+    "origin": [
+     203,
+     198
+    ],
+    "foot": [
+     203,
+     377
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "signpost",
+    "file": "objects/fight/signpost.png",
+    "w": 232,
+    "h": 235,
+    "origin": [
+     116,
+     118
+    ],
+    "foot": [
+     127,
+     224
+    ],
+    "layer": 3,
+    "z": 1,
+    "view": "side on"
+   },
+   {
+    "name": "fence",
+    "file": "objects/fight/fence.png",
+    "w": 278,
+    "h": 166,
+    "origin": [
+     139,
+     83
+    ],
+    "foot": [
+     139,
+     157
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "rock",
+    "file": "objects/fight/rock.png",
+    "w": 224,
+    "h": 138,
+    "origin": [
+     112,
+     69
+    ],
+    "foot": [
+     104,
+     129
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "stump",
+    "file": "objects/fight/stump.png",
+    "w": 179,
+    "h": 101,
+    "origin": [
+     90,
+     51
+    ],
+    "foot": [
+     87,
+     92
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "haystack",
+    "file": "objects/fight/haystack.png",
+    "w": 234,
+    "h": 234,
+    "origin": [
+     117,
+     117
+    ],
+    "foot": [
+     110,
+     225
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "side on"
+   },
+   {
+    "name": "mushrooms",
+    "file": "objects/fight/mushrooms.png",
+    "w": 130,
+    "h": 93,
+    "origin": [
+     65,
+     47
+    ],
+    "foot": [
+     73,
+     84
+    ],
+    "layer": 4,
+    "z": 0,
+    "view": "side on"
+   }
+  ]
+ },
+ "board": {
+  "ground": [
+   {
+    "name": "grass 0",
+    "file": "board/grass 0.png",
+    "w": 256,
+    "h": 256,
+    "origin": "top-left",
+    "repeat": "both",
+    "grid": [
+     256,
+     256
+    ]
+   },
+   {
+    "name": "grass 1",
+    "file": "board/grass 1.png",
+    "w": 256,
+    "h": 256,
+    "origin": "top-left",
+    "repeat": "both",
+    "grid": [
+     256,
+     256
+    ]
+   },
+   {
+    "name": "grass 2",
+    "file": "board/grass 2.png",
+    "w": 256,
+    "h": 256,
+    "origin": "top-left",
+    "repeat": "both",
+    "grid": [
+     256,
+     256
+    ]
+   }
+  ],
+  "patches": [
+   {
+    "name": "patch_light",
+    "file": "board/patch_light.png",
+    "w": 240,
+    "h": 150,
+    "origin": "centre",
+    "note": "a soft-edged overlay placed freely on the plates"
+   },
+   {
+    "name": "patch_dark",
+    "file": "board/patch_dark.png",
+    "w": 240,
+    "h": 150,
+    "origin": "centre",
+    "note": "a soft-edged overlay placed freely on the plates"
+   },
+   {
+    "name": "patch_flowers",
+    "file": "board/patch_flowers.png",
+    "w": 240,
+    "h": 150,
+    "origin": "centre",
+    "note": "a soft-edged overlay placed freely on the plates"
+   }
+  ],
+  "road": {
+   "N": {
+    "name": "road_N",
+    "file": "board/road_N.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 1,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "E": {
+    "name": "road_E",
+    "file": "board/road_E.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 2,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NE": {
+    "name": "road_NE",
+    "file": "board/road_NE.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 3,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "S": {
+    "name": "road_S",
+    "file": "board/road_S.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 4,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NS": {
+    "name": "road_NS",
+    "file": "board/road_NS.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 5,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "ES": {
+    "name": "road_ES",
+    "file": "board/road_ES.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 6,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NES": {
+    "name": "road_NES",
+    "file": "board/road_NES.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 7,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "W": {
+    "name": "road_W",
+    "file": "board/road_W.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 8,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NW": {
+    "name": "road_NW",
+    "file": "board/road_NW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 9,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "EW": {
+    "name": "road_EW",
+    "file": "board/road_EW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 10,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NEW": {
+    "name": "road_NEW",
+    "file": "board/road_NEW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 11,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "SW": {
+    "name": "road_SW",
+    "file": "board/road_SW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 12,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NSW": {
+    "name": "road_NSW",
+    "file": "board/road_NSW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 13,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "ESW": {
+    "name": "road_ESW",
+    "file": "board/road_ESW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 14,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "NESW": {
+    "name": "road_NESW",
+    "file": "board/road_NESW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "mask": 15,
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "bridge_NS": {
+    "name": "bridge_NS",
+    "file": "board/bridge_NS.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "bridge_EW": {
+    "name": "bridge_EW",
+    "file": "board/bridge_EW.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "grid": [
+     256,
+     128
+    ]
+   }
+  },
+  "shore": {
+   "n": {
+    "name": "shore_n",
+    "file": "board/shore_n.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "n",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "e": {
+    "name": "shore_e",
+    "file": "board/shore_e.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "e",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "s": {
+    "name": "shore_s",
+    "file": "board/shore_s.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "s",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "w": {
+    "name": "shore_w",
+    "file": "board/shore_w.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "w",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "ne": {
+    "name": "shore_ne",
+    "file": "board/shore_ne.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "ne",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "nw": {
+    "name": "shore_nw",
+    "file": "board/shore_nw.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "nw",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "se": {
+    "name": "shore_se",
+    "file": "board/shore_se.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "se",
+    "grid": [
+     256,
+     128
+    ]
+   },
+   "sw": {
+    "name": "shore_sw",
+    "file": "board/shore_sw.png",
+    "w": 256,
+    "h": 128,
+    "origin": "top-left",
+    "water": "sw",
+    "grid": [
+     256,
+     128
+    ]
+   }
+  },
+  "cliff": {
+   "front": [
+    {
+     "name": "cliff_front 0",
+     "file": "board/cliff_front 0.png",
+     "w": 256,
+     "h": 96,
+     "origin": "top-left",
+     "repeat": "x",
+     "note": "its top at the plateau's front edge; 14 px of lip, the face, the foot shadow on the lower ground"
+    },
+    {
+     "name": "cliff_front 1",
+     "file": "board/cliff_front 1.png",
+     "w": 256,
+     "h": 96,
+     "origin": "top-left",
+     "repeat": "x",
+     "note": "its top at the plateau's front edge; 14 px of lip, the face, the foot shadow on the lower ground"
+    },
+    {
+     "name": "cliff_front 2",
+     "file": "board/cliff_front 2.png",
+     "w": 256,
+     "h": 96,
+     "origin": "top-left",
+     "repeat": "x",
+     "note": "its top at the plateau's front edge; 14 px of lip, the face, the foot shadow on the lower ground"
+    }
+   ],
+   "corner_sw": {
+    "name": "cliff_corner_sw",
+    "file": "board/cliff_corner_sw.png",
+    "w": 96,
+    "h": 96,
+    "origin": "top-left"
+   },
+   "corner_se": {
+    "name": "cliff_corner_se",
+    "file": "board/cliff_corner_se.png",
+    "w": 96,
+    "h": 96,
+    "origin": "top-left"
+   },
+   "edge_n": {
+    "name": "cliff_edge_n",
+    "file": "board/cliff_edge_n.png",
+    "w": 256,
+    "h": 24,
+    "origin": "top-left",
+    "repeat": "x"
+   },
+   "edge_w": {
+    "name": "cliff_edge_w",
+    "file": "board/cliff_edge_w.png",
+    "w": 24,
+    "h": 128,
+    "origin": "top-left",
+    "repeat": "y"
+   },
+   "edge_e": {
+    "name": "cliff_edge_e",
+    "file": "board/cliff_edge_e.png",
+    "w": 24,
+    "h": 128,
+    "origin": "top-left",
+    "repeat": "y"
+   }
+  },
+  "space": {
+   "plate": {
+    "name": "space",
+    "file": "board/space.png",
+    "w": 128,
+    "h": 64,
+    "origin": [
+     64,
+     30
+    ],
+    "note": "the gold ring; the origin is the plate's centre on the ground; a token stands at it"
+   },
+   "lit": {
+    "name": "space_lit",
+    "file": "board/space_lit.png",
+    "w": 160,
+    "h": 80,
+    "origin": [
+     80,
+     38
+    ],
+    "note": "the ring that lights a reachable space; pulse its alpha"
+   },
+   "discs": {
+    "town": {
+     "name": "disc_town",
+     "file": "board/disc_town.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "town"
+    },
+    "battle": {
+     "name": "disc_battle",
+     "file": "board/disc_battle.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "battle"
+    },
+    "shop": {
+     "name": "disc_shop",
+     "file": "board/disc_shop.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "shop"
+    },
+    "event": {
+     "name": "disc_event",
+     "file": "board/disc_event.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "event"
+    },
+    "treasure": {
+     "name": "disc_treasure",
+     "file": "board/disc_treasure.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "treasure"
+    },
+    "quest": {
+     "name": "disc_quest",
+     "file": "board/disc_quest.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "quest"
+    },
+    "boss": {
+     "name": "disc_boss",
+     "file": "board/disc_boss.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "boss"
+    },
+    "shrine": {
+     "name": "disc_shrine",
+     "file": "board/disc_shrine.png",
+     "w": 72,
+     "h": 34,
+     "origin": [
+      36,
+      17
+     ],
+     "kind": "shrine"
+    }
+   }
+  },
+  "horizon": [
+   {
+    "name": "sky",
+    "file": "horizon/sky.png",
+    "w": 64,
+    "h": 400,
+    "type": 1,
+    "factor": 0,
+    "factorY": 0,
+    "y": 0
+   },
+   {
+    "name": "clouds",
+    "file": "horizon/clouds.png",
+    "w": 1648,
+    "h": 240,
+    "type": 4,
+    "factor": 0.05,
+    "factorY": 0,
+    "drift": 5,
+    "y": 20
+   },
+   {
+    "name": "sea",
+    "file": "horizon/sea.png",
+    "w": 1648,
+    "h": 520,
+    "type": 1,
+    "factor": 0.3,
+    "factorY": 0,
+    "y": 360,
+    "note": "the sea band under the sky; pinned to the top of the screen (factorY 0), slides a little sideways"
+   },
+   {
+    "name": "island_0",
+    "file": "horizon/island_0.png",
+    "w": 320,
+    "h": 120,
+    "type": 0,
+    "factor": 0.2,
+    "factorY": 0,
+    "y": 330,
+    "note": "an accent placed once, two pictures in turn, spaced 600 to 1200 px apart"
+   },
+   {
+    "name": "island_1",
+    "file": "horizon/island_1.png",
+    "w": 320,
+    "h": 120,
+    "type": 0,
+    "factor": 0.2,
+    "factorY": 0,
+    "y": 360,
+    "note": "an accent placed once, two pictures in turn, spaced 600 to 1200 px apart"
+   }
+  ],
+  "objects": [
+   {
+    "name": "tree",
+    "file": "objects/board/tree.png",
+    "w": 206,
+    "h": 264,
+    "origin": [
+     103,
+     132
+    ],
+    "foot": [
+     102,
+     230
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "tree_small",
+    "file": "objects/board/tree_small.png",
+    "w": 146,
+    "h": 184,
+    "origin": [
+     73,
+     92
+    ],
+    "foot": [
+     73,
+     159
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "bush",
+    "file": "objects/board/bush.png",
+    "w": 126,
+    "h": 98,
+    "origin": [
+     63,
+     49
+    ],
+    "foot": [
+     63,
+     77
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "bush_wide",
+    "file": "objects/board/bush_wide.png",
+    "w": 180,
+    "h": 105,
+    "origin": [
+     90,
+     53
+    ],
+    "foot": [
+     90,
+     75
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "house",
+    "file": "objects/board/house.png",
+    "w": 246,
+    "h": 260,
+    "origin": [
+     123,
+     130
+    ],
+    "foot": [
+     123,
+     219
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "signpost",
+    "file": "objects/board/signpost.png",
+    "w": 141,
+    "h": 145,
+    "origin": [
+     71,
+     73
+    ],
+    "foot": [
+     77,
+     122
+    ],
+    "layer": 3,
+    "z": 1,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "fence",
+    "file": "objects/board/fence.png",
+    "w": 170,
+    "h": 113,
+    "origin": [
+     85,
+     57
+    ],
+    "foot": [
+     85,
+     85
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "rock",
+    "file": "objects/board/rock.png",
+    "w": 136,
+    "h": 98,
+    "origin": [
+     68,
+     49
+    ],
+    "foot": [
+     64,
+     75
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "stump",
+    "file": "objects/board/stump.png",
+    "w": 110,
+    "h": 85,
+    "origin": [
+     55,
+     43
+    ],
+    "foot": [
+     54,
+     64
+    ],
+    "layer": 3,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "haystack",
+    "file": "objects/board/haystack.png",
+    "w": 142,
+    "h": 150,
+    "origin": [
+     71,
+     75
+    ],
+    "foot": [
+     67,
+     125
+    ],
+    "layer": 2,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   },
+   {
+    "name": "mushrooms",
+    "file": "objects/board/mushrooms.png",
+    "w": 80,
+    "h": 67,
+    "origin": [
+     40,
+     34
+    ],
+    "foot": [
+     45,
+     52
+    ],
+    "layer": 4,
+    "z": 0,
+    "view": "a touch from above (30 degrees)"
+   }
+  ],
+  "plateau": [
+   {
+    "name": "plateau 0",
+    "file": "board/plateau 0.png",
+    "w": 256,
+    "h": 256,
+    "origin": "top-left",
+    "repeat": "both",
+    "grid": [
+     256,
+     256
+    ],
+    "note": "the plates of a raised cell"
+   },
+   {
+    "name": "plateau 1",
+    "file": "board/plateau 1.png",
+    "w": 256,
+    "h": 256,
+    "origin": "top-left",
+    "repeat": "both",
+    "grid": [
+     256,
+     256
+    ],
+    "note": "the plates of a raised cell"
+   }
+  ]
+ }
+}

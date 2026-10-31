@@ -1,0 +1,1118 @@
+{
+ "frames": {
+  "warrior/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 141,
+    "h": 205
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 141,
+    "h": 205
+   },
+   "sourceSize": {
+    "w": 141,
+    "h": 205
+   },
+   "pivot": {
+    "x": 0.3546,
+    "y": 1.0195
+   }
+  },
+  "warrior/attack1/0003": {
+   "frame": {
+    "x": 145,
+    "y": 2,
+    "w": 132,
+    "h": 203
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 203
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 203
+   },
+   "pivot": {
+    "x": 0.7424,
+    "y": 1.0246
+   }
+  },
+  "warrior/move/0003": {
+   "frame": {
+    "x": 279,
+    "y": 2,
+    "w": 127,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 127,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 127,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.6614,
+    "y": 1.0051
+   }
+  },
+  "warrior/move/0004": {
+   "frame": {
+    "x": 408,
+    "y": 2,
+    "w": 120,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.6583,
+    "y": 0.9897
+   }
+  },
+  "warrior/attack1/0001": {
+   "frame": {
+    "x": 530,
+    "y": 2,
+    "w": 152,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5066,
+    "y": 1.0154
+   }
+  },
+  "warrior/stand/0001": {
+   "frame": {
+    "x": 684,
+    "y": 2,
+    "w": 132,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.6061,
+    "y": 1.0155
+   }
+  },
+  "warrior/stand/0002": {
+   "frame": {
+    "x": 818,
+    "y": 2,
+    "w": 127,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 127,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 127,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.6142,
+    "y": 1.0206
+   }
+  },
+  "warrior/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 209,
+    "w": 125,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 125,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 125,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.624,
+    "y": 1.0258
+   }
+  },
+  "warrior/stand/0004": {
+   "frame": {
+    "x": 129,
+    "y": 209,
+    "w": 127,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 127,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 127,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.6142,
+    "y": 1.0206
+   }
+  },
+  "warrior/move/0002": {
+   "frame": {
+    "x": 258,
+    "y": 209,
+    "w": 139,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 139,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 139,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.6691,
+    "y": 1.0156
+   }
+  },
+  "warrior/die1/0001": {
+   "frame": {
+    "x": 399,
+    "y": 209,
+    "w": 132,
+    "h": 191
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 132,
+    "h": 191
+   },
+   "sourceSize": {
+    "w": 132,
+    "h": 191
+   },
+   "pivot": {
+    "x": 0.3333,
+    "y": 1.0157
+   }
+  },
+  "warrior/move/0006": {
+   "frame": {
+    "x": 533,
+    "y": 209,
+    "w": 139,
+    "h": 189
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 139,
+    "h": 189
+   },
+   "sourceSize": {
+    "w": 139,
+    "h": 189
+   },
+   "pivot": {
+    "x": 0.6691,
+    "y": 1.0317
+   }
+  },
+  "warrior/move/0005": {
+   "frame": {
+    "x": 674,
+    "y": 209,
+    "w": 127,
+    "h": 188
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 127,
+    "h": 188
+   },
+   "sourceSize": {
+    "w": 127,
+    "h": 188
+   },
+   "pivot": {
+    "x": 0.6614,
+    "y": 1.0426
+   }
+  },
+  "warrior/attack1/0006": {
+   "frame": {
+    "x": 803,
+    "y": 209,
+    "w": 134,
+    "h": 188
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 134,
+    "h": 188
+   },
+   "sourceSize": {
+    "w": 134,
+    "h": 188
+   },
+   "pivot": {
+    "x": 0.7164,
+    "y": 1.0213
+   }
+  },
+  "warrior/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 405,
+    "w": 143,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 143,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 143,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.6643,
+    "y": 1.0214
+   }
+  },
+  "warrior/hit1/0001": {
+   "frame": {
+    "x": 147,
+    "y": 405,
+    "w": 157,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 157,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 157,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.2229,
+    "y": 1.1381
+   }
+  },
+  "warrior/die1/0005": {
+   "frame": {
+    "x": 306,
+    "y": 405,
+    "w": 315,
+    "h": 177
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 315,
+    "h": 177
+   },
+   "sourceSize": {
+    "w": 315,
+    "h": 177
+   },
+   "pivot": {
+    "x": 0.3683,
+    "y": 0.8475
+   }
+  },
+  "warrior/attack1/0005": {
+   "frame": {
+    "x": 623,
+    "y": 405,
+    "w": 122,
+    "h": 176
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 176
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 176
+   },
+   "pivot": {
+    "x": 0.7295,
+    "y": 1.0284
+   }
+  },
+  "warrior/attack1/0004": {
+   "frame": {
+    "x": 747,
+    "y": 405,
+    "w": 131,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 131,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 131,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.7481,
+    "y": 1.0231
+   }
+  },
+  "warrior/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 594,
+    "w": 192,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.3333,
+    "y": 0.9527
+   }
+  },
+  "warrior/die1/0003": {
+   "frame": {
+    "x": 196,
+    "y": 594,
+    "w": 277,
+    "h": 159
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 277,
+    "h": 159
+   },
+   "sourceSize": {
+    "w": 277,
+    "h": 159
+   },
+   "pivot": {
+    "x": 0.4116,
+    "y": 0.9434
+   }
+  },
+  "warrior/die1/0006": {
+   "frame": {
+    "x": 475,
+    "y": 594,
+    "w": 314,
+    "h": 156
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 314,
+    "h": 156
+   },
+   "sourceSize": {
+    "w": 314,
+    "h": 156
+   },
+   "pivot": {
+    "x": 0.3694,
+    "y": 0.8269
+   }
+  },
+  "warrior/die1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 765,
+    "w": 314,
+    "h": 154
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 314,
+    "h": 154
+   },
+   "sourceSize": {
+    "w": 314,
+    "h": 154
+   },
+   "pivot": {
+    "x": 0.3694,
+    "y": 0.8377
+   }
+  }
+ },
+ "meta": {
+  "image": "warrior.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "warrior/stand/0001",
+     "w": 132,
+     "h": 194,
+     "origin": {
+      "x": 80,
+      "y": 197
+     },
+     "delay": 100,
+     "lt": {
+      "x": -80,
+      "y": -196
+     },
+     "rb": {
+      "x": 51,
+      "y": -4
+     },
+     "head": {
+      "x": -5,
+      "y": -186
+     }
+    },
+    {
+     "name": "warrior/stand/0002",
+     "w": 127,
+     "h": 194,
+     "origin": {
+      "x": 78,
+      "y": 198
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -197
+     },
+     "rb": {
+      "x": 49,
+      "y": -5
+     },
+     "head": {
+      "x": -7,
+      "y": -186
+     }
+    },
+    {
+     "name": "warrior/stand/0003",
+     "w": 125,
+     "h": 194,
+     "origin": {
+      "x": 78,
+      "y": 199
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -198
+     },
+     "rb": {
+      "x": 46,
+      "y": -6
+     },
+     "head": {
+      "x": -10,
+      "y": -186
+     }
+    },
+    {
+     "name": "warrior/stand/0004",
+     "w": 127,
+     "h": 194,
+     "origin": {
+      "x": 78,
+      "y": 198
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -197
+     },
+     "rb": {
+      "x": 49,
+      "y": -5
+     },
+     "head": {
+      "x": -7,
+      "y": -186
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "warrior/move/0001",
+     "w": 143,
+     "h": 187,
+     "origin": {
+      "x": 95,
+      "y": 191
+     },
+     "delay": 100,
+     "lt": {
+      "x": -95,
+      "y": -191
+     },
+     "rb": {
+      "x": 47,
+      "y": -5
+     },
+     "head": {
+      "x": -9,
+      "y": -179
+     }
+    },
+    {
+     "name": "warrior/move/0002",
+     "w": 139,
+     "h": 192,
+     "origin": {
+      "x": 93,
+      "y": 195
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -195
+     },
+     "rb": {
+      "x": 45,
+      "y": -4
+     },
+     "head": {
+      "x": -11,
+      "y": -183
+     }
+    },
+    {
+     "name": "warrior/move/0003",
+     "w": 127,
+     "h": 195,
+     "origin": {
+      "x": 84,
+      "y": 196
+     },
+     "delay": 100,
+     "lt": {
+      "x": -84,
+      "y": -195
+     },
+     "rb": {
+      "x": 42,
+      "y": -1
+     },
+     "head": {
+      "x": -15,
+      "y": -184
+     }
+    },
+    {
+     "name": "warrior/move/0004",
+     "w": 120,
+     "h": 195,
+     "origin": {
+      "x": 79,
+      "y": 193
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -193
+     },
+     "rb": {
+      "x": 41,
+      "y": 1
+     },
+     "head": {
+      "x": -17,
+      "y": -181
+     }
+    },
+    {
+     "name": "warrior/move/0005",
+     "w": 127,
+     "h": 188,
+     "origin": {
+      "x": 84,
+      "y": 196
+     },
+     "delay": 100,
+     "lt": {
+      "x": -84,
+      "y": -195
+     },
+     "rb": {
+      "x": 42,
+      "y": -9
+     },
+     "head": {
+      "x": -15,
+      "y": -184
+     }
+    },
+    {
+     "name": "warrior/move/0006",
+     "w": 139,
+     "h": 189,
+     "origin": {
+      "x": 93,
+      "y": 195
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -195
+     },
+     "rb": {
+      "x": 45,
+      "y": -7
+     },
+     "head": {
+      "x": -11,
+      "y": -183
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "warrior/attack1/0001",
+     "w": 152,
+     "h": 195,
+     "origin": {
+      "x": 77,
+      "y": 198
+     },
+     "delay": 67,
+     "lt": {
+      "x": -77,
+      "y": -197
+     },
+     "rb": {
+      "x": 75,
+      "y": -4
+     },
+     "head": {
+      "x": 21,
+      "y": -188
+     }
+    },
+    {
+     "name": "warrior/attack1/0002",
+     "w": 141,
+     "h": 205,
+     "origin": {
+      "x": 50,
+      "y": 209
+     },
+     "delay": 134,
+     "lt": {
+      "x": -49,
+      "y": -208
+     },
+     "rb": {
+      "x": 91,
+      "y": -4
+     },
+     "head": {
+      "x": 40,
+      "y": -185
+     }
+    },
+    {
+     "name": "warrior/attack1/0003",
+     "w": 132,
+     "h": 203,
+     "origin": {
+      "x": 98,
+      "y": 208
+     },
+     "delay": 67,
+     "lt": {
+      "x": -97,
+      "y": -190
+     },
+     "rb": {
+      "x": 33,
+      "y": -6
+     },
+     "head": {
+      "x": -33,
+      "y": -174
+     }
+    },
+    {
+     "name": "warrior/attack1/0004",
+     "w": 131,
+     "h": 173,
+     "origin": {
+      "x": 98,
+      "y": 177
+     },
+     "delay": 134,
+     "lt": {
+      "x": -95,
+      "y": -176
+     },
+     "rb": {
+      "x": 32,
+      "y": -5
+     },
+     "head": {
+      "x": -49,
+      "y": -162
+     }
+    },
+    {
+     "name": "warrior/attack1/0005",
+     "w": 122,
+     "h": 176,
+     "origin": {
+      "x": 89,
+      "y": 181
+     },
+     "delay": 67,
+     "lt": {
+      "x": -88,
+      "y": -180
+     },
+     "rb": {
+      "x": 33,
+      "y": -6
+     },
+     "head": {
+      "x": -41,
+      "y": -168
+     }
+    },
+    {
+     "name": "warrior/attack1/0006",
+     "w": 134,
+     "h": 188,
+     "origin": {
+      "x": 96,
+      "y": 192
+     },
+     "delay": 67,
+     "lt": {
+      "x": -96,
+      "y": -192
+     },
+     "rb": {
+      "x": 37,
+      "y": -5
+     },
+     "head": {
+      "x": -20,
+      "y": -179
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "warrior/hit1/0001",
+     "w": 157,
+     "h": 181,
+     "origin": {
+      "x": 35,
+      "y": 206
+     },
+     "delay": 600,
+     "lt": {
+      "x": -34,
+      "y": -206
+     },
+     "rb": {
+      "x": 121,
+      "y": -26
+     },
+     "head": {
+      "x": 74,
+      "y": -171
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "warrior/die1/0001",
+     "w": 132,
+     "h": 191,
+     "origin": {
+      "x": 44,
+      "y": 194
+     },
+     "delay": 83,
+     "lt": {
+      "x": -43,
+      "y": -193
+     },
+     "rb": {
+      "x": 87,
+      "y": -3
+     },
+     "head": {
+      "x": 36,
+      "y": -181
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "warrior/die1/0002",
+     "w": 192,
+     "h": 169,
+     "origin": {
+      "x": 64,
+      "y": 161
+     },
+     "delay": 83,
+     "lt": {
+      "x": -63,
+      "y": -161
+     },
+     "rb": {
+      "x": 128,
+      "y": 8
+     },
+     "head": {
+      "x": 82,
+      "y": -134
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "warrior/die1/0003",
+     "w": 277,
+     "h": 159,
+     "origin": {
+      "x": 114,
+      "y": 150
+     },
+     "delay": 83,
+     "lt": {
+      "x": -113,
+      "y": -150
+     },
+     "rb": {
+      "x": 162,
+      "y": 8
+     },
+     "head": {
+      "x": 126,
+      "y": -110
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "warrior/die1/0004",
+     "w": 314,
+     "h": 154,
+     "origin": {
+      "x": 116,
+      "y": 129
+     },
+     "delay": 83,
+     "lt": {
+      "x": -115,
+      "y": -128
+     },
+     "rb": {
+      "x": 197,
+      "y": 24
+     },
+     "head": {
+      "x": 171,
+      "y": -82
+     },
+     "a0": 255,
+     "a1": 220
+    },
+    {
+     "name": "warrior/die1/0005",
+     "w": 315,
+     "h": 177,
+     "origin": {
+      "x": 116,
+      "y": 150
+     },
+     "delay": 83,
+     "lt": {
+      "x": -115,
+      "y": -149
+     },
+     "rb": {
+      "x": 199,
+      "y": 26
+     },
+     "head": {
+      "x": 170,
+      "y": -105
+     },
+     "a0": 220,
+     "a1": 120
+    },
+    {
+     "name": "warrior/die1/0006",
+     "w": 314,
+     "h": 156,
+     "origin": {
+      "x": 116,
+      "y": 129
+     },
+     "delay": 83,
+     "lt": {
+      "x": -115,
+      "y": -128
+     },
+     "rb": {
+      "x": 197,
+      "y": 26
+     },
+     "head": {
+      "x": 171,
+      "y": -82
+     },
+     "a0": 120,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}
