@@ -1,12 +1,15 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 1;
+export const STATE_VERSION = 2;
 
 export type SpaceKind = 'town' | 'battle' | 'shop' | 'event' | 'treasure' | 'quest' | 'bossgate' | 'shrine';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
-/** One space on the board. `x` and `y` are design pixels (412 by 915, portrait); `links` are the spaces one step away. */
+/**
+ * One space on the board. `x` and `y` are world pixels inside the board's width and height (the camera follows the
+ * character over them); `links` are the spaces one step away. A plain road space has the name "".
+ */
 export interface Space {
   id: string;
   kind: SpaceKind;
@@ -16,9 +19,14 @@ export interface Space {
   links: string[];
 }
 
-/** The board is a graph: spaces and the connections between them, never a grid. */
+/**
+ * The board is a graph: spaces and the connections between them, never a grid. `width` and `height` are the world's
+ * size in world pixels: the camera's bounds.
+ */
 export interface Board {
   start: string;
+  width: number;
+  height: number;
   spaces: Record<string, Space>;
 }
 

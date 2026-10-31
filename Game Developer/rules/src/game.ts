@@ -1,7 +1,8 @@
 // The game as a pure function: apply(state, action, rng) -> { state, events }.
 // The state passed in is never changed; a new one comes back.
 
-import { BOARD_DATA, CLASS_DATA, DICE_DATA } from './data.ts';
+import { CLASS_DATA, DICE_DATA, ISLAND_DATA } from './data.ts';
+import { buildBoard } from './island.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
 import {
@@ -21,17 +22,15 @@ export interface NewGameOptions {
   player: string;
   name: string;
   classId: ClassId;
+  /** The board to play on. Left out, the island from rules/data/board.json; the tests pass the small ring. */
+  board?: Board;
 }
 
 type MoveAction = Extract<Action, { type: 'move' }>;
 
-/** The board from rules/data/board.json, copied so the state owns it. */
+/** The island from rules/data/board.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
-  const spaces: Board['spaces'] = {};
-  for (const s of BOARD_DATA.spaces) {
-    spaces[s.id] = { ...s, links: [...s.links] };
-  }
-  return { start: BOARD_DATA.start, spaces };
+  return buildBoard(ISLAND_DATA);
 }
 
 export function makeCharacter(id: string, name: string, classId: ClassId, space: string): Character {
@@ -50,9 +49,9 @@ export function makeCharacter(id: string, name: string, classId: ClassId, space:
   };
 }
 
-/** A fresh game: the small board, one character on the start space, the die unrolled. */
+/** A fresh game: the board, one character on the start space, the die unrolled. */
 export function newGame(o: NewGameOptions): GameState {
-  const board = makeBoard();
+  const board = o.board ?? makeBoard();
   return {
     version: STATE_VERSION,
     seed: o.seed,

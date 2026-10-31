@@ -1,26 +1,41 @@
 import { describe, expect, it } from 'vitest';
-import { apply, newGame } from '../src/game.ts';
+import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
 import { migrate } from '../src/save.ts';
 import type { Action, GameState } from '../src/types.ts';
+import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
 
+/** A game on the twelve-space ring, so the paths below stay short. The real game plays on the island. */
 function fresh(seed = 'ashford'): GameState {
-  return newGame({ seed, player: P, name: 'Robin', classId: 'warrior' });
+  return newGame({ seed, player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
 }
 
 const roll = (id = 'r1'): Action => ({ type: 'roll', id, player: P });
 const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player: P, path });
 
 describe('a new game', () => {
-  it('has the small board, one warrior on the start space and an unrolled die', () => {
+  it('plays on the island unless given a board: Ashford Isle, starting in the town Ashford', () => {
+    const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
+    expect(s.version).toBe(2);
+    expect(s.board).toEqual(makeBoard());
+    expect(s.board.start).toBe('ashford');
+    expect(s.board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford' });
+    expect(Object.keys(s.board.spaces).length).toBeGreaterThanOrEqual(55);
+    expect(Object.keys(s.board.spaces).length).toBeLessThanOrEqual(70);
+    expect(s.board).toMatchObject({ width: 1400, height: 1850 });
+    expect(s.characters[P]).toMatchObject({ space: 'ashford', steps: 0 });
+  });
+
+  it('takes the small ring when a test asks: one warrior on the start space and an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(1);
+    expect(s.version).toBe(2);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(s.board.start).toBe('s0');
+    expect(s.board).toMatchObject({ width: 412, height: 915 });
     expect(s.board.spaces.s0).toMatchObject({ kind: 'town', name: 'Ashford', links: ['s11', 's1'] });
     expect(s.characters[P]).toEqual({
       id: P,
@@ -195,12 +210,57 @@ describe('a few turns from one seed', () => {
 });
 
 describe('a stored state', () => {
-  it('passes through at the current version and is refused otherwise', () => {
+  it('passes through at the current version and is refused when it is nothing we know', () => {
     const s = fresh();
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 2 })).toBeNull();
+    expect(migrate({ version: 3 })).toBeNull();
+    expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
+  });
+
+  // A version-1 state as the first builds saved it: the ring as its board, a character mid-walk.
+  const versionOne = () => ({
+    version: 1,
+    seed: 'old-seed',
+    board: {
+      start: 's0',
+      spaces: {
+        s0: { id: 's0', kind: 'town', name: 'Ashford', x: 206, y: 715, links: ['s11', 's1'] },
+        s1: { id: 's1', kind: 'battle', name: 'Moor Edge', x: 131, y: 677, links: ['s0', 's2'] },
+      },
+    },
+    characters: {
+      p1: { id: 'p1', name: 'Robin', classId: 'warrior', hp: 77, maxHp: 120, attack: 12, defense: 8, gold: 95, space: 's7', steps: 3 },
+      p2: { id: 'p2', name: 'Ann', classId: 'mage', hp: 80, maxHp: 80, attack: 14, defense: 4, gold: 12, space: 's2', steps: 0 },
+    },
+    die: { sides: 6, last: 3 },
+  });
+
+  it('brings a version-1 state to version 2: the island, every character kept and stood on the start, the die unrolled', () => {
+    const old = versionOne();
+    const s = migrate(structuredClone(old));
+    expect(s).not.toBeNull();
+    expect(s!.version).toBe(2);
+    expect(s!.seed).toBe('old-seed');
+    expect(s!.board).toEqual(makeBoard());
+    expect(s!.characters.p1).toEqual({ ...old.characters.p1, space: 'ashford', steps: 0 });
+    expect(s!.characters.p2).toEqual({ ...old.characters.p2, space: 'ashford', steps: 0 });
+    expect(s!.die).toEqual({ sides: 6, last: null });
+    // And it plays on: a roll from the start of the island.
+    const { state, events } = apply(s!, roll(), makeRng('ashford'));
+    expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);
+    expect(reachable(state.board, 'ashford', 2).map((r) => r.space)).toEqual(['ashford-millford-2', 'ashford-saltmarsh-2', 'ashford-ravine-2']);
+  });
+
+  it('refuses a version-1 state it cannot carry over', () => {
+    const noSeed = versionOne() as Record<string, unknown>;
+    delete noSeed.seed;
+    expect(migrate(noSeed)).toBeNull();
+    const oddClass = versionOne();
+    oddClass.characters.p2.classId = 'bard';
+    expect(migrate(oddClass)).toBeNull();
+    expect(migrate({ version: 1, seed: 'x', characters: 'none' })).toBeNull();
   });
 });

@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { newGame, type Action } from '../../rules/src/index.ts';
+import { ringBoard } from '../../rules/test/fixtures/ring.ts';
 import { openDb, pruneResults } from '../src/db.ts';
 import { RegionActor } from '../src/region-actor.ts';
 
 const P = 'p1';
-const create = () => ({ seed: 'ashford', state: newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' }) });
+// The actor plays on the twelve-space ring here so the paths stay short; the server itself plays on the island.
+const create = () => ({ seed: 'ashford', state: newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() }) });
 const roll = (id: string): Action => ({ type: 'roll', id, player: P });
 const move = (id: string, path: string[]): Action => ({ type: 'move', id, player: P, path });
 
