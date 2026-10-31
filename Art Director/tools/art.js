@@ -28,7 +28,7 @@ const need = (p, what) => { if (!fs.existsSync(p)) { console.error('missing ' + 
 const atlas = () => path.join(W, 'sheets', name + '.json');
 function copy() {
   const bd = path.join(W, 'build'); fs.mkdirSync(bd, { recursive: true });
-  for (const f of [rec.builder, 'toon.py', 'render.py']) { const s = path.join(__dirname, 'build', f); need(s, 'the studio\'s script'); fs.copyFileSync(s, path.join(bd, f)); }
+  for (const f of [rec.builder, 'toon.py', 'render.py', 'skin.py']) { const s = path.join(__dirname, 'build', f); need(s, 'the studio\'s script'); fs.copyFileSync(s, path.join(bd, f)); }   // skin.py: the Survival studio's skinned construction, for bodies that are one surface
   const before = [path.join(GAME, 'client', 'public', 'assets', name), path.join(GAME, 'assets', name)].find(p => fs.existsSync(p));
   if (before) cpdir(before, path.join(W, 'before')); else console.log('(the game has no sprite for ' + name + ' yet: no before/)');
   const notes = path.join(W, 'NOTES.md');

@@ -16,8 +16,9 @@ from mathutils import Vector
 bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene; out = os.path.abspath(sys.argv[sys.argv.index('--') + 1])
 M = toon.material
-COL = {'cream': M('cream', '#f3e9d2'), 'violet': M('violet', '#9b5de5'), 'leaf': M('leaf', '#5fb04a'), 'leaf2': M('leaf2', '#7ccf5a'), 'white': M('white', '#fff8f0', flat=True),
-       'ink': M('ink', '#2b2320', flat=True), 'brow': M('brow', '#3d2e4f', flat=True), 'pink': M('pink', '#ff9a86', flat=True), 'mouth': M('mouth', '#5a2a3a', flat=True), 'root': M('root', '#e2cfa8')}
+# the cream in chosen warm tones (Colin, AD: the body was a muddy grey)
+COL = {'cream': M('cream', '#f8e6c0', gloss=0.5, tones_={'deep': '#b89468', 'shade': '#dcbf90', 'base': '#f8e6c0', 'light': '#fff1d6', 'hi': '#fffaf0'}), 'violet': M('violet', '#9b5de5', gloss=0.7), 'leaf': M('leaf', '#5fb04a', gloss=0.3), 'leaf2': M('leaf2', '#7ccf5a', gloss=0.3), 'white': M('white', '#fff8f0', flat=True),
+       'ink': M('ink', '#2b2320', flat=True), 'brow': M('brow', '#3d2e4f', flat=True), 'pink': M('pink', '#ff9a86', flat=True), 'mouth': M('mouth', '#5a2a3a', flat=True), 'root': M('root', '#e2cfa8', gloss=0.2)}
 def smooth(o): bpy.context.view_layer.objects.active = o; o.select_set(True); bpy.ops.object.shade_smooth(); o.select_set(False)
 def empty(name, loc, parent=None):
     o = bpy.data.objects.new(name, None); sc.collection.objects.link(o); o.location = loc
@@ -52,7 +53,8 @@ EYES, PUPILS, BROWS, CHEEKS = [], [], [], []
 for s in (-1, 1):
     p = Vector((C.x, C.y, C.z)) + D * R * 0.96 + S * 0.15 * s
     EYES.append(sphere('eye%d' % (s + 1), 0.1, p, COL['white'], scale=(0.45, 1, 1.25), rot=(0, 0, FROT), parent=face))
-    PUPILS.append(sphere('pupil%d' % (s + 1), 0.05, p + D * 0.042, COL['ink'], scale=(0.5, 1, 1.3), rot=(0, 0, FROT), seg=16, parent=face))
+    pu = sphere('pupil%d' % (s + 1), 0.05, p + D * 0.042, COL['ink'], scale=(0.5, 1, 1.3), rot=(0, 0, FROT), seg=16, parent=face); PUPILS.append(pu)
+    sphere('catch%d' % (s + 1), 0.016, p + D * 0.066 + S * 0.016 + Vector((0, 0, 0.024)), COL['white'], scale=(0.5, 1, 1), rot=(0, 0, FROT), seg=10, parent=pu)   # the catchlight: the reference's eyes all have one (the Slime's, the Mushroom's)
     b = Vector((C.x, C.y, C.z + 0.19)) + D * R * 0.98 + S * 0.15 * s
     BROWS.append(sphere('brow%d' % (s + 1), 0.09, b, COL['brow'], scale=(0.3, 1.1, 0.35), rot=(s * 0.35, 0, FROT), seg=12, parent=face))
     CHEEKS.append(sphere('cheek%d' % (s + 1), 0.07, Vector((C.x, C.y, C.z - 0.16)) + D * R * 0.94 + S * 0.25 * s, COL['pink'], scale=(0.3, 1, 0.7), rot=(0, 0, FROT), seg=12, parent=face))
@@ -96,11 +98,11 @@ clip('move', 140, [dict(scale=(1.08, 1.08, 0.86), leaves_tilt=10, brow_angry=0.3
                     dict(scale=(0.97, 0.97, 1.06), z=0.18, lean=-10, leaves_tilt=8, brow_angry=0.3), dict(scale=(1, 1, 1), z=0.16, lean=-4, leaves_tilt=-6, brow_angry=0.3),
                     dict(scale=(1.12, 1.12, 0.84), leaves_tilt=-18, brow_angry=0.3), dict(scale=(1.03, 1.03, 0.97), leaves_tilt=-6, brow_angry=0.3)])
 # hit1: flattened, knocked back, the leaves splayed straight out, the eyes popped, an O mouth
-clip('hit1', 600, [dict(scale=(1.3, 1.3, 0.72), x=0.08, lean=12, leaves_tilt=-4, splay=38, eye=1.4, eye_sep=1.35, pupil=0.7, brow_up=1.0, mouth='o')])
-# die1: a wobble, a forward nod, a lean back, the topple onto its back, a bounce, flat and fading
-clip('die1', 150, [dict(scale=(1.05, 1.05, 0.95), lean=6), dict(lean=-8, eye_z=0.5), dict(lean=20, leaves_tilt=12, eye_z=0.5), dict(lean=55, z=0.30, leaves_tilt=20, eye_z=0.3, mouth='flat'),
-                    dict(lean=90, z=0.36, leaves_tilt=-30, splay=20, eye_z=0.15, mouth='flat'), dict(lean=90, z=0.42, scale=(1.05, 1.05, 0.95), leaves_tilt=-36, splay=24, eye_z=0.15, mouth='flat'),
-                    dict(lean=90, z=0.36, leaves_tilt=-30, splay=24, eye_z=0.15, mouth='flat'), dict(lean=90, z=0.34, scale=(1.1, 1.1, 0.9), leaves_tilt=-30, splay=24, eye_z=0.15, mouth='flat')],
+clip('hit1', 600, [dict(scale=(1.3, 1.3, 0.72), x=0.08, lean=12, leaves_tilt=-10, splay=18, eye=1.4, eye_sep=1.35, pupil=0.7, brow_up=1.0, mouth='o')])
+# die1: a wobble, a nod, a lean back, then it sinks and squashes flat (the Slime's melt; a topple showed the crown's seam and lost the face), the crown drooping, fading at the end
+clip('die1', 150, [dict(scale=(1.05, 1.05, 0.95), lean=6), dict(lean=-8, eye_z=0.5), dict(lean=14, leaves_tilt=12, eye_z=0.5), dict(scale=(1.15, 1.15, 0.8), leaves_tilt=30, eye_z=0.3, mouth='flat'),
+                    dict(scale=(1.3, 1.3, 0.58), leaves_tilt=50, splay=14, eye_z=0.15, mouth='flat'), dict(scale=(1.42, 1.42, 0.42), leaves_tilt=66, splay=20, eye_z=0.15, mouth='flat'),
+                    dict(scale=(1.48, 1.48, 0.34), leaves_tilt=74, splay=22, eye_z=0.15, mouth='flat'), dict(scale=(1.5, 1.5, 0.3), leaves_tilt=78, splay=22, eye_z=0.15, mouth='flat')],
      alpha=[255, 255, 255, 255, 255, 255, 180, 90, 0])
 # attack1: the headbutt; four of windup leaning back, the launch, the lunge, the impact, a hold, four of recovery
 clip('attack1', 120, [dict(lean=6, x=0.03, scale=(1.04, 1.04, 0.94), leaves_tilt=14, brow_angry=1.0, mouth='grr'), dict(lean=14, x=0.07, scale=(1.08, 1.08, 0.9), leaves_tilt=24, brow_angry=1.0, mouth='grr'),

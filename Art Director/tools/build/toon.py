@@ -20,8 +20,10 @@ AMBIENT = (0.26, 0.27, 0.32)                        # the world's light on the u
 COOL = (0.22, 0.24, 0.48)                            # mixed into the shade tones (a cool shadow, never the same hue darkened)
 WARM = (1.0, 0.96, 0.82)                             # mixed into the light tones
 STEPS = {'deep': -0.24, 'shade': -0.12, 'base': 0.0, 'light': 0.10, 'hi': 0.19}   # lightness change per tone (hi was 0.24: the cap's top went pastel)
-MOTTLE = 0.05                                        # the painted texture in the fill (0 flat)
+MOTTLE = 0.04                                        # the painted texture in the fill (0 flat)
 TURN = 0.14                                          # darkening toward the silhouette (0 none)
+GLOSS = 0.55                                         # the glossy highlight where the sun reflects to the camera (the reference's monsters shine: the Slime, the Mushroom's cap); 0 matte
+GLOSS_ROUGH = 0.32
 
 def srgb(hexs):
     h = hexs.lstrip('#'); v = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
@@ -74,7 +76,7 @@ def build_nodes(m):
     out = n.new('ShaderNodeOutputMaterial'); em = n.new('ShaderNodeEmission'); em.inputs['Strength'].default_value = 1.0
     v = _light(n, L)
     ramp = n.new('ShaderNodeValToRGB'); cr = ramp.color_ramp; cr.interpolation = 'EASE'
-    stops = [(0.00, 'deep'), (0.20, 'deep'), (0.30, 'shade'), (0.44, 'shade'), (0.54, 'base'), (0.70, 'base'), (0.80, 'light'), (0.90, 'light'), (0.97, 'hi')]
+    stops = [(0.00, 'deep'), (0.24, 'deep'), (0.28, 'shade'), (0.48, 'shade'), (0.52, 'base'), (0.74, 'base'), (0.78, 'light'), (0.92, 'light'), (0.95, 'hi')]   # harder steps (Colin, AD: the monster was soft where the painted things are hard; one hand)
     if m.get('flat'): stops = [(0.0, 'base'), (1.0, 'base')]            # eyes' whites, a glow: one tone, no shading
     if m.get('matte'): stops = [s for s in stops if s[1] != 'hi']        # no highlight (cloth, earth)
     while len(cr.elements) > 1: cr.elements.remove(cr.elements[-1])
@@ -91,15 +93,23 @@ def build_nodes(m):
         lw = n.new('ShaderNodeLayerWeight'); lw.inputs['Blend'].default_value = 0.6
         turn = _math(n, L, 'SUBTRACT', 1.0, _math(n, L, 'MULTIPLY', _math(n, L, 'POWER', lw.outputs['Fresnel'], 2.0), TURN))
         col = _mix(n, L, 'MULTIPLY', 1.0, col, _gray(n, L, turn))
+    gloss = m.get('gloss', GLOSS)
+    if gloss and not m.get('flat') and not m.get('matte'):                # the shine: a glossy reflection of the sun, eased in, laid as a pale warm spot
+        gl = n.new('ShaderNodeBsdfGlossy'); gl.inputs['Roughness'].default_value = GLOSS_ROUGH; gl.inputs['Color'].default_value = (1, 1, 1, 1)
+        grgb = n.new('ShaderNodeShaderToRGB'); L.new(gl.outputs[0], grgb.inputs[0]); gbw = n.new('ShaderNodeRGBToBW'); L.new(grgb.outputs['Color'], gbw.inputs['Color'])
+        k = n.new('ShaderNodeMapRange'); k.inputs['From Min'].default_value = 0.35; k.inputs['From Max'].default_value = 1.1; k.interpolation_type = 'SMOOTHSTEP'; L.new(gbw.outputs[0], k.inputs['Value'])
+        shine = tuple(min(1.0, c * 0.5 + 0.5) for c in srgb(t['hi']))
+        col = _mix(n, L, 'MIX', _math(n, L, 'MULTIPLY', k.outputs['Result'], gloss), col, shine)
     L.new(col, em.inputs['Color']); L.new(em.outputs[0], out.inputs['Surface'])
 
-def material(name, hexs, flat=False, matte=False, sat=1.0, tones_=None):
-    """a named colour. flat: one tone, unshaded (eye whites, glows). matte: no highlight. tones_: the five tones by hand."""
+def material(name, hexs, flat=False, matte=False, sat=1.0, tones_=None, gloss=None):
+    """a named colour. flat: one tone, unshaded (eye whites, glows). matte: no highlight, no shine. gloss: the shine's strength (GLOSS by default). tones_: the five tones by hand."""
     m = bpy.data.materials.get(name)
     if m: return m
     m = bpy.data.materials.new(name); m['hex'] = hexs
     if flat: m['flat'] = 1
     if matte: m['matte'] = 1
+    if gloss is not None: m['gloss'] = gloss
     if sat != 1.0: m['sat'] = sat
     if tones_: m['tones'] = tones_
     build_nodes(m); m.diffuse_color = (*srgb(hexs), 1)

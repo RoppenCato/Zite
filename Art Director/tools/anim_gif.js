@@ -12,7 +12,7 @@ const ROOT = path.resolve(__dirname, '..'); const a = process.argv.slice(2); con
   const acts = (opt('actions') || 'stand,move,attack1,hit1,die1').split(',').filter(k => J.actions[k]); const frames = [];
   for (const act of acts) {
     const A = J.actions[act], n = A.loop ? loops : 1;
-    for (let k = 0; k < n; k++) for (const F of A.frames) frames.push({ delay: F.delay, text: act, layers: [{ file: path.join(dir, 'frames', F.name + '.png'), x: ax - x0 - F.origin.x, y: ay - y0 - F.origin.y, alpha: F.a0 !== undefined ? Math.round((F.a0 + F.a1) / 2) : 255 }] });
+    for (let k = 0; k < n; k++) for (const F of A.frames) frames.push({ delay: F.delay, text: act, layers: [{ file: path.join(dir, 'frames', F.name.split('/').slice(1).join('_') + '.png'), x: ax - x0 - F.origin.x, y: ay - y0 - F.origin.y, alpha: F.a0 !== undefined ? Math.round((F.a0 + F.a1) / 2) : 255 }] });
   }
   const spec = { w: SZ, h: SZ, bg: bgCrop, scale: 0.5, frames }; const specFile = path.join(tmp, '_gif.json'); fs.writeFileSync(specFile, JSON.stringify(spec));
   const r = spawnSync('python', [path.join(__dirname, 'gif.py'), specFile, path.resolve(ROOT, out)], { stdio: 'inherit' }); if (r.status) process.exit(r.status);

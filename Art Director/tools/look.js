@@ -2,8 +2,8 @@
 // size (2x files shown at 1x CSS, like the phone) and at a zoom, on a flat colour or on a background picture.
 //   node tools/look.js <out.png> [--bg #8fd84a|file.png] [--zoom 2] [--origin feet|centre] <pic.png> [<pic.png> ...]
 // Each picture's origin is its bottom centre (feet) unless --origin centre. Files at 2x are halved on the way in (--px 2).
-const P = require('./paint.js'); const { player } = require('./player.js'); const fs = require('fs'); const path = require('path');
-(async () => {
+const P = require('./paint.js'); const { player, load } = require('./player.js'); const fs = require('fs'); const path = require('path');
+(async () => { await load();
   const args = process.argv.slice(2); const out = args.shift(); const opt = { bg: '#8fd84a', zoom: '2', origin: 'feet', px: '2' }; const pics = [];
   for (let i = 0; i < args.length; i++) { if (args[i].startsWith('--')) { opt[args[i].slice(2)] = args[++i]; } else pics.push(args[i]); }
   const PX = +opt.px, Z = +opt.zoom, ims = []; for (const p of pics) ims.push(await P.loadImage(p));

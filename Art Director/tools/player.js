@@ -1,10 +1,20 @@
-// player.js: our player, drawn in code, for scale in every judging picture (Perry, AD, 2026-10-31). The same figure as the
-// world-form mock-ups: feet at (x, y), 100 CSS pixels tall at s = 1, the head half the height, facing the camera. It stands
-// in for the class characters until they are built; it is never delivered to the game.
-const { INK, lin, rad, ink, rr } = require('./paint.js');
-function player(g, x, y, s = 1, o = {}) {
-  s = s * 100 / 104;                                   // the mock's figure is 104 tall at s = 1; ours is 100
-  g.save(); g.translate(x, y); g.scale(s, s);
+// player.js: our player, for scale in every judging picture (Perry, AD, 2026-10-31). The built Warrior's atlas when it
+// exists (out/warrior, else work/warrior/sheets), drawn by its origin at the feet; before that the mock-ups' code-drawn
+// figure (Robin, 2026-10-31: it looked awful; it stays only as the fallback). Call `await load()` once, then player() is
+// synchronous: feet at (x, y), s the scale (1 is 100 CSS px tall when drawn on a canvas in CSS units; the atlas is at 2x).
+//   const { player, load } = require('./player.js'); await load(); player(g, x, y, 1, { frame: 'stand_00', flip: false });
+const P = require('./paint.js'); const fs = require('fs'); const path = require('path');
+const { INK, lin, rad, ink, rr } = P; const ROOT = path.resolve(__dirname, '..');
+let atlas = null;
+async function load() {
+  for (const dir of [path.join(ROOT, 'out', 'warrior'), path.join(ROOT, 'work', 'warrior', 'sheets')]) {
+    const j = path.join(dir, 'warrior.json'); if (!fs.existsSync(j)) continue;
+    const J = JSON.parse(fs.readFileSync(j, 'utf8')); const im = await P.loadImage(path.join(dir, J.meta.image)); atlas = { J, im, dir }; return atlas;
+  }
+  return null;
+}
+function fallback(g, x, y, s, o) {
+  s = s * 100 / 104; g.save(); g.translate(x, y); g.scale(s, s);
   if (o.shadow !== false) { g.fillStyle = 'rgba(0,0,0,0.22)'; g.beginPath(); g.ellipse(0, 2, 22, 6, 0, 0, 7); g.fill(); }
   g.beginPath(); rr(g, -12, -18, 10, 18, 3); rr(g, 2, -18, 10, 18, 3); g.fillStyle = '#3a2d2a'; g.fill(); ink(g, 2.5);
   g.beginPath(); rr(g, -13, -50, 26, 34, 8); g.fillStyle = lin(g, -13, 0, 13, 0, [[0, '#2f5fb8'], [0.5, '#5590e6'], [1, '#2a4f9a']]); g.fill(); ink(g, 2.5);
@@ -15,7 +25,13 @@ function player(g, x, y, s = 1, o = {}) {
   g.fillStyle = rad(g, -6, -102, 0, -94, 30, [[0, '#ff9a66'], [1, '#c23f2a']]); g.fill(); ink(g, 2.5);
   g.fillStyle = '#fff'; g.beginPath(); g.ellipse(-9, -72, 5, 7, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(9, -72, 5, 7, 0, 0, 7); g.fill();
   g.fillStyle = INK; g.beginPath(); g.ellipse(-8, -71, 3, 5, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(10, -71, 3, 5, 0, 0, 7); g.fill();
-  g.beginPath(); g.arc(0, -62, 5, 0.2, Math.PI - 0.2); ink(g, 2);
-  g.restore();
+  g.beginPath(); g.arc(0, -62, 5, 0.2, Math.PI - 0.2); ink(g, 2); g.restore();
 }
-module.exports = { player, HEIGHT: 100, WIDTH: 62 };
+function player(g, x, y, s = 1, o = {}) {
+  if (!atlas) return fallback(g, x, y, s, o);
+  const name = o.frame || atlas.J.actions.stand.frames[0].name, fr = atlas.J.frames[name].frame, data = Object.values(atlas.J.actions).flatMap(A => A.frames).find(f => f.name === name);
+  g.save(); g.translate(x, y); g.scale((o.flip ? -1 : 1) * s / 2, s / 2);     // the atlas is at 2x; s = 1 draws it at 1x CSS
+  if (o.shadow !== false) { g.fillStyle = 'rgba(0,0,0,0.22)'; g.beginPath(); g.ellipse(0, 4, 48, 12, 0, 0, 7); g.fill(); }
+  g.drawImage(atlas.im, fr.x, fr.y, fr.w, fr.h, -data.origin.x, -data.origin.y, fr.w, fr.h); g.restore();
+}
+module.exports = { player, load, HEIGHT: 100, WIDTH: 62 };

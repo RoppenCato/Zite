@@ -4,14 +4,14 @@
 // from the grid pieces, props side on, our player and the monster on the walk line). Also writes the layer file the parallax
 // preview reads. Everything comes from kit.json and the kit's files, so what is judged is what the game would lay.
 //   node tools/meadow_scene.js [--kit work/meadow/kit] [--out work/meadow] [--monster out/turnip/turnip.json] [--frame stand_00]
-const P = require('./paint.js'); const { player } = require('./player.js'); const fs = require('fs'); const path = require('path');
+const P = require('./paint.js'); const { player, load } = require('./player.js'); const fs = require('fs'); const path = require('path');
 const ROOT = path.resolve(__dirname, '..'); const a = process.argv.slice(2); const opt = k => a.includes('--' + k) ? a[a.indexOf('--' + k) + 1] : null;
 const KIT = path.resolve(ROOT, opt('kit') || 'work/meadow/kit'), OUT = path.resolve(ROOT, opt('out') || 'work/meadow'), W = 824, H = 1830;   // the phone at 2x
 const kit = JSON.parse(fs.readFileSync(path.join(KIT, 'kit.json'), 'utf8')); const cache = {}; const img = async f => cache[f] || (cache[f] = await P.loadImage(path.join(KIT, f)));
 const rng = P.rng(3);
 async function monster() {   // the monster's atlas, if there is one yet: a frame drawn by its origin
   const j = opt('monster'); if (!j) return null; const J = JSON.parse(fs.readFileSync(path.resolve(ROOT, j), 'utf8')), im = await P.loadImage(path.join(path.dirname(path.resolve(ROOT, j)), J.meta.image));
-  const name = opt('frame') || 'stand_00', fr = J.frames[name].frame, data = Object.values(J.actions).flatMap(A => A.frames).find(f => f.name === name);
+  const name = opt('frame') || J.actions.stand.frames[0].name, fr = J.frames[name].frame, data = Object.values(J.actions).flatMap(A => A.frames).find(f => f.name === name);
   return { draw: (g, x, y, flip, s = 1) => { g.save(); g.translate(x, y); g.scale(flip ? -s : s, s); g.drawImage(im, fr.x, fr.y, fr.w, fr.h, -data.origin.x, -data.origin.y, fr.w, fr.h); g.restore(); }, w: fr.w, h: fr.h };
 }
 function hud(g, title) {   // the game's chrome, drawn plainly so the picture reads as a screen (the chrome itself is the game's)
@@ -29,7 +29,7 @@ async function fight() {
   for (let c = 0; c < cols; c++) { const x = c * kit.grid.w - 100; const e = pick(T.enH0); g.drawImage(await img(e.file), x, GY - e.h); for (let r = 0; r < 3; r++) { const b = pick(T.bsc); g.drawImage(await img(b.file), x, GY + r * kit.grid.h); } }
   const walk = GY - 20, objs = Object.fromEntries(kit.fight.objects.map(o => [o.name, o]));
   const place = async (name, x, y, s = 1) => { const o = objs[name]; if (!o) return; const im = await img(o.file); g.drawImage(im, x - o.foot[0] * s, y - o.foot[1] * s, im.width * s, im.height * s); };
-  await place('signpost', 30, walk - 2); await place('tree', 120, walk - 4); await place('fence', 790, walk - 8); await place('mushrooms', 430, walk + 4); await place('bush', 830, walk + 2);
+  for (const [n, x, y] of [['tree', 110, walk - 6], ['bush_yellow', 20, walk + 2], ['signpost', 40, walk - 2], ['fence', 790, walk - 8], ['bush', 840, walk + 2], ['rock_small', 420, walk + 2], ['mushrooms', 470, walk + 4], ['flowers', 360, walk + 4], ['grass_tuft', 200, walk + 6], ['grass_tuft2', 540, walk + 6], ['grass_tuft3', 700, walk + 6], ['flowers3', 760, walk + 6]]) await place(n, x, y);
   g.save(); g.scale(2, 2); player(g, 125, walk / 2, 1); g.restore();
   if (M) M.draw(g, 590, walk, false); else { P.tag(g, 'the monster stands here', 520, walk - 40, 18); }
   hud(g, 'Sunny Meadow'); fightUi(g);
@@ -48,12 +48,12 @@ async function board() {
   // the land: plates on the grid from the shore row down
   const LAND = 464, cw = 256, ch = 128, rows = Math.ceil((H - LAND) / 256) + 1, colsN = Math.ceil(W / 256) + 1;
   for (let r = 0; r < rows; r++) for (let c = 0; c < colsN; c++) { const p = pick(B.ground); g.drawImage(await img(p.file), c * 256 - 64, LAND + r * 256); }
-  for (const [k, x, y] of [['light', 300, 900], ['dark', 620, 1200], ['flowers', 150, 1500], ['light', 700, 1600], ['flowers', 560, 760]]) { const p = B.patches.find(q => q.file.includes(k)); const im = await img(p.file); g.drawImage(im, x - im.width / 2, y - im.height / 2); }
+  for (const [k, x, y] of [['light', 300, 900], ['dark', 620, 1200], ['flowers', 150, 1500], ['light', 700, 1600], ['flowers', 560, 760], ['dirt', 424, 880], ['dirt', 560, 1310], ['dark', 140, 1100], ['flowers', 700, 1680], ['light', 120, 1700]]) { const p = B.patches.find(q => q.file.includes(k)); const im = await img(p.file); g.drawImage(im, x - im.width / 2, y - im.height / 2); }
   for (let c = -1; c < colsN; c++) g.drawImage(await img(B.shore.n.file), c * cw + 40, LAND);
   // the plateau: cells (col 1 to 2, rows 2 to 3) raised one step; its plates stay where they are, the cliff faces below its front edge sell the step
   const PX0 = 40 + 1 * cw, PY0 = LAND + 2 * ch, PW = 1 * cw, PH = 2 * ch;   // one cell wide, two deep: the hill the house stands on
   g.save(); g.beginPath(); g.rect(PX0, PY0, PW, PH); g.clip(); g.drawImage(await img(B.plateau[0].file), PX0, PY0); g.restore();
-  g.drawImage(await img(B.cliff.edge_n.file), PX0, PY0 - 8, PW, 24); for (let y = PY0; y < PY0 + PH; y += 128) { g.drawImage(await img(B.cliff.edge_w.file), PX0 - 8, y); g.drawImage(await img(B.cliff.edge_e.file), PX0 + PW - 16, y); }
+  g.drawImage(await img(B.cliff.edge_n.file), PX0, PY0 - 10, PW, 28); for (let y = PY0; y < PY0 + PH; y += 128) { g.drawImage(await img(B.cliff.edge_w.file), PX0 - 10, y); g.drawImage(await img(B.cliff.edge_e.file), PX0 + PW, y); }
   g.drawImage(await img(B.cliff.front[0].file), PX0, PY0 + PH - 14);
   g.drawImage(await img(B.cliff.corner_sw.file), PX0 - 96 + 8, PY0 + PH - 14); g.drawImage(await img(B.cliff.corner_se.file), PX0 + PW - 8, PY0 + PH - 14);
   // the roads: a path of cells with their masks, from the bottom left up past the hill to the shore; the spaces at some cells
@@ -68,12 +68,15 @@ async function board() {
   // the upright things, sorted by the foot's y: props from above, the player, the monster
   const objs = Object.fromEntries(B.objects.map(o => [o.name, o])), items = [];
   const prop = (name, x, y, s = 1) => { const o = objs[name]; if (o) items.push({ y, draw: async () => { const im = await img(o.file); g.drawImage(im, x - o.foot[0] * s, y - o.foot[1] * s, im.width * s, im.height * s); } }); };
-  [[90, 600], [250, 570], [760, 640], [790, 1000], [60, 1040], [780, 1340], [720, 1720], [120, 1760], [40, 1420]].forEach(([x, y], i) => prop(i % 3 === 2 ? 'tree_small' : 'tree', x, y));
-  prop('house', 424, 820); prop('signpost', 300, 1120); prop('fence', 160, 1460); prop('fence', 160 + 71, 1460); prop('bush', 560, 1300); prop('bush_wide', 120, 1250); prop('rock', 330, 1560); prop('stump', 160, 1620); prop('haystack', 540, 1620); prop('mushrooms', 200, 950);
+  [['tree', 90, 620], ['tree_round', 250, 570], ['tree', 770, 600], ['tree_small', 60, 1040], ['tree', 790, 1000], ['tree_round', 780, 1340], ['tree', 720, 1720], ['tree_small', 120, 1770], ['tree', 40, 1420], ['tree_small', 560, 1810]].forEach(([n, x, y]) => prop(n, x, y));
+  for (const [n, x, y] of [['house', 424, 850], ['signpost', 300, 1120], ['well', 560, 1290], ['lamp', 560, 1130], ['crates', 200, 1300], ['barrel', 262, 1332], ['fence', 120, 1470], ['fence', 264, 1470], ['bench', 120, 1560], ['haystack', 560, 1600], ['log', 280, 1600], ['stump', 120, 1640],
+    ['rock', 720, 1180], ['rock_small', 150, 960], ['rocks', 780, 1540], ['rock_small', 600, 560], ['bush', 200, 1180], ['bush_wide', 120, 1250], ['bush_yellow', 760, 880], ['bush', 740, 1440], ['mushrooms', 200, 950], ['mushrooms', 640, 1500],
+    ['grass_tuft', 100, 700], ['grass_tuft2', 300, 640], ['grass_tuft3', 600, 700], ['grass_tuft', 760, 760], ['grass_tuft2', 80, 880], ['grass_tuft3', 200, 1060], ['grass_tuft', 360, 1080], ['grass_tuft2', 540, 1000], ['grass_tuft3', 760, 1120], ['grass_tuft', 100, 1360], ['grass_tuft2', 520, 1440], ['grass_tuft3', 340, 1500], ['grass_tuft', 600, 1700], ['grass_tuft2', 240, 1740], ['grass_tuft3', 700, 1600], ['grass_tuft', 440, 1240],
+    ['flowers', 150, 760], ['flowers2', 620, 640], ['flowers3', 260, 1000], ['flowers', 720, 1300], ['flowers2', 80, 1540], ['flowers3', 480, 1500], ['flowers', 360, 1700], ['flowers2', 560, 1760], ['flowers3', 700, 1000]]) prop(n, x, y);
   items.push({ y: sp[3][1] + 1, draw: async () => { g.save(); g.scale(2, 2); player(g, sp[3][0] / 2, sp[3][1] / 2 + 2, 0.6); g.restore(); } });   // the board's scale is 0.6 of the fight's
   if (M) items.push({ y: sp[2][1] + 1, draw: async () => M.draw(g, sp[2][0], sp[2][1] + 2, false, 0.6) });
   items.sort((p, q) => p.y - q.y); for (const it of items) await it.draw();
   hud(g, 'Sunny Meadow'); roll(g);
   P.save(cv, path.join(OUT, 'board.png')); console.log('wrote', path.join(OUT, 'board.png'));
 }
-(async () => { await fight(); await board(); })();
+(async () => { await load(); await fight(); await board(); })();

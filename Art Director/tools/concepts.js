@@ -1,10 +1,13 @@
 // concepts.js: a concept board (Perry, AD, 2026-10-31): stills side by side on the meadow's green at phone size and at a
 // zoom, our player at the left for scale, a caption under each. For Robin to pick from before any rig.
 //   node tools/concepts.js <out.png> <title> <pic.png> "<caption>" [<pic.png> "<caption>" ...]
-const P = require('./paint.js'); const { player } = require('./player.js');
-(async () => {
+const P = require('./paint.js'); const { player, load } = require('./player.js');
+(async () => { await load();
   const [out, title, ...rest] = process.argv.slice(2); const items = []; for (let i = 0; i < rest.length; i += 2) items.push({ file: rest[i], caption: rest[i + 1] || '' });
-  for (const it of items) { const im = await P.loadImage(it.file); const cv = P.createCanvas(im.width, im.height); cv.getContext('2d').drawImage(im, 0, 0); P.harden(cv, 110); it.cv = P.trim(cv, 2).cv; it.foot = [im.width / 2 - P.trim(cv, 2).x, im.height - 24 - P.trim(cv, 2).y]; }
+  for (const it of items) {   // a file may say where its foot is: pic.png@x,y (in its own pixels); otherwise the bottom centre, 24 px up (a prop render)
+    const [file, at] = it.file.split('@'); const im = await P.loadImage(file); const cv = P.createCanvas(im.width, im.height); cv.getContext('2d').drawImage(im, 0, 0); P.harden(cv, 110); const t = P.trim(cv, 2); it.cv = t.cv;
+    const [fx, fy] = at ? at.split(',').map(Number) : [im.width / 2, im.height - 24]; it.foot = [fx - t.x, fy - t.y];
+  }
   const COLW = 230, W = 100 + items.length * COLW, Z = 2.2, H = 60 + 170 + 40 + 170 * Z + 70;
   const cv = P.createCanvas(W * 2, Math.round(H * 2)), g = cv.getContext('2d'); g.scale(2, 2); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
   g.fillStyle = '#8fd84a'; g.fillRect(0, 0, W, H); g.fillStyle = 'rgba(248,236,198,0.9)'; g.fillRect(0, 0, W, 44); P.label(g, title, 14, 22, 18, P.INK);

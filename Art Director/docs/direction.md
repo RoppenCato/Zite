@@ -140,6 +140,29 @@ Many small props per large one: a place's richness is many small pieces. Henesys
   `C:\dev\MapleStoryPlus` shows a layer stack panning (it reads our files where they are and copies nothing); the phone's
   size with `--width 412 --height 915`.
 
+## 7b. The budget (Robin, 2026-10-31: Zite's art must stay small for the phone; the numbers are Miles, GD's, the same day)
+
+| What | The limit |
+| --- | --- |
+| Files | at 2x of the 412 by 915 design, PNG; a palette (PNG-8) wherever it holds, through `tools/shrink.py` |
+| Atlases, always | Phaser 3 JSON hash, names `<sprite>/<action>/0001`, 2 px padding, the pivot at the feet per frame; power-of-two sides, never over 2048 by 2048; a character or a monster at most 1024 by 2048 |
+| A monster | one atlas, under 300 KB on disk, about 33 frames (stand 6, move 6, hit1 1, die1 8, attack1 12) |
+| A class character | one atlas, under 400 KB, about 25 frames |
+| An area's kit | the board kit one atlas plus its horizon strips, the fight kit one atlas (tiles and props) plus two or three background strips of at most 2048 by 1024 over a code-drawn sky; together under 2.5 MB, aiming at 2 |
+| On screen at once | at most 4 full-screen layers in a fight, 3 on the board; under 48 MB decoded per scene, 64 the hard cap |
+| The first load | the meadow kit, the Warrior, one monster and the icons under 3.5 MB; later areas load on entry |
+| Rates | stand and move 10 frames a second, attack 15, die 12, hit held 150 ms; the names and rates in every drop's NOTES.md |
+
+The server never carries art (static files, cached on the phone), so only the first install's size matters.
+
+## 7c. The paint recipe (2026-10-31)
+
+Everything near is painted to `docs/recipe.md`: one light over the whole form, three chosen tones in hard shapes, a dark
+quiet ground body under a thin bright lip, crisp edges, one ink line for the hero, the monsters and the props alike, nothing
+stamped, a foot for every prop, clusters not confetti. The recipe came from measuring the reference against our first pass
+after Colin, AD (the Survival game's Art Director) reviewed it at Robin's request. The player character is painted 2D parts
+to the same recipe (Colin's advice, the Turnip Grump's quality as the bar), not a Blender model.
+
 ## 8. Before anything is handed over (the reference's list, kept)
 
 1. Put it next to our player for scale, and beside a similar reference piece for proportion and motion.

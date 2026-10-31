@@ -101,6 +101,25 @@ optimising (a `pngquant` pass would halve it; not done yet).
 6. **Deliver:** `node tools/deliver_area.js meadow` copies `work/meadow/kit/` (without `_check/`) to `out/meadow/` with the
    two screens, the preview and `NOTES.md`.
 
+## The second pass (2026-10-31, after Colin, AD's review and Miles, GD's budgets)
+
+- **The recipe** is `docs/recipe.md`; the brushes in `tools/brush.js` follow it (`crown`, `trunk`, `clods`, `grass`, `rock`,
+  `tuft`, `flower`, `pole`, `dome`, `cloud`, `meadow`), with one `ink` for everything near.
+- **Measure first:** `node tools/measure.js <pic.png> name=x,y,w,h ...` gives the dark share, saturation and lightness of
+  any rectangle. The reference's crops are read where they are; nothing is copied.
+- **One slice before a kit:** `node tools/slice.js` paints one fight slice straight with the brushes (one tree, one bush,
+  the ground, our player and the Turnip Grump) into `work/slice/slice.png`; measure it against the reference before
+  repainting anything else.
+- **The player is painted 2D parts:** `node tools/hero_paint.js` paints the Warrior's stand (head, hair, face, body, legs,
+  arms, sword as separate functions, so a rig moves them later) and writes a `meta.json` the packer reads; `node
+  tools/pack.js warrior work/hero/paint work/warrior/sheets` makes its atlas, and `tools/player.js` draws it in every
+  picture from then on. The Blender ways (`warrior_build.py` on primitives, `hero_skin_build.py` on `skin.py`) are kept as
+  the record of the two-ways board.
+- **The packer writes Miles, GD's form:** names `<sprite>/<action>/0001`, 2 px padding, a pivot at the feet per frame,
+  power-of-two sides up to 1024 by 2048 (`tools/pack.js`); the loose frames in `frames/` are named `<action>_0001.png`.
+- **Shrink before delivery:** `python tools/shrink.py out/<name>` turns every PNG into a 255-colour palette PNG with its
+  transparency (the Turnip Grump's atlas: 1.3 MB to 196 KB). Run it on `out/`, never on `work/`.
+
 ## Looking
 
 - `node tools/look.js <out.png> [--bg #hex|file.png] [--zoom 2] <pic.png> ...`: pictures on a ground line beside our player at
