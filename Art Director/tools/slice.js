@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, '..'); const a = process.argv.slice(2); con
 const OUT = path.resolve(ROOT, opt('out') || 'work/slice/slice.png'), W = 824, H = 1830, GY = 1290, WALK = GY - 20;
 const wave = (x, W, amps) => amps.reduce((s, [n, am, ph]) => s + am * Math.sin(2 * Math.PI * n * x / W + ph), 0);
 (async () => {
-  await load();
+  await load(opt('player') || undefined);
   const cv = P.createCanvas(W, H), g = cv.getContext('2d'), r = P.rng(5);
   // the sky and the clouds (flat puffs, shaded low, no line)
   g.fillStyle = P.lin(g, 0, 0, 0, 1100, [[0, '#4a98e2'], [1, '#a8d4f2']]); g.fillRect(0, 0, W, 1100);

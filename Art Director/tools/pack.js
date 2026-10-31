@@ -18,7 +18,8 @@ if (!name || !dir || !out) { console.log('usage: node tools/pack.js <name> <rend
       P.harden(cv); const t = P.trim(cv, 1);
       const key = `${name}/${act}/${String(i + 1).padStart(4, '0')}`, origin = { x: Math.round(O[0] - t.x), y: Math.round(O[1] - t.y) };   // Miles, GD's names (2026-10-31): <sprite>/<action>/<0001>
       const rel = p => ({ x: Math.round(p[0] - O[0]), y: Math.round(p[1] - O[1]) });
-      const fr = { name: key, w: t.cv.width, h: t.cv.height, origin, delay: F.delay, lt: rel(F.lt), rb: rel(F.rb), head: rel(F.head) };
+      const lt = F.lt || [t.x, t.y], rb = F.rb || [t.x + t.cv.width, t.y + t.cv.height], hd = F.head || [O[0], t.y];   // a builder that gives no box gets the painted bounds
+      const fr = { name: key, w: t.cv.width, h: t.cv.height, origin, delay: F.delay, lt: rel(lt), rb: rel(rb), head: rel(hd) };
       if (F.a0 !== undefined) { fr.a0 = F.a0; fr.a1 = F.a1; }
       actions[act].frames.push(fr); frames.push({ key, cv: t.cv, origin });
     }

@@ -6,9 +6,9 @@
 const P = require('./paint.js'); const fs = require('fs'); const path = require('path');
 const { INK, lin, rad, ink, rr } = P; const ROOT = path.resolve(__dirname, '..');
 let atlas = null;
-async function load() {
-  for (const dir of [path.join(ROOT, 'out', 'warrior'), path.join(ROOT, 'work', 'warrior', 'sheets')]) {
-    const j = path.join(dir, 'warrior.json'); if (!fs.existsSync(j)) continue;
+async function load(file) {   // file: an atlas json to use instead of the studio's current Warrior
+  for (const j of (file ? [path.resolve(ROOT, file)] : [path.join(ROOT, 'out', 'warrior', 'warrior.json'), path.join(ROOT, 'work', 'warrior', 'sheets', 'warrior.json')])) {
+    const dir = path.dirname(j); if (!fs.existsSync(j)) continue;
     const J = JSON.parse(fs.readFileSync(j, 'utf8')); const im = await P.loadImage(path.join(dir, J.meta.image)); atlas = { J, im, dir }; return atlas;
   }
   return null;

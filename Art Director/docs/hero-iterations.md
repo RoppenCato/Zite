@@ -184,6 +184,21 @@ alive) and his lesson that the sword belongs in the far hand at a three-quarter 
 with feet apart, the long clear blade, the bigger strike and hit shapes, the strike's trail and the hard flat tones that
 match the turnip; reject his crouched knobby legs and his short foreshortened blade. Robin decides.
 
+## Another try, as volumes: three variants (2026-10-31, late evening)
+
+Robin: "do another try from what you learned, then present three variants"; and "Colin's legs look like a diaper". Built
+on Colin's construction (`tools/build/warrior_vol.py`, from his `zite_hero.py`: balls swept along paths and voxel-merged
+into one skin, bound to bones, IK legs, four hard tones, the face projected) with what both of us learnt: straight longer
+legs under the hips and the tunic ending at the belt (no flared hem below it, no lowered hips: that was the diaper); the
+sword in the far hand, held forward at the belt as Robin's side-view example holds it, so it stands clear of the chest and
+the near arm hangs plainly; our upright stance with the feet apart; the overhead cut winding up high in front (behind, a
+big head hides it, as Colin found) and landing low with the front foot lunging, the strike held two beats, a tapered trail
+(`tools/smear.js` from the blade's tip the builder writes); our thrown-back hit; the death freeing the sword. Three looks:
+A soft (Colin's rounded hair cap with fringe locks, a plain blue tunic), B spiky (pointed locks swept back and up, a
+headband, a smaller head and longer legs), C cap (a steel cap with a leather rim and a red plume, short hair at the nape,
+leather shoulder pads). Each 23 frames, a 1024-square atlas (C 1024 by 2048), about 650 KB before the palette shrink. The
+pictures were sent into the chat; `tools/variants_board.js` draws the board. Robin picks.
+
 ## For Robin to decide
 
 1. The hair's shape (these tufts swept back, or another cut) and how much of the head it may take: it sets the
