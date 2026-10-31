@@ -39,8 +39,8 @@ const wave = (x, W, amps) => amps.reduce((s, [n, am, ph]) => s + am * Math.sin(2
   B.tuft(g, 60, WALK + 8, 28, 24); B.tuft(g, 300, WALK + 8, 22, 25, B.LEAF_YELLOW); B.flower(g, 282, WALK + 6, 44, 26, 0); B.rock(g, 720, WALK + 6, 42, 36, 27);
   B.tuft(g, 760, WALK + 8, 26, 28); B.tuft(g, 470, WALK + 8, 20, 29, B.LEAF_DARK);
   // our player, facing the fight (the game flips him), and the monster; both with the ground's shadow the game lays
-  g.save(); g.scale(2, 2); player(g, 200, WALK / 2, 1, { flip: true }); g.restore();
-  const mj = opt('monster') || 'work/turnip/sheets/turnip.json'; if (fs.existsSync(path.resolve(ROOT, mj))) { const J = JSON.parse(fs.readFileSync(path.resolve(ROOT, mj), 'utf8')), im = await P.loadImage(path.join(path.dirname(path.resolve(ROOT, mj)), J.meta.image)), F = J.actions.stand.frames[0], fr = J.frames[F.name].frame; g.fillStyle = 'rgba(0,0,0,0.22)'; g.beginPath(); g.ellipse(600, WALK + 8, 80, 22, 0, 0, 7); g.fill(); g.drawImage(im, fr.x, fr.y, fr.w, fr.h, 600 - F.origin.x, WALK - F.origin.y, fr.w, fr.h); }
+  if (!opt('empty')) { g.save(); g.scale(2, 2); player(g, 200, WALK / 2, 1, { flip: true }); g.restore(); }   // --empty: the stage alone, for pages and gifs that draw the fighters themselves
+  const mj = opt('monster') || 'work/turnip/sheets/turnip.json'; if (!opt('empty') && fs.existsSync(path.resolve(ROOT, mj))) { const J = JSON.parse(fs.readFileSync(path.resolve(ROOT, mj), 'utf8')), im = await P.loadImage(path.join(path.dirname(path.resolve(ROOT, mj)), J.meta.image)), F = J.actions.stand.frames[0], fr = J.frames[F.name].frame; g.fillStyle = 'rgba(0,0,0,0.22)'; g.beginPath(); g.ellipse(600, WALK + 8, 80, 22, 0, 0, 7); g.fill(); g.drawImage(im, fr.x, fr.y, fr.w, fr.h, 600 - F.origin.x, WALK - F.origin.y, fr.w, fr.h); }
   C.hud(g, 'Sunny Meadow'); C.fightUi(g);
   P.save(cv, OUT); console.log('wrote', OUT);
 })();

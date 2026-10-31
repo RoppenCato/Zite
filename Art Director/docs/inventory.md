@@ -15,7 +15,10 @@ Nothing is in the game yet (2026-10-31): the client draws shapes and labels.
 
 | Asset | Where | State | What needs work |
 | --- | --- | --- | --- |
-| Turnip Grump (meadow, level 1 to 10 band) | `out/turnip/` (atlas, json, frames, sheet, compare, gif, build) | delivered 2026-10-31 | the atlas is about 1 MB at 2x: a pngquant pass; `attack1` has no flash or dust at the impact; the four other meadow candidates wait for Robin's pick |
+| Turnip Grump (meadow, starter band) | `out/turnip/` (a Blender render with the painted ramp) | delivered 2026-10-31 | the one monster still in the 3D hand Robin turned down for the hero: repaint it as painted 2D like the three below so the meadow is one hand; its ringed eyes; the atlas not yet shrunk |
+| Puffwort (meadow, starter band; hops) | `out/puffwort/` (atlas 1024 by 2048 palette PNG, json, frames, sheet, compare, screen, gif, build) | delivered 2026-10-31 | the seed shapes are small at phone size; a seed could be fatter |
+| Honey Bumble (meadow, starter band; flies) | `out/bumble/` (atlas 1024 square, json, frames, sheet, compare, screen, gif, build) | delivered 2026-10-31 | the wings' beat is two positions; a third would smooth the hover |
+| Bramble Bun (meadow, starter band; rolls) | `out/bramble/` (atlas 1024 by 2048, json, frames, sheet, compare, screen, gif, build) | delivered 2026-10-31 | the roll turns the face too, which reads as rolling; if Robin wants the face upright, the roll becomes a bounce |
 
 ## Characters
 

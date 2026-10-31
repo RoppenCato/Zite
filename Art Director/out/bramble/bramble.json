@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "bramble/die1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 256,
+    "h": 264
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 264
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 264
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9091
+   }
+  },
+  "bramble/die1/0007": {
+   "frame": {
+    "x": 260,
+    "y": 2,
+    "w": 252,
+    "h": 245
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 252,
+    "h": 245
+   },
+   "sourceSize": {
+    "w": 252,
+    "h": 245
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.902
+   }
+  },
+  "bramble/die1/0006": {
+   "frame": {
+    "x": 514,
+    "y": 2,
+    "w": 239,
+    "h": 225
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 239,
+    "h": 225
+   },
+   "sourceSize": {
+    "w": 239,
+    "h": 225
+   },
+   "pivot": {
+    "x": 0.5021,
+    "y": 0.9022
+   }
+  },
+  "bramble/die1/0005": {
+   "frame": {
+    "x": 755,
+    "y": 2,
+    "w": 222,
+    "h": 205
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 222,
+    "h": 205
+   },
+   "sourceSize": {
+    "w": 222,
+    "h": 205
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9024
+   }
+  },
+  "bramble/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 268,
+    "w": 164,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 164,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 164,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9278
+   }
+  },
+  "bramble/stand/0005": {
+   "frame": {
+    "x": 168,
+    "y": 268,
+    "w": 166,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 166,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 166,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9271
+   }
+  },
+  "bramble/stand/0006": {
+   "frame": {
+    "x": 336,
+    "y": 268,
+    "w": 166,
+    "h": 191
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 166,
+    "h": 191
+   },
+   "sourceSize": {
+    "w": 166,
+    "h": 191
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9267
+   }
+  },
+  "bramble/stand/0004": {
+   "frame": {
+    "x": 504,
+    "y": 268,
+    "w": 170,
+    "h": 188
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 188
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 188
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9255
+   }
+  },
+  "bramble/move/0001": {
+   "frame": {
+    "x": 676,
+    "y": 268,
+    "w": 170,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9251
+   }
+  },
+  "bramble/attack1/0012": {
+   "frame": {
+    "x": 848,
+    "y": 268,
+    "w": 170,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9251
+   }
+  },
+  "bramble/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 464,
+    "w": 170,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9243
+   }
+  },
+  "bramble/die1/0004": {
+   "frame": {
+    "x": 174,
+    "y": 464,
+    "w": 204,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 204,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9027
+   }
+  },
+  "bramble/attack1/0001": {
+   "frame": {
+    "x": 380,
+    "y": 464,
+    "w": 170,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9293
+   }
+  },
+  "bramble/stand/0003": {
+   "frame": {
+    "x": 552,
+    "y": 464,
+    "w": 174,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9282
+   }
+  },
+  "bramble/attack1/0002": {
+   "frame": {
+    "x": 728,
+    "y": 464,
+    "w": 172,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 172,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 172,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.4244,
+    "y": 0.9337
+   }
+  },
+  "bramble/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 651,
+    "w": 174,
+    "h": 180
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 180
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 180
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9278
+   }
+  },
+  "bramble/attack1/0009": {
+   "frame": {
+    "x": 178,
+    "y": 651,
+    "w": 162,
+    "h": 180
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 180
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 180
+   },
+   "pivot": {
+    "x": 1.142,
+    "y": 1.0222
+   }
+  },
+  "bramble/die1/0001": {
+   "frame": {
+    "x": 342,
+    "y": 651,
+    "w": 182,
+    "h": 177
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 182,
+    "h": 177
+   },
+   "sourceSize": {
+    "w": 182,
+    "h": 177
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9379
+   }
+  },
+  "bramble/attack1/0011": {
+   "frame": {
+    "x": 526,
+    "y": 651,
+    "w": 169,
+    "h": 177
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 177
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 177
+   },
+   "pivot": {
+    "x": 0.6864,
+    "y": 0.9379
+   }
+  },
+  "bramble/move/0004": {
+   "frame": {
+    "x": 697,
+    "y": 651,
+    "w": 180,
+    "h": 176
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 176
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 176
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8523
+   }
+  },
+  "bramble/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 833,
+    "w": 179,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 179,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 179,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.3855,
+    "y": 0.9249
+   }
+  },
+  "bramble/attack1/0010": {
+   "frame": {
+    "x": 183,
+    "y": 833,
+    "w": 186,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 186,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 186,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.8333,
+    "y": 0.9827
+   }
+  },
+  "bramble/move/0003": {
+   "frame": {
+    "x": 371,
+    "y": 833,
+    "w": 182,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 182,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 182,
+    "h": 172
+   },
+   "pivot": {
+    "x": 0.5275,
+    "y": 0.9244
+   }
+  },
+  "bramble/attack1/0007": {
+   "frame": {
+    "x": 555,
+    "y": 833,
+    "w": 175,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 175,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 175,
+    "h": 172
+   },
+   "pivot": {
+    "x": 1.0286,
+    "y": 1
+   }
+  },
+  "bramble/move/0005": {
+   "frame": {
+    "x": 732,
+    "y": 833,
+    "w": 177,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 177,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 177,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.4859,
+    "y": 0.929
+   }
+  },
+  "bramble/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1008,
+    "w": 177,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 177,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 177,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.774,
+    "y": 0.9763
+   }
+  },
+  "bramble/attack1/0004": {
+   "frame": {
+    "x": 181,
+    "y": 1008,
+    "w": 180,
+    "h": 168
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 168
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 168
+   },
+   "pivot": {
+    "x": 0.3556,
+    "y": 0.9226
+   }
+  },
+  "bramble/die1/0003": {
+   "frame": {
+    "x": 363,
+    "y": 1008,
+    "w": 188,
+    "h": 166
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 188,
+    "h": 166
+   },
+   "sourceSize": {
+    "w": 188,
+    "h": 166
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9096
+   }
+  },
+  "bramble/die1/0002": {
+   "frame": {
+    "x": 553,
+    "y": 1008,
+    "w": 188,
+    "h": 165
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 188,
+    "h": 165
+   },
+   "sourceSize": {
+    "w": 188,
+    "h": 165
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9273
+   }
+  },
+  "bramble/move/0006": {
+   "frame": {
+    "x": 743,
+    "y": 1008,
+    "w": 192,
+    "h": 162
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 162
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 162
+   },
+   "pivot": {
+    "x": 0.474,
+    "y": 0.9198
+   }
+  },
+  "bramble/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1179,
+    "w": 187,
+    "h": 159
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 187,
+    "h": 159
+   },
+   "sourceSize": {
+    "w": 187,
+    "h": 159
+   },
+   "pivot": {
+    "x": 0.5134,
+    "y": 0.9308
+   }
+  },
+  "bramble/attack1/0008": {
+   "frame": {
+    "x": 191,
+    "y": 1179,
+    "w": 203,
+    "h": 157
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 203,
+    "h": 157
+   },
+   "sourceSize": {
+    "w": 203,
+    "h": 157
+   },
+   "pivot": {
+    "x": 1.0887,
+    "y": 0.8535
+   }
+  },
+  "bramble/hit1/0001": {
+   "frame": {
+    "x": 396,
+    "y": 1179,
+    "w": 278,
+    "h": 129
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 278,
+    "h": 129
+   },
+   "sourceSize": {
+    "w": 278,
+    "h": 129
+   },
+   "pivot": {
+    "x": 0.3813,
+    "y": 0.9302
+   }
+  }
+ },
+ "meta": {
+  "image": "bramble.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bramble/stand/0001",
+     "w": 170,
+     "h": 185,
+     "origin": {
+      "x": 85,
+      "y": 171
+     },
+     "delay": 100,
+     "lt": {
+      "x": -85,
+      "y": -171
+     },
+     "rb": {
+      "x": 85,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -171
+     }
+    },
+    {
+     "name": "bramble/stand/0002",
+     "w": 174,
+     "h": 180,
+     "origin": {
+      "x": 87,
+      "y": 167
+     },
+     "delay": 100,
+     "lt": {
+      "x": -87,
+      "y": -166
+     },
+     "rb": {
+      "x": 87,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -166
+     }
+    },
+    {
+     "name": "bramble/stand/0003",
+     "w": 174,
+     "h": 181,
+     "origin": {
+      "x": 87,
+      "y": 168
+     },
+     "delay": 100,
+     "lt": {
+      "x": -87,
+      "y": -168
+     },
+     "rb": {
+      "x": 87,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -168
+     }
+    },
+    {
+     "name": "bramble/stand/0004",
+     "w": 170,
+     "h": 188,
+     "origin": {
+      "x": 85,
+      "y": 174
+     },
+     "delay": 100,
+     "lt": {
+      "x": -85,
+      "y": -173
+     },
+     "rb": {
+      "x": 85,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -173
+     }
+    },
+    {
+     "name": "bramble/stand/0005",
+     "w": 166,
+     "h": 192,
+     "origin": {
+      "x": 83,
+      "y": 178
+     },
+     "delay": 100,
+     "lt": {
+      "x": -83,
+      "y": -178
+     },
+     "rb": {
+      "x": 82,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -178
+     }
+    },
+    {
+     "name": "bramble/stand/0006",
+     "w": 166,
+     "h": 191,
+     "origin": {
+      "x": 83,
+      "y": 177
+     },
+     "delay": 100,
+     "lt": {
+      "x": -83,
+      "y": -177
+     },
+     "rb": {
+      "x": 82,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -177
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bramble/move/0001",
+     "w": 170,
+     "h": 187,
+     "origin": {
+      "x": 85,
+      "y": 173
+     },
+     "delay": 100,
+     "lt": {
+      "x": -85,
+      "y": -172
+     },
+     "rb": {
+      "x": 85,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -172
+     }
+    },
+    {
+     "name": "bramble/move/0002",
+     "w": 187,
+     "h": 159,
+     "origin": {
+      "x": 96,
+      "y": 148
+     },
+     "delay": 100,
+     "lt": {
+      "x": -96,
+      "y": -148
+     },
+     "rb": {
+      "x": 91,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -148
+     }
+    },
+    {
+     "name": "bramble/move/0003",
+     "w": 182,
+     "h": 172,
+     "origin": {
+      "x": 96,
+      "y": 159
+     },
+     "delay": 100,
+     "lt": {
+      "x": -95,
+      "y": -158
+     },
+     "rb": {
+      "x": 85,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -158
+     }
+    },
+    {
+     "name": "bramble/move/0004",
+     "w": 180,
+     "h": 176,
+     "origin": {
+      "x": 90,
+      "y": 150
+     },
+     "delay": 100,
+     "lt": {
+      "x": -90,
+      "y": -149
+     },
+     "rb": {
+      "x": 90,
+      "y": 25
+     },
+     "head": {
+      "x": 0,
+      "y": -149
+     }
+    },
+    {
+     "name": "bramble/move/0005",
+     "w": 177,
+     "h": 169,
+     "origin": {
+      "x": 86,
+      "y": 157
+     },
+     "delay": 100,
+     "lt": {
+      "x": -86,
+      "y": -157
+     },
+     "rb": {
+      "x": 90,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -157
+     }
+    },
+    {
+     "name": "bramble/move/0006",
+     "w": 192,
+     "h": 162,
+     "origin": {
+      "x": 91,
+      "y": 149
+     },
+     "delay": 100,
+     "lt": {
+      "x": -90,
+      "y": -149
+     },
+     "rb": {
+      "x": 101,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -149
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bramble/hit1/0001",
+     "w": 278,
+     "h": 129,
+     "origin": {
+      "x": 106,
+      "y": 120
+     },
+     "delay": 600,
+     "lt": {
+      "x": -105,
+      "y": -119
+     },
+     "rb": {
+      "x": 171,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -119
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bramble/die1/0001",
+     "w": 182,
+     "h": 177,
+     "origin": {
+      "x": 91,
+      "y": 166
+     },
+     "delay": 83,
+     "lt": {
+      "x": -90,
+      "y": -165
+     },
+     "rb": {
+      "x": 90,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -165
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bramble/die1/0002",
+     "w": 188,
+     "h": 165,
+     "origin": {
+      "x": 94,
+      "y": 153
+     },
+     "delay": 83,
+     "lt": {
+      "x": -94,
+      "y": -152
+     },
+     "rb": {
+      "x": 93,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -152
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bramble/die1/0003",
+     "w": 188,
+     "h": 166,
+     "origin": {
+      "x": 94,
+      "y": 151
+     },
+     "delay": 83,
+     "lt": {
+      "x": -94,
+      "y": -151
+     },
+     "rb": {
+      "x": 94,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -151
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bramble/die1/0004",
+     "w": 204,
+     "h": 185,
+     "origin": {
+      "x": 102,
+      "y": 167
+     },
+     "delay": 83,
+     "lt": {
+      "x": -102,
+      "y": -166
+     },
+     "rb": {
+      "x": 102,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -166
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bramble/die1/0005",
+     "w": 222,
+     "h": 205,
+     "origin": {
+      "x": 111,
+      "y": 185
+     },
+     "delay": 83,
+     "lt": {
+      "x": -110,
+      "y": -184
+     },
+     "rb": {
+      "x": 110,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -184
+     },
+     "a0": 255,
+     "a1": 230
+    },
+    {
+     "name": "bramble/die1/0006",
+     "w": 239,
+     "h": 225,
+     "origin": {
+      "x": 120,
+      "y": 203
+     },
+     "delay": 83,
+     "lt": {
+      "x": -119,
+      "y": -203
+     },
+     "rb": {
+      "x": 119,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -203
+     },
+     "a0": 230,
+     "a1": 160
+    },
+    {
+     "name": "bramble/die1/0007",
+     "w": 252,
+     "h": 245,
+     "origin": {
+      "x": 126,
+      "y": 221
+     },
+     "delay": 83,
+     "lt": {
+      "x": -125,
+      "y": -221
+     },
+     "rb": {
+      "x": 125,
+      "y": 23
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     },
+     "a0": 160,
+     "a1": 80
+    },
+    {
+     "name": "bramble/die1/0008",
+     "w": 256,
+     "h": 264,
+     "origin": {
+      "x": 128,
+      "y": 240
+     },
+     "delay": 83,
+     "lt": {
+      "x": -128,
+      "y": -239
+     },
+     "rb": {
+      "x": 127,
+      "y": 23
+     },
+     "head": {
+      "x": 0,
+      "y": -239
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bramble/attack1/0001",
+     "w": 170,
+     "h": 184,
+     "origin": {
+      "x": 80,
+      "y": 171
+     },
+     "delay": 67,
+     "lt": {
+      "x": -79,
+      "y": -170
+     },
+     "rb": {
+      "x": 90,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -170
+     }
+    },
+    {
+     "name": "bramble/attack1/0002",
+     "w": 172,
+     "h": 181,
+     "origin": {
+      "x": 73,
+      "y": 169
+     },
+     "delay": 67,
+     "lt": {
+      "x": -73,
+      "y": -168
+     },
+     "rb": {
+      "x": 99,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -168
+     }
+    },
+    {
+     "name": "bramble/attack1/0003",
+     "w": 179,
+     "h": 173,
+     "origin": {
+      "x": 69,
+      "y": 160
+     },
+     "delay": 67,
+     "lt": {
+      "x": -68,
+      "y": -160
+     },
+     "rb": {
+      "x": 110,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -160
+     }
+    },
+    {
+     "name": "bramble/attack1/0004",
+     "w": 180,
+     "h": 168,
+     "origin": {
+      "x": 64,
+      "y": 155
+     },
+     "delay": 134,
+     "lt": {
+      "x": -63,
+      "y": -154
+     },
+     "rb": {
+      "x": 115,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -154
+     }
+    },
+    {
+     "name": "bramble/attack1/0005",
+     "w": 164,
+     "h": 194,
+     "origin": {
+      "x": 82,
+      "y": 180
+     },
+     "delay": 67,
+     "lt": {
+      "x": -81,
+      "y": -179
+     },
+     "rb": {
+      "x": 81,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -179
+     }
+    },
+    {
+     "name": "bramble/attack1/0006",
+     "w": 177,
+     "h": 169,
+     "origin": {
+      "x": 137,
+      "y": 165
+     },
+     "delay": 67,
+     "lt": {
+      "x": -137,
+      "y": -165
+     },
+     "rb": {
+      "x": 39,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -165
+     }
+    },
+    {
+     "name": "bramble/attack1/0007",
+     "w": 175,
+     "h": 172,
+     "origin": {
+      "x": 180,
+      "y": 172
+     },
+     "delay": 67,
+     "lt": {
+      "x": -180,
+      "y": -171
+     },
+     "rb": {
+      "x": -6,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -171
+     }
+    },
+    {
+     "name": "bramble/attack1/0008",
+     "w": 203,
+     "h": 157,
+     "origin": {
+      "x": 221,
+      "y": 134
+     },
+     "delay": 134,
+     "lt": {
+      "x": -221,
+      "y": -133
+     },
+     "rb": {
+      "x": -18,
+      "y": 22
+     },
+     "head": {
+      "x": 0,
+      "y": -133
+     }
+    },
+    {
+     "name": "bramble/attack1/0009",
+     "w": 162,
+     "h": 180,
+     "origin": {
+      "x": 185,
+      "y": 184
+     },
+     "delay": 67,
+     "lt": {
+      "x": -185,
+      "y": -183
+     },
+     "rb": {
+      "x": -23,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -183
+     }
+    },
+    {
+     "name": "bramble/attack1/0010",
+     "w": 186,
+     "h": 173,
+     "origin": {
+      "x": 155,
+      "y": 170
+     },
+     "delay": 67,
+     "lt": {
+      "x": -154,
+      "y": -169
+     },
+     "rb": {
+      "x": 31,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -169
+     }
+    },
+    {
+     "name": "bramble/attack1/0011",
+     "w": 169,
+     "h": 177,
+     "origin": {
+      "x": 116,
+      "y": 166
+     },
+     "delay": 67,
+     "lt": {
+      "x": -115,
+      "y": -166
+     },
+     "rb": {
+      "x": 53,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -166
+     }
+    },
+    {
+     "name": "bramble/attack1/0012",
+     "w": 170,
+     "h": 187,
+     "origin": {
+      "x": 85,
+      "y": 173
+     },
+     "delay": 67,
+     "lt": {
+      "x": -85,
+      "y": -172
+     },
+     "rb": {
+      "x": 85,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -172
+     }
+    }
+   ]
+  }
+ }
+}

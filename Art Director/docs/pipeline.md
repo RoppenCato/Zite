@@ -120,6 +120,14 @@ optimising (a `pngquant` pass would halve it; not done yet).
 - **Shrink before delivery:** `python tools/shrink.py out/<name>` turns every PNG into a 255-colour palette PNG with its
   transparency (the Turnip Grump's atlas: 1.3 MB to 196 KB). Run it on `out/`, never on `work/`.
 
+## A monster painted in code (2026-10-31, the three meadow monsters)
+
+A blob creature needs no rig: `tools/monsters/<name>.js` exports its size, origin and actions as lists of poses (a few numbers
+each: squash, lean, lift, part angles, the face's mood, loose pieces) and a `draw(g, pose)` in the painted hand (brush.js
+tones, the one ink line). `node tools/monster_paint.js <name>` paints every frame with its data into `work/<name>/paint`;
+then `pack.js`, `sheet.js`, `slice.js --monster <atlas.json>`, `compare.js`, `anim_gif.js` as for the hero, and
+`tools/shrink.py out/<name>`. `slice.js --empty true` paints the stage with no fighters, for pages and gifs that draw them.
+
 ## Looking
 
 - `node tools/look.js <out.png> [--bg #hex|file.png] [--zoom 2] <pic.png> ...`: pictures on a ground line beside our player at
