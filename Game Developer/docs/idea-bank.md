@@ -22,7 +22,9 @@ the date, and comes off this list.
 9. **The world's form** (Perry, AD, 2026-10-31, after Robin's art decision): (a) the world itself a side-view
    MapleStory-like place generated from kits, the board's spaces along its ground, the camera following the token, fights
    where the token stands, an overview map screen for the big picture; or (b) a top-down painted world map of spaces and
-   paths with side-view fight scenes. Perry, AD recommends (a). Robin decides.
+   paths with side-view fight scenes. Later that day Robin showed a Dokapon board and asked for a mix: (c) the board seen from a raised camera in 2D, a tilted
+   ground with cliff faces and upright pieces sorted by depth, the camera coming down for a fight (`Art Director/docs/pictures/
+   world-form/C-diorama.png`). Perry, AD now recommends (c). Robin decides.
 
 ## Ideas noted in the brief, not decided
 

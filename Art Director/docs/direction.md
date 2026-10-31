@@ -165,6 +165,16 @@ A new thing is right when:
 
 ## Open, for Robin
 
+Robin, later on 2026-10-31, showed a Dokapon Kingdom board (a green island seen from a raised camera, gold spaces on roads,
+castles, trees, a river) and asked for "like B but 2.5D, a mix of A and B". That is a third form, **(c)**: the ground drawn
+from above at a tilt, with cliff faces where the land steps up; roads, rivers and the spaces flat on it; everything standing
+on it (trees, houses, castles, players, monsters) upright and sorted by depth; the camera follows the token and comes down for
+a fight, so the board's own scenery is the fight's background. Drawn as `docs/pictures/world-form/C-diorama.png`. **The
+studio now recommends (c)** over (a) and (b): it is the board game Robin described, it shows the world and the other players
+at once, it keeps the library's figures, props, monsters and painted style whole, and the one new thing it needs is a tilted
+ground kit (plates, roads, shore, cliff faces) instead of the side-view tile kit; the library's grassy top edges and earth
+bodies still teach how a cliff face is painted. (a) and (b) stay below as the record.
+
 - **The world's form.** The library builds side-view places: ground kits, layered backgrounds, props. Either (a) the world
   itself is such a place, a huge side-view MapleStory-like world generated from kits, the board's spaces laid along its
   ground, the camera following the token, a fight happening where the token stands (the fight background is the place

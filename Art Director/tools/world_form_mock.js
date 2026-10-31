@@ -166,7 +166,10 @@ function board(title, lines, items, file) {
   items.forEach(([name, cvs], i) => { const x = gutter + i * (pw + gutter); g.drawImage(cvs, x, top); g.lineWidth = 3; g.strokeStyle = '#222'; g.strokeRect(x, top, pw, ph); label(g, name, x + pw / 2, top + ph + 30, 20, '#333', { align: 'center' }); });
   fs.writeFileSync(path.join(OUT, file), cv.toBuffer('image/png')); console.log('wrote', file); return cv;
 }
+module.exports = { createCanvas, W, H, S, INK, rng, phone, rr, lin, rad, label, ink, sky, cloud, plane, tree, ground, ladder, house, hero, slime, badge, plate, hud, roll, fightUi, board, worldA, mapB, fight, overviewA };
+if (require.main === module) {
 const aWorld = phone(worldA), aFight = phone(g => fight(g)), aMap = phone(overviewA), bMap = phone(mapB), bFight = phone(g => fight(g));
 board('(a) The world is a side-view place', ['The board\'s spaces are plates along the ground of a MapleStory-like place built from kits: ground tiles, parallax planes, props.', 'A roll moves your token along the ground (and up ladders); a fight happens right where you stand, the camera just comes closer.', 'An overview map shows where you are in the whole world.'], [['The world: your token on its space', aWorld], ['A fight: the same place, closer', aFight], ['The overview map', aMap]], 'A-side-view-world.png');
 board('(b) A top-down world map', ['The board is a painted map seen from above: spaces and roads, towns, forests, rivers; your token stands on the map.', 'A fight opens a separate side-view scene built from the kits, one per area, then returns to the map.'], [['The world map, from above', bMap], ['A fight: a separate scene', bFight]], 'B-top-down-map.png');
 board('(a) side-view place  or  (b) top-down map', ['Same game, same kits, same fight. What differs is what you look at while you roll and move, and how much art it takes.'], [['(a) the world', aWorld], ['(a) the overview map', aMap], ['(b) the world map', bMap], ['the fight, in both', aFight]], 'A-vs-B.png');
+}
