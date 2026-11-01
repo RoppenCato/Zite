@@ -510,6 +510,10 @@ export class FightScene extends Phaser.Scene {
         if (this.outcome) this.outcome = { ...this.outcome, loot: this.outcome.loot.map((p) => (p.kind === 'gear' && p.gear.id === e.gear.id ? { ...p, worn: true } : p)) };
         (this.scene.get('board') as BoardScene).refreshHud();
         break;
+      case 'questProgress':
+        this.say(`Errand: ${e.quest.done} of ${e.quest.count}.`);
+        if (e.quest.done >= e.quest.count) moments(this)?.find('mark_scroll', 'Errand done!', `Go back to ${this.game_.state.board.spaces[e.quest.town]?.name ?? 'town'} to be paid.`, 0xe8b84a);
+        break;
       case 'found':
         this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
         break;

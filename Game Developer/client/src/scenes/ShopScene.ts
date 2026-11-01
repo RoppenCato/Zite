@@ -19,6 +19,18 @@ export interface ShopSceneDeps {
 }
 
 const CENTRE = DESIGN_WIDTH / 2;
+/** The tag's green. */
+const OWNED = 0x2f7d4f;
+
+/** How much of this kind of piece you own: "Worn", "Worn, 2 in bag", "1 in bag", or nothing. */
+export function ownedGear(worn: GearItem | null, bag: GearItem[], base: string): string {
+  const wearing = worn?.base === base;
+  const carried = bag.filter((g) => g.base === base).length;
+  if (wearing && carried) return `Worn, ${carried} in bag`;
+  if (wearing) return 'Worn';
+  return carried ? `${carried} in bag` : '';
+}
+
 /** Where things sit, in design pixels (the driver taps them here). */
 export const SHOP_LAYOUT = {
   /** Gear, Items and Sell; in a town Train too. */
@@ -26,7 +38,7 @@ export const SHOP_LAYOUT = {
   firstRowY: 244,
   rowStep: 48,
   rows: 8,
-  button: { x: 352, w: 88, h: 42 },
+  button: { x: 344, w: 88, h: 42 },
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
@@ -83,13 +95,21 @@ export class ShopScene extends Phaser.Scene {
     this.gold.setText(`Gold ${me.gold}`);
     const { firstRowY, rowStep, button } = SHOP_LAYOUT;
     const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
-    const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void): void => {
+    const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void, own = ''): void => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
       // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
-      this.rows.push(this.add.text(26, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(26, y + 10, detail, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 248 }, maxLines: 1 }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(304, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
+      const title = this.add.text(26, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5);
+      this.rows.push(title);
+      // What you already own, as a green tag beside the name (Robin, 2026-11-01: "easy to see in the shops if you already own an item (or how many)").
+      if (own) {
+        const tag = this.add.text(title.x + title.width + 14, y - 9, own, { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0, 0.5);
+        const pill = this.add.rectangle(tag.x - 5, y - 9, tag.width + 10, 19, OWNED).setOrigin(0, 0.5);
+        this.rows.push(pill, tag);
+        tag.setDepth(1);
+      }
+      this.rows.push(this.add.text(26, y + 10, detail, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 236 }, maxLines: 1 }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(292, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
     if (tab === 'train') {
@@ -109,13 +129,13 @@ export class ShopScene extends Phaser.Scene {
     } else if (tab === 'buy') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier);
-        row(i, g.name, this.ink.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }));
+        row(i, g.name, this.ink.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }), ownedGear(me.equipment[slot], me.bag, g.base));
       });
     } else if (tab === 'items') {
       ITEM_IDS.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(i, `${item.name}${owned ? ` ×${owned}` : ''}`, this.ink.text, `${item.text.split(/[.:;] /)[0]!.replace(/[.]$/, "")}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }));
+        row(i, item.name, this.ink.text, `${item.text.split(/[.:;] /)[0]!.replace(/[.]$/, "")}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '');
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);

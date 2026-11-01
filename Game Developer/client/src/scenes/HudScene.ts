@@ -23,9 +23,9 @@ export interface HudSceneDeps {
 /** Where the buttons sit, in design pixels (the pane's scripts tap them here). */
 export const BUTTONS = {
   map: { x: 58, y: 830, w: 96, h: 48 },
-  world: { x: 157, y: 830, w: 96, h: 48 },
-  bag: { x: 256, y: 830, w: 96, h: 48 },
-  log: { x: 355, y: 830, w: 96, h: 48 },
+  hero: { x: 157, y: 830, w: 96, h: 48 },
+  quests: { x: 256, y: 830, w: 96, h: 48 },
+  settings: { x: 355, y: 830, w: 96, h: 48 },
   roll: { x: 206, y: 885, w: 340, h: 58 },
 } as const;
 /** The message box: its bottom edge stays here; it grows upward for a longer line. */
@@ -326,11 +326,11 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const board = (): BoardScene => this.scene.get('board') as BoardScene;
-    const { map, world, bag, log, roll } = BUTTONS;
+    const { map, hero, quests, settings: gear, roll } = BUTTONS;
     this.mapLabel = makeButton(this, map.x, map.y, map.w, map.h, 'Map', COLORS.log, '18px', () => board().toggleMap()).label;
-    makeButton(this, world.x, world.y, world.w, world.h, 'World', COLORS.log, '18px', () => board().openAtlas());
-    makeButton(this, bag.x, bag.y, bag.w, bag.h, 'Bag', COLORS.log, '18px', () => board().openBag());
-    makeButton(this, log.x, log.y, log.w, log.h, 'Log', COLORS.log, '18px', () => board().downloadLog());
+    makeButton(this, hero.x, hero.y, hero.w, hero.h, 'Hero', COLORS.log, '18px', () => board().openBag());
+    makeButton(this, quests.x, quests.y, quests.w, quests.h, 'Quests', COLORS.log, '18px', () => board().openQuests());
+    makeButton(this, gear.x, gear.y, gear.w, gear.h, 'Settings', COLORS.log, '16px', () => board().openSettings());
     this.rollButton = makeButton(this, roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '26px', () => board().roll());
     this.log.note(`build 0.2.0 · ${WORLD_DATA.name} · seed ${this.game_.state.seed.slice(0, 8)}`);
   }

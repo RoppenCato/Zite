@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 13;
+export const STATE_VERSION = 14;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss';
@@ -196,6 +196,8 @@ export interface Character {
   offer: Offer | null;
   /** The errands carried, one a town at most. */
   quests: Quest[];
+  /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
+  questsDone: Quest[];
   /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */
   picks: string[][];
   /** Keys to the locked chests, by area: a mini-boss of the area drops one. */

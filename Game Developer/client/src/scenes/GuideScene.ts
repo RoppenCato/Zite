@@ -135,8 +135,8 @@ export class GuideScene extends Phaser.Scene {
           { title: 'Stunned', text: 'The enemy loses its turn. Mini-bosses and bosses shrug it off.' },
           { title: 'Hardened, fading', text: 'A hardened enemy takes less from your hits; a fading one makes your next hit miss.' },
           { title: 'Barrier', text: 'Takes the damage before your HP does.' },
-          { title: ITEMS.potion!.name, text: `${ITEMS.potion!.text} You can also drink it from the bag.` },
-          { title: ITEMS['mana-potion']!.name, text: `${ITEMS['mana-potion']!.text} You can also drink it from the bag.` },
+          { title: ITEMS.potion!.name, text: `${ITEMS.potion!.text} You can also drink it from Hero.` },
+          { title: ITEMS['mana-potion']!.name, text: `${ITEMS['mana-potion']!.text} You can also drink it from Hero.` },
         ],
       },
       {
@@ -144,7 +144,7 @@ export class GuideScene extends Phaser.Scene {
         entries: [
           ...SPACE_KINDS.filter((k) => k !== 'normal').map((k) => ({ title: SPACE_KIND_DATA[k].label, text: SPACE_KIND_DATA[k].hint })),
           { title: 'Wilds', text: SPACE_KIND_DATA.normal.hint },
-          { title: 'Looking around', text: 'Drag the map with a finger, pinch to zoom, tap any spot to hear about it. Map shows it all; Back returns to you.' },
+          { title: 'Looking around', text: 'Drag the map with a finger, pinch to zoom, or tap twice to zoom all the way out and in. Tap any spot to hear about it. Map shows it all; Back returns to you.' },
         ],
       },
     ];

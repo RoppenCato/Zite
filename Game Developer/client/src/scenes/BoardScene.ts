@@ -66,6 +66,7 @@ const BOSS_RADIUS = 34;
 const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circle
 const RING_RADIUS = 42;
 const TOKEN_RADIUS = 15;
+const DOUBLE_TAP_MS = 320;
 const STEP_MS = 260;
 const LIT = 0xfff27a;
 
@@ -152,6 +153,8 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** The last tap on the world, for a double tap. */
+  private lastTap = { at: -Infinity, x: 0, y: 0 };
   /** True while a question's window is up. */
   private asking = false;
   /** True while the token is on the road. */
@@ -227,7 +230,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** Take up whatever the state is in the middle of: a fight, a question, a pending roll, or nothing. */
   private resume(message?: string): void {
-    if (this.scene.isActive('fight') || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas') || this.scene.isActive('ask') || this.scene.isActive('reveal')) return;
+    if (this.scene.isActive('fight') || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('quests') || this.scene.isActive('settings') || this.scene.isActive('ask') || this.scene.isActive('reveal')) return;
     const me = this.game_.me;
     this.clearChoices();
     if (me.fight) {
@@ -351,8 +354,7 @@ export class BoardScene extends Phaser.Scene {
   /** Roll the die; then walk, or light up the places the roll can end and wait for a tap. */
   roll(): void {
     // Roll with a sheet open: the sheet goes, or the die would roll and the spots light behind it.
-    if (this.scene.isActive('bag')) this.bagClosed();
-    if (this.scene.isActive('atlas')) this.atlasClosed();
+    this.closeSheets();
     if (this.busy) {
       sfx.play('ui/tap-denied');
       if (this.choices_) this.setMessage('Tap a lit spot first.');
@@ -386,54 +388,47 @@ export class BoardScene extends Phaser.Scene {
     else this.follow(false);
   }
 
-  /** The bag: what you wear and carry. Not while a fight or a shop is up. */
+  /** Hero: what you wear and carry. */
   openBag(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal') || this.scene.isActive('ask')) return;
+    this.toggleSheet('bag');
+  }
+
+  /** The quest log. */
+  openQuests(): void {
+    this.toggleSheet('quests');
+  }
+
+  /** The settings, and the guide behind them. */
+  openSettings(): void {
+    this.toggleSheet('settings');
+  }
+
+  /** A sheet: its button opens it, closes it, or switches from another (Robin, 2026-11-01). Not over a fight, a shop, a reveal, a question or a walk. */
+  private toggleSheet(key: 'bag' | 'quests' | 'settings'): void {
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal') || this.asking) return;
     if (this.walking) {
       sfx.play('ui/tap-denied');
       return;
     }
-    // Bag again closes it; Bag over the atlas switches (Robin, 2026-11-01: pressing a button again should close its menu).
-    if (this.scene.isActive('bag')) {
-      this.bagClosed();
-      return;
-    }
-    if (this.scene.isActive('atlas')) this.atlasClosed();
+    const wasOpen = this.scene.isActive(key);
+    this.closeSheets();
+    if (wasOpen) return;
     sfx.play('ui/sheet-open');
-    this.scene.launch('bag');
+    this.scene.launch(key);
   }
 
-  /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
-  openAtlas(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal') || this.scene.isActive('ask')) return;
-    if (this.walking) {
-      sfx.play('ui/tap-denied');
-      return;
+  /** Any sheet goes, and the tap that closed it stays off the board. */
+  private closeSheets(): void {
+    for (const key of ['bag', 'quests', 'settings'] as const) {
+      if (!this.scene.isActive(key)) continue;
+      sfx.play('ui/sheet-close');
+      this.scene.stop(key);
+      this.overlayClosedAt = this.time.now;
+      this.overlayClosedFrame = this.game.loop.frame;
+      this.refreshHud();
     }
-    if (this.scene.isActive('atlas')) {
-      this.atlasClosed();
-      return;
-    }
-    if (this.scene.isActive('bag')) this.bagClosed();
-    sfx.play('ui/sheet-open');
-    this.scene.launch('atlas');
   }
 
-  atlasClosed(): void {
-    sfx.play('ui/sheet-close');
-    this.scene.stop('atlas');
-    this.overlayClosedAt = this.time.now;
-    this.overlayClosedFrame = this.game.loop.frame;
-  }
-
-  /** From the atlas: close it and frame the area on the board. */
-  atlasFrame(areaId: string): void {
-    this.atlasClosed();
-    const b = this.game_.state.board.areas[areaId]?.bounds;
-    if (b) this.frame([{ x: b.x, y: b.y }, { x: b.x + b.width, y: b.y + b.height }]);
-  }
-
-  /** The bag is closed: the numbers may have changed. */
   bagClosed(): void {
     sfx.play('ui/sheet-close');
     this.scene.stop('bag');
@@ -1122,7 +1117,31 @@ export class BoardScene extends Phaser.Scene {
       this.drag = null;
       return;
     }
-    if (this.drag && p.id === this.drag.pointer) this.drag = null;
+    if (this.drag && p.id === this.drag.pointer) {
+      const tapped = !this.drag.moved;
+      this.drag = null;
+      if (tapped) this.onTapped(p);
+    }
+  }
+
+  /** Two quick taps in the same place zoom all the way out, or from there all the way in where you tapped (Robin, 2026-11-01). */
+  private onTapped(p: Phaser.Input.Pointer): void {
+    const now = this.time.now;
+    const near = Phaser.Math.Distance.Between(p.x, p.y, this.lastTap.x, this.lastTap.y) < 40 * DPR;
+    const twice = now - this.lastTap.at < DOUBLE_TAP_MS && near;
+    this.lastTap = twice ? { at: -Infinity, x: 0, y: 0 } : { at: now, x: p.x, y: p.y };
+    if (!twice || this.walking) return;
+    const cam = this.cameras.main;
+    if (cam.zoom > this.minZoom * 1.15) {
+      this.overview();
+      return;
+    }
+    const at = cam.getWorldPoint(p.x, p.y);
+    this.unfollow();
+    cam.panEffect.reset();
+    cam.zoomEffect.reset();
+    cam.pan(at.x, at.y, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
+    cam.zoomTo(MAX_ZOOM, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
   }
 
   private onWheel(p: Phaser.Input.Pointer, deltaY: number): void {

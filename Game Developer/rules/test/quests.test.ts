@@ -106,6 +106,7 @@ describe('an errand from the town', () => {
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'levelled', level: 2 }));
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'loot', gear: expect.objectContaining({ rarity: 'unique' }) }));
     expect(me(r.state).quests).toEqual([]);
+    expect(me(r.state).questsDone.map((q) => q.id)).toEqual(['s0']);
     expect(me(r.state).cooldowns['quest:s0']).toBe(NOW + QUESTS.cooldownMs);
     expect(me(r.state).offer).toBeNull();
   });

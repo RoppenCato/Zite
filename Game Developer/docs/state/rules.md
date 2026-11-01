@@ -407,3 +407,5 @@ these are the events (the skill `shared-world`).
 - **A merchant met by chance camps on the spot**, so his shop sells.
 - State version 13: every character gains `ailments`; `withChurches` turns the set hubs (or a grown area's first named wild hub) into churches.
 - **King Goo stays at 700 / 30 / 11 for now.** Robin found the bosses "very overtuned? But maybe they should be for a bit". The wall above assumes all eight slots in tin at level 5 or 6; without gear it is 5% at his own level. Before auto-equip a player easily met him unworn, so this is to be felt again before any number moves.
+
+- State version 14: every character gains `questsDone`, the errands finished, the last twenty kept for the quest log (Robin, 2026-11-01).

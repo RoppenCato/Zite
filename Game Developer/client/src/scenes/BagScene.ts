@@ -24,7 +24,7 @@ const CENTRE = DESIGN_WIDTH / 2;
 const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 /** Where things sit, in design pixels (the driver taps them here). */
 export const BAG_LAYOUT = {
-  close: { x: 356, y: 138, w: 84, h: 44 },
+  close: { x: 344, y: 142, w: 84, h: 44 },
   /** The worn grid: four tiles a row, two rows, in slot order. */
   tile: (i: number) => ({ x: 58 + (i % 4) * 99, y: 216 + Math.floor(i / 4) * 70 }),
   detailY: 354,
@@ -70,7 +70,7 @@ export class BagScene extends Phaser.Scene {
     const kit = kitReady(this);
     const ink = kit ? INK : COLORS.text;
     const dim = kit ? INK_DIM : COLORS.dim;
-    this.add.text(24, 112, 'Bag', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: ink });
+    this.add.text(26, 112, 'Hero', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: ink });
     this.numbers = this.add.text(24, 146, '', { fontFamily: FONT, fontSize: '13px', color: dim, wordWrap: { width: 284 } });
     const { close, detailY, carriedY, drop, act } = BAG_LAYOUT;
     makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());

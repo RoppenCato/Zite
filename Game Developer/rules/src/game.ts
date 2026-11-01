@@ -87,6 +87,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     bossKills: {},
     offer: null,
     quests: [],
+    questsDone: [],
     picks: [],
     keys: {},
     ailments: {},
@@ -248,7 +249,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       let st = state;
       if (mine && mine.done >= mine.count) {
         events.push({ type: 'questDone', action: id, player, quest: mine });
-        rested = { ...rested, quests: rested.quests.filter((q) => q !== mine), cooldowns: { ...rested.cooldowns, [`quest:${space.id}`]: now + QUESTS.cooldownMs } };
+        rested = { ...rested, quests: rested.quests.filter((q) => q !== mine), questsDone: [...(rested.questsDone ?? []), mine].slice(-20), cooldowns: { ...rested.cooldowns, [`quest:${space.id}`]: now + QUESTS.cooldownMs } };
         rested = giveGold(rested, mine.gold, action, events);
         rested = gainXp(rested, mine.xp, action, events);
         rested = offerPicks(rested, rng, c.level, action, events);

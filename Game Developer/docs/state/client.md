@@ -437,3 +437,11 @@ world boss in the atlas's list.
 ## Questions in a window (`AskScene`, Robin, 2026-11-01)
 
 An errand offered, the gambler, a level's pick and a piece with no room in the bag each open a window over the dimmed band: an icon, a title, the words, what it pays, big answers (a pick's buttons have the ability's words over them). `BoardScene.ask` waits for any card on show (`MomentScene.whenQuiet`); an answer closes it and its result pops as a find. Bag and World are refused while it is up. The chips (dice cards, notes on a spot) now stand above the message box however tall it grows; before, a two-line message hid them. `tools/drive-*.mjs` still answer offers through the chips and need updating before they are run again.
+
+## The menu row (Robin, 2026-11-01)
+
+The HUD's row is Map, Hero (the bag), Quests and Settings. Robin: "you have to go into world map to reach settings... Guess you dont need world map when you can zoom out", so the area list is gone (`archive/AtlasScene.ts`) and `SettingsScene` holds the guide, the toggles, the world, the log and starting over. **The quest log** (`QuestScene`, `Character.questsDone`, state version 14): errands under way with progress, town and pay, those ready to be paid marked, then the ones finished, the last twenty kept. An errand finished in a fight pops a card. **Double tap** on the map zooms all the way out; from there, all the way in where you tapped (`onTapped`). Map and Back still work. One way to open a sheet: `toggleSheet`.
+
+## What you own, in the shop (Robin, 2026-11-01)
+
+A green tag beside the name: on Gear "Worn", "Worn, 2 in bag" or "1 in bag", counted by the piece's base so a rare tin sword counts as a tin sword; on Items "You have 3". Nothing owned, no tag.
