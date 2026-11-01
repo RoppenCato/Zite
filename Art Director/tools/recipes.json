@@ -1,6 +1,0 @@
-{
- "_": "the studio's monsters and characters: the builder (in tools/build/), the blend it saves, the renderer's arguments. node tools/art.js <name> <step>",
- "turnip": { "builder": "turnip_build.py", "blend": "turnip.blend", "render": "--size 220 --px 2 --elev 0 --ortho 2.9 --aim 0.9 --aimx -0.2", "area": "meadow", "at": "590,1270" },
- "warrior": { "builder": "warrior_build.py", "blend": "warrior.blend", "render": "--size 200 --px 2 --elev 0 --ortho 2.0 --aim 0.6 --aimx -0.1", "area": "meadow", "at": "250,1270", "player": true },
- "hero_skin": { "builder": "hero_skin_build.py", "blend": "hero_skin.blend", "render": "--size 200 --px 2 --elev 0 --ortho 2.0 --aim 0.6 --aimx -0.1", "area": "meadow", "at": "250,1270", "note": "the skinned still for the two-ways board" }
-}

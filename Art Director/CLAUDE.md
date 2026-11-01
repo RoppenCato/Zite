@@ -28,6 +28,14 @@ monsters, tiles, backgrounds, parallax and objects are built); `docs/direction.m
 sentence, our scale, the pipeline, the check); `docs/pipeline.md` (the exact commands, once written); `docs/techniques.md`
 (readability and sprites from Blender); `docs/inventory.md` (every asset and its state); `docs/log.md`.
 
+## The direction was scrapped (Robin, 2026-11-01)
+
+**Read `HANDOVER.md` first.** Robin, 2026-11-01: "scrap the whole art direction, besides the shell (like 2.5D, fighting
+etc), and start from the beginning with the art." The shell stays: the world's form, the kits as data, the action set with
+frame data, Miles, GD's budgets and the atlas form. The look he wants is in `examples/` (three pictures). Everything drawn
+under the section below was removed from this studio on 2026-11-01; the section is kept as the record of what was decided
+on 2026-10-31 and is no longer the direction.
+
 ## The direction (Robin, 2026-10-31)
 
 **The art follows the MapleStory reference library**, `C:\dev\MapleStoryPlus\Settings\Inspiration`: painted, cute and
