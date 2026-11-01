@@ -1,4 +1,4 @@
-> Carried over from the Survival game's art studio (C:\dev\SG\Art Director) on 2026-10-31. Section 1 (readability) holds for any sprite on a phone; sections 2 to 4 matter if Blender is the pipeline; sections 5 and 6 are that game's. Perry, AD.
+> Carried over from the Survival game's art studio (`C:\dev\SG\Art Director`) on 2026-10-31. Section 1 (readability) holds for any sprite on a phone; sections 2 to 4 matter if Blender is the pipeline; sections 5 and 6 are that game's.
 
 # Techniques: what the guides and the forums teach, checked against our pipeline
 
@@ -42,7 +42,7 @@ Creator and Sprite Render Kit add-on notes, and GameFromScratch's sprite tutoria
 - **One fixed light rig in the world; turn the model, not the sun.** Then the lit side is always the same side of the frame
   whatever the character faces, as a drawn sprite's would be. **Ours:** `render.py` turns the rig under the sun; right.
 - **Small, hard lights.** Big soft lights wash out the forms; a sun with angle 0 gives the hard cel step. **Ours:** right,
-  except the sun is too weak to step at all (`docs/pipeline.md`, fault 1).
+  except the sun is too weak to step at all (the Survival game's pipeline notes, fault 1).
 - **Render larger, scale down with a smooth filter.** The thread found a pixel filter width of about 0.7 to 1.0 sharper than
   1.4; linear resampling on the way down. **Ours:** rendered at 2x, halved with a smooth filter, filter size 1.2: worth a
   test at 0.9 to see if the line crispens without aliasing.
