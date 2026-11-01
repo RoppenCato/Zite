@@ -171,6 +171,7 @@ docs/idea-bank.md         undecided ideas and the open questions, with who asked
 docs/art-demands.md       what art the game needs and in what order, for the Art Director; each wave tagged with its chapter
 docs/chapters.md          the game cut into chapters, each an area's level range finished in game and art, ending in an alpha
 docs/sound-demands.md     what sound the game needs and in what order, for the Sound Director; each wave tagged with its chapter
+docs/plan-chapter-1.md    the numbered plan for chapter 1: each step, what it needs from the studios and when, built here
 docs/names.md             everything in the game that carries a name, for the theme; all placeholders until Robin names them
 docs/world-content.md     the Enchanted Kingdoms content catalogue: twelve region archetypes, their creatures, bosses and places (a proposal)
 docs/world-content-mapping.md  how the catalogue maps onto the areas, themes and data as built, and what Robin has to confirm

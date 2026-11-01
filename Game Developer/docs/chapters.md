@@ -15,6 +15,9 @@ tags); how each system stands is in
 
 ## Chapter 1: Puddlewick. Cloverfield Meadows, levels 1 to 4. **Alpha 1**
 
+The numbered plan of implementation, step by step with what each needs from the studios and when, is
+`docs/plan-chapter-1.md` (Robin, 2026-11-01: the Knight alone in Alpha 1; built here).
+
 The whole loop, small and finished: one area, one class with its gear visible, a UI worth looking at, chests that feel
 like winning.
 
