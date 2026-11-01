@@ -90,8 +90,9 @@ export class ShopScene extends Phaser.Scene {
     const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void): void => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 3));
-      this.rows.push(this.add.text(24, y - 15, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: nameColor }));
-      this.rows.push(this.add.text(24, y + 4, detail, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim }));
+      // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
+      this.rows.push(this.add.text(26, y - 7, name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(26, y + 7, detail, { fontFamily: FONT, fontSize: '10px', color: this.ink.dim, wordWrap: { width: 238 }, maxLines: 1 }).setOrigin(0, 0.5));
       this.rows.push(this.add.text(306, y, price, { fontFamily: FONT, fontSize: '14px', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '14px', onTap).button);
     };
@@ -112,12 +113,12 @@ export class ShopScene extends Phaser.Scene {
     } else if (tab === 'buy') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier);
-        row(i, g.name, COLORS.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }));
+        row(i, g.name, this.ink.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }));
       });
       ITEM_IDS.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(SLOTS.length + i, item.name, COLORS.text, `${item.text}${owned ? ` · you have ${owned}` : ''}`, `${item.price} g`, 'Buy', () => this.buy({ item: id }));
+        row(SLOTS.length + i, item.name, this.ink.text, `${item.text}${owned ? ` · you have ${owned}` : ''}`, `${item.price} g`, 'Buy', () => this.buy({ item: id }));
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);

@@ -301,8 +301,10 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
       if (what === 'event' && area && EVENTS[area.theme]) return themeEvent(state, c, area.theme, tier, action, rng, events);
       if (what === 'merchant') {
+        // The merchant camps here for a while, so the shop he opens is a shop (Robin, 2026-11-01: nothing could be bought from one).
         events.push({ type: 'merchant', action: id, player });
-        return { state: withCharacter(state, c), events };
+        const camped = { ...state, spawns: { ...state.spawns, [space.id]: { kind: 'merchant' as const, enemy: null, until: now + PROGRESSION.spawns.lifeMs } } };
+        return { state: withCharacter(camped, c), events };
       }
       if (what === 'gamble' && c.gold > 0) {
         const stake = Math.min(c.gold, PROGRESSION.gamble.stakePerTier * tier);

@@ -231,6 +231,10 @@ describe('landing', () => {
     expect(me(chest.state).cooldowns).toEqual({}); // a chest found in the wilds is not a spot that empties
     const merchant = apply(about('s0'), move(['s1']), makeRng(firstSeed('merchant')), NOW);
     expect(merchant.events[2]).toEqual({ type: 'merchant', action: 'm1', player: P });
+    // He camps on the spot, so what he opens counts as a shop and a purchase goes through (Robin found it refused, 2026-11-01).
+    expect(merchant.state.spawns.s1).toMatchObject({ kind: 'merchant' });
+    const bought = apply(merchant.state, { type: 'buy', player: P, id: 'b1', item: 'potion' } as Action, makeRng(1), NOW);
+    expect(bought.events.some((e) => e.type === 'bought')).toBe(true);
     const event = apply(about('s0'), move(['s1']), makeRng(firstSeed('themeEvent')), NOW);
     expect(event.events[2]).toMatchObject({ type: 'themeEvent', kind: 'heal', text: expect.stringContaining('picnic') }); // the meadows' event
     const counts: Record<string, number> = {};
