@@ -280,3 +280,11 @@ slanted heavy lid, a bright glossy blue iris where the reference's is near-black
 blush where the reference shades orange, and the skin too dark. All redrawn to the reference's layout (the lines above),
 checked head to head beside it at the same size. Then Robin: "your eyes need to be smaller and same size" (Robin,
 2026-11-01): both eyes 25 by 28 px at 2x, equal. Robin judges; nothing delivered to `out/` until he does.
+
+Robin, 2026-11-01, next: "you're building the body in lots of different parts, which makes it very doll-like; Colin did the
+same mistake. The eyes look odd because they are just copies of each other, like he's got two left eyes." Both structural,
+both fixed in `tools/doll.js`: a unit (the body with both legs and the boots; the head with its hair; each arm with its
+fist) is filled on its own canvas and stamped under ONE silhouette line round everything painted (`brush.outline`), as the
+reference's body is one picture; only a thin inner edge on the near leg and the hairline sit inside. The far eye is now the
+near eye's mirror about the face's centre line (the heavy lids both rise toward the centre, the brows mirror too), while the
+iris's lean and the highlight stay on the light's side, as a real pair of eyes does.

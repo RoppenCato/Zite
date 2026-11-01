@@ -3,15 +3,18 @@
 // measured from its own data (my scratch study of the client's character parts, never copied): a paper doll of a few
 // painted parts, the feet as the origin, the body 21x31 under a head 39x35 (the head half the height and wider than the
 // body), one slim arm hung on the navel, the sword as long as the body is tall held in that hand, hands as small balls,
-// big boots; a face set low and forward on the head, both eyes seen on a side-on body, the far one narrower; smooth soft
-// shading, one thin dark line; few frames with strong poses: a slow 3-frame breath, a 4-frame stride, attacks that lunge
-// half the body's height and hold the strike. This paints the same doll at our scale (65 reference px -> 200 px at 2x) in
-// our own tones and shapes, from pose dictionaries in the reference's units (x forward is negative, y up is negative, the
-// feet at 0,0). Writes <act>_<nn>.png and meta.json for tools/pack.js.
+// big boots; a face set low and forward on the head, both eyes seen on a side-on body; smooth soft shading, one thin dark
+// line; few frames with strong poses: a slow 3-frame breath, a 4-frame stride, attacks that lunge half the body's height
+// and hold the strike. This paints the same doll at our scale (65 reference px -> 200 px at 2x) in our own tones and
+// shapes, from pose dictionaries in the reference's units (x forward is negative, y up is negative, the feet at 0,0).
+// Robin, 2026-11-01: "you're building the body in lots of different parts, which makes it very doll-like": so the body
+// (torso and both legs, the boots) is ONE unit, filled first and given one silhouette line round the whole, as the
+// reference's body is one picture; the head with its hair is one unit, each arm with its fist one unit. Only a few thin
+// inner lines (the near leg's edge, the hairline) sit inside a unit. Writes <act>_<nn>.png and meta.json for tools/pack.js.
 //   node tools/doll.js <out dir> [--only stand,attack1] [--sheet work/doll/sheet.png]
-const P = require('./paint.js'); const fs = require('fs'); const path = require('path');
+const P = require('./paint.js'); const B = require('./brush.js'); const fs = require('fs'); const path = require('path');
 const { alpha, mix } = P; const a = process.argv.slice(2); const OUT = a[0] || 'work/doll/paint'; const opt = k => a.includes('--' + k) ? a[a.indexOf('--' + k) + 1] : null;
-const S = 200 / 65, W = 560, H = 340, OX = 300, OY = 310, INK = '#2b2320';
+const S = 200 / 65, W = 560, H = 340, OX = 300, OY = 310, INK = '#2b2320', LINE = 2.2;
 const px = p => [OX + p[0] * S, OY + p[1] * S];
 const v = (p, q) => [q[0] - p[0], q[1] - p[1]], len = d => Math.hypot(d[0], d[1]), unit = d => { const L = len(d) || 1; return [d[0] / L, d[1] / L]; }, ang = d => Math.atan2(d[1], d[0]);
 const add = (p, d, k = 1) => [p[0] + d[0] * k, p[1] + d[1] * k], rad = deg => deg * Math.PI / 180;
@@ -20,57 +23,59 @@ const SKIN = { light: '#fff1de', mid: '#fde0c0', dark: '#f0b98e', deep: '#c98a5e
 const TUNIC = { light: '#86bdf6', mid: '#4a8ade', dark: '#2d5fae', deep: '#1e417e' }, PANTS = { light: '#d9b47c', mid: '#b58c56', dark: '#7e5c36' }, BOOT = { light: '#c9583f', mid: '#9c3a2c', dark: '#5e2018' };   // tan trousers, red boots: the legs stay bright at phone size, as the reference keeps its shorts and shoes bright
 const STEEL = { light: '#f7fafd', mid: '#c6d0dc', dark: '#8795a6' }, GOLD = { light: '#f8dc82', mid: '#d8a84c', dark: '#9a6c22' }, BELT = { mid: '#7a4a2a', dark: '#4a2a14' };
 function ink(g, w = 2.5, al = 1) { g.lineWidth = w; g.strokeStyle = al < 1 ? alpha(INK, al) : INK; g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke(); }
-function smoothClosed(g, pts, k = 0.5) {   // a closed curve through the points (quadratics through the midpoints)
+const inner = g => ink(g, 1.6, 0.5);   // a thin line inside a unit
+// a unit: parts filled on their own canvas, then stamped onto the frame under ONE silhouette line round everything painted (brush.outline)
+function stamp(g, draw) { const cv = P.createCanvas(W, H); draw(cv.getContext('2d')); g.drawImage(B.outline(cv, LINE), 0, 0); }
+function smoothClosed(g, pts) {   // a closed curve through the points (quadratics through the midpoints)
   const n = pts.length; g.beginPath(); const m = (i) => [(pts[i % n][0] + pts[(i + 1) % n][0]) / 2, (pts[i % n][1] + pts[(i + 1) % n][1]) / 2];
   g.moveTo(...m(0)); for (let i = 1; i <= n; i++) { const p = pts[i % n], q = m(i); g.quadraticCurveTo(p[0], p[1], q[0], q[1]); } g.closePath();
 }
-// a tube: a limb through a chain of points with a width at each, one closed path, lit across (the light from the upper left)
+// a tube: a limb through a chain of points with a width at each, one closed path, lit across (the light from the upper left); no line of its own unless asked
 function tube(g, pts, ws, t, o = {}) {
   const n = pts.length, L = [], R = [];
   for (let i = 0; i < n; i++) { const d = unit(v(pts[Math.max(0, i - 1)], pts[Math.min(n - 1, i + 1)])), nn = [-d[1], d[0]]; L.push(add(pts[i], nn, -ws[i] / 2)); R.push(add(pts[i], nn, ws[i] / 2)); }
   const path = () => { g.beginPath(); g.moveTo(...L[0]); for (let i = 1; i < n; i++) g.lineTo(...L[i]); const d1 = unit(v(pts[n - 2], pts[n - 1])); g.arc(pts[n - 1][0], pts[n - 1][1], ws[n - 1] / 2, ang(d1) - Math.PI / 2, ang(d1) + Math.PI / 2); for (let i = n - 1; i >= 0; i--) g.lineTo(...R[i]); const d0 = unit(v(pts[1], pts[0])); g.arc(pts[0][0], pts[0][1], ws[0] / 2, ang(d0) - Math.PI / 2, ang(d0) + Math.PI / 2); g.closePath(); };
   const d = unit(v(pts[0], pts[n - 1])), nn = [-d[1], d[0]], w = Math.max(...ws), c = pts[Math.floor(n / 2)], lightSide = (nn[0] + nn[1] * 0.5) < 0 ? -1 : 1;   // the normal toward the upper-left light
   path(); g.fillStyle = P.lin(g, c[0] - nn[0] * w / 2 * lightSide, c[1] - nn[1] * w / 2 * lightSide, c[0] + nn[0] * w / 2 * lightSide, c[1] + nn[1] * w / 2 * lightSide, [[0, t.light], [0.45, t.mid], [1, t.dark]]); g.fill();
-  if (o.ink !== false) { path(); ink(g, o.w || 2.5); }
+  if (o.edge) { path(); inner(g); }
 }
-function bendPoint(A, B, L, k) {   // the joint between A and B for two segments of length L, bent to side k of the A->B line
-  const d = v(A, B), D = len(d), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], u = unit(d), nn = [-u[1], u[0]], h = Math.sqrt(Math.max(0, L * L - D * D / 4));
+function bendPoint(A, B2, L, k) {   // the joint between A and B for two segments of length L, bent to side k of the A->B line
+  const d = v(A, B2), D = len(d), m = [(A[0] + B2[0]) / 2, (A[1] + B2[1]) / 2], u = unit(d), nn = [-u[1], u[0]], h = Math.sqrt(Math.max(0, L * L - D * D / 4));
   return add(m, nn, k * h);
 }
-// ---- the parts, each in frame pixels ----
-function torso(g, hips, neck, near) {   // the tunic from the hips to the neck, a short skin neck, the belt at the hem
+// ---- the parts, each in frame pixels; fills only, the unit's stamp draws the line ----
+function torso(g, hips, neck) {   // the tunic from the hips to the neck, a short skin neck, the belt at the hem
   const d = unit(v(hips, neck)), L = len(v(hips, neck)); g.save(); g.translate(hips[0], hips[1]); g.rotate(ang(d) + Math.PI / 2); const s = L / 100;
-  g.beginPath(); P.rr(g, -14, -112 * s, 28, 26 * s, 8); g.fillStyle = SKIN.dark; g.fill(); ink(g);                                                 // the neck
+  g.beginPath(); P.rr(g, -14, -112 * s, 28, 26 * s, 8); g.fillStyle = SKIN.dark; g.fill();                                                          // the neck
   const body = () => smoothClosed(g, [[-31, -96 * s], [-34, -60 * s], [-36, -14 * s], [-32, 6], [0, 10], [32, 6], [36, -14 * s], [34, -60 * s], [30, -96 * s], [0, -102 * s]]);
   body(); g.fillStyle = P.rad(g, -22, -70 * s, -8, -50 * s, 86, [[0, TUNIC.light], [0.5, TUNIC.mid], [1, TUNIC.dark]]); g.fill();
   g.save(); body(); g.clip(); g.fillStyle = BELT.mid; g.fillRect(-40, -16 * s, 80, 14); g.fillStyle = BELT.dark; g.fillRect(-40, -4 * s, 80, 4);   // the belt
-  g.beginPath(); P.rr(g, -8, -17 * s, 16, 15, 3); g.fillStyle = GOLD.mid; g.fill(); ink(g, 1.5); g.fillStyle = GOLD.light; g.fillRect(-6, -15 * s, 5, 4);
+  g.beginPath(); P.rr(g, -8, -17 * s, 16, 15, 3); g.fillStyle = GOLD.mid; g.fill(); ink(g, 1.4, 0.7); g.fillStyle = GOLD.light; g.fillRect(-6, -15 * s, 5, 4);
   g.beginPath(); g.moveTo(-12, -98 * s); g.lineTo(0, -82 * s); g.lineTo(12, -98 * s); g.closePath(); g.fillStyle = TUNIC.deep; g.fill();                  // the collar's V
   g.beginPath(); g.moveTo(-36, -30 * s); g.quadraticCurveTo(0, -22 * s, 36, -30 * s); g.lineTo(36, 10); g.lineTo(-36, 10); g.closePath(); g.fillStyle = alpha(TUNIC.deep, 0.35); g.fill();   // the hem's shade
-  g.restore(); body(); ink(g); g.restore();
+  g.restore(); g.restore();
 }
-function leg(g, hip, ankle, near, o = {}) {   // thigh and shin as one tube, the knee bent forward, the boot at the ankle with its toe forward
+function leg(g, hip, ankle, near, o = {}) {   // thigh and shin as one tube, the knee bent forward, the boot at the ankle with its toe forward; the near leg gets a thin edge so it reads in front
   const knee = bendPoint(hip, ankle, 30, o.kneeSide || 1), t = near ? PANTS : { light: PANTS.mid, mid: PANTS.dark, dark: PANTS.dark }, b = near ? BOOT : { light: BOOT.mid, mid: BOOT.dark, dark: BOOT.dark };
-  tube(g, [hip, knee, ankle], [26, 23, 21], t);
   const d = unit(v(knee, ankle)), f = o.foot || [-1, 0];   // the foot's direction (forward, flat), or as the pose says
   const toe = add(ankle, f, 30), heel = add(ankle, f, -10), up = [-f[1], f[0]];                                             // 'up' is the normal to the foot, pointing up when flat
-  g.beginPath(); g.moveTo(...add(ankle, d, -12)); g.lineTo(...add(add(ankle, [-d[1] * 13, d[0] * 13]), d, -10)); g.lineTo(...add(heel, up, -2)); g.quadraticCurveTo(...add(heel, up, 10), ...add(toe, up, 8));
-  g.quadraticCurveTo(...add(toe, up, 14), ...add(toe, up, 4)); g.lineTo(...add(add(ankle, [d[1] * 13, -d[0] * 13]), d, -10)); g.closePath();
-  g.fillStyle = P.lin(g, ankle[0], ankle[1] - 16, ankle[0], ankle[1] + 12, [[0, b.light], [0.5, b.mid], [1, b.dark]]); g.fill(); ink(g);
+  const boot = () => { g.beginPath(); g.moveTo(...add(ankle, d, -12)); g.lineTo(...add(add(ankle, [-d[1] * 13, d[0] * 13]), d, -10)); g.lineTo(...add(heel, up, -2)); g.quadraticCurveTo(...add(heel, up, 10), ...add(toe, up, 8)); g.quadraticCurveTo(...add(toe, up, 14), ...add(toe, up, 4)); g.lineTo(...add(add(ankle, [d[1] * 13, -d[0] * 13]), d, -10)); g.closePath(); };
+  tube(g, [hip, knee, ankle], [26, 23, 21], t, { edge: near });
+  boot(); g.fillStyle = P.lin(g, ankle[0], ankle[1] - 16, ankle[0], ankle[1] + 12, [[0, b.light], [0.5, b.mid], [1, b.dark]]); g.fill(); if (near) { boot(); inner(g); }
   g.beginPath(); g.moveTo(...add(heel, up, 9)); g.lineTo(...add(toe, up, 8)); g.lineWidth = 2.5; g.strokeStyle = alpha(b.dark, 0.7); g.stroke();   // the sole's line
 }
-function arm(g, shoulder, hand, near, o = {}) {   // sleeve, forearm, fist; the elbow bent to the side the pose says
+function arm(g, shoulder, hand, near, o = {}) {   // sleeve and forearm; the elbow bent to the side the pose says
   const elbow = bendPoint(shoulder, hand, 25.5, o.bend === undefined ? -1 : o.bend), tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep }, ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep };
   tube(g, [elbow, hand], [18, 16], ts); tube(g, [shoulder, elbow], [22, 19], tt);
 }
 function fist(g, p, dir, near, grips) {   // a ball of a hand, the thumb toward the sword
   const t = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }; g.save(); g.translate(p[0], p[1]); g.rotate(ang(dir));
-  g.beginPath(); g.ellipse(0, 0, 13, 11.5, 0, 0, 7); g.fillStyle = P.rad(g, -4, -4, 0, 0, 15, [[0, t.light], [0.6, t.mid], [1, t.dark]]); g.fill(); ink(g);
-  g.beginPath(); g.ellipse(7, -6, 5, 4, 0.4, 0, 7); g.fillStyle = t.light; g.fill(); ink(g, 1.5);
-  if (grips) { g.beginPath(); g.moveTo(-5, -6); g.quadraticCurveTo(2, -1, -5, 5); ink(g, 1.5, 0.6); }
+  g.beginPath(); g.ellipse(0, 0, 13, 11.5, 0, 0, 7); g.fillStyle = P.rad(g, -4, -4, 0, 0, 15, [[0, t.light], [0.6, t.mid], [1, t.dark]]); g.fill();
+  g.beginPath(); g.ellipse(7, -6, 5, 4, 0.4, 0, 7); g.fillStyle = t.light; g.fill(); inner(g);
+  if (grips) { g.beginPath(); g.moveTo(-5, -6); g.quadraticCurveTo(2, -1, -5, 5); inner(g); }
   g.restore();
 }
-function sword(g, grip, deg) {   // from the grip point along the angle (0 forward, 90 up): pommel, grip, guard, the long slim blade (the reference's is as long as its body is tall)
+function sword(g, grip, deg) {   // from the grip point along the angle (0 forward, 90 up): pommel, grip, guard, the long slim blade (the reference's is as long as its body is tall); drawn with its own lines
   g.save(); g.translate(grip[0], grip[1]); g.rotate(rad(deg) + Math.PI);   // the blade runs toward screen left at 0 degrees, up at 90
   g.beginPath(); g.arc(-16, 0, 6, 0, 7); g.fillStyle = GOLD.mid; g.fill(); ink(g, 1.8);
   g.beginPath(); P.rr(g, -15, -4.5, 30, 9, 4); g.fillStyle = '#5a3a24'; g.fill(); ink(g, 1.8);
@@ -84,26 +89,28 @@ function sword(g, grip, deg) {   // from the grip point along the angle (0 forwa
 function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out as the reference lays it, the hair as a cap with a swept fringe down to the eyes
   const tilt = rad(tiltDeg); g.save(); g.translate(c[0], c[1]); g.rotate(tilt);   // positive leans the head back (its top toward screen right)
   const skull = () => smoothClosed(g, [[0, -54], [-40, -47], [-58, -6], [-50, 34], [-22, 54], [16, 54], [50, 28], [56, -16], [40, -44]]);
-  skull(); g.fillStyle = P.rad(g, -24, -28, -10, -6, 92, [[0, SKIN.light], [0.55, SKIN.mid], [1, SKIN.dark]]); g.fill(); ink(g);
-  g.beginPath(); g.ellipse(54, 8, 8, 11, 0, 0, 7); g.fillStyle = SKIN.mid; g.fill(); ink(g, 2); g.beginPath(); g.ellipse(54, 9, 4, 6, 0, 0, 7); ink(g, 1.5, 0.6);   // the ear
-  // the face (the reference's layout, measured): both eyes in the front half, the far one narrower and right beside the near one, their tops at the
-  // head's middle; tall almond eyes with a heavy, nearly flat upper lid; the iris filling the eye, dark above and lighter below, a big highlight at the
-  // top front; thick brows just above the lids; a short mouth below, between the eyes; no nose
+  skull(); g.fillStyle = P.rad(g, -24, -28, -10, -6, 92, [[0, SKIN.light], [0.55, SKIN.mid], [1, SKIN.dark]]); g.fill();
+  g.beginPath(); g.ellipse(54, 8, 8, 11, 0, 0, 7); g.fillStyle = SKIN.mid; g.fill(); inner(g); g.beginPath(); g.ellipse(54, 9, 4, 6, 0, 0, 7); ink(g, 1.5, 0.6);   // the ear
+  // the face (the reference's layout, measured): both eyes in the front half, right beside each other, their tops at the head's middle; tall almond
+  // eyes with a heavy, slanted upper lid; the iris filling the eye, dark above and lighter below, a big highlight at the top front; thick brows just
+  // above the lids; a short mouth below, between the eyes; no nose. The far eye is the near one's MIRROR about the face's centre line, not a copy
+  // (Robin, 2026-11-01: "like he's got two left eyes"): m flips each eye's shape, lid and brow; the iris's lean and the highlight keep the light's side
   const closed = mood === 'blink' || mood === 'hurt' || mood === 'dead', shock = mood === 'shock';
-  for (const [ex, ey, rx, ry] of [[-33, 8, 12.5, 14], [4, 7, 12.5, 14]]) {   // Robin, 2026-11-01: the eyes smaller and the same size
-    const eye = () => { g.beginPath(); g.moveTo(ex - rx, ey - ry + 9); g.quadraticCurveTo(ex - rx, ey - ry + 4, ex - rx * 0.5, ey - ry + 3); g.lineTo(ex + rx * 0.55, ey - ry); g.quadraticCurveTo(ex + rx, ey - ry - 1, ex + rx, ey - ry + 4); g.lineTo(ex + rx * 0.9, ey + ry * 0.45); g.quadraticCurveTo(ex + rx * 0.7, ey + ry, ex - rx * 0.05, ey + ry); g.quadraticCurveTo(ex - rx * 0.75, ey + ry, ex - rx * 0.95, ey + ry * 0.5); g.closePath(); };
-    if (closed) { g.beginPath(); if (mood === 'hurt' || mood === 'dead') { g.moveTo(ex - rx, ey - 6); g.lineTo(ex, ey + 1); g.lineTo(ex + rx, ey - 6); } else { g.moveTo(ex - rx, ey - 1); g.quadraticCurveTo(ex, ey + 7, ex + rx, ey - 1); } ink(g, 3.5); }
+  for (const [ex, ey, rx, ry, m] of [[-33, 8, 12.5, 14, 1], [4, 7, 12.5, 14, -1]]) {   // Robin, 2026-11-01: the eyes smaller and the same size
+    const X = dx => ex + m * dx;
+    const eye = () => { g.beginPath(); g.moveTo(X(-rx), ey - ry + 9); g.quadraticCurveTo(X(-rx), ey - ry + 4, X(-rx * 0.5), ey - ry + 3); g.lineTo(X(rx * 0.55), ey - ry); g.quadraticCurveTo(X(rx), ey - ry - 1, X(rx), ey - ry + 4); g.lineTo(X(rx * 0.9), ey + ry * 0.45); g.quadraticCurveTo(X(rx * 0.7), ey + ry, X(-rx * 0.05), ey + ry); g.quadraticCurveTo(X(-rx * 0.75), ey + ry, X(-rx * 0.95), ey + ry * 0.5); g.closePath(); };
+    if (closed) { g.beginPath(); if (mood === 'hurt' || mood === 'dead') { g.moveTo(X(-rx), ey - 6); g.lineTo(X(0), ey + 1); g.lineTo(X(rx), ey - 6); } else { g.moveTo(X(-rx), ey - 1); g.quadraticCurveTo(X(0), ey + 7, X(rx), ey - 1); } ink(g, 3.5); }
     else {
       eye(); g.fillStyle = '#fbf7ef'; g.fill();
       g.save(); eye(); g.clip(); const ir = shock ? 0.6 : 0.96;
-      g.beginPath(); g.ellipse(ex - 2, ey + 2, rx * ir * 0.92, ry * ir, 0, 0, 7); g.fillStyle = P.lin(g, 0, ey - ry, 0, ey + ry, [[0, '#121820'], [0.5, '#1f2a36'], [1, '#4b6b8c']]); g.fill();   // the iris: near-black above, grey-blue below
+      g.beginPath(); g.ellipse(ex - 2, ey + 2, rx * ir * 0.92, ry * ir, 0, 0, 7); g.fillStyle = P.lin(g, 0, ey - ry, 0, ey + ry, [[0, '#121820'], [0.5, '#1f2a36'], [1, '#4b6b8c']]); g.fill();   // the iris: near-black above, grey-blue below, leaning to the front
       g.beginPath(); g.ellipse(ex - 2, ey + 5, rx * 0.4, ry * 0.46, 0, 0, 7); g.fillStyle = '#0c1118'; g.fill();                                                      // the pupil
-      g.beginPath(); g.ellipse(ex - rx * 0.38, ey - ry * 0.32, rx * 0.36, ry * 0.28, 0, 0, 7); g.fillStyle = '#ffffff'; g.fill(); g.beginPath(); g.arc(ex + rx * 0.3, ey + ry * 0.5, 2.6, 0, 7); g.fill();   // the highlights
+      g.beginPath(); g.ellipse(ex - rx * 0.38, ey - ry * 0.32, rx * 0.36, ry * 0.28, 0, 0, 7); g.fillStyle = '#ffffff'; g.fill(); g.beginPath(); g.arc(ex + rx * 0.3, ey + ry * 0.5, 2.6, 0, 7); g.fill();   // the highlights, on the light's side
       g.restore(); eye(); ink(g, 1.2, 0.45);
-      g.beginPath(); g.moveTo(ex - rx - 4, ey - ry + 12); g.quadraticCurveTo(ex - rx * 0.6, ey - ry + 2, ex + rx * 0.5, ey - ry - 1); g.lineTo(ex + rx, ey - ry + 3); ink(g, 4.5);   // the heavy upper lid, slanted, a touch past the front corner
+      g.beginPath(); g.moveTo(X(-rx - 4), ey - ry + 12); g.quadraticCurveTo(X(-rx * 0.6), ey - ry + 2, X(rx * 0.5), ey - ry - 1); g.lineTo(X(rx), ey - ry + 3); ink(g, 4.5);   // the heavy upper lid, rising toward the face's centre
     }
     const bu = mood === 'grr' ? 5 : shock ? -7 : 0, bk = mood === 'grr' ? 1 : 0;   // the brow: thick, right above the lid; the inner end down when fierce
-    g.beginPath(); g.moveTo(ex - rx - 3, ey - ry - 2 + bu - bk * 5); g.quadraticCurveTo(ex, ey - ry - 10 + bu, ex + rx + 2, ey - ry - 5 + bu + bk * 5); g.lineWidth = 5; g.strokeStyle = '#3a1a0c'; g.lineCap = 'round'; g.stroke();
+    g.beginPath(); g.moveTo(X(-rx - 3), ey - ry - 2 + bu - bk * 5); g.quadraticCurveTo(X(0), ey - ry - 10 + bu, X(rx + 2), ey - ry - 5 + bu + bk * 5); g.lineWidth = 5; g.strokeStyle = '#3a1a0c'; g.lineCap = 'round'; g.stroke();
   }
   const mx = -19, my = 37;
   if (mood === 'grr') { g.beginPath(); P.rr(g, mx - 9, my - 4, 18, 9, 3); g.fillStyle = '#6a2e2e'; g.fill(); ink(g, 1.8); g.fillStyle = '#fffaf0'; g.fillRect(mx - 6, my - 3, 12, 3); }
@@ -111,7 +118,7 @@ function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out 
   else if (mood === 'dead') { g.beginPath(); g.moveTo(mx - 8, my + 2); g.quadraticCurveTo(mx - 4, my - 3, mx, my + 2); g.quadraticCurveTo(mx + 4, my + 7, mx + 8, my + 2); ink(g, 2.2); }
   else { g.beginPath(); g.moveTo(mx - 5, my); g.lineTo(mx + 5, my); ink(g, 2.4); }
   for (const [bx, by, w] of [[-50, 28, 10], [24, 26, 9]]) { g.beginPath(); g.ellipse(bx, by, w, 6, 0, 0, 7); g.fillStyle = alpha('#f3a060', 0.45); g.fill(); }
-  // the hair: a cap over the skull with a swept fringe of pointed locks reaching the eyes (the reference's hairline sits on the eyes' tops), two short spikes at the crown, a tuft at the nape; a sheen along the top front
+  // the hair: a cap over the skull with a swept fringe of pointed locks reaching the eyes (the reference's hairline sits on the eyes' tops), two short spikes at the crown, a tuft at the nape; a sheen along the top front; its own line is the hairline
   const hair = () => { g.beginPath(); g.moveTo(54, -2); g.lineTo(70, -10); g.lineTo(60, -28); g.quadraticCurveTo(62, -44, 42, -60); g.lineTo(28, -66); g.lineTo(20, -82); g.lineTo(8, -66); g.lineTo(-6, -80); g.lineTo(-18, -63);
     g.quadraticCurveTo(-44, -64, -60, -40); g.quadraticCurveTo(-70, -26, -68, -14); g.lineTo(-62, -8); g.lineTo(-54, -24); g.lineTo(-44, -10); g.lineTo(-34, -26); g.lineTo(-21, -8); g.lineTo(-12, -24); g.lineTo(2, -12); g.lineTo(14, -28); g.lineTo(27, -16); g.lineTo(38, -30); g.closePath(); };
   hair(); g.fillStyle = P.rad(g, -24, -52, -6, -30, 100, [[0, HAIR.light], [0.4, HAIR.mid], [1, HAIR.dark]]); g.fill();
@@ -120,7 +127,7 @@ function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out 
   g.beginPath(); g.moveTo(-76, -34); g.quadraticCurveTo(-10, -24, 60, -28); g.lineTo(60, 24); g.lineTo(-76, 24); g.closePath(); g.fillStyle = alpha(HAIR.deep, 0.32); g.fill();          // the fringe's underside, in shade over the brow
   g.beginPath(); g.moveTo(-62, -40); g.quadraticCurveTo(-20, -72, 36, -60); g.quadraticCurveTo(10, -58, -12, -52); g.quadraticCurveTo(-40, -46, -62, -40); g.closePath(); g.fillStyle = alpha('#ffe6b0', 0.8); g.fill();   // the sheen
   g.strokeStyle = alpha(HAIR.deep, 0.75); g.lineWidth = 2.2; g.lineCap = 'round'; for (const [x0, y0, x1, y1] of [[-62, -8, -56, -34], [-44, -10, -40, -36], [-21, -8, -19, -34], [2, -12, 2, -36], [27, -16, 25, -38], [20, -82, 17, -58], [-6, -80, -4, -56], [70, -10, 54, -22]]) { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo((x0 + x1) / 2 - 4, (y0 + y1) / 2, x1, y1); g.stroke(); }   // strands from each lock's tip
-  g.restore(); hair(); ink(g);
+  g.restore(); hair(); ink(g, 2);
   g.restore();
 }
 // ---- the poses, in the reference's units: x forward is negative, y up is negative, the feet at 0,0 ----
@@ -153,23 +160,21 @@ const ACTIONS = {
     { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 83, swordFree: [-16, 0, 6], a0: 150, a1: 0 },
   ],
 };
-// ---- a frame: the parts placed from the pose and drawn back to front ----
+// ---- a frame: the units placed from the pose and stamped back to front, each under its one silhouette line ----
 function drawFrame(g, F) {
   const neck = px(F.neck), hips = px(F.hips), headC = px(F.head), handN = px(F.handN), ankleN = px(F.ankleN), ankleF = px(F.ankleF);
   const up = unit(v(hips, neck)), side = [-up[1], up[0]];                                   // 'side' points to screen right (the back) when the body is upright; forward is -side
   const shoulderN = add(add(neck, up, -7), side, 16), shoulderF = add(add(neck, up, -7), side, 8);   // the shoulders at the torso's back half, where the reference hangs its arm
-  const hipN = add(hips, side, -5), hipF = add(hips, side, 5);
+  const hipN = add(hips, side, -5), hipF = add(hips, side, 5), hasSword = F.sword !== null && F.sword !== undefined;
   if (F.swordFree) { const q = px(F.swordFree); sword(g, q, F.swordFree[2]); }                      // a dropped sword lies on the ground, behind everything
-  if (F.sword !== null && F.sword !== undefined && F.swordZ === 'back') sword(g, handN, F.sword);
-  if (F.handF) { const hf = px(F.handF); arm(g, shoulderF, hf, false, { bend: 1 }); fist(g, hf, v(shoulderF, hf), false, false); }
-  leg(g, hipF, ankleF, false, { foot: F.footF, kneeSide: 1 });
-  torso(g, hips, neck, true);
-  leg(g, hipN, ankleN, true, { foot: F.footN, kneeSide: 1 });
-  head(g, headC, F.tilt, F.face);
-  if (F.sword !== null && F.sword !== undefined && F.swordZ !== 'back') sword(g, handN, F.sword);
-  arm(g, shoulderN, handN, true, { bend: F.bendN });
-  fist(g, handN, F.sword === null ? v(shoulderN, handN) : [Math.cos(rad(F.sword)) * -1, -Math.sin(rad(F.sword))], true, F.sword !== null);
-  return { headTop: add(headC, [Math.sin(rad(F.tilt)) * 70, -Math.cos(rad(F.tilt)) * 70]), tip: F.sword === null ? null : add(handN, [-Math.cos(rad(F.sword)) * 128, -Math.sin(rad(F.sword)) * 128]), shoulder: shoulderN };
+  if (hasSword && F.swordZ === 'back') sword(g, handN, F.sword);
+  if (F.handF) { const hf = px(F.handF); stamp(g, h => { arm(h, shoulderF, hf, false, { bend: 1 }); fist(h, hf, v(shoulderF, hf), false, false); }); }
+  stamp(g, h => { leg(h, hipF, ankleF, false, { foot: F.footF, kneeSide: 1 }); torso(h, hips, neck); leg(h, hipN, ankleN, true, { foot: F.footN, kneeSide: 1 }); });   // the body: both legs and the tunic, one line round the whole
+  stamp(g, h => head(h, headC, F.tilt, F.face));
+  if (hasSword && F.swordZ !== 'back') sword(g, handN, F.sword);
+  const dir = hasSword ? [-Math.cos(rad(F.sword)), -Math.sin(rad(F.sword))] : v(shoulderN, handN);
+  stamp(g, h => { arm(h, shoulderN, handN, true, { bend: F.bendN }); fist(h, handN, dir, true, hasSword); });   // the near arm with its fist, over the sword's grip
+  return { headTop: add(headC, [Math.sin(rad(F.tilt)) * 70, -Math.cos(rad(F.tilt)) * 70]), tip: hasSword ? add(handN, [-Math.cos(rad(F.sword)) * 128, -Math.sin(rad(F.sword)) * 128]) : null, shoulder: shoulderN };
 }
 (async () => {
   fs.mkdirSync(OUT, { recursive: true }); const only = opt('only') ? opt('only').split(',') : Object.keys(ACTIONS);
