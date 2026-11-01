@@ -1,6 +1,10 @@
 # The client (`client/`)
 
-Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. The scenes: the **character screen**
+Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. **The canvas draws at the device's pixel
+ratio** (`hires.ts`, Mitch, AD's catch of 2026-11-01: before, a phone at ratio 2 drew everything at half size and scaled it up):
+the game is the design size times `DPR` (capped at 2), a scene plugin zooms each scene's main camera by `DPR` onto the design
+rectangle and gives every text that resolution, so scene code keeps the design coordinates; the board multiplies its own
+zooms and its tap and drag thresholds by `DPR` and sets its band viewport in canvas pixels. The scenes: the **character screen**
 the first time (a name and a class), then the **board** (the world in areas, drawn in world pixels under a camera that
 follows the character), the **HUD** over it (the fixed chrome, which never scrolls or zooms), and the **fight**, the
 **shop**, the **bag**, the **atlas** and the **loot reveal**, each launched over both when it begins and stopped when it ends. Shapes and labels only; the Art
@@ -39,7 +43,8 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/backdrop.ts` | the fight backdrops by theme: a code sky, the Art Director's strips as tiling sprites with scroll factors, the soil; `Backdrop`, `preloadBackdrops` |
 | `src/creatures.ts` | the creatures' atlases by enemy id (the Jelly Slime so far); `Figure` plays a creature's clips, `blowMs` says when its blow lands; `preloadCreatures` |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
-| `src/scenes/BagScene.ts` | the bag: what is worn, what is carried, the numbers, flasks and cards; Wear, Take off, Drop, Close |
+| `src/scenes/BagScene.ts` | the bag: the eight worn slots as a grid of tiles in their rarity frames, a detail plate for the piece tapped, the carried pieces as cards, the flasks and cards as icons with counts; Wear or Take off and Drop act on the piece tapped; Close |
+| `src/hires.ts` | the canvas at the device's pixel density: a scene plugin that zooms every scene's camera by `DPR` onto the design rectangle and renders every text at `DPR` |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
 
 ## Size and scaling (mine, 2026-10-31)
@@ -237,12 +242,17 @@ abilities with rank, text and costs, and a **Learn** or **Rank up** button at th
 rank). The message line says what happened; **Leave** (220 by 50 at y 706) calls the board's `shopLeft`. The HUD's gold
 follows every buy.
 
-## The bag scene (mine, 2026-10-31)
+## The bag scene (Robin, 2026-11-01: "The inventory needs to look better"; laid out after Mitch, AD's mock-up)
 
-"Bag" and the numbers with everything on (attack, defense, HP, mana, crit, dodge, lifesteal, thorns); **Worn**: the five
-slots, each with its piece in its rarity colour (or "nothing") and a **Take off** button; **Carried n of 12**: up to
-six pieces shown with **Wear** and **Drop**; the flasks and cards at the bottom; **Close** at the top right. Opened from the HUD's Bag
-button, not while a fight or the shop is up.
+"Bag" and the numbers with everything on (attack, defense, HP, mana, crit, dodge, lifesteal, thorns); **the eight worn
+slots as a grid** of four by two tiles (`BAG_LAYOUT.tile(i)`), each the kit's slot icon inside the rarity frame of the piece
+worn (dim when empty), its slot name under it; **a detail plate** that shows the piece tapped (name in its rarity ink, its
+rarity and kind, numbers and powers) or what just happened; **Carried n of 12** as cards, each with the frame and slot icon
+(the gear icons replace the slot icon when they come), the name and the power line, up to five; **the flasks and cards** as
+the kit's item icons with their counts; **Drop** and **Wear** (reading **Take off** for a worn piece) at the bottom act on the
+piece tapped, dim until one is; **Close** at the top right. A tap on a tile or card sparkles and buzzes; after a change the
+pick follows the piece (put on: its slot; taken off: the card it became). Opened from the HUD's Bag button, not while a
+fight or the shop is up.
 
 ## The hero on screen (`hero.ts`, 2026-11-01)
 

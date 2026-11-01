@@ -1,6 +1,8 @@
 // The design size: an Android phone, portrait (mine, 2026-10-31). Phaser scales it to fit whatever screen it gets.
 export const DESIGN_WIDTH = 412;
 export const DESIGN_HEIGHT = 915;
+/** The device pixel ratio the canvas draws at (hires.ts): the phone's, capped at 2 for the fill rate; 1 where there is no window. */
+export const DPR = typeof window === 'undefined' ? 1 : Math.min(2, Math.max(1, Math.round((window.devicePixelRatio || 1) * 2) / 2));
 
 /** The HUD panel across the top: name, numbers, where you are, the die. The world is seen under it. */
 export const HUD_HEIGHT = 100;

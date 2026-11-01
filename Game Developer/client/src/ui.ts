@@ -60,7 +60,7 @@ export function makeButton(
     feel.press(scene, button);
     feel.buzz();
     sfx.play('ui/tap');
-    if (!settings.get().fewerEffects) fx(scene, 'fx_tap', pointer.x, pointer.y, tint ?? (kind === 'action' ? 0xb8f09a : kind === 'danger' ? 0xffb0a0 : 0xe2d6ff), 500, 0.8);
+    if (!settings.get().fewerEffects) fx(scene, 'fx_tap', pointer.worldX, pointer.worldY, tint ?? (kind === 'action' ? 0xb8f09a : kind === 'danger' ? 0xffb0a0 : 0xe2d6ff), 500, 0.8);
     onTap();
   });
   const up = () => {

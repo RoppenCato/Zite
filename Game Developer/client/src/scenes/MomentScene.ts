@@ -91,9 +91,9 @@ export class MomentScene extends Phaser.Scene {
     }
     const inkTitle = kit ? (m.banner === 'banner_level' ? INK : '#f7efdc') : m.ink;
     const inkLine = kit ? (m.banner === 'banner_level' ? '#6b5a60' : '#e9dcc4') : COLORS.dim;
-    const title = this.add.text(0, kit ? -8 : -12, m.title, { fontFamily: FONT_DISPLAY, fontSize: kit ? '26px' : '28px', fontStyle: 'bold', color: inkTitle }).setOrigin(0.5);
+    const title = this.add.text(0, kit ? -12 : -12, m.title, { fontFamily: FONT_DISPLAY, fontSize: kit ? '26px' : '28px', fontStyle: 'bold', color: inkTitle }).setOrigin(0.5);
     for (let px = 28; px > 18 && title.width > PLATE.w - 60; px--) title.setFontSize(`${px}px`);
-    const line = this.add.text(0, kit ? 14 : 20, m.line, { fontFamily: FONT, fontSize: kit ? '11px' : '13px', color: inkLine }).setOrigin(0.5);
+    const line = this.add.text(0, kit ? 10 : 20, m.line, { fontFamily: FONT, fontSize: kit ? '11px' : '13px', color: inkLine }).setOrigin(0.5);
     const banner = this.add.container(CENTRE, BANNER_Y, [back, title, line]);
     if (kit && m.banner === 'banner_level' && !quick) {
       const burst = this.add.image(CENTRE, BANNER_Y, KIT_SOFT, 'burst_levelup').setScale(0.2).setTint(0xffd166).setBlendMode(Phaser.BlendModes.ADD).setDepth(-1);

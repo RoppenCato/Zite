@@ -46,7 +46,7 @@ import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
 import { fx, hasFrame, icon, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
@@ -69,16 +69,17 @@ const STEP_MS = 260;
 const LIT = 0xfff27a;
 
 // The camera (mine, 2026-10-31: numbers to start with).
-const FOLLOW_ZOOM = 0.8; // walking about
-const MAX_ZOOM = 1.4; // the closest a pinch gets
-const HARD_MIN_ZOOM = 0.12; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
-const ZOOM_FLOOR = 0.05;
+// The zooms are world pixels per CSS pixel; the camera draws at the device's density, so each is multiplied by DPR (hires.ts).
+const FOLLOW_ZOOM = 0.8 * DPR; // walking about
+const MAX_ZOOM = 1.4 * DPR; // the closest a pinch gets
+const HARD_MIN_ZOOM = 0.12 * DPR; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
+const ZOOM_FLOOR = 0.05 * DPR;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
 const CAMERA_MS = 350; // a pan or a zoom
 const FOLLOW_LERP = 0.12;
-const NAME_ZOOM = 0.45; // below this the hub names are hidden
-const DRAG_START = 8; // design pixels a finger moves before a touch becomes a drag
-const TAP_MAX = 10; // a finger that moved less than this on release tapped
+const NAME_ZOOM = 0.45 * DPR; // below this the hub names are hidden
+const DRAG_START = 8 * DPR; // in canvas pixels // design pixels a finger moves before a touch becomes a drag
+const TAP_MAX = 10 * DPR; // in canvas pixels // a finger that moved less than this on release tapped
 const WHEEL_STEP = 1.1; // one notch of a mouse wheel
 
 // One colour and one letter per kind of spot (mine, 2026-10-31, placeholders until the art comes).
@@ -847,7 +848,8 @@ export class BoardScene extends Phaser.Scene {
   private setupCamera(board: Board): void {
     const cam = this.cameras.main;
     // The band between the HUD panel and the bottom controls; the HUD scene draws over the rest.
-    cam.setViewport(0, HUD_HEIGHT, DESIGN_WIDTH, VIEW_HEIGHT);
+    // The band between the HUD and the strip, in canvas pixels (the canvas draws at DPR, hires.ts).
+    cam.setViewport(0, HUD_HEIGHT * DPR, DESIGN_WIDTH * DPR, VIEW_HEIGHT * DPR);
     cam.setBounds(0, 0, board.width, board.height);
     cam.setRoundPixels(true);
     this.minZoom = this.overviewZoom();

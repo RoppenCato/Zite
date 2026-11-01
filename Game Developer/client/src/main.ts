@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import * as rules from '../../rules/src/index.ts';
 import type { GameHolder } from './game-holder.ts';
 import { GameLog } from './game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH } from './layout.ts';
+import { HIRES_PLUGIN } from './hires.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, DPR } from './layout.ts';
 import { LocalGame, TICK_MS } from './local-game.ts';
 import { ACCOUNT_KEY, RECOVER_KEY, RemoteGame, serverUrl, storedAccount, type Credentials } from './remote-game.ts';
 import { ConnectScene } from './scenes/ConnectScene.ts';
@@ -90,8 +91,9 @@ await Promise.race([
 const phaser = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  width: DESIGN_WIDTH,
-  height: DESIGN_HEIGHT,
+  // The canvas at the phone's pixel density; the scenes still work in the design size (hires.ts).
+  width: DESIGN_WIDTH * DPR,
+  height: DESIGN_HEIGHT * DPR,
   backgroundColor: COLORS.background,
   banner: false,
   dom: { createContainer: true }, // the name field on the character screen
@@ -100,6 +102,7 @@ const phaser = new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   scene: first,
+  plugins: { scene: [HIRES_PLUGIN] },
 });
 
 // For the browser pane and the tools in tools/: drive the game from a script, read the log, reach the rules (to plant a
