@@ -5,6 +5,10 @@ the game as it stands needs, grouped in waves, first wave first. The budgets, th
 are in `docs/state/art.md`; this file says what and when. Sizes here are **CSS (design) pixels; the files are 2x**.
 The order is mine; Robin changes it with a word.
 
+**Later the same day Robin scrapped the art direction** and kept the shell (the raised-camera board, side-view fights,
+kits as data, the budgets and the atlas form), so this list stands as it is; the new art session starts from the Art
+Director's `HANDOVER.md`. The four delivered pieces are stand-ins now, nothing more.
+
 ## The order, and why
 
 1. **What the player sees most comes first**: the board of the first area, the fight of the first area, and the UI that
@@ -22,15 +26,14 @@ nothing waits on art to be playable; each drop replaces its shape.
 
 | Piece | State |
 | --- | --- |
-| The Warrior (player class) | delivered, `assets/warrior/` |
-| The Puffwort, the Honey Bumble, the Bramble Bun (meadow monsters) | delivered, `assets/<name>/` |
-| The Turnip Grump (meadow monster) | held by Perry, AD until repainted in the same hand |
+| The Warrior (player class) | scrapped art (Robin, 2026-11-01); kept in `assets/warrior/` as a stand-in for the loader work |
+| The Puffwort, the Honey Bumble, the Bramble Bun (meadow monsters) | scrapped art; kept in `assets/<name>/` as stand-ins |
+| The Turnip Grump | not coming |
 | Everything else | shapes |
 
 **Wave 0 is mine, not the studio's**: the atlas loader; the Warrior on the board (`stand` at 0.6, `move` on the walk) and in
-the fight (`stand`, `attack1`, `hit1`, `die1`); the three monsters in the fight. And the meadows' mobs in the rules take the
-delivered monsters' names (mine, 2026-11-01; the stats stay, the names were placeholders): Slime → Puffwort (level 1),
-Moor Wolf → Bramble Bun (2), Marsh Wisp → Honey Bumble (3, the one that drains mana: it flies), Bandit → Turnip Grump (3).
+the fight (`stand`, `attack1`, `hit1`, `die1`); the three monsters in the fight. The meadows' mobs keep their rules names (Slime, Moor Wolf, Bandit, Marsh Wisp) until the new art
+names them; the stand-ins wear those names meanwhile.
 
 ## Wave 1: the meadows, complete (the first minutes of the game)
 
@@ -60,10 +63,10 @@ variants (a spring, a road, the town's gate) later if there is appetite.
 
 | Creature | Role | Level | Size | State |
 | --- | --- | --- | --- | --- |
-| Puffwort | mob | 1 | 120 | delivered |
-| Bramble Bun | mob | 2 | 140 | delivered |
-| Honey Bumble | mob | 3 | 120 | delivered |
-| Turnip Grump | mob | 3 | 160 | held |
+| Slime (the name follows the art) | mob | 1 | 120 | **needed**; a stand-in exists |
+| Moor Wolf | mob | 2 | 140 | **needed**; a stand-in exists |
+| Bandit | mob | 3 | 110 | **needed** |
+| Marsh Wisp (flies, drains mana) | mob | 3 | 120 | **needed**; a stand-in exists |
 | **The meadows' mini-boss** (the rules call it Wolf Alpha; the name follows the art) | mini | 5 | 180 to 200 | **needed** |
 | **The Thornwood Warden** at the Iron Gate | boss | 6 | 300 to 400 | **needed**; a second phase under half HP (its bark splits): a second `stand` (6) and `attack1` (12) if a second atlas fits, else a tint done in code |
 
@@ -95,7 +98,8 @@ at most 824 by 1830 at 2x, or the board kit's strips reused). The placeholder ic
 ## Wave 2: the other three classes, their abilities, the fight's effects
 
 - **The Rogue, the Mage, the Ranger** on the Warrior's rig: 25 frames each (stand 4, move 6, attack1 6, hit1 1, die1 6),
-  100 px tall, facing left, at most 400 KB each. Their standing frame is the class card's picture; no separate portraits
+  all four the same height (to be reconfirmed with Robin: 100 CSS px was the old number, his own sheet
+  stood 118), facing left, at most 400 KB each. Their standing frame is the class card's picture; no separate portraits
   (mine). Gear does **not** show on the character (mine, 2026-11-01: one sprite a class whatever is worn; a swappable
   weapon layer is a later idea if Robin wants it).
 - **Ability icons**, 24, 40 px, one atlas, in this order: Warrior (Heavy Blow, Shield Bash, War Cry, Execute, Rally, Shield
@@ -193,7 +197,7 @@ About 70 monsters in all at 300 KB each is 21 MB over the whole game, loaded an 
 
 ## For Robin to say yes or no to
 
-1. The meadows' mobs take the delivered monsters' names (wave 0).
+1. The player's height on screen: 100 CSS px, or bigger (your own sheet stood 118).
 2. Gear does not show on the character; one sprite a class (wave 2).
 3. The order itself: the meadows complete, then the UI, then the other classes, then the next areas. If you would rather
    see the four classes before the meadows' boss, say so and waves 1c and 2 swap.

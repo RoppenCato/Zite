@@ -1,7 +1,7 @@
 # The art
 
-The board scene still draws shapes and labels (2026-10-31); the first delivered piece sits in `assets/` and is not drawn
-yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
+The board scene still draws shapes and labels (2026-10-31); four pieces of scrapped art sit in `assets/` as stand-ins and are
+not drawn yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
 2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
 arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
 here, so the game builds without the studios' folders. **What the game needs drawn, and in what order, is `docs/art-demands.md`.**
@@ -10,10 +10,10 @@ here, so the game builds without the studios' folders. **What the game needs dra
 
 | Folder | What | Since | Drawn by the client? |
 | --- | --- | --- | --- |
-| `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet |
-| `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet |
-| `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet |
-| `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet |
+| `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
+| `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
+| `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
+| `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 
 The three monsters share one form (Perry, AD's NOTES.md in each folder): `<name>/stand` 6 frames at 100 ms looping,
 `<name>/move` 6 at 100 ms looping, `<name>/hit1` 1 frame held 600 ms, `<name>/die1` 8 at 83 ms with the last three fading,
@@ -27,17 +27,18 @@ The Warrior's animations (Perry, AD's NOTES.md; the names and rates go into data
 board; `warrior/attack1` 6 at 67 ms with frames 2 and 4 held 134 ms, the blow landing on frame 4; `warrior/hit1` 1 frame
 held 600 ms; `warrior/die1` 6 at 83 ms, the last three fading. Files are 2x: he stands 100 CSS px tall, drawn facing left
 and flipped to face right, at 0.6 on the board; the game lays the contact shadow (an ellipse about 60 by 16 CSS px at 0.22
-black). **Wiring him in** (the atlas loaded by the client, the board token and the fight sprite) waits for the camera
-branch to land, since both change `BoardScene.ts`.
+black). **Wiring him in** (the atlas loaded by the client, the board token and the fight sprite) goes ahead with these files as
+stand-ins: the new art replaces the files, not the code, since the atlas form is unchanged.
 
-## What is coming
+## The art starts again (Robin, 2026-11-01)
 
-Perry, AD builds to these budgets since 2026-10-31: the packer writes the Phaser 3 JSON hash with names
-`<sprite>/<action>/0001`, 2 px padding, a pivot at the feet per frame, power-of-two sides; every delivery goes through a
-palette shrink. Still to come: the **meadow's fight kit** (one atlas of tiles and props plus three background strips, the
-sky left to code) and the board kit (one atlas plus horizon strips), and the **Turnip Grump**, whose folder in `out/turnip`
-is still the older 3D-rendered one and is held until it is repainted in the same hand as the three monsters above. Perry,
-AD messages when a drop is ready; nothing is copied before that.
+Robin scrapped the whole art direction on 2026-11-01 and kept the shell: the board from a raised camera, side-view
+fights, areas as kits of data, these budgets and the atlas form. Everything drawn under the old direction is gone from the
+studio (the Turnip Grump and the meadow kits are not coming); the four pieces copied here stay as stand-ins. The new art
+session starts from `C:devZiteArt DirectorHANDOVER.md`, which has three example pictures of the look Robin wants
+(lush painted environments with depth, chunky friendly shapes, characters small against the scene). **The player's height
+is to be reconfirmed with Robin**: 100 CSS px was Perry, AD's number with mine; Robin's own sheet stood 118 and he liked
+its presence. What the game needs, in order, is `docs/art-demands.md`.
 
 ## Where art lives and how it reaches the phone
 
