@@ -354,3 +354,15 @@ it. The chest curves out (12.5), the waist narrows (10), the hips flare (12). Ea
 calf fuller at the back (3.5 front, 4.1 back) and an ankle (3.0). The sleeve cap is fuller (27 px) where the arm meets
 the shoulder. The rest of the pass (joints fixed to the torso, fixed limb lengths, the lunge through the hips, the fall
 losing balance first) was already in place.
+
+## Robin's own sheet, and the doll rebuilt to it (2026-11-01)
+
+Robin sent his own version of the sheet ("Try this. I updated the sheet myself"): the same grid, a taller figure with the
+head a third of the height, a neck, both arms, the sword carried down at the side, a wide stride with the arms swinging,
+an overhead windup. Cut back into frames (`tools/cut_sheet.js`: the grid's cells, the green keyed by hue, labels and
+ground lines wiped, scaled to 2x) and cleaned (`tools/fix_sheet.js`: grounded, anchored on the hair or the feet, the walk
+scaled to the stand's height and given the stand's head, hard edges, snappier delays, the trail). Then Robin: "instead try
+to use it for your model." So the doll takes his construction: the head a third of the height (K 1.32, HS 0.65, the head's
+centre 33 px up the neck's line), a narrower torso, slimmer legs and lighter boots, a slimmer arm that reaches the hip, a
+shorter sword, both arms in every frame, his stance, stride and attack. The sword's angles are kept so the tip clears the
+ground with the hand at the hip (32 degrees down standing, 21 to 33 walking). Both play on the page with a switch.
