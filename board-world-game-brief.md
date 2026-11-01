@@ -107,7 +107,7 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 - **Android first, iOS later** (Robin, 2026-10-31: "if it's easier we can do Android only to start"; it is: Chrome has the install prompt, native QR scanning, push and no storage eviction). The browser version works everywhere meanwhile.
 
 ## Suggested MVP order
-Playable alone first, with co-op designed in from the start; if building co-op straight away turns out easier, do that (Robin, 2026-10-31).
+Playable alone first, with co-op designed in from the start; if building co-op straight away turns out easier, do that (Robin, 2026-10-31). **The work is cut into chapters, each an area's level range finished in game and art, ending in a playable alpha** (Robin, 2026-11-01): the Game Developer's `docs/chapters.md`.
 
 1. Single-player board + movement + battle in the browser
 2. Persistence + accounts (server)
