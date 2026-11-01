@@ -79,15 +79,16 @@ character may take an atlas of 2048 by 2048 (my word, 2026-11-01: 16 MB decoded;
   whoosh, counter flash, charge glow, poison drip, chill, burn, weaken, heal glow, mana sparkle, the wind-up tell over an
   enemy's head, the level-up burst.
 - **The player's height on screen** is Robin's to confirm from the test shots (100 CSS px was the old number; his own sheet
-  stood 118). On the board the hero stands at 0.3 of the fight's size (Mitch, AD's number for the test).
+  stood 118). On the board the hero stands at half the fight's size, 75 CSS px, against the 56 px plates (mine, 2026-11-01; Robin said "whatever works best" and can overrule).
 
 ## Wave 3 (chapter 1): Cloverfield Meadows, complete
 
 ### 3a. The meadows' board kit
 
 The board is seen from a raised camera in 2D (the brief, "The look"): a tilted ground with cliff faces where the land
-steps up, roads flat on it, everything standing on it upright. Cloverfield Meadows is one cell of 1400 by 1900 world
-pixels with 60 spots; the ground is tiles and strips, never one picture.
+steps up, roads flat on it, everything standing on it upright. Cloverfield Meadows' bounds are x 140 to 1260 and y 2120 to
+3592 world pixels (1120 by 1472; the brief's 1400 by 1900 was a first guess, corrected 2026-11-01) with 60 spots; the ground is
+tiles and strips, never one picture.
 
 | Piece | Count | Size | Notes |
 | --- | --- | --- | --- |

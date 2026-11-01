@@ -1,43 +1,35 @@
 # The Cloverfield Meadows board kit
 
 Mitch, AD, 2026-11-01. Copy the whole folder. Sizes are design pixels (world pixels on the board); the files are 2x, so draw
-them at 0.5. 276 KB in all, against the area kit's 2.5 MB for board and fight together. Decoded: `board_props` 8 MB
+them at 0.5. About 280 KB in all, against the area kit's 2.5 MB for board and fight together. Decoded: `board_props` 8 MB
 (1024 by 2048), `board_ground` 4 MB, `cover` 1 MB.
 
-`puddlewick.jpg`, `crossroads.jpg` and `whole.jpg` are this kit laid on your real graph (world.json's hubs and roads, your
-`roadPoints` formula, 60 spots, camera at 0.8 and 0.27), by the studio's tool from these same atlases. They are not
-screenshots of the game.
+`puddlewick.jpg`, `crossroads.jpg` and `whole.jpg` are this kit laid on your real graph by the studio's tool, from these same
+atlases. They are not screenshots of the game.
 
 ## How to lay it
 
 - **Ground:** `ground_a` to `ground_d` at random per 128 px cell from the world seed, mostly a and b. They share one base
-  colour at their edges, so they mix without showing squares. Use `ground_worn` round hubs if you like; the `worn` prop does
-  the same job for less. Tiles are 1 px extruded; draw them 128 apart.
-- **Roads, two ways:** either repeat `road_straight` along the curve, turned to it (it has no directional shadow, so any angle
-  works), with `road_end` at each spot and `road_junction` at each hub; or stroke the curve in code with three lines, which
-  costs no texture and I would try it first: 30 px `#b4935a`, 25 px `#d9bb7e`, 10 px `#ecd49c` at 0.8 alpha, round joins.
-  `road_bend` and `road_fork` are there if you lay by pieces; the layout did not need them.
+  colour at their edges, so they mix without showing squares. Tiles are 1 px extruded.
+- **Roads:** stroke the curve in code with three lines: 30 px `#b4935a`, 25 px `#d9bb7e`, 10 px `#ecd49c` at 0.8 alpha, round
+  joins. Or repeat `road_straight` along the curve, turned to it, with `road_end` at each spot and `road_junction` at each hub.
 - **Spots:** `spot_<kind>`, the pivot at the centre, where the token stands: wild 56 wide, town and shop 90, chest, spring and
-  shrine 56, the gate 120. Clean plates with the kind in the rim's colour and nothing on them (Robin, 2026-11-01); the name or
-  kind comes from your tooltip on touch.
-- **Props:** pivot at the foot, shadows baked in. Sort by the foot's y, with the token in the same sort. Do not flip them: the
+  shrine 56, the gate 120. Clean plates with the kind in the rim's colour and nothing on them (Robin, 2026-11-01).
+- **Props:** pivot at the foot, shadows baked in. Sort by the foot's y with the token in the same sort. Do not flip them: the
   shadow falls to the lower right on every piece. `clover`, `worn` and `hill` are flat: draw them before the roads.
-- **Placement:** `placement_cloverfield.json` is every prop for the hand-laid area as `{ name, x, y, hub? }` in world pixels,
-  ready to load: the landmarks by their hubs and the seeded clusters. It keeps each piece's whole body clear of the roads and
-  spots. For grown areas the rule is in `tools/kit/board_test.js`: clusters of up to four pieces from one mix, 170 px apart,
-  190 from a hub (240 from a town), rejecting any place whose body would cover a road or a spot.
-- **The hill and the windmill:** draw `hill` flat, then the windmill stands on its top, as in the file.
-- **Cover:** `cover.png`, 256 square, seamless soft cloud, full colour; your 70 percent dark can go over it or be dropped.
-- **Cliff and rims:** `cliff` repeats sideways, its top meeting the upper ground. `rim_north` is the map's far edge with land
-  at the bottom; `rim_south` is the near edge with a low chalk face, drawn flipped vertically. No east or west rim and no
-  corners yet: tell me if the map's sides show and I will draw them.
+- **Placement:** `placement_cloverfield.json` lists every prop as `{ name, x, y, hub? }` in world pixels, ready to load. It keeps
+  each piece's whole body clear of the roads and spots and inside the area's bounds as the game reports them (x 140 to 1240,
+  stopping where Thornwood begins; y 2120 to 3592). The first version assumed the 1400 wide in `docs/art-demands.md` and put
+  props past the edge; replace it. For grown areas the rule is in `tools/kit/board_test.js`.
+- **The hill and the windmill:** draw `hill` flat; the windmill stands 40 px above the hill's foot, as in the file.
+- **Cover:** `cover.png`, 256 square, seamless soft cloud, full colour.
 - **Plates:** `name_plate.png` 120 by 28 and `area_banner.png` 400 by 60, for your words.
+- **Not needed for now:** `cliff`, `rim_north`, `rim_south`, `road_bend`, `road_fork` (the world has no heights or coast).
 
 ## Not tested, and left out
 
-Not yet seen in the game. The cliff and the rims were checked as repeats, not laid on a map, because the world data has no
-heights or coast; the area's hub layout decides whether they are needed at all. The horizon strips are left out (they are
-last in your list); `far.png` from the fight kit can stand in. The windmill's sails and the smoke do not move yet.
+The horizon strips are left out; `far.png` from the fight kit can stand in. The windmill's sails and the smoke do not move yet.
+The cliff and the rims were checked as repeats only.
 
 ## The props and the spots (`board_props`, pivot at the foot)
 
@@ -78,7 +70,7 @@ last in your list); `far.png` from the fight kit can stand in. The windmill's sa
 | `signpost_one` | wild ground | 29 by 42 | 6, 38 |
 | `signpost_three` | Clover Crossroads | 59 by 57 | 29, 51 |
 | `stile` | Hedgerow | 22 by 21 | 11, 18 |
-| `hill` | Windmill Hill, under the windmill; a flat piece, draw it before the roads; its top is 34 design px above the foot x 1.6 | 222 by 113 | 103, 101 |
+| `hill` | Windmill Hill, under the windmill; a flat piece, draw it before the roads; the windmill stands 40 design px above its foot | 167 by 85 | 77, 76 |
 | `windmill` | Windmill Hill | 129 by 161 | 70, 149 |
 | `old_mill` | Old Mill | 105 by 64 | 40, 57 |
 | `pond` | Duck Pond | 164 by 106 | 83, 92 |
