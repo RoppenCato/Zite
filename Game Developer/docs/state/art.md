@@ -4,7 +4,7 @@ The board scene still draws shapes and labels (2026-10-31); the first delivered 
 yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
 2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
 arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
-here, so the game builds without the studios' folders.
+here, so the game builds without the studios' folders. **What the game needs drawn, and in what order, is `docs/art-demands.md`.**
 
 ## What is in the game
 
