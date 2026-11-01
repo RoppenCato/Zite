@@ -5,11 +5,13 @@
 | `http://localhost:5173/` | `npm run dev`, or the pane's launch entry `game` | the game, hot-reloading |
 | `http://192.168.x.x:5173/` | the Network line Vite prints | the same, for a phone on the same Wi-Fi (no install prompt over plain http) |
 | `http://localhost:4173/` | `npm run build` then `npm run preview` | the built PWA with its service worker and manifest; this is what installs |
-| `ws://localhost:8787` | `npm run server` | the WebSocket server; answers `{"type":"ping"}` only |
+| `ws://localhost:8787` | `npm run server` | the WebSocket server speaking `docs/state/protocol.md` |
+| `http://localhost:4173/?server=ws://localhost:8787` | the two above | the built client in co-op against the local server; the address is remembered, `?server=off` forgets it |
 
 ## Driving the game from the pane
 
-`window.boardWorld` is `{ game, log, phaser }`; `game` is null while the character screen is up:
+`window.boardWorld` is `{ game, log, phaser, rules, server }`; `game` is null while the character screen or the connect
+screen is up. `game.act` answers a promise in both solo and co-op (`await` it, or `boardWorld.game.actNow(...)` in solo):
 
 ```js
 boardWorld.phaser.scene.isActive('create')                 // the character screen (no save)
@@ -17,7 +19,10 @@ boardWorld.phaser.scene.getScene('create').choose('mage')  // or tap a card; Beg
 boardWorld.phaser.scene.getScene('create').begin()         // the name is read from the <input> inside #game
 boardWorld.game.me                       // the character: space, steps, hp, mana, gold, xp, level, fight, items, equipment, bag, abilities, opened, cooldowns
 boardWorld.game.state.spawns             // what prowls or camps where, and until when
-boardWorld.game.act({ type: 'roll', player: 'local' })
+await boardWorld.game.act({ type: 'roll', player: boardWorld.game.player })   // 'local' in solo, the account's id in co-op
+boardWorld.game.link()                   // { kind: 'solo' } | { kind: 'online', online } | { kind: 'connecting', tries, reason }
+boardWorld.game.onlinePlayers()          // the other players connected (co-op)
+boardWorld.game.recovery()               // the account's code (co-op)
 boardWorld.game.act({ type: 'move', player: 'local', path: ['ashford-millford-1', 'ashford-millford-2'] })
 boardWorld.game.act({ type: 'fight', player: 'local', move: { kind: 'attack' }, guard: 'block' })   // one round
 boardWorld.game.act({ type: 'buy', player: 'local', slot: 'weapon' })         // standing on a shop or in a town
@@ -65,6 +70,16 @@ the mana potion among the moves, a level's pick of one ability in two answered i
 errand taken, a full bag's piece sold from the chips, the World button's atlas with Go and the settings' toggles, the Iron Gate's boss dropping a unique or an epic and Thornwood
 opening, the Briar King and Frostpeak, the Frost Matriarch and the first grown area laid and drawn (then its boss and
 the second), and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first and plants saves of its own.
+
+**Two phones in one world**: `node tools/drive-coop.mjs [pageUrl] [serverPort]` starts the real server on a port of its
+own (8790) with a database of its own, serves nothing itself (the built client must be at the page url, `npm run preview`),
+and drives two headless phones through it: the character screen says where the world is; A makes an account (the token
+and the code land in the phone's storage); B joins and both see each other (marks, "with …", "online · 2 here", a line
+about the newcomer); A rolls and walks and B sees the mark move; A reloads through the connect screen and is the same
+character; the server is stopped (the HUD says reconnecting) and started again (both reconnect on their own); B rolls
+after that; a third phone brings A's character with her code; the settings show the address and the code. Screenshots
+in `tools/out/coop/`. Thirteen checks; the browser's own "WebSocket connection failed" lines while the server is down are
+not counted as errors.
 
 ## The balance simulation
 

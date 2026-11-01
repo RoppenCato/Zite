@@ -7,12 +7,12 @@ import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEM_IDS, ITEMS, plainGear, PROGRESSION, sellPrice, SLOTS, SPACE_KIND_DATA, type GearItem } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_COLORS, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder } from '../game-holder.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface ShopSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -31,7 +31,9 @@ export const SHOP_LAYOUT = {
 } as const;
 
 export class ShopScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
+  /** True while an action is on its way to the world (mine, 2026-11-01): one at a time. */
+  private inFlight = false;
   private readonly log: GameLog;
   private gold!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
@@ -119,7 +121,13 @@ export class ShopScene extends Phaser.Scene {
   }
 
   private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string }): void {
-    const events = this.game_.act({ type: 'buy', player: this.game_.player, ...what });
+    if (this.inFlight) return;
+    this.inFlight = true;
+    this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));
+  }
+
+  private bought(events: GameEvent[]): void {
+    this.inFlight = false;
     const bought = events.find((e) => e.type === 'bought');
     const trained = events.find((e) => e.type === 'trained');
     if (trained?.type === 'trained') {
@@ -137,11 +145,25 @@ export class ShopScene extends Phaser.Scene {
   }
 
   private sell(g: GearItem): void {
-    const events = this.game_.act({ type: 'sell', player: this.game_.player, gear: g.id });
-    const sold = events.find((e) => e.type === 'sold');
-    this.message.setText(sold?.type === 'sold' ? `Sold ${g.name} for ${sold.price} gold.` : this.describe(events));
-    this.show(this.tab);
-    (this.scene.get('board') as BoardScene).refreshHud();
+    if (this.inFlight) return;
+    this.inFlight = true;
+    this.game_.act({ type: 'sell', player: this.game_.player, gear: g.id }).then(
+      (events) => {
+        this.inFlight = false;
+        const sold = events.find((e) => e.type === 'sold');
+        this.message.setText(sold?.type === 'sold' ? `Sold ${g.name} for ${sold.price} gold.` : this.describe(events));
+        this.show(this.tab);
+        (this.scene.get('board') as BoardScene).refreshHud();
+      },
+      (e: unknown) => this.failed(e),
+    );
+  }
+
+  /** The world did not answer (the socket is between two lives): say so; the next tap tries again. */
+  private failed(e: unknown): void {
+    this.inFlight = false;
+    this.log.error(`shop action failed: ${String(e)}`);
+    this.message.setText('No answer from the world. Try again.');
   }
 
   private describe(events: GameEvent[]): string {
@@ -151,4 +173,4 @@ export class ShopScene extends Phaser.Scene {
   }
 }
 
-type GameEvent = ReturnType<LocalGame['act']>[number];
+type GameEvent = Awaited<ReturnType<GameHolder['act']>>[number];

@@ -1,15 +1,17 @@
 // A region actor: the one owner of a region's state. It takes actions one at a time through the same rules the
 // client runs (with its own clock passed in, for spots that give again and for spawns), keeps its state and its dice
-// in SQLite, and answers a repeated action id with the stored answer.
+// in SQLite, answers a repeated action id with the stored answer, and says what each action changed (the delta).
 // The shape of a Cloudflare Durable Object or a Colyseus room (CLAUDE.md), so the server can move later.
 
 import {
   apply,
+  diffState,
   makeRng,
   migrate,
-  newGame,
+  newWorld,
   resumeRng,
   type Action,
+  type Delta,
   type GameEvent,
   type GameState,
   type Rng,
@@ -22,6 +24,8 @@ export interface ActionResult {
   events: GameEvent[];
   /** True when this action id had been answered before and the stored answer was returned. */
   replayed: boolean;
+  /** What the action changed, for the client's merge: null when nothing did; not kept, so absent on a replayed answer. */
+  delta?: Delta | null;
 }
 
 export interface Snapshot {
@@ -95,11 +99,17 @@ export class RegionActor {
     return { version: this.version, state: structuredClone(this.state) };
   }
 
+  /** The version alone, without copying the state. */
+  get currentVersion(): number {
+    return this.version;
+  }
+
   private handle(action: Action): ActionResult {
     const stored = this.getResult.get(this.id, action.id) as { result: string } | undefined;
     if (stored) return { ...(JSON.parse(stored.result) as ActionResult), replayed: true };
 
     const { state, events } = apply(this.state, action, this.rng, this.now());
+    const delta = diffState(this.state, state);
     if (state !== this.state) {
       this.state = state;
       this.version += 1;
@@ -109,7 +119,7 @@ export class RegionActor {
       this.persist();
       this.putResult.run(this.id, action.id, JSON.stringify(result), this.now());
     })();
-    return result;
+    return { ...result, delta };
   }
 
   private persist(): void {
@@ -118,5 +128,5 @@ export class RegionActor {
 }
 
 function defaultRegion(id: string): { seed: string; state: GameState } {
-  return { seed: id, state: newGame({ seed: id, player: 'robin', name: 'Robin', classId: 'warrior' }) };
+  return { seed: id, state: newWorld({ seed: id }) };
 }

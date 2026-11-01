@@ -6,13 +6,14 @@ import Phaser from 'phaser';
 import { creature, questLine, type Area } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder } from '../game-holder.ts';
+import { RECOVER_KEY, SERVER_KEY } from '../remote-game.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface AtlasSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -28,7 +29,7 @@ export const ATLAS_LAYOUT = {
 } as const;
 
 export class AtlasScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
   private page = 0;
@@ -90,7 +91,8 @@ export class AtlasScene extends Phaser.Scene {
     }
   }
 
-  /** The three settings as rows with a toggle each (mine, 2026-11-01: sound for the sound layer to come, fewer effects, larger text). */
+  /** The three settings as rows with a toggle each (mine, 2026-11-01: sound for the sound layer to come, fewer effects, larger text),
+   * then the world (the server, or solo) and the account (the code for another phone, starting over). */
   private showSettings(): void {
     const s = settings.get();
     const { firstRowY, rowStep, go } = ATLAS_LAYOUT;
@@ -105,6 +107,45 @@ export class AtlasScene extends Phaser.Scene {
       this.rows.push(this.add.text(24, y + 14, row.text, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim, wordWrap: { width: 280 } }));
       this.rows.push(makeButton(this, go.x, y + 12, go.w + 8, go.h, row.value ? row.on : row.off, row.value ? COLORS.button : COLORS.log, '14px', () => { row.set(!row.value); this.log.note(`setting ${row.name}: ${!row.value ? row.on : row.off}`); this.refresh(); }).button);
     });
+    const link = this.game_.link();
+    const server = stored(SERVER_KEY);
+    const worldText = link.kind === 'solo'
+      ? 'Solo play on this phone. Join a world with its address (wss://…) and your character there is kept on the server.'
+      : link.kind === 'online'
+        ? `Online at ${server ?? '?'}: ${link.online} ${link.online === 1 ? 'player' : 'players'} here now.`
+        : `Trying to reach ${server ?? '?'} (${link.tries} ${link.tries === 1 ? 'try' : 'tries'}): ${link.reason}.`;
+    this.settingRow(rows.length, 'World', worldText, link.kind === 'solo' ? 'Join…' : 'Server…', () => {
+      const typed = window.prompt('The world\'s address (wss://…), or "off" for solo play:', server ?? 'wss://');
+      if (typed === null) return;
+      location.assign(`${location.pathname}?server=${encodeURIComponent(typed.trim())}`);
+    });
+    const code = this.game_.recovery();
+    if (code) {
+      this.settingRow(rows.length + 1, 'Account', `Your code for another phone: ${code}. Write it down; it brings this character back.`, 'Use a code…', () => {
+        const typed = window.prompt('The code from your other phone:');
+        if (!typed?.trim()) return;
+        try {
+          localStorage.setItem(RECOVER_KEY, typed.trim());
+        } catch {
+          return;
+        }
+        this.game_.reset();
+        location.reload();
+      });
+    }
+    this.settingRow(rows.length + (code ? 2 : 1), 'Start over', code ? 'Forget this phone\'s character (the code still brings it back) and make a new one.' : 'Throw this save away and make a new character.', 'Start over', () => {
+      if (!window.confirm('Start over with a new character?')) return;
+      this.game_.reset();
+      location.reload();
+    });
+  }
+
+  private settingRow(i: number, name: string, text: string, button: string, onTap: () => void): void {
+    const { firstRowY, rowStep, go } = ATLAS_LAYOUT;
+    const y = firstRowY + i * rowStep;
+    this.rows.push(this.add.text(24, y - 6, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: COLORS.text }));
+    this.rows.push(this.add.text(24, y + 14, text, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim, wordWrap: { width: 258 } }));
+    this.rows.push(makeButton(this, go.x - 10, y + 12, go.w + 28, go.h, button, COLORS.log, '13px', onTap).button);
   }
 
   /** One line under the name: the levels, the boss and your kills, the errand, or that it is closed and what opens it. */
@@ -124,5 +165,14 @@ export class AtlasScene extends Phaser.Scene {
     if (boss) parts.push(`${boss.name} at ${gate!.name}${kills ? `, beaten ${kills}×` : ''}.`);
     if (errand) parts.push(`Errand: ${questLine(errand)}`);
     return parts.join(' ');
+  }
+}
+
+/** A value from the page's storage, or null when there is none or storage is blocked. */
+function stored(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
   }
 }

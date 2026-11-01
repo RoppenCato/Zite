@@ -7,7 +7,7 @@ Three packages in one npm project:
 
 - `rules/`: the game as a pure function, `apply(state, action, rng) → { state, events }`, numbers in `rules/data/*.json`
 - `client/`: the Phaser 4 PWA for phones (TypeScript, Vite)
-- `server/`: the Node server for Robin's PC (`ws`, SQLite), one region actor; not wired to the client yet
+- `server/`: the Node server for Robin's PC (`ws`, SQLite): one region actor, the accounts, the hub speaking `docs/state/protocol.md`
 
 ## Run it
 
@@ -48,22 +48,33 @@ that Chrome on Android installs; it needs HTTPS or localhost.
 npm run server
 ```
 
-starts the WebSocket server on ws://localhost:8787 with its database in `server/data/world.db`. It answers
-`{"type":"ping"}` and nothing else yet.
+starts the world's server on ws://localhost:8787 with its database in `server/data/world.db`. Open the client once as
+`http://localhost:4173/?server=ws://localhost:8787` (or the dev address) and the character screen says "the world at …":
+Begin makes your account on the server, the address is remembered, and every later open connects on its own. A second
+window (a private one, so it has storage of its own) with the same address is a second player: both stand on the board.
+Settings (World → Settings) show the account's code; typed on another phone's character screen it brings the same
+character there. `?server=off` goes back to solo play. For phones: `npm run tunnel` in front of the server and the
+`wss://….trycloudflare.com` address it prints as the `?server=` (`docs/state/server.md`, "Running it for friends").
+
+```bash
+node tools/drive-coop.mjs
+```
+
+plays two headless phones against a server of its own (needs the built client at http://localhost:4173/).
 
 Also: `npm run typecheck` (TypeScript, strict, both configs), `npm run icons` (remakes the placeholder icons),
-`npm run tunnel` (cloudflared, once installed and once the server has a protocol).
+`npm run tunnel` (cloudflared, once installed).
 
 ## Where things are
 
 ```
-rules/src        types, rng, data, world, paths, gear, fight, common, hints, game, save, index
-rules/data       world.json (areas, hubs, roads), dice, classes, abilities, spaces, enemies, gear, items, surprises, progression
-rules/test       rng, game, fight, items, gear, board, world, purity; fixtures/ring (the first twelve-spot board)
-client/src       main, layout, ui, local-game, game-log, scenes/CreateScene, play, BoardScene, HudScene, FightScene, ShopScene, BagScene
+rules/src        types, rng, data, world, generate, paths, gear, fight, quests, common, hints, game, save, delta, protocol, index
+rules/data       world.json (areas, hubs, roads), themes, shapes, dice, classes, abilities, spaces, enemies, gear, uniques, items, quests, surprises, events, progression
+rules/test       rng, game, fight, kits, enemies, uniques, quests, vaults, items, gear, board, world, generate, shared, purity; fixtures/ring, grown
+client/src       main, layout, ui, game-holder, local-game, remote-game, game-log, tips, settings, scenes/CreateScene, ConnectScene, play, BoardScene, HudScene, FightScene, ShopScene, BagScene, AtlasScene
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
-server/src       db, region-actor, index
-server/test      region-actor
-tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size), simulate.ts (the balance bots)
-docs/state/      rules.md, world.md, client.md, server.md, pages.md
+server/src       db, region-actor, accounts, hub, index
+server/test      region-actor, hub
+tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size), drive-coop.mjs (two phones and a server), simulate.ts (the balance bots)
+docs/state/      rules.md, world.md, client.md, server.md, protocol.md, pages.md, art.md
 ```

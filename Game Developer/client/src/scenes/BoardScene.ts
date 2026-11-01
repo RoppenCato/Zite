@@ -2,7 +2,8 @@
 // whatever has spawned), a camera that follows the character, and the touch input (tap a spot for a hint or a choice,
 // drag to pan, pinch to zoom). The fixed chrome is HudScene, launched from here; the fight, the shop and the bag are
 // scenes launched over both. No art yet: shapes and labels. Everything here is drawing and input; what happens is
-// decided by the rules through LocalGame.
+// decided by the rules through the holder (LocalGame alone, or RemoteGame with the server).
+// Other players stand on the board as small marks with their names; the HUD says whether the world is online.
 
 import Phaser from 'phaser';
 import {
@@ -26,14 +27,14 @@ import {
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
-import type { FightOutcome } from './FightScene.ts';
+import type { FightOutcome, FightScene } from './FightScene.ts';
 import type { Chip, HudScene } from './HudScene.ts';
 
 export interface BoardSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -92,8 +93,12 @@ interface Pinch {
 }
 
 export class BoardScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
   private readonly log: GameLog;
+  /** The other players' marks, by player id (mine, 2026-11-01: who is where, dim when offline). */
+  private readonly others = new Map<string, Phaser.GameObjects.Container>();
+  /** True while an action is on its way to the world: nothing else is sent meanwhile. */
+  private inFlight = false;
   private readonly rings = new Map<string, Phaser.GameObjects.Arc>();
   private readonly circles = new Map<string, Phaser.GameObjects.Arc>();
   private readonly names: Phaser.GameObjects.Text[] = [];
@@ -135,11 +140,13 @@ export class BoardScene extends Phaser.Scene {
     this.border = this.add.graphics().setDepth(2);
     this.drawBoard();
     this.drawToken();
+    this.drawOthers();
     this.drawSpawns();
     this.refreshClocks();
     this.setupCamera(board);
     this.setupInput();
     this.game_.onSpawns = () => this.drawSpawns();
+    this.game_.onChange = (what) => this.onWorldChange(what);
     this.time.addEvent({ delay: 1000, loop: true, callback: () => this.refreshClocks() });
     this.log.note(`board scene ready: ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
     this.scene.launch('hud');
@@ -151,8 +158,16 @@ export class BoardScene extends Phaser.Scene {
     hud.setFollowing(this.following);
     hud.setBusy(this.busy);
     this.refreshHud();
-    const me = this.game_.me;
+    this.refreshLink();
     hud.setDie(this.game_.state.die.last === null ? '–' : String(this.game_.state.die.last));
+    this.resume(tips.take('start') ?? undefined);
+  }
+
+  /** Take up whatever the state is in the middle of: a fight, a question, a pending roll, or nothing. */
+  private resume(message?: string): void {
+    if (this.scene.isActive('fight') || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas')) return;
+    const me = this.game_.me;
+    this.clearChoices();
     if (me.fight) {
       this.openFight();
     } else if (me.offer || me.picks.length) {
@@ -161,8 +176,86 @@ export class BoardScene extends Phaser.Scene {
       this.setBusy(true);
       this.offerChoices();
     } else {
-      this.setMessage(tips.take('start') ?? `Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
+      this.finish(message ?? `Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
     }
+  }
+
+  /** Send an intent and go on with its events; while one is on its way nothing else is sent. No answer: resync and say so. */
+  private send(intent: Intent, then: (events: GameEvent[]) => void): void {
+    if (this.inFlight) return;
+    this.inFlight = true;
+    this.game_.act(intent).then(
+      (events) => {
+        this.inFlight = false;
+        then(events);
+      },
+      (e: unknown) => {
+        this.inFlight = false;
+        this.log.error(`action failed: ${String(e)}`);
+        this.hud?.setChips([]);
+        this.resume('No answer from the world. Try again.');
+      },
+    );
+  }
+
+  /** The state changed under the player: others moved, the world ticked, the link changed, a reconnect brought a snapshot. */
+  private onWorldChange(what: WorldChange): void {
+    if (what.board) {
+      this.drawBoard();
+      this.refreshCovers();
+      this.drawSpawns();
+    }
+    if (what.others || what.board) {
+      this.drawOthers();
+      this.refreshHud(); // "with Bo" in the place line
+    }
+    if (what.me) {
+      this.refreshHud();
+      this.refreshClocks();
+      if (this.scene.isActive('fight')) (this.scene.get('fight') as FightScene).refreshFromState();
+      else if (!this.inFlight && !this.busy) {
+        this.placeToken();
+        this.resume();
+      }
+    }
+    if (what.link) this.refreshLink();
+    const line = this.othersLine(what.events);
+    if (line) {
+      this.log.note(line);
+      if (!this.busy) this.setMessage(line);
+    }
+  }
+
+  /** One line about what another player just did, when it is worth one. */
+  private othersLine(events: GameEvent[]): string {
+    const { characters, board } = this.game_.state;
+    const name = (id: string) => characters[id]?.name ?? 'Someone';
+    for (const e of events) {
+      if (e.player === this.game_.player) continue;
+      switch (e.type) {
+        case 'joined':
+          return `${e.name} the ${CLASS_DATA[e.classId].name} has joined the world.`;
+        case 'opened':
+          return `${name(e.player)} opened ${board.areas[e.area]?.name ?? e.area}!`;
+        case 'bossDown':
+          return `${name(e.player)} beat the boss at ${board.spaces[e.space]?.name ?? e.space}.`;
+        case 'levelled':
+          return `${name(e.player)} reached level ${e.level}.`;
+        case 'died':
+          return `${name(e.player)} fell and woke in ${board.spaces[e.town]?.name ?? e.town}.`;
+        default:
+          break;
+      }
+    }
+    return '';
+  }
+
+  /** The HUD's link line: solo, online with how many, or reconnecting. */
+  private refreshLink(): void {
+    const link = this.game_.link();
+    if (link.kind === 'solo') this.hud?.setLink('solo', COLORS.dim);
+    else if (link.kind === 'online') this.hud?.setLink(link.online > 1 ? `online · ${link.online} here` : 'online', '#6fcf7a');
+    else this.hud?.setLink(link.tries ? `reconnecting (${link.tries})…` : 'connecting…', '#f0a030');
   }
 
   /** The map of landing space to path while the player is choosing; null otherwise. The pane reads it. */
@@ -185,15 +278,16 @@ export class BoardScene extends Phaser.Scene {
       return;
     }
     this.setBusy(true);
-    const rolled = this.game_.act({ type: 'roll', player: this.game_.player });
-    const roll = rolled.find((e) => e.type === 'rolled');
-    if (!roll || roll.type !== 'rolled') {
-      this.finish(this.describe(rolled));
-      return;
-    }
-    this.hud?.setDie(String(roll.value), true);
-    this.log.note(`rolled ${roll.value}`);
-    this.offerChoices();
+    this.send({ type: 'roll', player: this.game_.player }, (rolled) => {
+      const roll = rolled.find((e) => e.type === 'rolled');
+      if (!roll || roll.type !== 'rolled') {
+        this.finish(this.describe(rolled));
+        return;
+      }
+      this.hud?.setDie(String(roll.value), true);
+      this.log.note(`rolled ${roll.value}`);
+      this.offerChoices();
+    });
   }
 
   /** Map: everything open; Back: the camera returns to the character. */
@@ -248,29 +342,31 @@ export class BoardScene extends Phaser.Scene {
   /** A dice card from the HUD's row: change the pending roll and offer the new choices. */
   useCard(item: string, value?: number): void {
     if (!this.choices_) return;
-    const events = this.game_.act({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) });
-    const steps = events.find((e) => e.type === 'steps');
-    if (!steps || steps.type !== 'steps') {
-      this.setMessage(this.describe(events));
-      return;
-    }
-    this.log.note(`used ${item}${value !== undefined ? ` ${value}` : ''}: ${steps.steps} steps`);
-    this.hud?.setDie(String(steps.steps), true);
-    this.clearChoices();
-    this.offerChoices(`${ITEMS[item]?.name ?? item}: now ${steps.steps} ${steps.steps === 1 ? 'step' : 'steps'}.`);
+    this.send({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) }, (events) => {
+      const steps = events.find((e) => e.type === 'steps');
+      if (!steps || steps.type !== 'steps') {
+        this.setMessage(this.describe(events));
+        return;
+      }
+      this.log.note(`used ${item}${value !== undefined ? ` ${value}` : ''}: ${steps.steps} steps`);
+      this.hud?.setDie(String(steps.steps), true);
+      this.clearChoices();
+      this.offerChoices(`${ITEMS[item]?.name ?? item}: now ${steps.steps} ${steps.steps === 1 ? 'step' : 'steps'}.`);
+    });
   }
 
   /** The gambler's answer. */
   answerGamble(choice: 'high' | 'low' | 'pass'): void {
-    const events = this.game_.act({ type: 'gamble', player: this.game_.player, choice });
-    this.hud?.setChips([]);
-    const gambled = events.find((e) => e.type === 'gambled');
-    if (gambled?.type === 'gambled') {
-      this.log.note(`gambled ${choice}: rolled ${gambled.roll}, ${gambled.won ? 'won' : 'lost'} ${Math.abs(gambled.delta)}`);
-      this.finish(`The die shows ${gambled.roll}: you ${gambled.won ? 'win' : 'lose'} ${Math.abs(gambled.delta)} gold.`);
-    } else {
-      this.finish(this.describe(events) || 'You walk on.');
-    }
+    this.send({ type: 'gamble', player: this.game_.player, choice }, (events) => {
+      this.hud?.setChips([]);
+      const gambled = events.find((e) => e.type === 'gambled');
+      if (gambled?.type === 'gambled') {
+        this.log.note(`gambled ${choice}: rolled ${gambled.roll}, ${gambled.won ? 'won' : 'lost'} ${Math.abs(gambled.delta)}`);
+        this.finish(`The die shows ${gambled.roll}: you ${gambled.won ? 'win' : 'lose'} ${Math.abs(gambled.delta)} gold.`);
+      } else {
+        this.finish(this.describe(events) || 'You walk on.');
+      }
+    });
   }
 
   /** The shop scene is done: close it and give the turn back. */
@@ -462,10 +558,11 @@ export class BoardScene extends Phaser.Scene {
     }
   }
 
-  /** The boss labels: level, and how long until a beaten boss is back. Once a second. */
+  /** The boss labels: level, and how long until a beaten boss is back. Once a second; the link line with it. */
   private refreshClocks(): void {
     const me = this.game_.me;
     const now = this.game_.now();
+    this.refreshLink();
     for (const [spaceId, label] of this.bossLabels) {
       const space = this.game_.state.board.spaces[spaceId]!;
       const boss = space.boss ? creature(space.boss, this.game_.state.board.bestiary) : undefined;
@@ -484,6 +581,48 @@ export class BoardScene extends Phaser.Scene {
       .text(0, 0, CLASS_DATA[me.classId].name.charAt(0), { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#101318', resolution: 2 })
       .setOrigin(0.5);
     this.token = this.add.container(space.x, space.y - SPACE_RADIUS - 6, [body, letter]).setDepth(10);
+  }
+
+  /** The token where the state says the character stands, without a walk (after a snapshot). */
+  private placeToken(): void {
+    const space = this.game_.state.board.spaces[this.game_.me.space];
+    if (space) this.token.setPosition(space.x, space.y - SPACE_RADIUS - 6);
+  }
+
+  /** The other players: a smaller mark with the class letter and the name, to the right of the spot; dim when offline. */
+  private drawOthers(): void {
+    const { characters, board } = this.game_.state;
+    const online = new Set(this.game_.onlinePlayers());
+    const seen = new Set<string>();
+    const perSpace = new Map<string, number>();
+    for (const c of Object.values(characters)) {
+      if (c.id === this.game_.player) continue;
+      const space = board.spaces[c.space];
+      if (!space) continue;
+      seen.add(c.id);
+      const n = perSpace.get(c.space) ?? 0;
+      perSpace.set(c.space, n + 1);
+      let mark = this.others.get(c.id);
+      const fresh = !mark;
+      if (!mark) {
+        const body = this.add.circle(0, 0, TOKEN_RADIUS - 3, CLASS_COLORS[c.classId] ?? 0xffffff, 1).setStrokeStyle(2, 0x101318, 1);
+        const letter = this.add.text(0, 0, CLASS_DATA[c.classId].name.charAt(0), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
+        const name = this.add.text(0, 14, c.name, { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: COLORS.text, resolution: 2 }).setOrigin(0.5, 0);
+        mark = this.add.container(0, 0, [body, letter, name]).setDepth(9);
+        this.others.set(c.id, mark);
+      }
+      const x = space.x + 30 + n * 18;
+      const y = space.y - SPACE_RADIUS + 4;
+      if (fresh || settings.get().fewerEffects) mark.setPosition(x, y);
+      else if (mark.x !== x || mark.y !== y) this.tweens.add({ targets: mark, x, y, duration: 300, ease: 'Sine.easeInOut' });
+      mark.setAlpha(online.has(c.id) ? 1 : 0.45);
+    }
+    for (const [id, mark] of this.others) {
+      if (!seen.has(id)) {
+        mark.destroy();
+        this.others.delete(id);
+      }
+    }
   }
 
   // ---- the camera --------------------------------------------------------------------------------------------------
@@ -757,11 +896,12 @@ export class BoardScene extends Phaser.Scene {
   }
 
   answerQuest(accept: boolean): void {
-    const events = this.game_.act({ type: 'quest', player: this.game_.player, accept });
-    this.hud?.setChips([]);
-    const taken = events.find((e) => e.type === 'questTaken');
-    this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
-    this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
+    this.send({ type: 'quest', player: this.game_.player, accept }, (events) => {
+      this.hud?.setChips([]);
+      const taken = events.find((e) => e.type === 'questTaken');
+      this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
+      this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
+    });
   }
 
   /** A piece with no room in the bag: sold on the spot, or left (Robin, 2026-10-31: a bag limit with a sell-or-drop choice). */
@@ -778,23 +918,25 @@ export class BoardScene extends Phaser.Scene {
   }
 
   answerKeep(choice: 'sell' | 'drop'): void {
-    const events = this.game_.act({ type: 'keep', player: this.game_.player, choice });
-    this.hud?.setChips([]);
-    const sold = events.find((e) => e.type === 'sold');
-    const dropped = events.find((e) => e.type === 'dropped');
-    this.finish(sold?.type === 'sold' ? `Sold ${sold.gear.name} for ${sold.price} gold.` : dropped?.type === 'dropped' ? `Left ${dropped.gear.name} behind.` : this.describe(events));
+    this.send({ type: 'keep', player: this.game_.player, choice }, (events) => {
+      this.hud?.setChips([]);
+      const sold = events.find((e) => e.type === 'sold');
+      const dropped = events.find((e) => e.type === 'dropped');
+      this.finish(sold?.type === 'sold' ? `Sold ${sold.gear.name} for ${sold.price} gold.` : dropped?.type === 'dropped' ? `Left ${dropped.gear.name} behind.` : this.describe(events));
+    });
   }
 
   answerPick(ability: string): void {
-    const events = this.game_.act({ type: 'pick', player: this.game_.player, ability });
-    this.hud?.setChips([]);
-    const picked = events.find((e) => e.type === 'picked');
-    if (picked?.type === 'picked') {
-      this.log.note(`picked ${picked.ability} rank ${picked.rank}`);
-      this.finish(`Learned ${ABILITIES[picked.ability]?.name ?? picked.ability}${picked.rank > 1 ? `, rank ${picked.rank}` : ''}. ${ABILITIES[picked.ability]?.text ?? ''}`.trim());
-    } else {
-      this.finish(this.describe(events));
-    }
+    this.send({ type: 'pick', player: this.game_.player, ability }, (events) => {
+      this.hud?.setChips([]);
+      const picked = events.find((e) => e.type === 'picked');
+      if (picked?.type === 'picked') {
+        this.log.note(`picked ${picked.ability} rank ${picked.rank}`);
+        this.finish(`Learned ${ABILITIES[picked.ability]?.name ?? picked.ability}${picked.rank > 1 ? `, rank ${picked.rank}` : ''}. ${ABILITIES[picked.ability]?.text ?? ''}`.trim());
+      } else {
+        this.finish(this.describe(events));
+      }
+    });
   }
 
   /** The gambler's question in the HUD's row. */
@@ -822,7 +964,9 @@ export class BoardScene extends Phaser.Scene {
       }
       this.flashHint(id);
       const bossTip = space.kind === 'boss' ? tips.take('boss') : null;
-      this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())}${bossTip ? ` ${bossTip}` : ''}`);
+      const here = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === id).map((c) => c.name);
+      const who = here.length ? ` ${here.join(' and ')} ${here.length > 1 ? 'are' : 'is'} here.` : '';
+      this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())}${who}${bossTip ? ` ${bossTip}` : ''}`);
       return;
     }
     const path = this.choices_.get(id);
@@ -859,7 +1003,11 @@ export class BoardScene extends Phaser.Scene {
 
   /** Send the move, then follow the token as it walks; what the landing brought comes after. */
   private go(path: string[]): void {
-    const moved = this.game_.act({ type: 'move', player: this.game_.player, path });
+    this.send({ type: 'move', player: this.game_.player, path }, (moved) => this.went(path, moved));
+  }
+
+  /** The move was taken: walk the token, then what the landing brought. */
+  private went(path: string[], moved: GameEvent[]): void {
     const landed = moved.find((e) => e.type === 'landed');
     if (!landed || landed.type !== 'landed') {
       this.finish(this.describe(moved));
@@ -938,7 +1086,8 @@ export class BoardScene extends Phaser.Scene {
     const space = this.game_.state.board.spaces[me.space];
     const area = space ? this.game_.state.board.areas[space.area] : undefined;
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
-    this.hud?.setStats(`Lv ${me.level} · HP ${me.hp}/${s.maxHp} · MP ${me.mana}/${s.maxMana} · Gold ${me.gold}`, `${area?.name ?? ''} · ${where}`);
+    const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
+    this.hud?.setStats(`Lv ${me.level} · HP ${me.hp}/${s.maxHp} · MP ${me.mana}/${s.maxMana} · Gold ${me.gold}`, `${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
   private setMessage(text: string): void {

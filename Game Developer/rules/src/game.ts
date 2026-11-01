@@ -44,6 +44,10 @@ type GambleAction = Extract<Action, { type: 'gamble' }>;
 type PickAction = Extract<Action, { type: 'pick' }>;
 type QuestAction = Extract<Action, { type: 'quest' }>;
 type KeepAction = Extract<Action, { type: 'keep' }>;
+type JoinAction = Extract<Action, { type: 'join' }>;
+
+/** The longest name a character may have. */
+export const MAX_NAME = 12;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
@@ -87,12 +91,17 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
 
 /** A fresh game: the board, one character on the start space, the die unrolled, nothing spawned. */
 export function newGame(o: NewGameOptions): GameState {
-  const board = o.board ?? makeBoard();
+  const world = newWorld(o);
+  return { ...world, characters: { [o.player]: makeCharacter(o.player, o.name, o.classId, world.board) } };
+}
+
+/** A world with nobody in it yet: what the server's region starts from; players arrive with `join`. */
+export function newWorld(o: { seed: string; board?: Board }): GameState {
   return {
     version: STATE_VERSION,
     seed: o.seed,
-    board,
-    characters: { [o.player]: makeCharacter(o.player, o.name, o.classId, board) },
+    board: o.board ?? makeBoard(),
+    characters: {},
     die: { sides: DICE_DATA.sides, last: null },
     spawns: {},
     nextItem: 1,
@@ -101,6 +110,7 @@ export function newGame(o: NewGameOptions): GameState {
 
 export function apply(state: GameState, action: Action, rng: Rng, now = 0): ApplyResult {
   if (action.type === 'tick') return tick(state, action, rng, now);
+  if (action.type === 'join') return join(state, action);
   const character = state.characters[action.player];
   if (!character) return reject(state, action, 'unknown player');
   switch (action.type) {
@@ -131,6 +141,15 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'keep':
       return keep(state, action, character);
   }
+}
+
+/** A new character for the player at the start, the way `newGame` makes the first; a player already here is refused. */
+function join(state: GameState, action: JoinAction): ApplyResult {
+  if (state.characters[action.player]) return reject(state, action, 'already here');
+  const name = action.name.trim().slice(0, MAX_NAME);
+  if (!name || !CLASS_DATA[action.classId]) return reject(state, action, 'bad value');
+  const c = makeCharacter(action.player, name, action.classId, state.board);
+  return { state: withCharacter(state, c), events: [{ type: 'joined', action: action.id, player: action.player, name, classId: action.classId, space: c.space }] };
 }
 
 /** Why the board will not take a turn right now, or null. */

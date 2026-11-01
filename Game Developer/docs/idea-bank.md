@@ -30,7 +30,8 @@ the date, and comes off this list.
 12. ~~Mana potions~~: built (2026-11-01); a mana spot of its own is still open (the spring gives both flasks).
 13. ~~Trainers in towns~~: built (2026-11-01), in the town's shop under Train.
 14. **Shared bosses**: a boss's 5-minute return is per character now (mine, for solo play); with the server, is a boss one
-    creature for everyone or one per player?
+    creature for everyone or one per player? The gate bosses stay per player (each opens their own way); a **world
+    boss** everyone hits together is what Piece 5 builds (mine, 2026-11-01), for Robin to judge.
 15. ~~The fourth area and the generator~~: built (2026-10-31, `docs/state/world.md`); the fourth area is the first
     grown one, fire. Two more shapes and the themes' events came 2026-11-01; more shapes are always welcome.
 16. **The far tiers' curve** (mine, 2026-10-31): the grown creatures grow ×1.25 HP a tier and gear ×1.35 a rank past the
@@ -51,3 +52,14 @@ the date, and comes off this list.
 - A "fewer effects" switch in the settings for weak phones.
 - A downloadable frame log and error log in the game (the Survival game's Admin pattern), since a phone has no console.
 - Push as a nudge only ("the boss window closes in two hours"), never as the only way to learn something.
+
+## Open after the server took the state (mine, 2026-11-01)
+
+- **Bringing a solo save into the world**: the server never takes a state from a client (rule 10), so an account starts
+  at the start. A one-time import of the solo character's level and gear, checked by the server, is possible if Robin
+  wants it.
+- **Hashing the tokens and codes** in SQLite before the server is ever public.
+- **Deltas smaller than a whole character** (a few kilobytes with gear and errands) and **many regions** (one actor
+  holds every character today) when there are enough players to feel it.
+- **A screen for the server's address and the code** instead of the browser's prompt.
+- **Playing offline and online with one character**: the two are separate saves today.

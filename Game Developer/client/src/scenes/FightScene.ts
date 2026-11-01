@@ -7,14 +7,14 @@ import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface FightSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -59,7 +59,7 @@ interface Option {
 }
 
 export class FightScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
   private readonly log: GameLog;
   private enemyBody!: Phaser.GameObjects.Arc;
   private enemyBar!: Bar;
@@ -199,9 +199,33 @@ export class FightScene extends Phaser.Scene {
     const move = this.pendingMove;
     this.pendingMove = null;
     this.setBusy(true);
-    const events = this.game_.act({ type: 'fight', player: this.game_.player, move, guard });
-    this.log.note(`fight ${move.kind}${'ability' in move ? ` ${move.ability}` : ''}/${guard}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
-    this.play(events, 0);
+    this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
+      (events) => {
+        this.log.note(`fight ${move.kind}${'ability' in move ? ` ${move.ability}` : ''}/${guard}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
+        this.play(events, 0);
+      },
+      (e: unknown) => {
+        // The world did not answer: the round was not fought. Back to the moves; the next tap tries again.
+        this.log.error(`fight action failed: ${String(e)}`);
+        this.setBusy(false);
+        this.say('No answer from the world. Try again.');
+        this.showMoves();
+      },
+    );
+  }
+
+  /** The state changed under the fight (a reconnect brought a snapshot): the bars and the lines follow it. */
+  refreshFromState(): void {
+    const me = this.game_.me;
+    if (!me.fight) {
+      if (!this.outcome) this.end({ type: 'fled', summary: 'The fight is over.' }, 'The fight is over.');
+      return;
+    }
+    const s = stats(me);
+    this.enemyBar.set(me.fight.enemy.hp, this.enemyMaxHp, true);
+    this.heroBar.set(me.hp, s.maxHp, true);
+    this.manaBar.set(me.mana, s.maxMana, true);
+    this.refreshStatus();
   }
 
   /** One event at a time, a beat apart, so a round reads as blows and not as a jump of the bars. */

@@ -4,7 +4,8 @@ The game as a pure function: `apply(state, action, rng, now) → { state, events
 own (the holder passes `now` in milliseconds), no `Math.random`, no packages: the test `rules/test/purity.test.ts` reads
 the source and refuses any of those. The state passed in is never changed; a new one comes back. The same code runs in
 the browser (solo, `client/src/local-game.ts`) and in the server's region actor (`server/src/region-actor.ts`). Import
-from `rules/src/index.ts`, never from the files inside.
+from `rules/src/index.ts`, never from the files inside. The delta between two states and the protocol's message types live
+here too, so the client and the server share them (`docs/state/protocol.md`).
 
 | File | What it holds |
 | --- | --- |
@@ -19,7 +20,9 @@ from `rules/src/index.ts`, never from the files inside.
 | `src/common.ts` | gold, healing, mana, xp and levels (`levelFor`, `gainXp`), the bag, `sellPrice` |
 | `src/hints.ts` | `hintFor(state, space, player, now)`: what touching a spot says; `countdown` |
 | `src/quests.ts` | the towns' errands: `newQuest`, `questProgress`, `questLine` |
-| `src/game.ts` | `newGame`, `apply`, `makeBoard`, `makeCharacter`; the board, landing, the shop and the bag, dice cards, the gamble, the tick |
+| `src/game.ts` | `newGame`, `newWorld` (nobody in it yet), `apply`, `makeBoard`, `makeCharacter`, `MAX_NAME` (12); joining, the board, landing, the shop and the bag, dice cards, the gamble, the tick |
+| `src/delta.ts` | `diffState(before, after)`: what changed, by reference, or null; `mergeDelta`, `mergeDeltas` |
+| `src/protocol.ts` | `PROTOCOL_VERSION` (1), `MAX_FRAME`, `RATE`, `BATCH_MS`, and the message types both sides import (`docs/state/protocol.md`) |
 | `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8, 9), or null |
 | `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; the Summit opens `gen-1` |
 | `data/themes.json` | the grown areas: the eight themes with their names, adjectives and creatures, the words for places, the four creature shapes, the base numbers and the growth a tier, the cell |
@@ -119,6 +122,10 @@ region actor stores answers by id). A refused action returns the **same** state 
 - **`use { item, value? }`**: a dice card while a roll is pending and the board is free (below). A potion is not used
   here: it is the fight's `item` move.
 - **`gamble { choice }`**: `high`, `low` or `pass`, answering a gambler's offer (below); `nothing to answer` otherwise.
+- **`join { name, classId }`**: a new character for `player` at the start, the way `newGame` makes the first; `joined {
+  name, classId, space }`. Sent by whoever makes accounts (the server; `newGame` for the solo game), never by a player.
+  `already here` for a player who exists; `bad value` for an empty name (names are trimmed to `MAX_NAME`, 12) or an
+  unknown class.
 - **`tick`**: the world moves (below); sent by whoever holds the state, not by a player.
 
 ## What landing does (mine, 2026-10-31, after Robin's spot list of the same day)
@@ -352,6 +359,7 @@ Nothing here has been played; these are the first numbers to be felt and changed
 | `test/quests.test.ts` | the errands: offered, every kind drawn, taken and declined with the town's wait, moved along by fights and chests, paid in town; the trainer's prices and refusals; the bag's limit, its question and the sale on the spot; the flasks by share and the spring's two |
 | `test/vaults.test.ts` | every theme's event and what it does (a hurt never to the last point); the two shapes with their vaults among the generator's; a vault locked, its key from the mini-boss once, its richer loot with the key spent; a version-8 save coming up |
 | `test/items.test.ts` | the shop (consumables, plain gear by rank, towns and merchants, refusals), selling, equip, unequip, drop, the dice cards |
+| `test/shared.test.ts` | joining (a second character at the start, the refusals, two players rolling from one stream); the delta (null when nothing changed, the acting character and the die after a roll, the spawns after a tick, the whole board when a boss lays an area, bundling); two bots playing six hundred actions on the world with ticks between, a client folding every delta ending with exactly the server's state |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |
 
 Every new mechanic starts with a test of this shape: given a state, an action, a seed and a clock, this is the state and

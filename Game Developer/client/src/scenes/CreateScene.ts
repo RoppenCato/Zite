@@ -1,19 +1,26 @@
 // The character screen, the first time: a name and a class (Robin, 2026-10-31: the class is chosen at creation and the
-// classes must feel different). Four cards with each class's style line and numbers, a Begin button. Layout mine.
+// classes must feel different). Four cards with each class's style line and numbers, a Begin button. In co-op the same
+// screen makes the account on the server, and a player with a code from another phone can bring that character instead.
+// Layout mine.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, CLASS_IDS, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
+import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
-import { LocalGame } from '../local-game.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
 
 export interface CreateSceneDeps {
   log: GameLog;
-  storage: Storage | null;
+  /** Where the world is, for the line under the title: this phone, or the server. */
+  where: string;
+  /** Make the game for the character: the local save, or an account on the server. Rejects with a reason to show. */
+  make: (o: { name: string; classId: ClassId }) => Promise<GameHolder>;
+  /** Bring a character from another phone by its recovery code; absent in solo play. */
+  recover: ((code: string) => Promise<GameHolder>) | null;
   /** Called with the new game before play starts, so main.ts can expose it to the pane. */
-  onCreated: (game: LocalGame) => void;
+  onCreated: (game: GameHolder) => void;
 }
 
 const CENTRE = DESIGN_WIDTH / 2;
@@ -22,13 +29,14 @@ const CARD_H = 104;
 const CARD_GAP = 12;
 const FIRST_CARD_Y = 304;
 export const DEFAULT_NAME = 'Robin';
-export const MAX_NAME = 12;
+export { MAX_NAME };
 
 /** Where things sit, in design pixels (the driver taps them here). */
 export const CREATE_LAYOUT = {
   input: { x: CENTRE, y: 180, w: 300, h: 44 },
   cardY: (i: number) => FIRST_CARD_Y + i * (CARD_H + CARD_GAP),
   begin: { x: CENTRE, y: 812, w: 220, h: 66 },
+  code: { x: CENTRE, y: 872, w: 260, h: 28 },
 } as const;
 
 const CARD_COLORS: Record<ClassId, number> = {
@@ -39,26 +47,23 @@ const CARD_COLORS: Record<ClassId, number> = {
 };
 
 export class CreateScene extends Phaser.Scene {
-  private readonly log: GameLog;
-  private readonly storage: Storage | null;
-  private readonly onCreated: (game: LocalGame) => void;
+  private readonly deps: CreateSceneDeps;
   private readonly cards = new Map<ClassId, Phaser.GameObjects.Graphics>();
   private nameField!: HTMLInputElement;
+  private status!: Phaser.GameObjects.Text;
   private chosen: ClassId = 'warrior';
   private begun = false;
 
   constructor(deps: CreateSceneDeps) {
     super('create');
-    this.log = deps.log;
-    this.storage = deps.storage;
-    this.onCreated = deps.onCreated;
+    this.deps = deps;
   }
 
   create(): void {
     this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT, fontSize: '32px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.add.text(CENTRE, 100, 'a board world', { fontFamily: FONT, fontSize: '16px', color: COLORS.dim }).setOrigin(0.5);
+    this.add.text(CENTRE, 100, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
 
-    const { input, begin } = CREATE_LAYOUT;
+    const { input, begin, code } = CREATE_LAYOUT;
     this.add.text(input.x - input.w / 2, 140, 'Your name', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
     this.nameField = document.createElement('input');
     this.nameField.type = 'text';
@@ -85,12 +90,14 @@ export class CreateScene extends Phaser.Scene {
     CLASS_IDS.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
     this.select(this.chosen);
 
+    this.status = this.add.text(CENTRE, 752, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5);
     makeButton(this, begin.x, begin.y, begin.w, begin.h, 'Begin', COLORS.button, '26px', () => this.begin());
+    if (this.deps.recover) makeButton(this, code.x, code.y, code.w, code.h, 'I have a code from another phone', COLORS.log, '12px', () => this.recoverWithCode());
     this.add
       .text(12, DESIGN_HEIGHT - 8, `build 0.2.0 · ${WORLD_DATA.name}`, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim })
       .setOrigin(0, 1)
       .setAlpha(0.7);
-    this.log.note('character screen');
+    this.deps.log.note('character screen');
   }
 
   /** Pick a class (the cards call this; so can a script). */
@@ -104,11 +111,38 @@ export class CreateScene extends Phaser.Scene {
     if (this.begun) return;
     this.begun = true;
     const name = this.nameField.value.trim().slice(0, MAX_NAME) || DEFAULT_NAME;
-    const game = LocalGame.create(this.storage, { name, classId: this.chosen });
-    this.log.note(`created: ${name} the ${this.chosen}, seed ${game.state.seed}`);
-    this.onCreated(game);
-    for (const { key, scene } of playScenes(game, this.log)) this.scene.add(key, scene, false);
+    this.status.setText('Making your character…');
+    this.deps.make({ name, classId: this.chosen }).then(
+      (game) => this.start(game, `created: ${name} the ${this.chosen}, seed ${game.state.seed}`),
+      (e: unknown) => this.failed(e),
+    );
+  }
+
+  /** A code typed from another phone: that character, on this one. */
+  recoverWithCode(): void {
+    if (this.begun || !this.deps.recover) return;
+    const code = window.prompt('The code from your other phone (it looks like KPM4-R7QX-2HJD):');
+    if (!code?.trim()) return;
+    this.begun = true;
+    this.status.setText('Finding your character…');
+    this.deps.recover(code.trim()).then(
+      (game) => this.start(game, `recovered: ${game.me.name} the ${game.me.classId}`),
+      (e: unknown) => this.failed(e),
+    );
+  }
+
+  private start(game: GameHolder, line: string): void {
+    this.deps.log.note(line);
+    this.deps.onCreated(game);
+    for (const { key, scene } of playScenes(game, this.deps.log)) this.scene.add(key, scene, false);
     this.scene.start('board');
+  }
+
+  private failed(e: unknown): void {
+    this.begun = false;
+    const why = e instanceof Error ? e.message : String(e);
+    this.deps.log.error(`could not start: ${why}`);
+    this.status.setText(why === 'unknown code' ? 'No character has that code. Check it and try again.' : `Could not start: ${why}. Try again.`);
   }
 
   private drawCard(id: ClassId, y: number): void {

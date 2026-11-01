@@ -1,6 +1,6 @@
-// Solo play: the state and the random stream live here, in the browser, saved to localStorage.
-// This is the only place in the client that calls the rules. When the server comes (MVP step 2), a second holder
-// sends the same intents over a socket instead; the scenes do not change.
+// Solo play: the state and the random stream live here, in the browser, saved to localStorage. The one place in the
+// client that calls the rules; RemoteGame (remote-game.ts) is the other holder, which sends the same intents to the
+// server instead. The scenes see both through GameHolder.
 
 import {
   apply,
@@ -16,6 +16,7 @@ import {
   type Rng,
 } from '../../rules/src/index.ts';
 
+import type { GameHolder, Intent, Link } from './game-holder.ts';
 import { tips } from './tips.ts';
 
 export const SAVE_KEY = 'boardworld.save';
@@ -32,16 +33,13 @@ interface Save {
   rng: number;
 }
 
-/** An action without its id: the holder adds the id (shared-world rule 3). */
-type Intent = Action extends infer A ? (A extends Action ? Omit<A, 'id'> : never) : never;
-
-export class LocalGame {
+export class LocalGame implements GameHolder {
   state: GameState;
   readonly player = PLAYER;
   private rng: Rng;
   private readonly storage: Storage | null;
-  /** Called after every action that changed the world's spawns, so the board can redraw its markers. */
   onSpawns: (() => void) | null = null;
+  onChange: GameHolder['onChange'] = null;
 
   private constructor(state: GameState, rng: Rng, storage: Storage | null) {
     this.state = state;
@@ -81,8 +79,13 @@ export class LocalGame {
     return Date.now();
   }
 
-  /** Apply what the player wants and save. Returns what happened. */
-  act(intent: Intent): GameEvent[] {
+  /** Apply what the player wants and save. Answers with what happened, at once but as a promise, like the remote holder. */
+  act(intent: Intent): Promise<GameEvent[]> {
+    return Promise.resolve(this.actNow(intent));
+  }
+
+  /** The same, without the wait: for the tick, and for scripts in the pane. */
+  actNow(intent: Intent): GameEvent[] {
     const action = { ...intent, id: newId() } as Action;
     const result = apply(this.state, action, this.rng, this.now());
     const spawnsBefore = this.state.spawns;
@@ -93,11 +96,22 @@ export class LocalGame {
   }
 
   /** The world moves: spawns come and go. The page calls it on load and every minute. */
-  tick(): GameEvent[] {
-    return this.act({ type: 'tick', player: 'world' });
+  tick(): Promise<GameEvent[]> {
+    return Promise.resolve(this.actNow({ type: 'tick', player: 'world' }));
   }
 
-  /** Throw the save away; the next load has no game and shows the character screen. */
+  link(): Link {
+    return { kind: 'solo' };
+  }
+
+  recovery(): string | null {
+    return null;
+  }
+
+  onlinePlayers(): string[] {
+    return [];
+  }
+
   /** Throw the save away (and the first minutes' tips with it): the next load is the character screen. */
   reset(): void {
     tips.clear();

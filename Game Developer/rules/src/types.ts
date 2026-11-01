@@ -338,6 +338,8 @@ export type Action =
   /** The answer for a piece that found no room in the bag: sold on the spot, or left. */
   | { type: 'keep'; id: string; player: string; choice: 'sell' | 'drop' }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
+  /** A new character for `player` at the start. Sent by whoever makes accounts: the server, or the local holder. */
+  | { type: 'join'; id: string; player: string; name: string; classId: ClassId }
   | { type: 'tick'; id: string; player: string };
 
 export type RejectReason =
@@ -365,7 +367,8 @@ export type RejectReason =
   | 'none left'
   | 'not now'
   | 'bad value'
-  | 'nothing to answer';
+  | 'nothing to answer'
+  | 'already here';
 
 /** What happened. The client plays these back; the server will send them on. */
 export type GameEvent =
@@ -463,6 +466,7 @@ export type GameEvent =
   | { type: 'steps'; action: string; player: string; steps: number }
   | { type: 'spawned'; action: string; player: string; space: string; spawn: Spawn }
   | { type: 'despawned'; action: string; player: string; space: string }
+  | { type: 'joined'; action: string; player: string; name: string; classId: ClassId; space: string }
   | { type: 'rejected'; action: string; player: string; reason: RejectReason };
 
 export interface ApplyResult {

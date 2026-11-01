@@ -7,13 +7,13 @@ import Phaser from 'phaser';
 import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface HudSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -36,7 +36,7 @@ export interface Chip {
 }
 
 export class HudScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
   private readonly log: GameLog;
   private name!: Phaser.GameObjects.Text;
   private stats!: Phaser.GameObjects.Text;
@@ -47,6 +47,7 @@ export class HudScene extends Phaser.Scene {
   private rollButton!: Phaser.GameObjects.Container;
   private mapLabel!: Phaser.GameObjects.Text;
   private chipRow!: Phaser.GameObjects.Container;
+  private linkText!: Phaser.GameObjects.Text;
 
   constructor(deps: HudSceneDeps) {
     super('hud');
@@ -92,6 +93,11 @@ export class HudScene extends Phaser.Scene {
     this.mapLabel.setText(following ? 'Map' : 'Back');
   }
 
+  /** The link to the world, under the die: solo, online with how many, or reconnecting (mine, 2026-11-01). */
+  setLink(text: string, color: string): void {
+    this.linkText.setText(text).setColor(color);
+  }
+
   /** The chips to show in the row; an empty list clears it. */
   setChips(chips: Chip[]): void {
     this.chipRow.removeAll(true);
@@ -121,6 +127,7 @@ export class HudScene extends Phaser.Scene {
       .text(0, 0, '–', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#101318' })
       .setOrigin(0.5);
     this.dieBox = this.add.container(DESIGN_WIDTH - 48, HUD_HEIGHT / 2, [box, this.dieText]);
+    this.linkText = this.add.text(DESIGN_WIDTH - 86, HUD_HEIGHT - 8, '', { fontFamily: FONT, fontSize: '11px', color: COLORS.dim }).setOrigin(1, 1);
   }
 
   private drawControls(): void {

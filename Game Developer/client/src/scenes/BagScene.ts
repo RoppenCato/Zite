@@ -5,12 +5,12 @@ import Phaser from 'phaser';
 import { describeGear, GEAR, ITEMS, SLOTS, stats, type GearItem, type Slot } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_COLORS, VIEW_HEIGHT } from '../layout.ts';
-import type { LocalGame } from '../local-game.ts';
+import type { GameHolder } from '../game-holder.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface BagSceneDeps {
-  game: LocalGame;
+  game: GameHolder;
   log: GameLog;
 }
 
@@ -29,7 +29,9 @@ export const BAG_LAYOUT = {
 } as const;
 
 export class BagScene extends Phaser.Scene {
-  private readonly game_: LocalGame;
+  private readonly game_: GameHolder;
+  /** True while an action is on its way to the world: one at a time. */
+  private inFlight = false;
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
   private numbers!: Phaser.GameObjects.Text;
@@ -87,12 +89,23 @@ export class BagScene extends Phaser.Scene {
   }
 
   private send(intent: { type: 'equip'; gear: string } | { type: 'unequip'; slot: Slot } | { type: 'drop'; gear: string }, done: string): void {
-    const events = this.game_.act({ ...intent, player: this.game_.player });
-    const rejected = events.find((e) => e.type === 'rejected');
-    this.message.setText(rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done);
-    this.log.note(done);
-    this.refresh();
-    (this.scene.get('board') as BoardScene).refreshHud();
+    if (this.inFlight) return;
+    this.inFlight = true;
+    this.game_.act({ ...intent, player: this.game_.player }).then(
+      (events) => {
+        this.inFlight = false;
+        const rejected = events.find((e) => e.type === 'rejected');
+        this.message.setText(rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done);
+        this.log.note(done);
+        this.refresh();
+        (this.scene.get('board') as BoardScene).refreshHud();
+      },
+      (e: unknown) => {
+        this.inFlight = false;
+        this.log.error(`bag action failed: ${String(e)}`);
+        this.message.setText('No answer from the world. Try again.');
+      },
+    );
   }
 }
 

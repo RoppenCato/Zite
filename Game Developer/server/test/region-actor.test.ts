@@ -30,7 +30,8 @@ describe('a region actor', () => {
   it('applies a roll through the rules and bumps the version', async () => {
     const { actor } = freshActor();
     const result = await actor.submit(roll('a1'));
-    expect(result).toEqual({ version: 1, events: [{ type: 'rolled', action: 'a1', player: P, value: 2 }], replayed: false });
+    expect(result).toMatchObject({ version: 1, events: [{ type: 'rolled', action: 'a1', player: P, value: 2 }], replayed: false });
+    expect(Object.keys(result.delta!).sort()).toEqual(['characters', 'die']); // what changed, for the client
     expect(actor.snapshot().version).toBe(1);
     expect(actor.snapshot().state.characters[P]).toMatchObject({ steps: 2, space: 's0' });
   });
@@ -39,7 +40,7 @@ describe('a region actor', () => {
     const { actor } = freshActor();
     const first = await actor.submit(roll('a1'));
     const again = await actor.submit(roll('a1'));
-    expect(again).toEqual({ ...first, replayed: true });
+    expect(again).toEqual({ version: first.version, events: first.events, replayed: true }); // no delta: the client rejoined with a snapshot
     expect(actor.snapshot().version).toBe(1);
     await actor.submit(move('a2', ['s1', 's2']));
     // The second roll of seed 'ashford' is a 1: the replay did not spend a roll.
@@ -67,8 +68,8 @@ describe('a region actor', () => {
   it('remembers a refused action without bumping the version', async () => {
     const { actor } = freshActor();
     const refused = await actor.submit(move('m1', ['s1']));
-    expect(refused).toEqual({ version: 0, events: [{ type: 'rejected', action: 'm1', player: P, reason: 'roll first' }], replayed: false });
-    expect(await actor.submit(move('m1', ['s1']))).toEqual({ ...refused, replayed: true });
+    expect(refused).toEqual({ version: 0, events: [{ type: 'rejected', action: 'm1', player: P, reason: 'roll first' }], replayed: false, delta: null });
+    expect(await actor.submit(move('m1', ['s1']))).toEqual({ version: 0, events: refused.events, replayed: true });
     expect(actor.snapshot().version).toBe(0);
   });
 
