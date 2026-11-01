@@ -90,12 +90,12 @@ const createA = await a.ev(() => ({ where: [...boardWorld.phaser.scene.getScene(
 check('with ?server= the character screen says where the world is and offers the code from another phone', /world at ws:\/\/localhost/.test(createA.where ?? '') && createA.code && createA.server === SERVER_URL, JSON.stringify(createA));
 await a.shot('0-create-online');
 await a.page.fill('#game input', 'Anna');
-await a.tapAt(206, 420); // the second card: Rogue
+await a.tapAt(206, 420); // the second card: Trickster
 await a.tapAt(206, 812); // Begin
 await a.ready();
 const joinedA = await a.me();
 const accountA = await a.ev(() => JSON.parse(localStorage.getItem('boardworld.account') ?? 'null'));
-check('Begin makes the account on the server: Anna the Rogue at Puddlewick Village, online alone, the token and the code kept on the phone', joinedA.name === 'Anna' && joinedA.space === 'ashford' && joinedA.link?.kind === 'online' && joinedA.link.online === 1 && joinedA.linkText === 'online' && /^p-/.test(accountA?.player ?? '') && typeof accountA?.token === 'string' && /^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(accountA?.recovery ?? ''), JSON.stringify({ joinedA, accountA }));
+check('Begin makes the account on the server: Anna the Trickster at Puddlewick Village, online alone, the token and the code kept on the phone', joinedA.name === 'Anna' && joinedA.space === 'ashford' && joinedA.link?.kind === 'online' && joinedA.link.online === 1 && joinedA.linkText === 'online' && /^p-/.test(accountA?.player ?? '') && typeof accountA?.token === 'string' && /^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(accountA?.recovery ?? ''), JSON.stringify({ joinedA, accountA }));
 await a.shot('1-a-alone');
 
 // B joins: both see each other.
@@ -103,12 +103,12 @@ await b.page.goto(url);
 await b.page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.isActive('create'), null, { timeout: 20000 });
 await sleep(300);
 await b.page.fill('#game input', 'Bo');
-await b.tapAt(206, 812); // Begin, the Warrior
+await b.tapAt(206, 812); // Begin, the Knight
 await b.ready();
 const joinedB = await b.me();
-check('B joins as Bo the Warrior and sees Anna standing at Puddlewick Village, online two', joinedB.name === 'Bo' && joinedB.others.length === 1 && joinedB.others[0].name === 'Anna' && joinedB.others[0].space === 'ashford' && joinedB.marks.length === 1 && joinedB.link?.online === 2 && joinedB.linkText === 'online · 2 here', JSON.stringify(joinedB));
+check('B joins as Bo the Knight and sees Anna standing at Puddlewick Village, online two', joinedB.name === 'Bo' && joinedB.others.length === 1 && joinedB.others[0].name === 'Anna' && joinedB.others[0].space === 'ashford' && joinedB.marks.length === 1 && joinedB.link?.online === 2 && joinedB.linkText === 'online · 2 here', JSON.stringify(joinedB));
 const sawB = await a.until((m) => m.others.length === 1 && m.link?.online === 2);
-check('A hears Bo arrive: a mark for him, "with Bo" in the place line, the link says two, a line in the message', sawB.others[0]?.name === 'Bo' && sawB.marks.length === 1 && sawB.linkText === 'online · 2 here' && /with Bo/.test(sawB.place) && /Bo the Warrior has joined the world/.test(sawB.message), JSON.stringify(sawB));
+check('A hears Bo arrive: a mark for him, "with Bo" in the place line, the link says two, a line in the message', sawB.others[0]?.name === 'Bo' && sawB.marks.length === 1 && sawB.linkText === 'online · 2 here' && /with Bo/.test(sawB.place) && /Bo the Knight has joined the world/.test(sawB.message), JSON.stringify(sawB));
 await a.shot('2-a-sees-b');
 
 // A rolls and walks; B sees Anna move.

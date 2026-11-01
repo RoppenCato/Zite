@@ -532,7 +532,7 @@ function drop(state: GameState, action: DropAction, character: Character): Apply
 
 /**
  * A dice card: a roll must be pending and the board free. It changes the steps owed and the die shows the new number.
- * The item `charm` is no card but a worn Lucky Charm: a re-roll once every so often (its value, in ms).
+ * The item `charm` is no card but a worn Rabbit's Foot: a re-roll once every so often (its value, in ms).
  */
 function useCard(state: GameState, action: UseAction, character: Character, rng: Rng, now: number): ApplyResult {
   if (action.item === 'charm') {

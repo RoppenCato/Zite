@@ -150,9 +150,9 @@ export class FightScene extends Phaser.Scene {
       { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
       { text: 'Abilities', color: 0x8e6ad9, enabled: Object.keys(me.abilities).length > 0, onTap: () => this.showAbilities() },
       { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
-      { text: potions > 1 ? `Potion ×${potions}` : 'Potion', color: 0x4aa3df, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: 'potion' }) },
+      { text: potions > 1 ? `${ITEMS.potion!.name} ×${potions}` : ITEMS.potion!.name, color: 0x4aa3df, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: 'potion' }) },
       { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
-      { text: manaPotions > 1 ? `Mana ×${manaPotions}` : 'Mana Potion', color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: 'mana-potion' }) },
+      { text: manaPotions > 1 ? `${ITEMS['mana-potion']!.name} ×${manaPotions}` : ITEMS['mana-potion']!.name, color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: 'mana-potion' }) },
     ]);
   }
 

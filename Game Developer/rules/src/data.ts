@@ -35,7 +35,7 @@ export interface ClassData {
   growth: { hp: number; mana: number; attack: number; defense: number };
   /** The abilities known from the start, at rank 1. */
   kit: string[];
-  /** The enemy does not strike back in the first round (the Ranger). */
+  /** The enemy does not strike back in the first round (the Archer). */
   firstStrike?: boolean;
   /** The class's meter: its name, what fills it (hurt: blows taken; hit: hits landed; round: every round; miss: blows
    * that miss you and crits), and a line on it. */

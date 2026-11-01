@@ -61,7 +61,7 @@ describe('the enemy tells its next move', () => {
 });
 
 describe("the enemies' effects", () => {
-  it('poison bites the player at the end of each round for three rounds; Ironbrow shrugs it off', () => {
+  it('poison bites the player at the end of each round for three rounds; Kettle Hat shrugs it off', () => {
     const bitten = apply(versus('warrior', 'spider', {}, { hp: 5000, next: mv('Venom Bite', 0.8, 'poison') }), turn(attack), makeRng('x'), NOW);
     expect(bitten.events).toContainEqual(expect.objectContaining({ type: 'effect', target: 'player', kind: 'poison', rounds: 3 }));
     expect(fight(bitten.state).poisoned).toEqual({ rounds: 2, damage: 6 });

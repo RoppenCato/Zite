@@ -93,7 +93,7 @@ bots' walls set these: `docs/state/rules.md`, Balance). Gen-1's Lord Ripplefin h
 (`themes.json` `rage`): a line ("Lord Ripplefin calls the lake to rise!") and one more move with the theme's effect (Glimmerlake and
 Frostveil weaken, Moonwhisper drains mana, Sunfall fades, Thornhollow regrows, Embercrown poisons, Thunderstone, Starfall
 and the Shattered Crown strike harder). The area's **gear rank is its tier**: the ten named ranks
-(Copper, Iron, Steel, Mithril, Adamant, Runed, Dragonbone, Starforged, Voidsteel, Sunmetal) and then "Rank 11", …;
+(Tin, Copper, Iron, Silver, Moonsilver, Sunsteel, Dragonscale, Starglass, Crownsteel, Everbright) and then "Rank 11", …;
 beyond the slot tables a rank's number grows ×1.35 and its price ×1.8 (`gear.json` `rankGrowth`, `priceGrowth`).
 
 **Laying it** (`growBoard(board, seed, areaId)`): a new board (the old one untouched), wider if the cell asks, the area

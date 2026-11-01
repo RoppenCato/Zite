@@ -52,11 +52,11 @@ describe('the uniques', () => {
 
   it('are made at a rank with a unique\'s number, one affix, their name and their text, never rolled by chance', () => {
     const g = makeUnique('x', 'twinfang', 3, makeRng('m'));
-    expect(g).toMatchObject({ id: 'x', slot: 'weapon', rank: 3, rarity: 'unique', name: 'Twinfang', base: 'steel sword', unique: 'twinfang', price: Math.round(rankPrice('weapon', 3) * GEAR.rarities.unique.priceMult) });
+    expect(g).toMatchObject({ id: 'x', slot: 'weapon', rank: 3, rarity: 'unique', name: 'Twinstinger', base: 'iron sword', unique: 'twinfang', price: Math.round(rankPrice('weapon', 3) * GEAR.rarities.unique.priceMult) });
     expect(g.stats.attack).toBeGreaterThanOrEqual(Math.floor(rankStat('weapon', 3) * GEAR.rarities.unique.mult * (1 - GEAR.roll)));
     expect(g.stats.attack).toBeLessThanOrEqual(Math.ceil(rankStat('weapon', 3) * GEAR.rarities.unique.mult * (1 + GEAR.roll)));
     expect(g.affixes).toHaveLength(1);
-    expect(describeGear(g)).toContain('Twinfang, steel sword · unique');
+    expect(describeGear(g)).toContain('Twinstinger, iron sword · unique');
     expect(describeGear(g)).toContain(UNIQUES.twinfang!.text);
     expect(() => makeUnique('x', 'excalibur', 1, makeRng('m'))).toThrow(/no such unique/);
     for (let i = 0; i < 500; i++) expect(rollGear(`r${i}`, 'weapon', 1, 0, makeRng(`r${i}`)).rarity).not.toBe('unique');
@@ -103,7 +103,7 @@ describe('what the fallen leave', () => {
 });
 
 describe('the powers', () => {
-  it('Twinfang strikes twice; Quickdraw crits first and the enemy holds back that round', () => {
+  it("Twinstinger strikes twice; Hare's Edge crits first and the enemy holds back that round", () => {
     const twin = apply(versus(wearing('twinfang'), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
     expect(hits(twin.events, 'player').map((h) => h.move)).toEqual(['Attack', 'Attack']);
     const quick = apply(versus(wearing('quickdraw'), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
@@ -114,7 +114,7 @@ describe('the powers', () => {
     expect(hits(second.events, 'enemy')).toHaveLength(1);
   });
 
-  it('Frostbrand chills every hit; Venomtooth poisons; the Sunblade hits bosses harder; Stormcaller crits every third hit', () => {
+  it('Icicle chills every hit; Nettlefang poisons; the Crownbreaker hits bosses harder; Thunderclap crits every third hit', () => {
     const chilled = apply(versus(wearing('frostbrand'), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
     expect(chilled.events).toContainEqual(expect.objectContaining({ type: 'effect', target: 'enemy', kind: 'weakened', rounds: 1 }));
     const venom = apply(versus(wearing('venomtooth'), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
@@ -135,7 +135,7 @@ describe('the powers', () => {
     expect(fight(s).strikes).toBe(3);
   });
 
-  it('Mindshard halves mana costs and softens abilities; Gorefang grows with the HP missing', () => {
+  it('Moonquill halves mana costs and softens abilities; Grudgeblade grows with the HP missing', () => {
     const shard = wearing('mindshard', 'mage', { abilities: { fireball: 1 } });
     const r = apply(versus(shard, 'slime', { hp: 5000, next: bite }), turn(ability('fireball')), makeRng('x'), NOW);
     expect(r.events[0]).toMatchObject({ type: 'mana', delta: -4 });
@@ -145,7 +145,7 @@ describe('the powers', () => {
     expect(stats({ ...full, hp: 1 }).attack).toBeLessThanOrEqual(Math.round(stats(full).attack * 1.6));
   });
 
-  it('Wardweave turns the first wound-up blow aside; Mirrormail throws back half of what is blocked; Thornhide softens blows under half HP', () => {
+  it('Hedgehog Coat turns the first wound-up blow aside; Mirrorcoat throws back half of what is blocked; Bramblehide softens blows under half HP', () => {
     const ward = versus(wearing('wardweave'), 'wolf-alpha', { hp: 5000, charged: 'Howl', next: bite }, { round: 2 });
     const r = apply(ward, turn(attack, 'none'), makeRng('x'), NOW);
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'missed', by: 'enemy', move: 'Howl' }));
@@ -163,7 +163,7 @@ describe('the powers', () => {
     expect(soft.damage).toBeLessThan(bare.damage);
   });
 
-  it('the Phoenix Helm catches a fall under a quarter once a fight; the Phoenix Feather raises the fallen once every half hour', () => {
+  it("the Rooster's Crest catches a fall under a quarter once a fight; the Phoenix Feather raises the fallen once every half hour", () => {
     const helm = versus(wearing('phoenix-helm', 'warrior', { hp: 40 }), 'wolf-alpha', { hp: 5000, attack: 400, next: bite }, { round: 2 });
     const r = apply(helm, turn(attack, 'none'), makeRng('x'), NOW);
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'revived', by: 'secondWind' }));
@@ -180,7 +180,7 @@ describe('the powers', () => {
     expect(fell.events.some((e) => e.type === 'died')).toBe(true);
   });
 
-  it("the Sage's Crown adds half the xp; the Miser's Coin doubles the gold and halves the xp; Ironbrow makes a crit a plain hit", () => {
+  it("the Owl's Crown adds half the xp; the Dragon's Penny doubles the gold and halves the xp; Kettle Hat makes a crit a plain hit", () => {
     const sage = apply(versus(wearing('sages-crown'), 'slime', { hp: 1 }), turn(attack), makeRng('x'), NOW);
     expect(sage.events).toContainEqual(expect.objectContaining({ type: 'won', xp: 8, gold: 6 }));
     const miser = apply(versus(wearing('misers-coin'), 'slime', { hp: 1 }), turn(attack), makeRng('x'), NOW);
@@ -194,7 +194,7 @@ describe('the powers', () => {
     expect(resisted).toBeGreaterThan(3);
   });
 
-  it('Striders turn a one into two; Windstep starts a fight with a step aside; Pathfinders halve a spot\'s wait; the Lucky Charm re-rolls once in a while', () => {
+  it("Seven-League Boots turn a one into two; Dancing Shoes starts a fight with a step aside; Wanderers halve a spot's wait; the Rabbit's Foot re-rolls once in a while", () => {
     const strider = newGame({ seed: 's', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
     const shod = { ...strider, characters: { [P]: wearing('striders') } };
     let ones = 0;
@@ -222,7 +222,7 @@ describe('the powers', () => {
     expect(apply({ ...strider, characters: { [P]: { ...me(strider), steps: 3 } } }, { type: 'use', id: 'u3', player: P, item: 'charm' }, makeRng('charm'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
   });
 
-  it('the Heartstone heals each round; the Sapphire Tear gives three more mana; the Wolf Totem brings a second point now and then', () => {
+  it('the Honeycomb Heart heals each round; the Moondrop gives three more mana; the Heartbeat Drum brings a second point now and then', () => {
     const heart = apply(versus(wearing('heartstone', 'warrior', { hp: 60 }), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
     expect(heart.events).toContainEqual(expect.objectContaining({ type: 'healed', amount: 6 }));
     const tear = apply(versus(wearing('sapphire-tear', 'mage', { mana: 10 }), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng('x'), NOW);
@@ -240,8 +240,8 @@ describe('the powers', () => {
 describe('a version-6 save', () => {
   it('comes up to date: one affix becomes the list, a fight in progress gains its new fields, the rest is kept', () => {
     const today = newGame({ seed: 'old', player: P, name: 'Robin', classId: 'rogue' });
-    const oldSword = { id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Iron Sword', base: 'iron sword', stats: { attack: 10 }, affix: { kind: 'crit', value: 0.1 }, price: 200 };
-    const oldHelm = { id: 'g2', slot: 'helm', rank: 1, rarity: 'common', name: 'Copper Helm', base: 'copper helm', stats: { maxHp: 12 }, affix: null, price: 20 };
+    const oldSword = { id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affix: { kind: 'crit', value: 0.1 }, price: 200 };
+    const oldHelm = { id: 'g2', slot: 'helm', rank: 1, rarity: 'common', name: 'Tin Helm', base: 'tin hat', stats: { maxHp: 12 }, affix: null, price: 20 };
     const fighting = startFight(me(today), 'spider', 's1', false);
     const oldEnemy = { ...fighting.fight!.enemy } as Record<string, unknown>;
     for (const k of ['next', 'armoured', 'evade', 'phase', 'phase2']) delete oldEnemy[k];
@@ -253,7 +253,7 @@ describe('a version-6 save', () => {
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).picks).toEqual([]);
     expect(me(s!).keys).toEqual({});
-    expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Iron Sword', base: 'iron sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });
+    expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });
     expect(me(s!).bag[0]!.affixes).toEqual([]);
     expect(me(s!).bag[0]).not.toHaveProperty('affix');
     expect(me(s!).fight).toMatchObject({ round: 3, charged: true, barrier: 5, meter: 0, strikes: 0, sureCrit: 0, windup: null, companion: null, mark: null, trap: 0, skip: 0, poisoned: null, weak: null, used: [] });

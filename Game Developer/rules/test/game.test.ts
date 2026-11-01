@@ -131,7 +131,7 @@ describe('move', () => {
     expect(apply(rolled(), move(['s1', 's5']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not connected' });
     expect(apply(rolled(), move(['s1', 's0']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no turning back' });
     expect(apply(rolled(), move(['s1', 'nowhere']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such space' });
-    // On the world, the road beyond the Iron Gate lies in Thornwood, closed until the Warden falls.
+    // On the world, the road beyond the Copper Gate lies in Thornwood, closed until the Warden falls.
     const world = newGame({ seed: 'x', player: P, name: 'R', classId: 'warrior' });
     const atGate = { ...world, characters: { [P]: { ...me(world), space: 'gate', steps: 1 } } };
     expect(apply(atGate, move(['gate-edge-1']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'that way is closed' });
@@ -168,7 +168,7 @@ describe('landing', () => {
     expect(first.events.slice(2)).toEqual([
       { type: 'chest', action: 'm1', player: P },
       { type: 'gold', action: 'm1', player: P, delta: 23, gold: 73 },
-      { type: 'loot', action: 'm1', player: P, gear: expect.objectContaining({ id: 'g1', slot: 'boots', rarity: 'epic', name: 'Quietfall', rank: 1 }) },
+      { type: 'loot', action: 'm1', player: P, gear: expect.objectContaining({ id: 'g1', slot: 'boots', rarity: 'epic', name: 'Tiptoes', rank: 1 }) },
       { type: 'found', action: 'm1', player: P, item: 'mana-potion', count: 1 },
     ]);
     expect(me(first.state)).toMatchObject({ gold: 73, items: { 'mana-potion': 1 }, cooldowns: { s5: NOW + 300000 } });

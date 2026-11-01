@@ -52,11 +52,11 @@ left) multiply by 0.887 and add the 5 pixels. The chips sit in a row centred at 
 view.
 
 **The fight screen's buttons**: rows a (110, 600), b (302, 600), c (110, 652), d (302, 652), e (110, 704), f (302, 704),
-each 180 wide; the moves fill a to e (Attack, Abilities, Charge, Potion, Flee), then the guards fill a to e (Block,
+each 180 wide; the moves fill a to e (Attack, Abilities, Charge, Honey Tonic, Flee), then the guards fill a to e (Block,
 Dodge, Brace, Counter, Back); Continue at (206, 652) once the fight is over. A round's events play 450 ms apart; the
 scene's `busy` is true meanwhile.
 
-**The shop**: Buy rows from y 224, 44 apart (the five slots, then potion, Reroll, +1, −1, Exactly N), Buy at x 356; the
+**The shop**: Buy rows from y 224, 44 apart (the five slots, then potion, Do-Over, +1, −1, Fairy Pick), Buy at x 356; the
 Sell side at (272, 178); Leave at (206, 706). **The bag**: Close at (364, 126); the worn rows from y 212 with Take off at
 x 364; the carried rows from y 456 with Wear at x 364 and Drop at x 288.
 

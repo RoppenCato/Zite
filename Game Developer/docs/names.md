@@ -1,13 +1,13 @@
 # Everything in the game that carries a name
 
 Miles, GD, 2026-11-01. The world's names are the Enchanted Kingdoms' since the evening of 2026-11-01 (Robin: names yes,
-order A; the catalogue is `docs/world-content.md`); the classes, gear, items and screen words are still the first names. Each lives in a data file under `rules/data/`, so a new name is an edit, not code;
+order A; the catalogue is `docs/world-content.md`); the classes, meters, abilities, gear ranks and proper names, uniques and items were themed the same evening (mine, at Robin's ask). Each lives in a data file under `rules/data/`, so a new name is an edit, not code;
 the ids (`meadows`, `slime`, `warrior`) stay as they are and never show. Counts are at the end.
 
 The world's kinds of place, in order outward from the start: Cloverfield Meadows, Wobblewood Forest, Honeyhill Fields (laid by
 hand), then the nine grown archetypes Glimmerlake Shores, Moonwhisper Woods, Thunderstone Highlands, Sunfall Expanse,
 Frostveil Peaks, Thornhollow Wilds, Starfall Dominion, Embercrown Mountains, The Shattered Crown, round and round. Each has
-four creatures, a mini-boss and a boss. The four classes are still Warrior, Rogue, Mage and Ranger.
+four creatures, a mini-boss and a boss. The four classes are the Knight, the Trickster, the Wizard and the Archer.
 
 ## 1. The world and its areas (`world.json`)
 
@@ -31,17 +31,17 @@ round: tier 4 Glimmerlake Shores … tier 12 The Shattered Crown, then Glimmerla
 (order A, Robin, 2026-11-01). A theme carries: its kingdom, four area names (one per round), five adjectives that name its
 places, four creatures, a mini-boss, a boss, the boss's rage line and move under half HP, and an event (section 7).
 
-| Tier | Theme | Kingdom | Area names, by round | Adjectives for places | Creatures | Mini-boss | Boss | Rage under half HP |
+| Tier | Theme | Kingdom | Area names, by round | Adjectives for places | Creatures | Mini-boss | Boss | Valor under half HP |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 4 | glimmerlake | Glimmerlake Marches | Glimmerlake Shores, Pearl Shallows, Reedwater Marches, Bellwater Coast | Glimmer, Reed, Pearl, Ripple, Coral | Bubble Imp, Shellback, River Sprite, Marsh Goblin | Crystal Crab | Lord Ripplefin | "Lord Ripplefin calls the lake to rise!", Undertow (weaken) |
 | 5 | moonwhisper | Moonspire Kingdom | Moonwhisper Woods, Violet Hollow, Witchlight Glades, Silvermoss Vale | Moon, Violet, Lantern, Dream, Silver | Moon Moth, Lantern Wisp, Dream Fox, Hexcap | Spellbound Doll | Lady Nightbloom | "Lady Nightbloom weaves a dream round you!", Hex (drain) |
-| 6 | thunderstone | Stormward Highlands | Thunderstone Highlands, Cracklepeak, Stormcairn Moors, Copperfell | Thunder, Slate, Copper, Storm, Boulder | Pebble Golem, Storm Bat, Rock Hopper, Spark Imp | Iron Goblin | Boulderbelly | "Boulderbelly's thunder crystal blazes!", Lightning |
+| 6 | thunderstone | Stormward Highlands | Thunderstone Highlands, Cracklepeak, Stormcairn Moors, Copperfell | Thunder, Slate, Tin, Storm, Boulder | Pebble Golem, Storm Bat, Rock Hopper, Spark Imp | Copper Goblin | Boulderbelly | "Boulderbelly's thunder crystal blazes!", Lightning |
 | 7 | sunfall | Suncrest Kingdom | Sunfall Expanse, Sevensun Sands, Obelisk Reach, Goldarch Wastes | Sun, Dune, Obelisk, Gilded, Mirage | Sand Skitter, Scarab Guard, Dust Wraith, Relic Mimic | Sunstone Sentinel | Pharaoh Solmar | "Pharaoh Solmar calls a sandstorm!", Sandstorm (evade) |
 | 8 | frostveil | Frostveil Kingdom | Frostveil Peaks, Glacier Hall, Icewind Shelf, Palewhite Crags | Frost, Icicle, Snowdrift, Pine, Glacier | Snow Puff, Icefang Wolf, Frost Spirit, Crystal Corn Goblin | Frozen Knight | Glaciorn | "Glaciorn breathes a blizzard!", Blizzard (weaken) |
 | 9 | thornhollow | Thornhollow Wilds | Thornhollow Wilds, Rotwood Deep, Weeping Thickets, Heartroot Tangle | Thorn, Briar, Rotcap, Hollow, Weeping | Thornling, Briar Wolf, Rotcap, Shadow Wisp | Cursed Stag | The Briar Queen | "The Briar Queen grows back her wounds!", Regrow (heal) |
 | 10 | starfall | Moonspire Kingdom | Starfall Dominion, Shardfall Crater, Astral Terraces, Lost Star Reach | Astral, Rune, Star, Void, Prism | Astral Wisp, Spell Eater, Rune Knight, Voidling | Arcane Construct | Archmage Veyra | "Archmage Veyra bends the stars!", Starfall |
 | 11 | embercrown | Embercrown Range | Embercrown Mountains, Ashen Nest, Blackglass Heights, Forgefire Ridge | Ember, Obsidian, Molten, Ashen, Basalt | Emberling, Ash Drake, Magma Golem, Flamefang | Obsidian Guardian | Ignarox, the Crownfire Dragon | "Ignarox, the Crownfire Dragon burns brighter!", Immolate (poison) |
-| 12 | shattered | The Shattered Crown | The Shattered Crown, Hall of Mirrors, Rift Crossing, The Broken Coronation | Crownless, Rift, Mirror, Ivory, Hollow | Crownless Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King | "The Hollow King's crown shards whirl!", Crown Shards |
+| 12 | shattered | The Shattered Crown | The Shattered Crown, Hall of Mirrors, Rift Crossing, The Broken Coronation | Acorncap, Rift, Mirror, Ivory, Hollow | Acorncap Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King | "The Hollow King's crown shards whirl!", Crown Shards |
 
 A grown area's places are "<Adjective> <Place word>": the place words by kind are **towns** Hold, Haven, Rest, Crossing, Landing;
 **shops** Trader, Market, Cart, Stall; **shrines** Shrine, Stone, Altar; **chests** Hoard, Cache, Cairn; **springs**
@@ -80,47 +80,38 @@ Grown creatures use the four shapes' moves: Strike, Lunge, Venom; Swipe, Crush, 
 
 ## 4. The classes and their abilities (`classes.json`, `abilities.json`)
 
+Themed on 2026-11-01 (mine, at Robin's ask). The ids (`warrior`, `heavy-blow`, …) are the first names and never show.
+
 | Class | One line | Meter (fills in a fight) |
 | --- | --- | --- |
-| Warrior | Steady, high base damage, tough. | Rage, from blows taken |
-| Rogue | Low base damage, chains crits, slips blows. | Combo, from hits landed |
-| Mage | Big spells, thin robes. | Flow, a point a round |
-| Ranger | Strikes first, many small hits. | Focus, from blows that miss and crits |
+| Knight (was Warrior) | Steady, high base damage, tough. | Valor: builds from every blow you take, more from a wound-up one. |
+| Trickster (was Rogue) | Low base damage, chains crits, slips blows. | Mischief: builds from every hit you land. |
+| Wizard (was Mage) | Big spells, thin robes. | Arcana: builds a point every round. |
+| Archer (was Ranger) | Strikes first, many small hits. | Aim: builds when a blow misses you and when you crit. |
 
 Six abilities a class; the first two are known from the start, the rest learnt at shrines, trainers and level picks.
 
 | Class | Abilities (name: what it does) |
 | --- | --- |
-| Warrior | Heavy Blow: one crushing hit. Shield Bash: a hit that stuns. War Cry: your hits land harder for a few rounds. Execute (3 Rage): a brutal hit, far harder on a foe under a third. Rally (3 Rage): heal a share and hit harder for two rounds. Shield Wall: a barrier worth a share of your HP. |
-| Rogue | Backstab: crits half the time. Poison Blade: poisons for three rounds. Shadowstep: the enemy's next blows miss. Smoke Bomb (3 Combo): vanish, the next blow misses and your next hit is a sure crit. Pickpocket: gold from the enemy's purse, once a fight. Eviscerate: spend all your Combo for a hit that grows with every point. |
-| Mage | Fireball: a huge hit. Frost Bolt: weakens the enemy's blows. Arcane Shield: a barrier that soaks the next damage. Time Warp (4 Flow): the enemy loses its next turn, boss or not. Meteor: lands two rounds later for a huge hit. Mana Shield: all your mana into a barrier. |
-| Ranger | Volley: three quick arrows. Aimed Shot: one careful arrow, often a crit. Snare: the enemy loses its next turn. Trap: the enemy's next wind-up fails. Hawk (2 Focus): strikes on its own at the end of every round for a while. Mark: your next hits land harder. |
+| Knight | Mighty Swing: one crushing hit. Shield Bonk: a hit that stuns: the enemy loses its next turn. Battle Hymn: your hits land harder for a few rounds. Finishing Flourish: spend 3 Valor: a flourish of a hit, far harder on a foe under a third of its HP. Second Wind: spend 3 Valor: heal a share of your HP and hit harder for two rounds. Castle Stance: stand like a castle wall: a barrier worth a share of your HP. |
+| Trickster | Sneak Jab: a hit that crits half the time. Nettle Knife: a cut that stings like nettles: poison for three rounds. Vanishing Act: slip away: the enemy's next blows miss. Puff of Smoke: spend 3 Mischief: vanish, the next blow misses and your next hit is a sure crit. Sticky Fingers: a quick cut and a quicker hand: gold from the enemy's purse, once a fight. Grand Finale: spend all your Mischief: a hit that grows with every point. |
+| Wizard | Firework: a burst of flame and sparks: a huge hit. Snowball Hex: a chill that weakens the enemy's blows. Bubble Shield: a shimmering bubble worth a share of your HP that soaks the next damage. Pocket Watch: spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not. Falling Star: call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile. Moonlight Veil: turn all your mana into a veil of moonlight. |
+| Archer | Triple Shot: three quick arrows. Bullseye: one careful arrow, often a crit. Net Toss: a net: the enemy loses its next turn. Tripwire: lay a tripwire: the enemy's next wind-up fails. Owl Friend: spend 2 Aim: your owl strikes on its own at the end of every round for a while. Painted Target: paint a target on the enemy: your next hits land harder. |
 
-The fight's own words: the moves **Attack, Abilities, Charge, Potion, Flee**; the guards **Block, Dodge, Brace, Counter**.
+The fight's own words: the moves **Attack, Abilities, Charge, Honey Tonic, Flee**; the guards **Block, Dodge, Brace, Counter**.
 
 ## 5. Gear (`gear.json`, `uniques.json`)
 
-- **Slots and their plain names**: weapon (Sword), armour (Mail), helm (Helm), boots (Boots), trinket (Amulet).
-- **Ranks by level** (ten, then "Rank 11…"): Copper, Iron, Steel, Mithril, Adamant, Runed, Dragonbone, Starforged,
-  Voidsteel, Sunmetal. A piece reads "Iron Sword", "Mithril Boots".
+- **Slots and their plain names**: weapon (Sword), armour (Coat), helm (Hat), boots (Boots), trinket (Charm).
+- **Ranks by level** (ten, then "Rank 11…"): Tin, Copper, Iron, Silver, Moonsilver, Sunsteel, Dragonscale, Starglass, Crownsteel, Everbright. A piece reads "Copper Sword", "Silver Boots".
 - **Rarities**: common, uncommon, rare, epic, legendary. From epic up a piece gets a proper name in front:
-  weapons Stormborn, Oathkeeper, Nightfang, Emberbite, Winterbite, Gravecall, Sunsplitter, Thornwhisper; armour
-  Dawnbulwark, Ironheart, Wardweave, Stonehide, Mistmantle; helms Crownless, Skullward, Mindkeep, Starbrow; boots
-  Swiftstep, Windrunners, Quietfall, Rootwalkers; trinkets Moontear, Everflame, Heartstone, Wyrmseye.
+  weapons Thistledown, Honeystinger, Moonpetal, Sunflare, Frostnip, Oathsworn, Briarsong, Starfallen; armour Oakheart, Cloverweave, Snugshell, Moonmantle, Sunwarden; helms Acorncap, Starbrow, Bumblecrest, Owlgaze; boots Puddlejumpers, Windhoppers, Tiptoes, Rootwalkers; trinkets Moontear, Firefly, Fourleaf, Dragonwink.
 - **Affixes** (rare and up): crit chance, lifesteal, dodge chance, thorns, vigor.
-- **The 23 uniques** (bosses drop them; each has a power): Twinfang (strikes twice), Quickdraw (crits first, holds the enemy
-  back a round), Frostbrand (chills), Venomtooth (poisons), Mindshard (halves mana costs), Gorefang (grows as HP is
-  missing), Stormcaller (crits every third hit), Sunblade (hits bosses harder); Wardweave (turns the first wound-up blow
-  aside), Mirrormail (throws back half of what you block), Thornhide (softens blows under half HP); Phoenix Helm (catches
-  a fall once a fight), Sage's Crown (half again the xp), Ironbrow (shrugs off poison, weakening and crits); Striders (a
-  one becomes a two), Windstep (a step aside at every fight's start), Pathfinders (halve a spot's wait); Miser's Coin
-  (double gold, half xp), Heartstone (heals every round), Sapphire Tear (mana back), Lucky Charm (re-rolls the die),
-  Phoenix Feather (raises the fallen once every half hour), Wolf Totem (feeds the meter).
+- **The 23 uniques** (bosses drop them; each has a power): Twinstinger (attack strikes twice, each at six tenths), Hare's Edge (your first hit of a fight is a sure crit, and the enemy does not strike back that round), Icicle (every hit chills: the enemy's next blow lands at eight tenths), Nettlefang (every hit poisons for two rounds, at three tenths of your attack a round), Moonquill (abilities cost half their mana and hit at eight tenths), Grudgeblade (hits harder the more HP you are missing, up to six tenths more), Thunderclap (every third hit you land is a sure crit), Crownbreaker (hits mini-bosses and bosses three tenths harder), Hedgehog Coat (the first wound-up blow of every fight misses you), Mirrorcoat (a blow you Block throws half of what you blocked back at the enemy), Bramblehide (every blow you take is three tenths softer while your HP is under half), Rooster's Crest (once a fight, a blow that would drop you under a quarter HP heals you three tenths instead), Owl's Crown (half again the xp from every fight), Kettle Hat (poison and weakening cannot touch you, and a crit against you is only a hit), Seven-League Boots (a roll of one becomes two), Dancing Shoes (you start every fight with a step aside: the first blow at you misses), Wanderers (chests, springs and shrines give again to you in half the time), Dragon's Penny (twice the gold from every fight, half the xp), Honeycomb Heart (heals a twentieth of your HP at the end of every round in a fight), Moondrop (three more mana back every round of a fight), Rabbit's Foot (roll the die again once every five minutes: a Charm chip appears after a roll), Phoenix Feather (when you would fall, you rise where you stand with half your HP instead, once every half hour), Heartbeat Drum (every point of your meter has a one-in-four chance to bring a second).
 
 ## 6. Items (`items.json`)
 
-Potion (heals four tenths), Mana Potion (half the mana back), the dice cards Reroll, +1, −1, Exactly N; the vault key
-an area's mini-boss drops; gold.
+Honey Tonic (heals four tenths of your HP. Drink it in a fight; it takes your turn); Moon Dew (gives back half your mana. Drink it in a fight; it takes your turn); Do-Over (roll the die again before you walk); Hop (one more step: a hop); Hold (hold back one step, never below one); Fairy Pick (the fairy picks the number you ask for: walk exactly that); the vault key an area's mini-boss drops; gold.
 
 ## 7. The spots, the surprises, the events, the errands, the notes (`spaces.json`, `surprises.json`, `events.json`, `quests.json`, `traces.json`)
 

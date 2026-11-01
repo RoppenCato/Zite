@@ -889,7 +889,7 @@ export class BoardScene extends Phaser.Scene {
     this.setMessage(`${lead || `Rolled ${value}.`} ${tip ?? 'Tap a lit spot to walk there.'}`);
   }
 
-  /** The dice cards in the bag, as chips for the HUD's row. Exactly N turns the row into the numbers. */
+  /** The dice cards in the bag, as chips for the HUD's row. a Fairy Pick turns the row into the numbers. */
   private diceChips(): Chip[] {
     const me = this.game_.me;
     const chips: Chip[] = [];
@@ -910,7 +910,7 @@ export class BoardScene extends Phaser.Scene {
         chips.push({ text, onTap: () => this.useCard(id) });
       }
     }
-    // A Lucky Charm worn: a re-roll, once every so often.
+    // A Rabbit's Foot worn: a re-roll, once every so often.
     const lucky = powers(me).lucky;
     if (lucky) {
       const left = (me.cooldowns.charm ?? 0) - this.game_.now();

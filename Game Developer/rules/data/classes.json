@@ -1,6 +1,6 @@
 {
   "warrior": {
-    "name": "Warrior",
+    "name": "Knight",
     "style": "Steady, high base damage, tough.",
     "hp": 120,
     "mana": 20,
@@ -18,13 +18,13 @@
       "shield-bash"
     ],
     "meter": {
-      "name": "Rage",
+      "name": "Valor",
       "gain": "hurt",
-      "text": "Rage builds from every blow you take, more from a wound-up one."
+      "text": "Valor builds from every blow you take, more from a wound-up one."
     }
   },
   "rogue": {
-    "name": "Rogue",
+    "name": "Trickster",
     "style": "Low base damage, chains crits, slips blows.",
     "hp": 100,
     "mana": 25,
@@ -44,13 +44,13 @@
       "poison-blade"
     ],
     "meter": {
-      "name": "Combo",
+      "name": "Mischief",
       "gain": "hit",
-      "text": "Combo builds from every hit you land."
+      "text": "Mischief builds from every hit you land."
     }
   },
   "mage": {
-    "name": "Mage",
+    "name": "Wizard",
     "style": "Big spells, thin robes.",
     "hp": 85,
     "mana": 40,
@@ -68,13 +68,13 @@
       "frost-bolt"
     ],
     "meter": {
-      "name": "Flow",
+      "name": "Arcana",
       "gain": "round",
-      "text": "Flow builds a point every round."
+      "text": "Arcana builds a point every round."
     }
   },
   "ranger": {
-    "name": "Ranger",
+    "name": "Archer",
     "style": "Strikes first, many small hits.",
     "hp": 100,
     "mana": 25,
@@ -95,9 +95,9 @@
     ],
     "firstStrike": true,
     "meter": {
-      "name": "Focus",
+      "name": "Aim",
       "gain": "miss",
-      "text": "Focus builds when a blow misses you and when you crit."
+      "text": "Aim builds when a blow misses you and when you crit."
     }
   }
 }

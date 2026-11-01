@@ -10,7 +10,7 @@ here, so the game builds without the studios' folders. **What the game needs dra
 
 | Folder | What | Since | Drawn by the client? |
 | --- | --- | --- | --- |
-| `assets/warrior/` | the Warrior, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
+| `assets/warrior/` | the Knight, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 | `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 | `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 | `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
@@ -71,7 +71,7 @@ effects" switch may render at 1x on weak phones later; it needs no extra files.
 | One monster (about 33 frames: stand 6, move 6, hit 1, die 8, attack 12) | 300 KB | 8 MB (1024 by 2048) |
 | One class character (about 25 frames) | 400 KB | 8 MB |
 | One area's kit, board plus fight (about 100 pieces) | 2.5 MB, aim for 2 | board kit 16 MB; fight kit at most 2 atlases, 32 MB |
-| The first load: code (Phaser is 0.4 MB compressed), the meadow kit, the Warrior, one monster, the icons | 4 MB in all, so art under 3.5 MB | |
+| The first load: code (Phaser is 0.4 MB compressed), the meadow kit, the Knight, one monster, the icons | 4 MB in all, so art under 3.5 MB | |
 | One scene in memory | | aim for 48 MB, hard cap 64 MB |
 
 - No single piece over 2048 on a side. Fight backgrounds are layers, not one picture: a sky gradient drawn by code, two or

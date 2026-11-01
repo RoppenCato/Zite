@@ -28,7 +28,7 @@ describe('the shop', () => {
     expect(me(sword.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
     expect(sword.state.nextItem).toBe(2);
     const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
-    expect(inTown.events[0]).toMatchObject({ type: 'bought', gear: expect.objectContaining({ name: 'Copper Helm' }), price: 20 });
+    expect(inTown.events[0]).toMatchObject({ type: 'bought', gear: expect.objectContaining({ name: 'Tin Hat' }), price: 20 });
     const camped = { ...at('s1', { gold: 200 }), spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1 } } };
     expect(apply(camped, buy({ item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'bought', item: 'reroll', price: 20 });
   });
@@ -106,7 +106,7 @@ describe('the wardrobe', () => {
 describe('the dice cards', () => {
   const pending = (items: Record<string, number>, steps = 3) => at('s0', { steps, items }, steps);
 
-  it('Reroll rolls the die again from the stream and the die shows the new number', () => {
+  it('Do-Over rolls the die again from the stream and the die shows the new number', () => {
     const { state, events } = apply(pending({ reroll: 1 }), use('reroll'), makeRng('ashford'), NOW); // the seed's first roll is a 2
     expect(events).toEqual([
       { type: 'used', action: 'u1', player: P, item: 'reroll' },
@@ -127,7 +127,7 @@ describe('the dice cards', () => {
     expect(me(down.state).items).toEqual({ 'minus-one': 1 });
   });
 
-  it('Exactly N walks the number chosen, inside the die', () => {
+  it('Fairy Pick walks the number chosen, inside the die', () => {
     const { state, events } = apply(pending({ exact: 1 }), use('exact', 5), makeRng('x'), NOW);
     expect(events[1]).toMatchObject({ type: 'steps', steps: 5 });
     expect(me(state)).toMatchObject({ steps: 5, items: {} });

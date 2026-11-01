@@ -7,7 +7,7 @@ import { RARITIES, SLOTS, type Rarity } from '../src/types.ts';
 
 describe('gear', () => {
   it('names ranks by tier, ten names and then "Rank n"', () => {
-    expect([1, 2, 3, 4, 10, 11, 0].map(rankName)).toEqual(['Copper', 'Iron', 'Steel', 'Mithril', 'Sunmetal', 'Rank 11', 'Copper']);
+    expect([1, 2, 3, 4, 10, 11, 0].map(rankName)).toEqual(['Tin', 'Copper', 'Iron', 'Silver', 'Everbright', 'Rank 11', 'Tin']);
   });
 
   it('grows a slot\'s number and price past the table by the growth a rank, so grown areas have gear of their rank', () => {
@@ -21,9 +21,9 @@ describe('gear', () => {
   });
 
   it('a plain piece is the common rank item of its slot, priced from the table', () => {
-    expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Iron Sword', base: 'iron sword', stats: { attack: 8 }, affixes: [], price: 90 });
-    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Copper Helm', stats: { maxHp: 12 }, price: 20 });
-    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Steel Amulet', stats: { maxMana: 20 } });
+    expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Copper Sword', base: 'copper sword', stats: { attack: 8 }, affixes: [], price: 90 });
+    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 12 }, price: 20 });
+    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Iron Charm', stats: { maxMana: 20 } });
   });
 
   it('rolls rarities by weight, and a boost skips the lowest', () => {
@@ -64,17 +64,17 @@ describe('gear', () => {
       }
       expect(g.rarity).not.toBe('unique');
       if (rar.named) expect(GEAR.names[slot]).toContain(g.name);
-      else expect(g.name).toBe(`Iron ${def.base}`);
-      expect(g.base).toBe(`iron ${def.base.toLowerCase()}`);
+      else expect(g.name).toBe(`Copper ${def.base}`);
+      expect(g.base).toBe(`copper ${def.base.toLowerCase()}`);
       expect(g.price).toBe(Math.round(def.price[1]! * rar.priceMult));
     }
     expect(rollGear('x', 'weapon', 1, 0, makeRng('same'))).toEqual(rollGear('x', 'weapon', 1, 0, makeRng('same')));
   });
 
   it('describes a piece in one line', () => {
-    expect(describeGear(plainGear('g', 'weapon', 1))).toBe('Copper Sword · common · +4 attack');
-    const named = { ...plainGear('g', 'weapon', 2), name: 'Stormborn', rarity: 'epic' as const, stats: { attack: 14 }, affixes: [{ kind: 'crit' as const, value: 0.12 }] };
-    expect(describeGear(named)).toBe('Stormborn, iron sword · epic · +14 attack · +12% crit chance');
+    expect(describeGear(plainGear('g', 'weapon', 1))).toBe('Tin Sword · common · +4 attack');
+    const named = { ...plainGear('g', 'weapon', 2), name: 'Thistledown', rarity: 'epic' as const, stats: { attack: 14 }, affixes: [{ kind: 'crit' as const, value: 0.12 }] };
+    expect(describeGear(named)).toBe('Thistledown, copper sword · epic · +14 attack · +12% crit chance');
   });
 
   it('adds what is worn to the base numbers: stats, crit, dodge, lifesteal, thorns, vigor', () => {

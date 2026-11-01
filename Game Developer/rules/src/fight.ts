@@ -1,7 +1,7 @@
 // The fight (Robin, 2026-10-31): a turn-based RPG. The player attacks, casts an ability, charges, drinks a potion or
 // runs; then chooses a guard; then the enemy moves, with wind-ups to read and a stun, a poison or a weakening to
 // suffer. Every number comes from the stream. Later the same day (Robin): class kits that feel different, in the hand
-// (the meters: Rage, Combo, Flow, Focus; the abilities that spend them), enemies whose next move is shown a round ahead
+// (the meters: Valor, Mischief, Arcana, Aim; the abilities that spend them), enemies whose next move is shown a round ahead
 // with effects the guard has to read, bosses with a second phase, and uniques whose powers bend the rules. The moves,
 // the guards and all the numbers are mine, first settings.
 

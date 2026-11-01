@@ -61,15 +61,17 @@ Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-
 ### Classes – everyone is DPS, different playstyles
 | Class | Style |
 |---|---|
-| Warrior | Steady, high base damage, tough |
-| Rogue | Low base damage, chains crits |
-| Mage | Charges for a turn, then a huge hit |
-| Ranger | Strikes first, multiple small hits |
+| Knight (was Warrior) | Steady, high base damage, tough |
+| Trickster (was Rogue) | Low base damage, chains crits |
+| Wizard (was Mage) | Charges for a turn, then a huge hit |
+| Archer (was Ranger) | Strikes first, multiple small hits |
 
-**You choose your class when you create your character. Each class has its own skills and spells, and the classes must feel different to play** (Robin, 2026-10-31); the first kits are built (the Game Developer's, 2026-10-31) and whether they feel right is open question 4. **Cross-class combos** (only in group battles) reward playing with people of other classes, e.g. Mage charges + Warrior holds the line = guaranteed big hit.
+The class names, the meters, the abilities, the gear ranks and the items carry Enchanted Kingdoms names since 2026-11-01 (Robin asked; the names are the Game Developer's, listed in `Game Developer/docs/names.md`).
+
+**You choose your class when you create your character. Each class has its own skills and spells, and the classes must feel different to play** (Robin, 2026-10-31); the first kits are built (the Game Developer's, 2026-10-31) and whether they feel right is open question 4. **Cross-class combos** (only in group battles) reward playing with people of other classes, e.g. the Wizard charges + the Knight holds the line = guaranteed big hit.
 
 ## Gear and loot (Robin, 2026-10-31)
-- **Gear is randomized and tiered** like WoW's or Diablo's: common, uncommon, rare, epic, legendary. **Every piece has a rank by level** (copper sword, iron sword, …), and you can find **a named version** ("Stormborn", an iron sword with a special effect) that feels special.
+- **Gear is randomized and tiered** like WoW's or Diablo's: common, uncommon, rare, epic, legendary. **Every piece has a rank by level** (copper sword, iron sword, …), and you can find **a named version** ("Thistledown", an iron sword with a special effect) that feels special.
 - **Equipment slots: weapon, armour, helm, boots, trinket.**
 - **A simple inventory**: keep the weapons and armour you found and switch to whatever you want; a bag for potions and the like.
 - **Make the loot interesting**: unique weapons and trinkets whose effects change how you play, each in its own way. Bosses drop them.

@@ -1,6 +1,6 @@
 {
   "heavy-blow": {
-    "name": "Heavy Blow",
+    "name": "Mighty Swing",
     "classId": "warrior",
     "text": "One crushing hit.",
     "mana": 4,
@@ -17,7 +17,7 @@
     ]
   },
   "shield-bash": {
-    "name": "Shield Bash",
+    "name": "Shield Bonk",
     "classId": "warrior",
     "text": "A hit that stuns: the enemy loses its next turn.",
     "mana": 6,
@@ -27,7 +27,7 @@
         "stun": 1
       },
       {
-        "power": 1.0,
+        "power": 1,
         "stun": 1
       },
       {
@@ -37,7 +37,7 @@
     ]
   },
   "war-cry": {
-    "name": "War Cry",
+    "name": "Battle Hymn",
     "classId": "warrior",
     "text": "Your hits land harder for a few rounds.",
     "mana": 5,
@@ -63,7 +63,7 @@
     ]
   },
   "backstab": {
-    "name": "Backstab",
+    "name": "Sneak Jab",
     "classId": "rogue",
     "text": "A hit that crits half the time.",
     "mana": 4,
@@ -83,9 +83,9 @@
     ]
   },
   "poison-blade": {
-    "name": "Poison Blade",
+    "name": "Nettle Knife",
     "classId": "rogue",
-    "text": "A cut that poisons for three rounds.",
+    "text": "A cut that stings like nettles: poison for three rounds.",
     "mana": 5,
     "ranks": [
       {
@@ -103,7 +103,7 @@
         }
       },
       {
-        "power": 1.0,
+        "power": 1,
         "poison": {
           "rounds": 4,
           "power": 0.8
@@ -112,7 +112,7 @@
     ]
   },
   "shadowstep": {
-    "name": "Shadowstep",
+    "name": "Vanishing Act",
     "classId": "rogue",
     "text": "Slip away: the enemy's next blows miss.",
     "mana": 6,
@@ -131,13 +131,13 @@
     ]
   },
   "fireball": {
-    "name": "Fireball",
+    "name": "Firework",
     "classId": "mage",
-    "text": "A burst of flame: a huge hit.",
+    "text": "A burst of flame and sparks: a huge hit.",
     "mana": 8,
     "ranks": [
       {
-        "power": 2.0
+        "power": 2
       },
       {
         "power": 2.3
@@ -148,7 +148,7 @@
     ]
   },
   "frost-bolt": {
-    "name": "Frost Bolt",
+    "name": "Snowball Hex",
     "classId": "mage",
     "text": "A chill that weakens the enemy's blows.",
     "mana": 6,
@@ -177,9 +177,9 @@
     ]
   },
   "arcane-shield": {
-    "name": "Arcane Shield",
+    "name": "Bubble Shield",
     "classId": "mage",
-    "text": "A barrier worth a share of your HP that soaks the next damage.",
+    "text": "A shimmering bubble worth a share of your HP that soaks the next damage.",
     "mana": 7,
     "ranks": [
       {
@@ -194,7 +194,7 @@
     ]
   },
   "volley": {
-    "name": "Volley",
+    "name": "Triple Shot",
     "classId": "ranger",
     "text": "Three quick arrows.",
     "mana": 5,
@@ -214,7 +214,7 @@
     ]
   },
   "aimed-shot": {
-    "name": "Aimed Shot",
+    "name": "Bullseye",
     "classId": "ranger",
     "text": "One careful arrow, often a crit.",
     "mana": 5,
@@ -234,9 +234,9 @@
     ]
   },
   "snare": {
-    "name": "Snare",
+    "name": "Net Toss",
     "classId": "ranger",
-    "text": "A trap: the enemy loses its next turn.",
+    "text": "A net: the enemy loses its next turn.",
     "mana": 6,
     "ranks": [
       {
@@ -253,9 +253,9 @@
     ]
   },
   "execute": {
-    "name": "Execute",
+    "name": "Finishing Flourish",
     "classId": "warrior",
-    "text": "Spend 3 Rage: a brutal hit, far harder on a foe under a third of its HP.",
+    "text": "Spend 3 Valor: a flourish of a hit, far harder on a foe under a third of its HP.",
     "mana": 0,
     "meter": 3,
     "ranks": [
@@ -277,9 +277,9 @@
     ]
   },
   "rally": {
-    "name": "Rally",
+    "name": "Second Wind",
     "classId": "warrior",
-    "text": "Spend 3 Rage: heal a share of your HP and hit harder for two rounds.",
+    "text": "Spend 3 Valor: heal a share of your HP and hit harder for two rounds.",
     "mana": 6,
     "meter": 3,
     "ranks": [
@@ -307,9 +307,9 @@
     ]
   },
   "shield-wall": {
-    "name": "Shield Wall",
+    "name": "Castle Stance",
     "classId": "warrior",
-    "text": "A wall of iron: a barrier worth a share of your HP.",
+    "text": "Stand like a castle wall: a barrier worth a share of your HP.",
     "mana": 8,
     "ranks": [
       {
@@ -324,9 +324,9 @@
     ]
   },
   "smoke-bomb": {
-    "name": "Smoke Bomb",
+    "name": "Puff of Smoke",
     "classId": "rogue",
-    "text": "Spend 3 Combo: vanish, the next blow misses and your next hit is a sure crit.",
+    "text": "Spend 3 Mischief: vanish, the next blow misses and your next hit is a sure crit.",
     "mana": 3,
     "meter": 3,
     "ranks": [
@@ -345,7 +345,7 @@
     ]
   },
   "pickpocket": {
-    "name": "Pickpocket",
+    "name": "Sticky Fingers",
     "classId": "rogue",
     "text": "A quick cut and a quicker hand: gold from the enemy's purse, once a fight.",
     "mana": 3,
@@ -361,14 +361,14 @@
       },
       {
         "power": 0.7,
-        "steal": 1.0
+        "steal": 1
       }
     ]
   },
   "eviscerate": {
-    "name": "Eviscerate",
+    "name": "Grand Finale",
     "classId": "rogue",
-    "text": "Spend all your Combo: a hit that grows with every point.",
+    "text": "Spend all your Mischief: a hit that grows with every point.",
     "mana": 2,
     "meterAll": true,
     "ranks": [
@@ -387,9 +387,9 @@
     ]
   },
   "time-warp": {
-    "name": "Time Warp",
+    "name": "Pocket Watch",
     "classId": "mage",
-    "text": "Spend 4 Flow: bend time, the enemy loses its next turn, boss or not.",
+    "text": "Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.",
     "mana": 6,
     "meter": 4,
     "ranks": [
@@ -406,14 +406,14 @@
     ]
   },
   "meteor": {
-    "name": "Meteor",
+    "name": "Falling Star",
     "classId": "mage",
-    "text": "Call a meteor: it lands two rounds later for a huge hit, whatever you do meanwhile.",
+    "text": "Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.",
     "mana": 10,
     "ranks": [
       {
         "windup": 2,
-        "power": 4.0
+        "power": 4
       },
       {
         "windup": 2,
@@ -426,16 +426,16 @@
     ]
   },
   "mana-shield": {
-    "name": "Mana Shield",
+    "name": "Moonlight Veil",
     "classId": "mage",
-    "text": "Turn all your mana into a barrier.",
+    "text": "Turn all your mana into a veil of moonlight.",
     "mana": 0,
     "ranks": [
       {
         "barrierPerMana": 1.5
       },
       {
-        "barrierPerMana": 2.0
+        "barrierPerMana": 2
       },
       {
         "barrierPerMana": 2.5
@@ -443,9 +443,9 @@
     ]
   },
   "trap": {
-    "name": "Trap",
+    "name": "Tripwire",
     "classId": "ranger",
-    "text": "Lay a trap: the enemy's next wind-up fails.",
+    "text": "Lay a tripwire: the enemy's next wind-up fails.",
     "mana": 8,
     "ranks": [
       {
@@ -462,9 +462,9 @@
     ]
   },
   "hawk": {
-    "name": "Hawk",
+    "name": "Owl Friend",
     "classId": "ranger",
-    "text": "Spend 2 Focus: your hawk strikes on its own at the end of every round for a while.",
+    "text": "Spend 2 Aim: your owl strikes on its own at the end of every round for a while.",
     "mana": 6,
     "meter": 2,
     "ranks": [
@@ -489,9 +489,9 @@
     ]
   },
   "mark": {
-    "name": "Mark",
+    "name": "Painted Target",
     "classId": "ranger",
-    "text": "Mark the enemy: your next hits land harder.",
+    "text": "Paint a target on the enemy: your next hits land harder.",
     "mana": 4,
     "ranks": [
       {

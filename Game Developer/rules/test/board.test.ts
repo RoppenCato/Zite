@@ -156,7 +156,7 @@ describe('the world', () => {
     }
   });
 
-  it('passes from area to area over a boss spot: the Iron Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit the first grown area', () => {
+  it('passes from area to area over a boss spot: the Copper Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit the first grown area', () => {
     expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'thornwood' });
     expect(board.spaces.briar).toMatchObject({ kind: 'boss', area: 'thornwood', boss: 'briar-king', opens: 'frostpeak' });
     expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: 'gen-1' });

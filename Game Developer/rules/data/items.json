@@ -1,8 +1,38 @@
 {
-  "potion":      { "name": "Potion",      "text": "Heals four tenths of your HP. Drink it in a fight; it takes your turn.",    "price": 25, "healShare": 0.4 },
-  "mana-potion": { "name": "Mana Potion", "text": "Gives back half your mana. Drink it in a fight; it takes your turn.",         "price": 25, "manaShare": 0.5 },
-  "reroll":    { "name": "Reroll",    "text": "Roll the die again before you walk.",                   "price": 20, "dice": "reroll" },
-  "plus-one":  { "name": "+1",        "text": "One more step.",                                         "price": 12, "dice": "plus" },
-  "minus-one": { "name": "-1",        "text": "One step fewer, never below one.",                       "price": 12, "dice": "minus" },
-  "exact":     { "name": "Exactly N", "text": "Walk exactly the number you choose.",                    "price": 40, "dice": "exact" }
+  "potion": {
+    "name": "Honey Tonic",
+    "text": "Heals four tenths of your HP. Drink it in a fight; it takes your turn.",
+    "price": 25,
+    "healShare": 0.4
+  },
+  "mana-potion": {
+    "name": "Moon Dew",
+    "text": "Gives back half your mana. Drink it in a fight; it takes your turn.",
+    "price": 25,
+    "manaShare": 0.5
+  },
+  "reroll": {
+    "name": "Do-Over",
+    "text": "Roll the die again before you walk.",
+    "price": 20,
+    "dice": "reroll"
+  },
+  "plus-one": {
+    "name": "Hop",
+    "text": "One more step: a hop.",
+    "price": 12,
+    "dice": "plus"
+  },
+  "minus-one": {
+    "name": "Hold",
+    "text": "Hold back one step, never below one.",
+    "price": 12,
+    "dice": "minus"
+  },
+  "exact": {
+    "name": "Fairy Pick",
+    "text": "The fairy picks the number you ask for: walk exactly that.",
+    "price": 40,
+    "dice": "exact"
+  }
 }

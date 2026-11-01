@@ -265,7 +265,7 @@ export interface Fight {
   spawn: boolean;
   /** True against a world boss: its HP lives in the spawn and is shared by everyone fighting it. */
   shared?: boolean;
-  /** The class's meter (Rage, Combo, Flow, Focus), 0 to `meterMax`; abilities spend it. */
+  /** The class's meter (Valor, Mischief, Arcana, Aim), 0 to `meterMax`; abilities spend it. */
   meter: number;
   /** Hits the player has landed this fight (Stormcaller counts them). */
   strikes: number;
@@ -346,7 +346,7 @@ export type Action =
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }
   | { type: 'drop'; id: string; player: string; gear: string }
-  /** A dice card while a roll is pending; `value` is the number for Exactly N. */
+  /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
   /** The answer to a pick of one ability in two. */
@@ -454,7 +454,7 @@ export type GameEvent =
   | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
   /** A boss's second phase began. */
   | { type: 'phase'; action: string; player: string; text: string }
-  /** The class's meter moved; `name` is Rage, Combo, Flow or Focus. */
+  /** The class's meter moved; `name` is Valor, Mischief, Arcana or Aim. */
   | { type: 'meter'; action: string; player: string; name: string; value: number; max: number }
   /** Gold lifted from the enemy in the fight. */
   | { type: 'stolen'; action: string; player: string; gold: number; total: number }

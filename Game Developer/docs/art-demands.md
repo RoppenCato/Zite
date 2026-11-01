@@ -26,12 +26,12 @@ nothing waits on art to be playable; each drop replaces its shape.
 
 | Piece | State |
 | --- | --- |
-| The Warrior (player class) | scrapped art (Robin, 2026-11-01); kept in `assets/warrior/` as a stand-in for the loader work |
+| The Knight (player class) | scrapped art (Robin, 2026-11-01); kept in `assets/warrior/` as a stand-in for the loader work |
 | The Puffwort, the Honey Bumble, the Bramble Bun (meadow monsters) | scrapped art; kept in `assets/<name>/` as stand-ins |
 | The Turnip Grump | not coming |
 | Everything else | shapes |
 
-**Wave 0 is mine, not the studio's**: the atlas loader; the Warrior on the board (`stand` at 0.6, `move` on the walk) and in
+**Wave 0 is mine, not the studio's**: the atlas loader; the Knight on the board (`stand` at 0.6, `move` on the walk) and in
 the fight (`stand`, `attack1`, `hit1`, `die1`); the three monsters in the fight. The meadows' mobs keep their rules names (Jelly Slime, Grumpy Sprout, Meadow Bandit, Bumbling Bee) until the new art
 names them; the stand-ins wear those names meanwhile.
 
@@ -84,7 +84,7 @@ One atlas, drawn once, used everywhere. Sizes in design pixels.
 | HP and MP bars (frame and fill), the class meter dots (empty, full) | 4 | bar 160 by 14; dot 12 |
 | Chips (the row under the board: dice cards, an errand, a level's pick, a note) in two states | 2 | 9-slice, 40 tall |
 | Spot-kind icons (the seven kinds), also used in hints and the atlas | 7 | 32 |
-| Item icons: potion, mana potion, the four dice cards (Reroll, +1, −1, Exactly N), a gold coin, a key | 8 | 40 |
+| Item icons: potion, mana potion, the four dice cards (Do-Over, +1, −1, Fairy Pick), a gold coin, a key | 8 | 40 |
 | Gear slot icons for an empty slot (weapon, armour, helm, boots, trinket) | 5 | 40 |
 | Rarity frames round an icon (common, uncommon, rare, epic, legendary) and the orange unique frame | 6 | 48 |
 | Small marks: a lock (a vault, a closed area), a clock (a cooldown), a star (xp), a heart, a drop of mana, an online dot | 6 | 24 |
@@ -97,14 +97,14 @@ at most 824 by 1830 at 2x, or the board kit's strips reused). The placeholder ic
 
 ## Wave 2: the other three classes, their abilities, the fight's effects
 
-- **The Rogue, the Mage, the Ranger** on the Warrior's rig: 25 frames each (stand 4, move 6, attack1 6, hit1 1, die1 6),
+- **The Trickster, the Wizard, the Archer** on the Warrior's rig: 25 frames each (stand 4, move 6, attack1 6, hit1 1, die1 6),
   all four the same height (to be reconfirmed with Robin: 100 CSS px was the old number, his own sheet
   stood 118), facing left, at most 400 KB each. Their standing frame is the class card's picture; no separate portraits
   (mine). Gear does **not** show on the character (mine, 2026-11-01: one sprite a class whatever is worn; a swappable
   weapon layer is a later idea if Robin wants it).
-- **Ability icons**, 24, 40 px, one atlas, in this order: Warrior (Heavy Blow, Shield Bash, War Cry, Execute, Rally, Shield
-  Wall), Rogue (Backstab, Poison Blade, Shadowstep, Smoke Bomb, Pickpocket, Eviscerate), Mage (Fireball, Frost Bolt, Arcane
-  Shield, Time Warp, Meteor, Mana Shield), Ranger (Volley, Aimed Shot, Snare, Trap, Hawk, Mark).
+- **Ability icons**, 24, 40 px, one atlas, in this order: Knight (Mighty Swing, Shield Bonk, Battle Hymn, Finishing Flourish, Second Wind, Shield
+  Wall), Trickster (Sneak Jab, Nettle Knife, Vanishing Act, Puff of Smoke, Sticky Fingers, Grand Finale), Wizard (Firework, Snowball Hex, Arcane
+  Shield, Pocket Watch, Falling Star, Moonlight Veil), Archer (Triple Shot, Bullseye, Net Toss, Tripwire, Owl Friend, Painted Target).
 - **Fight effects**, small strips of 4 to 6 frames at 64 to 128 px, one atlas: hit spark, crit burst, block shield, dodge
   whoosh, counter flash, charge glow, poison drip, chill, burn, weaken, heal glow, mana sparkle, the wind-up tell over an
   enemy's head, a level-up burst.
@@ -137,14 +137,14 @@ The harvest board kit (grain, orchards, hives, hay bales, windmills), its fight 
 
 ## Wave 5: gear icons
 
-- **Base pieces**: five slots (sword, mail, helm, boots, amulet) by ten ranks (Copper, Iron, Steel, Mithril, Adamant, Runed,
-  Dragonbone, Starforged, Voidsteel, Sunmetal) = 50 icons at 48 px. **In rank order, all five slots of a rank at a time**,
-  because players meet the ranks in order: Copper and Iron first. Rarity is the frame (wave 1d), not a new icon; ranks past
-  Sunmetal reuse the last with a tint.
-- **The 23 uniques**, each its own icon, as they are met (bosses drop them): weapons Twinfang, Quickdraw, Frostbrand,
-  Venomtooth, Mindshard, Gorefang, Stormcaller, Sunblade; armour Wardweave, Mirrormail, Thornhide; helms Phoenix Helm,
-  Sage's Crown, Ironbrow; boots Striders, Windstep, Pathfinders; trinkets Miser's Coin, Heartstone, Sapphire Tear, Lucky
-  Charm, Phoenix Feather, Wolf Totem.
+- **Base pieces**: five slots (sword, mail, helm, boots, amulet) by ten ranks (Tin, Copper, Iron, Silver, Moonsilver, Sunsteel,
+  Dragonscale, Starglass, Crownsteel, Everbright) = 50 icons at 48 px. **In rank order, all five slots of a rank at a time**,
+  because players meet the ranks in order: Tin and Copper first. Rarity is the frame (wave 1d), not a new icon; ranks past
+  Everbright reuse the last with a tint.
+- **The 23 uniques**, each its own icon, as they are met (bosses drop them): weapons Twinstinger, Hare's Edge, Icicle,
+  Nettlefang, Moonquill, Grudgeblade, Thunderclap, Crownbreaker; armour Hedgehog Coat, Mirrorcoat, Bramblehide; helms Rooster's Crest,
+  Owl's Crown, Kettle Hat; boots Seven-League Boots, Dancing Shoes, Wanderers; trinkets Dragon's Penny, Honeycomb Heart, Moondrop, Rabbit's
+  Foot, Phoenix Feather, Heartbeat Drum.
 
 ## Wave 6: the grown themes, one at a time, in the generator's order
 
@@ -157,13 +157,13 @@ themes (Ashen Reach after Glimmerlake Shores, …) reuses the art under new name
 | --- | --- | --- | --- | --- | --- |
 | 1 | glimmerlake (Glimmerlake Marches) | Glimmerlake Shores | Bubble Imp, Shellback, River Sprite, Marsh Goblin | Crystal Crab | Lord Ripplefin |
 | 2 | moonwhisper (Moonspire Kingdom) | Moonwhisper Woods | Moon Moth, Lantern Wisp, Dream Fox, Hexcap | Spellbound Doll | Lady Nightbloom |
-| 3 | thunderstone (Stormward Highlands) | Thunderstone Highlands | Pebble Golem, Storm Bat, Rock Hopper, Spark Imp | Iron Goblin | Boulderbelly |
+| 3 | thunderstone (Stormward Highlands) | Thunderstone Highlands | Pebble Golem, Storm Bat, Rock Hopper, Spark Imp | Copper Goblin | Boulderbelly |
 | 4 | sunfall (Suncrest Kingdom) | Sunfall Expanse | Sand Skitter, Scarab Guard, Dust Wraith, Relic Mimic | Sunstone Sentinel | Pharaoh Solmar |
 | 5 | frostveil (Frostveil Kingdom) | Frostveil Peaks | Snow Puff, Icefang Wolf, Frost Spirit, Crystal Corn Goblin | Frozen Knight | Glaciorn |
 | 6 | thornhollow (Thornhollow Wilds) | Thornhollow Wilds | Thornling, Briar Wolf, Rotcap, Shadow Wisp | Cursed Stag | The Briar Queen |
 | 7 | starfall (Moonspire Kingdom) | Starfall Dominion | Astral Wisp, Spell Eater, Rune Knight, Voidling | Arcane Construct | Archmage Veyra |
 | 8 | embercrown (Embercrown Range) | Embercrown Mountains | Emberling, Ash Drake, Magma Golem, Flamefang | Obsidian Guardian | Ignarox, the Crownfire Dragon |
-| 9 | shattered (The Shattered Crown) | The Shattered Crown | Crownless Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King |
+| 9 | shattered (The Shattered Crown) | The Shattered Crown | Acorncap Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King |
 
 Each theme's creatures, mini-boss and boss are the catalogue's, in `rules/data/themes.json`.
 
@@ -176,7 +176,7 @@ nearby" marker, and the combo effects for cross-class attacks (one burst per pai
 ## Rules for every piece (the short form of `docs/state/art.md`)
 
 - Files at 2x; atlases only, power-of-two sides up to 2048; a monster or a class at most 1024 by 2048 and 300 to 400 KB;
-  an area's kit at most 2.5 MB; the first load (code, the meadows, the Warrior, one monster, the icons) under 4 MB.
+  an area's kit at most 2.5 MB; the first load (code, the meadows, the Knight, one monster, the icons) under 4 MB.
 - Characters and monsters face left, pivot at the feet, frames trimmed and named `<thing>/<action>/0001`; the five
   actions for monsters, the five for classes, as delivered; bosses add a second phase if two atlases fit.
 - Backdrops as layers, never one picture; at most four full-screen layers in a fight, three on the board.

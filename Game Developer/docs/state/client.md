@@ -104,7 +104,7 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - **Questions in the chip row**: the gambler's (High, Low, Walk on); **a town's errand** (Take it, Not now; the message
   says what it asks and pays); **a piece with no room in the bag** (Sell for n, Leave it); and **a level's pick of one
   ability in two** (the two names as chips, the message saying what each does; the one tapped is learned, `pick`),
-  asked after the fight that owed it and whenever the board is free. **A Lucky Charm** worn adds a Charm chip to a
+  asked after the fight that owed it and whenever the board is free. **A Rabbit's Foot** worn adds a Charm chip to a
   pending roll (a re-roll; the chip shows the wait while it is spent).
 - **Every intent goes through `send`**: one at a time (`inFlight`), the scene going on when the promise answers; no
   answer (the socket between two lives) says "No answer from the world. Try again." and `resume` takes up whatever the
@@ -114,13 +114,13 @@ opaque panel that takes every touch, and call the board back when they close (`f
   where the roll can end inside the open areas (`reachable` with `opened`). **One place and no dice card in the bag: the
   token walks at once. Otherwise those spots light up** (a pulsing yellow ring, radius 42), the camera frames them, the
   chip row shows the dice cards held, and the message says "Tap a lit spot to walk there". A chip sends `use`; on the
-  `steps` event the die shows the new number and the choices are offered again (Exactly N first turns the row into the
+  `steps` event the die shows the new number and the choices are offered again (Fairy Pick first turns the row into the
   numbers and a way back). The tap area of a spot is a circle of radius 38, for thumbs. Tapping an unlit spot while
   choosing says "Not N steps away"; tapping Roll says "Tap a lit spot first".
 - **The tap** calls `game.act({ type: 'move', path })` at once, clears the rings, and only then walks the token: a tween
   chain, 260 ms per step, the camera following. The state is ahead of the picture during the walk, as it will be with a
   server: the picture is playback. Then what the landing brought: the message says it ("Rolled 4. Landed in the wilds."
-  / "Landed on Slime Cave (chest). A chest! +23 gold. Found Quietfall, copper boots · epic · +4 defense …" / "Rested: HP
+  / "Landed on Slime Cave (chest). A chest! +23 gold. Found Tiptoes, copper boots · epic · +4 defense …" / "Rested: HP
   and mana full." / "Empty for now; again in 4:59." / "Learned war cry, rank 1."); a fight opens the fight scene; a shop,
   a town or a merchant opens the shop scene; the gambler's offer puts **High, Low, Walk on** in the chip row with the
   question in the message line, and the answer's result finishes the turn. While choosing, walking, fighting or shopping
@@ -165,19 +165,19 @@ An opaque panel over the band; the HUD stays above. From the top: the enemy's na
 18, red), the enemy as a circle of radius 56 with its initial, a status line in orange that **leads with what it will do
 next** ("next: Venom Bite (poison)", "next: it winds up Smash", "next: Smash lands, hard. Block it!"; then stunned,
 poisoned, weakened, hardened, fading, raging); the message line; the character as a circle of radius 26, its HP bar
-(green) and mana bar (blue), a status line in teal that **leads with the class meter as dots** ("Rage ●●○○○"; then
+(green) and mana bar (blue), a status line in teal that **leads with the class meter as dots** ("Valor ●●○○○"; then
 charged, hits harder, barrier, evading, sure crit, marked, hawk, meteor in n, trap set, time bent, poisoned, weakened); a
 prompt that counts the rounds. The two lines said before the message stay above it, dimmer: a round reads as a short
 log; the enemy rings red while it holds a wind-up. **A round is two taps.** First the move, in two rows of two and a
 third row: **Attack**, **Abilities** (then the known abilities with their mana and meter costs, dimmed when mana or meter
-is short or the once-a-fight one is used, and Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with
-none), **Flee**, **Mana Potion ×n**. Then the guard:
+is short or the once-a-fight one is used, and Back), **Charge** ("Charged" while held), **Honey Tonic ×n** (dimmed with
+none), **Flee**, **Moon Dew ×n**. Then the guard:
 **Block (half)**, **Dodge (luck)**, **Brace (+mana)**, **Counter (hit back)**, and Back. The round is one intent
 (`game.act({ type: 'fight', move, guard })`) and its events are **played back one at a time, 450 ms apart**: a hit
 flashes the one struck and floats the damage up (bigger and yellow on a crit), the bars tween, the message says the blow,
 the miss, the wind-up, the stun (or a boss shrugging it off), the poison on either side, the counter, the drink, the
 loot, the level, the boss falling, the area opening, and the new things: the boss's second phase in its own words, time
-bending, a trap springing, gold lifted, the enemy healing or draining mana, a Phoenix catching a fall, Ironbrow turning a
+bending, a trap springing, gold lifted, the enemy healing or draining mana, a Phoenix catching a fall, Kettle Hat turning a
 crit aside. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
 **A world boss** says "world boss" in the header and what a shared fight is in the first line; its bar follows the HP in
 the spawn when others hit it (`refreshFromState`, called by the board on every change to the player or the spawns); when

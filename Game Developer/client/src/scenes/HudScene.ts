@@ -29,7 +29,7 @@ const MESSAGE_Y = 776;
 /** The row of chips, between the band and the message line. */
 export const CHIPS_Y = 754;
 
-/** A chip in the row: a dice card held, a number for Exactly N, an answer to the gambler. */
+/** A chip in the row: a dice card held, a number for a Fairy Pick, an answer to the gambler. */
 export interface Chip {
   text: string;
   onTap: () => void;

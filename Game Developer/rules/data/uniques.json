@@ -1,26 +1,187 @@
 {
   "_about": "Uniques (Robin, 2026-10-31: loot with effects that change how you play; the pieces are mine). Each has a slot, the earliest tier it drops at, and a power the rules read. Bosses carry them (and minis now and then); the numbers roll at the boss's rank as a legendary's.",
-  "twinfang":       { "name": "Twinfang",        "slot": "weapon",  "tier": 1, "power": "twinStrike",  "value": 0.6,  "text": "Attack strikes twice, each at six tenths." },
-  "quickdraw":      { "name": "Quickdraw",       "slot": "weapon",  "tier": 1, "power": "quickdraw",   "value": 1,    "text": "Your first hit of a fight is a sure crit, and the enemy does not strike back that round." },
-  "frostbrand":     { "name": "Frostbrand",      "slot": "weapon",  "tier": 2, "power": "frostbrand",  "value": 0.8,  "text": "Every hit chills: the enemy's next blow lands at eight tenths." },
-  "venomtooth":     { "name": "Venomtooth",      "slot": "weapon",  "tier": 2, "power": "venom",       "value": 0.3,  "text": "Every hit poisons for two rounds, at three tenths of your attack a round." },
-  "mindshard":      { "name": "Mindshard",       "slot": "weapon",  "tier": 3, "power": "arcane",      "value": 0.5,  "text": "Abilities cost half their mana and hit at eight tenths." },
-  "gorefang":       { "name": "Gorefang",        "slot": "weapon",  "tier": 3, "power": "bloodthirst", "value": 0.6,  "text": "Hits harder the more HP you are missing, up to six tenths more." },
-  "stormcaller":    { "name": "Stormcaller",     "slot": "weapon",  "tier": 4, "power": "thunder",     "value": 3,    "text": "Every third hit you land is a sure crit." },
-  "sunblade":       { "name": "Sunblade",        "slot": "weapon",  "tier": 5, "power": "sunblade",    "value": 1.3,  "text": "Hits mini-bosses and bosses three tenths harder." },
-  "wardweave":      { "name": "Wardweave",       "slot": "armour",  "tier": 1, "power": "ward",        "value": 1,    "text": "The first wound-up blow of every fight misses you." },
-  "mirrormail":     { "name": "Mirrormail",      "slot": "armour",  "tier": 3, "power": "mirror",      "value": 0.5,  "text": "A blow you Block throws half of what you blocked back at the enemy." },
-  "thornhide":      { "name": "Thornhide",       "slot": "armour",  "tier": 5, "power": "bulwark",     "value": 0.3,  "text": "Every blow you take is three tenths softer while your HP is under half." },
-  "phoenix-helm":   { "name": "Phoenix Helm",    "slot": "helm",    "tier": 2, "power": "secondWind",  "value": 0.3,  "text": "Once a fight, a blow that would drop you under a quarter HP heals you three tenths instead." },
-  "sages-crown":    { "name": "Sage's Crown",    "slot": "helm",    "tier": 1, "power": "scholar",     "value": 1.5,  "text": "Half again the xp from every fight." },
-  "ironbrow":       { "name": "Ironbrow",        "slot": "helm",    "tier": 4, "power": "ironbrow",    "value": 1,    "text": "Poison and weakening cannot touch you, and a crit against you is only a hit." },
-  "striders":       { "name": "Striders",        "slot": "boots",   "tier": 1, "power": "strider",     "value": 2,    "text": "A roll of one becomes two." },
-  "windstep":       { "name": "Windstep",        "slot": "boots",   "tier": 2, "power": "windstep",    "value": 1,    "text": "You start every fight with a step aside: the first blow at you misses." },
-  "pathfinders":    { "name": "Pathfinders",     "slot": "boots",   "tier": 4, "power": "pathfinder",  "value": 1,    "text": "Chests, springs and shrines give again to you in half the time." },
-  "misers-coin":    { "name": "Miser's Coin",    "slot": "trinket", "tier": 1, "power": "greed",       "value": 2,    "text": "Twice the gold from every fight, half the xp." },
-  "heartstone":     { "name": "Heartstone",      "slot": "trinket", "tier": 2, "power": "regen",       "value": 0.05, "text": "Heals a twentieth of your HP at the end of every round in a fight." },
-  "sapphire-tear":  { "name": "Sapphire Tear",   "slot": "trinket", "tier": 2, "power": "manaWell",    "value": 3,    "text": "Three more mana back every round of a fight." },
-  "lucky-charm":    { "name": "Lucky Charm",     "slot": "trinket", "tier": 3, "power": "lucky",       "value": 300000, "text": "Roll the die again once every five minutes: a Charm chip appears after a roll." },
-  "phoenix-feather":{ "name": "Phoenix Feather", "slot": "trinket", "tier": 4, "power": "phoenix",     "value": 0.5,  "text": "When you would fall, you rise where you stand with half your HP instead, once every half hour." },
-  "wolf-totem":     { "name": "Wolf Totem",      "slot": "trinket", "tier": 5, "power": "fury",        "value": 0.25, "text": "Every point of your meter has a one-in-four chance to bring a second." }
+  "twinfang": {
+    "name": "Twinstinger",
+    "slot": "weapon",
+    "tier": 1,
+    "power": "twinStrike",
+    "value": 0.6,
+    "text": "Attack strikes twice, each at six tenths."
+  },
+  "quickdraw": {
+    "name": "Hare's Edge",
+    "slot": "weapon",
+    "tier": 1,
+    "power": "quickdraw",
+    "value": 1,
+    "text": "Your first hit of a fight is a sure crit, and the enemy does not strike back that round."
+  },
+  "frostbrand": {
+    "name": "Icicle",
+    "slot": "weapon",
+    "tier": 2,
+    "power": "frostbrand",
+    "value": 0.8,
+    "text": "Every hit chills: the enemy's next blow lands at eight tenths."
+  },
+  "venomtooth": {
+    "name": "Nettlefang",
+    "slot": "weapon",
+    "tier": 2,
+    "power": "venom",
+    "value": 0.3,
+    "text": "Every hit poisons for two rounds, at three tenths of your attack a round."
+  },
+  "mindshard": {
+    "name": "Moonquill",
+    "slot": "weapon",
+    "tier": 3,
+    "power": "arcane",
+    "value": 0.5,
+    "text": "Abilities cost half their mana and hit at eight tenths."
+  },
+  "gorefang": {
+    "name": "Grudgeblade",
+    "slot": "weapon",
+    "tier": 3,
+    "power": "bloodthirst",
+    "value": 0.6,
+    "text": "Hits harder the more HP you are missing, up to six tenths more."
+  },
+  "stormcaller": {
+    "name": "Thunderclap",
+    "slot": "weapon",
+    "tier": 4,
+    "power": "thunder",
+    "value": 3,
+    "text": "Every third hit you land is a sure crit."
+  },
+  "sunblade": {
+    "name": "Crownbreaker",
+    "slot": "weapon",
+    "tier": 5,
+    "power": "sunblade",
+    "value": 1.3,
+    "text": "Hits mini-bosses and bosses three tenths harder."
+  },
+  "wardweave": {
+    "name": "Hedgehog Coat",
+    "slot": "armour",
+    "tier": 1,
+    "power": "ward",
+    "value": 1,
+    "text": "The first wound-up blow of every fight misses you."
+  },
+  "mirrormail": {
+    "name": "Mirrorcoat",
+    "slot": "armour",
+    "tier": 3,
+    "power": "mirror",
+    "value": 0.5,
+    "text": "A blow you Block throws half of what you blocked back at the enemy."
+  },
+  "thornhide": {
+    "name": "Bramblehide",
+    "slot": "armour",
+    "tier": 5,
+    "power": "bulwark",
+    "value": 0.3,
+    "text": "Every blow you take is three tenths softer while your HP is under half."
+  },
+  "phoenix-helm": {
+    "name": "Rooster's Crest",
+    "slot": "helm",
+    "tier": 2,
+    "power": "secondWind",
+    "value": 0.3,
+    "text": "Once a fight, a blow that would drop you under a quarter HP heals you three tenths instead."
+  },
+  "sages-crown": {
+    "name": "Owl's Crown",
+    "slot": "helm",
+    "tier": 1,
+    "power": "scholar",
+    "value": 1.5,
+    "text": "Half again the xp from every fight."
+  },
+  "ironbrow": {
+    "name": "Kettle Hat",
+    "slot": "helm",
+    "tier": 4,
+    "power": "ironbrow",
+    "value": 1,
+    "text": "Poison and weakening cannot touch you, and a crit against you is only a hit."
+  },
+  "striders": {
+    "name": "Seven-League Boots",
+    "slot": "boots",
+    "tier": 1,
+    "power": "strider",
+    "value": 2,
+    "text": "A roll of one becomes two."
+  },
+  "windstep": {
+    "name": "Dancing Shoes",
+    "slot": "boots",
+    "tier": 2,
+    "power": "windstep",
+    "value": 1,
+    "text": "You start every fight with a step aside: the first blow at you misses."
+  },
+  "pathfinders": {
+    "name": "Wanderers",
+    "slot": "boots",
+    "tier": 4,
+    "power": "pathfinder",
+    "value": 1,
+    "text": "Chests, springs and shrines give again to you in half the time."
+  },
+  "misers-coin": {
+    "name": "Dragon's Penny",
+    "slot": "trinket",
+    "tier": 1,
+    "power": "greed",
+    "value": 2,
+    "text": "Twice the gold from every fight, half the xp."
+  },
+  "heartstone": {
+    "name": "Honeycomb Heart",
+    "slot": "trinket",
+    "tier": 2,
+    "power": "regen",
+    "value": 0.05,
+    "text": "Heals a twentieth of your HP at the end of every round in a fight."
+  },
+  "sapphire-tear": {
+    "name": "Moondrop",
+    "slot": "trinket",
+    "tier": 2,
+    "power": "manaWell",
+    "value": 3,
+    "text": "Three more mana back every round of a fight."
+  },
+  "lucky-charm": {
+    "name": "Rabbit's Foot",
+    "slot": "trinket",
+    "tier": 3,
+    "power": "lucky",
+    "value": 300000,
+    "text": "Roll the die again once every five minutes: a Charm chip appears after a roll."
+  },
+  "phoenix-feather": {
+    "name": "Phoenix Feather",
+    "slot": "trinket",
+    "tier": 4,
+    "power": "phoenix",
+    "value": 0.5,
+    "text": "When you would fall, you rise where you stand with half your HP instead, once every half hour."
+  },
+  "wolf-totem": {
+    "name": "Heartbeat Drum",
+    "slot": "trinket",
+    "tier": 5,
+    "power": "fury",
+    "value": 0.25,
+    "text": "Every point of your meter has a one-in-four chance to bring a second."
+  }
 }
