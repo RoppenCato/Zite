@@ -62,7 +62,7 @@ const KITS: Record<string, Kit> = {
   },
 };
 
-const PLATES: Record<SpaceKind, string> = { normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_shrine', boss: 'spot_gate' };
+const PLATES: Record<SpaceKind, string> = { normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
 
 export function preloadBoardKits(scene: Phaser.Scene): void {
   const k = KITS.meadow!;

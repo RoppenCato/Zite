@@ -141,6 +141,7 @@ export class BoardScene extends Phaser.Scene {
    * under the button (mine, 2026-10-31), not even when the closing frame runs long drawing a grown area. */
   private overlayClosedAt = -Infinity;
   private overlayClosedFrame = -Infinity;
+  private outside: Phaser.GameObjects.TileSprite | null = null;
   private links!: Phaser.GameObjects.Graphics;
   private border!: Phaser.GameObjects.Graphics;
   private token!: Phaser.GameObjects.Container;
@@ -613,6 +614,11 @@ export class BoardScene extends Phaser.Scene {
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
     }
     for (const area of fresh) this.drawCover(area);
+    // Past the areas' edges there is cloud, not a void (the map can be dragged there).
+    if (this.textures.exists('board_cover')) {
+      this.outside ??= this.add.tileSprite(0, 0, board.width, board.height, 'board_cover').setOrigin(0, 0).setTileScale(0.5).setDepth(-1).setTint(0x8a8fa8);
+      this.outside.setSize(board.width, board.height);
+    }
     this.border.clear();
     this.border.lineStyle(6, COLORS.border, 1);
     this.border.strokeRect(3, 3, board.width - 6, board.height - 6);
@@ -758,7 +764,8 @@ export class BoardScene extends Phaser.Scene {
 
   /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
   private drawCover(area: Area): void {
-    const kit = kitFor(this, area.theme);
+    // The meadow's cloud over any closed area, kit or not: nothing shows until it opens.
+    const kit = kitFor(this, area.theme) ?? kitFor(this, 'meadow');
     if (kit) {
       this.covers.set(area.id, drawKitCover(this, kit, area));
       return;

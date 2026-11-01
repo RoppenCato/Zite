@@ -4,7 +4,7 @@ Mitch, AD, 2026-11-01. Copy the whole folder. Sizes are design pixels (world pix
 them at 0.5. About 280 KB in all, against the area kit's 2.5 MB for board and fight together. Decoded: `board_props` 8 MB
 (1024 by 2048), `board_ground` 4 MB, `cover` 1 MB.
 
-`puddlewick.jpg`, `crossroads.jpg` and `whole.jpg` are this kit laid on your real graph by the studio's tool, from these same
+`puddlewick.jpg`, `crossroads.jpg`, `church.jpg` and `whole.jpg` are this kit laid on your real graph by the studio's tool, from these same
 atlases. They are not screenshots of the game.
 
 ## How to lay it
@@ -13,10 +13,11 @@ atlases. They are not screenshots of the game.
   colour at their edges, so they mix without showing squares. Tiles are 1 px extruded.
 - **Roads:** stroke the curve in code with three lines: 30 px `#b4935a`, 25 px `#d9bb7e`, 10 px `#ecd49c` at 0.8 alpha, round
   joins. Or repeat `road_straight` along the curve, turned to it, with `road_end` at each spot and `road_junction` at each hub.
-- **Spots:** `spot_<kind>`, the pivot at the centre, where the token stands: wild 56 wide, town and shop 90, chest, spring and
-  shrine 56, the gate 120. Clean plates with the kind in the rim's colour and nothing on them (Robin, 2026-11-01).
+- **Spots:** `spot_<kind>`, the pivot at the centre, where the token stands: wild 56 wide, town and shop 90, chest, spring,
+  shrine and church 56, the gate 120. Clean plates with the kind in the rim's colour and nothing on them (Robin, 2026-11-01).
 - **Props:** pivot at the foot, shadows baked in. Sort by the foot's y with the token in the same sort. Do not flip them: the
   shadow falls to the lower right on every piece. `clover`, `worn` and `hill` are flat: draw them before the roads.
+- **The church:** `church` stands by `ravine`, Little Clover Church, on a `spot_church` plate with a rose rim (Robin, 2026-11-01: "a church somewhere on each map"). Placement has it, with the long hedge and the stile gone from that hub.
 - **Placement:** `placement_cloverfield.json` lists every prop as `{ name, x, y, hub? }` in world pixels, ready to load. It keeps
   each piece's whole body clear of the roads and spots and inside the area's bounds as the game reports them (x 140 to 1240,
   stopping where Thornwood begins; y 2120 to 3592). The first version assumed the 1400 wide in `docs/art-demands.md` and put
@@ -74,6 +75,7 @@ The cliff and the rims were checked as repeats only.
 | `windmill` | Windmill Hill | 129 by 161 | 70, 149 |
 | `old_mill` | Old Mill | 105 by 64 | 40, 57 |
 | `pond` | Duck Pond | 164 by 106 | 83, 92 |
+| `church` | Little Clover Church, one on each map, beside its church hub | 138 by 169 | 55, 162 |
 | `spring` | Abandoned Orchard, a spring spot | 82 by 61 | 39, 45 |
 | `shrine` | Forest Shrine, a shrine spot | 44 by 55 | 26, 52 |
 | `chest` | Slime Cave, a chest spot (closed; the opening is the loot drop) | 39 by 33 | 19, 25 |
@@ -84,6 +86,7 @@ The cliff and the rims were checked as repeats only.
 | `spot_chest` | a chest spot (t) | 61 by 36 | the centre, where the token stands |
 | `spot_spring` | a spring spot (p) | 61 by 36 | the centre, where the token stands |
 | `spot_shrine` | a shrine spot (s) | 61 by 36 | the centre, where the token stands |
+| `spot_church` | a church hub, heals and clears poison | 61 by 36 | the centre, where the token stands |
 | `spot_gate` | the boss hub | 125 by 71 | the centre, where the token stands |
 
 ## The ground (`board_ground`, 1 px extruded)

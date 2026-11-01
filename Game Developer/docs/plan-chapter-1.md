@@ -96,7 +96,7 @@ step 9 when the parts land, 10 and 11 near the end, 12 last.
 
 ## Robin's first play (2026-11-01)
 
-His notes are done: `docs/state/client.md` and `docs/state/rules.md`, each under "Robin's first play notes". To come from the studios: the church's plate and building, a lid-less chest body with its lid as a piece, a church sound.
+His notes are done: `docs/state/client.md` and `docs/state/rules.md`, each under "Robin's first play notes". The church's plate and building and the chest's body and lid landed the same night. To come from the studios: the church's bell and the poison's sting (Nigel, SD, waiting on the PC's audio output).
 
 ## What Robin does meanwhile
 

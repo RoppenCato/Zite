@@ -24,8 +24,8 @@ const CENTRE = DESIGN_WIDTH / 2;
 export const REVEAL_LAYOUT = { titleY: 150, cardY: 330, chestY: 600, mouthY: 530, hintY: 696 } as const;
 /** The glow builds this long before the lid moves; a tap cuts it short. */
 const BUILD_MS = 1500;
-/** Where the closed chest's frame divides into lid and body, in file pixels from its top. */
-const LID_CUT = 92;
+/** Where the lid's centre starts against the chest's pivot, in design pixels (Mitch, AD). */
+const LID_FROM = { x: -0.5, y: -70.5 } as const;
 /** The card rests this long before the next card or the board, unless tapped. */
 const REST_MS = 2200;
 const QUICK_REST_MS = 1500;
@@ -111,8 +111,8 @@ export class RevealScene extends Phaser.Scene {
 
     this.glow = this.add.image(CENTRE, mouthY, LOOT_KEYS.glow).setTint(this.tint).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0).setScale(LOOT_SCALE * 0.3).setDepth(1);
     this.chest = this.add.sprite(CENTRE, chestY, LOOT_KEYS.chest, 'chest/closed/0001').setScale(LOOT_SCALE).setDepth(3);
-    // The lid: the same frame's top part, hidden until it blows off.
-    this.lid = this.add.sprite(CENTRE, chestY, LOOT_KEYS.chest, 'chest/closed/0001').setScale(LOOT_SCALE).setDepth(4).setVisible(false);
+    // The lid, hidden until it blows off; it spins about its own centre.
+    this.lid = this.add.sprite(CENTRE + LID_FROM.x, chestY + LID_FROM.y, LOOT_KEYS.chest, 'chest/lid').setScale(LOOT_SCALE).setDepth(4).setVisible(false);
     this.shaker = null;
     this.hint = this.add.text(CENTRE, hintY, 'Tap to go on', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5).setAlpha(0).setDepth(5);
 
@@ -168,17 +168,16 @@ export class RevealScene extends Phaser.Scene {
     this.shaker = null;
     const { chestY } = REVEAL_LAYOUT;
     this.chest.setAngle(0).setPosition(CENTRE, chestY).clearTint();
-    // The pop: the frame divides at the lid's seam; the body stays, the lid flies.
-    const { width, height } = this.chest.frame;
-    this.chest.setCrop(0, LID_CUT, width, height - LID_CUT);
-    this.lid.setCrop(0, 0, width, LID_CUT).setVisible(!this.quick);
+    // The pop: the body stays with its light showing, the lid flies.
+    this.chest.setFrame('chest/body');
+    this.lid.setVisible(!this.quick);
     this.burst();
     if (this.quick) return;
     this.chest.setScale(LOOT_SCALE * 1.22, LOOT_SCALE * 0.82);
     this.tweens.add({ targets: this.chest, scaleX: LOOT_SCALE, scaleY: LOOT_SCALE, duration: 300, ease: 'Back.easeOut' });
     const flash = this.add.circle(CENTRE, REVEAL_LAYOUT.mouthY, 40, 0xffffff, 0.9).setDepth(5).setBlendMode(Phaser.BlendModes.ADD);
     this.tweens.add({ targets: flash, scale: 5, alpha: 0, duration: 260, ease: 'Quad.easeOut', onComplete: () => flash.destroy() });
-    this.tweens.add({ targets: this.lid, y: chestY - 520, angle: 280, duration: 620, ease: 'Quad.easeOut' });
+    this.tweens.add({ targets: this.lid, y: chestY - 520, angle: 540, duration: 680, ease: 'Quad.easeOut' });
     this.tweens.add({ targets: this.lid, alpha: 0, delay: 360, duration: 260, onComplete: () => this.lid.setVisible(false) });
   }
 
