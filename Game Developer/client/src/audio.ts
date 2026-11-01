@@ -12,6 +12,8 @@ import fightOgg from '../../assets/sound/fight/fight.ogg';
 import spotsJson from '../../assets/sound/ui-spots/ui-spots.json?url';
 import spotsOgg from '../../assets/sound/ui-spots/ui-spots.ogg';
 import meadowsBoardOgg from '../../assets/sound/music/meadows-board.ogg';
+import creaturesMeadowsJson from '../../assets/sound/creatures-meadows/creatures-meadows.json?url';
+import creaturesMeadowsOgg from '../../assets/sound/creatures-meadows/creatures-meadows.ogg';
 import { settings } from './settings.ts';
 
 interface SpriteFile {
@@ -26,6 +28,8 @@ const SPRITES: SpriteFile[] = [
   { key: 'ui', json: uiJson, ogg: uiOgg, volume: 0.8 },
   { key: 'fight', json: fightJson, ogg: fightOgg, volume: 1 },
   { key: 'ui-spots', json: spotsJson, ogg: spotsOgg, volume: 0.8 },
+  // The meadows' creature voices; an area's voices belong with its load once areas load their own (Nigel, SD).
+  { key: 'creatures-meadows', json: creaturesMeadowsJson, ogg: creaturesMeadowsOgg, volume: 1 },
 ];
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b' };

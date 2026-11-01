@@ -408,6 +408,7 @@ export class FightScene extends Phaser.Scene {
         break;
       case 'phase':
         sfx.play('fight/phase');
+        sfx.play(`creature/${this.enemyId}/surge`);
         this.say(e.text);
         this.refreshStatus();
         break;
