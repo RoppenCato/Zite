@@ -21,8 +21,8 @@ mkdirSync(OUT, { recursive: true });
 const PAGE = process.argv[2] ?? 'http://localhost:4173/';
 const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
-const STATE_VERSION = 8; // rules/src/types.ts
-const B = { map: [72, 836], bag: [206, 836], log: [340, 836], roll: [206, 884] }; // HudScene BUTTONS
+const STATE_VERSION = 9; // rules/src/types.ts
+const B = { map: [60, 836], world: [158, 836], bag: [256, 836], log: [354, 836], roll: [206, 884] }; // HudScene BUTTONS
 const F = { a: [110, 600], b: [302, 600], c: [110, 652], d: [302, 652], e: [110, 704], f: [302, 704], cont: [206, 652] }; // FightScene FIGHT_BUTTONS
 const SHOP = { row: (i) => 222 + i * 40, buyX: 356, leave: [206, 706], tabSell: [272, 178] }; // ShopScene SHOP_LAYOUT: five slots, then potion, mana potion, reroll, +1, -1, exact
 const BAG = { close: [364, 126], wearX: 364, carriedY: 456 };
@@ -214,7 +214,7 @@ await sleep(100);
 const namesAt = async (z) => { await ev((z) => boardWorld.phaser.scene.getScene('board').cameras.main.setZoom(z), z); await sleep(80); return ev(() => boardWorld.phaser.scene.getScene('board').names.map((n) => n.visible)); };
 const shown = await namesAt(0.5);
 const hidden = await namesAt(0.4);
-check('hub names shown at 0.5, hidden at 0.4', shown.every(Boolean) && hidden.every((v) => !v) && shown.length > 20, `${shown.length} names`);
+check('hub names shown at 0.5 where the camera sees them, hidden at 0.4', shown.some(Boolean) && !shown.every(Boolean) && hidden.every((v) => !v) && shown.length > 20, `${shown.filter(Boolean).length} of ${shown.length} names shown at 0.5`);
 await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
 await sleep(500);
 await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
@@ -294,8 +294,13 @@ await shot('11-after-fight');
 
 // The shop: a save standing on Tinker Cart with gold; tap the shop you stand on, buy a potion, a +1 and a sword, leave.
 /** Plant a save: the current state with the character patched (and the state itself, for spawns and the die). */
-const stockSave = (patch, statePatch = {}) => ev(({ patch, statePatch }) => {
+const stockSave = (patch, statePatch = {}, freshBoard = false) => ev(({ patch, statePatch, freshBoard }) => {
   const state = structuredClone(boardWorld.game.state);
+  if (freshBoard) {
+    // The hand-laid world again, without the areas grown earlier in this run.
+    state.board = boardWorld.rules.makeBoard();
+    state.spawns = {};
+  }
   Object.assign(state.characters.local, patch);
   Object.assign(state, statePatch);
   localStorage.setItem('boardworld.save', JSON.stringify({ version: 1, state, rng: 424242 }));
@@ -718,6 +723,35 @@ await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
 await sleep(400);
 await settle();
 await shot('24-overview-grown');
+
+// The world as a list: World opens the atlas with the areas by tier and where you are; Go frames one; Settings toggles.
+await stockSave({ ...STRONG, space: 'ashford', opened: ['meadows', 'thornwood'] }, {}, true);
+await page.reload();
+await ready();
+await settle();
+await tapAt(...B.world);
+await sleep(400);
+const atlas = await ev(() => ({ active: boardWorld.phaser.scene.isActive('atlas'), rows: boardWorld.phaser.scene.getScene('atlas').children.list.filter((o) => o.text && /tier \d/.test(o.text)).map((o) => o.text) }));
+check('World opens the atlas: the areas by tier, the open ones bright, you are here', atlas.active && atlas.rows.length === 3 && atlas.rows[0] === 'Ashford Meadows · tier 1 · you are here' && atlas.rows[1] === 'Thornwood · tier 2' && atlas.rows[2] === 'Frostpeak · tier 3', JSON.stringify(atlas));
+await tapAt(364, 176 + 74 + 12); // Go, Thornwood
+await sleep(500);
+await settle();
+const framed = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const b = boardWorld.game.state.board.areas.thornwood.bounds; const v = s.cameras.main.worldView; const cx = b.x + b.width / 2; const cy = b.y + b.height / 2; return { atlas: boardWorld.phaser.scene.isActive('atlas'), following: s.following, inside: v.x <= cx && cx <= v.x + v.width && v.y <= cy && cy <= v.y + v.height, view: { x: Math.round(v.x), y: Math.round(v.y), w: Math.round(v.width), h: Math.round(v.height) }, bounds: b }; });
+check('Go frames the area on the board and closes the atlas', !framed.atlas && framed.following === false && framed.inside, JSON.stringify(framed));
+await tapAt(...B.world);
+await sleep(300);
+await tapAt(276, 126); // Settings
+await sleep(200);
+const toggles = await ev(() => boardWorld.phaser.scene.getScene('atlas').children.list.flatMap((o) => (o.list ? o.list : [o])).filter((o) => o.text && /^(On|Off|Full|Fewer|Large|Normal)$/.test(o.text)).map((o) => o.text));
+check('Settings lists sound, effects and text with their toggles', JSON.stringify(toggles) === '["On","Full","Normal"]', JSON.stringify(toggles));
+await tapAt(364 + 4, 176 + 74 + 12); // Effects: fewer
+await sleep(200);
+const fewer = await ev(() => JSON.parse(localStorage.getItem('boardworld.settings') || '{}'));
+check('a toggle is kept in the page\'s storage', fewer.fewerEffects === true, JSON.stringify(fewer));
+await tapAt(364 + 4, 176 + 74 + 12); // and back
+await sleep(200);
+await tapAt(364, 126); // Close
+await sleep(300);
 
 // reset() throws the save away: the next load is the character screen again.
 await ev(() => boardWorld.game.reset());

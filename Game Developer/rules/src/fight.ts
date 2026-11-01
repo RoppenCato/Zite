@@ -673,6 +673,12 @@ function win(r: Round): ApplyResult {
     next = giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
 
+  // A mini-boss of an area with a locked chest carries its key, until the character holds one.
+  if (e.role === 'mini' && area && (next.keys[area.id] ?? 0) === 0 && Object.values(s.board.spaces).some((x) => x.area === area.id && x.locked)) {
+    next = { ...next, keys: { ...next.keys, [area.id]: 1 } };
+    events.push({ type: 'keyFound', action: id, player, area: area.id });
+  }
+
   if (space?.kind === 'boss' && e.role === 'boss') {
     const until = now + (SPACE_KIND_DATA.boss.cooldownMs ?? 0);
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };

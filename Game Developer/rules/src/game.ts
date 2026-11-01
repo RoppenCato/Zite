@@ -2,8 +2,8 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
-import { ABILITIES, CLASS_DATA, DICE_DATA, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
-import { addLoot, gainXp, giveGold, giveItem, nextGearId, reject, sellPrice, spend, withCharacter } from './common.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
+import { addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, offerPicks, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats } from './gear.ts';
 import { newQuest, questLine, questProgress } from './quests.ts';
@@ -81,6 +81,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     offer: null,
     quests: [],
     picks: [],
+    keys: {},
   };
 }
 
@@ -227,6 +228,14 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       return { state: withCharacter(state, c), events };
     case 'chest': {
       if (onCooldown) return empty();
+      if (space.locked) {
+        if ((c.keys[space.area] ?? 0) <= 0) {
+          events.push({ type: 'locked', action: id, player, space: space.id, area: space.area, mini: area?.miniBosses[0] ?? null });
+          return { state: withCharacter(state, c), events };
+        }
+        const keys = { ...c.keys, [space.area]: c.keys[space.area]! - 1 };
+        return openChest(state, cooled({ ...c, keys }), tier, space.area, action, rng, events, true);
+      }
       return openChest(state, cooled(c), tier, space.area, action, rng, events);
     }
     case 'potion': {
@@ -254,6 +263,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       const what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
+      if (what === 'event' && area && EVENTS[area.theme]) return themeEvent(state, c, area.theme, tier, action, rng, events);
       if (what === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
@@ -294,17 +304,26 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
   return { state: withCharacter(state, fighting), events };
 }
 
-/** A chest: gold by the tier, maybe gear of the tier's rank, maybe a potion or a card; an errand for chests moves along. */
-function openChest(state: GameState, c: Character, tier: number, areaId: string, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+/**
+ * A chest: gold by the tier, maybe gear of the tier's rank, maybe a potion or a card; an errand for chests moves along.
+ * A vault (`rich`, the locked chest opened with its key) holds three times the gold, a piece never under epic, and a
+ * unique of the tier three times in ten.
+ */
+function openChest(state: GameState, c: Character, tier: number, areaId: string, action: Action, rng: Rng, events: GameEvent[], rich = false): ApplyResult {
   events.push({ type: 'chest', action: action.id, player: action.player });
   const [lo, hi] = PROGRESSION.chest.gold;
-  let next = giveGold(questProgress(c, { chest: areaId }, action, events), tier * (lo + rng.int(hi - lo + 1) - 1), action, events);
+  let next = giveGold(questProgress(c, { chest: areaId }, action, events), tier * (lo + rng.int(hi - lo + 1) - 1) * (rich ? 3 : 1), action, events);
   let s = state;
-  if (rng.next() < PROGRESSION.chest.gearChance) {
-    const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
+  if (rich || rng.next() < PROGRESSION.chest.gearChance) {
     const got = nextGearId(s);
     s = got.state;
-    next = addLoot(next, rollGear(got.id, slot, tier, 0, rng), action, events);
+    const unique = rich && rng.next() < 0.3 ? rollUnique(got.id, tier, tier, rng) : null;
+    if (unique) {
+      next = addLoot(next, unique, action, events);
+    } else {
+      const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
+      next = addLoot(next, rollGear(got.id, slot, tier, rich ? 3 : 0, rng), action, events);
+    }
   }
   if (rng.next() < PROGRESSION.chest.consumableChance) {
     const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
@@ -312,6 +331,50 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
     next = roll < 0.4 ? giveItem(next, 'potion', 1, action, events) : roll < 0.6 ? giveItem(next, 'mana-potion', 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
   return { state: withCharacter(s, next), events };
+}
+
+/** The theme's event on a wild spot (mine, 2026-11-01): a share of HP or mana, gold by the tier, a flask or a card. */
+function themeEvent(state: GameState, c: Character, theme: string, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+  const ev = EVENTS[theme]!;
+  const s = stats(c);
+  let next = c;
+  let amount = 0;
+  switch (ev.kind) {
+    case 'heal':
+      amount = Math.max(1, Math.round(s.maxHp * ev.value));
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      next = heal(next, amount, action, events);
+      break;
+    case 'hurt':
+      // Never the last point: an event is colour, not a death.
+      amount = Math.min(Math.max(0, c.hp - 1), Math.max(1, Math.round(s.maxHp * ev.value)));
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      next = { ...next, hp: next.hp - amount };
+      break;
+    case 'gold':
+      amount = ev.value * tier;
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      next = giveGold(next, amount, action, events);
+      break;
+    case 'mana':
+      amount = Math.max(1, Math.round(s.maxMana * ev.value));
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      next = restoreMana(next, amount, action, events);
+      break;
+    case 'flask':
+      amount = ev.value;
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      next = giveItem(next, rng.next() < 0.5 ? 'potion' : 'mana-potion', amount, action, events);
+      break;
+    case 'card': {
+      amount = ev.value;
+      events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+      const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
+      next = giveItem(next, cards[rng.int(cards.length) - 1]!, amount, action, events);
+      break;
+    }
+  }
+  return { state: withCharacter(state, next), events };
 }
 
 /** A shrine: a new ability of the class if one is left, else a rank for one known, else nothing. */

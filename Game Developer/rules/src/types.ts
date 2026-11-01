@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 8;
+export const STATE_VERSION = 9;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -71,6 +71,8 @@ export interface Space {
   area: string;
   boss?: string;
   opens?: string | null;
+  /** A locked chest: it opens only with the area's key, which its mini-boss carries, and holds more (mine, 2026-11-01). */
+  locked?: boolean;
 }
 
 /** An area of the map: a theme, a tier, the levels of what lives there, and which mobs and mini-bosses those are. */
@@ -193,6 +195,8 @@ export interface Character {
   quests: Quest[];
   /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */
   picks: string[][];
+  /** Keys to the locked chests, by area: a mini-boss of the area drops one. */
+  keys: Record<string, number>;
 }
 
 export interface EnemyMove {
@@ -401,6 +405,12 @@ export type GameEvent =
   | { type: 'bagFull'; action: string; player: string; gear: GearItem; sold: number | null }
   /** An ability bought from a town's trainer: learned, or a rank gained. */
   | { type: 'trained'; action: string; player: string; ability: string; rank: number; price: number; gold: number }
+  /** A locked chest with no key for it: `mini` names what carries the key. */
+  | { type: 'locked'; action: string; player: string; space: string; area: string; mini: string | null }
+  /** The key to an area's locked chest, from its mini-boss. */
+  | { type: 'keyFound'; action: string; player: string; area: string }
+  /** A wild spot's event of the area's theme; what it did follows as healed, hit, gold, mana or found. */
+  | { type: 'themeEvent'; action: string; player: string; text: string; kind: 'heal' | 'hurt' | 'gold' | 'mana' | 'flask' | 'card'; amount: number }
   /** A wandering merchant: the shop is open here. */
   | { type: 'merchant'; action: string; player: string }
   /** A fight began against this enemy, on this space. */

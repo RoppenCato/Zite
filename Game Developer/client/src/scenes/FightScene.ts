@@ -8,6 +8,8 @@ import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, t
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
+import { settings } from '../settings.ts';
+import { tips } from '../tips.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -28,6 +30,8 @@ export const FIGHT_BUTTONS = {
 } as const;
 
 const STEP_MS = 450; // between two events of a round
+/** The first fight's line, said once (tips.ts). */
+const TIP_FIGHT = 'Pick a move, then how you take the blow. The orange line says what the enemy does next: Block a wind-up, Dodge a poison.';
 const CENTRE = DESIGN_WIDTH / 2;
 const BAR_W = 260;
 const BAR_H = 18;
@@ -113,7 +117,7 @@ export class FightScene extends Phaser.Scene {
     this.lines = [];
     this.history = this.add.text(CENTRE, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } }).setOrigin(0.5, 0);
     this.message = this.add
-      .text(CENTRE, 370, `${enemy.name} blocks the way!`, { fontFamily: FONT, fontSize: '16px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
+      .text(CENTRE, 370, `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(16), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
       .setOrigin(0.5, 0);
 
     this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
@@ -310,9 +314,11 @@ export class FightScene extends Phaser.Scene {
         if (e.ok) this.end({ type: 'fled', summary: 'You got away.' }, 'You got away!');
         else this.say('No escape!');
         break;
-      case 'won':
-        this.end({ type: 'won', summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
+      case 'won': {
+        const tip = tips.take('won');
+        this.end({ type: 'won', summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
+      }
       case 'loot':
         this.say(`It drops ${e.gear.name} (${e.gear.rarity})!`);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${e.gear.name} (${e.gear.rarity}).` };
@@ -456,11 +462,11 @@ export class FightScene extends Phaser.Scene {
   }
 
   private flash(body: Phaser.GameObjects.Arc, damage: number, crit: boolean): void {
-    this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
+    if (!settings.get().fewerEffects) this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
     const number = this.add
       .text(body.x + 40, body.y - 40, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '30px' : '22px', fontStyle: 'bold', color: crit ? '#fff27a' : COLORS.text })
       .setOrigin(0.5);
-    this.tweens.add({ targets: number, y: number.y - 50, alpha: 0, duration: 700, ease: 'Quad.easeOut', onComplete: () => number.destroy() });
+    this.tweens.add({ targets: number, y: number.y - 50, alpha: 0, duration: settings.ms(700) || 1, ease: 'Quad.easeOut', onComplete: () => number.destroy() });
   }
 
   private say(text: string): void {

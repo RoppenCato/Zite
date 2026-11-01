@@ -249,9 +249,10 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(8);
+    expect(s!.version).toBe(9);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).picks).toEqual([]);
+    expect(me(s!).keys).toEqual({});
     expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Iron Sword', base: 'iron sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });
     expect(me(s!).bag[0]!.affixes).toEqual([]);
     expect(me(s!).bag[0]).not.toHaveProperty('affix');

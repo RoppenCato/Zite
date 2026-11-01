@@ -32,7 +32,7 @@ the date, and comes off this list.
 14. **Shared bosses**: a boss's 5-minute return is per character now (mine, for solo play); with the server, is a boss one
     creature for everyone or one per player?
 15. ~~The fourth area and the generator~~: built (2026-10-31, `docs/state/world.md`); the fourth area is the first
-    grown one, fire. Open from it: hand-laid shapes beyond the three templates, and quests or events of a theme.
+    grown one, fire. Two more shapes and the themes' events came 2026-11-01; more shapes are always welcome.
 16. **The far tiers' curve** (mine, 2026-10-31): the grown creatures grow ×1.25 HP a tier and gear ×1.35 a rank past the
     tables, so the bots' walls, flat at about nine wins in ten from tier 4 to 9, ease towards ten in ten past tier 10.
     Either gear slows (×1.3) or the creatures' growth climbs after tier 9; to be felt first, there is a long way to tier

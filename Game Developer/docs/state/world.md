@@ -67,8 +67,11 @@ first name the first time round, the second the second time (Emberfall, Mistwate
 Duskmoor, Skyreach, Verdant Tangle; then Ashen Reach, Tidehollow, …).
 
 **Its shape** (`generateArea(seed, n)`, from the stream `hashSeed("seed:area:n")`, so the same for every player and
-whatever else is on the board): one of the hand-laid areas as a template, its hubs and roads moved into the cell, a hub
-with only one road dropped (no dead ends), its boss hub turned to wilds. The **way in** is the hub nearest the entry
+whatever else is on the board): one of five templates, the three hand-laid areas and the two shapes of `shapes.json`
+(the **ladder**, two columns with rungs; the **wheel**, a hub with six spokes), its hubs and roads moved into the
+cell, a hub with only one road dropped (no dead ends), its boss hub turned to wilds. A shape's **locked vault** stays
+one (named "<Adjective> Vault"): it opens only with the area's key, which the area's mini-boss drops once, and holds
+three times the gold, a piece never under epic and a unique three times in ten (`docs/state/rules.md`). The **way in** is the hub nearest the entry
 side whose straight approach from the opener (the Summit, or the area before's gate: a pure function of the seed too)
 keeps clear of the area's other spots, named "**<Area> Pass**", plain wilds; the **way out** is the hub nearest the exit
 side chosen the same way, the area's boss hub, named "<Adjective> Gate", opening `gen-(n+1)`. The template's kinds are

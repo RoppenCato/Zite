@@ -17,7 +17,10 @@ Director's sprites come later. The client never decides anything: it sends inten
 | `src/game-log.ts` | the frame log and error log, downloadable |
 | `src/scenes/CreateScene.ts` | the character screen: the name field, the four class cards, Begin; makes the game and starts the board |
 | `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop and bag scenes made together |
-| `src/scenes/BoardScene.ts` | the world, the token, the camera, the touch input, hints; `roll`, `toggleMap`, `openBag`, `downloadLog`, `useCard`, `answerGamble` |
+| `src/scenes/BoardScene.ts` | the world, the token, the camera, the touch input, hints, culling; `roll`, `toggleMap`, `openAtlas`, `openBag`, `downloadLog`, `useCard`, `answerGamble` |
+| `src/scenes/AtlasScene.ts` | the world as a list: the areas by tier, bosses, kills, errands, where you are; Go frames one; the settings behind a button |
+| `src/tips.ts` | the first minutes: a few lines said once (the start, the first choice, fight, win and boss), kept in storage |
+| `src/settings.ts` | sound (for later), fewer effects, larger text; kept in storage; `ms()` and `font()` for the scenes |
 | `src/scenes/HudScene.ts` | the top panel, the chip row, the message line, Map, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips` |
 | `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
@@ -61,7 +64,9 @@ opaque panel that takes every touch, and call the board back when they close (`f
   lifts when a boss opens it. **Links** are 6-pixel lines in one `Graphics`. **The world grows**: `drawBoard` draws
   whatever the board has that is not drawn yet (at the start everything; after a fight that laid a grown area, that
   area's ground, name, roads, spots, boss label and cover), redraws the border and widens the camera's bounds and its
-  minimum zoom; the eight grown themes have their own ground colours (`THEME_COLORS`).
+  minimum zoom; the eight grown themes have their own ground colours (`THEME_COLORS`). **Culling** (mine, 2026-11-01):
+  every frame the camera has moved, each spot's circle, letter and names are shown only inside the view and a margin
+  of 120, the names also under their zoom rule; rings and the token are never hidden. A vault shows a V.
 - **Spots**: circles in a colour per kind with a letter (town T, shop $, chest C, spring +, shrine *, boss B); the wilds
   are smaller (radius 20) and bare, the others radius 26; **a boss spot is big (radius 34), dark red, named, with its
   boss's level under it**, and dims with a countdown while the boss is away. Hubs show their names (bold 13 px) below
@@ -111,6 +116,14 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - **Drag pans** once a finger has moved more than 8 design pixels (following stops; the scroll moves by the finger's
   travel divided by the zoom). A spot is tapped on `pointerup` only when `pointer.getDistance()` is under 10, so a drag
   that ends on a spot is not a tap. **Pinch zooms** with two fingers; a **mouse wheel** zooms by 10 percent a notch.
+- **The World button** opens the atlas (`AtlasScene`): the areas by tier with a swatch of their colour, the open ones
+  bright, "you are here", the levels, the boss and your kills, your errand there, or what opens a closed one; **Go**
+  frames the area on the board; **Settings** turns the list into three toggles (sound, effects full or fewer, text
+  normal or large), kept in `localStorage['boardworld.settings']`; Close. Fewer effects make the camera and the bars
+  jump and the blows not flash; large text takes from the next screen on.
+- **The first minutes** (`tips.ts`): the start ("Welcome to Zite…"), the first roll with a choice, the first fight,
+  the first win and the first boss tapped each add a line once, kept in `localStorage['boardworld.tips']` and forgotten
+  on reset.
 - **The Map button** frames everything open (following stopped) and reads "Back" whenever the camera is not following
   the token; Back returns to the follow zoom and follows the token again.
 - Nothing reads the canvas back and nothing filters per frame; the per-frame work is the frame log and the zoom check.

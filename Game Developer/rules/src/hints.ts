@@ -36,8 +36,14 @@ export function hintFor(state: GameState, spaceId: string, player: string, now: 
       const prowl = spawn?.kind === 'miniboss' && spawn.enemy ? ` A ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here!` : spawn?.kind === 'merchant' ? ' A wandering merchant has camped here.' : '';
       return `${where}, levels ${area?.levels[0]} to ${area?.levels[1]}: ${mobs} roam here. Gold, xp, now and then ${rank} gear, and sometimes something else.${prowl}`;
     }
-    case 'chest':
+    case 'chest': {
+      if (space.locked) {
+        const mini = area?.miniBosses[0] ? creature(area.miniBosses[0], bestiary)?.name : null;
+        const key = (me?.keys[space.area] ?? 0) > 0 ? ' You carry its key.' : mini ? ` The ${mini} prowling the wilds carries the key.` : '';
+        return `${where}: a locked vault, three times the gold and gear worth the trouble.${key}${again}`;
+      }
       return `${where}: gold, and maybe ${rank} gear.${again}`;
+    }
     case 'potion':
       return `${where}: a potion to take along.${again}`;
     case 'spell':

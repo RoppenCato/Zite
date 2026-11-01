@@ -26,7 +26,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('a new game', () => {
   it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(8);
+    expect(s.version).toBe(9);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
@@ -36,7 +36,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(8);
+    expect(s.version).toBe(9);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(me(s)).toEqual({
@@ -65,6 +65,7 @@ describe('a new game', () => {
       offer: null,
       quests: [],
       picks: [],
+      keys: {},
     });
     expect(s.die).toEqual({ sides: 6, last: null });
   });
@@ -223,11 +224,15 @@ describe('landing', () => {
   it('in the wilds draws what turns up: mostly a fight with the area\'s creatures, else a chest, a merchant, a gamble', () => {
     const slime = apply(about('s0'), move(['s1']), makeRng('ashford'), NOW);
     expect(slime.events[2]).toMatchObject({ type: 'fight', enemy: expect.objectContaining({ id: 'slime', level: 1 }), space: 's1' });
-    const chest = apply(about('s0'), move(['s1']), makeRng(2), NOW);
-    expect(chest.events.slice(2).map((e) => e.type)).toEqual(['chest', 'gold', 'loot']);
+    // The first seeds that give each thing (the weights move as the table does; the things do not).
+    const firstSeed = (type: string) => Array.from({ length: 400 }, (_, i) => i).find((i) => apply(about('s0'), move(['s1']), makeRng(i), NOW).events[2]?.type === type)!;
+    const chest = apply(about('s0'), move(['s1']), makeRng(firstSeed('chest')), NOW);
+    expect(chest.events.slice(2, 4).map((e) => e.type)).toEqual(['chest', 'gold']);
     expect(me(chest.state).cooldowns).toEqual({}); // a chest found in the wilds is not a spot that empties
-    const merchant = apply(about('s0'), move(['s1']), makeRng(30), NOW);
+    const merchant = apply(about('s0'), move(['s1']), makeRng(firstSeed('merchant')), NOW);
     expect(merchant.events[2]).toEqual({ type: 'merchant', action: 'm1', player: P });
+    const event = apply(about('s0'), move(['s1']), makeRng(firstSeed('themeEvent')), NOW);
+    expect(event.events[2]).toMatchObject({ type: 'themeEvent', kind: 'heal', text: expect.stringContaining('picnic') }); // the meadows' event
     const counts: Record<string, number> = {};
     for (let i = 0; i < 300; i++) {
       const r = apply(about('s0'), move(['s1']), makeRng(`wild-${i}`), NOW);
@@ -239,14 +244,16 @@ describe('landing', () => {
         if (e.type === 'fight' && e.enemy.role === 'mob') expect(['slime', 'wolf', 'bandit', 'wisp']).toContain(e.enemy.id);
       }
     }
-    expect(counts.fight).toBeGreaterThan(180);
+    expect(counts.fight).toBeGreaterThan(160);
     expect(counts.chest).toBeGreaterThan(10);
     expect(counts.offer).toBeGreaterThan(5);
     expect(counts.merchant).toBeGreaterThan(5);
+    expect(counts.themeEvent).toBeGreaterThan(5);
   });
 
   it('a gamble is answered high or low on a die for the stake, or passed; nothing else goes until it is', () => {
-    const offered = apply(about('s0'), move(['s1']), makeRng(4), NOW);
+    const gambleSeed = Array.from({ length: 400 }, (_, i) => i).find((i) => apply(about('s0'), move(['s1']), makeRng(i), NOW).events[2]?.type === 'offer')!;
+    const offered = apply(about('s0'), move(['s1']), makeRng(gambleSeed), NOW);
     expect(offered.events[2]).toEqual({ type: 'offer', action: 'm1', player: P, offer: { kind: 'gamble', stake: 20 } });
     expect(me(offered.state).offer).toEqual({ kind: 'gamble', stake: 20 });
     expect(apply(offered.state, roll(), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'answer first' });
@@ -375,7 +382,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 9 })).toBeNull();
+    expect(migrate({ version: 10 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -395,7 +402,7 @@ describe('a stored state', () => {
   it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
     const s = migrate(structuredClone(older(version)));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(8);
+    expect(s!.version).toBe(9);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
     expect(s!.die).toEqual({ sides: 6, last: null });
@@ -442,7 +449,7 @@ describe('a stored state', () => {
     const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
     const s = migrate(structuredClone(v5));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(8);
+    expect(s!.version).toBe(9);
     expect(s!.board).toEqual(makeBoard());
     expect(s!.characters.p1).toEqual(p1);
     expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });

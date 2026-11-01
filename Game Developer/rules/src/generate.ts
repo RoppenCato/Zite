@@ -4,7 +4,7 @@
 // re-dressed: a theme, names, which hub is the way in and which the boss on the way out, creatures scaled to its tier,
 // gear of its rank in its shop. The cells go east in a snake two cells tall; the board widens as they come.
 
-import { THEMES, WORLD_DATA } from './data.ts';
+import { SHAPES, THEMES, WORLD_DATA } from './data.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import type { Board, EnemyData, Space, SpaceKind } from './types.ts';
 import { addArea, addRoad, areaCentre, roadPoints, setBounds, type WorldArea, type WorldHub, type WorldRoad } from './world.ts';
@@ -68,7 +68,8 @@ let templateCache: Template[] | null = null;
 function templates(): Template[] {
   if (templateCache) return templateCache;
   const { width, height } = THEMES.cell;
-  templateCache = WORLD_DATA.areas.map((a) => {
+  const laid: { hubs: WorldHub[]; roads: WorldRoad[] }[] = [...WORLD_DATA.areas, ...SHAPES];
+  templateCache = laid.map((a) => {
     const ox = Math.floor(Math.min(...a.hubs.map((h) => h.x)) / width) * width;
     const oy = Math.floor(Math.min(...a.hubs.map((h) => h.y)) / height) * height;
     const roadCount = new Map<string, number>();
@@ -76,7 +77,7 @@ function templates(): Template[] {
       roadCount.set(r.from, (roadCount.get(r.from) ?? 0) + 1);
       roadCount.set(r.to, (roadCount.get(r.to) ?? 0) + 1);
     }
-    const hubs = a.hubs.filter((h) => (roadCount.get(h.id) ?? 0) >= 2).map((h) => ({ id: h.id, kind: h.kind === 'boss' ? ('normal' as SpaceKind) : h.kind, name: h.name, x: h.x - ox, y: h.y - oy }));
+    const hubs = a.hubs.filter((h) => (roadCount.get(h.id) ?? 0) >= 2).map((h) => ({ id: h.id, kind: h.kind === 'boss' ? ('normal' as SpaceKind) : h.kind, name: h.name, x: h.x - ox, y: h.y - oy, ...(h.locked ? { locked: true } : {}) }));
     const keep = new Set(hubs.map((h) => h.id));
     const roads = a.roads.filter((r) => keep.has(r.from) && keep.has(r.to)).map((r) => ({ from: r.from, to: r.to, kinds: r.kinds, bow: r.bow }));
     return { hubs, roads };
@@ -227,6 +228,7 @@ export function generateArea(seed: string, n: number): GrownArea {
     const id = `${tag}-${h.id}`;
     const base = { id, kind, x: h.x + ox, y: h.y + oy };
     if (h.id === entry.id) return { ...base, name: entryName(peek.name) };
+    if (h.locked && kind === 'chest') return { ...base, name: `${adjective()} Vault`, locked: true };
     if (h.id === exit.id) return { ...base, name: `${adjective()} Gate`, boss: bossId, opens: `${GROWN_PREFIX}${n + 1}` };
     return { ...base, name: placeName(kind) };
   });

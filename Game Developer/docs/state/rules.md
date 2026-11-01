@@ -8,7 +8,7 @@ from `rules/src/index.ts`, never from the files inside.
 
 | File | What it holds |
 | --- | --- |
-| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (8) |
+| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (9) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
 | `src/data.ts` | the numbers from `data/*.json`, typed |
 | `src/world.ts` | `buildBoard(world)`: the board from the world's areas, hubs and roads (`docs/state/world.md`); `addArea`, `addRoad`, `setBounds`, `checkOpens` for the generator; `KIND_LETTERS`, `GROWN` |
@@ -20,7 +20,7 @@ from `rules/src/index.ts`, never from the files inside.
 | `src/hints.ts` | `hintFor(state, space, player, now)`: what touching a spot says; `countdown` |
 | `src/quests.ts` | the towns' errands: `newQuest`, `questProgress`, `questLine` |
 | `src/game.ts` | `newGame`, `apply`, `makeBoard`, `makeCharacter`; the board, landing, the shop and the bag, dice cards, the gamble, the tick |
-| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8), or null |
+| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8, 9), or null |
 | `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; the Summit opens `gen-1` |
 | `data/themes.json` | the grown areas: the eight themes with their names, adjectives and creatures, the words for places, the four creature shapes, the base numbers and the growth a tier, the cell |
 | `data/spaces.json` | the kinds of spot: label, road letter, the hint, how long a used spot waits |
@@ -31,7 +31,9 @@ from `rules/src/index.ts`, never from the files inside.
 | `data/uniques.json` | the uniques: slot, earliest tier, power, value, text |
 | `data/items.json` | the potion (four tenths of max HP), the mana potion (half the mana) and the four dice cards: text and price |
 | `data/quests.json` | the errands: how many are carried, the town's wait, the four kinds with their counts, pay and unique chance |
-| `data/surprises.json` | what a wild spot holds, as weights |
+| `data/surprises.json` | what a wild spot holds, as weights (a fight, a chest, a merchant, a gamble, a mini-boss, the theme's event) |
+| `data/events.json` | the themes' events on wild spots: a line and what it does |
+| `data/shapes.json` | two more shapes for the generator, each with a locked vault |
 | `data/progression.json` | the xp table, crits, flee, death, charge, mana a round, the guards, chests, the gamble, spawns |
 | `data/dice.json` | the die: 6 sides |
 | `test/fixtures/ring.json`, `ring.ts` | the first twelve-spot ring in today's shape, kept as a test board: `ringBoard()` |
@@ -40,14 +42,14 @@ from `rules/src/index.ts`, never from the files inside.
 ## The state
 
 ```
-GameState { version: 8, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem }
+GameState { version: 9, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem }
 Board     { start, width, height, spaces: { [id]: Space }, areas: { [id]: Area }, bestiary: { [id]: EnemyData } }
-Space     { id, kind, name, x, y, links, area, boss?, opens? }   x, y in world pixels; a road spot's name is ""
+Space     { id, kind, name, x, y, links, area, boss?, opens?, locked? }   x, y in world pixels; a road spot's name is ""
 Area      { id, name, theme, tier, levels: [lo, hi], mobs, miniBosses, bounds }
 Character { id, name, classId, level, xp, gold, hp, mana, maxHp, maxMana, attack, defense, space, steps, fight,
             items, equipment: { weapon, armour, helm, boots, trinket }, bag: GearItem[], abilities: { [id]: rank },
             opened: area ids, cooldowns: { [space]: until } (also charm, phoenix, quest:<town>), bossKills: { [space]: n },
-            offer, quests: Quest[], picks: string[][] }
+            offer, quests: Quest[], picks: string[][], keys: { [area]: n } }
 GearItem  { id, slot, rank, rarity, name, base, stats, affixes: Affix[], unique?, price }
 Fight     { enemy, round, charged, attackUp, barrier, evade, space, spawn, meter, strikes, sureCrit, windup, companion, mark,
             trap, skip, poisoned, weak, used }
@@ -76,8 +78,9 @@ still there and in an open area, else goes to the start; the rest is kept as it 
 uniques, the meters and the intents**: a piece's one `affix` becomes its `affixes`, a fight in progress gains the
 fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends). **8
 (2026-11-01) brought the errands, the trainer and the bag's limit**: a character gains `quests` and `picks`; a pick
-that sat in `offer` moves to `picks`. A state missing its seed or characters, or with a character of an unknown
-class, gives null; so does anything that is not a state we know. The holder then starts a fresh game.
+that sat in `offer` moves to `picks`. **9 (2026-11-01) brought the locked vaults**: a character gains `keys`. A state
+missing its seed or characters, or with a character of an unknown class, gives null; so does anything that is not a
+state we know. The holder then starts a fresh game.
 
 ## The actions
 
@@ -124,9 +127,10 @@ region actor stores answers by id). A refused action returns the **same** state 
 | --- | --- | --- |
 | town | HP and mana back to full; the shop and the trainer are open while you stand there; an errand paid, told or offered (below) | `rested { hp, mana }`, then `questDone`, `nothing { text }` or `offer` |
 | shop | nothing by itself; the shop is open while you stand there | none |
-| normal (the wilds) | what has spawned there, else a roll by `surprises.json`: a **fight** with one of the area's mobs (70), a **chest** (10), a **merchant** (8), a **gamble** (7), one of the area's **mini-bosses** (5) | `fight`, or `chest …`, `merchant`, `offer` |
+| normal (the wilds) | what has spawned there, else a roll by `surprises.json`: a **fight** with one of the area's mobs (70), a **chest** (10), a **merchant** (8), a **gamble** (7), one of the area's **mini-bosses** (5), **the theme's event** (8, `events.json`: a line, then a share of HP or mana, gold by the tier, a flask or a card; a hurt never takes the last point) | `fight`, or `chest …`, `merchant`, `offer`, `themeEvent { text, kind, amount }` and what followed |
 | chest | gold (`chest.gold` times the tier), gear of the tier's rank with a chance, a potion or a card with a chance; then empty for 5 minutes | `chest`, `gold`, `loot`, `found`; later `empty { until }` |
 | potion (spring) | one potion and one mana potion; then dry for 3 minutes | `found`, `found`; later `empty` |
+| chest, locked (a grown area's vault) | with the area's key (its mini-boss drops one, `keyFound`): the key spent, three times the gold, a piece never under epic, a unique three times in ten; without: `locked { mini }` and nothing | `locked`, or as a chest |
 | spell (shrine) | a new ability of the class, else a rank for one known (up to 3), else nothing; then quiet for 10 minutes | `learned { ability, rank }` or `nothing`; later `empty` |
 | boss | the boss fight, unless the boss is away (5 minutes after it fell, per character) | `fight`, or `nothing` |
 
@@ -346,6 +350,7 @@ Nothing here has been played; these are the first numbers to be felt and changed
 | `test/enemies.test.ts` | the intent told at the start and every round and used the round after; a wind-up told as one; every effect (poison and Ironbrow, drain, weaken, armour, evade, heal); every family has something to read; the bosses' second phases, hand-laid and grown |
 | `test/uniques.test.ts` | every unique's shape and every power's unique; making one; a legendary's two affixes; what bosses, minis and mobs drop; every power in play; a version-6 save coming up to date |
 | `test/quests.test.ts` | the errands: offered, every kind drawn, taken and declined with the town's wait, moved along by fights and chests, paid in town; the trainer's prices and refusals; the bag's limit, its question and the sale on the spot; the flasks by share and the spring's two |
+| `test/vaults.test.ts` | every theme's event and what it does (a hurt never to the last point); the two shapes with their vaults among the generator's; a vault locked, its key from the mini-boss once, its richer loot with the key spent; a version-8 save coming up |
 | `test/items.test.ts` | the shop (consumables, plain gear by rank, towns and merchants, refusals), selling, equip, unequip, drop, the dice cards |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |
 

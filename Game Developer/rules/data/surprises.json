@@ -3,5 +3,6 @@
   "chest": 10,
   "merchant": 8,
   "gamble": 7,
-  "miniboss": 5
+  "miniboss": 5,
+  "event": 8
 }

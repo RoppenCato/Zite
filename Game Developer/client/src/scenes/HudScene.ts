@@ -1,6 +1,6 @@
 // The fixed chrome over the world: the top panel (name, level, HP, mana, gold, where you are, the die box), a row of
-// chips (dice cards while a roll is pending, the gambler's question), the message line, and the Map, Bag, Log and Roll
-// buttons. It is its own scene so the world camera can scroll and zoom under it. It decides nothing: the buttons call
+// chips (dice cards while a roll is pending, the gambler's question), the message line, and the Map, World, Bag, Log
+// and Roll buttons. It is its own scene so the world camera can scroll and zoom under it. It decides nothing: the buttons call
 // the board scene, and the board scene tells it what to show.
 
 import Phaser from 'phaser';
@@ -8,6 +8,7 @@ import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
+import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -18,9 +19,10 @@ export interface HudSceneDeps {
 
 /** Where the buttons sit, in design pixels (the pane's scripts tap them here). */
 export const BUTTONS = {
-  map: { x: 72, y: 836, w: 112, h: 36 },
-  bag: { x: 206, y: 836, w: 112, h: 36 },
-  log: { x: 340, y: 836, w: 112, h: 36 },
+  map: { x: 60, y: 836, w: 90, h: 36 },
+  world: { x: 158, y: 836, w: 90, h: 36 },
+  bag: { x: 256, y: 836, w: 90, h: 36 },
+  log: { x: 354, y: 836, w: 90, h: 36 },
   roll: { x: 206, y: 884, w: 300, h: 52 },
 } as const;
 const MESSAGE_Y = 776;
@@ -130,7 +132,7 @@ export class HudScene extends Phaser.Scene {
     this.message = this.add
       .text(DESIGN_WIDTH / 2, MESSAGE_Y, '', {
         fontFamily: FONT,
-        fontSize: '15px',
+        fontSize: settings.font(15),
         color: COLORS.text,
         align: 'center',
         wordWrap: { width: DESIGN_WIDTH - 32 },
@@ -138,8 +140,9 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     const board = (): BoardScene => this.scene.get('board') as BoardScene;
-    const { map, bag, log, roll } = BUTTONS;
+    const { map, world, bag, log, roll } = BUTTONS;
     this.mapLabel = makeButton(this, map.x, map.y, map.w, map.h, 'Map', COLORS.log, '16px', () => board().toggleMap()).label;
+    makeButton(this, world.x, world.y, world.w, world.h, 'World', COLORS.log, '16px', () => board().openAtlas());
     makeButton(this, bag.x, bag.y, bag.w, bag.h, 'Bag', COLORS.log, '16px', () => board().openBag());
     makeButton(this, log.x, log.y, log.w, log.h, 'Log', COLORS.log, '16px', () => board().downloadLog());
     this.rollButton = makeButton(this, roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '24px', () => board().roll()).button;

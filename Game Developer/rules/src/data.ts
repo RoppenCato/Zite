@@ -13,7 +13,9 @@ import surprisesJson from '../data/surprises.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
-import type { World } from './world.ts';
+import shapesJson from '../data/shapes.json' with { type: 'json' };
+import eventsJson from '../data/events.json' with { type: 'json' };
+import type { World, WorldHub, WorldRoad } from './world.ts';
 import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind } from './types.ts';
 
 export interface ClassData {
@@ -193,7 +195,17 @@ export const PROGRESSION = progressionJson as ProgressionData;
 export const ITEMS = itemsJson as Record<string, ItemData>;
 export const GEAR = gearJson as GearData;
 /** The odds of what a normal spot holds, as weights. */
-export const SURPRISES = surprisesJson as Record<'fight' | 'chest' | 'merchant' | 'gamble' | 'miniboss', number>;
+export const SURPRISES = surprisesJson as Record<'fight' | 'chest' | 'merchant' | 'gamble' | 'miniboss' | 'event', number>;
+/** More shapes for the generator, laid inside one cell. */
+export const SHAPES = (shapesJson as unknown as { shapes: { id: string; hubs: WorldHub[]; roads: WorldRoad[] }[] }).shapes;
+/** What a wild spot does now and then besides a fight, by theme. */
+export interface ThemeEvent {
+  text: string;
+  kind: 'heal' | 'hurt' | 'gold' | 'mana' | 'flask' | 'card';
+  value: number;
+}
+const { _about: _eventsAbout, ...eventEntries } = eventsJson as unknown as { _about: string } & Record<string, ThemeEvent>;
+export const EVENTS = eventEntries as Record<string, ThemeEvent>;
 export const THEMES = themesJson as ThemesData;
 const { _about: _uniquesAbout, ...uniqueEntries } = uniquesJson as unknown as { _about: string } & Record<string, UniqueData>;
 export const UNIQUES = uniqueEntries as Record<string, UniqueData>;

@@ -16,6 +16,8 @@ export interface WorldHub {
    * may be named by its grown id ("gen-1"): it is laid when the boss falls. */
   boss?: string;
   opens?: string | null;
+  /** A chest that needs the area's key. */
+  locked?: boolean;
 }
 
 /**
@@ -101,6 +103,7 @@ export function addArea(board: Board, area: WorldArea, worldName = 'world'): voi
     if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${worldName}: boss spot "${hub.id}" names no boss`);
     if (hub.name === '') throw new Error(`world ${worldName}: hub "${hub.id}" has no name`);
     const space: Space = { id: hub.id, kind: hub.kind, name: hub.name, x: hub.x, y: hub.y, links: [], area: area.id };
+    if (hub.locked && hub.kind === 'chest') space.locked = true;
     if (hub.kind === 'boss') {
       space.boss = hub.boss;
       space.opens = hub.opens ?? null;

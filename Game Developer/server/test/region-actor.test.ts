@@ -61,7 +61,7 @@ describe('a region actor', () => {
     const me = actor.snapshot().state.characters[P]!;
     expect(me).toMatchObject({ space: 's3', steps: 0 });
     expect(me.items.potion).toBeGreaterThanOrEqual(1); // whatever the wilds held, the potion bought is still there
-    expect(me.gold).toBeGreaterThanOrEqual(35);
+    expect(me.gold).toBeGreaterThanOrEqual(25); // fifty less the potion; whatever the wilds held took none
   });
 
   it('remembers a refused action without bumping the version', async () => {

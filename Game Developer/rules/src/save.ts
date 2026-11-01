@@ -42,7 +42,17 @@ interface StateV5 {
   spawns: GameState['spawns'];
   nextItem: number;
 }
-/** A version-7 state: today's shape, but a character carried no errands and its level's pick sat in `offer`. */
+/** A version-8 state: today's shape, but a character carried no keys. */
+interface StateV8 {
+  version: 8;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** A version-7 state: the shape of 8, but a character carried no errands and its level's pick sat in `offer`. */
 interface StateV7 {
   version: 7;
   seed: string;
@@ -89,25 +99,42 @@ interface OldCharacter {
  * the fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends).
  * 7 → 8 (2026-11-01): errands and the bag's limit. A character gains `quests` and `picks`; a pick that sat in `offer`
  * moves to `picks`.
+ * 8 → 9 (2026-11-01): locked vaults. A character gains `keys`.
  */
 export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 7) return fromVersion7(raw as StateV7);
+  if (candidate.version === 8) return fromVersion8(raw as StateV8);
+  if (candidate.version === 7) {
+    const v8 = fromVersion7(raw as StateV7);
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+  }
   if (candidate.version === 6) {
     const v7 = fromVersion6(raw as StateV6);
-    return v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
   }
   if (candidate.version === 5) {
     const v6 = fromVersion5(raw as StateV5);
     const v7 = v6 ? fromVersion6(v6 as unknown as StateV6) : null;
-    return v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
   }
   if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
     return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
   }
   return null;
+}
+
+function fromVersion8(old: StateV8): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    characters[id] = { ...c, keys: c.keys ?? {} };
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
 }
 
 function fromVersion7(old: StateV7): GameState | null {

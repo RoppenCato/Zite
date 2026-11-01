@@ -173,7 +173,7 @@ function choose(state: GameState, now: number): string[] {
       }
       case 'chest':
       case 'potion':
-        score = cooling ? 0 : 30;
+        score = cooling || (space.locked && !(me.keys[space.area] ?? 0)) ? 0 : 30;
         break;
       case 'spell':
         score = cooling ? 0 : 35;

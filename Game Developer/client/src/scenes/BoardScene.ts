@@ -27,6 +27,8 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
+import { settings } from '../settings.ts';
+import { tips } from '../tips.ts';
 import type { FightOutcome } from './FightScene.ts';
 import type { Chip, HudScene } from './HudScene.ts';
 
@@ -95,6 +97,9 @@ export class BoardScene extends Phaser.Scene {
   private readonly rings = new Map<string, Phaser.GameObjects.Arc>();
   private readonly circles = new Map<string, Phaser.GameObjects.Arc>();
   private readonly names: Phaser.GameObjects.Text[] = [];
+  /** Every drawn thing of a spot but its ring, to hide what the camera cannot see (mine, 2026-11-01: the board grows to hundreds of spots). */
+  private readonly spotParts = new Map<string, { x: number; y: number; parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Text)[]; names: Phaser.GameObjects.Text[] }>();
+  private lastCull = { x: NaN, y: NaN, zoom: NaN, count: -1 };
   private readonly bossLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly covers = new Map<string, Phaser.GameObjects.Rectangle>();
   private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
@@ -156,7 +161,7 @@ export class BoardScene extends Phaser.Scene {
       this.setBusy(true);
       this.offerChoices();
     } else {
-      this.setMessage(`Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
+      this.setMessage(tips.take('start') ?? `Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
     }
   }
 
@@ -167,14 +172,8 @@ export class BoardScene extends Phaser.Scene {
 
   override update(_time: number, delta: number): void {
     this.log.frame(delta);
-    const zoom = this.cameras.main.zoom;
-    if (zoom !== this.lastZoom) {
-      const hidden = zoom < NAME_ZOOM;
-      if (this.lastZoom < 0 || hidden !== this.lastZoom < NAME_ZOOM) {
-        for (const name of this.names) name.setVisible(!hidden);
-      }
-      this.lastZoom = zoom;
-    }
+    this.lastZoom = this.cameras.main.zoom;
+    this.cull();
   }
 
   // ---- what the HUD's buttons call ---------------------------------------------------------------------------------
@@ -207,6 +206,25 @@ export class BoardScene extends Phaser.Scene {
   openBag(): void {
     if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag')) return;
     this.scene.launch('bag');
+  }
+
+  /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
+  openAtlas(): void {
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas')) return;
+    this.scene.launch('atlas');
+  }
+
+  atlasClosed(): void {
+    this.scene.stop('atlas');
+    this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
+  }
+
+  /** From the atlas: close it and frame the area on the board. */
+  atlasFrame(areaId: string): void {
+    this.atlasClosed();
+    const b = this.game_.state.board.areas[areaId]?.bounds;
+    if (b) this.frame([{ x: b.x, y: b.y }, { x: b.x + b.width, y: b.y + b.height }]);
   }
 
   /** The bag is closed: the numbers may have changed. */
@@ -310,11 +328,7 @@ export class BoardScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.setBounds(0, 0, board.width, board.height);
     this.minZoom = this.overviewZoom();
-    if (this.lastZoom >= 0) {
-      // Names drawn now follow the zoom's rule for names, like the rest.
-      const hidden = cam.zoom < NAME_ZOOM;
-      for (const name of this.names) name.setVisible(!hidden);
-    }
+    this.lastCull.count = -1; // the new spots take the view's rule at the next frame
     this.refreshCovers();
     if (this.drawn.size > fresh.length) this.log.note(`board grown: ${fresh.map((a) => a.name).join(', ')}; ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
   }
@@ -353,7 +367,11 @@ export class BoardScene extends Phaser.Scene {
     ring.setStrokeStyle(4, LIT, 1).setVisible(false).setDepth(4);
     this.rings.set(space.id, ring);
 
+    const parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Text)[] = [];
+    const spotNames: Phaser.GameObjects.Text[] = [];
+    this.spotParts.set(space.id, { x: space.x, y: space.y, parts, names: spotNames });
     const circle = this.add.circle(space.x, space.y, radius, color, 1).setDepth(5);
+    parts.push(circle);
     circle.setStrokeStyle(space.kind === 'boss' ? 6 : 3, 0xffffff, space.kind === 'boss' ? 0.7 : 0.25);
     circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
     // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
@@ -362,12 +380,14 @@ export class BoardScene extends Phaser.Scene {
     });
     this.circles.set(space.id, circle);
 
-    const letter = KIND_LETTERS_SHOWN[space.kind];
+    const letter = space.locked ? 'V' : KIND_LETTERS_SHOWN[space.kind];
     if (letter) {
-      this.add
-        .text(space.x, space.y, letter, { fontFamily: FONT, fontSize: space.kind === 'boss' ? '26px' : '20px', fontStyle: 'bold', color: '#101318', resolution: 2 })
-        .setOrigin(0.5)
-        .setDepth(6);
+      parts.push(
+        this.add
+          .text(space.x, space.y, letter, { fontFamily: FONT, fontSize: space.kind === 'boss' ? '26px' : '20px', fontStyle: 'bold', color: '#101318', resolution: 2 })
+          .setOrigin(0.5)
+          .setDepth(6),
+      );
     }
     if (space.name) {
       // Only hubs have names; the wilds of the road show their circle and nothing more.
@@ -376,6 +396,7 @@ export class BoardScene extends Phaser.Scene {
         .setOrigin(0.5, 0)
         .setDepth(6);
       this.names.push(name);
+      spotNames.push(name);
       if (space.kind === 'boss') {
         const label = this.add
           .text(space.x, space.y + radius + 20, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', resolution: 2 })
@@ -383,7 +404,32 @@ export class BoardScene extends Phaser.Scene {
           .setDepth(6);
         this.bossLabels.set(space.id, label);
         this.names.push(label);
+        spotNames.push(label);
       }
+    }
+  }
+
+  /**
+   * Hide what the camera cannot see: every spot's circle, letter and names outside the view and a margin. Run when the
+   * camera has moved or zoomed or the board has grown. The names also keep their zoom rule; rings and the token are
+   * never hidden here.
+   */
+  private cull(): void {
+    const cam = this.cameras.main;
+    const v = cam.worldView;
+    const count = this.spotParts.size;
+    if (v.x === this.lastCull.x && v.y === this.lastCull.y && cam.zoom === this.lastCull.zoom && count === this.lastCull.count) return;
+    this.lastCull = { x: v.x, y: v.y, zoom: cam.zoom, count };
+    const margin = 120;
+    const left = v.x - margin;
+    const right = v.right + margin;
+    const top = v.y - margin;
+    const bottom = v.bottom + margin;
+    const namesHidden = cam.zoom < NAME_ZOOM;
+    for (const spot of this.spotParts.values()) {
+      const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom;
+      for (const p of spot.parts) p.setVisible(inView);
+      for (const n of spot.names) n.setVisible(inView && !namesHidden);
     }
   }
 
@@ -483,7 +529,7 @@ export class BoardScene extends Phaser.Scene {
     } else {
       // startFollow jumps to the token; put the camera back and let the lerp carry it there.
       cam.setScroll(scrollX, scrollY);
-      cam.zoomTo(FOLLOW_ZOOM, CAMERA_MS, 'Sine.easeInOut', true);
+      cam.zoomTo(FOLLOW_ZOOM, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
     }
     this.setFollowing(true);
   }
@@ -505,8 +551,8 @@ export class BoardScene extends Phaser.Scene {
     const b = this.openBounds();
     this.minZoom = this.overviewZoom();
     this.unfollow();
-    cam.pan(b.x + b.width / 2, b.y + b.height / 2, CAMERA_MS, 'Sine.easeInOut', true);
-    cam.zoomTo(this.minZoom, CAMERA_MS, 'Sine.easeInOut', true);
+    cam.pan(b.x + b.width / 2, b.y + b.height / 2, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
+    cam.zoomTo(this.minZoom, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
     this.log.note('map overview');
   }
 
@@ -529,8 +575,8 @@ export class BoardScene extends Phaser.Scene {
     maxY += FRAME_PAD;
     const zoom = Phaser.Math.Clamp(Math.min(cam.width / (maxX - minX), cam.height / (maxY - minY)), this.minZoom, FOLLOW_ZOOM);
     this.unfollow();
-    cam.pan((minX + maxX) / 2, (minY + maxY) / 2, CAMERA_MS, 'Sine.easeInOut', true);
-    cam.zoomTo(zoom, CAMERA_MS, 'Sine.easeInOut', true);
+    cam.pan((minX + maxX) / 2, (minY + maxY) / 2, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
+    cam.zoomTo(zoom, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
   }
 
   private setZoom(zoom: number): void {
@@ -642,7 +688,8 @@ export class BoardScene extends Phaser.Scene {
     this.tweens.add({ targets: rings, alpha: 0.25, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.frame([this.token, ...options.map((o) => board.spaces[o.space]!)]);
     this.hud?.setChips(cards);
-    this.setMessage(`${lead || `Rolled ${value}.`} Tap a lit spot to walk there.`);
+    const tip = tips.take('choice');
+    this.setMessage(`${lead || `Rolled ${value}.`} ${tip ?? 'Tap a lit spot to walk there.'}`);
   }
 
   /** The dice cards in the bag, as chips for the HUD's row. Exactly N turns the row into the numbers. */
@@ -774,7 +821,8 @@ export class BoardScene extends Phaser.Scene {
         return;
       }
       this.flashHint(id);
-      this.setMessage(hintFor(this.game_.state, id, this.game_.player, this.game_.now()));
+      const bossTip = space.kind === 'boss' ? tips.take('boss') : null;
+      this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())}${bossTip ? ` ${bossTip}` : ''}`);
       return;
     }
     const path = this.choices_.get(id);
@@ -934,6 +982,15 @@ export class BoardScene extends Phaser.Scene {
           break;
         case 'bagFull':
           parts.push(e.sold !== null ? `No room in the bag: ${e.gear.name} sold for ${e.sold} gold.` : '');
+          break;
+        case 'locked':
+          parts.push(`Locked. ${e.mini ? `The ${creature(e.mini, this.game_.state.board.bestiary)?.name ?? 'mini-boss'} prowling these wilds carries the key.` : ''}`.trim());
+          break;
+        case 'keyFound':
+          parts.push(`It carried a key: the vault of ${this.game_.state.board.areas[e.area]?.name ?? e.area} opens to you.`);
+          break;
+        case 'themeEvent':
+          parts.push(e.text);
           break;
         case 'levelled':
           parts.push(`Level ${e.level}!`);

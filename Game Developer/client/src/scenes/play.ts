@@ -4,6 +4,7 @@
 
 import type { GameLog } from '../game-log.ts';
 import type { LocalGame } from '../local-game.ts';
+import { AtlasScene } from './AtlasScene.ts';
 import { BagScene } from './BagScene.ts';
 import { BoardScene } from './BoardScene.ts';
 import { FightScene } from './FightScene.ts';
@@ -17,5 +18,6 @@ export function playScenes(game: LocalGame, log: GameLog): { key: string; scene:
     { key: 'fight', scene: new FightScene({ game, log }) },
     { key: 'shop', scene: new ShopScene({ game, log }) },
     { key: 'bag', scene: new BagScene({ game, log }) },
+    { key: 'atlas', scene: new AtlasScene({ game, log }) },
   ];
 }

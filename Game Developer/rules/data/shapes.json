@@ -1,0 +1,64 @@
+{
+  "_about": "More shapes for the generator (mine, 2026-11-01): laid like a hand-laid area, inside one cell (1400 by 1900), with a locked chest where a hub says so. The generator takes these beside the three hand-laid areas when it dresses a grown area.",
+  "shapes": [
+    {
+      "id": "ladder",
+      "hubs": [
+        { "id": "a1", "kind": "town",   "name": "a1", "x": 300,  "y": 300 },
+        { "id": "a2", "kind": "normal", "name": "a2", "x": 300,  "y": 800 },
+        { "id": "a3", "kind": "chest",  "name": "a3", "x": 300,  "y": 1300, "locked": true },
+        { "id": "a4", "kind": "normal", "name": "a4", "x": 300,  "y": 1650 },
+        { "id": "b1", "kind": "normal", "name": "b1", "x": 1000, "y": 250 },
+        { "id": "b2", "kind": "shop",   "name": "b2", "x": 1050, "y": 750 },
+        { "id": "b3", "kind": "potion", "name": "b3", "x": 1000, "y": 1250 },
+        { "id": "b4", "kind": "normal", "name": "b4", "x": 1050, "y": 1650 },
+        { "id": "c1", "kind": "spell",  "name": "c1", "x": 650,  "y": 550 },
+        { "id": "c2", "kind": "normal", "name": "c2", "x": 650,  "y": 1050 },
+        { "id": "c3", "kind": "normal", "name": "c3", "x": 650,  "y": 1500 }
+      ],
+      "roads": [
+        { "from": "a1", "to": "a2", "kinds": "nnnn",  "bow": 30 },
+        { "from": "a2", "to": "a3", "kinds": "npnn",  "bow": 30 },
+        { "from": "a3", "to": "a4", "kinds": "nn",    "bow": 0 },
+        { "from": "b1", "to": "b2", "kinds": "nnnn",  "bow": 30 },
+        { "from": "b2", "to": "b3", "kinds": "nntn",  "bow": 30 },
+        { "from": "b3", "to": "b4", "kinds": "nnn",   "bow": 0 },
+        { "from": "a1", "to": "c1", "kinds": "nn",    "bow": 0 },
+        { "from": "c1", "to": "b1", "kinds": "nn",    "bow": 0 },
+        { "from": "a2", "to": "c2", "kinds": "nn",    "bow": 0 },
+        { "from": "c2", "to": "b2", "kinds": "nn",    "bow": 0 },
+        { "from": "c1", "to": "c2", "kinds": "ntn",   "bow": 0 },
+        { "from": "c2", "to": "c3", "kinds": "nnn",   "bow": 0 },
+        { "from": "a3", "to": "c3", "kinds": "nn",    "bow": 0 },
+        { "from": "c3", "to": "b3", "kinds": "nn",    "bow": 0 },
+        { "from": "a4", "to": "b4", "kinds": "nnpnn", "bow": 40 }
+      ]
+    },
+    {
+      "id": "wheel",
+      "hubs": [
+        { "id": "m",  "kind": "town",   "name": "m",  "x": 700,  "y": 950 },
+        { "id": "r1", "kind": "spell",  "name": "r1", "x": 700,  "y": 350 },
+        { "id": "r2", "kind": "normal", "name": "r2", "x": 1150, "y": 650 },
+        { "id": "r3", "kind": "shop",   "name": "r3", "x": 1150, "y": 1250 },
+        { "id": "r4", "kind": "normal", "name": "r4", "x": 700,  "y": 1550 },
+        { "id": "r5", "kind": "chest",  "name": "r5", "x": 250,  "y": 1250, "locked": true },
+        { "id": "r6", "kind": "potion", "name": "r6", "x": 250,  "y": 650 }
+      ],
+      "roads": [
+        { "from": "r1", "to": "r2", "kinds": "nnnn",  "bow": 40 },
+        { "from": "r2", "to": "r3", "kinds": "nntnn", "bow": 40 },
+        { "from": "r3", "to": "r4", "kinds": "nnnn",  "bow": 40 },
+        { "from": "r4", "to": "r5", "kinds": "nnnn",  "bow": 40 },
+        { "from": "r5", "to": "r6", "kinds": "nnpnn", "bow": 40 },
+        { "from": "r6", "to": "r1", "kinds": "nnnn",  "bow": 40 },
+        { "from": "m",  "to": "r1", "kinds": "nnnnn", "bow": 0 },
+        { "from": "m",  "to": "r2", "kinds": "nnnn",  "bow": 0 },
+        { "from": "m",  "to": "r3", "kinds": "nnnn",  "bow": 0 },
+        { "from": "m",  "to": "r4", "kinds": "nnnnn", "bow": 0 },
+        { "from": "m",  "to": "r5", "kinds": "nnnn",  "bow": 0 },
+        { "from": "m",  "to": "r6", "kinds": "nnnn",  "bow": 0 }
+      ]
+    }
+  ]
+}

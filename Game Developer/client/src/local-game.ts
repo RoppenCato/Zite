@@ -16,6 +16,8 @@ import {
   type Rng,
 } from '../../rules/src/index.ts';
 
+import { tips } from './tips.ts';
+
 export const SAVE_KEY = 'boardworld.save';
 export const SAVE_VERSION = 1;
 /** The one local player. Accounts come with the server. */
@@ -96,7 +98,9 @@ export class LocalGame {
   }
 
   /** Throw the save away; the next load has no game and shows the character screen. */
+  /** Throw the save away (and the first minutes' tips with it): the next load is the character screen. */
   reset(): void {
+    tips.clear();
     try {
       this.storage?.removeItem(SAVE_KEY);
     } catch {
