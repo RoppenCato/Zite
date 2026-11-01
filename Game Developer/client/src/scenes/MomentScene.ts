@@ -36,6 +36,7 @@ const HOLD_MS = 1300;
 export class MomentScene extends Phaser.Scene {
   private queue: Moment[] = [];
   private showing = false;
+  private waiting: (() => void)[] = [];
 
   constructor() {
     super('moment');
@@ -114,10 +115,17 @@ export class MomentScene extends Phaser.Scene {
     if (!this.showing) this.next();
   }
 
+  /** Run this once nothing is on show: a question waits for the "Rested" card before it opens. */
+  whenQuiet(then: () => void): void {
+    if (this.showing) this.waiting.push(then);
+    else then();
+  }
+
   private next(): void {
     const m = this.queue.shift();
     if (!m) {
       this.showing = false;
+      for (const then of this.waiting.splice(0)) then();
       return;
     }
     this.showing = true;

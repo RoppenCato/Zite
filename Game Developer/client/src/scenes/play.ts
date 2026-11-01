@@ -5,6 +5,7 @@
 import type { GameLog } from '../game-log.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { AtlasScene } from './AtlasScene.ts';
+import { AskScene } from './AskScene.ts';
 import { BagScene } from './BagScene.ts';
 import { BoardScene } from './BoardScene.ts';
 import { FightScene } from './FightScene.ts';
@@ -23,6 +24,7 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'bag', scene: new BagScene({ game, log }) },
     { key: 'atlas', scene: new AtlasScene({ game, log }) },
     { key: 'reveal', scene: new RevealScene({ log }) },
+    { key: 'ask', scene: new AskScene() },
     { key: 'guide', scene: new GuideScene({ game }) },
     { key: 'moment', scene: new MomentScene() },
   ];

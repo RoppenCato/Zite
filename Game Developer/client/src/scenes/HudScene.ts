@@ -213,6 +213,8 @@ export class HudScene extends Phaser.Scene {
     const h = Math.max(44, Math.ceil(this.message.height) + 14);
     const y = MESSAGE_BOTTOM - h / 2;
     this.message.setY(y);
+    // The chips stand clear above the box, however tall it grew.
+    this.chipRow.setY(MESSAGE_BOTTOM - h - 24);
     if (this.messagePlate) {
       resizePlate(this.messagePlate, MESSAGE_W, h);
       this.messagePlate.setY(y);

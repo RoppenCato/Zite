@@ -51,6 +51,7 @@ import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import type { FightOutcome, FightScene } from './FightScene.ts';
+import type { AskRequest } from './AskScene.ts';
 import type { Chip, HudScene } from './HudScene.ts';
 import { moments } from './MomentScene.ts';
 
@@ -151,6 +152,8 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** True while a question's window is up. */
+  private asking = false;
   /** True while the token is on the road. */
   private walking = false;
   /** True while the camera follows the token; false after a drag, in the overview, or while a roll is framed. */
@@ -224,7 +227,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** Take up whatever the state is in the middle of: a fight, a question, a pending roll, or nothing. */
   private resume(message?: string): void {
-    if (this.scene.isActive('fight') || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas')) return;
+    if (this.scene.isActive('fight') || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas') || this.scene.isActive('ask') || this.scene.isActive('reveal')) return;
     const me = this.game_.me;
     this.clearChoices();
     if (me.fight) {
@@ -385,7 +388,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** The bag: what you wear and carry. Not while a fight or a shop is up. */
   openBag(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal') || this.scene.isActive('ask')) return;
     if (this.walking) {
       sfx.play('ui/tap-denied');
       return;
@@ -402,7 +405,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
   openAtlas(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal') || this.scene.isActive('ask')) return;
     if (this.walking) {
       sfx.play('ui/tap-denied');
       return;
@@ -467,10 +470,12 @@ export class BoardScene extends Phaser.Scene {
 
   /** The gambler's answer. */
   answerGamble(choice: 'high' | 'low' | 'pass'): void {
+    this.closeAsk();
     this.send({ type: 'gamble', player: this.game_.player, choice }, (events) => {
       this.hud?.setChips([]);
       const gambled = events.find((e) => e.type === 'gambled');
       if (gambled?.type === 'gambled') {
+        moments(this)?.find('item_gold', gambled.won ? `You win ${Math.abs(gambled.delta)} gold!` : `You lose ${Math.abs(gambled.delta)} gold`, `The die shows ${gambled.roll}.`, gambled.won ? 0xe8b84a : 0xff7a5c);
         this.log.note(`gambled ${choice}: rolled ${gambled.roll}, ${gambled.won ? 'won' : 'lost'} ${Math.abs(gambled.delta)}`);
         this.finish(`The die shows ${gambled.roll}: you ${gambled.won ? 'win' : 'lose'} ${Math.abs(gambled.delta)} gold.`);
       } else {
@@ -1201,36 +1206,72 @@ export class BoardScene extends Phaser.Scene {
     else if (me.picks.length) this.offerPick();
   }
 
-  /** A level's pick: the two abilities as chips; the one tapped is learned (mine, 2026-11-01). */
+  /** A question in its window (`AskScene`), once any card on show has gone. */
+  private ask(request: AskRequest): void {
+    this.setBusy(true);
+    // A flag, not isActive: the last window's stop may still be queued when the next question comes in the same frame.
+    const open = () => {
+      if (this.asking) return;
+      this.asking = true;
+      this.scene.launch('ask', request);
+    };
+    const m = moments(this);
+    if (m) m.whenQuiet(open);
+    else open();
+  }
+
+  /** An answer went out: the window goes, and the tap that closed it stays off the board. */
+  private closeAsk(): void {
+    if (!this.asking) return;
+    this.asking = false;
+    this.scene.stop('ask');
+    this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
+  }
+
+  /** A level's pick: the two abilities in a window; the one tapped is learned (mine, 2026-11-01). */
   private offerPick(): void {
     const options = this.game_.me.picks[0];
     if (!options) return;
-    this.setBusy(true);
-    sfx.play('ui/pick-appear');
     const name = (id: string) => ABILITIES[id]?.name ?? id;
     const known = (id: string) => this.game_.me.abilities[id] ?? 0;
-    this.setMessage(`Level ${this.game_.me.level}: pick one. ${options.map((id) => `${name(id)}: ${ABILITIES[id]?.text ?? ''}`).join(' ')}`);
-    this.hud?.setChips(options.map((id) => ({ text: known(id) ? `${name(id)} R${known(id) + 1}` : name(id), onTap: () => this.answerPick(id) })));
+    this.setMessage(`Level ${this.game_.me.level}: pick one.`);
+    this.ask({
+      icon: 'mark_star',
+      color: 0xc084fc,
+      title: `Level ${this.game_.me.level}: learn one`,
+      text: 'You can only take one of these now.',
+      options: options.map((id) => ({ label: known(id) ? `${name(id)}, rank ${known(id) + 1}` : name(id), color: 0x8e6ad9, note: ABILITIES[id]?.text, onTap: () => this.answerPick(id) })),
+    });
   }
 
   /** A town's errand: Take it or Not now (mine, 2026-11-01). */
   private offerQuest(): void {
     const offer = this.game_.me.offer;
     if (!offer || offer.kind !== 'quest') return;
-    this.setBusy(true);
     const q = offer.quest;
-    this.setMessage(`An errand from ${this.game_.state.board.spaces[q.town]?.name ?? 'the town'}: ${q.text} Pays ${q.gold} gold and ${q.xp} xp${q.unique ? ', maybe a unique' : ''}.`);
-    this.hud?.setChips([
-      { text: 'Take it', onTap: () => this.answerQuest(true) },
-      { text: 'Not now', onTap: () => this.answerQuest(false) },
-    ]);
+    const town = this.game_.state.board.spaces[q.town]?.name ?? 'the town';
+    this.setMessage(`An errand from ${town}.`);
+    this.ask({
+      icon: 'mark_scroll',
+      color: 0xe8b84a,
+      title: `An errand from ${town}`,
+      text: q.text,
+      pays: `Pays ${q.gold} gold and ${q.xp} xp${q.unique ? ', maybe a unique' : ''}`,
+      options: [
+        { label: 'Take it', color: COLORS.button, onTap: () => this.answerQuest(true) },
+        { label: 'Not now', color: COLORS.log, onTap: () => this.answerQuest(false) },
+      ],
+    });
   }
 
   answerQuest(accept: boolean): void {
+    this.closeAsk();
     this.send({ type: 'quest', player: this.game_.player, accept }, (events) => {
       this.hud?.setChips([]);
       const taken = events.find((e) => e.type === 'questTaken');
       if (taken) sfx.play('ui/errand-take');
+      if (taken?.type === 'questTaken') moments(this)?.find('mark_scroll', 'Errand taken', taken.quest.text, 0xe8b84a);
       this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
       this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
     });
@@ -1240,16 +1281,22 @@ export class BoardScene extends Phaser.Scene {
   private offerKeep(): void {
     const offer = this.game_.me.offer;
     if (!offer || offer.kind !== 'loot') return;
-    this.setBusy(true);
     const g = offer.gear;
-    this.setMessage(`Your bag is full. ${describeGear(g)}: sell it here for ${sellPrice(g)} gold, or leave it?`);
-    this.hud?.setChips([
-      { text: `Sell for ${sellPrice(g)}`, onTap: () => this.answerKeep('sell') },
-      { text: 'Leave it', onTap: () => this.answerKeep('drop') },
-    ]);
+    this.setMessage('Your bag is full.');
+    this.ask({
+      icon: 'item_gold',
+      color: 0xe8b84a,
+      title: 'Your bag is full',
+      text: describeGear(g),
+      options: [
+        { label: `Sell it for ${sellPrice(g)} gold`, color: COLORS.button, onTap: () => this.answerKeep('sell') },
+        { label: 'Leave it', color: COLORS.log, onTap: () => this.answerKeep('drop') },
+      ],
+    });
   }
 
   answerKeep(choice: 'sell' | 'drop'): void {
+    this.closeAsk();
     this.send({ type: 'keep', player: this.game_.player, choice }, (events) => {
       this.hud?.setChips([]);
       const sold = events.find((e) => e.type === 'sold');
@@ -1259,10 +1306,12 @@ export class BoardScene extends Phaser.Scene {
   }
 
   answerPick(ability: string): void {
+    this.closeAsk();
     this.send({ type: 'pick', player: this.game_.player, ability }, (events) => {
       this.hud?.setChips([]);
       const picked = events.find((e) => e.type === 'picked');
       if (picked?.type === 'picked') {
+        moments(this)?.find('mark_star', ABILITIES[picked.ability]?.name ?? picked.ability, `Learned, rank ${picked.rank}. ${ABILITIES[picked.ability]?.text ?? ''}`, 0xc084fc);
         this.log.note(`picked ${picked.ability} rank ${picked.rank}`);
         this.finish(`Learned ${ABILITIES[picked.ability]?.name ?? picked.ability}${picked.rank > 1 ? `, rank ${picked.rank}` : ''}. ${ABILITIES[picked.ability]?.text ?? ''}`.trim());
       } else {
@@ -1275,13 +1324,19 @@ export class BoardScene extends Phaser.Scene {
   private offerGamble(): void {
     const offer = this.game_.me.offer;
     if (!offer || offer.kind !== 'gamble') return;
-    this.setBusy(true);
-    this.setMessage(`A gambler offers double or nothing on ${offer.stake} gold. The die: high (4 to 6) or low (1 to 3)?`);
-    this.hud?.setChips([
-      { text: 'High', onTap: () => this.answerGamble('high') },
-      { text: 'Low', onTap: () => this.answerGamble('low') },
-      { text: 'Walk on', onTap: () => this.answerGamble('pass') },
-    ]);
+    this.setMessage('A gambler stops you.');
+    this.ask({
+      icon: 'item_gold',
+      color: 0xe8b84a,
+      title: 'A gambler stops you',
+      text: 'Double or nothing. Call the die.',
+      pays: `Stake: ${offer.stake} gold`,
+      options: [
+        { label: 'High: 4 to 6', color: COLORS.button, onTap: () => this.answerGamble('high') },
+        { label: 'Low: 1 to 3', color: COLORS.button, onTap: () => this.answerGamble('low') },
+        { label: 'Walk on', color: COLORS.log, onTap: () => this.answerGamble('pass') },
+      ],
+    });
   }
 
   private onSpaceTap(id: string): void {
@@ -1448,6 +1503,9 @@ export class BoardScene extends Phaser.Scene {
     this.setMessage(message);
     this.refreshHud();
     this.setBusy(false);
+    // Another question still owed (a second pick, an offer behind it) asks now; left alone, Roll would only be refused.
+    const me = this.game_.me;
+    if (!me.fight && (me.offer || me.picks.length)) this.offerChoice();
   }
 
   private setBusy(busy: boolean): void {
