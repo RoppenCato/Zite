@@ -325,3 +325,21 @@ too small to see, the walk's body did not bob or lean. The pivot was already the
   falling, the ground contact with the legs still up, settled, then two frames fading.
 
 28 frames, three over Miles, GD's "about 25"; the atlas still fits 1024 by 2048 and shrinks to a palette PNG at delivery.
+
+Robin, 2026-11-01, an anatomy and proportion guide pasted in (the head 5 to 8 percent smaller, a longer torso, wider
+shoulders, a chest, waist and hips, elbows and knees as distinct sections with fixed limb lengths and consistent joints,
+lighter boots with a clear ankle, feet rolling heel to toe, weight carried through the hips, no stretching or floating).
+All of it done inside the one-form body, since a joint is a bend in the contour, not a part:
+
+- The contour now runs from the neck into sloping shoulders (11.5 reference px half-width), a chest, a narrower waist
+  (10), and hips flaring over the legs (11.5). The head is drawn at 0.73 of its reference size and the body stretched
+  1.16 (the feet stay), which puts the head near 40 percent of the height.
+- Each leg is two fixed segments (`LEG`, 32 px each) with the knee found between them: a slight forward bend standing, a
+  deep bend in the front leg of the lunge, the back leg straight. The near leg has a short crease at its knee. The boots
+  are lighter (the toe 9.5 ahead, the heel 4 behind, 4 tall) with the shaft the shin's width, so the ankle reads.
+- The arm is two fixed segments (`ARM`, 29 px each) with a fixed reach (`reach()` pulls a hand the pose puts too far
+  back within it, and the sword draws from that hand), the upper arm in the sleeve, the elbow with a crease on its outer
+  side, a narrower wrist with a faint line, the hand a rounded end with a thumb over the grip and the fingers' curl.
+- The shoulder joints are fixed points of the torso (7.5 and 2.5 px behind the hips' line, 4 below the neck) in every
+  frame, so the arms connect in the same place throughout.
+- The walk rolls the feet: the toe up at the front contact, the heel up at the back as the foot pushes off.
