@@ -58,7 +58,7 @@ only erasable syntax (no enums, no parameter properties), which `tsconfig.json` 
   online; and the others hear the new online list.
 - **`intent`**: `join first` before a join; the action must have a string `id` and a known `type` (`tick` and `join` are
   `not yours to send`; the rest `unknown action`); the hub **stamps the account's id** as `player` whatever the client
-  wrote; **30 intents in any 10 s** per socket, more are `too fast` and after ten more the socket is closed (1008). The
+  wrote; **30 intents in any 10 s** per socket, more are `too fast`, and after ten more the socket is cut off: the intents the actor already took are still answered, then the socket is closed (1008). The
   answer is a **`result`** with the events, `replayed` and the delta; everyone else on the region is owed an **`event`**.
 - **Bundling**: what a socket is owed is gathered for `BATCH_MS` (60 ms) and sent as one `event`: deltas merged
   (`mergeDeltas`), the events in order (only the shared ones: joined, moved, won, died, opened, bossDown, levelled,

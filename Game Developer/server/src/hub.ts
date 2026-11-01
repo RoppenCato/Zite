@@ -44,6 +44,10 @@ interface Conn {
   /** When the last intents arrived, for the rate limit. */
   recent: number[];
   strikes: number;
+  /** Intents handed to the actor and not yet answered. */
+  inflight: number;
+  /** True once a flooder is cut off: the answers still owed go out, then the socket closes. */
+  cut: boolean;
   /** What this socket hears in its next `event`, gathered for `batchMs`. */
   owed: Owed | null;
   timer: ReturnType<typeof setTimeout> | null;
@@ -76,7 +80,7 @@ export class Hub {
 
   /** Take a socket that just connected. */
   attach(ws: WebSocket): void {
-    const conn: Conn = { ws, player: null, recent: [], strikes: 0, owed: null, timer: null };
+    const conn: Conn = { ws, player: null, recent: [], strikes: 0, inflight: 0, cut: false, owed: null, timer: null };
     this.conns.add(conn);
     ws.on('message', (data, isBinary) => {
       void this.onMessage(conn, data, isBinary);
@@ -188,21 +192,36 @@ export class Hub {
     if (!this.allowed(conn)) {
       conn.strikes += 1;
       this.error(conn, 'too fast', a.id);
-      if (conn.strikes > RATE.closeAfter) {
-        this.drop(conn);
-        conn.ws.close(1008, 'too fast');
-      }
+      if (conn.strikes > RATE.closeAfter) this.cut(conn);
       return;
     }
-    let r: ActionResult;
+    conn.inflight += 1;
     try {
-      r = await this.region.submit({ ...(a as WireAction), player } as Action);
-    } catch (e) {
-      this.log(`action ${a.type} from ${player} broke the rules: ${String(e)}`);
-      return this.error(conn, 'that could not be done', a.id);
+      let r: ActionResult;
+      try {
+        r = await this.region.submit({ ...(a as WireAction), player } as Action);
+      } catch (e) {
+        this.log(`action ${a.type} from ${player} broke the rules: ${String(e)}`);
+        return this.error(conn, 'that could not be done', a.id);
+      }
+      this.send(conn, { type: 'result', action: a.id, version: r.version, serverTime: this.now(), events: r.events, replayed: r.replayed, ...(r.delta ? { delta: r.delta } : {}) });
+      if (r.delta) this.tell(conn, r.version, r.events, r.delta);
+    } finally {
+      conn.inflight -= 1;
+      if (conn.cut && conn.inflight === 0) conn.ws.close(1008, 'too fast');
     }
-    this.send(conn, { type: 'result', action: a.id, version: r.version, serverTime: this.now(), events: r.events, replayed: r.replayed, ...(r.delta ? { delta: r.delta } : {}) });
-    if (r.delta) this.tell(conn, r.version, r.events, r.delta);
+  }
+
+  /**
+   * A flooder is cut off: it is no longer in the world, the intents the actor already took are still answered (a phone
+   * must never lose an answer to something that happened), and the socket closes once the last answer is out. The close
+   * used to come at once, which dropped those answers whenever all the intents arrived in one chunk (Windows does that).
+   */
+  private cut(conn: Conn): void {
+    if (conn.cut) return;
+    conn.cut = true;
+    this.drop(conn);
+    if (conn.inflight === 0) conn.ws.close(1008, 'too fast');
   }
 
   /** The rate limit: `RATE.intents` in any `RATE.windowMs`. */
