@@ -33,7 +33,9 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/tips.ts` | the first minutes: a few lines said once (the start, the first choice, fight, win and boss), kept in storage |
 | `src/settings.ts` | sound, fewer effects, larger text, vibration; kept in storage; `ms()` and `font()` for the scenes |
 | `src/scenes/HudScene.ts` | the top panel (with the link line under the die: solo, online · n here, reconnecting), the chip row, the message line, Map, World, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips`, `setLink` |
-| `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
+| `src/scenes/FightScene.ts` | the fight, side on: the area's backdrop, the hero at the left, the enemy at the right as the Art Director's figure or a circle, bars over each, the tell over the enemy, the words and buttons on the strip under the ground; two taps a round, the events played back a beat apart with a blow landing on its frame; `FIGHT_LAYOUT`, `FIGHT_BUTTONS` |
+| `src/backdrop.ts` | the fight backdrops by theme: a code sky, the Art Director's strips as tiling sprites with scroll factors, the soil; `Backdrop`, `preloadBackdrops` |
+| `src/creatures.ts` | the creatures' atlases by enemy id (the Jelly Slime so far); `Figure` plays a creature's clips, `blowMs` says when its blow lands; `preloadCreatures` |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
 | `src/scenes/BagScene.ts` | the bag: what is worn, what is carried, the numbers, flasks and cards; Wear, Take off, Drop, Close |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
@@ -166,6 +168,26 @@ opaque panel that takes every touch, the reveal with a dark veil, and they call 
 - Nothing reads the canvas back and nothing filters per frame; the per-frame work is the frame log and the zoom check.
 
 ## The fight scene (Robin, 2026-10-31: a turn-based RPG with a defensive choice, one thumb; layout and pacing mine)
+
+**Side on since 2026-11-01 (chapter 1, step 4), on Mitch, AD's first pieces.** The screen covers the band and the HUD's
+strip (the HUD's own buttons wait under it). The ground line is at y 540 (`FIGHT_LAYOUT`); the area's backdrop
+(`backdrop.ts`, by the theme of the fight's space) is a code sky gradient from the band's top to the ground line, then
+the Art Director's strips as tiling sprites placed by their bottoms against the ground line with his scroll factors
+(far 0.15, the tree line 0.45, the hedge 0.8, the ground 1), the far strip drifting 2 px a second, and the soil colour
+under the ground band down to y 720; a theme with no strips yet gets the sky and plain soil. The fighters' feet stand 14
+px below the ground strip's top: the hero at x 112 at 150 CSS px facing right, the enemy at x 300, the Art Director's
+figure (`creatures.ts`, by the enemy's id, the Jelly Slime at 120) or the old circle with a letter until its art
+comes. Contact shadows under both. Over each figure its bars (the hero's HP and MP with the status line above; the
+enemy's HP with its tell and status above, in white with a dark stroke so they read on the sky); the title (name, level,
+role) at the top with the two history lines under it. The strip from y 720 holds the message, the prompt and the three
+rows of buttons (`FIGHT_BUTTONS`, at y 800, 842, 884; Continue at 842).
+
+**Blows on their frames**: a hit by the player plays the hero's attack1 and waits `Hero.blowMs()` (the fourth frame, 201
+ms) before the enemy's hit1, the flash, the floating number and the bar; a hit by the enemy plays its attack1 and waits
+`Figure.blowMs()` (the slime's seventh frame, 418 ms) before the hero's hit1 and the rest; a counter the same as a hit by
+the player; a crit shakes the camera a touch; a win plays the enemy's die1 (its last frames fading); a wind-up held tints
+a figure red. Fewer effects: no waits, no shakes, no blinks.
+
 
 An opaque panel over the band; the HUD stays above. From the top: the enemy's name, level and role, its HP bar (260 by
 18, red), the enemy as a circle of radius 56 with its initial, a status line in orange that **leads with what it will do

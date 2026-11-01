@@ -38,6 +38,8 @@ import {
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
+import { preloadBackdrops } from '../backdrop.ts';
+import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
@@ -719,6 +721,8 @@ export class BoardScene extends Phaser.Scene {
   preload(): void {
     preloadHero(this);
     preloadLoot(this);
+    preloadCreatures(this);
+    preloadBackdrops(this);
     audio.preload(this);
   }
 

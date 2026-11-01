@@ -80,3 +80,40 @@ spritemap; the tumble entries are `loop: true` and exactly 0.6 s each. Play `ui/
 
 **For Robin's ear:** whether the shake reads as a hand (it is deliberately dull) or as a knock in the next room; whether the tumble
 is too even, or too bright beside the land. Both are easy to move.
+
+# The taps, the choice and the chest (2026-11-01, the same evening)
+
+Twelve sounds, three variations each, written from one spec (`sfx/ui/_make.py`). Robin told Miles, GD to go on with the next steps,
+so these follow the die without waiting for its letter. Every knock is recorded wood (`sfx/ui/ref/README.md`); the bells are the
+studio's pretty bell, in C pentatonic (C D E G A) so they sit over any region's key; the swells are the studio's strings.
+
+**Listen:** `preview-chest.mp3` (25 s): the six chests as the game plays them, each the shimmer, the burst 0.75 s later, the card, the
+ding: common (0:00), uncommon (0:03), rare (0:07), epic (0:10), legendary (0:14), unique (0:17); then three taps (0:21), two denied
+taps (0:22), three choices (0:23). On the phone page: Chapter 1, the row "The chest, six ways, and the taps"; each sound under Sounds.
+
+| Sound (the game's name) | Length | What it is | Level against the die's land |
+| --- | --- | --- | --- |
+| `tap` (`ui/tap`) | 50 ms | a soft wooden tick (Kenney's light impact, faster), under 4.4 kHz: plain, since it is heard a hundred times an hour | -10 dB (gain 0.31) |
+| `tap_denied` (`ui/tap-denied`) | 120 ms | two dull knocks 70 ms apart, under 1.6 kHz: a quiet no, no buzzer | -12 dB (0.296) |
+| `choice` (`ui/choice`) | 87 ms | two bright ticks 45 ms apart, the second higher and a touch louder: a small lift | -6 dB (0.491) |
+| `chest_shimmer` (`ui/chest-shimmer`) | 1.5 s | twelve small bells running up C pentatonic over 1.4 s, each louder, glitter above, a soft string swell under; no event at its end, so a tap's fade can cut it anywhere | -8 dB (0.18) |
+| `chest_burst_common` | 0.11 s | the lid's pop: a hollow knock, a warm knock, the latch's click; recorded wood only. Gold-only chests too | -2 dB (0.583) |
+| `chest_burst_uncommon` | 0.5 s | the pop and one bell, G5 | -1 dB (0.583) |
+| `chest_burst_rare` | 0.72 s | the pop and two bells rising a third, C6 E6 | 0 dB (0.639) |
+| `chest_burst_epic` | 1.0 s | the pop, three bells rising C6 E6 G6, a soft string chord under | +1 dB (0.677) |
+| `chest_burst_legendary` | 1.8 s | the fanfare: the pop, a run up to C7 held as a chord, glitter, strings swelling for two seconds | +2 dB (0.654): the loudest UI sound |
+| `chest_burst_unique` | 1.33 s | its own: the pop, then a strange open chord of bells (D6 A6 E7, fifths stacked) over a low dark string; old and particular, not big | +2 dB (0.709) |
+| `chest_card` (`ui/chest-card`) | 0.26 s | Kenney's page flip a third faster, under 7 kHz: card and paper | -8 dB (0.544) |
+| `chest_ding` (`ui/chest-ding`) | 0.42 s | one bell, C6 E6 or G6 by variation: the full stop | -4 dB (0.214) |
+
+The six bursts climb in length, in brightness and in level together (0.1 s and -2 dB to 1.8 s and +2 dB), so rarity is heard before
+it is read. The shimmer rendered at 1.6 s and is held to 1.5 s with a fade at the cut, as the brief's length says.
+
+**For the game (Miles, GD):** `game/ui.ogg` and `ui.json` now hold 51 sounds (17 names, three each), 16.5 s, about 170 KB: the die,
+the taps, the choice, the chest. The shimmer may be stretched by rarity as you planned; it has no end event. The level up, the boss
+down and the area opened come next in the same pair.
+
+**For Robin's ear:** the tap most of all, since it is the sound he will hear most: is it pleasant the hundredth time, or should it be
+softer or duller? Whether the six bursts read as six steps of rarity, and whether the unique one reads as special or merely odd.
+Whether the shimmer is a glow or a music box. The bells are the one synth voice here; if they read as too much, the pop alone is the
+common burst and the others can lose a bell each.

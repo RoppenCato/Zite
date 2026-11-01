@@ -7,7 +7,7 @@
 
 import Phaser from 'phaser';
 import type { Character } from '../../rules/src/index.ts';
-import { ensureClips, type ActionData } from './clips.ts';
+import { ensureClips, msBefore, type ActionData } from './clips.ts';
 import plateData from '../../assets/hero/plate/hero_plate.json';
 import plateJson from '../../assets/hero/plate/hero_plate.json?url';
 import platePng from '../../assets/hero/plate/hero_plate.png';
@@ -30,8 +30,8 @@ const SETS: Record<HeroSet, SetFiles> = {
   plate: { key: 'hero_plate', png: platePng, json: plateJson, actions: (plateData as { actions: Record<string, ActionData> }).actions },
 };
 
-/** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number); 0.45 fits today's fight layout (mine). */
-export const HERO_FIGHT_SCALE = 0.45;
+/** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
+export const HERO_FIGHT_SCALE = 0.5;
 /** On the board the hero stands at 0.3 of the fight's size (Mitch, AD's number for the test). */
 export const HERO_BOARD_SCALE = 0.15;
 
@@ -69,6 +69,12 @@ export class Hero {
     const first = SETS[set].actions.stand?.frames[0]?.name;
     this.sprite = scene.add.sprite(x, y, SETS[set].key, first).setScale(scale);
     this.sprite.play(`${SETS[set].key}/stand`);
+  }
+
+  /** How far into attack1 the blow lands, in ms (the fourth frame, held): the hit's flash waits for it. */
+  blowMs(): number {
+    const a = SETS[this.set].actions.attack1;
+    return a ? msBefore(a, 4) : 0;
   }
 
   /** Files face left; true turns the hero to face right. */

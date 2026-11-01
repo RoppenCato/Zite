@@ -74,6 +74,186 @@
       "start": 5.4174,
       "end": 5.7129,
       "loop": false
+    },
+    "ui/tap-1": {
+      "start": 5.7629,
+      "end": 5.8111,
+      "loop": false
+    },
+    "ui/tap-2": {
+      "start": 5.8611,
+      "end": 5.9141,
+      "loop": false
+    },
+    "ui/tap-3": {
+      "start": 5.9641,
+      "end": 6.0166,
+      "loop": false
+    },
+    "ui/tap-denied-1": {
+      "start": 6.0666,
+      "end": 6.1874,
+      "loop": false
+    },
+    "ui/tap-denied-2": {
+      "start": 6.2374,
+      "end": 6.3549,
+      "loop": false
+    },
+    "ui/tap-denied-3": {
+      "start": 6.4049,
+      "end": 6.5267,
+      "loop": false
+    },
+    "ui/choice-1": {
+      "start": 6.5767,
+      "end": 6.6663,
+      "loop": false
+    },
+    "ui/choice-2": {
+      "start": 6.7163,
+      "end": 6.8027,
+      "loop": false
+    },
+    "ui/choice-3": {
+      "start": 6.8527,
+      "end": 6.9395,
+      "loop": false
+    },
+    "ui/chest-shimmer-1": {
+      "start": 6.9895,
+      "end": 8.4895,
+      "loop": false
+    },
+    "ui/chest-shimmer-2": {
+      "start": 8.5395,
+      "end": 10.0395,
+      "loop": false
+    },
+    "ui/chest-shimmer-3": {
+      "start": 10.0895,
+      "end": 11.5895,
+      "loop": false
+    },
+    "ui/chest-card-1": {
+      "start": 11.6395,
+      "end": 11.9009,
+      "loop": false
+    },
+    "ui/chest-card-2": {
+      "start": 11.9509,
+      "end": 12.2152,
+      "loop": false
+    },
+    "ui/chest-card-3": {
+      "start": 12.2652,
+      "end": 12.5233,
+      "loop": false
+    },
+    "ui/chest-ding-1": {
+      "start": 12.5733,
+      "end": 12.9917,
+      "loop": false
+    },
+    "ui/chest-ding-2": {
+      "start": 13.0417,
+      "end": 13.4602,
+      "loop": false
+    },
+    "ui/chest-ding-3": {
+      "start": 13.5102,
+      "end": 13.9289,
+      "loop": false
+    },
+    "ui/chest-burst-common-1": {
+      "start": 13.9789,
+      "end": 14.0875,
+      "loop": false
+    },
+    "ui/chest-burst-common-2": {
+      "start": 14.1375,
+      "end": 14.2432,
+      "loop": false
+    },
+    "ui/chest-burst-common-3": {
+      "start": 14.2932,
+      "end": 14.402,
+      "loop": false
+    },
+    "ui/chest-burst-uncommon-1": {
+      "start": 14.452,
+      "end": 14.9515,
+      "loop": false
+    },
+    "ui/chest-burst-uncommon-2": {
+      "start": 15.0015,
+      "end": 15.501,
+      "loop": false
+    },
+    "ui/chest-burst-uncommon-3": {
+      "start": 15.551,
+      "end": 16.0505,
+      "loop": false
+    },
+    "ui/chest-burst-rare-1": {
+      "start": 16.1005,
+      "end": 16.8261,
+      "loop": false
+    },
+    "ui/chest-burst-rare-2": {
+      "start": 16.8761,
+      "end": 17.5831,
+      "loop": false
+    },
+    "ui/chest-burst-rare-3": {
+      "start": 17.6331,
+      "end": 18.3561,
+      "loop": false
+    },
+    "ui/chest-burst-epic-1": {
+      "start": 18.4061,
+      "end": 19.4212,
+      "loop": false
+    },
+    "ui/chest-burst-epic-2": {
+      "start": 19.4712,
+      "end": 20.4862,
+      "loop": false
+    },
+    "ui/chest-burst-epic-3": {
+      "start": 20.5362,
+      "end": 21.5513,
+      "loop": false
+    },
+    "ui/chest-burst-legendary-1": {
+      "start": 21.6013,
+      "end": 23.3995,
+      "loop": false
+    },
+    "ui/chest-burst-legendary-2": {
+      "start": 23.4495,
+      "end": 25.2477,
+      "loop": false
+    },
+    "ui/chest-burst-legendary-3": {
+      "start": 25.2978,
+      "end": 27.096,
+      "loop": false
+    },
+    "ui/chest-burst-unique-1": {
+      "start": 27.146,
+      "end": 28.4772,
+      "loop": false
+    },
+    "ui/chest-burst-unique-2": {
+      "start": 28.5272,
+      "end": 29.8585,
+      "loop": false
+    },
+    "ui/chest-burst-unique-3": {
+      "start": 29.9085,
+      "end": 31.2397,
+      "loop": false
     }
   }
 }

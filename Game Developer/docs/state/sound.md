@@ -1,7 +1,7 @@
 # The sound
 
 The first sounds are in the game (2026-11-01, chapter 1 step 3): Nigel, SD's UI sprite, `assets/sound/ui/ui.ogg` with its
-spritemap `ui.json` (copied whole from his `out/sfx/ui/game/`; the die's shake, tumble and three candidate landings so far),
+spritemap `ui.json` (copied whole from his `out/sfx/ui/game/`; by the evening of 2026-11-01 17 names in three variants each: the die's shake, tumble and three candidate landings, `ui/tap`, `ui/tap-denied`, `ui/choice`, the chest's shimmer, six bursts, card and ding; his levels against the die's landing in his NOTES.md),
 loaded with the board and played through `client/src/audio.ts`: `audio.play(name)` plays a sprite entry, or one of a family's
 variants (`ui/die-land` picks `-1` to `-3` at random), and is silent for a name no sprite holds yet; `audio.loop` for the
 tumble; the sound setting and `?mute=1` keep everything quiet; the UI sprite plays at 0.8 of full (the UI bus under the fight

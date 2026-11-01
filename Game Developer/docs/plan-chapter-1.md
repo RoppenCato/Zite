@@ -15,7 +15,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 | --- | --- | --- |
 | First | **the chest and the loot reveal** pieces (the chest, the six glows, the opening clip, the card, the particle sheets): small, and they land in step 2 (landed 2026-11-01) | **the UI sprite's first half**: the tap, the tap denied, the die's shake, tumble and landing, the steps, the chest's shimmer, bursts and ding, the level up (step 1, step 2, step 7) |
 | Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6) | **the fight sprite** (step 4, step 7) |
-| Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
+| Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4; landed 2026-11-01) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
 | Fourth | **the meadows' board kit** with its props (step 5) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
 | Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9) | **the meadows' creature voices** (six creatures, three each) |
 | Sixth | the other five meadows creatures and **King Goo** (step 4's tail) | |
@@ -41,7 +41,8 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    die's roll (the shake on the tap, the tumble with the faces flickering, the landing with a bounce and a glow, Nigel, SD's
    sounds pitched a little by the face). *Needs*: the banners and the die from the UI kit when it comes; the level-up,
    boss-down and area-opened sounds. *Done*: the four dopamine moments read as moments.
-4. **The fight, side on.** The fight screen rebuilt around the hero at 150 CSS px: a layered backdrop (the sky a code
+4. **The fight, side on** (the screen done 2026-11-01 on Mitch, AD's Jelly Slime and meadows backdrop, `client/src/scenes/FightScene.ts`,
+   `backdrop.ts`, `creatures.ts`; the tail, the other five creatures and King Goo, waits on their art). The fight screen rebuilt around the hero at 150 CSS px: a layered backdrop (the sky a code
    gradient, two or three strips, a ground band), the hero at the left with his feet on the ground, the enemy at the right
    at its size (a circle by role until its art), HP bars over each figure, the enemy's tell above it, the message as a strip
    that does not fight the figures, the move and guard rows as they are, the effects as code flashes until the effect

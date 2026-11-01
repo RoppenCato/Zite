@@ -26,7 +26,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DB_DIR = mkdtempSync(join(tmpdir(), 'zite-coop-'));
 const DB_PATH = join(DB_DIR, 'world.db');
 const B = { map: [60, 836], world: [158, 836], bag: [256, 836], log: [354, 836], roll: [206, 884] };
-const F = { a: [110, 600], cont: [206, 652] }; // FightScene FIGHT_BUTTONS: Attack, then Block in the same slot; Continue
+const F = { a: [110, 800], cont: [206, 842] }; // FightScene FIGHT_BUTTONS: Attack, then Block in the same slot; Continue
 const WORLD_BOSS_HP = 1375;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -133,7 +133,7 @@ async function settle(p) {
     const st = await p.ev(() => ({ fight: !!boardWorld.game.me.fight, offer: !!boardWorld.game.me.offer || boardWorld.game.me.picks.length > 0, shop: boardWorld.phaser.scene.isActive('shop'), fightScene: boardWorld.phaser.scene.isActive('fight'), fightBusy: boardWorld.phaser.scene.getScene('fight')?.busy, outcome: !!boardWorld.phaser.scene.getScene('fight')?.outcome }));
     if (st.fightScene) {
       if (st.fightBusy) { await sleep(300); continue; }
-      if (st.outcome) { await p.tapAt(206, 652); await sleep(400); continue; }
+      if (st.outcome) { await p.tapAt(206, 842); await sleep(400); continue; }
       await p.tapAt(110, 600); await sleep(150); await p.tapAt(110, 600); await sleep(600); // Attack, Block, the round's playback
       continue;
     }

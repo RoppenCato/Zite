@@ -10,6 +10,8 @@ export interface ActionFrame {
   /** The alpha this frame starts and ends with, 0 to 255; a death's last frames fade. */
   a0?: number;
   a1?: number;
+  /** The top of the figure this frame, from the pivot (for a bar or a marker over it). */
+  head?: { x: number; y: number };
 }
 
 export interface ActionData {

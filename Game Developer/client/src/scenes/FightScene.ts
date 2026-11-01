@@ -1,13 +1,18 @@
-// The fight screen (Robin, 2026-10-31: a turn-based RPG, fights on their own screen, one thumb). The enemy at the top,
-// the character below, a message between. A round is two taps: what you do (Attack, an ability, Charge, a Potion,
-// Flee), then how you take the blow (Block, Dodge, Brace, Counter). Each round is one intent; the events play back one
-// at a time. The layout and the pacing are mine.
+// The fight screen (Robin, 2026-10-31: a turn-based RPG, fights on their own screen, one thumb), side on since chapter 1
+// step 4 (2026-11-01): the area's layered backdrop, the hero at the left at 150 CSS px with his feet on the ground, the
+// enemy at the right at its size (the Art Director's figure when it has one, a circle until then), the bars over each
+// figure, the enemy's tell over its bar, the words and the buttons on a dark strip under the ground. A round is two
+// taps: what you do (Attack, an ability, Charge, a Potion, Flee), then how you take the blow (Block, Dodge, Brace,
+// Counter). Each round is one intent; the events play back one at a time, a blow landing on its clip's frame. The
+// layout and the pacing are mine; the backdrop's measures are Mitch, AD's (assets/meadow_fight/NOTES.md).
 
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
+import { Backdrop } from '../backdrop.ts';
+import { creatureReady, Figure } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
 import { settings } from '../settings.ts';
@@ -21,23 +26,36 @@ export interface FightSceneDeps {
   log: GameLog;
 }
 
+/** The fight's layout, in design pixels (mine, 2026-11-01): the ground line, where the figures stand, the strip of words and buttons. */
+export const FIGHT_LAYOUT = {
+  groundY: 540,
+  /** The soil runs to here; the dark strip with the words and the buttons begins. */
+  stripY: 720,
+  heroX: 112,
+  enemyX: 300,
+  titleY: 122,
+  historyY: 148,
+  messageY: 738,
+  promptY: 772,
+  barW: 150,
+} as const;
+
 /** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
 export const FIGHT_BUTTONS = {
-  a: { x: 110, y: 600, w: 180, h: 46 },
-  b: { x: 302, y: 600, w: 180, h: 46 },
-  c: { x: 110, y: 652, w: 180, h: 46 },
-  d: { x: 302, y: 652, w: 180, h: 46 },
-  e: { x: 110, y: 704, w: 180, h: 40 },
-  f: { x: 302, y: 704, w: 180, h: 40 },
-  continue: { x: 206, y: 652, w: 220, h: 56 },
+  a: { x: 110, y: 800, w: 180, h: 38 },
+  b: { x: 302, y: 800, w: 180, h: 38 },
+  c: { x: 110, y: 842, w: 180, h: 38 },
+  d: { x: 302, y: 842, w: 180, h: 38 },
+  e: { x: 110, y: 884, w: 180, h: 36 },
+  f: { x: 302, y: 884, w: 180, h: 36 },
+  continue: { x: 206, y: 842, w: 220, h: 56 },
 } as const;
 
 const STEP_MS = 450; // between two events of a round
 /** The first fight's line, said once (tips.ts). */
 const TIP_FIGHT = 'Pick a move, then a guard. The orange line says what comes next.';
 const CENTRE = DESIGN_WIDTH / 2;
-const BAR_W = 260;
-const BAR_H = 18;
+const BAR_H = 16;
 
 const ENEMY_COLORS: Record<string, number> = {
   mob: 0x9a8f7a,
@@ -62,20 +80,25 @@ interface Option {
   onTap: () => void;
 }
 
+type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+
 export class FightScene extends Phaser.Scene {
   private readonly game_: GameHolder;
   private readonly log: GameLog;
-  private enemyBody!: Phaser.GameObjects.Arc;
+  private backdrop: Backdrop | null = null;
+  private enemyBody!: Body;
+  /** The enemy drawn from the Art Director's atlas when it has one. */
+  private enemy: Figure | null = null;
   private enemyBar!: Bar;
   private enemyStatus!: Phaser.GameObjects.Text;
-  private heroBody!: Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+  private heroBody!: Body;
   /** The hero drawn from the atlas when a set is loaded. */
   private hero: Hero | null = null;
   private heroBar!: Bar;
   private manaBar!: Bar;
   private heroStatus!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
-  /** The two lines before the message, dimmer: a round reads as a short log (mine, 2026-11-01). */
+  /** The two lines before the message, dimmer, under the title: a round reads as a short log (mine, 2026-11-01). */
   private history!: Phaser.GameObjects.Text;
   private lines: string[] = [];
   private prompt!: Phaser.GameObjects.Text;
@@ -105,41 +128,64 @@ export class FightScene extends Phaser.Scene {
     const enemy = fight.enemy;
     const cls = CLASS_DATA[me.classId];
     const s = stats(me);
+    const L = FIGHT_LAYOUT;
     this.busy = false;
     this.outcome = null;
     this.pendingMove = null;
+    this.enemy = null;
+    this.hero = null;
     this.enemyName = enemy.name;
     this.enemyMaxHp = enemy.maxHp;
 
-    // The panel covers the band and takes every touch, so nothing reaches the board under it.
-    this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
+    // The screen covers the band and the HUD's strip and takes every touch, so nothing reaches the board under it.
+    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_WIDTH * 0 + 915) / 2, DESIGN_WIDTH, 915 - HUD_HEIGHT, 0x151826, 1).setInteractive();
+    const board = this.game_.state.board;
+    const theme = board.areas[board.spaces[fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow';
+    this.backdrop = new Backdrop(this, theme, L.groundY, L.stripY);
+    const feetY = this.backdrop.feetY;
 
-    this.add.text(CENTRE, 128, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.enemyBar = new Bar(this, CENTRE, 162, BAR_W, BAR_H, 0xd9534f);
-    this.enemyBody = this.add.circle(300, 250, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
-    this.add.text(300, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
-    this.enemyStatus = this.add.text(CENTRE, 318, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center' }).setOrigin(0.5, 0);
-
+    this.add.text(CENTRE, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4 }).setOrigin(0.5);
     this.lines = [];
-    this.history = this.add.text(266, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: 270 } }).setOrigin(0.5, 0);
-    this.message = this.add
-      .text(266, 370, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
-      .setOrigin(0.5, 0);
+    this.history = this.add.text(CENTRE, L.historyY, '', { fontFamily: FONT, fontSize: '12px', color: '#e8eef6', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 360 } }).setOrigin(0.5, 0);
+
+    // The contact shadows, then the figures, so they stand on the ground.
+    this.add.ellipse(L.heroX, feetY, 64, 16, 0x000000, 0.22);
+    const enemyArt = creatureReady(this, enemy.id);
+    this.add.ellipse(L.enemyX, feetY, enemyArt ? 96 : 110, enemyArt ? 18 : 20, 0x000000, 0.22);
+
+    let enemyTop: number;
+    if (enemyArt) {
+      this.enemy = new Figure(this, enemy.id, L.enemyX, feetY);
+      this.enemyBody = this.enemy.sprite;
+      enemyTop = feetY - this.enemy.headHeight();
+    } else {
+      this.enemyBody = this.add.circle(L.enemyX, feetY - 56, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
+      this.add.text(L.enemyX, feetY - 56, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+      enemyTop = feetY - 112;
+    }
+    this.enemyBar = new Bar(this, L.enemyX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
+    this.enemyStatus = this.add.text(L.enemyX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#ffb347', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     const set = heroSetFor(me);
+    let heroTop: number;
     if (heroReady(this, set)) {
-      // The hero at the left facing the enemy, feet on the ground line under the message (the side view's first step).
-      this.hero = new Hero(this, set, 70, 470, HERO_FIGHT_SCALE);
+      this.hero = new Hero(this, set, L.heroX, feetY, HERO_FIGHT_SCALE);
       this.hero.face(true);
       this.heroBody = this.hero.sprite;
+      heroTop = feetY - 150;
     } else {
-      this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
-      this.add.text(CENTRE, 440, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+      this.heroBody = this.add.circle(L.heroX, feetY - 26, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
+      this.add.text(L.heroX, feetY - 26, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+      heroTop = feetY - 52;
     }
-    this.heroBar = new Bar(this, CENTRE, 486, BAR_W, BAR_H, COLORS.button);
-    this.manaBar = new Bar(this, CENTRE, 510, BAR_W, 14, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(CENTRE, 524, '', { fontFamily: FONT, fontSize: '13px', color: '#7fd8d8', align: 'center' }).setOrigin(0.5, 0);
-    this.prompt = this.add.text(CENTRE, 566, '', { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
+    this.heroBar = new Bar(this, L.heroX, heroTop - 26, L.barW, BAR_H, COLORS.button);
+    this.manaBar = new Bar(this, L.heroX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
+    this.heroStatus = this.add.text(L.heroX, heroTop - 56, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#7fe0e0', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+
+    this.message = this.add
+      .text(CENTRE, L.messageY, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 32 } })
+      .setOrigin(0.5, 0);
+    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);
@@ -149,7 +195,11 @@ export class FightScene extends Phaser.Scene {
     this.manaBar.set(me.mana, s.maxMana, true);
     this.refreshStatus();
     this.showMoves();
-    this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}`);
+    this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
+  }
+
+  override update(_time: number, delta: number): void {
+    this.backdrop?.update(delta);
   }
 
   // ---- the two taps of a round --------------------------------------------------------------------------------------
@@ -278,20 +328,29 @@ export class FightScene extends Phaser.Scene {
     switch (e.type) {
       case 'hit':
         if (e.by === 'player') {
+          // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
           this.hero?.play('attack1');
-          this.flash(this.enemyBody, e.damage, e.crit);
-          this.enemyBar.set(e.hp, this.enemyMaxHp);
+          this.after(this.hero?.blowMs() ?? 0, () => {
+            this.enemy?.play('hit1');
+            this.flash(this.enemyBody, e.damage, e.crit);
+            this.enemyBar.set(e.hp, this.enemyMaxHp);
+          });
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
         } else {
-          this.hero?.play('hit1');
-          this.flash(this.heroBody, e.damage, e.crit);
-          this.heroBar.set(e.hp, s.maxHp);
+          this.enemy?.play('attack1');
+          this.after(this.enemy?.blowMs() ?? 0, () => {
+            this.hero?.play('hit1');
+            this.flash(this.heroBody, e.damage, e.crit);
+            this.heroBar.set(e.hp, s.maxHp);
+          });
           this.say(`${e.move} hits you for ${e.damage}${e.absorbed ? ` (${e.absorbed} soaked)` : ''}${e.crit ? ', a crit!' : '.'}`);
         }
         break;
       case 'missed':
-        if (e.by === 'enemy') this.hero?.play('stand');
-        else this.hero?.play('attack1');
+        if (e.by === 'enemy') {
+          this.enemy?.play('attack1');
+          this.hero?.play('stand');
+        } else this.hero?.play('attack1');
         this.say(e.by === 'enemy' ? `${e.move} misses!` : 'You miss.');
         break;
       case 'charged':
@@ -349,8 +408,12 @@ export class FightScene extends Phaser.Scene {
         this.say(e.by === 'phoenix' ? `The Phoenix Feather burns: you rise with ${e.hp} HP!` : `The Phoenix Helm pulls you back to ${e.hp} HP.`);
         break;
       case 'countered':
-        this.flash(this.enemyBody, e.damage, false);
-        this.enemyBar.set(e.hp, this.enemyMaxHp);
+        this.hero?.play('attack1');
+        this.after(this.hero?.blowMs() ?? 0, () => {
+          this.enemy?.play('hit1');
+          this.flash(this.enemyBody, e.damage, false);
+          this.enemyBar.set(e.hp, this.enemyMaxHp);
+        });
         this.say(`You strike back for ${e.damage}.`);
         break;
       case 'mana':
@@ -370,6 +433,7 @@ export class FightScene extends Phaser.Scene {
         break;
       case 'won': {
         this.hero?.play('stand');
+        this.enemy?.play('die1');
         const tip = tips.take('won');
         this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
@@ -397,6 +461,7 @@ export class FightScene extends Phaser.Scene {
         moments(this)?.bossDown(this.enemyName);
         break;
       case 'worldBossDown':
+        this.enemy?.play('die1');
         this.say(`${this.enemyName} falls to all of you! ${e.shares.length === 1 ? 'The reward is yours alone.' : `${e.shares.length} fighters share the reward.`}`);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${e.shares.length === 1 ? 'Fought alone.' : `Shared by ${e.shares.length}.`}` };
         break;
@@ -423,6 +488,14 @@ export class FightScene extends Phaser.Scene {
       default:
         break;
     }
+  }
+
+  /** Something that waits for a blow to land on its frame; at once with fewer effects. */
+  private after(ms: number, what: () => void): void {
+    if (ms <= 0 || !settings.ms(1)) what();
+    else this.time.delayedCall(ms, () => {
+      if (this.scene.isActive()) what();
+    });
   }
 
   private end(outcome: FightOutcome, text: string): void {
@@ -471,9 +544,12 @@ export class FightScene extends Phaser.Scene {
       e.phase === 2 ? 'raging' : '',
     ].filter(Boolean);
     this.enemyStatus.setText(enemyBits.join(' · '));
-    // A wind-up held: the enemy rings red until it lands.
-    if (e.charged) this.enemyBody.setStrokeStyle(8, 0xff5a4a, 1);
-    else this.enemyBody.setStrokeStyle(4, 0x101318, 1);
+    // A wind-up held: the enemy reddens until it lands.
+    if (this.enemyBody instanceof Phaser.GameObjects.Arc) {
+      if (e.charged) this.enemyBody.setStrokeStyle(8, 0xff5a4a, 1);
+      else this.enemyBody.setStrokeStyle(4, 0x101318, 1);
+    } else if (e.charged) this.enemyBody.setTint(0xffb0a0);
+    else this.enemyBody.clearTint();
     const meter = CLASS_DATA[this.game_.me.classId].meter;
     const heroBits = [
       meter ? `${meter.name} ${'●'.repeat(f.meter ?? 0)}${'○'.repeat(Math.max(0, PROGRESSION.meterMax - (f.meter ?? 0)))}` : '',
@@ -531,12 +607,16 @@ export class FightScene extends Phaser.Scene {
     }
   }
 
-  private flash(body: Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite, damage: number, crit: boolean): void {
-    if (!settings.get().fewerEffects) this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
+  /** A blow landing: the figure blinks, the number floats up from its chest, a crit shakes the camera a little. */
+  private flash(body: Body, damage: number, crit: boolean): void {
+    const quick = !settings.ms(1);
+    if (!quick) this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
+    if (crit && !quick) this.cameras.main.shake(120, 0.004);
+    const top = body instanceof Phaser.GameObjects.Arc ? body.y - 40 : body.y - body.displayHeight * 0.75;
     const number = this.add
-      .text(body.x + 40, body.y - 40, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '30px' : '22px', fontStyle: 'bold', color: crit ? '#fff27a' : COLORS.text })
+      .text(body.x + 30, top, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '32px' : '24px', fontStyle: 'bold', color: crit ? '#fff27a' : '#ffffff', stroke: '#1a2030', strokeThickness: 4 })
       .setOrigin(0.5);
-    this.tweens.add({ targets: number, y: number.y - 50, alpha: 0, duration: settings.ms(700) || 1, ease: 'Quad.easeOut', onComplete: () => number.destroy() });
+    this.tweens.add({ targets: number, y: top - 50, alpha: 0, duration: settings.ms(700) || 1, ease: 'Quad.easeOut', onComplete: () => number.destroy() });
   }
 
   private say(text: string): void {

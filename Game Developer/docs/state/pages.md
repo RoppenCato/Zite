@@ -51,9 +51,9 @@ left) multiply by 0.887 and add the 5 pixels. The chips sit in a row centred at 
 `board.frame([...])` and `board.overview()` are private but callable from a script when a test needs the lit spots in
 view.
 
-**The fight screen's buttons**: rows a (110, 600), b (302, 600), c (110, 652), d (302, 652), e (110, 704), f (302, 704),
+**The fight screen's buttons**: rows a (110, 800), b (302, 800), c (110, 842), d (302, 842), e (110, 884), f (302, 884),
 each 180 wide; the moves fill a to e (Attack, Abilities, Charge, Honey Tonic, Flee), then the guards fill a to e (Block,
-Dodge, Brace, Counter, Back); Continue at (206, 652) once the fight is over. A round's events play 450 ms apart; the
+Dodge, Brace, Counter, Back); Continue at (206, 842) once the fight is over. A round's events play 450 ms apart; the
 scene's `busy` is true meanwhile.
 
 **The shop**: Buy rows from y 216, 33 apart (the eight slots, then Honey Tonic, Moon Dew, Do-Over, Hop, Hold, Fairy Pick), Buy at x 356; the
