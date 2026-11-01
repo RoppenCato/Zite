@@ -9,7 +9,8 @@ phones**. Two chapters are systems rather than places (proximity, the real-world
 order puts them. A chapter is done when every line of its "done when" is true on a phone, not before; the next chapter
 starts when the one before is done, except art, which may run one chapter ahead.
 
-The art for each chapter is in `docs/art-demands.md` (the waves carry chapter tags); how each system stands is in
+The art for each chapter is in `docs/art-demands.md` and the sound in `docs/sound-demands.md` (the waves carry chapter
+tags); how each system stands is in
 `docs/state/`; what is open is in `docs/idea-bank.md`.
 
 ## Chapter 1: Puddlewick. Cloverfield Meadows, levels 1 to 4. **Alpha 1**
@@ -34,6 +35,10 @@ like winning.
 eight slots and the four weapon types; Cloverfield Meadows' board kit, fight backdrop, the Jelly Slime, Grumpy Sprout,
 Meadow Bandit, Bumbling Bee, Mushroom Muncher and King Goo; the Tin and Copper gear icons; the wordmark and the icon.
 
+**Sound** (sound waves 1 to 3): the UI set (the tap, the roll, the die landing, the steps, the chest's shimmer, burst and
+ding, the level up, boss down), the fight set with the Knight's abilities, Cloverfield Meadows' board, fight, King Goo
+and town themes, the meadow bed, the six creatures' voices; the audio layer in the client with mute and volumes.
+
 **Done when**: a new player on an Android phone installs Zite, makes a Knight, plays from Puddlewick Village to King Goo
 and beats him by level 5 or 6 with the real UI and art and no placeholder shape in sight; two phones see each other in
 the world over the tunnel; a chest opening makes Robin smile; the frame log shows 60 fps on his phone.
@@ -48,6 +53,8 @@ marks and notes drawn with the UI kit; the first balance pass over four classes 
 and the fight effects; Wobblewood's kit, backdrop, Twigling, Moss Goblin, Sporeling, Nutkin Thief, the Sleepy Owlbear
 Cub and Grumblebark; the Iron and Silver gear icons.
 
+**Sound** (wave 4): the three classes' abilities and meters, Wobblewood's themes and bed, its six creatures' voices.
+
 **Done when**: four classes play differently from level 1 to 8 with their own look, and a party of friends on four phones
 clears Grumblebark together over a weekend without a crash or a stuck socket.
 
@@ -60,6 +67,8 @@ forward; the spawn and cooldown feel; a first pass of the "fewer effects" switch
 **Art** (wave 5): Honeyhill's kit, backdrop, Honey Blob, Corn Goblin, Buzzbug, Apple Mimic, the Scarecrow Scrapper and
 Queen Bumble; the Moonsilver and Sunsteel gear icons; the uniques' icons that have dropped so far.
 
+**Sound** (wave 5): Honeyhill's themes and bed, its six creatures' voices, the world boss's horn and fanfare, the settings.
+
 **Done when**: the three hand-laid areas are complete, a character goes from 1 to 12 with no placeholder, Queen Bumble
 falls to a party, and the world keeps going for a week on Robin's PC without a restart.
 
@@ -69,6 +78,8 @@ falls to a party, and the world keeps going for a week on Robin's PC without a r
 six-letter code to type), the link's lifetime, joining each other's fights from anywhere, the live fight room with
 cross-class combos. **Art** (wave 8): the QR frame, the nearby marker, the combo bursts.
 
+**Sound** (wave 6): the link made, the nearby ping, the combo stings.
+
 **Done when**: two friends in the same room link up by QR and win a fight together with a combo, and two strangers in
 the same café are told of each other and nothing more.
 
@@ -77,8 +88,8 @@ the same café are told of each other and nothing more.
 Glimmerlake Shores (12 to 16), Moonwhisper Woods (16 to 20), Thunderstone Highlands (20 to 24), Sunfall Expanse (24 to
 28), Frostveil Peaks (28 to 32), Thornhollow Wilds (32 to 36), Starfall Dominion (36 to 40), Embercrown Mountains (40 to
 44), The Shattered Crown (44 to 48). Each chapter: the theme's kit, backdrop, four mobs, mini-boss and boss (wave 7), its
-rank's gear icons, its uniques, the balance walls for its levels, and whatever the generator needs for that theme's
-shape. The game already lays these areas from the seed; a chapter turns the shapes into art and the numbers into felt
+rank's gear icons, its uniques, its three themes, bed and eighteen voices (sound wave 7), the balance walls for its levels,
+and whatever the generator needs for that theme's shape. The game already lays these areas from the seed; a chapter turns the shapes into art and the numbers into felt
 ones. **Done when** a party at the chapter's level clears the gate boss and the next area opens with its own look.
 
 ## The real-world flavour (the brief's MVP step 5): a chapter when Robin wants it

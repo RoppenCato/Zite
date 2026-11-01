@@ -11,6 +11,7 @@ world, protocol, art, sound, pages). Read the file before changing its system; w
 | `protocol.md` | 2026-11-01 | every message between the client and the server: join, intent, snapshot, result, event, leave; the delta; reconnecting; the limits |
 | `world.md` | 2026-10-31 | the world: areas by tier, hubs and roads, passages and bosses, the three hand-laid areas, the grown areas (themes, cells, shapes, creatures, passages), what is static and what is live |
 | `pages.md` | 2026-10-31 | what the browser pane can open, how to drive the game from it, where every button sits, the headless driver |
-| `art.md` | 2026-10-31 | no art yet; the budgets the Art Director builds to: 2x files, atlases, caps on disk and in memory |
+| `art.md` | 2026-10-31 | what art is in the game (the hero's sets), the budgets the Art Director builds to, the stand-ins |
+| `sound.md` | 2026-11-01 | no sound yet; the budgets and the audio layer to come; the list is `docs/sound-demands.md` |
 
-Not yet: `sound.md`.
+Every system has its file now.
