@@ -7,6 +7,7 @@ import { WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
+import { preloadKit } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
 
@@ -41,6 +42,10 @@ export class ConnectScene extends Phaser.Scene {
   constructor(deps: ConnectSceneDeps) {
     super('connect');
     this.deps = deps;
+  }
+
+  preload(): void {
+    preloadKit(this);
   }
 
   create(): void {

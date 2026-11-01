@@ -44,6 +44,7 @@ import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps,
 import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
+import { preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
@@ -762,6 +763,7 @@ export class BoardScene extends Phaser.Scene {
     preloadCreatures(this);
     preloadBackdrops(this);
     preloadBoardKits(this);
+    preloadKit(this);
     audio.preload(this);
   }
 
@@ -1320,7 +1322,7 @@ export class BoardScene extends Phaser.Scene {
     const area = space ? this.game_.state.board.areas[space.area] : undefined;
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
-    this.hud?.setStats(`Lv ${me.level} · HP ${me.hp}/${s.maxHp} · MP ${me.mana}/${s.maxMana} · Gold ${me.gold}`, `${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
+    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
   private setMessage(text: string): void {

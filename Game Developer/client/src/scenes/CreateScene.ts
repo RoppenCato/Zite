@@ -9,6 +9,7 @@ import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
 import { feel, sfx } from '../feel.ts';
+import { preloadKit } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
 
@@ -62,6 +63,10 @@ export class CreateScene extends Phaser.Scene {
   constructor(deps: CreateSceneDeps) {
     super('create');
     this.deps = deps;
+  }
+
+  preload(): void {
+    preloadKit(this);
   }
 
   create(): void {

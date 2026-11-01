@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "burst_levelup": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 512,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 512,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 512,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "die_glow": {
+   "frame": {
+    "x": 518,
+    "y": 3,
+    "w": 192,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "ui_soft.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/kit/ui.js",
+  "filePx": 2
+ }
+}

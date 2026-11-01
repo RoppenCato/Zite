@@ -81,6 +81,12 @@ if (server && (account || recoverCode)) {
   first = saved ? playScenes(saved, log).map((s) => s.scene) : [localCreate()];
 }
 
+// The UI kit's fonts, before any text is drawn: a short wait, then the system face if they have not come (offline).
+await Promise.race([
+  Promise.all([document.fonts.load('700 20px Fredoka'), document.fonts.load('400 15px Nunito'), document.fonts.load('700 15px Nunito')]).catch(() => undefined),
+  new Promise((resolve) => setTimeout(resolve, 1500)),
+]);
+
 const phaser = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',

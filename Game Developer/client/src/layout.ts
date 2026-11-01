@@ -70,4 +70,7 @@ export const RARITY_TINT: Record<string, number> = {
   gold: 0xe8b84a,
 };
 
-export const FONT = 'system-ui, "Segoe UI", Roboto, sans-serif';
+/** The text face: Nunito (the UI kit's choice, Mitch, AD, 2026-11-01), the system's when it has not loaded. */
+export const FONT = '"Nunito", system-ui, "Segoe UI", Roboto, sans-serif';
+/** The display face for titles, numbers and buttons: Fredoka. */
+export const FONT_DISPLAY = '"Fredoka", "Nunito", system-ui, "Segoe UI", Roboto, sans-serif';

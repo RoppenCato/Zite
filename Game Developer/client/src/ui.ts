@@ -1,16 +1,30 @@
-// Small pieces of chrome shared by the scenes. Shapes and labels only; the art comes later. Every button has the press
-// feel (feel.ts): it squashes on touch, answers at once, pops on release, buzzes and ticks.
+// Small pieces of chrome shared by the scenes, drawn from the UI kit (kit.ts, Mitch, AD, 2026-11-01) when it is loaded
+// and as shapes when it is not. Every button has the press feel (feel.ts): it swaps to its pressed face and squashes on
+// touch, answers at once, pops back on release, buzzes and ticks.
 
 import Phaser from 'phaser';
 import { feel, sfx } from './feel.ts';
-import { COLORS, FONT } from './layout.ts';
+import { CREAM, INK, kitReady, plate, resizePlate } from './kit.ts';
+import { COLORS, FONT, FONT_DISPLAY } from './layout.ts';
 
 export interface Button {
   button: Phaser.GameObjects.Container;
   label: Phaser.GameObjects.Text;
+  /** Dim or wake the button (the kit's dim face; the shapes fade). */
+  setEnabled(on: boolean): void;
 }
 
-/** A rounded button that squashes on the press, calls `onTap` at once (so it answers within a frame), and pops on release. */
+type ButtonKind = 'action' | 'plain' | 'danger';
+
+/** Which of the kit's three buttons a colour asks for: green is the action, red the danger, the rest plain (tinted when coloured). */
+function kindOf(color: number): { kind: ButtonKind; tint: number | null } {
+  if (color === COLORS.button) return { kind: 'action', tint: null };
+  if (color === 0xd9534f || color === 0xc0392b) return { kind: 'danger', tint: null };
+  if (color === COLORS.log || color === COLORS.panel) return { kind: 'plain', tint: null };
+  return { kind: 'plain', tint: color };
+}
+
+/** A button that squashes on the press, calls `onTap` at once (so it answers within a frame), and pops on release. */
 export function makeButton(
   scene: Phaser.Scene,
   x: number,
@@ -22,6 +36,49 @@ export function makeButton(
   fontSize: string,
   onTap: () => void,
 ): Button {
+  if (!kitReady(scene)) return shapeButton(scene, x, y, w, h, text, color, fontSize, onTap);
+  const { kind, tint } = kindOf(color);
+  const big = h >= 50;
+  const corner = big ? 22 : 18;
+  const height = Math.max(h, corner * 2);
+  const width = Math.max(w, corner * 2);
+  const frame = (state: 'idle' | 'pressed' | 'dim') => `btn_${kind}_${big ? 'big' : 'small'}_${state}`;
+  const face = plate(scene, frame('idle'), 0, 0, width, height);
+  if (tint !== null) face.setTint(tint);
+  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 2 }).setOrigin(0.5);
+  for (let px = parseInt(fontSize, 10); px > 11 && label.width > width - 16; px--) label.setFontSize(`${px}px`);
+  const button = scene.add.container(x, y, [face, label]).setSize(width, height);
+  button.setInteractive({ useHandCursor: true });
+  let enabled = true;
+  const show = (state: 'idle' | 'pressed' | 'dim') => {
+    face.setFrame(frame(state));
+    label.setY(state === 'pressed' ? 3 : -3);
+  };
+  button.on('pointerdown', () => {
+    if (enabled) show('pressed');
+    feel.press(scene, button);
+    feel.buzz();
+    sfx.play('ui/tap');
+    onTap();
+  });
+  const up = () => {
+    show(enabled ? 'idle' : 'dim');
+    feel.release(scene, button);
+  };
+  button.on('pointerup', up);
+  button.on('pointerout', up);
+  return {
+    button,
+    label,
+    setEnabled: (on: boolean) => {
+      enabled = on;
+      show(on ? 'idle' : 'dim');
+    },
+  };
+}
+
+/** The button as a shape, for a scene that runs before the kit is loaded. */
+function shapeButton(scene: Phaser.Scene, x: number, y: number, w: number, h: number, text: string, color: number, fontSize: string, onTap: () => void): Button {
   const g = scene.add.graphics();
   g.fillStyle(color, 1);
   g.fillRoundedRect(-w / 2, -h / 2, w, h, 16);
@@ -38,20 +95,43 @@ export function makeButton(
   });
   button.on('pointerup', () => feel.release(scene, button));
   button.on('pointerout', () => feel.release(scene, button));
-  return { button, label };
+  return { button, label, setEnabled: (on) => button.setAlpha(on ? 1 : 0.4) };
 }
 
-/** A horizontal bar whose fill shrinks from the right: HP. `set` moves the fill, tweened unless `now`. */
+/**
+ * A horizontal bar: HP (green) or MP (blue). From the kit: the frame, the fill that shrinks from the right, and the part
+ * just lost draining away behind it, with the number over it. `set` moves the fill, tweened unless `now`.
+ */
 export class Bar {
-  private readonly fill: Phaser.GameObjects.Rectangle;
-  private readonly text: Phaser.GameObjects.Text;
   private readonly scene: Phaser.Scene;
   private readonly label: string;
+  private readonly text: Phaser.GameObjects.Text;
+  private readonly fill: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle;
+  private readonly lost: Phaser.GameObjects.NineSlice | null;
+  /** The fill's full width in design pixels, and its current share. */
+  private readonly inner: number;
+  private share = { fill: 1, lost: 1 };
 
   constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, color: number, depth = 0, label = 'HP') {
     this.scene = scene;
     this.label = label;
+    const kit = kitReady(scene);
+    if (kit) {
+      const mp = color === COLORS.mana || label === 'MP';
+      plate(scene, 'bar_frame', x, y, w, 14).setDepth(depth);
+      this.inner = w - 4;
+      const left = x - w / 2 + 2;
+      this.lost = plate(scene, 'bar_lost', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 1);
+      this.fill = plate(scene, mp ? 'bar_mp' : 'bar_hp', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 2);
+      this.text = scene.add
+        .text(x, y, '', { fontFamily: FONT_DISPLAY, fontSize: '11px', fontStyle: 'bold', color: CREAM, stroke: INK, strokeThickness: 3 })
+        .setOrigin(0.5)
+        .setDepth(depth + 3);
+      return;
+    }
     scene.add.rectangle(x, y, w, h, 0x2b3245, 1).setDepth(depth);
+    this.inner = w;
+    this.lost = null;
     this.fill = scene.add.rectangle(x - w / 2, y, w, h, color, 1).setOrigin(0, 0.5).setDepth(depth + 1);
     this.text = scene.add
       .text(x, y, '', { fontFamily: FONT, fontSize: h < 16 ? '11px' : '13px', fontStyle: 'bold', color: COLORS.text })
@@ -60,12 +140,38 @@ export class Bar {
   }
 
   set(value: number, max: number, now = false): void {
-    const scaleX = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
+    const target = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
     const line = `${this.label} ${value}/${max}`;
     if (this.text.text && this.text.text !== line && !now) feel.tick(this.scene, this.text);
     this.text.setText(line);
-    this.scene.tweens.killTweensOf(this.fill);
-    if (now) this.fill.setScale(scaleX, 1);
-    else this.scene.tweens.add({ targets: this.fill, scaleX, duration: 220, ease: 'Quad.easeOut' });
+    this.scene.tweens.killTweensOf(this.share);
+    if (now) {
+      this.share.fill = target;
+      this.share.lost = target;
+      this.apply();
+      return;
+    }
+    // The fill moves at once; what was lost lingers behind it for a beat and drains.
+    const dropped = target < this.share.fill;
+    this.share.fill = target;
+    if (!dropped) this.share.lost = target;
+    this.apply();
+    this.scene.tweens.add({ targets: this.share, lost: target, delay: dropped ? 260 : 0, duration: 320, ease: 'Quad.easeOut', onUpdate: () => this.apply() });
+  }
+
+  private apply(): void {
+    const w = (share: number) => Math.max(share > 0 ? 6 : 0, this.inner * share);
+    if (this.fill instanceof Phaser.GameObjects.Rectangle) {
+      this.fill.setScale(this.share.fill, 1);
+      return;
+    }
+    const f = w(this.share.fill);
+    this.fill.setVisible(f > 0);
+    if (f > 0) resizePlate(this.fill, f, 10);
+    if (this.lost) {
+      const l = w(Math.max(this.share.lost, this.share.fill));
+      this.lost.setVisible(l > 0);
+      if (l > 0) resizePlate(this.lost, l, 10);
+    }
   }
 }
