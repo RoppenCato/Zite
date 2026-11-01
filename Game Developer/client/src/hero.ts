@@ -32,8 +32,8 @@ const SETS: Record<HeroSet, SetFiles> = {
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
-/** On the board the hero stands at 0.3 of the fight's size (Mitch, AD's number for the test). */
-export const HERO_BOARD_SCALE = 0.15;
+/** On the board the hero stands at half the fight's size, 75 CSS px: taller than a spot plate, as in Mitch, AD's board layout (mine, 2026-11-01). */
+export const HERO_BOARD_SCALE = 0.25;
 
 /** Queue the sets' atlases; call from a scene's preload. */
 export function preloadHero(scene: Phaser.Scene): void {

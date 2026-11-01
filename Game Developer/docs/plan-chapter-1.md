@@ -16,7 +16,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 | First | **the chest and the loot reveal** pieces (the chest, the six glows, the opening clip, the card, the particle sheets): small, and they land in step 2 (landed 2026-11-01) | **the UI sprite's first half**: the tap, the tap denied, the die's shake, tumble and landing, the steps, the chest's shimmer, bursts and ding, the level up (step 1, step 2, step 7) |
 | Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6) | **the fight sprite** (step 4, step 7) |
 | Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4; landed 2026-11-01) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
-| Fourth | **the meadows' board kit** with its props (step 5) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
+| Fourth | **the meadows' board kit** with its props (step 5; landed 2026-11-01) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
 | Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9) | **the meadows' creature voices** (six creatures, three each) |
 | Sixth | the other five meadows creatures and **King Goo** (step 4's tail) | |
 | Last | the **wordmark, the app icon, the character-screen backdrop** (step 11) | |
@@ -49,7 +49,8 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    sheet. The monster, when it comes, plays its five clips on the same events as the hero. *Needs*: the meadows' fight
    backdrop and the Jelly Slime first, the other creatures and King Goo after; the fight sprite from Nigel, SD. *Done*:
    a fight against the Jelly Slime with both figures animated on their backdrop, at 60 fps on the phone.
-5. **The board from kits.** A board renderer that draws an area's ground as tiles with cliff faces at the steps, roads
+5. **The board from kits** (done 2026-11-01 for Cloverfield Meadows on Mitch, AD's kit, `client/src/boardkit.ts`; grown areas
+   and the other two hand-laid areas keep the shapes until their kits come). A board renderer that draws an area's ground as tiles with cliff faces at the steps, roads
    as kit pieces along the links, spot markers from the kit, props placed by hand on the hubs, everything standing upright
    and sorted by depth; the closed-area cover as a tile; the hero and the other players' marks as figures on top. A small
    data file per area says which tile and which props go where. Shapes stay wherever the kit has no piece yet. *Needs*:

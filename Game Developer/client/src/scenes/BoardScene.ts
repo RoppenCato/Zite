@@ -1,7 +1,8 @@
 // The world: areas by tier drawn in world pixels (each area's ground, the links, the spots, bosses on the board,
 // whatever has spawned), a camera that follows the character, and the touch input (tap a spot for a hint or a choice,
 // drag to pan, pinch to zoom). The fixed chrome is HudScene, launched from here; the fight, the shop and the bag are
-// scenes launched over both. No art yet: shapes and labels. Everything here is drawing and input; what happens is
+// scenes launched over both. An area whose theme has a kit (boardkit.ts: Cloverfield Meadows since 2026-11-01) is drawn
+// from it, tiles, roads, plates and props; the rest is still shapes and labels. Everything here is drawing and input; what happens is
 // decided by the rules through the holder (LocalGame alone, or RemoteGame with the server). A chest, a vault or a boss's
 // drop opens the loot reveal (RevealScene) before the board goes on.
 // Other players stand on the board as small marks with their names; the HUD says whether the world is online.
@@ -39,6 +40,7 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { preloadBackdrops } from '../backdrop.ts';
+import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
@@ -118,13 +120,15 @@ export class BoardScene extends Phaser.Scene {
   /** True while an action is on its way to the world: nothing else is sent meanwhile. */
   private inFlight = false;
   private readonly rings = new Map<string, Phaser.GameObjects.Arc>();
-  private readonly circles = new Map<string, Phaser.GameObjects.Arc>();
+  private readonly circles = new Map<string, Phaser.GameObjects.Arc | Phaser.GameObjects.Image>();
+  /** True once an area has been drawn from a kit: the token then sorts by its feet among the props. */
+  private kitted = false;
   private readonly names: Phaser.GameObjects.Text[] = [];
   /** Every drawn thing of a spot but its ring, to hide what the camera cannot see (mine, 2026-11-01: the board grows to hundreds of spots). */
-  private readonly spotParts = new Map<string, { x: number; y: number; parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Text)[]; names: Phaser.GameObjects.Text[] }>();
+  private readonly spotParts = new Map<string, { x: number; y: number; parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Image | Phaser.GameObjects.Text)[]; names: Phaser.GameObjects.Text[] }>();
   private lastCull = { x: NaN, y: NaN, zoom: NaN, count: -1 };
   private readonly bossLabels = new Map<string, Phaser.GameObjects.Text>();
-  private readonly covers = new Map<string, Phaser.GameObjects.Rectangle>();
+  private readonly covers = new Map<string, Phaser.GameObjects.Rectangle | Phaser.GameObjects.Container>();
   private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
   /** The notes left on spots (mine, 2026-11-01): a small mark to the left of the spot. */
   private readonly traceMarks = new Map<string, Phaser.GameObjects.Container>();
@@ -328,6 +332,7 @@ export class BoardScene extends Phaser.Scene {
   override update(_time: number, delta: number): void {
     this.log.frame(delta);
     this.lastZoom = this.cameras.main.zoom;
+    if (this.kitted && this.token) this.token.setDepth(standingDepth(this.token.y + SPACE_RADIUS + 6));
     this.cull();
   }
 
@@ -517,6 +522,10 @@ export class BoardScene extends Phaser.Scene {
     const spaces = Object.values(board.spaces).filter((s) => !this.circles.has(s.id));
     this.drawLinks(spaces, board.spaces);
     for (const space of spaces) this.drawSpace(space);
+    for (const area of fresh) {
+      const kit = kitFor(this, area.theme);
+      if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
+    }
     for (const area of fresh) this.drawCover(area);
     this.border.clear();
     this.border.lineStyle(6, COLORS.border, 1);
@@ -531,6 +540,14 @@ export class BoardScene extends Phaser.Scene {
 
   /** An area's ground in its theme's colour, its name written large and faint. */
   private drawGround(area: Area): void {
+    const kit = kitFor(this, area.theme);
+    if (kit) {
+      const { board, seed } = this.game_.state;
+      drawKitGround(this, kit, area, seed, board.width, board.height);
+      drawKitBanner(this, kit, area, FONT);
+      this.kitted = true;
+      return;
+    }
     const g = this.add.graphics().setDepth(0);
     g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
     g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
@@ -544,6 +561,11 @@ export class BoardScene extends Phaser.Scene {
 
   /** The roads of the given spots: each link once, and a link to a spot drawn earlier (the passage from a boss into a grown area). */
   private drawLinks(spaces: Space[], all: Record<string, Space>): void {
+    const areas = this.game_.state.board.areas;
+    const kitted = spaces.filter((s) => kitFor(this, areas[s.area]?.theme ?? ''));
+    const kits = new Map(kitted.map((s) => [areas[s.area]!.theme, kitFor(this, areas[s.area]!.theme)!]));
+    for (const [theme, kit] of kits) drawKitRoads(this, kit, kitted.filter((s) => areas[s.area]?.theme === theme), all);
+    spaces = spaces.filter((s) => !kitFor(this, areas[s.area]?.theme ?? ''));
     const fresh = new Set(spaces.map((s) => s.id));
     this.links.lineStyle(6, COLORS.link, 1);
     for (const space of spaces) {
@@ -563,13 +585,23 @@ export class BoardScene extends Phaser.Scene {
     ring.setStrokeStyle(4, LIT, 1).setVisible(false).setDepth(4);
     this.rings.set(space.id, ring);
 
-    const parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Text)[] = [];
+    const parts: (Phaser.GameObjects.Arc | Phaser.GameObjects.Image | Phaser.GameObjects.Text)[] = [];
     const spotNames: Phaser.GameObjects.Text[] = [];
     this.spotParts.set(space.id, { x: space.x, y: space.y, parts, names: spotNames });
-    const circle = this.add.circle(space.x, space.y, radius, color, 1).setDepth(5);
+    const kit = kitFor(this, this.game_.state.board.areas[space.area]?.theme ?? '');
+    let circle: Phaser.GameObjects.Arc | Phaser.GameObjects.Image;
+    let under = radius + 4;
+    if (kit) {
+      const plate = drawKitPlate(this, kit, space);
+      circle = plate;
+      under = plate.displayHeight / 2 + 2;
+    } else {
+      const arc = this.add.circle(space.x, space.y, radius, color, 1).setDepth(5);
+      arc.setStrokeStyle(space.kind === 'boss' ? 6 : 3, 0xffffff, space.kind === 'boss' ? 0.7 : 0.25);
+      arc.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
+      circle = arc;
+    }
     parts.push(circle);
-    circle.setStrokeStyle(space.kind === 'boss' ? 6 : 3, 0xffffff, space.kind === 'boss' ? 0.7 : 0.25);
-    circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
     // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
     circle.on('pointerup', (pointer: Phaser.Input.Pointer) => {
       if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250 && this.game.loop.frame - this.overlayClosedFrame > 3) {
@@ -584,7 +616,7 @@ export class BoardScene extends Phaser.Scene {
     });
     this.circles.set(space.id, circle);
 
-    const letter = space.locked ? 'V' : KIND_LETTERS_SHOWN[space.kind];
+    const letter = kit ? '' : space.locked ? 'V' : KIND_LETTERS_SHOWN[space.kind];
     if (letter) {
       parts.push(
         this.add
@@ -596,14 +628,14 @@ export class BoardScene extends Phaser.Scene {
     if (space.name) {
       // Only hubs have names; the wilds of the road show their circle and nothing more.
       const name = this.add
-        .text(space.x, space.y + radius + 4, space.name, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: COLORS.text, align: 'center', resolution: 2 })
+        .text(space.x, space.y + under, space.name, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: COLORS.text, align: 'center', resolution: 2, ...(kit ? { stroke: '#2a3320', strokeThickness: 3 } : {}) })
         .setOrigin(0.5, 0)
-        .setDepth(6);
+        .setDepth(KIT_DEPTH.names);
       this.names.push(name);
       spotNames.push(name);
       if (space.kind === 'boss') {
         const label = this.add
-          .text(space.x, space.y + radius + 20, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', resolution: 2 })
+          .text(space.x, space.y + under + 16, '', { fontFamily: FONT, fontSize: '12px', color: kit ? '#f4f0e4' : COLORS.dim, align: 'center', resolution: 2, ...(kit ? { stroke: '#2a3320', strokeThickness: 3 } : {}) })
           .setOrigin(0.5, 0)
           .setDepth(6);
         this.bossLabels.set(space.id, label);
@@ -639,6 +671,11 @@ export class BoardScene extends Phaser.Scene {
 
   /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
   private drawCover(area: Area): void {
+    const kit = kitFor(this, area.theme);
+    if (kit) {
+      this.covers.set(area.id, drawKitCover(this, kit, area));
+      return;
+    }
     const b = area.bounds;
     const cover = this.add.rectangle(b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x0b0d14, 0.72).setDepth(8);
     this.covers.set(area.id, cover);
@@ -724,6 +761,7 @@ export class BoardScene extends Phaser.Scene {
     preloadLoot(this);
     preloadCreatures(this);
     preloadBackdrops(this);
+    preloadBoardKits(this);
     audio.preload(this);
   }
 

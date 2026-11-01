@@ -34,6 +34,7 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/settings.ts` | sound, fewer effects, larger text, vibration; kept in storage; `ms()` and `font()` for the scenes |
 | `src/scenes/HudScene.ts` | the top panel (with the link line under the die: solo, online · n here, reconnecting), the chip row, the message line, Map, World, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips`, `setLink` |
 | `src/scenes/FightScene.ts` | the fight, side on: the area's backdrop, the hero at the left, the enemy at the right as the Art Director's figure or a circle, bars over each, the tell over the enemy, the words and buttons on the strip under the ground; two taps a round, the events played back a beat apart with a blow landing on its frame; `FIGHT_LAYOUT`, `FIGHT_BUTTONS` |
+| `src/boardkit.ts` | the board from kits by theme (the meadows so far): ground tiles chosen per cell from the seed, roads stroked in the kit's three colours along the links, spot plates by kind, the hand-laid props sorted by their foot, the area banner, the cloud cover; `kitFor`, `standingDepth`, `preloadBoardKits` |
 | `src/backdrop.ts` | the fight backdrops by theme: a code sky, the Art Director's strips as tiling sprites with scroll factors, the soil; `Backdrop`, `preloadBackdrops` |
 | `src/creatures.ts` | the creatures' atlases by enemy id (the Jelly Slime so far); `Figure` plays a creature's clips, `blowMs` says when its blow lands; `preloadCreatures` |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
@@ -83,6 +84,19 @@ opaque panel that takes every touch, the reveal with a dark veil, and they call 
 `shopLeft`, `bagClosed`, `revealClosed`).
 
 ## The board scene
+
+**From the kit since 2026-11-01 (chapter 1, step 5)**, where the area's theme has one (`boardkit.ts`; Cloverfield Meadows on
+Mitch, AD's `assets/board_meadows/`): the ground as 128 px tiles over the area's bounds, picked per cell from the world seed
+(mostly the two plain tiles, a clover and a darker one now and then), drawn a touch over size so no seam shows at a fractional
+zoom; the roads as the links stroked in three widths and colours (30 px `#b4935a`, 25 `#d9bb7e`, 10 `#ecd49c` at 0.8) with
+a round joint at every spot, so the curves the spots follow read as one road; a plate per spot by kind (`spot_wild`, `_town`,
+`_shop`, `_chest`, `_spring`, `_shrine`, `_gate`), the tap area the plate itself, with no letter on it (the hint on touch
+says what it is); the hub's name under the plate with a dark stroke; the props of `placement_cloverfield.json` (Mitch, AD's
+hand-laid 133 pieces, kept clear of the roads and spots), the flat ones (clover, worn, the hill) under the roads and the rest
+sorted by their foot (`standingDepth`), the token sorted among them every frame; the area's name on the kit's banner at the top
+of its bounds; the closed-area cover as the kit's cloud tiled over the bounds with a little dark. Depths: ground 0, flat 1,
+roads 2, plates 3, rings 4, props and the token 5 plus the foot, names 6, covers 8, badges 9. The hero stands at 0.25 on the
+board (75 CSS px). An area whose theme has no kit, and every grown area for now, keeps the shapes below.
 
 - **The world**: each area's ground in its theme's colour (meadow, forest, ice), its name written large and faint, a thin
   border round the map. **A closed area is covered** by a dark rectangle (you see there is more, not what); the cover
