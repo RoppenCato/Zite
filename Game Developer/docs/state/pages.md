@@ -15,7 +15,7 @@ screen is up. `game.act` answers a promise in both solo and co-op (`await` it, o
 
 ```js
 boardWorld.phaser.scene.isActive('create')                 // the character screen (no save)
-boardWorld.phaser.scene.getScene('create').choose('mage')  // or tap a card; Begin at (206, 812), the cards at y 304, 420, 536, 652
+boardWorld.phaser.scene.getScene('create').choose('warrior')  // the Knight alone is offered in chapter 1 (Robin, 2026-11-01); or tap the card; Begin at (206, 812), the cards at y 304, 420, 536, 652
 boardWorld.phaser.scene.getScene('create').begin()         // the name is read from the <input> inside #game
 boardWorld.game.me                       // the character: space, steps, hp, mana, gold, xp, level, fight, items, equipment, bag, abilities, opened, cooldowns
 boardWorld.game.state.spawns             // what prowls or camps where, and until when

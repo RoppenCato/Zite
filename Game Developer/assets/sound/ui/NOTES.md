@@ -117,3 +117,33 @@ down and the area opened come next in the same pair.
 softer or duller? Whether the six bursts read as six steps of rarity, and whether the unique one reads as special or merely odd.
 Whether the shimmer is a glow or a music box. The bells are the one synth voice here; if they read as too much, the pop alone is the
 common burst and the others can lose a bell each.
+
+# The banners: the level up, the boss down, the area opened (2026-11-01, the same evening)
+
+Three sounds for Miles, GD's banners, in the same spec (`sfx/ui/_make.py`). Two of them are big moments, so each has a tune, not a
+run: a cell of short short short long that the two share, the level up rising on bells, the boss down the same cell inverted on a
+horn, so the two are kin and neither is the chest's bells running up.
+
+**Listen:** `preview-banners.mp3` (22 s): the level up twice (0:00, 0:02), the boss down twice (0:05, 0:08), the area opened twice
+(0:11, 0:14), then a boss down and an area opened as they come in the game (0:17). On the phone page: Chapter 1, the row "The
+banners: level up, boss down, area opened".
+
+| Sound (the game's name) | Length | What it is | Level against the die's land |
+| --- | --- | --- | --- |
+| `level_up` (`ui/level-up`) | 1.5 s | G5 C6 E6 then a held G6 on bells, strings doubling, a chord swelling under the held note, glitter on it | +1 dB (gain 0.485) |
+| `boss_down` (`ui/boss-down`) | 1.93 s | C5 G5 E5 then a long C6 on a horn (two saws and a low triangle through a low-pass), a low drum on the first and the last note, strings under, bells only on the last | wanted +3 dB; **the file is already at its peak, so it plays at +1.7 dB (gain 1.0)**: the loudest UI sound, and Miles, GD may give it a little more in the game |
+| `area_opened` (`ui/area-opened`) | 1.92 s | strings rising from a low C to a wide C major with the ninth over 1.2 s, bells shimmering up through it late, no knock, no drum | -4 dB (0.292): the fifth moment, softer |
+
+The boss down is 40 % under 250 Hz (the drum and the horn's low triangle); a phone loses that weight and keeps the horn's phrase,
+which is the point. The first render merged its three variations because the boom sample's own tail runs for seconds; it is now cut
+to half a second.
+
+**For the game (Miles, GD):** `game/ui.ogg` is 47.8 s and 328 KB with 60 sounds (20 names). **The 60 s sprite ceiling is near**: wave 1
+has about 60 names, so at three variations each the UI sprite would run to some 150 s. Either the UI wave becomes two or three sprites
+(`ui.ogg` the die, the taps and the chest; `ui-spots.ogg` the arrivals and the spots; `ui-chrome.ogg` the rest), or the one-shot
+moments (the banners, the bursts, the arrivals) carry one variation instead of three, which they can: nobody hears a level up twice in
+a minute. My suggestion is both: one variation for anything heard less than once a minute, and a second sprite for the arrivals and
+the spots. Miles, GD decides; the spec changes in one line either way.
+
+**For Robin's ear:** whether the level up is a tune you could hum after a week of hearing it; whether the boss down is big enough
+without being long; whether the area opened is a swell or a sigh.

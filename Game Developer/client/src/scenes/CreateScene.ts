@@ -40,6 +40,10 @@ export const CREATE_LAYOUT = {
   code: { x: CENTRE, y: 872, w: 260, h: 28 },
 } as const;
 
+/** The classes offered (Robin, 2026-11-01: Alpha 1 with the Knight alone; the rules keep all four, chapter 2 opens the rest). */
+export const OFFERED: readonly ClassId[] = ['warrior'];
+const LATER = CLASS_IDS.filter((id) => !OFFERED.includes(id));
+
 const CARD_COLORS: Record<ClassId, number> = {
   warrior: 0x5a6378,
   rogue: 0x4f5a5a,
@@ -87,8 +91,15 @@ export class CreateScene extends Phaser.Scene {
     ].join(';'));
     this.add.dom(input.x, input.y, this.nameField);
 
-    this.add.text(CENTRE, 234, 'Pick a class. Each one fights its own way.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
-    CLASS_IDS.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
+    this.add.text(CENTRE, 234, OFFERED.length > 1 ? 'Pick a class. Each one fights its own way.' : 'Your class, for now.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
+    OFFERED.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
+    if (LATER.length) {
+      const names = LATER.map((id) => `the ${CLASS_DATA[id].name}`);
+      const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0]!;
+      this.add
+        .text(CENTRE, CREATE_LAYOUT.cardY(OFFERED.length) - CARD_H / 2 + 8, `${list.charAt(0).toUpperCase()}${list.slice(1)} come in chapter 2.`, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim, align: 'center', wordWrap: { width: CARD_W } })
+        .setOrigin(0.5, 0);
+    }
     this.select(this.chosen);
 
     this.status = this.add.text(CENTRE, 752, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5);
@@ -103,7 +114,7 @@ export class CreateScene extends Phaser.Scene {
 
   /** Pick a class (the cards call this; so can a script). */
   choose(classId: ClassId): void {
-    if (!CLASS_DATA[classId]) return;
+    if (!CLASS_DATA[classId] || !OFFERED.includes(classId)) return;
     this.select(classId);
   }
 
@@ -169,7 +180,7 @@ export class CreateScene extends Phaser.Scene {
 
   private select(classId: ClassId): void {
     this.chosen = classId;
-    CLASS_IDS.forEach((id, i) => {
+    OFFERED.forEach((id, i) => {
       const g = this.cards.get(id)!;
       const y = CREATE_LAYOUT.cardY(i);
       g.clear();

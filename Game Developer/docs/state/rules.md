@@ -360,6 +360,14 @@ the numbers above are the retune. Where it stands:
   the Bog King 98 / 100 / 85 / 100; two levels under, half to eight in ten; four under, only the Knight. The Ranger's
   rank-3 kit (a Painted Target on a four-arrow Triple Shot, a Tripwire for every wind-up) makes it the strongest past tier 4 and the Wizard
   the softest: a thing to feel before it is tuned from a table.
+- **With the eight slots (2026-11-01, chapter 1 step 10)** the wall was run again: three more pieces (a shield, gloves, a
+  cape) made King Goo a level-3 fight for the Knight in tin with two potions (90 % at level 3, 100 % at 4), against the
+  plan's "by level 5 or 6 in the area's gear" (Robin's chapter 1, `docs/chapters.md`). **King Goo grew to 700 HP, 30
+  attack, 11 defense** (from 550 / 26 / 9, `enemies.json`): now the Knight wins 27 % at level 4, **92 % at level 5**,
+  100 % at 6; the Trickster 32 / 72 / 95 at 5 / 6 / 7, the Wizard 45 / 75 / 95, the Archer 35 at 6 and 93 at 7 (they
+  come in chapter 2 and get their own look then). Bots reach level 5 around turn 55 as before, so the gate opens where
+  the chapter says. The Grumblebark and the later bosses were left alone: their walls moved little (the Knight 57 % at
+  level 6 against the Grumblebark, 97 % at 8) and their chapters are not built yet.
 - **With the errands and the trainer (2026-11-01)** the bots take every errand and sell what the bag cannot hold; the
   errands' xp brings level 8 around turn 140 and level 14 around 300, and three bots in thirty-two beat Queen Bumble
   in 500 turns. The bots do not train yet.

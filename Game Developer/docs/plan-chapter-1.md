@@ -64,14 +64,15 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    `?mute=1`; the audio unlocked on the first tap. *Needs*: the UI sprite, then the fight sprite, then the meadows' music
    and voices; ffmpeg on the PC (installed 2026-11-01). *Done*: the game is heard on the phone with the volumes and the mute
    working, and silent in the pane with `?mute=1`.
-8. **The Knight alone.** The character screen offers the Knight and says the three others come in chapter 2; the rules
+8. **The Knight alone** (done 2026-11-01, `OFFERED` in `client/src/scenes/CreateScene.ts`). The character screen offers the Knight and says the three others come in chapter 2; the rules
    keep all four, so nothing else changes. *Needs*: nothing. *Done*: a new player can only be a Knight.
 9. **The hero's parts, layered.** When Mitch, AD's alignment test passes: the client draws one atlas per part in the fixed
    order (cape, body, boots, hips, torso, gloves, head, helm, near arm, weapon, off-hand) with the same frame timing; each
    piece of gear carries its look in the data; the set-by-coat rule of the test goes. *Needs*: the Knight's per-part
    atlases for the Tin and Copper pieces and the four weapon types. *Done*: wear anything in the bag and see it on the
    board and in the fight.
-10. **Balance with eight slots.** The bots (`tools/simulate.ts`) run again with the three new slots; the walls for levels 1
+10. **Balance with eight slots** (done 2026-11-01: King Goo to 700 HP, 30 attack, 11 defense; the Knight wins 92 % at
+    level 5 in tin, 100 % at 6). The bots (`tools/simulate.ts`) run again with the three new slots; the walls for levels 1
     to 6 and King Goo retuned so a Knight beats him by level 5 or 6 in the area's gear. *Needs*: nothing. *Done*: the
     numbers in `docs/state/rules.md` are current.
 11. **Friends on the tunnel, the install page.** cloudflared in front of the server and the built client; the title screen

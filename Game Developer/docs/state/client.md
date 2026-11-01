@@ -20,7 +20,7 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/ui.ts` | `makeButton` and the `Bar` (HP, mana), shared by the scenes |
 | `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules with the browser's clock, ticks, saves; `actNow` for scripts |
 | `src/game-log.ts` | the frame log and error log, downloadable |
-| `src/scenes/CreateScene.ts` | the character screen: the name field, the four class cards, Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
+| `src/scenes/CreateScene.ts` | the character screen: the name field, the class cards (`OFFERED`: the Knight alone in chapter 1, Robin, 2026-11-01, with a line that the other three come in chapter 2; the rules keep all four), Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
 | `src/scenes/ConnectScene.ts` | co-op, with an account on this phone: "connecting…", tries again on its own, Play offline for now, Start over when the account is gone |
 | `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop, bag, atlas and reveal scenes made together |
 | `src/scenes/RevealScene.ts` | the loot reveal: the chest glows in the colour of its best prize, opens, bursts, and gives each prize on a card; a tap or a wait moves on; `REVEAL_LAYOUT` |

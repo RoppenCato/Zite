@@ -122,9 +122,9 @@
     "name": "King Goo",
     "level": 6,
     "role": "boss",
-    "hp": 550,
-    "attack": 26,
-    "defense": 9,
+    "hp": 700,
+    "attack": 30,
+    "defense": 11,
     "xp": 150,
     "gold": 150,
     "moves": [
