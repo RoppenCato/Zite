@@ -32,7 +32,8 @@ const SPRITES: SpriteFile[] = [
   { key: 'creatures-meadows', json: creaturesMeadowsJson, ogg: creaturesMeadowsOgg, volume: 1 },
 ];
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
-const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b' };
+// A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
+const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b', 'ui/arrive-church': 'ui/arrive-shrine' };
 
 /** The music, one file per piece, streamed through an audio element and looped whole (Nigel, SD's board theme, 2026-11-01). */
 const MUSIC: Record<string, string> = { 'music/meadows-board': meadowsBoardOgg };
@@ -86,6 +87,11 @@ class Audio {
   /** The sprite that holds `name`, and the name itself resolved from a family or an alias; null when none has it yet. */
   private find(name: string): { sprite: SpriteFile; name: string } | null {
     if (!this.game) return null;
+    return this.findExact(name) ?? (ALIASES[name] ? this.findExact(ALIASES[name]!) : null);
+  }
+
+  private findExact(base: string): { sprite: SpriteFile; name: string } | null {
+    if (!this.game) return null;
     for (const s of SPRITES) {
       let map = this.maps.get(s.key);
       if (!map) {
@@ -94,7 +100,6 @@ class Audio {
         map = json.spritemap;
         this.maps.set(s.key, map);
       }
-      const base = ALIASES[name] ?? name;
       if (map[base]) return { sprite: s, name: base };
       const variants = [1, 2, 3, 4, 5].map((n) => `${base}-${n}`).filter((v) => map![v]);
       if (variants.length) return { sprite: s, name: variants[Math.floor(Math.random() * variants.length)]! };

@@ -362,6 +362,7 @@ export class BoardScene extends Phaser.Scene {
       this.log.note(`rolled ${roll.value}`);
       const stung = rolled.find((e) => e.type === 'stung');
       if (stung?.type === 'stung') {
+        sfx.play('ui/stung');
         moments(this)?.find('mark_drop', `Poison: -${stung.damage} HP`, stung.left > 0 ? `${stung.left} more rolls, or a church.` : 'It has worn off.', 0x8fd14f);
         this.refreshHud();
       }
@@ -1330,7 +1331,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'shrine', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
