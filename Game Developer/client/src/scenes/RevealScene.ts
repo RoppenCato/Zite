@@ -10,6 +10,7 @@ import type { GameLog } from '../game-log.ts';
 import { feel, sfx } from '../feel.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT } from '../layout.ts';
 import { CARD, CHEST_OPEN_FRAME, cardWords, ensureLootClips, LOOT_KEYS, LOOT_SCALE, tierOf, type RevealRequest, type Tier } from '../loot.ts';
+import { gearIcon } from '../hero.ts';
 import { settings } from '../settings.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -71,6 +72,7 @@ export class RevealScene extends Phaser.Scene {
   private face!: Phaser.GameObjects.Image;
   private faceMask!: Phaser.GameObjects.Graphics;
   private square!: Phaser.GameObjects.Text;
+  private squareArt: Phaser.GameObjects.Image | null = null;
   private name_!: Phaser.GameObjects.Text;
   private power!: Phaser.GameObjects.Text;
   /** The card's parts, moved and faded together. */
@@ -187,7 +189,17 @@ export class RevealScene extends Phaser.Scene {
     const words = cardWords(prize);
     const ink = RARITY_INK[words.tier] ?? COLORS.text;
     this.rim.setTint(RARITY_TINT[words.tier] ?? 0xffffff);
-    this.square.setText(words.square.toUpperCase()).setColor(ink);
+    const art = prize.kind === 'gear' ? gearIcon(this, prize.gear) : null;
+    this.squareArt?.destroy();
+    this.squareArt = null;
+    if (art) {
+      this.squareArt = this.add.image(this.square.x, this.square.y, art.texture, art.frame).setScale(0.6).setDepth(2).setAlpha(this.square.alpha > 0 ? 1 : 0);
+      this.cardParts = [this.rim, this.face, this.faceMask, this.square, this.name_, this.power, this.squareArt];
+      this.square.setText('');
+    } else {
+      this.cardParts = [this.rim, this.face, this.faceMask, this.square, this.name_, this.power];
+      this.square.setText(words.square.toUpperCase()).setColor(ink);
+    }
     this.name_.setText(words.name).setColor(ink);
     for (let px = 19; px > 13 && this.name_.width > CARD.w - CARD.textX - 14; px--) this.name_.setFontSize(`${px}px`);
     this.fitPower(words.power);

@@ -31,6 +31,11 @@ barrier, sureCrit, companion, windup, plus `fight/effect-poison-tick`, `fight/ef
 `fight/revive`; `fight/caught`; `fight/victory`, `fight/defeat`, `fight/drop`. The creature's voice by its id:
 `creature/<id>/attack`, `/hit`, `/die` (the slime is `slime`).
 
+**Music** (2026-11-01 evening): Nigel, SD's `music/meadows-board` (`assets/sound/music/meadows-board.ogg`, 2.27 MB, 141.6 s,
+looped whole, -18.9 LUFS) plays on the board through an audio element at 0.7 with a two-second crossfade (`audio.music`);
+the fight, King Goo and title themes wait on Robin's word on the board theme, since they quote its tune; the meadow bed and
+the six creatures' voices (`creature/<id>/attack`, `hit`, `die`) come meanwhile.
+
 Still to come (chapter 1, step 7): the fight sprite loaded with the fight scene, music per area streamed through an audio element with a
 crossfade on an area change and on a fight's start and end, ambience under it, the settings' mute and two volumes,
 `?mute=1` for test pages, the audio unlocked on the first tap. The settings already carry a sound toggle that does nothing

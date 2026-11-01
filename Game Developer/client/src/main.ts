@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import * as rules from '../../rules/src/index.ts';
 import type { GameHolder } from './game-holder.ts';
 import { GameLog } from './game-log.ts';
+import { audio } from './audio.ts';
 import { HIRES_PLUGIN } from './hires.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, DPR } from './layout.ts';
 import { LocalGame, TICK_MS } from './local-game.ts';
@@ -109,10 +110,10 @@ const phaser = new Phaser.Game({
 // state or look a creature up). `game` is null on the character screen and while connecting.
 declare global {
   interface Window {
-    boardWorld: { game: GameHolder | null; log: GameLog; phaser: Phaser.Game; rules: typeof rules; server: string | null };
+    boardWorld: { game: GameHolder | null; log: GameLog; phaser: Phaser.Game; rules: typeof rules; server: string | null; audio: typeof audio };
   }
 }
-window.boardWorld = { game: saved, log, phaser, rules, server };
+window.boardWorld = { game: saved, log, phaser, rules, server, audio };
 
 // The world ticks once a minute while the page is open, and when it comes back to the front: spawns come and go (solo);
 // with a server the tick only checks the link, and a socket the phone killed in the background is replaced.

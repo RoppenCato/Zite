@@ -11,6 +11,7 @@ import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, RARITY_INK } from '../layout.
 import type { GameHolder } from '../game-holder.ts';
 import { feel, sfx } from '../feel.ts';
 import { hasFrame, icon, INK, INK_DIM, itemFrame, kitReady, plate, sheet } from '../kit.ts';
+import { gearIcon } from '../hero.ts';
 import { makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -107,7 +108,9 @@ export class BagScene extends Phaser.Scene {
       if (kit) {
         if (chosen) this.rows.push(plate(this, 'row_bag_chosen', x, y, 84, 66));
         this.rows.push(icon(this, g ? `frame_${g.rarity}` : 'frame_common', x, y - 4).setAlpha(g ? 1 : 0.55));
-        this.rows.push(icon(this, `slot_${slot}`, x, y - 4).setAlpha(g ? 1 : 0.45));
+        const art = g ? gearIcon(this, g) : null;
+        if (art) this.rows.push(this.add.image(x, y - 4, art.texture, art.frame).setScale(0.5));
+        else this.rows.push(icon(this, `slot_${slot}`, x, y - 4).setAlpha(g ? 1 : 0.45));
       } else {
         this.rows.push(this.add.rectangle(x, y - 4, 44, 44, chosen ? 0x3a4256 : 0x2b3245, 1).setStrokeStyle(2, g ? parseInt((RARITY_INK[g.rarity] ?? '#888').slice(1), 16) : 0x4a5470, 1));
       }
@@ -127,7 +130,9 @@ export class BagScene extends Phaser.Scene {
       if (kit) {
         this.rows.push(plate(this, chosen ? 'row_bag_chosen' : 'row_bag_idle', CENTRE, y, DESIGN_WIDTH - 36, carriedStep - 6));
         this.rows.push(icon(this, `frame_${g.rarity}`, 48, y).setScale(0.42));
-        this.rows.push(icon(this, `slot_${g.slot}`, 48, y).setScale(0.42));
+        const art = gearIcon(this, g);
+        if (art) this.rows.push(this.add.image(48, y, art.texture, art.frame).setScale(0.42));
+        else this.rows.push(icon(this, `slot_${g.slot}`, 48, y).setScale(0.42));
       }
       this.rows.push(this.add.text(76, y - 11, g.name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: RARITY_INK[g.rarity] ?? ink }).setOrigin(0, 0.5));
       this.rows.push(this.add.text(76, y + 9, this.powerLine(g), { fontFamily: FONT, fontSize: '10px', color: dim, wordWrap: { width: 300 } }).setOrigin(0, 0.5));

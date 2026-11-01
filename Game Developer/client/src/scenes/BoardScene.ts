@@ -43,7 +43,7 @@ import { preloadBackdrops } from '../backdrop.ts';
 import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
-import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
+import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
 import { fx, hasFrame, icon, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
@@ -333,6 +333,7 @@ export class BoardScene extends Phaser.Scene {
 
   override update(_time: number, delta: number): void {
     this.log.frame(delta);
+    this.hero?.update(delta);
     this.lastZoom = this.cameras.main.zoom;
     if (this.kitted && this.token) this.token.setDepth(standingDepth(this.token.y + SPACE_RADIUS + 6));
     this.cull();
@@ -785,12 +786,11 @@ export class BoardScene extends Phaser.Scene {
   private drawToken(): void {
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space]!;
-    const set = heroSetFor(me);
-    if (heroReady(this, set)) {
-      // The hero stands on the spot: the sprite's feet at the spot's centre, a touch up (the container sits above it).
-      this.hero = new Hero(this, set, 0, SPACE_RADIUS + 2, HERO_BOARD_SCALE);
+    if (heroReady(this)) {
+      // The hero stands on the spot: his feet at the spot's centre, a touch up (the container sits above it).
+      this.hero = new Hero(this, me, 0, SPACE_RADIUS + 2, HERO_BOARD_SCALE);
       this.hero.face(true);
-      this.token = this.add.container(space.x, space.y - SPACE_RADIUS - 6, [this.hero.sprite]).setDepth(10);
+      this.token = this.add.container(space.x, space.y - SPACE_RADIUS - 6, [this.hero.root]).setDepth(10);
       return;
     }
     const body = this.add.circle(0, 0, TOKEN_RADIUS, CLASS_COLORS[me.classId] ?? 0xffffff, 1);
@@ -1341,13 +1341,14 @@ export class BoardScene extends Phaser.Scene {
 
   /** The HUD's lines: level, HP, mana, gold; the area and the spot. The fight, shop and bag scenes call it too. */
   refreshHud(): void {
-    if (this.hero) this.hero.show(heroSetFor(this.game_.me));
+    this.hero?.wear(this.game_.me);
     const me = this.game_.me;
     const s = stats(me);
     const space = this.game_.state.board.spaces[me.space];
     const area = space ? this.game_.state.board.areas[space.area] : undefined;
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
+    if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
     this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 

@@ -17,7 +17,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 | Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6; landed 2026-11-01) | **the fight sprite** (step 4, step 7) |
 | Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4; landed 2026-11-01) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
 | Fourth | **the meadows' board kit** with its props (step 5; landed 2026-11-01) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
-| Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9) | **the meadows' creature voices** (six creatures, three each) |
+| Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9; the body and Tin landed 2026-11-01) | **the meadows' creature voices** (six creatures, three each) |
 | Sixth | the other five meadows creatures and **King Goo** (step 4's tail) | |
 | Last | the **wordmark, the app icon, the character-screen backdrop** (step 11) | |
 
@@ -62,16 +62,20 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    nine-slices; the two fonts; the HUD, the character screen, the shop, the bag, the atlas and the settings restyled on it;
    the message box grows for a long line instead of clipping. *Needs*: the UI kit and the fonts. *Done*: every screen in
    the game is the kit, nothing is a flat rectangle, and Robin says it is pleasant to look at (his verdict pending).
-7. **The audio layer.** The sprites loaded with their scenes and played on the events; music per area streamed with a
+7. **The audio layer** (the sprites since steps 3 to 6; the music since 2026-11-01 evening with Nigel, SD's board theme:
+   `audio.music`, an audio element per piece, a two-second crossfade, the first-tap unlock, the sound setting; the fight,
+   King Goo and title themes wait on Robin's word on the board theme). The sprites loaded with their scenes and played on the events; music per area streamed with a
    crossfade on an area change and on a fight's start and end; the beds under it; mute and two volumes in the settings;
    `?mute=1`; the audio unlocked on the first tap. *Needs*: the UI sprite, then the fight sprite, then the meadows' music
    and voices; ffmpeg on the PC (installed 2026-11-01). *Done*: the game is heard on the phone with the volumes and the mute
    working, and silent in the pane with `?mute=1`.
 8. **The Knight alone** (done 2026-11-01, `OFFERED` in `client/src/scenes/CreateScene.ts`). The character screen offers the Knight and says the three others come in chapter 2; the rules
    keep all four, so nothing else changes. *Needs*: nothing. *Done*: a new player can only be a Knight.
-9. **The hero's parts, layered.** When Mitch, AD's alignment test passes: the client draws one atlas per part in the fixed
-   order (cape, body, boots, hips, torso, gloves, head, helm, near arm, weapon, off-hand) with the same frame timing; each
-   piece of gear carries its look in the data; the set-by-coat rule of the test goes. *Needs*: the Knight's per-part
+9. **The hero's parts, layered** (done 2026-11-01 on Mitch, AD's Knight body and Tin set, `client/src/hero.ts`; Copper and
+   the other ranks show Tin until their art comes). Mitch, AD's alignment test passed with a fourteen-layer order (cape,
+   body, boots, coat, far arm in front, far glove, charm, head, hair or hat, arm, the coat's near shoulder, weapon, hand or
+   glove, shield), one texture per slot, one clock in the client driving every layer; a piece's look is `<rank>_<part>`
+   in its slot's texture; the set-by-coat rule of the test is gone. *Needs*: the Knight's per-part
    atlases for the Tin and Copper pieces and the four weapon types. *Done*: wear anything in the bag and see it on the
    board and in the fight.
 10. **Balance with eight slots** (done 2026-11-01: King Goo to 700 HP, 30 attack, 11 defense; the Knight wins 92 % at

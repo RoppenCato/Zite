@@ -11,6 +11,7 @@ import fightJson from '../../assets/sound/fight/fight.json?url';
 import fightOgg from '../../assets/sound/fight/fight.ogg';
 import spotsJson from '../../assets/sound/ui-spots/ui-spots.json?url';
 import spotsOgg from '../../assets/sound/ui-spots/ui-spots.ogg';
+import meadowsBoardOgg from '../../assets/sound/music/meadows-board.ogg';
 import { settings } from './settings.ts';
 
 interface SpriteFile {
@@ -29,6 +30,11 @@ const SPRITES: SpriteFile[] = [
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b' };
 
+/** The music, one file per piece, streamed through an audio element and looped whole (Nigel, SD's board theme, 2026-11-01). */
+const MUSIC: Record<string, string> = { 'music/meadows-board': meadowsBoardOgg };
+const MUSIC_VOLUME = 0.7;
+const CROSSFADE_MS = 2000;
+
 export interface PlayOptions {
   /** The playback rate: 1 is as recorded; the die's landing moves a little with the face. */
   rate?: number;
@@ -46,6 +52,13 @@ class Audio {
   private muted = false;
   /** The spritemaps once loaded, by sprite key. */
   private maps = new Map<string, Spritemap>();
+  /** The piece playing now and the one fading out. */
+  private track: { name: string; el: HTMLAudioElement } | null = null;
+  private fading: HTMLAudioElement | null = null;
+  private fadeTimer: ReturnType<typeof setInterval> | null = null;
+  /** The piece asked for before the first tap unlocked audio, played on that tap. */
+  private pendingMusic: string | null = null;
+  private unlockHooked = false;
 
   /** Once, from the first scene: the game and the page's `?mute=1`. */
   init(game: Phaser.Game): void {
@@ -83,6 +96,85 @@ class Audio {
       if (variants.length) return { sprite: s, name: variants[Math.floor(Math.random() * variants.length)]! };
     }
     return null;
+  }
+
+  /**
+   * The music for a place or a moment: fades the piece playing out over two seconds while the new one fades in. A name
+   * with no file yet changes nothing (the board theme goes on under a fight until the fight theme comes); null stops.
+   * Browsers allow audio only after a tap: a piece asked for before that waits for the first tap.
+   */
+  music(name: string | null): void {
+    if (name !== null && !MUSIC[name]) return;
+    if (this.track?.name === name) return;
+    if (this.quiet) {
+      this.pendingMusic = name;
+      this.hookUnlock();
+      return;
+    }
+    if (this.fadeTimer) clearInterval(this.fadeTimer);
+    if (this.fading) {
+      this.fading.pause();
+      this.fading = null;
+    }
+    this.fading = this.track?.el ?? null;
+    this.track = null;
+    if (name) {
+      // Not `new Audio`: this class is named Audio too.
+      const el = document.createElement('audio');
+      el.src = MUSIC[name]!;
+      el.loop = true;
+      el.volume = 0;
+      el.preload = 'auto';
+      this.track = { name, el };
+      const started: Promise<void> | undefined = el.play();
+      started?.catch(() => {
+        // Not unlocked yet: play it on the first tap.
+        this.pendingMusic = name;
+        this.track = null;
+        this.hookUnlock();
+      });
+    }
+    const out = this.fading;
+    const start = Date.now();
+    this.fadeTimer = setInterval(() => {
+      const t = Math.min(1, (Date.now() - start) / CROSSFADE_MS);
+      if (out) out.volume = MUSIC_VOLUME * (1 - t);
+      if (this.track) this.track.el.volume = MUSIC_VOLUME * t;
+      if (t >= 1) {
+        if (this.fadeTimer) clearInterval(this.fadeTimer);
+        this.fadeTimer = null;
+        if (out) out.pause();
+        if (this.fading === out) this.fading = null;
+      }
+    }, 50);
+  }
+
+  /** The sound setting turned off: the music stops; turned on: the last piece comes back. */
+  applySettings(): void {
+    if (this.quiet) {
+      if (this.track) {
+        this.pendingMusic = this.track.name;
+        this.track.el.pause();
+        this.track = null;
+      }
+      return;
+    }
+    if (this.pendingMusic && !this.track) {
+      const name = this.pendingMusic;
+      this.pendingMusic = null;
+      this.music(name);
+    }
+  }
+
+  private hookUnlock(): void {
+    if (this.unlockHooked || typeof window === 'undefined') return;
+    this.unlockHooked = true;
+    const once = () => {
+      window.removeEventListener('pointerdown', once);
+      this.unlockHooked = false;
+      this.applySettings();
+    };
+    window.addEventListener('pointerdown', once);
   }
 
   /** A short sound once; silent if it does not exist yet. */

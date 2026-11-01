@@ -12,7 +12,7 @@ import { Backdrop } from '../backdrop.ts';
 import { creatureReady, Figure } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { sfx } from '../feel.ts';
-import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
+import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -82,7 +82,7 @@ interface Option {
   onTap: () => void;
 }
 
-type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
 export class FightScene extends Phaser.Scene {
   private readonly game_: GameHolder;
@@ -175,12 +175,11 @@ export class FightScene extends Phaser.Scene {
     this.enemyBar = new Bar(this, L.enemyX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
     this.enemyStatus = this.add.text(L.enemyX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#ffb347', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
-    const set = heroSetFor(me);
     let heroTop: number;
-    if (heroReady(this, set)) {
-      this.hero = new Hero(this, set, L.heroX, feetY, HERO_FIGHT_SCALE);
+    if (heroReady(this)) {
+      this.hero = new Hero(this, me, L.heroX, feetY, HERO_FIGHT_SCALE);
       this.hero.face(true);
-      this.heroBody = this.hero.sprite;
+      this.heroBody = this.hero.root;
       heroTop = feetY - 150;
     } else {
       this.heroBody = this.add.circle(L.heroX, feetY - 26, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
@@ -210,6 +209,7 @@ export class FightScene extends Phaser.Scene {
 
   override update(_time: number, delta: number): void {
     this.backdrop?.update(delta);
+    this.hero?.update(delta);
   }
 
   // ---- the two taps of a round --------------------------------------------------------------------------------------
@@ -586,8 +586,10 @@ export class FightScene extends Phaser.Scene {
     if (this.enemyBody instanceof Phaser.GameObjects.Arc) {
       if (e.charged) this.enemyBody.setStrokeStyle(8, 0xff5a4a, 1);
       else this.enemyBody.setStrokeStyle(4, 0x101318, 1);
-    } else if (e.charged) this.enemyBody.setTint(0xffb0a0);
-    else this.enemyBody.clearTint();
+    } else if (this.enemyBody instanceof Phaser.GameObjects.Sprite) {
+      if (e.charged) this.enemyBody.setTint(0xffb0a0);
+      else this.enemyBody.clearTint();
+    }
     const meter = CLASS_DATA[this.game_.me.classId].meter;
     const heroBits = [
       meter ? `${meter.name} ${'●'.repeat(f.meter ?? 0)}${'○'.repeat(Math.max(0, PROGRESSION.meterMax - (f.meter ?? 0)))}` : '',

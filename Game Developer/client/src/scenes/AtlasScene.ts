@@ -10,6 +10,7 @@ import type { GameHolder } from '../game-holder.ts';
 import { RECOVER_KEY, SERVER_KEY } from '../remote-game.ts';
 import { settings } from '../settings.ts';
 import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
+import { audio } from '../audio.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -104,7 +105,10 @@ export class AtlasScene extends Phaser.Scene {
     const s = settings.get();
     const { firstRowY, rowStep, go } = ATLAS_LAYOUT;
     const rows: { name: string; text: string; value: boolean; on: string; off: string; set: (v: boolean) => void }[] = [
-      { name: 'Sound', text: 'The sounds, and the music when it comes. Off keeps the game quiet.', value: s.sound, on: 'On', off: 'Off', set: (v) => settings.set({ sound: v }) },
+      { name: 'Sound', text: 'The sounds, and the music when it comes. Off keeps the game quiet.', value: s.sound, on: 'On', off: 'Off', set: (v) => {
+          settings.set({ sound: v });
+          audio.applySettings();
+        } },
       { name: 'Effects', text: 'Fewer: bars and the camera jump instead of gliding, blows do not flash. For a slow phone.', value: !s.fewerEffects, on: 'Full', off: 'Fewer', set: (v) => settings.set({ fewerEffects: !v }) },
       { name: 'Text', text: 'Larger text in the message lines, from the next screen on.', value: s.largeText, on: 'Large', off: 'Normal', set: (v) => settings.set({ largeText: v }) },
       { name: 'Vibration', text: 'A short buzz when you press, on phones that can.', value: s.vibration, on: 'On', off: 'Off', set: (v) => settings.set({ vibration: v }) },

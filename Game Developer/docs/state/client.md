@@ -254,13 +254,21 @@ piece tapped, dim until one is; **Close** at the top right. A tap on a tile or c
 pick follows the piece (put on: its slot; taken off: the card it became). Opened from the HUD's Bag button, not while a
 fight or the shop is up.
 
-## The hero on screen (`hero.ts`, 2026-11-01)
+## The hero on screen, in layers (`hero.ts`, chapter 1 step 9, 2026-11-01)
 
-`client/src/hero.ts` loads the hero's sets (`assets/hero/<set>/hero_<set>.png` and `.json`, imported through Vite so the build
-carries them), makes a Phaser animation per clip from the atlas's `actions` block (each frame's own delay; `stand` and
-`move` loop), and the class `Hero` plays them on a sprite whose x, y is the feet (the frames carry a pivot at the feet, which
-Phaser applies on every frame change). The files face left; `face(true)` flips. `heroSetFor(character)` picks the set: a
-coat worn shows `plate`, otherwise `tunic` (mine, for the test); `refreshHud` swaps the set when the wardrobe changes.
+`client/src/hero.ts` loads Mitch, AD's Knight (`assets/hero_gear/`): one texture per slot (body with hair, head, arms and
+hands; boots; capes; coats; gloves; charms; hats; swords; shields) and the gear icons, every piece with the same 26 frames
+named `<piece>/<clip>/<nnnn>` with the pivot at the feet, and `clips.json` with the delays, loops, holds and the fall's fade.
+A `Hero` is a container (`root`, its x, y the feet, `setSize(200, 300)` so its displayHeight is the hero's height) of up to
+fourteen sprites in Mitch, AD's draw order, built from the character's equipment (`layersFor`): the cape, the body, the
+boots worn or the bare boots, the coat, the far arm's front layer, the far glove, the charm, the head, the hat or the hair,
+the arm, the coat's near shoulder, the weapon, the glove or the hand, the shield. A piece's art is `<rank>_<part>` in its
+slot's texture, Tin's when the rank has none yet, nothing when the slot has no art. One clock drives all the layers: the
+scene calls `hero.update(delta)`, which steps the frame and sets every layer's frame, so they never drift; `play(action,
+hold)` starts a clip (one-shots return to `stand`; `defend` and a `hold` stay on the last frame; `die1` stays down and fades
+by the frames' `a0`/`a1`); `wear(character)` rebuilds the layers when the wardrobe changes (`refreshHud` calls it);
+`face(true)` flips the whole figure to face right; `blowMs()` is the fourth frame of `attack1`. `gearIcon(scene, gear)` gives
+a piece's icon for the bag and the loot card. The files are 2x: 0.5 in the fight (150 CSS px), 0.25 on the board.
 
 ## The loot reveal (`RevealScene.ts`, chapter 1 step 2, 2026-11-01)
 
@@ -329,6 +337,12 @@ Mitch, AD's kit (`assets/ui/`, his NOTES.md) drawn through `kit.ts`, every piece
   (in red, a stronger buzz and a small shake, `ui/boss-down`), the area opened (in green, a slower swell and a wide ring,
   `ui/area-opened`). A plate of 340 by 86 drawn by code until the UI kit's banners come. Each holds 1.3 s and lifts away;
   several queue. The board shows them for a landing's events (`showMoments`), the fight at the beat of its own events.
+- **The music** (`audio.music(name)`, 2026-11-01 evening): one file per piece (`MUSIC`, `assets/sound/music/`; Nigel, SD's
+  `music/meadows-board` so far), streamed through an audio element looped whole at 0.7, a two-second crossfade when the
+  piece changes, a name with no file yet changing nothing (so a fight keeps the board theme until the fight theme comes),
+  `null` stopping; a piece asked for before the first tap, or while the sound setting is off, waits and starts on the tap
+  or when the setting comes back (`applySettings`, called by the settings row). The board asks for `music/<theme>-board`
+  whenever the HUD refreshes.
 - **The sounds** (`audio.ts`): `assets/sound/ui/ui.ogg` and `ui.json` (Nigel, SD's sprite, copied whole from his
   `out/sfx/ui/game/`), loaded by the board's preload with Phaser's audio sprite loader; the UI sprite plays at 0.8 of
   full. `ui/die-land` is an alias for his candidate B until Robin picks. Every hook the scenes call is listed in
