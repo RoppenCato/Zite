@@ -8,6 +8,7 @@ import { AtlasScene } from './AtlasScene.ts';
 import { BagScene } from './BagScene.ts';
 import { BoardScene } from './BoardScene.ts';
 import { FightScene } from './FightScene.ts';
+import { GuideScene } from './GuideScene.ts';
 import { HudScene } from './HudScene.ts';
 import { MomentScene } from './MomentScene.ts';
 import { RevealScene } from './RevealScene.ts';
@@ -22,6 +23,7 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'bag', scene: new BagScene({ game, log }) },
     { key: 'atlas', scene: new AtlasScene({ game, log }) },
     { key: 'reveal', scene: new RevealScene({ log }) },
+    { key: 'guide', scene: new GuideScene({ game }) },
     { key: 'moment', scene: new MomentScene() },
   ];
 }

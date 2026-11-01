@@ -204,8 +204,8 @@ export function generateArea(seed: string, n: number): GrownArea {
   kinds.set(entry.id, 'normal');
   kinds.set(exit.id, 'boss');
   const letters = new Map<string, string>(template.roads.map((r) => [`${r.from}-${r.to}`, r.kinds]));
-  const count = (kind: SpaceKind): number => [...kinds.values()].filter((k) => k === kind).length + [...letters.values()].join('').split('').filter((l) => ({ t: 'chest', p: 'potion', s: 'shop', h: 'spell', w: 'town' } as Record<string, string>)[l] === kind).length;
-  const need: [SpaceKind, number, string][] = [['town', 1, 'w'], ['shop', 1, 's'], ['spell', 1, 'h'], ['chest', 2, 't'], ['potion', 2, 'p']];
+  const count = (kind: SpaceKind): number => [...kinds.values()].filter((k) => k === kind).length + [...letters.values()].join('').split('').filter((l) => ({ t: 'chest', p: 'potion', s: 'shop', h: 'spell', w: 'town', c: 'church' } as Record<string, string>)[l] === kind).length;
+  const need: [SpaceKind, number, string][] = [['town', 1, 'w'], ['shop', 1, 's'], ['spell', 1, 'h'], ['church', 1, 'c'], ['chest', 2, 't'], ['potion', 2, 'p']];
   for (const [kind, min, letter] of need) {
     while (count(kind) < min) {
       const spare = template.hubs.filter((h) => kinds.get(h.id) === 'normal' && h.id !== entry.id && h.id !== exit.id);

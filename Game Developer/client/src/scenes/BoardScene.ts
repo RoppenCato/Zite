@@ -44,7 +44,7 @@ import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps,
 import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
-import { fx, hasFrame, icon, preloadKit } from '../kit.ts';
+import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
@@ -90,9 +90,10 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   chest: 0xf0a030,
   potion: 0x4aa3df,
   spell: 0x8e6ad9,
+  church: 0xf4f0e4,
   boss: 0x8f2f3b,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -359,6 +360,11 @@ export class BoardScene extends Phaser.Scene {
         return;
       }
       this.log.note(`rolled ${roll.value}`);
+      const stung = rolled.find((e) => e.type === 'stung');
+      if (stung?.type === 'stung') {
+        moments(this)?.find('mark_drop', `Poison: -${stung.damage} HP`, stung.left > 0 ? `${stung.left} more rolls, or a church.` : 'It has worn off.', 0x8fd14f);
+        this.refreshHud();
+      }
       if (this.hud) this.hud.landDie(roll.value, () => this.offerChoices());
       else this.offerChoices();
     });
@@ -489,6 +495,67 @@ export class BoardScene extends Phaser.Scene {
       // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
       if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
     });
+  }
+
+  /**
+   * What a spot gave, as a picture over the board and not only a line of text (Robin, 2026-11-01: "when you go on a spot and
+   * its just a random 'you got this', it needs to be more visual"). A chest has the reveal for this; a wild spot's event
+   * says its own line once, whatever numbers follow it.
+   */
+  private showFinds(events: GameEvent[]): void {
+    const m = moments(this);
+    if (!m) return;
+    const themed = events.find((e) => e.type === 'themeEvent');
+    if (themed?.type === 'themeEvent') {
+      const look = {
+        heal: { icon: 'mark_heart', title: 'Feeling better', color: 0x6fcf7a },
+        hurt: { icon: 'mark_alert', title: 'Ouch!', color: 0xff7a5c },
+        gold: { icon: 'item_gold', title: 'A lucky find', color: 0xe8b84a },
+        mana: { icon: 'mark_drop', title: 'Refreshed', color: 0x5aa9ff },
+        flask: { icon: 'item_honey_tonic', title: 'A lucky find', color: 0xe8b84a },
+        card: { icon: 'item_do_over', title: 'A lucky find', color: 0xc084fc },
+      }[themed.kind];
+      m.find(look.icon, look.title, themed.text, look.color);
+      return;
+    }
+    for (const e of events) {
+      switch (e.type) {
+        case 'rested': {
+          const cured = events.find((x) => x.type === 'cured');
+          if (cured?.type === 'cured') m.find('mark_star', 'Healed and cured', `HP and mana full; ${cured.ailments.join(' and ')} gone.`, 0xfff1b0);
+          else m.find('mark_heart', 'Rested', 'HP and mana full.', 0x6fcf7a);
+          break;
+        }
+        case 'gold':
+          if (e.delta > 0) m.find('item_gold', `+${e.delta} gold`, 'Into your purse.', 0xe8b84a);
+          else if (e.delta < 0) m.find('item_gold', `${e.delta} gold`, 'Out of your purse.', 0xff7a5c);
+          break;
+        case 'found':
+          m.find(itemFrame(e.item), `+${e.count} ${ITEMS[e.item]?.name ?? e.item}`, ITEMS[e.item]?.text ?? '', 0xfff1b0);
+          break;
+        case 'healed':
+          if (e.amount > 0) m.find('mark_heart', `+${e.amount} HP`, 'You feel better.', 0x6fcf7a);
+          break;
+        case 'learned':
+        case 'picked':
+          m.find('mark_star', ABILITIES[e.ability]?.name ?? e.ability, `Learned, rank ${e.rank}. ${ABILITIES[e.ability]?.text ?? ''}`, 0xc084fc);
+          break;
+        case 'keyFound':
+          m.find('item_key', 'A key!', 'It opens this area\'s vault.', 0xe8b84a);
+          break;
+        case 'questDone':
+          m.find('mark_star', 'Errand done', e.quest.text, 0xfff1b0);
+          break;
+        case 'locked':
+          m.find('mark_lock', 'Locked', 'A vault. Its key is carried by this area\'s mini-boss.', 0xd6cfbd);
+          break;
+        case 'empty':
+          m.find('mark_clock', 'Empty for now', `Again in ${countdown(e.until - this.game_.now())}.`, 0xd6cfbd);
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   /** The big moments in a batch of events (chapter 1, step 3): a level crossed, an area opened. Fights show their own. */
@@ -965,7 +1032,9 @@ export class BoardScene extends Phaser.Scene {
 
   /** Inside the band the world is seen through; a touch on the HUD's panel or strip is not the world's. */
   private inView(p: Phaser.Input.Pointer): boolean {
-    return p.y >= HUD_HEIGHT && p.y < HUD_HEIGHT + VIEW_HEIGHT;
+    // The pointer is in canvas pixels, the band in design pixels (hires.ts).
+    const y = p.y / DPR;
+    return y >= HUD_HEIGHT && y < HUD_HEIGHT + VIEW_HEIGHT;
   }
 
   private onPointerDown(p: Phaser.Input.Pointer): void {
@@ -1261,7 +1330,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'shrine', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
@@ -1290,6 +1359,7 @@ export class BoardScene extends Phaser.Scene {
       };
       this.showMoments(moved);
       const chest = moved.some((e) => e.type === 'chest');
+      if (!chest) this.showFinds(moved);
       this.reveal(prizesIn(moved), chest ? (space.kind === 'chest' ? 'A chest!' : 'A chest in the wilds!') : `Found ${space.name ? `at ${space.name}` : 'here'}`, after);
     });
   }
@@ -1360,7 +1430,8 @@ export class BoardScene extends Phaser.Scene {
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
     if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
-    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
+    const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : ''].filter(Boolean).join(', ');
+    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried ? `${carried} · ` : ''}${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
   private setMessage(text: string): void {
@@ -1374,6 +1445,9 @@ export class BoardScene extends Phaser.Scene {
       switch (e.type) {
         case 'rested':
           parts.push('Rested: HP and mana full.');
+          break;
+        case 'cured':
+          parts.push(`Cured of ${e.ailments.join(' and ')}.`);
           break;
         case 'chest':
           parts.push('A chest!');

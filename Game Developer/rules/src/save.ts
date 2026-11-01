@@ -116,6 +116,7 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
+  if (candidate.version === 12) return fillSlots(raw as GameState);
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -152,9 +153,23 @@ function fillSlots(state: GameState | null): GameState | null {
   if (!state) return null;
   const characters: Record<string, Character> = {};
   for (const [id, c] of Object.entries(state.characters)) {
-    characters[id] = { ...c, equipment: { ...emptyEquipment(), ...(c.equipment ?? {}) } };
+    characters[id] = { ...c, equipment: { ...emptyEquipment(), ...(c.equipment ?? {}) }, ailments: c.ailments ?? {} };
   }
-  return { ...state, version: STATE_VERSION, characters };
+  return { ...state, version: STATE_VERSION, characters, board: withChurches(state.board) };
+}
+
+/** 12 → 13 (2026-11-01): a church on every map (Robin), and ailments that outlast a fight. The hand-laid areas' churches stand on set hubs; a grown area already played gets one on its first named wild hub. */
+const HAND_LAID_CHURCHES: Record<string, string> = { ravine: 'Little Clover Church', hollow: 'Oakshade Church', ridge: 'Honeybell Church' };
+function withChurches(board: Board): Board {
+  const spaces = { ...board.spaces };
+  for (const area of Object.values(board.areas)) {
+    const own = Object.values(spaces).filter((s) => s.area === area.id).sort((a, b) => a.id.localeCompare(b.id));
+    if (own.some((s) => s.kind === 'church')) continue;
+    const set = own.find((s) => HAND_LAID_CHURCHES[s.id] && s.kind === 'normal');
+    const pick = set ?? own.find((s) => s.kind === 'normal' && s.name) ?? own.find((s) => s.kind === 'normal');
+    if (pick) spaces[pick.id] = { ...pick, kind: 'church', name: HAND_LAID_CHURCHES[pick.id] ?? pick.name ?? `${area.name} Church` };
+  }
+  return { ...board, spaces };
 }
 
 /** A state as version 10 stored it: today's shape, the board laid under the old names. */

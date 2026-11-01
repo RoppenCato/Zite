@@ -89,6 +89,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     quests: [],
     picks: [],
     keys: {},
+    ailments: {},
   };
 }
 
@@ -183,6 +184,15 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   if (character.steps > 0) return reject(state, action, 'finish your move first');
   const value = rng.int(state.die.sides);
   const events: GameEvent[] = [{ type: 'rolled', action: action.id, player: action.player, value }];
+  // Poison carried out of a fight stings on each roll; it never kills, and it wears off.
+  const poison = character.ailments?.poison;
+  if (poison) {
+    const hp = Math.max(1, character.hp - poison.damage);
+    const left = poison.rolls - 1;
+    const { poison: _gone, ...others } = character.ailments;
+    character = { ...character, hp, ailments: left > 0 ? { ...others, poison: { ...poison, rolls: left } } : others };
+    events.push({ type: 'stung', action: action.id, player: action.player, damage: poison.damage, hp, left });
+  }
   // Striders: a roll of one becomes two.
   const strider = powers(character).strider;
   const steps = value === 1 && strider ? strider : value;
@@ -280,6 +290,14 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     case 'spell': {
       if (onCooldown) return empty();
       return { state: withCharacter(state, learn(cooled(c), action, rng, events)), events };
+    }
+    case 'church': {
+      // Robin, 2026-11-01: a church on every map, to heal and be rid of poison and the like. Always open, and free.
+      const s = stats(c);
+      events.push({ type: 'rested', action: id, player, hp: s.maxHp, mana: s.maxMana });
+      const carried = Object.keys(c.ailments ?? {});
+      if (carried.length) events.push({ type: 'cured', action: id, player, ailments: carried });
+      return { state: withCharacter(state, { ...c, hp: s.maxHp, mana: s.maxMana, ailments: {} }), events };
     }
     case 'boss': {
       if (!space.boss) return { state: withCharacter(state, c), events };
@@ -465,8 +483,14 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
     const got = nextGearId(state);
     const gear = plainGear(got.id, action.slot, tier);
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
-    if (character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
+    const empty = !character.equipment[action.slot];
+    if (!empty && character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
     const gold = character.gold - gear.price;
+    // A piece for an empty slot goes straight on (Robin, 2026-11-01).
+    if (empty) {
+      const worn = { ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } };
+      return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: null }] };
+    }
     return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
   }
   return reject(state, action, 'no such item');
@@ -556,7 +580,18 @@ function useCard(state: GameState, action: UseAction, character: Character, rng:
   const item = ITEMS[action.item];
   if (!item) return reject(state, action, 'no such item');
   if ((character.items[action.item] ?? 0) <= 0) return reject(state, action, 'none left');
-  if (!item.dice) return reject(state, action, 'not now');
+  if (!item.dice) {
+    // A flask drunk from the bag (Robin, 2026-11-01), not only in a fight.
+    if (character.fight) return reject(state, action, 'finish the fight first');
+    const s = stats(character);
+    const helps = (item.healShare && character.hp < s.maxHp) || (item.manaShare && character.mana < s.maxMana);
+    if (!helps) return reject(state, action, 'not now');
+    const events: GameEvent[] = [{ type: 'used', action: action.id, player: action.player, item: action.item }];
+    let c = spend(character, action.item);
+    if (item.healShare) c = heal(c, Math.max(1, Math.round(s.maxHp * item.healShare)), action, events);
+    if (item.manaShare) c = restoreMana(c, Math.max(1, Math.round(s.maxMana * item.manaShare)), action, events);
+    return { state: withCharacter(state, c), events };
+  }
   const busy = boardBusy(character);
   if (busy) return reject(state, action, busy);
   if (character.steps === 0) return reject(state, action, 'not now');

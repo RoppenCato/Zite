@@ -397,3 +397,13 @@ Nothing here has been played; these are the first numbers to be felt and changed
 
 Every new mechanic starts with a test of this shape: given a state, an action, a seed and a clock, this is the state and
 these are the events (the skill `shared-world`).
+
+## Robin's first play notes (2026-11-01)
+
+- **Gear puts itself on.** A piece found or bought goes straight on when its slot is empty (`addLoot`, `buy`: an `equipped` event after `loot` or `bought`); only then the bag.
+- **A church on every map** (Robin; `SpaceKind` `church`, letter `c`): full HP and mana and every ailment gone, free, no cooldown. Little Clover Church (hub `ravine`, was Hedgerow), Oakshade Church (`hollow`, was Leaning Oaks), Honeybell Church (`ridge`, was Empty Apiary); the generator gives every grown area one.
+- **Ailments outlast a fight** (mine, so a church has something to cure; `Character.ailments`): poison left when you win or flee stings on each roll for twice its rounds, never below 1 HP (`stung`); weakness left takes hold in the next fight and is used up there. A fall clears both. A town rests but does not cure.
+- **Flasks from the bag**: `use` on a Honey Tonic or Moon Dew outside a fight; refused when it would do nothing.
+- **A merchant met by chance camps on the spot**, so his shop sells.
+- State version 13: every character gains `ailments`; `withChurches` turns the set hubs (or a grown area's first named wild hub) into churches.
+- **King Goo stays at 700 / 30 / 11 for now.** Robin found the bosses "very overtuned? But maybe they should be for a bit". The wall above assumes all eight slots in tin at level 5 or 6; without gear it is 5% at his own level. Before auto-equip a player easily met him unworn, so this is to be felt again before any number moves.

@@ -64,6 +64,7 @@ export const KIND_LETTERS: Record<string, SpaceKind> = {
   t: 'chest',
   p: 'potion',
   h: 'spell',
+  c: 'church',
   s: 'shop',
   g: 'boss',
   w: 'town',

@@ -28,8 +28,6 @@ export const LOOT_ACTIONS = {
 };
 /** The files are 2x: the chest is 160 CSS px wide at this scale. */
 export const LOOT_SCALE = 0.5;
-/** The frame of `chest/open` on which the lid is fully open: the burst, the glow's swell and the card start there (Mitch, AD). */
-export const CHEST_OPEN_FRAME = 'chest/open/0008';
 /** The card's design size and where its parts sit (Mitch, AD): a 16 px corner for the nine-slice, the icon square, the text. */
 export const CARD = { w: 300, h: 120, corner: 16, rim: 11, square: { x: 20, y: 32, size: 56 }, textX: 92, nameY: 46, powerY: 64 } as const;
 
@@ -57,7 +55,7 @@ export function ensureLootClips(scene: Phaser.Scene): void {
 // ---- what a reveal shows --------------------------------------------------------------------------------------------
 
 /** One card of the reveal: a piece of gear (sold at once when the bag was full and something else was pending), gold, or an item. */
-export type Prize = { kind: 'gear'; gear: GearItem; sold: number | null } | { kind: 'gold'; amount: number } | { kind: 'item'; item: string; count: number };
+export type Prize = { kind: 'gear'; gear: GearItem; sold: number | null; worn?: boolean } | { kind: 'gold'; amount: number } | { kind: 'item'; item: string; count: number };
 
 /** The colour a reveal glows in: the rarity of its best piece, or gold when the chest held only coins and items. */
 export type Tier = Rarity | 'gold';
@@ -82,6 +80,9 @@ export function prizesIn(events: GameEvent[]): Prize[] {
     else if (e.type === 'bagFull') {
       const last = prizes[prizes.length - 1];
       if (last?.kind === 'gear' && last.gear.id === e.gear.id) last.sold = e.sold;
+    } else if (e.type === 'equipped') {
+      const last = prizes[prizes.length - 1];
+      if (last?.kind === 'gear' && last.gear.id === e.gear.id) last.worn = true;
     } else if (chest && e.type === 'gold' && e.delta > 0) prizes.push({ kind: 'gold', amount: e.delta });
     else if (chest && e.type === 'found') prizes.push({ kind: 'item', item: e.item, count: e.count });
   }
@@ -90,7 +91,7 @@ export function prizesIn(events: GameEvent[]): Prize[] {
 
 /** Only the gear in a fight's events: a drop is the fight's prize; its xp and gold are the fight's own words. */
 export function gearIn(events: GameEvent[]): Prize[] {
-  return prizesIn(events.filter((e) => e.type === 'loot' || e.type === 'bagFull'));
+  return prizesIn(events.filter((e) => e.type === 'loot' || e.type === 'bagFull' || e.type === 'equipped'));
 }
 
 export function tierOf(prizes: Prize[]): Tier {
@@ -112,6 +113,7 @@ export function cardWords(p: Prize): { name: string; power: string; square: stri
       const g = p.gear;
       const kind = g.name.toLowerCase() === g.base.toLowerCase() ? capitalise(g.rarity) : g.unique ? `Unique ${SLOT_WORDS[g.slot].toLowerCase()}` : `${capitalise(g.rarity)} ${g.base}`;
       const parts = [kind, ...gearPowers(g)];
+      if (p.worn) parts.push('put on');
       if (p.sold !== null) parts.push(`no room: sold for ${p.sold} gold`);
       return { name: g.name, power: parts.join(' · '), square: SLOT_WORDS[g.slot], tier: g.rarity };
     }

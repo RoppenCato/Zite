@@ -163,6 +163,7 @@ function choose(state: GameState, now: number): string[] {
         break;
       }
       case 'town':
+      case 'church':
         score = me.hp < s.maxHp * 0.5 || me.mana < s.maxMana * 0.4 ? 60 : 5;
         break;
       case 'shop': {

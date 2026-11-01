@@ -13,7 +13,7 @@ import { creatureReady, Figure } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
-import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
+import { INK, kitReady, plate } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
@@ -30,27 +30,30 @@ export interface FightSceneDeps {
 
 /** The fight's layout, in design pixels (mine, 2026-11-01): the ground line, where the figures stand, the strip of words and buttons. */
 export const FIGHT_LAYOUT = {
-  groundY: 540,
+  groundY: 490,
   /** The soil runs to here; the dark strip with the words and the buttons begins. */
-  stripY: 720,
-  heroX: 112,
-  enemyX: 300,
+  stripY: 640,
+  // Robin, 2026-11-01: "in battle you stand way too close to the enemy". The hero at the left edge, the enemy well to the right.
+  heroX: 66,
+  /** The hero's bars sit in from the edge, so they stay on the screen. */
+  heroBarX: 90,
+  enemyX: 318,
   titleY: 122,
   historyY: 148,
-  messageY: 736,
-  promptY: 770,
+  messageY: 650,
+  promptY: 708,
   barW: 150,
 } as const;
 
 /** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
 export const FIGHT_BUTTONS = {
-  a: { x: 110, y: 800, w: 180, h: 38 },
-  b: { x: 302, y: 800, w: 180, h: 38 },
-  c: { x: 110, y: 842, w: 180, h: 38 },
-  d: { x: 302, y: 842, w: 180, h: 38 },
-  e: { x: 110, y: 884, w: 180, h: 36 },
-  f: { x: 302, y: 884, w: 180, h: 36 },
-  continue: { x: 206, y: 842, w: 220, h: 56 },
+  a: { x: 108, y: 744, w: 188, h: 54 },
+  b: { x: 304, y: 744, w: 188, h: 54 },
+  c: { x: 108, y: 802, w: 188, h: 54 },
+  d: { x: 304, y: 802, w: 188, h: 54 },
+  e: { x: 108, y: 860, w: 188, h: 54 },
+  f: { x: 304, y: 860, w: 188, h: 54 },
+  continue: { x: 206, y: 802, w: 260, h: 70 },
 } as const;
 
 const STEP_MS = 450; // between two events of a round
@@ -149,7 +152,7 @@ export class FightScene extends Phaser.Scene {
     const kit = kitReady(this);
     if (kit) {
       plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, DESIGN_WIDTH, 915 - L.stripY);
-      plate(this, 'panel_message', CENTRE, L.messageY + 20, 380, 50);
+      plate(this, 'panel_message', CENTRE, L.messageY + 22, 384, 56);
     }
     const feetY = this.backdrop.feetY;
 
@@ -175,8 +178,9 @@ export class FightScene extends Phaser.Scene {
       this.add.text(L.enemyX, feetY - 56, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       enemyTop = feetY - 112;
     }
-    this.enemyBar = new Bar(this, L.enemyX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
-    this.enemyStatus = this.add.text(L.enemyX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#ffb347', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
+    this.enemyBar = new Bar(this, enemyBarX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
+    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#ffb347', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     let heroTop: number;
     if (heroReady(this)) {
@@ -189,14 +193,14 @@ export class FightScene extends Phaser.Scene {
       this.add.text(L.heroX, feetY - 26, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       heroTop = feetY - 52;
     }
-    this.heroBar = new Bar(this, L.heroX, heroTop - 26, L.barW, BAR_H, COLORS.button);
-    this.manaBar = new Bar(this, L.heroX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(L.heroX, heroTop - 56, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#7fe0e0', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    this.heroBar = new Bar(this, L.heroBarX, heroTop - 26, L.barW, BAR_H, COLORS.button);
+    this.manaBar = new Bar(this, L.heroBarX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
+    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#7fe0e0', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     this.message = this.add
       .text(CENTRE, L.messageY, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(14), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 350 } })
       .setOrigin(0.5, 0);
-    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '12px', color: kit ? INK_DIM : COLORS.dim }).setOrigin(0.5);
+    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: kit ? '#f7efdc' : COLORS.dim }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);
@@ -206,6 +210,10 @@ export class FightScene extends Phaser.Scene {
     this.manaBar.set(me.mana, s.maxMana, true);
     this.refreshStatus();
     this.showMoves();
+    makeButton(this, 380, 124, 44, 44, '?', COLORS.log, '20px', () => {
+      sfx.play('ui/sheet-open');
+      this.scene.launch('guide', { page: 0 });
+    });
     sfx.play('fight/begin');
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
   }
@@ -236,7 +244,7 @@ export class FightScene extends Phaser.Scene {
   /** The known abilities with their mana costs; dimmed when mana is short. */
   private showAbilities(): void {
     const me = this.game_.me;
-    this.prompt.setText('Which ability?');
+    this.prompt.setText('Which ability? The ? up top says what each does.');
     const f = me.fight;
     const meterName = CLASS_DATA[me.classId].meter?.name ?? 'meter';
     const arcane = powers(me).arcane;
@@ -261,6 +269,11 @@ export class FightScene extends Phaser.Scene {
   /** The move is chosen: now how to take the blow. */
   private pick(move: FightMove): void {
     this.pendingMove = move;
+    // What the chosen ability does, while there is still Back (Robin, 2026-11-01: hard to tell what skills do).
+    if (move.kind === 'ability') {
+      const a = ABILITIES[move.ability];
+      if (a) this.say(`${a.name}: ${a.text}`);
+    }
     this.prompt.setText('And when it strikes back?');
     this.setOptions([
       { text: 'Block (half)', color: COLORS.log, enabled: true, onTap: () => this.act('block') },
@@ -344,6 +357,7 @@ export class FightScene extends Phaser.Scene {
         if (e.by === 'player') {
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
           this.hero?.play('attack1');
+          this.step(this.heroBody, 34);
           this.after(this.hero?.blowMs() ?? 0, () => {
             this.enemy?.play('hit1');
             sfx.play(e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
@@ -355,6 +369,7 @@ export class FightScene extends Phaser.Scene {
         } else {
           this.enemy?.play('attack1');
           sfx.play(`creature/${this.enemyId}/attack`);
+          this.step(this.enemyBody, -30);
           this.after(this.enemy?.blowMs() ?? 0, () => {
             this.hero?.play('hit1');
             sfx.play(e.crit || e.damage >= s.maxHp * 0.15 ? 'fight/enemy-hit-heavy' : 'fight/enemy-hit-light');
@@ -481,11 +496,16 @@ export class FightScene extends Phaser.Scene {
       case 'loot':
         // The drop is told here and shown by the loot reveal once the fight closes (chapter 1, step 2).
         sfx.play('fight/drop');
-        this.say(`It drops ${e.gear.name} (${e.gear.rarity})!`);
+        // Robin, 2026-11-01: "You open the chest first of course": no name here, the reveal shows what it is.
+        this.say('It drops a chest!');
         if (this.outcome) this.outcome = { ...this.outcome, loot: [...this.outcome.loot, ...gearIn([e])] };
         break;
       case 'bagFull':
         if (this.outcome) this.outcome = { ...this.outcome, loot: this.outcome.loot.map((p) => (p.kind === 'gear' && p.gear.id === e.gear.id ? { ...p, sold: e.sold } : p)) };
+        break;
+      case 'equipped':
+        if (this.outcome) this.outcome = { ...this.outcome, loot: this.outcome.loot.map((p) => (p.kind === 'gear' && p.gear.id === e.gear.id ? { ...p, worn: true } : p)) };
+        (this.scene.get('board') as BoardScene).refreshHud();
         break;
       case 'found':
         this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
@@ -530,6 +550,15 @@ export class FightScene extends Phaser.Scene {
       default:
         break;
     }
+  }
+
+  /** A figure steps toward the other for its blow and back. */
+  private step(body: Body, dx: number): void {
+    if (!settings.ms(1) || !body) return;
+    const home = body.x;
+    this.tweens.killTweensOf(body);
+    body.x = home;
+    this.tweens.add({ targets: body, x: home + dx, duration: 160, ease: 'Quad.easeOut', yoyo: true, hold: 120, onComplete: () => (body.x = home) });
   }
 
   /** Something that waits for a blow to land on its frame; at once with fewer effects. */

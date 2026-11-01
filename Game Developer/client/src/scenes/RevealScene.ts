@@ -1,6 +1,7 @@
 // The loot reveal (Robin, 2026-11-01: "a nice interface for when you find a chest. With it glowing in different rarity
 // colors, and a nice animation when opening. The aim is dopamine hits."). A screen over the board for every chest, vault
-// and boss drop: the chest glows in the colour of its best prize while the glow builds, opens (Mitch, AD's clip), bursts
+// and boss drop: the chest shines in the colour of its best prize and shakes harder for a second and a half (Robin,
+// 2026-11-01: "the chest animation should pop and the lid should blow upwards"), pops, the lid flies off, and it bursts
 // into sparkles and petals of that colour on the frame the lid is fully open, and each prize slides out on a card with
 // its name in its colour and its power under it. A tap opens the chest early; a tap or a short wait moves to the next
 // card; the last gives the board back. "Fewer effects" skips the build and the particles. Timings mine.
@@ -9,7 +10,7 @@ import Phaser from 'phaser';
 import type { GameLog } from '../game-log.ts';
 import { feel, sfx } from '../feel.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT } from '../layout.ts';
-import { CARD, CHEST_OPEN_FRAME, cardWords, ensureLootClips, LOOT_KEYS, LOOT_SCALE, tierOf, type RevealRequest, type Tier } from '../loot.ts';
+import { CARD, cardWords, ensureLootClips, LOOT_KEYS, LOOT_SCALE, tierOf, type RevealRequest, type Tier } from '../loot.ts';
 import { gearIcon } from '../hero.ts';
 import { settings } from '../settings.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -22,7 +23,9 @@ const CENTRE = DESIGN_WIDTH / 2;
 /** Where things sit, in design pixels (mine): the chest's feet, its mouth where the glow and the particles centre, the card at rest. */
 export const REVEAL_LAYOUT = { titleY: 150, cardY: 330, chestY: 600, mouthY: 530, hintY: 696 } as const;
 /** The glow builds this long before the lid moves; a tap cuts it short. */
-const BUILD_MS = 750;
+const BUILD_MS = 1500;
+/** Where the closed chest's frame divides into lid and body, in file pixels from its top. */
+const LID_CUT = 92;
 /** The card rests this long before the next card or the board, unless tapped. */
 const REST_MS = 2200;
 const QUICK_REST_MS = 1500;
@@ -67,6 +70,8 @@ export class RevealScene extends Phaser.Scene {
   private count!: Phaser.GameObjects.Text;
   private glow!: Phaser.GameObjects.Image;
   private chest!: Phaser.GameObjects.Sprite;
+  private lid!: Phaser.GameObjects.Sprite;
+  private shaker: Phaser.Tweens.Tween | null = null;
   private hint!: Phaser.GameObjects.Text;
   private rim!: Phaser.GameObjects.Image;
   private face!: Phaser.GameObjects.Image;
@@ -106,6 +111,9 @@ export class RevealScene extends Phaser.Scene {
 
     this.glow = this.add.image(CENTRE, mouthY, LOOT_KEYS.glow).setTint(this.tint).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0).setScale(LOOT_SCALE * 0.3).setDepth(1);
     this.chest = this.add.sprite(CENTRE, chestY, LOOT_KEYS.chest, 'chest/closed/0001').setScale(LOOT_SCALE).setDepth(3);
+    // The lid: the same frame's top part, hidden until it blows off.
+    this.lid = this.add.sprite(CENTRE, chestY, LOOT_KEYS.chest, 'chest/closed/0001').setScale(LOOT_SCALE).setDepth(4).setVisible(false);
+    this.shaker = null;
     this.hint = this.add.text(CENTRE, hintY, 'Tap to go on', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5).setAlpha(0).setDepth(5);
 
     this.makeCard(cardY);
@@ -127,8 +135,26 @@ export class RevealScene extends Phaser.Scene {
       this.open();
       return;
     }
-    this.tweens.add({ targets: this.glow, alpha: 0.7, scale: LOOT_SCALE * 0.7, duration: BUILD_MS, ease: 'Sine.easeIn' });
-    this.tweens.add({ targets: this.chest, angle: { from: -2.5, to: 2.5 }, duration: 70, yoyo: true, repeat: 3, delay: BUILD_MS - 300 });
+    // It shines in the colour, brighter and brighter, and shakes harder and harder.
+    const { chestY } = REVEAL_LAYOUT;
+    const light = lighten(this.tint);
+    this.shaker = this.tweens.addCounter({
+      from: 0,
+      to: 1,
+      duration: BUILD_MS,
+      ease: 'Sine.easeIn',
+      onUpdate: (tween) => {
+        const t = tween.getValue() ?? 0;
+        const now = this.time.now;
+        this.chest.setAngle(Math.sin(now * 0.055) * (0.6 + t * 4.5));
+        this.chest.x = CENTRE + Math.sin(now * 0.083) * t * 4;
+        this.chest.y = chestY - Math.abs(Math.sin(now * 0.041)) * t * 6;
+        this.glow.setAlpha(0.2 + t * 0.8 + Math.sin(now * 0.02) * 0.08);
+        this.glow.setScale(LOOT_SCALE * (0.5 + t * 0.8));
+        const mix = (from: number, to: number): number => Math.round(from + (to - from) * t * 0.7);
+        this.chest.setTint((mix(255, (light >> 16) & 0xff) << 16) | (mix(255, (light >> 8) & 0xff) << 8) | mix(255, light & 0xff));
+      },
+    });
     this.timer = this.time.delayedCall(BUILD_MS, () => this.open());
   }
 
@@ -138,25 +164,22 @@ export class RevealScene extends Phaser.Scene {
     this.phase = 'opening';
     this.timer?.remove(false);
     this.timer = null;
-    this.tweens.killTweensOf(this.chest);
-    this.chest.setAngle(0);
-    if (this.quick) {
-      this.chest.setFrame('chest/opened/0001');
-      this.burst();
-      return;
-    }
-    let burst = false;
-    this.chest.on(Phaser.Animations.Events.ANIMATION_UPDATE, (_anim: Phaser.Animations.Animation, frame: Phaser.Animations.AnimationFrame) => {
-      if (!burst && frame.textureFrame === CHEST_OPEN_FRAME) {
-        burst = true;
-        this.burst();
-      }
-    });
-    this.chest.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      if (!burst) this.burst();
-      this.chest.setFrame('chest/opened/0001');
-    });
-    this.chest.play(`${LOOT_KEYS.chest}/open`);
+    this.shaker?.stop();
+    this.shaker = null;
+    const { chestY } = REVEAL_LAYOUT;
+    this.chest.setAngle(0).setPosition(CENTRE, chestY).clearTint();
+    // The pop: the frame divides at the lid's seam; the body stays, the lid flies.
+    const { width, height } = this.chest.frame;
+    this.chest.setCrop(0, LID_CUT, width, height - LID_CUT);
+    this.lid.setCrop(0, 0, width, LID_CUT).setVisible(!this.quick);
+    this.burst();
+    if (this.quick) return;
+    this.chest.setScale(LOOT_SCALE * 1.22, LOOT_SCALE * 0.82);
+    this.tweens.add({ targets: this.chest, scaleX: LOOT_SCALE, scaleY: LOOT_SCALE, duration: 300, ease: 'Back.easeOut' });
+    const flash = this.add.circle(CENTRE, REVEAL_LAYOUT.mouthY, 40, 0xffffff, 0.9).setDepth(5).setBlendMode(Phaser.BlendModes.ADD);
+    this.tweens.add({ targets: flash, scale: 5, alpha: 0, duration: 260, ease: 'Quad.easeOut', onComplete: () => flash.destroy() });
+    this.tweens.add({ targets: this.lid, y: chestY - 520, angle: 280, duration: 620, ease: 'Quad.easeOut' });
+    this.tweens.add({ targets: this.lid, alpha: 0, delay: 360, duration: 260, onComplete: () => this.lid.setVisible(false) });
   }
 
   /** The glow swells, the particles fly, the first card comes out. */

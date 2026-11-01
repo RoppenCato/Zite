@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { audio } from '../audio.ts';
 import { feel } from '../feel.ts';
-import { INK, KIT_SOFT, kitReady, plate } from '../kit.ts';
+import { hasFrame, icon, INK, INK_DIM, KIT_SOFT, kitReady, plate } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import { settings } from '../settings.ts';
 
@@ -19,7 +19,9 @@ interface Moment {
   sound: string;
   buzz: number;
   /** A swell grows in from small; a burst pops in with sparkles and a ring. */
-  kind: 'burst' | 'swell';
+  kind: 'burst' | 'swell' | 'find';
+  /** A find's picture, from the kit. */
+  icon?: string;
   shake?: boolean;
   /** The kit's banner for it, and whether its words are ink (on parchment) or cream. */
   banner: 'banner_level' | 'banner_boss' | 'banner_area';
@@ -58,6 +60,55 @@ export class MomentScene extends Phaser.Scene {
     this.push({ title: `${area} opens`, line: 'New ground to walk.', color: 0x6fcf7a, ink: '#d6f5da', sound: 'ui/area-opened', buzz: 20, kind: 'swell', banner: 'banner_area' });
   }
 
+  /** Something a spot gave: its icon popping over a glow, the words on a card under it. */
+  find(iconFrame: string, title: string, line: string, color: number): void {
+    this.push({ title, line, color, ink: INK, sound: '', buzz: 12, kind: 'find', icon: iconFrame, banner: 'banner_area' });
+  }
+
+  private showFind(m: Moment): void {
+    const quick = settings.get().fewerEffects;
+    const y = HUD_HEIGHT + VIEW_HEIGHT * 0.36;
+    feel.buzz(m.buzz);
+    const kit = kitReady(this);
+    const parts: Phaser.GameObjects.GameObject[] = [];
+    if (kit) {
+      const rays = this.add.image(0, -44, KIT_SOFT, 'burst_levelup').setScale(0.55).setTint(m.color).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.8);
+      if (!quick) this.tweens.add({ targets: rays, angle: 40, scale: 0.7, alpha: 0.35, duration: 1200, ease: 'Sine.easeOut' });
+      parts.push(rays);
+      parts.push(plate(this, 'panel_message', 0, 28, 300, 76));
+    } else {
+      parts.push(this.add.rectangle(0, 28, 300, 76, COLORS.panel, 0.95).setStrokeStyle(2, m.color));
+    }
+    const pic = m.icon && hasFrame(this, m.icon) ? icon(this, m.icon, 0, -44).setScale(1.25) : null;
+    if (pic) parts.push(pic);
+    const title = this.add.text(0, 12, m.title, { fontFamily: FONT_DISPLAY, fontSize: '19px', fontStyle: 'bold', color: kit ? INK : COLORS.text }).setOrigin(0.5);
+    for (let px = 19; px > 13 && title.width > 276; px--) title.setFontSize(`${px}px`);
+    const words = this.add.text(0, 38, m.line, { fontFamily: FONT, fontSize: '12px', color: kit ? INK_DIM : COLORS.dim, align: 'center', wordWrap: { width: 276 } }).setOrigin(0.5);
+    if (words.height > 30) words.setFontSize('11px');
+    parts.push(title, words);
+    const card = this.add.container(CENTRE, y, parts);
+    const leave = () => {
+      if (quick) {
+        card.destroy();
+        this.next();
+        return;
+      }
+      this.tweens.add({ targets: card, alpha: 0, y: y - 26, duration: 200, ease: 'Quad.easeIn', onComplete: () => {
+        card.destroy();
+        this.next();
+      } });
+    };
+    if (quick) {
+      this.time.delayedCall(1000, leave);
+      return;
+    }
+    card.setScale(0.5).setAlpha(0);
+    this.tweens.add({ targets: card, scale: 1, alpha: 1, duration: 240, ease: 'Back.easeOut' });
+    if (pic) this.tweens.add({ targets: pic, scale: 1.45, duration: 170, yoyo: true, delay: 200, ease: 'Quad.easeOut' });
+    feel.sparkle(this, CENTRE, y - 44, m.color, 60, 12);
+    this.time.delayedCall(1250, leave);
+  }
+
   private push(m: Moment): void {
     this.queue.push(m);
     if (!this.showing) this.next();
@@ -70,7 +121,8 @@ export class MomentScene extends Phaser.Scene {
       return;
     }
     this.showing = true;
-    this.show(m);
+    if (m.kind === 'find') this.showFind(m);
+    else this.show(m);
   }
 
   private show(m: Moment): void {

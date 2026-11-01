@@ -21,14 +21,12 @@ export interface ShopSceneDeps {
 const CENTRE = DESIGN_WIDTH / 2;
 /** Where things sit, in design pixels (the driver taps them here). */
 export const SHOP_LAYOUT = {
-  tabBuy: { x: 140, y: 178, w: 120, h: 34 },
-  tabSell: { x: 272, y: 178, w: 120, h: 34 },
-  /** In a town the three tabs share the row. */
-  townTabs: { buy: { x: 96, y: 178, w: 100, h: 34 }, sell: { x: 206, y: 178, w: 100, h: 34 }, train: { x: 316, y: 178, w: 100, h: 34 } },
-  firstRowY: 216,
-  rowStep: 33,
-  rows: 14,
-  button: { x: 356, w: 80, h: 32 },
+  /** Gear, Items and Sell; in a town Train too. */
+  tabY: 192,
+  firstRowY: 244,
+  rowStep: 48,
+  rows: 8,
+  button: { x: 352, w: 88, h: 42 },
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
@@ -43,7 +41,7 @@ export class ShopScene extends Phaser.Scene {
   private gold!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private rows: Phaser.GameObjects.GameObject[] = [];
-  private tab: 'buy' | 'sell' | 'train' = 'buy';
+  private tab: 'buy' | 'items' | 'sell' | 'train' = 'buy';
   private merchant = false;
   private town = false;
 
@@ -63,23 +61,21 @@ export class ShopScene extends Phaser.Scene {
     this.ink = sheetInk(this, { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold });
     this.rarity = kitReady(this) ? RARITY_INK : RARITY_COLORS;
     sheet(this);
-    this.add.text(CENTRE, 124, title, { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text }).setOrigin(0.5);
-    this.gold = this.add.text(CENTRE, 152, '', { fontFamily: FONT, fontSize: '15px', color: this.ink.gold }).setOrigin(0.5);
-    const { tabBuy, tabSell, townTabs, leave } = SHOP_LAYOUT;
-    const buyTab = this.town ? townTabs.buy : tabBuy;
-    const sellTab = this.town ? townTabs.sell : tabSell;
-    makeButton(this, buyTab.x, buyTab.y, buyTab.w, buyTab.h, 'Buy', COLORS.log, '15px', () => this.show('buy'));
-    makeButton(this, sellTab.x, sellTab.y, sellTab.w, sellTab.h, 'Sell', COLORS.log, '15px', () => this.show('sell'));
-    if (this.town) makeButton(this, townTabs.train.x, townTabs.train.y, townTabs.train.w, townTabs.train.h, 'Train', COLORS.log, '15px', () => this.show('train'));
+    this.add.text(CENTRE, 134, title, { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text }).setOrigin(0.5);
+    this.gold = this.add.text(CENTRE, 160, '', { fontFamily: FONT, fontSize: '15px', color: this.ink.gold }).setOrigin(0.5);
+    const { tabY, leave } = SHOP_LAYOUT;
+    const tabs: ['buy' | 'items' | 'sell' | 'train', string][] = [['buy', 'Gear'], ['items', 'Items'], ['sell', 'Sell'], ...(this.town ? ([['train', 'Train']] as ['train', string][]) : [])];
+    const tabW = (DESIGN_WIDTH - 40) / tabs.length;
+    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '16px', () => this.show(id)));
     this.message = this.add
-      .text(CENTRE, 668, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
+      .text(CENTRE, 636, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);
     makeButton(this, leave.x, leave.y, leave.w, leave.h, 'Leave', COLORS.log, '20px', () => (this.scene.get('board') as BoardScene).shopLeft());
     this.show('buy');
     this.log.note(`shop: ${title}`);
   }
 
-  private show(tab: 'buy' | 'sell' | 'train'): void {
+  private show(tab: 'buy' | 'items' | 'sell' | 'train'): void {
     this.tab = tab;
     for (const r of this.rows) r.destroy();
     this.rows = [];
@@ -89,12 +85,12 @@ export class ShopScene extends Phaser.Scene {
     const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
     const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void): void => {
       const y = firstRowY + i * rowStep;
-      if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 3));
+      if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
       // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
       this.rows.push(this.add.text(26, y - 7, name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(26, y + 7, detail, { fontFamily: FONT, fontSize: '10px', color: this.ink.dim, wordWrap: { width: 238 }, maxLines: 1 }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(26, y + 7, detail, { fontFamily: FONT, fontSize: '10px', color: this.ink.dim, wordWrap: { width: 248 }, maxLines: 1 }).setOrigin(0, 0.5));
       this.rows.push(this.add.text(306, y, price, { fontFamily: FONT, fontSize: '14px', color: this.ink.gold }).setOrigin(1, 0.5));
-      this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '14px', onTap).button);
+      this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
     if (tab === 'train') {
       // The trainer: the class's abilities, each learned for the tier's price or raised a rank for more.
@@ -115,10 +111,11 @@ export class ShopScene extends Phaser.Scene {
         const g = plainGear('preview', slot, tier);
         row(i, g.name, this.ink.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }));
       });
+    } else if (tab === 'items') {
       ITEM_IDS.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(SLOTS.length + i, item.name, this.ink.text, `${item.text}${owned ? ` · you have ${owned}` : ''}`, `${item.price} g`, 'Buy', () => this.buy({ item: id }));
+        row(i, `${item.name}${owned ? ` ×${owned}` : ''}`, this.ink.text, `${item.text.split(/[.:;] /)[0]!.replace(/[.]$/, "")}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }));
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);
@@ -144,7 +141,7 @@ export class ShopScene extends Phaser.Scene {
       this.log.note(`trained ${trained.ability} rank ${trained.rank} for ${trained.price}`);
     } else if (bought && bought.type === 'bought') {
       const name = bought.gear ? bought.gear.name : (ITEMS[bought.item ?? '']?.name ?? bought.item);
-      this.message.setText(`Bought ${name} for ${bought.price} gold.${bought.gear ? ' It is in your bag.' : ''}`);
+      this.message.setText(`Bought ${name} for ${bought.price} gold.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
       this.log.note(`bought ${name} for ${bought.price}`);
     } else {
       this.message.setText(this.describe(events));

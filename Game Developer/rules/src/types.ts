@@ -1,9 +1,9 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 12;
+export const STATE_VERSION = 13;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -200,6 +200,14 @@ export interface Character {
   picks: string[][];
   /** Keys to the locked chests, by area: a mini-boss of the area drops one. */
   keys: Record<string, number>;
+  /** What a fight left on you (Robin, 2026-11-01): it stays until it wears off or a church cures it. */
+  ailments: Ailments;
+}
+
+/** Poison stings on each roll; weakness softens your hits through the next fight. */
+export interface Ailments {
+  poison?: { rolls: number; damage: number };
+  weak?: { rounds: number; mult: number };
 }
 
 export interface EnemyMove {
@@ -398,6 +406,10 @@ export type GameEvent =
   | { type: 'landed'; action: string; player: string; space: string; kind: SpaceKind }
   /** A town: HP and mana back to full. */
   | { type: 'rested'; action: string; player: string; hp: number; mana: number }
+  /** A church took these off you. */
+  | { type: 'cured'; action: string; player: string; ailments: string[] }
+  /** Poison carried out of a fight stung on a roll. */
+  | { type: 'stung'; action: string; player: string; damage: number; hp: number; left: number }
   /** Gold found (delta > 0) or lost (delta < 0); `gold` is the new total. */
   | { type: 'gold'; action: string; player: string; delta: number; gold: number }
   /** HP given back; `amount` is 0 when there was nothing to heal. `hp` is the new value. */

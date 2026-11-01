@@ -322,6 +322,10 @@
       "Cart",
       "Stall"
     ],
+    "church": [
+      "Church",
+      "Chapel"
+    ],
     "spell": [
       "Shrine",
       "Stone",

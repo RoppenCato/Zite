@@ -50,11 +50,16 @@ export function spend(c: Character, item: string): Character {
 }
 
 /**
- * Gear into the bag; a full bag (`bagLimit`) holds the piece in `offer` to be sold or left (Robin, 2026-10-31: a bag limit
- * with a sell-or-drop choice), or, when something else is pending, sells it on the spot.
+ * Gear found: put on at once when its slot is empty (Robin, 2026-11-01), else into the bag; a full bag (`bagLimit`) holds the
+ * piece in `offer` to be sold or left (Robin, 2026-10-31: a bag limit with a sell-or-drop choice), or, when something else is
+ * pending, sells it on the spot.
  */
 export function addLoot(c: Character, gear: GearItem, action: Action, events: GameEvent[]): Character {
   events.push({ type: 'loot', action: action.id, player: action.player, gear });
+  if (!c.equipment[gear.slot]) {
+    events.push({ type: 'equipped', action: action.id, player: action.player, gear, replaced: null });
+    return { ...c, equipment: { ...c.equipment, [gear.slot]: gear } };
+  }
   if (c.bag.length < GEAR.bagLimit) return { ...c, bag: [...c.bag, gear] };
   if (!c.offer) {
     events.push({ type: 'bagFull', action: action.id, player: action.player, gear, sold: null });

@@ -76,6 +76,8 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: a potion to take along.${again}`;
     case 'spell':
       return `${where}: learn an ability of your class, or improve one you know.${again}`;
+    case 'church':
+      return `${where}: heals you fully and takes off poison and weakness. Always open, and free.`;
     case 'shop':
       return `${where}: ${rank} gear, potions and dice cards; it buys what you carry.`;
     case 'town': {

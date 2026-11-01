@@ -11,6 +11,7 @@ import { RECOVER_KEY, SERVER_KEY } from '../remote-game.ts';
 import { settings } from '../settings.ts';
 import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { audio } from '../audio.ts';
+import { sfx } from '../feel.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -22,12 +23,13 @@ export interface AtlasSceneDeps {
 const CENTRE = DESIGN_WIDTH / 2;
 /** Where things sit, in design pixels (the driver taps them here). */
 export const ATLAS_LAYOUT = {
-  close: { x: 364, y: 126, w: 72, h: 32 },
-  settings: { x: 276, y: 126, w: 92, h: 32 },
-  firstRowY: 176,
+  close: { x: 364, y: 128, w: 72, h: 44 },
+  settings: { x: 284, y: 128, w: 84, h: 44 },
+  guide: { x: 204, y: 128, w: 72, h: 44 },
+  firstRowY: 184,
   rowStep: 74,
   rows: 7,
-  go: { x: 364, w: 72, h: 30 },
+  go: { x: 356, w: 76, h: 42 },
 } as const;
 
 export class AtlasScene extends Phaser.Scene {
@@ -53,9 +55,13 @@ export class AtlasScene extends Phaser.Scene {
     this.ink = sheetInk(this, { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold });
     this.rarity = kitReady(this) ? RARITY_INK : RARITY_COLORS;
     sheet(this);
-    this.add.text(24, 112, 'The world', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text });
-    const { close, settings: settingsButton } = ATLAS_LAYOUT;
-    makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).atlasClosed());
+    this.add.text(24, 114, 'The world', { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: this.ink.text });
+    const { close, settings: settingsButton, guide } = ATLAS_LAYOUT;
+    makeButton(this, guide.x, guide.y, guide.w, guide.h, 'Guide', COLORS.log, '14px', () => {
+      sfx.play('ui/sheet-open');
+      this.scene.launch('guide', { page: 0 });
+    });
+    makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '14px', () => (this.scene.get('board') as BoardScene).atlasClosed());
     this.settingsLabel = makeButton(this, settingsButton.x, settingsButton.y, settingsButton.w, settingsButton.h, 'Settings', COLORS.log, '14px', () => {
       this.mode = this.mode === 'areas' ? 'settings' : 'areas';
       this.settingsLabel.setText(this.mode === 'areas' ? 'Settings' : 'Areas');

@@ -94,6 +94,10 @@ Steps 1 to 3 and 8 need no art to start and are first. Robin, 2026-11-01: steps 
 4, step 6 when the UI kit lands (its code starts earlier on the placeholder atlas), step 7 when the first sprite lands,
 step 9 when the parts land, 10 and 11 near the end, 12 last.
 
+## Robin's first play (2026-11-01)
+
+His notes are done: `docs/state/client.md` and `docs/state/rules.md`, each under "Robin's first play notes". To come from the studios: the church's plate and building, a lid-less chest body with its lid as a piece, a church sound.
+
 ## What Robin does meanwhile
 
 Plays the build on his phone after every step and says what felt wrong; answers Mitch, AD's and Nigel, SD's questions as

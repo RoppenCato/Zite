@@ -59,7 +59,7 @@ export function hasFrame(scene: Phaser.Scene, frame: string): boolean {
 
 /** The kit's item icon for an item id, if there is one. */
 export function itemFrame(item: string): string {
-  return { potion: 'item_honey_tonic', 'mana-potion': 'item_moon_dew', reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', pick: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
+  return { potion: 'item_honey_tonic', 'mana-potion': 'item_moon_dew', reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', exact: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
 }
 
 /** A modal sheet over the world band (the shop, the bag, the atlas): the world dimmed, the kit's parchment in its wood frame. */

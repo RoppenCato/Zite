@@ -9,7 +9,7 @@ import { plainGear } from '../src/gear.ts';
 import { hintFor } from '../src/hints.ts';
 import { newQuest, questLine } from '../src/quests.ts';
 import { makeRng } from '../src/rng.ts';
-import type { Action, Character, GameEvent, GameState, Quest } from '../src/types.ts';
+import { SLOTS, type Action, type Character, type GameEvent, type GameState, type Quest } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
@@ -139,7 +139,9 @@ describe('the bag\'s limit', () => {
   const full = Array.from({ length: GEAR.bagLimit }, (_, i) => plainGear(`b${i}`, 'helm', 1));
 
   it('a piece with no room waits as an offer to be sold or left; buying gear is refused; a second piece is sold at once', () => {
-    const s = about('s4', { bag: full });
+    // Every slot filled: a piece for an empty one would go straight on.
+    const worn = Object.fromEntries(SLOTS.map((slot) => [slot, plainGear(`w-${slot}`, slot, 1)])) as Character['equipment'];
+    const s = about('s4', { bag: full, equipment: worn });
     const chest = apply(s, move(['s5']), makeRng('ashford'), NOW); // the seed that drops gear from this chest
     const loot = chest.events.find((e) => e.type === 'loot');
     expect(loot).toBeDefined();
@@ -153,7 +155,7 @@ describe('the bag\'s limit', () => {
     const dropped = apply(chest.state, { type: 'keep', id: 'k2', player: P, choice: 'drop' }, makeRng('x'), NOW);
     expect(dropped.events[0]).toMatchObject({ type: 'dropped', gear: expect.objectContaining({ id: gear.id }) });
     expect(me(dropped.state).gold).toBe(me(chest.state).gold);
-    expect(apply(about('s0', { bag: full, gold: 500 }, 0), { type: 'buy', id: 'b', player: P, slot: 'weapon' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'bag full' });
+    expect(apply(about('s0', { bag: full, equipment: worn, gold: 500 }, 0), { type: 'buy', id: 'b', player: P, slot: 'weapon' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'bag full' });
     expect(apply(s, { type: 'keep', id: 'k3', player: P, choice: 'sell' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
     // With a question already pending, the piece is sold on the spot.
     const events: GameEvent[] = [];

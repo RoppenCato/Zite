@@ -54,9 +54,9 @@ view.
 **The bag**: the worn tiles at `BAG_LAYOUT.tile(i)` (x 58, 157, 256, 355; y 216 and 286), the carried cards from y 426
 every 50, Drop at (100, 712), Wear or Take off at (262, 712), Close at (364, 126); tap a tile or card first, then the button.
 
-**The fight screen's buttons**: rows a (110, 800), b (302, 800), c (110, 842), d (302, 842), e (110, 884), f (302, 884),
+**The fight screen's buttons**: rows a (108, 744), b (304, 744), c (108, 802), d (304, 802), e (108, 860), f (304, 860),
 each 180 wide; the moves fill a to e (Attack, Abilities, Charge, Honey Tonic, Flee), then the guards fill a to e (Block,
-Dodge, Brace, Counter, Back); Continue at (206, 842) once the fight is over. A round's events play 450 ms apart; the
+Dodge, Brace, Counter, Back); Continue at (206, 802) once the fight is over; the ? at (380, 124) opens the guide. A round's events play 450 ms apart; the
 scene's `busy` is true meanwhile.
 
 **The shop**: Buy rows from y 216, 33 apart (the eight slots, then Honey Tonic, Moon Dew, Do-Over, Hop, Hold, Fairy Pick), Buy at x 356; the

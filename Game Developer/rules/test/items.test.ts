@@ -24,9 +24,17 @@ describe('the shop', () => {
     expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 25, gold: 175 }]);
     expect(me(state)).toMatchObject({ gold: 175, items: { potion: 1 } });
     const sword = apply(state, buy({ slot: 'weapon' }, 'b2'), makeRng('x'), NOW);
-    expect(sword.events).toEqual([{ type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 145 }]);
-    expect(me(sword.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
+    // The weapon's slot is empty: it goes straight on (Robin, 2026-11-01). A second one goes into the bag.
+    expect(sword.events).toEqual([
+      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 145 },
+      { type: 'equipped', action: 'b2', player: P, gear: plainGear('g1', 'weapon', 1), replaced: null },
+    ]);
+    expect(me(sword.state).bag).toEqual([]);
+    expect(me(sword.state).equipment.weapon).toEqual(plainGear('g1', 'weapon', 1));
     expect(sword.state.nextItem).toBe(2);
+    const second = apply(sword.state, buy({ slot: 'weapon' }, 'b3'), makeRng('x'), NOW);
+    expect(me(second.state).bag).toEqual([plainGear('g2', 'weapon', 1)]);
+    expect(me(second.state).equipment.weapon?.id).toBe('g1');
     const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
     expect(inTown.events[0]).toMatchObject({ type: 'bought', gear: expect.objectContaining({ name: 'Tin Hat' }), price: 20 });
     const camped = { ...at('s1', { gold: 200 }), spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1 } } };

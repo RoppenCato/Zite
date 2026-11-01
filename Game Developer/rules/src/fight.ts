@@ -63,6 +63,14 @@ export function makeEnemy(id: string, bestiary: Record<string, EnemyData> = {}):
   };
 }
 
+/** What a fight leaves on you when it ends with you standing (Robin, 2026-11-01): poison goes on stinging for twice its rounds in rolls, weakness into the next fight. */
+function lingering(c: Character, f: Fight): Character {
+  const ailments = { ...(c.ailments ?? {}) };
+  if (f.poisoned) ailments.poison = { rolls: f.poisoned.rounds * 2, damage: f.poisoned.damage };
+  if (f.weak) ailments.weak = { ...f.weak };
+  return { ...c, ailments };
+}
+
 /** A fight with nothing on either side yet. */
 export function freshFight(enemy: Enemy, space: string, spawn: boolean): Fight {
   return { enemy, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn, meter: 0, strikes: 0, sureCrit: 0, windup: null, companion: null, mark: null, trap: 0, skip: 0, poisoned: null, weak: null, used: [] };
@@ -77,7 +85,10 @@ export function startFight(c: Character, enemyId: string, space: string, spawn: 
   const p = powers(c);
   if (p.windstep) fight.evade += p.windstep;
   if (rng) fight.enemy.next = pickMove(fight.enemy, rng);
-  return { ...c, fight };
+  // Weakness carried from the last fight takes hold here, and is used up by it.
+  const { weak, ...others } = c.ailments ?? {};
+  if (weak) fight.weak = { ...weak };
+  return { ...c, fight, ailments: others };
 }
 
 /** One blow: the swing then the crit from the stream. `attack` is the striker's effective attack; `base` is the damage before the crit. */
@@ -326,7 +337,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     case 'flee': {
       const ok = rng.next() < PROGRESSION.fleeChance;
       events.push({ type: 'fled', action: id, player, ok });
-      if (ok) return { state: withCharacter(state, { ...r.c, fight: null }), events };
+      if (ok) return { state: withCharacter(state, { ...lingering(r.c, f), fight: null }), events };
       break;
     }
   }
@@ -673,7 +684,7 @@ function win(r: Round): ApplyResult {
     xp = Math.round(xp / p.greed);
   }
   events.push({ type: 'won', action: id, player, xp, gold });
-  let next: Character = { ...c, gold: c.gold + gold, fight: null };
+  let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
   next = questProgress(next, { beat: e.id }, action, events);
@@ -817,7 +828,7 @@ function die(state: GameState, c: Character, action: Action, events: GameEvent[]
   const lostGold = Math.floor(c.gold * PROGRESSION.deathGoldLoss);
   const town = nearestTown(state.board, c.space, new Set(c.opened));
   events.push({ type: 'died', action: action.id, player: action.player, town, lostGold });
-  const woke: Character = { ...c, gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null };
+  const woke: Character = { ...c, gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null, ailments: {} };
   const s = stats(woke);
   return { state: withCharacter(state, { ...woke, hp: s.maxHp, mana: s.maxMana }), events };
 }

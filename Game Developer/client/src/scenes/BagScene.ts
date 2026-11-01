@@ -24,19 +24,19 @@ const CENTRE = DESIGN_WIDTH / 2;
 const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 /** Where things sit, in design pixels (the driver taps them here). */
 export const BAG_LAYOUT = {
-  close: { x: 364, y: 126, w: 72, h: 36 },
+  close: { x: 356, y: 138, w: 84, h: 44 },
   /** The worn grid: four tiles a row, two rows, in slot order. */
   tile: (i: number) => ({ x: 58 + (i % 4) * 99, y: 216 + Math.floor(i / 4) * 70 }),
   detailY: 354,
   carriedY: 426,
   carriedStep: 50,
-  carriedRows: 5,
-  flasksY: 676,
-  drop: { x: 100, y: 712, w: 110, h: 40 },
-  act: { x: 262, y: 712, w: 150, h: 40 },
+  carriedRows: 4,
+  flasksY: 650,
+  drop: { x: 100, y: 708, w: 120, h: 48 },
+  act: { x: 268, y: 708, w: 170, h: 48 },
 } as const;
 
-type Pick = { kind: 'worn'; slot: Slot } | { kind: 'carried'; gear: GearItem } | null;
+type Pick = { kind: 'worn'; slot: Slot } | { kind: 'carried'; gear: GearItem } | { kind: 'item'; item: string } | null;
 
 export class BagScene extends Phaser.Scene {
   private readonly game_: GameHolder;
@@ -51,6 +51,8 @@ export class BagScene extends Phaser.Scene {
   private actButton!: Button;
   private dropButton!: Button;
   private picked: Pick = null;
+  /** Which page of the carried pieces is shown: four to a page. */
+  private carriedPage = 0;
   /** A line about the last thing done, shown in the detail plate until the next tap. */
   private note = '';
 
@@ -63,6 +65,7 @@ export class BagScene extends Phaser.Scene {
   create(): void {
     this.picked = null;
     this.note = '';
+    this.carriedPage = 0;
     sheet(this);
     const kit = kitReady(this);
     const ink = kit ? INK : COLORS.text;
@@ -122,7 +125,16 @@ export class BagScene extends Phaser.Scene {
 
     // What is carried: cards.
     const { carriedY, carriedStep, carriedRows } = BAG_LAYOUT;
-    const carried = me.bag.slice(0, carriedRows);
+    const pages = Math.max(1, Math.ceil(me.bag.length / carriedRows));
+    this.carriedPage = Math.min(this.carriedPage, pages - 1);
+    const carried = me.bag.slice(this.carriedPage * carriedRows, (this.carriedPage + 1) * carriedRows);
+    if (pages > 1) {
+      this.rows.push(this.add.text(306, carriedY - 34, `${this.carriedPage + 1} of ${pages}`, { fontFamily: FONT, fontSize: '12px', color: dim }).setOrigin(1, 0.5));
+      this.rows.push(makeButton(this, 346, carriedY - 36, 56, 34, 'Next', COLORS.log, '13px', () => {
+        this.carriedPage = (this.carriedPage + 1) % pages;
+        this.refresh();
+      }).button);
+    }
     if (!carried.length) this.rows.push(this.add.text(CENTRE, carriedY + 10, 'Nothing carried yet. Shops sell gear; the wilds and chests drop it.', { fontFamily: FONT, fontSize: '12px', color: dim, align: 'center', wordWrap: { width: DESIGN_WIDTH - 60 } }).setOrigin(0.5));
     carried.forEach((g, i) => {
       const y = carriedY + i * carriedStep;
@@ -140,7 +152,6 @@ export class BagScene extends Phaser.Scene {
       zone.on('pointerdown', () => this.pick({ kind: 'carried', gear: g }, 48, y));
       this.rows.push(zone);
     });
-    if (me.bag.length > carried.length) this.rows.push(this.add.text(CENTRE, carriedY + carried.length * carriedStep - 10, `and ${me.bag.length - carried.length} more`, { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(0.5));
 
     // The flasks and cards, as icons with counts.
     const items = Object.entries(me.items).filter(([, n]) => n > 0);
@@ -151,6 +162,9 @@ export class BagScene extends Phaser.Scene {
       if (kit && hasFrame(this, frame)) this.rows.push(icon(this, frame, x, BAG_LAYOUT.flasksY).setScale(0.45));
       else this.rows.push(this.add.text(x, BAG_LAYOUT.flasksY, (ITEMS[id]?.name ?? id).charAt(0), { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: ink }).setOrigin(0.5));
       this.rows.push(this.add.text(x + 14, BAG_LAYOUT.flasksY + 8, `×${n}`, { fontFamily: FONT_DISPLAY, fontSize: '11px', fontStyle: 'bold', color: ink }).setOrigin(0, 0.5));
+      const zone = this.add.zone(x + 4, BAG_LAYOUT.flasksY, 50, 44).setInteractive({ useHandCursor: true });
+      zone.on('pointerdown', () => this.pick({ kind: 'item', item: id }, x, BAG_LAYOUT.flasksY));
+      this.rows.push(zone);
     });
 
     this.refreshDetail();
@@ -169,6 +183,19 @@ export class BagScene extends Phaser.Scene {
     const worn = p?.kind === 'worn' ? me.equipment[p.slot] : null;
     const carried = p?.kind === 'carried' ? (me.bag.find((g) => g.id === p.gear.id) ?? null) : null;
     const piece = worn ?? carried;
+    if (!this.note && p?.kind === 'item') {
+      const item = ITEMS[p.item];
+      const count = me.items[p.item] ?? 0;
+      const s = stats(me);
+      const flask = !!item && !item.dice;
+      const helps = flask && count > 0 && ((!!item.healShare && me.hp < s.maxHp) || (!!item.manaShare && me.mana < s.maxMana));
+      this.detailName.setText(item?.name ?? p.item).setColor(kitReady(this) ? INK : COLORS.text);
+      this.detailLine.setText(flask ? (helps ? item.text.split('.')[0] + '.' : 'You are full: it would do nothing now.') : 'Use it after a roll: it shows above the message then.');
+      this.actButton.label.setText(flask ? 'Drink' : 'Wear');
+      this.actButton.setEnabled(helps && !this.inFlight);
+      this.dropButton.setEnabled(false);
+      return;
+    }
     if (this.note) {
       this.detailName.setText(this.note).setColor(kitReady(this) ? INK : COLORS.text);
       this.detailLine.setText('');
@@ -202,6 +229,11 @@ export class BagScene extends Phaser.Scene {
     const me = this.game_.me;
     const p = this.picked;
     if (!p) return;
+    if (p.kind === 'item') {
+      const name = ITEMS[p.item]?.name ?? p.item;
+      this.send({ type: 'use', item: p.item }, `You drink a ${name}.`);
+      return;
+    }
     if (p.kind === 'worn') {
       const g = me.equipment[p.slot];
       if (g) this.send({ type: 'unequip', slot: p.slot }, `Took off ${g.name}.`);
@@ -218,7 +250,7 @@ export class BagScene extends Phaser.Scene {
     if (g) this.send({ type: 'drop', gear: g.id }, `Dropped ${g.name}.`);
   }
 
-  private send(intent: { type: 'equip'; gear: string } | { type: 'unequip'; slot: Slot } | { type: 'drop'; gear: string }, done: string): void {
+  private send(intent: { type: 'equip'; gear: string } | { type: 'unequip'; slot: Slot } | { type: 'drop'; gear: string } | { type: 'use'; item: string }, done: string): void {
     if (this.inFlight) return;
     this.inFlight = true;
     this.refreshDetail();
@@ -226,7 +258,7 @@ export class BagScene extends Phaser.Scene {
       (events) => {
         this.inFlight = false;
         const rejected = events.find((e) => e.type === 'rejected');
-        if (!rejected) sfx.play(intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
+        if (!rejected) sfx.play(intent.type === 'use' ? (intent.item === 'mana-potion' ? 'fight/mana-potion' : 'fight/potion') : intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
         this.note = rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done;
         // A worn piece taken off is carried now, and a piece put on is worn: the pick follows it.
         if (!rejected && intent.type === 'equip') {

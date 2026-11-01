@@ -23,7 +23,7 @@ const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
 const STATE_VERSION = 10; // rules/src/types.ts
 const B = { map: [60, 836], world: [158, 836], bag: [256, 836], log: [354, 836], roll: [206, 884] }; // HudScene BUTTONS
-const F = { a: [110, 800], b: [302, 800], c: [110, 842], d: [302, 842], e: [110, 884], f: [302, 884], cont: [206, 842] }; // FightScene FIGHT_BUTTONS
+const F = { a: [108, 744], b: [304, 744], c: [108, 802], d: [304, 802], e: [108, 860], f: [304, 860], cont: [206, 802] }; // FightScene FIGHT_BUTTONS
 const SHOP = { row: (i) => 222 + i * 40, buyX: 356, leave: [206, 706], tabSell: [272, 178] }; // ShopScene SHOP_LAYOUT: five slots, then potion, mana potion, reroll, +1, -1, exact
 const BAG = { close: [364, 126], wearX: 364, carriedY: 456 };
 

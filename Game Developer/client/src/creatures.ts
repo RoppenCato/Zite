@@ -60,7 +60,8 @@ const CREATURES: Record<string, CreatureFiles> = {
     png: gooPng,
     json: gooJson,
     actions: actionsOf(gooData),
-    scale: 1,
+    // A touch under the file's size, so there is room between him and the Knight (Robin, 2026-11-01: "you are almost hugging it").
+    scale: 0.9,
     blowFrame: 5,
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },

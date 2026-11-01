@@ -98,8 +98,8 @@
         },
         {
           "id": "ravine",
-          "kind": "normal",
-          "name": "Hedgerow",
+          "kind": "church",
+          "name": "Little Clover Church",
           "x": 1150,
           "y": 3450
         }
@@ -249,8 +249,8 @@
         },
         {
           "id": "hollow",
-          "kind": "normal",
-          "name": "Leaning Oaks",
+          "kind": "church",
+          "name": "Oakshade Church",
           "x": 2150,
           "y": 2750
         },
@@ -480,8 +480,8 @@
         },
         {
           "id": "ridge",
-          "kind": "normal",
-          "name": "Empty Apiary",
+          "kind": "church",
+          "name": "Honeybell Church",
           "x": 2150,
           "y": 600
         },
