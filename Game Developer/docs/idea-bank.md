@@ -5,7 +5,8 @@ the date, and comes off this list.
 
 ## Open questions (from the brief, 2026-10-31)
 
-1. **Loot:** Dokapon-like (few clear items) or Diablo-like (random stats, rarity colours)?
+1. ~~Loot~~: decided (Robin, 2026-10-31): randomized and tiered like WoW's or Diablo's, ranks by level, named versions,
+   uniques from bosses. In the brief under Gear and loot.
 2. **Boss battles when not physically together:** live (everyone online at once) or async (turns within a time window)?
    The research says the server can do both with the same rules: a live fight is a room with short deadlines; an async one is
    the same room with deadlines of hours (`docs/coop-research.md`, Nakama's "passive turn-based").
@@ -13,7 +14,7 @@ the date, and comes off this list.
 4. **Board size and sharding:** one global board, or regional shards so it does not feel empty? (Technically: one actor per
    region either way; a shard is a second copy of a region's live state.)
 5. **Each class's own skills and spells** (Robin, 2026-10-31: the class is chosen at character creation and the classes must feel different to play): which moves each class has, how they fit the fight's turn, and what "defend" is for each.
-6. **Working title.**
+6. ~~Working title~~: **Zite** (Robin, 2026-10-31). In the brief's title.
 7. **The names of the three sessions** (Miles, GD; Perry, AD; Nigel, SD are mine, 2026-10-31).
 8. **The technical direction** in `CLAUDE.md` (Phaser 4, the pure rules package, a Node server on Robin's PC behind a
    Cloudflare Tunnel): mine, for Robin to confirm or change. Decided by Robin on 2026-10-31: the PC may stay on, with the
@@ -22,7 +23,7 @@ the date, and comes off this list.
 9. **The world's form**: decided (Robin, 2026-10-31): (c) the board seen from a raised camera in 2D, and fights on their
    own 2D screen as an instance of where you stand. In the brief and `Art Director/docs/direction.md`.
 
-## Open after the decisions of 2026-10-31 (`docs/decisions-2026-10-31.md`)
+## Open after the decisions of 2026-10-31 (in the brief since 2026-11-01: Spots, Progression gating, Gear and loot, Combat)
 
 10. ~~Quest givers~~: built as the towns' errands (2026-11-01, `docs/state/rules.md`); a quest giver as a spot of its
     own is still open.

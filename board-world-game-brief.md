@@ -1,13 +1,13 @@
-# Board World Game – Project Brief
+# Zite – Project Brief
 
-*Working title: TBD. Concept captured 2026-10-31.*
+*Working title: Zite (Robin, 2026-10-31). Concept captured 2026-10-31.*
 
 ## Pitch
-A co-op MMO-lite set in a classic fantasy world shaped like one giant Dokapon Kingdom-style board. Players drop in whenever they want, roll a die, move, and resolve the space they land on (battle, shop, event, boss…). The community fights the world together, not each other. The signature feature: **players who meet in real life can link up** and fight together live.
+A co-op MMO-lite set in a classic fantasy world laid out as one giant board, the way Dokapon Kingdom's is: **one big connected map with many paths, where the die gives you the choice of where to go** (Robin, 2026-10-31). Players drop in whenever they want, roll a die, move, and resolve the spot they land on (a fight, a shop, a chest, a boss…). The community fights the world together, not each other. The signature feature: **players who meet in real life can link up** and fight together live.
 
 ## Pillars
 1. **Board-game exploration** – random dice movement across a huge shared world.
-2. **Co-op, not PvP** – the world is the enemy; progress is shared.
+2. **Co-op, not PvP** – the world is the enemy. An MMO-lite: go around, kill mobs, get better, kill bosses, get further (Robin, 2026-10-31).
 3. **Check in whenever** – no timers, no energy, no punishment for being away.
 4. **Proximity play** – meeting IRL unlocks joint battles and combos.
 5. **Phone + browser** – one codebase, 2D, a MapleStory-like look. Fast and snappy above all: simple graphics so nothing ever lags (Robin, 2026-10-31).
@@ -17,25 +17,33 @@ A co-op MMO-lite set in a classic fantasy world shaped like one giant Dokapon Ki
 - Open the app → roll the die → move → resolve the space → repeat or close.
 - **Unlimited rolls.** No timed or rationed dice. The limitation is that the number is random – you can't choose it.
 - Movement is **always independent**; players never move as a group.
-- Progress goes to both the character (level, gear) and the world (region/town state).
+- Progress goes to the character (level, gear, abilities) and to the areas opened by beating their bosses.
 
-### Space types (initial)
-Battle, shop, town, event, treasure, quest giver, boss gate, shrine.
+### Spots (Robin, 2026-10-31)
+- **Normal spots** are most of the map: you fight level-fitting mobs of that area. **Mobs live in their own parts of the map**, so you always know what you are going after. A normal spot also has a chance of something else: a chest to open, a wandering merchant, a mini-boss, a gambling event.
+- **Special spots**: a treasure chest, a potion spot, a spells spot.
+- **Towns** (rest, errands) and **shops**, which sell the basic weapons and armour of their area's tier.
+- **Boss spots** at the passage into the next area (see Progression gating).
+- **Random mini-bosses and other events spawn on random normal spots from time to time.**
+- **Touching a spot gives hints** on what you could meet (level range, loot), but not everything: plenty of surprise.
 
 ### Dice cards
 Items that manipulate the roll, found or bought: *Reroll*, *+1 / −1*, *Exactly N*, etc. They add a tactical layer on top of the randomness.
 
 ### Progression gating
-Since dice are unlimited, pacing comes from the world:
-- Boss gates that require a level or item
-- Regions that open only once the community has liberated them
-- Danger that increases further from the start area
+Since dice are unlimited, pacing comes from the world (Robin, 2026-10-31):
+- **Areas are ordered by tier** outward from the start; the danger grows with the tier.
+- **Bosses are the gates to new areas.** A boss stands on the spot that leads into the next area and **is seen on the board**. Nothing gates it but your power: too low a level and too poor gear, and the fight is simply too hard. **Land exactly on the boss** to fight it; once it is dead, that part of the map opens.
+- **Bosses can be killed again**: a boss is back **5 minutes** after it died. **Bosses drop the good things** (uniques, nothing under epic), not better loot for killing the same boss again.
+- **No town liberation** (Dokapon's): the world is beaten through its mobs and bosses.
 
 ### Death
-Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
+Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-10-31).
 
 ## The world
 - A big, beautiful world map: the thing the player looks at most.
+- **No islands, no water. One big map like Breath of the Wild's**: different areas with different themes (meadow, forest, ice, fire, water, …), **ordered by tier** outward from the start (Robin, 2026-10-31).
+- **One connected board with many paths**, forks every few spots, so the die gives a choice of where to go (Robin, 2026-10-31). Spaces and connections, never a grid.
 - Generated, and big enough never to run out. Each area of the map has its own look and its own fight background (Robin, 2026-10-31).
 
 ## The look
@@ -43,7 +51,9 @@ Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
 - **The board is seen from a raised camera, in 2D** (Robin, 2026-10-31, after showing a Dokapon Kingdom board): a tilted ground with cliff faces where the land steps up; roads, rivers and the spaces flat on it; everything standing on it upright, sorted by depth. **Fights are their own screen**, 2D, outside the map: an instanced scene of where you are, in the area's look (Robin, 2026-10-31).
 
 ## Combat
-- Turn-based RPG combat, not Dokapon's rock-paper-scissors (Robin, 2026-10-31): you choose among attacks, spells and defending; stats such as attack, defense and health decide the outcome.
+- Turn-based RPG combat, not Dokapon's rock-paper-scissors (Robin, 2026-10-31): a round is **attacking normally, using an item, casting a spell or ability, or charging**, and **a defensive choice before the enemy attacks** (different kinds); stats such as attack, defense and health decide the outcome.
+- **Anyone can charge** for a bigger attack next turn. **Mana for everyone** is the resource for abilities (Robin, 2026-10-31).
+- **Classes have basic abilities that fit their style**, different enough that the play differs; **more skills and higher ranks are bought, found or earned** as you go. The abilities should be fun and make the classes feel different and exciting, not only bigger numbers (Robin, 2026-10-31).
 - Must be playable with one thumb on a phone: the play is making choices (buttons, or gestures).
 
 ### Classes – everyone is DPS, different playstyles
@@ -54,12 +64,17 @@ Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
 | Mage | Charges for a turn, then a huge hit |
 | Ranger | Strikes first, multiple small hits |
 
-**You choose your class when you create your character. Each class has its own skills and spells, and the classes must feel different to play** (Robin, 2026-10-31); what each one's moves are is open question 5. **Cross-class combos** (only in group battles) reward playing with people of other classes, e.g. Mage charges + Warrior holds the line = guaranteed big hit.
+**You choose your class when you create your character. Each class has its own skills and spells, and the classes must feel different to play** (Robin, 2026-10-31); the first kits are built (the Game Developer's, 2026-10-31) and whether they feel right is open question 4. **Cross-class combos** (only in group battles) reward playing with people of other classes, e.g. Mage charges + Warrior holds the line = guaranteed big hit.
+
+## Gear and loot (Robin, 2026-10-31)
+- **Gear is randomized and tiered** like WoW's or Diablo's: common, uncommon, rare, epic, legendary. **Every piece has a rank by level** (copper sword, iron sword, …), and you can find **a named version** ("Stormborn", an iron sword with a special effect) that feels special.
+- **Equipment slots: weapon, armour, helm, boots, trinket.**
+- **A simple inventory**: keep the weapons and armour you found and switch to whatever you want; a bag for potions and the like.
+- **Make the loot interesting**: unique weapons and trinkets whose effects change how you play, each in its own way. Bosses drop them.
 
 ## Co-op layer
-- **Town liberation:** occupied towns have shared HP; every player who fights there contributes. Freed towns unlock shops and routes for everyone.
-- **World bosses:** shared HP with a time window (e.g. 48 h).
-- **Gathering points:** bosses/liberations can be joined by anyone standing on or next to the space – or by anyone IRL-linked to a player who is there.
+- **World bosses:** shared HP with a time window (e.g. 48 h). (Town liberation is out: Robin, 2026-10-31.)
+- **Gathering points:** bosses can be joined by anyone standing on or next to the space – or by anyone IRL-linked to a player who is there.
 - **Traces:** players can leave items or warnings on spaces for others.
 - **Guilds:** shared home town that members upgrade together (idea, not decided).
 
@@ -79,7 +94,7 @@ Sent back to the nearest town, lose a share of gold (e.g. 20%). Gear is kept.
 ## Tech direction
 - **PWA** (Phaser or plain canvas) – runs in browser, installable on phones. Optionally wrap with **Capacitor** later for app stores / native features.
 - **HTTPS is required** for GPS and camera (QR scanning) in browsers.
-- **Server required** for the shared world (positions, inventories, town/boss HP). Mostly asynchronous; only proximity battles need real-time.
+- **Server required** for the shared world (positions, inventories, boss HP). Mostly asynchronous; only proximity battles need real-time.
 - Hosting path:
   1. Develop locally
   2. Test with friends via home PC + **Cloudflare Tunnel** (free HTTPS, no port forwarding, works behind CGNAT; PC must stay on)
@@ -92,14 +107,15 @@ Playable alone first, with co-op designed in from the start; if building co-op s
 
 1. Single-player board + movement + battle in the browser
 2. Persistence + accounts (server)
-3. Shared world: town liberation, world boss
+3. Shared world: world boss, traces, who is here
 4. Proximity linking (GPS + QR) and live joint battles
 5. Real-world flavor (weather/time)
 
 ## Open questions
-1. **Loot:** Dokapon-like (few clear items) or Diablo-like (random stats, rarity colors)?
-2. **Boss battles when not physically together:** live (everyone online at once) or async (turns within a time window)?
-3. **Long-term goal:** max level, a story to finish, or seasons where the world resets?
-4. **Board size/sharding:** one global board, or regional shards so it doesn't feel empty?
-5. The move set (attacks, spells, defend) and how class abilities fit into it.
-6. Working title.
+1. **Boss battles when not physically together:** live (everyone online at once) or async (turns within a time window)? A world boss with shared HP and a window exists since 2026-11-01; whether that is the form is open.
+2. **Long-term goal:** max level, a story to finish, or seasons where the world resets?
+3. **Board size/sharding:** one global board, or regional shards so it doesn't feel empty?
+4. **The class kits:** the first moves and abilities per class are built (the Game Developer's, 2026-10-31); do they feel different enough, and right?
+5. **Does an area open for everyone once anyone beats its boss, or for each player on their own?** (Today: each player's own.)
+
+Decided on 2026-10-31 and moved up: the loot (Gear and loot), the working title (Zite), the form of the fight (Combat).
