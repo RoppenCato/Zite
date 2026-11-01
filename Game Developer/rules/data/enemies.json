@@ -1,0 +1,535 @@
+{
+  "slime": {
+    "name": "Slime",
+    "level": 1,
+    "role": "mob",
+    "hp": 40,
+    "attack": 10,
+    "defense": 2,
+    "xp": 5,
+    "gold": 6,
+    "moves": [
+      {
+        "name": "Splat",
+        "power": 1,
+        "weight": 1
+      }
+    ]
+  },
+  "wolf": {
+    "name": "Moor Wolf",
+    "level": 2,
+    "role": "mob",
+    "hp": 60,
+    "attack": 13,
+    "defense": 3,
+    "xp": 8,
+    "gold": 10,
+    "moves": [
+      {
+        "name": "Bite",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Lunge",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "bandit": {
+    "name": "Bandit",
+    "level": 3,
+    "role": "mob",
+    "hp": 80,
+    "attack": 16,
+    "defense": 5,
+    "xp": 12,
+    "gold": 16,
+    "moves": [
+      {
+        "name": "Slash",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Cheap Shot",
+        "power": 1.5,
+        "weight": 1
+      },
+      {
+        "name": "Dirty Trick",
+        "power": 0.6,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "wisp": {
+    "name": "Marsh Wisp",
+    "level": 3,
+    "role": "mob",
+    "hp": 50,
+    "attack": 18,
+    "defense": 1,
+    "xp": 10,
+    "gold": 9,
+    "moves": [
+      {
+        "name": "Spark",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Siphon",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "wolf-alpha": {
+    "name": "Wolf Alpha",
+    "level": 5,
+    "role": "mini",
+    "hp": 242,
+    "attack": 19,
+    "defense": 6,
+    "xp": 40,
+    "gold": 50,
+    "moves": [
+      {
+        "name": "Bite",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Howl",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Savage Bite",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "thornwood-warden": {
+    "name": "Thornwood Warden",
+    "level": 6,
+    "role": "boss",
+    "hp": 550,
+    "attack": 26,
+    "defense": 9,
+    "xp": 150,
+    "gold": 150,
+    "moves": [
+      {
+        "name": "Club",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Smash",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Warden's bark splits and thorns burst out!",
+      "moves": [
+        {
+          "name": "Club",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Smash",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Thorn Burst",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    }
+  },
+  "spider": {
+    "name": "Thorn Spider",
+    "level": 5,
+    "role": "mob",
+    "hp": 140,
+    "attack": 24,
+    "defense": 7,
+    "xp": 20,
+    "gold": 22,
+    "moves": [
+      {
+        "name": "Bite",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Pounce",
+        "power": 1.4,
+        "weight": 1
+      },
+      {
+        "name": "Venom Bite",
+        "power": 0.8,
+        "weight": 2,
+        "effect": "poison"
+      }
+    ]
+  },
+  "treant": {
+    "name": "Old Treant",
+    "level": 6,
+    "role": "mob",
+    "hp": 200,
+    "attack": 22,
+    "defense": 11,
+    "xp": 26,
+    "gold": 26,
+    "moves": [
+      {
+        "name": "Branch",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Root Slam",
+        "power": 1.6,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Regrow",
+        "power": 0,
+        "weight": 1,
+        "effect": "heal"
+      }
+    ]
+  },
+  "outlaw": {
+    "name": "Outlaw Archer",
+    "level": 6,
+    "role": "mob",
+    "hp": 150,
+    "attack": 28,
+    "defense": 6,
+    "xp": 24,
+    "gold": 28,
+    "moves": [
+      {
+        "name": "Arrow",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Barbed Arrow",
+        "power": 1.2,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "wraith": {
+    "name": "Wood Wraith",
+    "level": 7,
+    "role": "mob",
+    "hp": 170,
+    "attack": 30,
+    "defense": 5,
+    "xp": 30,
+    "gold": 30,
+    "moves": [
+      {
+        "name": "Touch",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Fade",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      },
+      {
+        "name": "Chill Touch",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "spider-queen": {
+    "name": "Spider Queen",
+    "level": 9,
+    "role": "mini",
+    "hp": 440,
+    "attack": 30,
+    "defense": 11,
+    "xp": 90,
+    "gold": 100,
+    "moves": [
+      {
+        "name": "Fangs",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Venom Lunge",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Web",
+        "power": 0,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "briar-king": {
+    "name": "Briar King",
+    "level": 10,
+    "role": "boss",
+    "hp": 935,
+    "attack": 36,
+    "defense": 12,
+    "xp": 350,
+    "gold": 300,
+    "moves": [
+      {
+        "name": "Thorn Whip",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Briar Crush",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Briar King rages: the thorns close in!",
+      "moves": [
+        {
+          "name": "Thorn Whip",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Briar Crush",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Strangle",
+          "power": 1.2,
+          "weight": 1,
+          "effect": "weaken"
+        },
+        {
+          "name": "Regrow",
+          "power": 0,
+          "weight": 1,
+          "effect": "heal"
+        }
+      ]
+    }
+  },
+  "ice-wolf": {
+    "name": "Ice Wolf",
+    "level": 9,
+    "role": "mob",
+    "hp": 260,
+    "attack": 38,
+    "defense": 11,
+    "xp": 40,
+    "gold": 45,
+    "moves": [
+      {
+        "name": "Bite",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Frost Lunge",
+        "power": 1.4,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "yeti": {
+    "name": "Yeti",
+    "level": 10,
+    "role": "mob",
+    "hp": 360,
+    "attack": 42,
+    "defense": 14,
+    "xp": 50,
+    "gold": 55,
+    "moves": [
+      {
+        "name": "Swipe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Boulder",
+        "power": 1.7,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "frost-wisp": {
+    "name": "Frost Wisp",
+    "level": 10,
+    "role": "mob",
+    "hp": 240,
+    "attack": 48,
+    "defense": 8,
+    "xp": 46,
+    "gold": 50,
+    "moves": [
+      {
+        "name": "Chill",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Siphon",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "ice-golem": {
+    "name": "Ice Golem",
+    "level": 11,
+    "role": "mob",
+    "hp": 420,
+    "attack": 40,
+    "defense": 18,
+    "xp": 56,
+    "gold": 65,
+    "moves": [
+      {
+        "name": "Fist",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Avalanche",
+        "power": 1.8,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Harden",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      }
+    ]
+  },
+  "yeti-elder": {
+    "name": "Yeti Elder",
+    "level": 13,
+    "role": "mini",
+    "hp": 770,
+    "attack": 48,
+    "defense": 16,
+    "xp": 170,
+    "gold": 180,
+    "moves": [
+      {
+        "name": "Swipe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Roar",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Chill Howl",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "frost-matriarch": {
+    "name": "Frost Matriarch",
+    "level": 14,
+    "role": "boss",
+    "hp": 1320,
+    "attack": 46,
+    "defense": 15,
+    "xp": 700,
+    "gold": 600,
+    "moves": [
+      {
+        "name": "Ice Claw",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Blizzard",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Matriarch's heart freezes over!",
+      "moves": [
+        {
+          "name": "Ice Claw",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Blizzard",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Frozen Heart",
+          "power": 0,
+          "weight": 1,
+          "effect": "armour"
+        },
+        {
+          "name": "Shatter",
+          "power": 1.3,
+          "weight": 1
+        }
+      ]
+    }
+  }
+}

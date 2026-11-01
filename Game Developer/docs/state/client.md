@@ -1,17 +1,36 @@
 # The client (`client/`)
 
-Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. One scene so far: the board. Shapes and
-labels only; the Art Director's sprites come later. The client never decides anything: it sends intents to the holder of
-the state (`LocalGame` today, the server from MVP step 2) and plays back the events.
+Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Six scenes: the **character screen**
+the first time (a name and a class), then the **board** (the world in areas, drawn in world pixels under a camera that
+follows the character), the **HUD** over it (the fixed chrome, which never scrolls or zooms), and the **fight**, the
+**shop** and the **bag**, each launched over both when it begins and stopped when it ends. Shapes and labels only; the Art
+Director's sprites come later. The client never decides anything: it sends intents to the holder of the state and plays
+back the events. **Two holders** behind one interface (`GameHolder`, `src/game-holder.ts`): `LocalGame` (solo: the state
+and the dice in the browser, saved to storage) and `RemoteGame` (co-op: the server holds the state; the page was opened
+once with `?server=wss://…`, `docs/state/protocol.md`). The scenes cannot tell them apart: `act` answers as a promise in
+both, and a scene waits the same way whether the die rolls here or on Robin's PC.
 
 | File | What it does |
 | --- | --- |
-| `index.html` | the page: viewport for phones, dark background, the `#game` box the canvas fills |
-| `src/main.ts` | makes the log, loads the save, starts Phaser, exposes `window.boardWorld` |
-| `src/layout.ts` | the design size (412 by 915) and the colours of the chrome |
-| `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules, saves |
+| `index.html` | the page: viewport for phones, dark background, the `#game` box the canvas fills, `touch-action: none` |
+| `src/main.ts` | makes the log; reads the server address (`?server=`, remembered) and the device's account; starts Phaser on the board (a local save), the connect screen (an account on the server), or the character screen; ticks the world; exposes `window.boardWorld` |
+| `src/game-holder.ts` | `GameHolder`: what the scenes need from whatever holds the state (`state`, `me`, `act`, `tick`, `reset`, `now`, `link`, `recovery`, `onlinePlayers`, `onSpawns`, `onChange`) |
+| `src/remote-game.ts` | co-op: the socket, join with the token (or a new character, or a code), the snapshot, intents one at a time with the pending one resent after a reconnect, deltas folded in, pings and reconnects, the server's clock; `serverUrl`, `storedAccount` |
+| `src/layout.ts` | the design size (412 by 915), the HUD's height (100) and the world band's (640), the colours (the themes', the rarities'), the font |
+| `src/ui.ts` | `makeButton` and the `Bar` (HP, mana), shared by the scenes |
+| `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules with the browser's clock, ticks, saves; `actNow` for scripts |
 | `src/game-log.ts` | the frame log and error log, downloadable |
-| `src/scenes/BoardScene.ts` | the board, the token, the HUD, the Roll and Log buttons |
+| `src/scenes/CreateScene.ts` | the character screen: the name field, the four class cards, Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
+| `src/scenes/ConnectScene.ts` | co-op, with an account on this phone: "connecting…", tries again on its own, Play offline for now, Start over when the account is gone |
+| `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop and bag scenes made together |
+| `src/scenes/BoardScene.ts` | the world, the token, the other players' marks, the camera, the touch input, hints, culling; `roll`, `toggleMap`, `openAtlas`, `openBag`, `downloadLog`, `useCard`, `answerGamble`; `send` (one intent at a time), `onWorldChange` |
+| `src/scenes/AtlasScene.ts` | the world as a list: the areas by tier, bosses, kills, errands, where you are; Go frames one; the settings behind a button |
+| `src/tips.ts` | the first minutes: a few lines said once (the start, the first choice, fight, win and boss), kept in storage |
+| `src/settings.ts` | sound (for later), fewer effects, larger text; kept in storage; `ms()` and `font()` for the scenes |
+| `src/scenes/HudScene.ts` | the top panel (with the link line under the die: solo, online · n here, reconnecting), the chip row, the message line, Map, World, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips`, `setLink` |
+| `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
+| `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
+| `src/scenes/BagScene.ts` | the bag: what is worn, what is carried, the numbers, flasks and cards; Wear, Take off, Drop, Close |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
 
 ## Size and scaling (mine, 2026-10-31)
@@ -20,37 +39,188 @@ The design size is **412 by 915 CSS pixels, portrait**, an ordinary Android phon
 `CENTER_BOTH` scales the whole canvas to fit whatever screen it gets and centres it; nothing is laid out per device. Judge it
 in the browser pane's mobile preset (375 by 812), where the canvas comes out at 0.89 scale.
 
-Layout at design size: the HUD panel in the top 90 pixels (name and class, HP, gold, current space; the die box at the
-right); the board between y 110 and 745 (the positions are in `rules/data/board.json`); the message line at y 795; the Roll
-button (220 by 66) and the Log button (80 by 50) at y 862; a tiny build-and-seed line at the bottom left.
+Layout at design size: the HUD panel in the top 100 pixels (name and class; `Lv 2 · HP 41/132 · MP 10/22 · Gold 127`;
+the area and the spot; the die box at the right); **the world band from y 100 to 740**, the main camera's viewport; a
+dark strip below it with the row of chips at y 754 (empty most of the time), the message line at y 776, the Map, Bag and
+Log buttons (112 by 36 at y 836, x 72, 206 and 340) and the Roll button (300 by 52 at y 884).
+
+## The character screen (mine, 2026-10-31: first layout; Robin, 2026-10-31: the class is chosen at creation)
+
+Shown when there is no save (solo) or no account on this phone (co-op). "Zite" at the top and where the world is under it
+("solo play on this phone" or "the world at wss://…"); **a name field** (a real `<input>` through Phaser's DOM container,
+300 by 44 at y 180, at most 12 characters, "Robin" to start, so the phone's keyboard comes up); **four cards** (340 by
+104, centred at y 304, 420, 536 and 652) with each class's name, its style line (in `classes.json`), its HP, mana,
+attack and defense and its two starting abilities; the chosen card is lit with a yellow border; **Begin** (220 by 66 at
+y 812) makes the game (`LocalGame.create`, or the account on the server through `RemoteGame.connect`; a status line at
+y 752 says "Making your character…" or why it could not), adds the play scenes and starts the board. An empty name
+becomes "Robin". In co-op a small button under Begin (y 872), **"I have a code from another phone"**, asks for the
+recovery code and brings that character to this phone. The pane can call `choose(classId)`, `begin()` and
+`recoverWithCode()` on the scene.
+
+## The connect screen (mine, 2026-11-01)
+
+Shown in co-op when this phone has an account (or a code left by the settings): "Connecting to the world at …", a status
+line that counts the tries (1, 2, 4, 8, then 15 s apart, forever), **Play offline for now** (the local save, or a local
+character screen) and, when the server says the account is unknown, **Start over** (forgets the token and shows the
+character screen for the world). The board starts the moment the snapshot is in.
+
+## The scenes of play and the HUD
+
+The board scene starts first, draws the world and **launches the HUD** at the end of its `create`. The HUD's `create`
+draws the chrome and calls `board.hudReady(hud)`; only then does the board push its first message, or take up again what
+the page was closed in the middle of: a fight, the gambler's question, a pending roll. The HUD's buttons call the board's
+public methods (`roll`, `toggleMap`, `openBag`, `downloadLog`); the board tells the HUD what to show. Phaser dispatches
+input to the top scene first and stops there when it hit something, so a tap on a button never reaches the world; a
+touch on the HUD's panel or strip is ignored by the board. The fight, shop and bag scenes each cover the band with an
+opaque panel that takes every touch, and call the board back when they close (`fightOver`, `shopLeft`, `bagClosed`).
 
 ## The board scene
 
-- **Links** are 6-pixel lines in one `Graphics`; **spaces** are circles of radius 26 in a colour per kind (town green,
-  battle red, shop yellow, event purple, treasure orange, quest blue, boss gate dark red with a thick ring, shrine teal), with
-  the kind's first letter inside and the name under; the **token** is a container (a circle of radius 15 with the class's
-  first letter) sitting just above its space.
+- **The world**: each area's ground in its theme's colour (meadow, forest, ice), its name written large and faint, a thin
+  border round the map. **A closed area is covered** by a dark rectangle (you see there is more, not what); the cover
+  lifts when a boss opens it. **Links** are 6-pixel lines in one `Graphics`. **The world grows**: `drawBoard` draws
+  whatever the board has that is not drawn yet (at the start everything; after a fight that laid a grown area, that
+  area's ground, name, roads, spots, boss label and cover), redraws the border and widens the camera's bounds and its
+  minimum zoom; the eight grown themes have their own ground colours (`THEME_COLORS`). **Culling** (mine, 2026-11-01):
+  every frame the camera has moved, each spot's circle, letter and names are shown only inside the view and a margin
+  of 120, the names also under their zoom rule; rings and the token are never hidden. A vault shows a V.
+- **Spots**: circles in a colour per kind with a letter (town T, shop $, chest C, spring +, shrine *, boss B); the wilds
+  are smaller (radius 20) and bare, the others radius 26; **a boss spot is big (radius 34), dark red, named, with its
+  boss's level under it**, and dims with a countdown while the boss is away. Hubs show their names (bold 13 px) below
+  zoom 0.45 hidden. **Whatever has spawned** bobs as a badge above its spot: a red "!" for a mini-boss, a yellow "$" for a
+  merchant; **a world boss as a big purple W with its HP written above it**, for everyone to see shrink; redrawn
+  whenever the spawns change (`onSpawns`) and after a fight. **A spot with notes** carries a small pale mark to its left
+  (a quote mark, or how many). A clock once a second refreshes the boss labels.
+- **The token** is a container (a circle of radius 15 with the class's first letter) just above its spot. **The other
+  players** (co-op) stand as smaller marks (radius 12, the class letter, the name under it) to the right of their spot,
+  fanned when several share one, full when online and dim when not; they glide when their player moves. The place line
+  says "with Bo" when someone shares your spot, a tapped spot says who is there, and a line in the message tells of a
+  newcomer, an area opened, a boss beaten, a level reached or a fall by someone else.
+- **A tap on any spot** that is not lit says what it is (`hintFor`, the notes left there last) in the message line and
+  flashes its ring; a tap on the shop or town you stand on opens the shop again; **a tap on the spot you stand on**
+  (any other kind, the board free) adds "Leave a note here?" and the four notes as chips; the one tapped is left
+  (`trace`), the spot gets its mark, and the others hear of it. The tap that closes the fight, the shop or the bag never also
+  counts on the spot under the button (a quarter-second guard), so Continue over a spot keeps the fight's summary.
+- **Questions in the chip row**: the gambler's (High, Low, Walk on); **a town's errand** (Take it, Not now; the message
+  says what it asks and pays); **a piece with no room in the bag** (Sell for n, Leave it); and **a level's pick of one
+  ability in two** (the two names as chips, the message saying what each does; the one tapped is learned, `pick`),
+  asked after the fight that owed it and whenever the board is free. **A Lucky Charm** worn adds a Charm chip to a
+  pending roll (a re-roll; the chip shows the wait while it is spent).
+- **Every intent goes through `send`**: one at a time (`inFlight`), the scene going on when the promise answers; no
+  answer (the socket between two lives) says "No answer from the world. Try again." and `resume` takes up whatever the
+  state is in the middle of. **`onWorldChange`** (the holder's `onChange`) redraws the others, the board when it grew,
+  the spawns, the HUD and the link line, and after a snapshot puts the token where the state says.
 - **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then asks the rules
-  where the roll can end (`reachable`). **One place: the token walks at once. More: those spaces light up** (a pulsing
-  yellow ring, radius 34) and the message says "Tap a lit space to walk there". The tap area of a space is a circle of
-  radius 38, wider than the drawn 26, for thumbs. Tapping an unlit space says "Not N steps away"; tapping Roll says "Tap
-  a lit space first". (Robin, 2026-10-31: the die gives the choice of where to go; the tap-the-destination form is mine.)
+  where the roll can end inside the open areas (`reachable` with `opened`). **One place and no dice card in the bag: the
+  token walks at once. Otherwise those spots light up** (a pulsing yellow ring, radius 42), the camera frames them, the
+  chip row shows the dice cards held, and the message says "Tap a lit spot to walk there". A chip sends `use`; on the
+  `steps` event the die shows the new number and the choices are offered again (Exactly N first turns the row into the
+  numbers and a way back). The tap area of a spot is a circle of radius 38, for thumbs. Tapping an unlit spot while
+  choosing says "Not N steps away"; tapping Roll says "Tap a lit spot first".
 - **The tap** calls `game.act({ type: 'move', path })` at once, clears the rings, and only then walks the token: a tween
-  chain, 260 ms per step, Sine in-out. The state is therefore ahead of the picture during the walk, as it will be with a
-  server: the picture is playback. While choosing or walking, the Roll button is dimmed.
-- **A page closed mid-choice** opens with the same choice lit again: the save holds the owed steps and the die's last
-  value, and `create` offers the choice when `steps > 0`.
-- A refusal shows as "Not allowed: <reason>." in the message line.
-- A hidden tab or a hidden browser pane pauses Phaser (no animation frames), so a walk finishes when the page is shown
-  again. The state is already saved by then.
+  chain, 260 ms per step, the camera following. The state is ahead of the picture during the walk, as it will be with a
+  server: the picture is playback. Then what the landing brought: the message says it ("Rolled 4. Landed in the wilds."
+  / "Landed on Old Cairn (chest). A chest! +23 gold. Found Quietfall, copper boots · epic · +4 defense …" / "Rested: HP
+  and mana full." / "Empty for now; again in 4:59." / "Learned war cry, rank 1."); a fight opens the fight scene; a shop,
+  a town or a merchant opens the shop scene; the gambler's offer puts **High, Low, Walk on** in the chip row with the
+  question in the message line, and the answer's result finishes the turn. While choosing, walking, fighting or shopping
+  the Roll button is dimmed.
+- **A page closed mid-choice** opens with the same choice lit and framed again; **mid-fight** on the fight; **mid-question**
+  with the gambler's chips again.
+- A refusal shows as "Not allowed: <reason>." in the message line. A hidden tab or a hidden browser pane pauses Phaser,
+  so a walk finishes when the page is shown again; the state is already saved by then.
 
-## The save (`local-game.ts`)
+## The camera (mine, 2026-10-31: numbers to start with)
 
-`localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On load a save
-of version 1 goes through `migrate`; anything else starts a fresh game from a new seed (`crypto.randomUUID`, or a
-timestamp-and-random fallback where that is missing). The one local player's id is `local`, named Robin, a Warrior (mine,
-until there is a character screen). `reset()` throws the save away. A save made in the pane is not Robin's: he plays on his
-phone.
+- The main camera's viewport is the band (`setViewport(0, 100, 412, 640)`), its bounds the whole map
+  (`setBounds(0, 0, board.width, board.height)`, so the covered areas can be looked at), `roundPixels` on.
+- **Follow zoom 0.8**; **minimum zoom** such that **everything open** fits the band (the meadows alone: about 0.37; all
+  three hand-laid areas: about 0.15, never under 0.12; a world grown wider than 0.12 fits may pull back as far as 0.05,
+  where the areas read as patches of colour); **maximum 1.4**. The camera starts following the token at the follow zoom
+  (`startFollow(token, true, 0.12, 0.12)`).
+- **A roll with more than one place to go frames the token and every lit spot**: their box plus 80 pixels of padding, the
+  zoom clamped between the minimum and the follow zoom, `pan` and `zoomTo` over 350 ms, following stopped. **After the
+  tap** the camera zooms back to the follow zoom and follows the token through the walk, gliding from where it was.
+- **Drag pans** once a finger has moved more than 8 design pixels (following stops; the scroll moves by the finger's
+  travel divided by the zoom). A spot is tapped on `pointerup` only when `pointer.getDistance()` is under 10, so a drag
+  that ends on a spot is not a tap. **Pinch zooms** with two fingers; a **mouse wheel** zooms by 10 percent a notch.
+- **The World button** opens the atlas (`AtlasScene`): the areas by tier with a swatch of their colour, the open ones
+  bright, "you are here", the levels, the boss and your kills, your errand there, or what opens a closed one; **Go**
+  frames the area on the board; **Settings** turns the list into three toggles (sound, effects full or fewer, text
+  normal or large), kept in `localStorage['boardworld.settings']`, then **World** (solo, or online at the server with
+  how many are here, or trying to reach it; **Join…** or **Server…** asks for an address and reloads with `?server=`),
+  **Account** in co-op (the recovery code to write down; **Use a code…** brings another character to this phone) and
+  **Start over** (the save, or this phone's token, thrown away after a confirm); Close. Fewer effects make the camera
+  and the bars jump and the blows not flash; large text takes from the next screen on.
+- **The first minutes** (`tips.ts`): the start ("Welcome to Zite…"), the first roll with a choice, the first fight,
+  the first win and the first boss tapped each add a line once, kept in `localStorage['boardworld.tips']` and forgotten
+  on reset.
+- **The Map button** frames everything open (following stopped) and reads "Back" whenever the camera is not following
+  the token; Back returns to the follow zoom and follows the token again.
+- Nothing reads the canvas back and nothing filters per frame; the per-frame work is the frame log and the zoom check.
+
+## The fight scene (Robin, 2026-10-31: a turn-based RPG with a defensive choice, one thumb; layout and pacing mine)
+
+An opaque panel over the band; the HUD stays above. From the top: the enemy's name, level and role, its HP bar (260 by
+18, red), the enemy as a circle of radius 56 with its initial, a status line in orange that **leads with what it will do
+next** ("next: Venom Bite (poison)", "next: it winds up Smash", "next: Smash lands, hard. Block it!"; then stunned,
+poisoned, weakened, hardened, fading, raging); the message line; the character as a circle of radius 26, its HP bar
+(green) and mana bar (blue), a status line in teal that **leads with the class meter as dots** ("Rage ●●○○○"; then
+charged, hits harder, barrier, evading, sure crit, marked, hawk, meteor in n, trap set, time bent, poisoned, weakened); a
+prompt that counts the rounds. The two lines said before the message stay above it, dimmer: a round reads as a short
+log; the enemy rings red while it holds a wind-up. **A round is two taps.** First the move, in two rows of two and a
+third row: **Attack**, **Abilities** (then the known abilities with their mana and meter costs, dimmed when mana or meter
+is short or the once-a-fight one is used, and Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with
+none), **Flee**, **Mana Potion ×n**. Then the guard:
+**Block (half)**, **Dodge (luck)**, **Brace (+mana)**, **Counter (hit back)**, and Back. The round is one intent
+(`game.act({ type: 'fight', move, guard })`) and its events are **played back one at a time, 450 ms apart**: a hit
+flashes the one struck and floats the damage up (bigger and yellow on a crit), the bars tween, the message says the blow,
+the miss, the wind-up, the stun (or a boss shrugging it off), the poison on either side, the counter, the drink, the
+loot, the level, the boss falling, the area opening, and the new things: the boss's second phase in its own words, time
+bending, a trap springing, gold lifted, the enemy healing or draining mana, a Phoenix catching a fall, Ironbrow turning a
+crit aside. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
+**A world boss** says "world boss" in the header and what a shared fight is in the first line; its bar follows the HP in
+the spawn when others hit it (`refreshFromState`, called by the board on every change to the player or the spawns); when
+someone else brings it down the screen says so with this player's share and ends as a win; when it leaves, "is gone".
+
+## The shop scene (mine, 2026-10-31)
+
+The shop's name (or "Wandering Merchant") and your gold at the top; two sides, **Buy** and **Sell**, and in a town a
+third, **Train** (the three tabs then share the row at x 96, 206 and 316). Buy lists the plain piece of the area's rank
+for each of the five slots with its number and price, then the potion, the mana potion and the four dice cards with
+their text and how many you hold; a Buy button each (80 by 32 at x 356, eleven rows from y 222, 40 apart). Sell lists
+the gear in the bag with its rarity colour and half its worth, and how full the bag is. Train lists the class's six
+abilities with rank, text and costs, and a **Learn** or **Rank up** button at the trainer's price (greyed at the top
+rank). The message line says what happened; **Leave** (220 by 50 at y 706) calls the board's `shopLeft`. The HUD's gold
+follows every buy.
+
+## The bag scene (mine, 2026-10-31)
+
+"Bag" and the numbers with everything on (attack, defense, HP, mana, crit, dodge, lifesteal, thorns); **Worn**: the five
+slots, each with its piece in its rarity colour (or "nothing") and a **Take off** button; **Carried n of 12**: up to
+six pieces shown with **Wear** and **Drop**; the flasks and cards at the bottom; **Close** at the top right. Opened from the HUD's Bag
+button, not while a fight or the shop is up.
+
+## The save (`local-game.ts`) and the account (`remote-game.ts`)
+
+**Solo**: `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On
+load a save of version 1 passes its state through `migrate`, which brings any older state up to the current version; no
+save, or one we cannot read, gives null and the character screen comes up, and `create` makes the game from the name and
+class chosen with a new seed. `act` passes `Date.now()` to the rules as the clock. **The world ticks** (`game.tick()`, the
+`tick` action) on load, once a minute, and when the page comes back to the front. The one local player's id is `local`.
+`reset()` throws the save away, so the next load is the character screen. A save made in the pane is not Robin's: he
+plays on his phone.
+
+**Co-op** (mine, 2026-11-01): `localStorage['boardworld.server']` is the address from `?server=` (`off` or empty forgets
+it); `localStorage['boardworld.account']` = `{ token, player, recovery }`, written from the first snapshot. `RemoteGame`
+sends `join` with the token (or `name` and `classId`, or `recover`), takes the snapshot as the whole truth, sends each
+intent with a UUID and waits for its `result` before the next; `event` messages fold others' deltas in and tell the
+scenes (`onChange`). It pings every 20 s and drops a socket with no pong in 10; a closed socket is replaced after 1, 2,
+4, 8, then 15 s, forever; `visibilitychange`, `pageshow` and the minute's tick call `checkLink`, which replaces a dead
+socket at once; after every new snapshot the intent that was in flight is sent again with the same id, and the server
+answers from its store if it had it. `now()` is the server's clock (its `serverTime` less ours). `reset()` forgets this
+phone's token (the code brings the character back) and tells the server `leave`. The solo save is not uploaded; the two
+worlds are separate.
 
 ## The frame log and error log (`game-log.ts`)
 
@@ -58,22 +228,18 @@ phone.
   worst frame (up to 600 seconds kept).
 - Errors: `window.onerror`, unhandled promise rejections and `console.error` are caught (up to 200 kept); notable game
   events go in with `log.note` (up to 500).
-- **Log** button: downloads the whole thing as `boardworld-log-<time>.txt` (header with user agent, screen and viewport;
-  errors; events; the per-second table; the last frame times). On a phone Robin shares that file into the chat.
-- `window.boardWorld` = `{ game, log, phaser }` so the pane and the scripts in `tools/` can read the state and the log.
+- **Log** button: downloads the whole thing as `boardworld-log-<time>.txt`. On a phone Robin shares that file into the chat.
+- `window.boardWorld` = `{ game, log, phaser, rules, server }` so the pane and the scripts in `tools/` can read the state and the log.
 
 ## The PWA
 
-`vite.config.ts` carries the manifest: name Board World (the working title is still open), standalone, portrait, dark
-theme, icons 192 and 512 (plus the 512 as maskable). The service worker (Workbox, `autoUpdate`) is only generated by
-`npm run build`; in `npm run dev` it is off so hot reload and the pane stay simple. Chrome on Android offers "Install app"
-once the built site is served over HTTPS (localhost counts; a phone on the LAN over plain http does not, so the install
-test needs the tunnel or Cloudflare Pages). Phaser is the weight: 1.38 MB of script, 362 kB gzipped; the build warns
-above 1.5 MB per chunk.
+`vite.config.ts` carries the manifest: name Board World (to become Zite with the local session's blessing: the manifest
+name is what the phone shows on install), standalone, portrait, dark theme, icons 192 and 512. The service worker
+(Workbox, `autoUpdate`) is only generated by `npm run build`; in `npm run dev` it is off. Chrome on Android offers
+"Install app" once the built site is served over HTTPS. Phaser is the weight: 1.4 MB of script, 370 kB gzipped.
 
 ## Not here yet
 
-A fight screen, the space resolutions, a map bigger than one screen (a camera that follows the character and zooms out
-for the overview), a character screen, sound (`?mute=1` is the convention for
-test pages once sound exists), the socket client (after `docs/state/protocol.md` is written), reconnect on
-`visibilitychange` and `pageshow`.
+A second hand-laid pass at the numbers once Robin has played; sound (`?mute=1` is the convention for test pages once
+sound exists); a quieter way to type the server's address and a code than the browser's prompt; the install prompt; the
+world boss in the atlas's list.

@@ -4,3 +4,4 @@ dev-dist/
 *.tsbuildinfo
 server/data/*.db
 server/data/*.db-*
+tools/out/

@@ -1,0 +1,89 @@
+{
+  "xpForLevel": [
+    0,
+    30,
+    80,
+    160,
+    280,
+    440,
+    650,
+    920,
+    1250,
+    1650,
+    2100,
+    2650,
+    3300,
+    4050,
+    4900,
+    5850,
+    6900,
+    8050,
+    9300,
+    10650,
+    12100,
+    13650,
+    15300,
+    17050,
+    18900,
+    20850,
+    22900,
+    25050,
+    27300,
+    29650
+  ],
+  "baseCrit": 0.1,
+  "critPower": 2,
+  "fleeChance": 0.5,
+  "deathGoldLoss": 0.2,
+  "charge": 2,
+  "enemyCharge": 2.5,
+  "manaPerRound": 2,
+  "guards": {
+    "block": 0.5,
+    "dodge": 0.3,
+    "brace": 0.75,
+    "braceMana": 4,
+    "counter": 0.5
+  },
+  "chest": {
+    "gold": [
+      15,
+      40
+    ],
+    "gearChance": 0.35,
+    "consumableChance": 0.3
+  },
+  "gamble": {
+    "stakePerTier": 20
+  },
+  "spawns": {
+    "cap": 2,
+    "chancePerTick": 0.5,
+    "lifeMs": 600000,
+    "miniboss": 0.7
+  },
+  "worldBoss": {
+    "chancePerTick": 0.02,
+    "lifeMs": 1800000,
+    "hpMult": 2.5,
+    "minShare": 0.25
+  },
+  "traces": {
+    "perSpace": 3,
+    "lifeMs": 86400000
+  },
+  "meterMax": 5,
+  "pickLevels": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ],
+  "training": {
+    "learn": 60,
+    "rank": 80
+  }
+}

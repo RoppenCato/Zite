@@ -4,8 +4,10 @@ import Database from 'better-sqlite3';
 
 export type Db = Database.Database;
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
+// Schema 1: the regions and the answers. Schema 2 adds the accounts and their tokens. Every statement is "if not
+// exists", so running them all is also the step up from 1 to 2; a later step that changes a table goes in `upgrade`.
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (
   key   TEXT PRIMARY KEY,
@@ -27,6 +29,22 @@ CREATE TABLE IF NOT EXISTS results (
   created_at INTEGER NOT NULL,
   PRIMARY KEY (region_id, action_id)
 );
+-- One account per character: its id is the player id in the region's state; the code is what a player types on a new phone.
+CREATE TABLE IF NOT EXISTS accounts (
+  id         TEXT PRIMARY KEY,
+  name       TEXT NOT NULL,
+  class_id   TEXT NOT NULL,
+  region_id  TEXT NOT NULL,
+  recovery   TEXT NOT NULL UNIQUE,
+  created_at INTEGER NOT NULL,
+  last_seen  INTEGER NOT NULL
+);
+-- The secrets devices hold: one account, many phones.
+CREATE TABLE IF NOT EXISTS tokens (
+  token      TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL REFERENCES accounts(id),
+  created_at INTEGER NOT NULL
+);
 `;
 
 /** Open (or create) the database at `path`; ':memory:' for tests. */
@@ -35,13 +53,21 @@ export function openDb(path: string): Db {
   if (path !== ':memory:') db.pragma('journal_mode = WAL');
   db.exec(SCHEMA);
   const row = db.prepare('SELECT value FROM meta WHERE key = ?').get('schema_version') as { value: string } | undefined;
-  if (!row) {
+  const found = row ? Number(row.value) : null;
+  if (found === null) {
     db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run('schema_version', String(SCHEMA_VERSION));
-  } else if (Number(row.value) !== SCHEMA_VERSION) {
-    // When schema 2 comes, the step from 1 to 2 runs here before the server starts.
-    throw new Error(`database is schema ${row.value}; this server needs ${SCHEMA_VERSION} and has no migration for that yet`);
+  } else if (found < SCHEMA_VERSION) {
+    upgrade(db, found);
+    db.prepare('UPDATE meta SET value = ? WHERE key = ?').run(String(SCHEMA_VERSION), 'schema_version');
+  } else if (found !== SCHEMA_VERSION) {
+    throw new Error(`database is schema ${row!.value}; this server needs ${SCHEMA_VERSION} and cannot go down`);
   }
   return db;
+}
+
+/** The steps from an older schema to this one, in order. From 1: nothing beyond the new tables `SCHEMA` already made. */
+function upgrade(_db: Db, from: number): void {
+  if (from < 1) throw new Error(`database is schema ${from}; that was never written`);
 }
 
 /** Forget results older than `olderThanMs` (shared-world rule 3: ids expire after a few days). */

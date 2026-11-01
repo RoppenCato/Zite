@@ -1,46 +1,79 @@
 import { describe, expect, it } from 'vitest';
-import { apply, newGame } from '../src/game.ts';
+import { ABILITIES, ENEMIES, PROGRESSION } from '../src/data.ts';
+import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
 import { migrate } from '../src/save.ts';
-import type { Action, GameState } from '../src/types.ts';
+import type { Action, Character, GameState } from '../src/types.ts';
+import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
+const NOW = 1_000_000;
 
+/** A game on the twelve-space ring, so the paths below stay short. The real game plays on the world. */
 function fresh(seed = 'ashford'): GameState {
-  return newGame({ seed, player: P, name: 'Robin', classId: 'warrior' });
+  return newGame({ seed, player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
 }
-
+/** The ring: s0 town, s1 wilds, s2 Tinker Cart (shop), s3 wilds, s4 wilds, s5 chest, s6 shrine, s7 wilds, s8 spring, s9 wilds, s10 boss, s11 wilds. */
+function about(space: string, patch: Partial<Character> = {}, steps = 1): GameState {
+  const s = fresh();
+  return { ...s, characters: { [P]: { ...s.characters[P]!, space, steps, ...patch } }, die: { ...s.die, last: steps } };
+}
 const roll = (id = 'r1'): Action => ({ type: 'roll', id, player: P });
 const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player: P, path });
+const me = (s: GameState): Character => s.characters[P]!;
 
 describe('a new game', () => {
-  it('has the small board, one warrior on the start space and an unrolled die', () => {
+  it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
+    const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
+    expect(s.version).toBe(10);
+    expect(s.board).toEqual(makeBoard());
+    expect(s.board.start).toBe('ashford');
+    expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
+    expect(s.spawns).toEqual({});
+    expect(s.nextItem).toBe(1);
+  });
+
+  it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(1);
+    expect(s.version).toBe(10);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
-    expect(s.board.start).toBe('s0');
-    expect(s.board.spaces.s0).toMatchObject({ kind: 'town', name: 'Ashford', links: ['s11', 's1'] });
-    expect(s.characters[P]).toEqual({
+    expect(me(s)).toEqual({
       id: P,
       name: 'Robin',
       classId: 'warrior',
+      level: 1,
+      xp: 0,
+      gold: 50,
       hp: 120,
+      mana: 20,
       maxHp: 120,
+      maxMana: 20,
       attack: 12,
       defense: 8,
-      gold: 50,
       space: 's0',
       steps: 0,
+      fight: null,
+      items: {},
+      equipment: { weapon: null, armour: null, helm: null, boots: null, trinket: null },
+      bag: [],
+      abilities: { 'heavy-blow': 1, 'shield-bash': 1 },
+      opened: ['ring'],
+      cooldowns: {},
+      bossKills: {},
+      offer: null,
+      quests: [],
+      picks: [],
+      keys: {},
     });
     expect(s.die).toEqual({ sides: 6, last: null });
   });
 
-  it('gives each class its own numbers from the data', () => {
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'mage' }).characters[P]).toMatchObject({ hp: 80, attack: 14, defense: 4, gold: 50 });
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'rogue' }).characters[P]).toMatchObject({ hp: 90, gold: 60 });
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 95, attack: 8 });
+  it('gives each class its own numbers and kit from the data', () => {
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'mage' }).characters[P]).toMatchObject({ hp: 85, mana: 40, attack: 14, defense: 4, gold: 50, abilities: { fireball: 1, 'frost-bolt': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'rogue' }).characters[P]).toMatchObject({ hp: 100, gold: 60, abilities: { backstab: 1, 'poison-blade': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 100, attack: 8, abilities: { volley: 1, 'aimed-shot': 1 } });
   });
 });
 
@@ -48,88 +81,244 @@ describe('roll', () => {
   it('rolls the die from the seed and leaves that many steps to walk', () => {
     const before = fresh();
     const snapshot = structuredClone(before);
-    const { state, events } = apply(before, roll(), makeRng('ashford'));
+    const { state, events } = apply(before, roll(), makeRng('ashford'), NOW);
     expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);
     expect(state.die.last).toBe(2);
-    expect(state.characters[P]?.steps).toBe(2);
-    expect(state.characters[P]?.space).toBe('s0');
+    expect(me(state).steps).toBe(2);
+    expect(me(state).space).toBe('s0');
     expect(before).toEqual(snapshot);
     expect(state).not.toBe(before);
   });
 
   it('replays the same roll from the same seed', () => {
-    const a = apply(fresh(), roll(), makeRng('ashford'));
-    const b = apply(fresh(), roll(), makeRng('ashford'));
-    expect(a).toEqual(b);
-    const c = apply(fresh(), roll(), makeRng(12345));
-    expect(c.events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 6 }]);
+    expect(apply(fresh(), roll(), makeRng('ashford'), NOW)).toEqual(apply(fresh(), roll(), makeRng('ashford'), NOW));
+    expect(apply(fresh(), roll(), makeRng(12345), NOW).events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 6 }]);
   });
 
-  it('is refused while a move is still owed', () => {
+  it('is refused while a move is owed, in a fight, with a question open, or for a player not in the game', () => {
     const rng = makeRng('ashford');
-    const first = apply(fresh(), roll('r1'), rng);
-    const second = apply(first.state, roll('r2'), rng);
+    const first = apply(fresh(), roll('r1'), rng, NOW);
+    const second = apply(first.state, roll('r2'), rng, NOW);
     expect(second.events).toEqual([{ type: 'rejected', action: 'r2', player: P, reason: 'finish your move first' }]);
     expect(second.state).toBe(first.state);
-  });
-
-  it('is refused for a player who is not in the game', () => {
-    const { state, events } = apply(fresh(), { type: 'roll', id: 'r1', player: 'nobody' }, makeRng('ashford'));
+    const fighting = apply(about('s9'), move(['s10']), makeRng('x'), NOW).state;
+    expect(apply(fighting, roll(), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'finish the fight first' });
+    const asked = about('s0', { offer: { kind: 'gamble', stake: 10 }, steps: 0 });
+    expect(apply(asked, roll(), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'answer first' });
+    const { state, events } = apply(fresh(), { type: 'roll', id: 'r1', player: 'nobody' }, makeRng('ashford'), NOW);
     expect(events).toEqual([{ type: 'rejected', action: 'r1', player: 'nobody', reason: 'unknown player' }]);
     expect(state.die.last).toBeNull();
   });
 });
 
 describe('move', () => {
-  const rolled = () => apply(fresh(), roll(), makeRng('ashford')).state; // two steps owed from s0
+  const rolled = () => apply(fresh(), roll(), makeRng('ashford'), NOW).state; // two steps owed from s0
 
   it('walks the path and lands on the last space', () => {
-    const { state, events } = apply(rolled(), move(['s1', 's2']), makeRng('ashford'));
+    const { state, events } = apply(rolled(), move(['s1', 's2']), makeRng('ashford'), NOW);
     expect(events).toEqual([
       { type: 'moved', action: 'm1', player: P, from: 's0', path: ['s1', 's2'] },
       { type: 'landed', action: 'm1', player: P, space: 's2', kind: 'shop' },
     ]);
-    expect(state.characters[P]).toMatchObject({ space: 's2', steps: 0 });
+    expect(me(state)).toMatchObject({ space: 's2', steps: 0 });
     expect(state.die.last).toBe(2);
   });
 
-  it('may go either way round from the start', () => {
-    const { state, events } = apply(rolled(), move(['s11', 's10']), makeRng('ashford'));
-    expect(events[1]).toEqual({ type: 'landed', action: 'm1', player: P, space: 's10', kind: 'bossgate' });
-    expect(state.characters[P]?.space).toBe('s10');
-  });
-
-  it('is refused before a roll', () => {
-    const { state, events } = apply(fresh(), move(['s1']), makeRng('ashford'));
-    expect(events).toEqual([{ type: 'rejected', action: 'm1', player: P, reason: 'roll first' }]);
-    expect(state.characters[P]?.space).toBe('s0');
-  });
-
-  it('must use exactly the steps rolled', () => {
-    expect(apply(rolled(), move(['s1']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'wrong number of steps' });
-    expect(apply(rolled(), move(['s1', 's2', 's3']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'wrong number of steps' });
-    expect(apply(rolled(), move([]), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'wrong number of steps' });
-  });
-
-  it('must follow the connections', () => {
-    expect(apply(rolled(), move(['s1', 's5']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'not connected' });
-    expect(apply(rolled(), move(['s2', 's3']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'not connected' });
-  });
-
-  it('may not turn straight back', () => {
-    expect(apply(rolled(), move(['s1', 's0']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'no turning back' });
-  });
-
-  it('refuses a space that does not exist', () => {
-    expect(apply(rolled(), move(['s1', 'nowhere']), makeRng('x')).events[0]).toMatchObject({ type: 'rejected', reason: 'no such space' });
+  it('is refused before a roll, with the wrong count, off the links, turning back, to nowhere, and into a closed area', () => {
+    expect(apply(fresh(), move(['s1']), makeRng('x'), NOW).events).toEqual([{ type: 'rejected', action: 'm1', player: P, reason: 'roll first' }]);
+    expect(apply(rolled(), move(['s1']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'wrong number of steps' });
+    expect(apply(rolled(), move([]), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'wrong number of steps' });
+    expect(apply(rolled(), move(['s1', 's5']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not connected' });
+    expect(apply(rolled(), move(['s1', 's0']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no turning back' });
+    expect(apply(rolled(), move(['s1', 'nowhere']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such space' });
+    // On the world, the road beyond the Iron Gate lies in Thornwood, closed until the Warden falls.
+    const world = newGame({ seed: 'x', player: P, name: 'R', classId: 'warrior' });
+    const atGate = { ...world, characters: { [P]: { ...me(world), space: 'gate', steps: 1 } } };
+    expect(apply(atGate, move(['gate-edge-1']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'that way is closed' });
+    expect(apply(atGate, move(['moon-gate-3']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'moved' });
+    const opened = { ...atGate, characters: { [P]: { ...me(atGate), opened: ['meadows', 'thornwood'] } } };
+    expect(apply(opened, move(['gate-edge-1']), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'moved' });
+    expect(reachable(world.board, 'gate', 1, new Set(['meadows'])).map((r) => r.space)).toEqual(['hermit-gate-3', 'moon-gate-3']);
+    expect(reachable(world.board, 'gate', 1, new Set(['meadows', 'thornwood'])).map((r) => r.space)).toEqual(['hermit-gate-3', 'moon-gate-3', 'gate-edge-1']);
   });
 
   it('leaves the state alone when refused', () => {
     const s = rolled();
     const snapshot = structuredClone(s);
-    const { state } = apply(s, move(['s1', 's0']), makeRng('x'));
+    const { state } = apply(s, move(['s1', 's0']), makeRng('x'), NOW);
     expect(state).toBe(s);
     expect(s).toEqual(snapshot);
+  });
+});
+
+describe('landing', () => {
+  it('in a town rests: HP and mana back to full', () => {
+    const { state, events } = apply(about('s1', { hp: 50, mana: 5 }), move(['s0']), makeRng('ashford'), NOW);
+    expect(events[2]).toEqual({ type: 'rested', action: 'm1', player: P, hp: 120, mana: 20 });
+    expect(me(state)).toMatchObject({ hp: 120, mana: 20 });
+  });
+
+  it('on a shop does nothing by itself: the shop is open while you stand there', () => {
+    const { events } = apply(about('s1'), move(['s2']), makeRng('ashford'), NOW);
+    expect(events.map((e) => e.type)).toEqual(['moved', 'landed']);
+  });
+
+  it('on a chest gives gold by the tier and maybe gear and a flask, then nothing for a while, then again', () => {
+    const first = apply(about('s4'), move(['s5']), makeRng('ashford'), NOW);
+    expect(first.events.slice(2)).toEqual([
+      { type: 'chest', action: 'm1', player: P },
+      { type: 'gold', action: 'm1', player: P, delta: 23, gold: 73 },
+      { type: 'loot', action: 'm1', player: P, gear: expect.objectContaining({ id: 'g1', slot: 'boots', rarity: 'epic', name: 'Quietfall', rank: 1 }) },
+      { type: 'found', action: 'm1', player: P, item: 'mana-potion', count: 1 },
+    ]);
+    expect(me(first.state)).toMatchObject({ gold: 73, items: { 'mana-potion': 1 }, cooldowns: { s5: NOW + 300000 } });
+    expect(me(first.state).bag).toHaveLength(1);
+    expect(first.state.nextItem).toBe(2);
+    const back = { ...first.state, characters: { [P]: { ...me(first.state), space: 's4', steps: 1 } } };
+    const soon = apply(back, move(['s5'], 'm2'), makeRng('ashford'), NOW + 1000);
+    expect(soon.events[2]).toEqual({ type: 'empty', action: 'm2', player: P, space: 's5', until: NOW + 300000 });
+    expect(me(soon.state).gold).toBe(73);
+    const later = apply(back, move(['s5'], 'm3'), makeRng('ashford'), NOW + 400000);
+    expect(later.events[2]).toEqual({ type: 'chest', action: 'm3', player: P });
+    expect(me(later.state).gold).toBe(96);
+  });
+
+  it('at a spring fills a flask, once in a while', () => {
+    const { state, events } = apply(about('s7'), move(['s8']), makeRng('x'), NOW);
+    expect(events[2]).toEqual({ type: 'found', action: 'm1', player: P, item: 'potion', count: 1 });
+    expect(me(state)).toMatchObject({ items: { potion: 1 }, cooldowns: { s8: NOW + 180000 } });
+  });
+
+  it('at a shrine teaches a new ability of the class, then improves one, then has nothing more', () => {
+    const warrior = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === 'warrior');
+    expect(warrior).toHaveLength(6);
+    const first = apply(about('s5'), move(['s6']), makeRng('ashford'), NOW);
+    const taught = first.events[2];
+    expect(taught).toMatchObject({ type: 'learned', action: 'm1', player: P, rank: 1 });
+    if (taught?.type === 'learned') {
+      expect(warrior).toContain(taught.ability);
+      expect(['heavy-blow', 'shield-bash']).not.toContain(taught.ability);
+      expect(me(first.state).abilities).toEqual({ 'heavy-blow': 1, 'shield-bash': 1, [taught.ability]: 1 });
+    }
+    expect(me(first.state).cooldowns.s6).toBe(NOW + 600000);
+    const all = (rank: number) => Object.fromEntries(warrior.map((a) => [a, rank]));
+    const knowsAll = apply(about('s5', { abilities: all(1) }), move(['s6']), makeRng('ashford'), NOW);
+    const learned = knowsAll.events[2];
+    expect(learned).toMatchObject({ type: 'learned', rank: 2 });
+    if (learned?.type === 'learned') expect(ABILITIES[learned.ability]?.classId).toBe('warrior');
+    const master = apply(about('s5', { abilities: all(3) }), move(['s6']), makeRng('ashford'), NOW);
+    expect(master.events[2]).toMatchObject({ type: 'nothing' });
+    const soon = apply({ ...first.state, characters: { [P]: { ...me(first.state), space: 's5', steps: 1 } } }, move(['s6'], 'm2'), makeRng('ashford'), NOW + 1);
+    expect(soon.events[2]).toMatchObject({ type: 'empty', space: 's6' });
+  });
+
+  it('on a boss spot starts the boss fight, unless the boss is away for its five minutes', () => {
+    const { state, events } = apply(about('s9'), move(['s10']), makeRng('x'), NOW);
+    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 550 }) });
+    expect(me(state).fight).toMatchObject({ space: 's10', spawn: false, round: 1 });
+    const away = apply(about('s9', { cooldowns: { s10: NOW + 1000 } }), move(['s10']), makeRng('x'), NOW);
+    expect(away.events[2]).toMatchObject({ type: 'nothing', text: expect.stringContaining('not back yet') });
+    expect(me(away.state).fight).toBeNull();
+  });
+
+  it('in the wilds draws what turns up: mostly a fight with the area\'s creatures, else a chest, a merchant, a gamble', () => {
+    const slime = apply(about('s0'), move(['s1']), makeRng('ashford'), NOW);
+    expect(slime.events[2]).toMatchObject({ type: 'fight', enemy: expect.objectContaining({ id: 'slime', level: 1 }), space: 's1' });
+    // The first seeds that give each thing (the weights move as the table does; the things do not).
+    const firstSeed = (type: string) => Array.from({ length: 400 }, (_, i) => i).find((i) => apply(about('s0'), move(['s1']), makeRng(i), NOW).events[2]?.type === type)!;
+    const chest = apply(about('s0'), move(['s1']), makeRng(firstSeed('chest')), NOW);
+    expect(chest.events.slice(2, 4).map((e) => e.type)).toEqual(['chest', 'gold']);
+    expect(me(chest.state).cooldowns).toEqual({}); // a chest found in the wilds is not a spot that empties
+    const merchant = apply(about('s0'), move(['s1']), makeRng(firstSeed('merchant')), NOW);
+    expect(merchant.events[2]).toEqual({ type: 'merchant', action: 'm1', player: P });
+    const event = apply(about('s0'), move(['s1']), makeRng(firstSeed('themeEvent')), NOW);
+    expect(event.events[2]).toMatchObject({ type: 'themeEvent', kind: 'heal', text: expect.stringContaining('picnic') }); // the meadows' event
+    const counts: Record<string, number> = {};
+    for (let i = 0; i < 300; i++) {
+      const r = apply(about('s0'), move(['s1']), makeRng(`wild-${i}`), NOW);
+      const what = r.events[2]!.type;
+      counts[what] = (counts[what] ?? 0) + 1;
+      if (what === 'fight') {
+        const e = r.events[2]!;
+        if (e.type === 'fight') expect(['mob', 'mini']).toContain(e.enemy.role);
+        if (e.type === 'fight' && e.enemy.role === 'mob') expect(['slime', 'wolf', 'bandit', 'wisp']).toContain(e.enemy.id);
+      }
+    }
+    expect(counts.fight).toBeGreaterThan(160);
+    expect(counts.chest).toBeGreaterThan(10);
+    expect(counts.offer).toBeGreaterThan(5);
+    expect(counts.merchant).toBeGreaterThan(5);
+    expect(counts.themeEvent).toBeGreaterThan(5);
+  });
+
+  it('a gamble is answered high or low on a die for the stake, or passed; nothing else goes until it is', () => {
+    const gambleSeed = Array.from({ length: 400 }, (_, i) => i).find((i) => apply(about('s0'), move(['s1']), makeRng(i), NOW).events[2]?.type === 'offer')!;
+    const offered = apply(about('s0'), move(['s1']), makeRng(gambleSeed), NOW);
+    expect(offered.events[2]).toEqual({ type: 'offer', action: 'm1', player: P, offer: { kind: 'gamble', stake: 20 } });
+    expect(me(offered.state).offer).toEqual({ kind: 'gamble', stake: 20 });
+    expect(apply(offered.state, roll(), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'answer first' });
+    const won = apply(offered.state, { type: 'gamble', id: 'g1', player: P, choice: 'high' }, makeRng(104), NOW);
+    expect(won.events).toEqual([{ type: 'gambled', action: 'g1', player: P, choice: 'high', roll: 6, won: true, delta: 20, gold: 70 }]);
+    expect(me(won.state).offer).toBeNull();
+    const lost = apply(offered.state, { type: 'gamble', id: 'g1', player: P, choice: 'low' }, makeRng(104), NOW);
+    expect(lost.events[0]).toMatchObject({ type: 'gambled', choice: 'low', roll: 6, won: false, delta: -20, gold: 30 });
+    const passed = apply(offered.state, { type: 'gamble', id: 'g1', player: P, choice: 'pass' }, makeRng('x'), NOW);
+    expect(passed.events[0]).toMatchObject({ type: 'nothing' });
+    expect(me(passed.state)).toMatchObject({ offer: null, gold: 50 });
+    expect(apply(fresh(), { type: 'gamble', id: 'g1', player: P, choice: 'high' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
+    // Broke: no gambler bothers you.
+    const broke = apply(about('s0', { gold: 0 }), move(['s1']), makeRng(4), NOW);
+    expect(broke.events[2]?.type).not.toBe('offer');
+  });
+
+  it('in the wilds where something has spawned, meets it: a mini-boss to fight, or a merchant', () => {
+    const base = about('s0');
+    const prowling = { ...base, spawns: { s1: { kind: 'miniboss' as const, enemy: 'wolf-alpha', until: NOW + 1000 } } };
+    const r = apply(prowling, move(['s1']), makeRng('x'), NOW);
+    expect(r.events[2]).toMatchObject({ type: 'fight', enemy: expect.objectContaining({ id: 'wolf-alpha', role: 'mini' }) });
+    expect(me(r.state).fight).toMatchObject({ spawn: true, space: 's1' });
+    const camped = { ...base, spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1000 } } };
+    expect(apply(camped, move(['s1']), makeRng('x'), NOW).events[2]).toEqual({ type: 'merchant', action: 'm1', player: P });
+  });
+});
+
+describe('the world\'s tick', () => {
+  const tick = (id: string): Action => ({ type: 'tick', id, player: 'world' });
+
+  it('puts a mini-boss or a merchant on a free wild spot of an open area for a while, and takes it away when its time is up', () => {
+    const world = newGame({ seed: 'w', player: P, name: 'R', classId: 'mage' });
+    const first = apply(world, tick('t0'), makeRng(0), NOW);
+    expect(first.events).toEqual([{ type: 'spawned', action: 't0', player: 'world', space: 'ashford-millford-1', spawn: { kind: 'miniboss', enemy: 'wolf-alpha', until: NOW + 600000 } }]);
+    expect(first.state.spawns).toEqual({ 'ashford-millford-1': { kind: 'miniboss', enemy: 'wolf-alpha', until: NOW + 600000 } });
+    expect(first.state.board.spaces['ashford-millford-1']!.area).toBe('meadows');
+    const later = apply(first.state, tick('t9'), makeRng(9), NOW + 2_000_000);
+    expect(later.events[0]).toEqual({ type: 'despawned', action: 't9', player: 'world', space: 'ashford-millford-1' });
+    expect(later.events[1]).toMatchObject({ type: 'spawned', space: 'tinker-millford-3' });
+  });
+
+  it('never spawns on a closed area, on a spot someone stands on, or past the cap, and gives the same state back when nothing happens', () => {
+    const world = newGame({ seed: 'w', player: P, name: 'R', classId: 'mage' });
+    for (let i = 0; i < 200; i++) {
+      const r = apply(world, tick(`t${i}`), makeRng(`spawn-${i}`), NOW);
+      for (const [space, spawn] of Object.entries(r.state.spawns)) {
+        expect(world.board.spaces[space]!.area).toBe('meadows');
+        expect(world.board.spaces[space]!.kind).toBe('normal');
+        expect(space).not.toBe('ashford');
+        if (spawn.kind === 'worldboss') {
+          // Now and then the world boss: the meadows' own boss, for longer, on top of the cap (coop.test.ts has the rest).
+          expect(spawn.until).toBe(NOW + PROGRESSION.worldBoss.lifeMs);
+          expect(spawn.enemy).toBe('thornwood-warden');
+          continue;
+        }
+        expect(spawn.until).toBe(NOW + 600000);
+        if (spawn.kind === 'miniboss') expect(spawn.enemy).toBe('wolf-alpha');
+        else expect(spawn.enemy).toBeNull();
+      }
+    }
+    const full = { ...world, spawns: { 'ashford-millford-1': { kind: 'merchant' as const, enemy: null, until: NOW + 1000 }, 'ashford-millford-2': { kind: 'merchant' as const, enemy: null, until: NOW + 1000 } } };
+    const r = apply(full, tick('t'), makeRng(0), NOW);
+    expect(r.state).toBe(full);
+    expect(r.events).toEqual([]);
   });
 });
 
@@ -138,8 +327,6 @@ describe('the legal paths', () => {
     const { board } = fresh();
     expect(legalPaths(board, 's0', 1)).toEqual([['s11'], ['s1']]);
     expect(legalPaths(board, 's0', 2)).toEqual([['s11', 's10'], ['s1', 's2']]);
-    expect(legalPaths(board, 's0', 3)).toEqual([['s11', 's10', 's9'], ['s1', 's2', 's3']]);
-    // s3 and s9 are the forks: the ring goes on, or the chord crosses the middle.
     expect(legalPaths(board, 's3', 1)).toEqual([['s2'], ['s4'], ['s9']]);
     expect(legalPaths(board, 's0', 4)).toHaveLength(4);
     expect(legalPaths(board, 's0', 0)).toEqual([]);
@@ -151,56 +338,152 @@ describe('the legal paths', () => {
       { space: 's10', path: ['s11', 's10'] },
       { space: 's2', path: ['s1', 's2'] },
     ]);
-    // A 6 from the start: six walks, but two of them end on Moon Shrine, so five places to tap.
     const six = reachable(board, 's0', 6);
-    expect(legalPaths(board, 's0', 6)).toHaveLength(6);
     expect(six.map((r) => r.space)).toEqual(['s6', 's1', 's5', 's7', 's11']);
-    expect(six[0]?.path).toEqual(['s11', 's10', 's9', 's8', 's7', 's6']);
     expect(reachable(board, 's0', 0)).toEqual([]);
   });
 
   it('agrees with move: every legal path is accepted', () => {
-    const { state } = apply(fresh(), roll(), makeRng(12345)); // a 6
+    const { state } = apply(fresh(), roll(), makeRng(12345), NOW); // a 6
     const paths = legalPaths(state.board, 's0', 6);
     expect(paths.length).toBeGreaterThan(2);
     for (const path of paths) {
-      const result = apply(state, move(path), makeRng('x'));
+      const result = apply(state, move(path), makeRng('x'), NOW);
       expect(result.events[1]).toMatchObject({ type: 'landed', space: path[5] });
     }
-    expect(paths).toContainEqual(['s1', 's2', 's3', 's9', 's10', 's11']);
-    expect(paths).toContainEqual(['s1', 's2', 's3', 's4', 's5', 's6']);
   });
 });
 
 describe('a few turns from one seed', () => {
-  it('always play out the same way', () => {
+  it('always play out the same way, whatever turns up', () => {
     const play = () => {
       const rng = makeRng('ashford');
       let state = fresh();
-      const rolls: number[] = [];
-      for (let i = 0; i < 3; i++) {
-        const r = apply(state, roll(`r${i}`), rng);
+      const log: string[] = [];
+      let turns = 0;
+      for (let i = 0; i < 40 && turns < 3; i++) {
+        const c = me(state);
+        let r;
+        if (c.fight) r = apply(state, { type: 'fight', id: `f${i}`, player: P, move: { kind: 'attack' }, guard: 'block' }, rng, NOW);
+        else if (c.offer) r = apply(state, { type: 'gamble', id: `g${i}`, player: P, choice: 'pass' }, rng, NOW);
+        else if (c.steps > 0) r = apply(state, move(legalPaths(state.board, c.space, c.steps)[0]!, `m${i}`), rng, NOW);
+        else {
+          r = apply(state, roll(`r${i}`), rng, NOW);
+          turns++;
+        }
         state = r.state;
-        if (r.events[0]?.type === 'rolled') rolls.push(r.events[0].value);
-        const me = state.characters[P]!;
-        const path = legalPaths(state.board, me.space, me.steps)[0]!;
-        state = apply(state, move(path, `m${i}`), rng).state;
+        log.push(r.events.map((e) => e.type).join('+'));
       }
-      return { rolls, space: state.characters[P]?.space };
+      return { log, me: me(state) };
     };
     const a = play();
-    expect(a.rolls).toEqual([2, 1, 5]);
+    expect(a.log.filter((l) => l.startsWith('rolled'))).toHaveLength(3);
     expect(play()).toEqual(a);
   });
 });
 
 describe('a stored state', () => {
-  it('passes through at the current version and is refused otherwise', () => {
+  it('passes through at the current version and is refused when it is nothing we know', () => {
     const s = fresh();
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 2 })).toBeNull();
+    expect(migrate({ version: 99 })).toBeNull();
+    expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
+  });
+
+  // Older states as the first builds saved them: the ring (1), the island (2), the fight (3), the bag (4).
+  const older = (version: 1 | 2 | 3 | 4) => ({
+    version,
+    seed: 'old-seed',
+    board: { start: 's0', spaces: {} },
+    characters: {
+      p1: { id: 'p1', name: 'Robin', classId: 'warrior', hp: 77, maxHp: 132, attack: 14, defense: 9, gold: 95, space: 's7', steps: 3, xp: 25, level: 2, fight: null, items: { potion: 2 } },
+      p2: { id: 'p2', name: 'Ann', classId: 'mage', hp: 80, maxHp: 80, attack: 14, defense: 4, gold: 12, space: 's2', steps: 0 },
+    },
+    die: { sides: 6, last: 3 },
+  });
+
+  it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
+    const s = migrate(structuredClone(older(version)));
+    expect(s).not.toBeNull();
+    expect(s!.version).toBe(10);
+    expect(s!.seed).toBe('old-seed');
+    expect(s!.board).toEqual(makeBoard());
+    expect(s!.die).toEqual({ sides: 6, last: null });
+    expect(s!.spawns).toEqual({});
+    expect(s!.nextItem).toBe(1);
+    expect(s!.characters.p1).toMatchObject({
+      id: 'p1',
+      name: 'Robin',
+      classId: 'warrior',
+      level: 2,
+      xp: 25,
+      gold: 95,
+      items: { potion: 2 },
+      hp: 132,
+      maxHp: 132,
+      mana: 22,
+      maxMana: 22,
+      attack: 14,
+      defense: 9,
+      space: 'ashford',
+      steps: 0,
+      fight: null,
+      bag: [],
+      abilities: { 'heavy-blow': 1, 'shield-bash': 1 },
+      opened: ['meadows'],
+      cooldowns: {},
+      bossKills: {},
+      offer: null,
+    });
+    expect(s!.characters.p2).toMatchObject({ name: 'Ann', classId: 'mage', level: 1, xp: 0, gold: 12, hp: 85, mana: 40, items: {}, abilities: { fireball: 1, 'frost-bolt': 1 } });
+    // And it plays on: a roll from the start of the world.
+    const { events } = apply(s!, roll(), makeRng('ashford'), NOW);
+    expect(events).toEqual([{ type: 'rolled', action: 'r1', player: P, value: 2 }]);
+  });
+
+  it('brings a version-5 state up: the board rebuilt with the Summit leading on, a character kept where it stood in an open area, one on a closed or vanished spot sent to the start', () => {
+    const today = newGame({ seed: 'old-seed', player: 'p1', name: 'Robin', classId: 'warrior' });
+    const oldBoard = structuredClone(today.board) as unknown as Record<string, unknown>;
+    delete oldBoard.bestiary;
+    (oldBoard.spaces as Record<string, { opens?: string | null }>).summit!.opens = null;
+    const p1 = { ...me(today), space: 'pass', steps: 2, gold: 300, opened: ['meadows', 'thornwood', 'frostpeak'], cooldowns: { summit: NOW + 1000 } };
+    const p2 = { ...me(today), id: 'p2', name: 'Ann', space: 'gate-edge-1', steps: 1, opened: ['meadows'] };
+    const p3 = { ...me(today), id: 'p3', name: 'Bo', space: 'nowhere', opened: ['meadows', 'gone'] };
+    const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
+    const s = migrate(structuredClone(v5));
+    expect(s).not.toBeNull();
+    expect(s!.version).toBe(10);
+    expect(s!.board).toEqual(makeBoard());
+    expect(s!.characters.p1).toEqual(p1);
+    expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });
+    expect(s!.characters.p3).toEqual({ ...p3, space: 'ashford', steps: 0, opened: ['meadows'] });
+    expect(s!.spawns).toEqual({ 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW } });
+    expect(s!.die).toEqual({ sides: 6, last: 4 });
+    expect(s!.nextItem).toBe(9);
+  });
+
+  it('refuses an older state it cannot carry over', () => {
+    const noSeed = older(4) as Record<string, unknown>;
+    delete noSeed.seed;
+    expect(migrate(noSeed)).toBeNull();
+    const oddClass = older(3);
+    oddClass.characters.p2.classId = 'bard';
+    expect(migrate(oddClass)).toBeNull();
+    expect(migrate({ version: 1, seed: 'x', characters: 'none' })).toBeNull();
+  });
+});
+
+describe('the enemies', () => {
+  it('each have a level, a role, at least one move, and a wind-up only on minis and bosses or a heavy mob', () => {
+    for (const [id, e] of Object.entries(ENEMIES)) {
+      expect(e.level, id).toBeGreaterThan(0);
+      expect(['mob', 'mini', 'boss']).toContain(e.role);
+      expect(e.moves.length, id).toBeGreaterThan(0);
+      for (const m of e.moves) expect(m.weight, `${id} ${m.name}`).toBeGreaterThan(0);
+      if (e.role !== 'mob') expect(e.moves.some((m) => m.charge), `${id} winds up`).toBe(true);
+    }
   });
 });

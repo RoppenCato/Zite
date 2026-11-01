@@ -22,9 +22,28 @@ the date, and comes off this list.
 9. **The world's form**: decided (Robin, 2026-10-31): (c) the board seen from a raised camera in 2D, and fights on their
    own 2D screen as an instance of where you stand. In the brief and `Art Director/docs/direction.md`.
 
+## Open after the decisions of 2026-10-31 (`docs/decisions-2026-10-31.md`)
+
+10. ~~Quest givers~~: built as the towns' errands (2026-11-01, `docs/state/rules.md`); a quest giver as a spot of its
+    own is still open.
+11. ~~A bag limit~~: twelve, with sell or leave (2026-11-01).
+12. ~~Mana potions~~: built (2026-11-01); a mana spot of its own is still open (the spring gives both flasks).
+13. ~~Trainers in towns~~: built (2026-11-01), in the town's shop under Train.
+14. ~~Shared bosses~~: built as the **world boss** (2026-11-01, `docs/state/rules.md`): now and then the boss of the
+    highest open area rages on a wild spot there with HP for a crowd, everyone who lands fights the same HP and is paid
+    by share when it falls. The gate bosses stay each player's own (each opens their own way): whether an area should
+    open for everyone once anyone beat its boss is Robin's call.
+15. ~~The fourth area and the generator~~: built (2026-10-31, `docs/state/world.md`); the fourth area is the first
+    grown one, fire. Two more shapes and the themes' events came 2026-11-01; more shapes are always welcome.
+16. **The far tiers' curve** (mine, 2026-10-31): the grown creatures grow ×1.25 HP a tier and gear ×1.35 a rank past the
+    tables, so the bots' walls, flat at about nine wins in ten from tier 4 to 9, ease towards ten in ten past tier 10.
+    Either gear slows (×1.3) or the creatures' growth climbs after tier 9; to be felt first, there is a long way to tier
+    10.
+
 ## Ideas noted in the brief, not decided
 
 - Guilds: a shared home town that members upgrade together.
+- Town liberation and occupied towns: out (Robin, 2026-10-31: no Dokapon-style liberation).
 - A "camp" bonus aura, IRL-only trading and friendly duels for linked players.
 - Real places (OpenStreetMap) as shrines giving dice cards when visited.
 
@@ -34,3 +53,14 @@ the date, and comes off this list.
 - A "fewer effects" switch in the settings for weak phones.
 - A downloadable frame log and error log in the game (the Survival game's Admin pattern), since a phone has no console.
 - Push as a nudge only ("the boss window closes in two hours"), never as the only way to learn something.
+
+## Open after the server took the state (mine, 2026-11-01)
+
+- **Bringing a solo save into the world**: the server never takes a state from a client (rule 10), so an account starts
+  at the start. A one-time import of the solo character's level and gear, checked by the server, is possible if Robin
+  wants it.
+- **Hashing the tokens and codes** in SQLite before the server is ever public.
+- **Deltas smaller than a whole character** (a few kilobytes with gear and errands) and **many regions** (one actor
+  holds every character today) when there are enough players to feel it.
+- **A screen for the server's address and the code** instead of the browser's prompt.
+- **Playing offline and online with one character**: the two are separate saves today.

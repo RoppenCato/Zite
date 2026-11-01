@@ -1,0 +1,517 @@
+{
+  "heavy-blow": {
+    "name": "Heavy Blow",
+    "classId": "warrior",
+    "text": "One crushing hit.",
+    "mana": 4,
+    "ranks": [
+      {
+        "power": 1.6
+      },
+      {
+        "power": 1.85
+      },
+      {
+        "power": 2.1
+      }
+    ]
+  },
+  "shield-bash": {
+    "name": "Shield Bash",
+    "classId": "warrior",
+    "text": "A hit that stuns: the enemy loses its next turn.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 0.8,
+        "stun": 1
+      },
+      {
+        "power": 1.0,
+        "stun": 1
+      },
+      {
+        "power": 1.2,
+        "stun": 2
+      }
+    ]
+  },
+  "war-cry": {
+    "name": "War Cry",
+    "classId": "warrior",
+    "text": "Your hits land harder for a few rounds.",
+    "mana": 5,
+    "ranks": [
+      {
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.3
+        }
+      },
+      {
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.45
+        }
+      },
+      {
+        "attackUp": {
+          "rounds": 4,
+          "mult": 1.6
+        }
+      }
+    ]
+  },
+  "backstab": {
+    "name": "Backstab",
+    "classId": "rogue",
+    "text": "A hit that crits half the time.",
+    "mana": 4,
+    "ranks": [
+      {
+        "power": 1.2,
+        "crit": 0.6
+      },
+      {
+        "power": 1.3,
+        "crit": 0.7
+      },
+      {
+        "power": 1.4,
+        "crit": 0.8
+      }
+    ]
+  },
+  "poison-blade": {
+    "name": "Poison Blade",
+    "classId": "rogue",
+    "text": "A cut that poisons for three rounds.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 0.8,
+        "poison": {
+          "rounds": 3,
+          "power": 0.5
+        }
+      },
+      {
+        "power": 0.9,
+        "poison": {
+          "rounds": 3,
+          "power": 0.65
+        }
+      },
+      {
+        "power": 1.0,
+        "poison": {
+          "rounds": 4,
+          "power": 0.8
+        }
+      }
+    ]
+  },
+  "shadowstep": {
+    "name": "Shadowstep",
+    "classId": "rogue",
+    "text": "Slip away: the enemy's next blows miss.",
+    "mana": 6,
+    "ranks": [
+      {
+        "evade": 2
+      },
+      {
+        "evade": 2,
+        "power": 0.6
+      },
+      {
+        "evade": 3,
+        "power": 0.8
+      }
+    ]
+  },
+  "fireball": {
+    "name": "Fireball",
+    "classId": "mage",
+    "text": "A burst of flame: a huge hit.",
+    "mana": 8,
+    "ranks": [
+      {
+        "power": 2.0
+      },
+      {
+        "power": 2.3
+      },
+      {
+        "power": 2.6
+      }
+    ]
+  },
+  "frost-bolt": {
+    "name": "Frost Bolt",
+    "classId": "mage",
+    "text": "A chill that weakens the enemy's blows.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 1.1,
+        "weaken": {
+          "rounds": 2,
+          "mult": 0.7
+        }
+      },
+      {
+        "power": 1.2,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.65
+        }
+      },
+      {
+        "power": 1.3,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.55
+        }
+      }
+    ]
+  },
+  "arcane-shield": {
+    "name": "Arcane Shield",
+    "classId": "mage",
+    "text": "A barrier worth a share of your HP that soaks the next damage.",
+    "mana": 7,
+    "ranks": [
+      {
+        "barrierShare": 0.3
+      },
+      {
+        "barrierShare": 0.4
+      },
+      {
+        "barrierShare": 0.5
+      }
+    ]
+  },
+  "volley": {
+    "name": "Volley",
+    "classId": "ranger",
+    "text": "Three quick arrows.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 0.7,
+        "hits": 3
+      },
+      {
+        "power": 0.8,
+        "hits": 3
+      },
+      {
+        "power": 0.85,
+        "hits": 4
+      }
+    ]
+  },
+  "aimed-shot": {
+    "name": "Aimed Shot",
+    "classId": "ranger",
+    "text": "One careful arrow, often a crit.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 1.5,
+        "crit": 0.35
+      },
+      {
+        "power": 1.7,
+        "crit": 0.45
+      },
+      {
+        "power": 1.9,
+        "crit": 0.55
+      }
+    ]
+  },
+  "snare": {
+    "name": "Snare",
+    "classId": "ranger",
+    "text": "A trap: the enemy loses its next turn.",
+    "mana": 6,
+    "ranks": [
+      {
+        "stun": 1
+      },
+      {
+        "stun": 1,
+        "power": 0.6
+      },
+      {
+        "stun": 2,
+        "power": 0.8
+      }
+    ]
+  },
+  "execute": {
+    "name": "Execute",
+    "classId": "warrior",
+    "text": "Spend 3 Rage: a brutal hit, far harder on a foe under a third of its HP.",
+    "mana": 0,
+    "meter": 3,
+    "ranks": [
+      {
+        "power": 1.4,
+        "executeBelow": 0.3,
+        "executePower": 2.8
+      },
+      {
+        "power": 1.6,
+        "executeBelow": 0.3,
+        "executePower": 3.1
+      },
+      {
+        "power": 1.8,
+        "executeBelow": 0.35,
+        "executePower": 3.4
+      }
+    ]
+  },
+  "rally": {
+    "name": "Rally",
+    "classId": "warrior",
+    "text": "Spend 3 Rage: heal a share of your HP and hit harder for two rounds.",
+    "mana": 6,
+    "meter": 3,
+    "ranks": [
+      {
+        "healShare": 0.12,
+        "attackUp": {
+          "rounds": 2,
+          "mult": 1.2
+        }
+      },
+      {
+        "healShare": 0.15,
+        "attackUp": {
+          "rounds": 2,
+          "mult": 1.25
+        }
+      },
+      {
+        "healShare": 0.18,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.3
+        }
+      }
+    ]
+  },
+  "shield-wall": {
+    "name": "Shield Wall",
+    "classId": "warrior",
+    "text": "A wall of iron: a barrier worth a share of your HP.",
+    "mana": 8,
+    "ranks": [
+      {
+        "barrierShare": 0.2
+      },
+      {
+        "barrierShare": 0.25
+      },
+      {
+        "barrierShare": 0.3
+      }
+    ]
+  },
+  "smoke-bomb": {
+    "name": "Smoke Bomb",
+    "classId": "rogue",
+    "text": "Spend 3 Combo: vanish, the next blow misses and your next hit is a sure crit.",
+    "mana": 3,
+    "meter": 3,
+    "ranks": [
+      {
+        "evade": 1,
+        "sureCrit": 1
+      },
+      {
+        "evade": 1,
+        "sureCrit": 2
+      },
+      {
+        "evade": 2,
+        "sureCrit": 2
+      }
+    ]
+  },
+  "pickpocket": {
+    "name": "Pickpocket",
+    "classId": "rogue",
+    "text": "A quick cut and a quicker hand: gold from the enemy's purse, once a fight.",
+    "mana": 3,
+    "oncePerFight": true,
+    "ranks": [
+      {
+        "power": 0.5,
+        "steal": 0.5
+      },
+      {
+        "power": 0.6,
+        "steal": 0.75
+      },
+      {
+        "power": 0.7,
+        "steal": 1.0
+      }
+    ]
+  },
+  "eviscerate": {
+    "name": "Eviscerate",
+    "classId": "rogue",
+    "text": "Spend all your Combo: a hit that grows with every point.",
+    "mana": 2,
+    "meterAll": true,
+    "ranks": [
+      {
+        "power": 0.6,
+        "perMeter": 0.35
+      },
+      {
+        "power": 0.7,
+        "perMeter": 0.4
+      },
+      {
+        "power": 0.8,
+        "perMeter": 0.45
+      }
+    ]
+  },
+  "time-warp": {
+    "name": "Time Warp",
+    "classId": "mage",
+    "text": "Spend 4 Flow: bend time, the enemy loses its next turn, boss or not.",
+    "mana": 6,
+    "meter": 4,
+    "ranks": [
+      {
+        "skip": 1
+      },
+      {
+        "skip": 1,
+        "power": 0.8
+      },
+      {
+        "skip": 2
+      }
+    ]
+  },
+  "meteor": {
+    "name": "Meteor",
+    "classId": "mage",
+    "text": "Call a meteor: it lands two rounds later for a huge hit, whatever you do meanwhile.",
+    "mana": 10,
+    "ranks": [
+      {
+        "windup": 2,
+        "power": 4.0
+      },
+      {
+        "windup": 2,
+        "power": 4.6
+      },
+      {
+        "windup": 2,
+        "power": 5.2
+      }
+    ]
+  },
+  "mana-shield": {
+    "name": "Mana Shield",
+    "classId": "mage",
+    "text": "Turn all your mana into a barrier.",
+    "mana": 0,
+    "ranks": [
+      {
+        "barrierPerMana": 1.5
+      },
+      {
+        "barrierPerMana": 2.0
+      },
+      {
+        "barrierPerMana": 2.5
+      }
+    ]
+  },
+  "trap": {
+    "name": "Trap",
+    "classId": "ranger",
+    "text": "Lay a trap: the enemy's next wind-up fails.",
+    "mana": 8,
+    "ranks": [
+      {
+        "trap": 1
+      },
+      {
+        "trap": 1,
+        "power": 0.6
+      },
+      {
+        "trap": 2,
+        "power": 0.8
+      }
+    ]
+  },
+  "hawk": {
+    "name": "Hawk",
+    "classId": "ranger",
+    "text": "Spend 2 Focus: your hawk strikes on its own at the end of every round for a while.",
+    "mana": 6,
+    "meter": 2,
+    "ranks": [
+      {
+        "companion": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      },
+      {
+        "companion": {
+          "rounds": 4,
+          "power": 0.4
+        }
+      },
+      {
+        "companion": {
+          "rounds": 5,
+          "power": 0.45
+        }
+      }
+    ]
+  },
+  "mark": {
+    "name": "Mark",
+    "classId": "ranger",
+    "text": "Mark the enemy: your next hits land harder.",
+    "mana": 4,
+    "ranks": [
+      {
+        "mark": {
+          "hits": 3,
+          "mult": 1.3
+        }
+      },
+      {
+        "mark": {
+          "hits": 3,
+          "mult": 1.4
+        }
+      },
+      {
+        "mark": {
+          "hits": 4,
+          "mult": 1.5
+        }
+      }
+    ]
+  }
+}

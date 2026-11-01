@@ -1,0 +1,178 @@
+// The character screen, the first time: a name and a class (Robin, 2026-10-31: the class is chosen at creation and the
+// classes must feel different). Four cards with each class's style line and numbers, a Begin button. In co-op the same
+// screen makes the account on the server, and a player with a code from another phone can bring that character instead.
+// Layout mine.
+
+import Phaser from 'phaser';
+import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
+import type { GameHolder } from '../game-holder.ts';
+import type { GameLog } from '../game-log.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
+import { makeButton } from '../ui.ts';
+import { playScenes } from './play.ts';
+
+export interface CreateSceneDeps {
+  log: GameLog;
+  /** Where the world is, for the line under the title: this phone, or the server. */
+  where: string;
+  /** Make the game for the character: the local save, or an account on the server. Rejects with a reason to show. */
+  make: (o: { name: string; classId: ClassId }) => Promise<GameHolder>;
+  /** Bring a character from another phone by its recovery code; absent in solo play. */
+  recover: ((code: string) => Promise<GameHolder>) | null;
+  /** Called with the new game before play starts, so main.ts can expose it to the pane. */
+  onCreated: (game: GameHolder) => void;
+}
+
+const CENTRE = DESIGN_WIDTH / 2;
+const CARD_W = 340;
+const CARD_H = 104;
+const CARD_GAP = 12;
+const FIRST_CARD_Y = 304;
+export const DEFAULT_NAME = 'Robin';
+export { MAX_NAME };
+
+/** Where things sit, in design pixels (the driver taps them here). */
+export const CREATE_LAYOUT = {
+  input: { x: CENTRE, y: 180, w: 300, h: 44 },
+  cardY: (i: number) => FIRST_CARD_Y + i * (CARD_H + CARD_GAP),
+  begin: { x: CENTRE, y: 812, w: 220, h: 66 },
+  code: { x: CENTRE, y: 872, w: 260, h: 28 },
+} as const;
+
+const CARD_COLORS: Record<ClassId, number> = {
+  warrior: 0x5a6378,
+  rogue: 0x4f5a5a,
+  mage: 0x5f528a,
+  ranger: 0x4f6e55,
+};
+
+export class CreateScene extends Phaser.Scene {
+  private readonly deps: CreateSceneDeps;
+  private readonly cards = new Map<ClassId, Phaser.GameObjects.Graphics>();
+  private nameField!: HTMLInputElement;
+  private status!: Phaser.GameObjects.Text;
+  private chosen: ClassId = 'warrior';
+  private begun = false;
+
+  constructor(deps: CreateSceneDeps) {
+    super('create');
+    this.deps = deps;
+  }
+
+  create(): void {
+    this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT, fontSize: '32px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.text(CENTRE, 100, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
+
+    const { input, begin, code } = CREATE_LAYOUT;
+    this.add.text(input.x - input.w / 2, 140, 'Your name', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
+    this.nameField = document.createElement('input');
+    this.nameField.type = 'text';
+    this.nameField.maxLength = MAX_NAME;
+    this.nameField.value = DEFAULT_NAME;
+    this.nameField.autocomplete = 'off';
+    this.nameField.setAttribute('style', [
+      `width:${input.w}px`,
+      `height:${input.h}px`,
+      'box-sizing:border-box',
+      'padding:0 14px',
+      'border:2px solid #3a4256',
+      'border-radius:12px',
+      'background:#121521',
+      `color:${COLORS.text}`,
+      `font:bold 20px ${FONT}`,
+      'outline:none',
+      'user-select:text',
+      '-webkit-user-select:text',
+    ].join(';'));
+    this.add.dom(input.x, input.y, this.nameField);
+
+    this.add.text(CENTRE, 234, 'Pick a class. Each one fights its own way.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
+    CLASS_IDS.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
+    this.select(this.chosen);
+
+    this.status = this.add.text(CENTRE, 752, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5);
+    makeButton(this, begin.x, begin.y, begin.w, begin.h, 'Begin', COLORS.button, '26px', () => this.begin());
+    if (this.deps.recover) makeButton(this, code.x, code.y, code.w, code.h, 'I have a code from another phone', COLORS.log, '12px', () => this.recoverWithCode());
+    this.add
+      .text(12, DESIGN_HEIGHT - 8, `build 0.2.0 · ${WORLD_DATA.name}`, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim })
+      .setOrigin(0, 1)
+      .setAlpha(0.7);
+    this.deps.log.note('character screen');
+  }
+
+  /** Pick a class (the cards call this; so can a script). */
+  choose(classId: ClassId): void {
+    if (!CLASS_DATA[classId]) return;
+    this.select(classId);
+  }
+
+  /** Make the character and start play. An empty name becomes the default. */
+  begin(): void {
+    if (this.begun) return;
+    this.begun = true;
+    const name = this.nameField.value.trim().slice(0, MAX_NAME) || DEFAULT_NAME;
+    this.status.setText('Making your character…');
+    this.deps.make({ name, classId: this.chosen }).then(
+      (game) => this.start(game, `created: ${name} the ${this.chosen}, seed ${game.state.seed}`),
+      (e: unknown) => this.failed(e),
+    );
+  }
+
+  /** A code typed from another phone: that character, on this one. */
+  recoverWithCode(): void {
+    if (this.begun || !this.deps.recover) return;
+    const code = window.prompt('The code from your other phone (it looks like KPM4-R7QX-2HJD):');
+    if (!code?.trim()) return;
+    this.begun = true;
+    this.status.setText('Finding your character…');
+    this.deps.recover(code.trim()).then(
+      (game) => this.start(game, `recovered: ${game.me.name} the ${game.me.classId}`),
+      (e: unknown) => this.failed(e),
+    );
+  }
+
+  private start(game: GameHolder, line: string): void {
+    this.deps.log.note(line);
+    this.deps.onCreated(game);
+    for (const { key, scene } of playScenes(game, this.deps.log)) this.scene.add(key, scene, false);
+    this.scene.start('board');
+  }
+
+  private failed(e: unknown): void {
+    this.begun = false;
+    const why = e instanceof Error ? e.message : String(e);
+    this.deps.log.error(`could not start: ${why}`);
+    this.status.setText(why === 'unknown code' ? 'No character has that code. Check it and try again.' : `Could not start: ${why}. Try again.`);
+  }
+
+  private drawCard(id: ClassId, y: number): void {
+    const c = CLASS_DATA[id];
+    const g = this.add.graphics();
+    this.cards.set(id, g);
+    const zone = this.add.zone(CENTRE, y, CARD_W, CARD_H).setInteractive({ useHandCursor: true });
+    zone.on('pointerdown', () => this.choose(id));
+    const left = CENTRE - CARD_W / 2 + 16;
+    this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text });
+    this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: COLORS.text });
+    this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}  ${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
+      fontFamily: FONT,
+      fontSize: '13px',
+      color: COLORS.dim,
+    });
+  }
+
+  private select(classId: ClassId): void {
+    this.chosen = classId;
+    CLASS_IDS.forEach((id, i) => {
+      const g = this.cards.get(id)!;
+      const y = CREATE_LAYOUT.cardY(i);
+      g.clear();
+      g.fillStyle(CARD_COLORS[id], id === classId ? 1 : 0.55);
+      g.fillRoundedRect(CENTRE - CARD_W / 2, y - CARD_H / 2, CARD_W, CARD_H, 16);
+      if (id === classId) {
+        g.lineStyle(4, 0xfff27a, 1);
+        g.strokeRoundedRect(CENTRE - CARD_W / 2, y - CARD_H / 2, CARD_W, CARD_H, 16);
+      }
+    });
+  }
+}

@@ -1,6 +1,6 @@
-// Solo play: the state and the random stream live here, in the browser, saved to localStorage.
-// This is the only place in the client that calls the rules. When the server comes (MVP step 2), a second holder
-// sends the same intents over a socket instead; the scenes do not change.
+// Solo play: the state and the random stream live here, in the browser, saved to localStorage. The one place in the
+// client that calls the rules; RemoteGame (remote-game.ts) is the other holder, which sends the same intents to the
+// server instead. The scenes see both through GameHolder.
 
 import {
   apply,
@@ -10,15 +10,21 @@ import {
   resumeRng,
   type Action,
   type Character,
+  type ClassId,
   type GameEvent,
   type GameState,
   type Rng,
 } from '../../rules/src/index.ts';
 
+import type { GameHolder, Intent, Link } from './game-holder.ts';
+import { tips } from './tips.ts';
+
 export const SAVE_KEY = 'boardworld.save';
 export const SAVE_VERSION = 1;
 /** The one local player. Accounts come with the server. */
 export const PLAYER = 'local';
+/** How often the world ticks (spawns come and go) while the page is open. */
+export const TICK_MS = 60_000;
 
 interface Save {
   version: typeof SAVE_VERSION;
@@ -27,14 +33,13 @@ interface Save {
   rng: number;
 }
 
-/** An action without its id: the holder adds the id (shared-world rule 3). */
-type Intent = Action extends infer A ? (A extends Action ? Omit<A, 'id'> : never) : never;
-
-export class LocalGame {
+export class LocalGame implements GameHolder {
   state: GameState;
   readonly player = PLAYER;
   private rng: Rng;
   private readonly storage: Storage | null;
+  onSpawns: (() => void) | null = null;
+  onChange: GameHolder['onChange'] = null;
 
   private constructor(state: GameState, rng: Rng, storage: Storage | null) {
     this.state = state;
@@ -42,8 +47,8 @@ export class LocalGame {
     this.storage = storage;
   }
 
-  /** The saved game if there is one we understand, otherwise a fresh game from a new seed. */
-  static load(storage: Storage | null, seed: string = newSeed()): LocalGame {
+  /** The saved game if there is one we understand; null when there is none (or it is broken), so the character screen comes up. */
+  static load(storage: Storage | null): LocalGame | null {
     try {
       const raw = storage?.getItem(SAVE_KEY);
       if (raw) {
@@ -52,9 +57,15 @@ export class LocalGame {
         if (state && typeof save.rng === 'number') return new LocalGame(state, resumeRng(save.rng), storage);
       }
     } catch {
-      // A broken save: start fresh below.
+      // A broken save: start fresh.
     }
-    const game = new LocalGame(newGame({ seed, player: PLAYER, name: 'Robin', classId: 'warrior' }), makeRng(seed), storage);
+    return null;
+  }
+
+  /** A fresh game for the character the player made, saved at once. */
+  static create(storage: Storage | null, o: { name: string; classId: ClassId; seed?: string }): LocalGame {
+    const seed = o.seed ?? newSeed();
+    const game = new LocalGame(newGame({ seed, player: PLAYER, name: o.name, classId: o.classId }), makeRng(seed), storage);
     game.save();
     return game;
   }
@@ -63,20 +74,52 @@ export class LocalGame {
     return this.state.characters[PLAYER]!;
   }
 
-  /** Apply what the player wants and save. Returns what happened. */
-  act(intent: Intent): GameEvent[] {
+  /** The holder's clock: the rules never read one themselves. */
+  now(): number {
+    return Date.now();
+  }
+
+  /** Apply what the player wants and save. Answers with what happened, at once but as a promise, like the remote holder. */
+  act(intent: Intent): Promise<GameEvent[]> {
+    return Promise.resolve(this.actNow(intent));
+  }
+
+  /** The same, without the wait: for the tick, and for scripts in the pane. */
+  actNow(intent: Intent): GameEvent[] {
     const action = { ...intent, id: newId() } as Action;
-    const result = apply(this.state, action, this.rng);
+    const result = apply(this.state, action, this.rng, this.now());
+    const spawnsBefore = this.state.spawns;
     this.state = result.state;
     this.save();
+    if (this.state.spawns !== spawnsBefore) this.onSpawns?.();
     return result.events;
   }
 
-  /** Throw the save away and start again. */
-  reset(seed: string = newSeed()): void {
-    this.state = newGame({ seed, player: PLAYER, name: 'Robin', classId: 'warrior' });
-    this.rng = makeRng(seed);
-    this.save();
+  /** The world moves: spawns come and go. The page calls it on load and every minute. */
+  tick(): Promise<GameEvent[]> {
+    return Promise.resolve(this.actNow({ type: 'tick', player: 'world' }));
+  }
+
+  link(): Link {
+    return { kind: 'solo' };
+  }
+
+  recovery(): string | null {
+    return null;
+  }
+
+  onlinePlayers(): string[] {
+    return [];
+  }
+
+  /** Throw the save away (and the first minutes' tips with it): the next load is the character screen. */
+  reset(): void {
+    tips.clear();
+    try {
+      this.storage?.removeItem(SAVE_KEY);
+    } catch {
+      // Storage blocked: nothing to throw away.
+    }
   }
 
   private save(): void {

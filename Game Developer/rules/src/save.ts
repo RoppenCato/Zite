@@ -1,13 +1,237 @@
-import { STATE_VERSION, type GameState } from './types.ts';
+import { CLASS_DATA, DICE_DATA } from './data.ts';
+import { freshFight } from './fight.ts';
+import { makeBoard, makeCharacter } from './game.ts';
+import { growBoard } from './generate.ts';
+import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
+
+/** The older shapes, as far as the migrations need them. */
+interface StateV1 {
+  version: 1;
+  seed: string;
+  characters: Record<string, OldCharacter>;
+  die: { sides: number; last: number | null };
+}
+interface StateV2 {
+  version: 2;
+  seed: string;
+  board: Board;
+  characters: Record<string, OldCharacter>;
+  die: { sides: number; last: number | null };
+}
+interface StateV3 {
+  version: 3;
+  seed: string;
+  board: Board;
+  characters: Record<string, OldCharacter>;
+  die: { sides: number; last: number | null };
+}
+interface StateV4 {
+  version: 4;
+  seed: string;
+  board: Board;
+  characters: Record<string, OldCharacter>;
+  die: { sides: number; last: number | null };
+}
+/** A version-5 state: the shape of version 6, with a board that knew no grown areas and no bestiary. */
+interface StateV5 {
+  version: 5;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** A version-8 state: today's shape, but a character carried no keys. */
+/** A version-9 state: today's shape without the notes on spots. */
+interface StateV9 {
+  version: 9;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+interface StateV8 {
+  version: 8;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** A version-7 state: the shape of 8, but a character carried no errands and its level's pick sat in `offer`. */
+interface StateV7 {
+  version: 7;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** A version-6 state: the shape of 7, but gear carried one `affix` and a fight knew no meter, intent or phase. */
+interface StateV6 {
+  version: 6;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** What every version before 5 had on a character that version 5 keeps. */
+interface OldCharacter {
+  id: string;
+  name: string;
+  classId: Character['classId'];
+  hp: number;
+  gold: number;
+  xp?: number;
+  level?: number;
+  items?: Record<string, number>;
+  [key: string]: unknown;
+}
 
 /**
- * Bring a stored state up to the current version. Version 1 is the first, so there is nothing to migrate yet;
- * when version 2 comes, this is where 1 becomes 2. Returns null for a thing that is not a state we know,
- * so the holder starts a fresh game instead of crashing on it.
+ * Bring a stored state up to the current version, or null for a thing that is not a state we know, so the holder
+ * starts a fresh game instead of crashing on it. Each step goes to the next version; an older state takes them all.
+ *
+ * 1 → 2 (2026-10-31): the ring became the island. 2 → 3: the fight came (xp, level, fight). 3 → 4: items came (the bag).
+ * 4 → 5 (2026-10-31): the island became the world in areas, with bosses, gear, mana and abilities. The board is
+ * rebuilt; every character keeps its name, class, level, xp, gold and consumables, stands on the start again with full
+ * HP and mana, an empty wardrobe, its class's starting abilities and only the first area open.
+ * 5 → 6 (2026-10-31): the world grows. The board is rebuilt from today's data (the Summit now opens the first grown
+ * area) and the areas a character had opened are laid again, so everything else is kept as it was.
+ * 6 → 7 (2026-11-01): uniques, meters and intents. A piece's one `affix` becomes its `affixes`; a fight in progress gains
+ * the fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends).
+ * 7 → 8 (2026-11-01): errands and the bag's limit. A character gains `quests` and `picks`; a pick that sat in `offer`
+ * moves to `picks`.
+ * 8 → 9 (2026-11-01): locked vaults. A character gains `keys`.
  */
 export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
+  if (candidate.version === 9) return fromVersion9(raw as StateV9);
+  if (candidate.version === 8) return fromVersion8(raw as StateV8);
+  if (candidate.version === 7) {
+    const v8 = fromVersion7(raw as StateV7);
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+  }
+  if (candidate.version === 6) {
+    const v7 = fromVersion6(raw as StateV6);
+    const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+  }
+  if (candidate.version === 5) {
+    const v6 = fromVersion5(raw as StateV5);
+    const v7 = v6 ? fromVersion6(v6 as unknown as StateV6) : null;
+    const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+  }
+  if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
+    return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
+  }
   return null;
+}
+
+/** From 9: the notes on spots arrive, none yet. */
+function fromVersion9(old: StateV9): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  for (const c of Object.values(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters: old.characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
+function fromVersion8(old: StateV8): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    characters[id] = { ...c, keys: c.keys ?? {} };
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
+function fromVersion7(old: StateV7): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    const offer = c.offer as (Offer | { kind: 'ability'; options: string[] }) | null;
+    const owed = offer && offer.kind === 'ability' ? [offer.options] : [];
+    characters[id] = { ...c, offer: offer && offer.kind === 'ability' ? null : offer, quests: c.quests ?? [], picks: [...(c.picks ?? []), ...owed] };
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
+/** A piece as version 6 stored it: one affix or none. */
+type OldGear = Omit<GearItem, 'affixes'> & { affix?: { kind: GearItem['affixes'][number]['kind']; value: number } | null; affixes?: GearItem['affixes'] };
+
+function fromVersion6(old: StateV6): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const gear = (g: OldGear | null): GearItem | null => {
+    if (!g) return null;
+    const { affix, ...rest } = g;
+    return { ...rest, affixes: rest.affixes ?? (affix ? [affix] : []) };
+  };
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    const equipment = { ...c.equipment };
+    for (const slot of Object.keys(equipment) as (keyof typeof equipment)[]) equipment[slot] = gear(equipment[slot] as OldGear | null);
+    let fight: Fight | null = null;
+    if (c.fight) {
+      const e = c.fight.enemy as Partial<Enemy> & Enemy;
+      const enemy: Enemy = { ...e, next: e.next ?? null, armoured: e.armoured ?? null, evade: e.evade ?? 0, phase: e.phase ?? 1, phase2: e.phase2 ?? null };
+      fight = { ...freshFight(enemy, c.fight.space, c.fight.spawn), ...c.fight, enemy };
+    }
+    characters[id] = { ...c, equipment, bag: (c.bag as OldGear[]).map((g) => gear(g)!), fight };
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
+function fromVersion5(old: StateV5): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  let board = makeBoard();
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    for (const areaId of c.opened ?? []) board = growBoard(board, old.seed, areaId);
+    const opened = (c.opened ?? []).filter((a) => board.areas[a]);
+    const space = board.spaces[c.space] && opened.includes(board.spaces[c.space]!.area) ? c.space : board.start;
+    characters[id] = { ...c, id, opened: opened.length ? opened : [board.spaces[board.start]!.area], space, steps: space === c.space ? c.steps : 0, fight: space === c.space ? c.fight : null };
+  }
+  const spawns = Object.fromEntries(Object.entries(old.spawns ?? {}).filter(([space]) => board.spaces[space]));
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
+function fromOlder(old: StateV1 | StateV2 | StateV3 | StateV4): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const board = makeBoard();
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    const fresh = makeCharacter(id, typeof c.name === 'string' ? c.name : id, c.classId, board);
+    const level = Math.max(1, Math.floor(typeof c.level === 'number' ? c.level : 1));
+    const growth = CLASS_DATA[c.classId].growth;
+    const grown: Character = {
+      ...fresh,
+      level,
+      xp: typeof c.xp === 'number' ? c.xp : 0,
+      gold: typeof c.gold === 'number' ? Math.max(0, c.gold) : fresh.gold,
+      items: typeof c.items === 'object' && c.items !== null ? { ...c.items } : {},
+      maxHp: fresh.maxHp + growth.hp * (level - 1),
+      maxMana: fresh.maxMana + growth.mana * (level - 1),
+      attack: fresh.attack + growth.attack * (level - 1),
+      defense: fresh.defense + growth.defense * (level - 1),
+    };
+    characters[id] = { ...grown, hp: grown.maxHp, mana: grown.maxMana };
+  }
+  const sides = typeof old.die?.sides === 'number' ? old.die.sides : DICE_DATA.sides;
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: { sides, last: null }, spawns: {}, nextItem: 1, traces: {} };
 }

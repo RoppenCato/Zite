@@ -1,5 +1,7 @@
 {
   "start": "s0",
+  "width": 412,
+  "height": 915,
   "spaces": [
     {
       "id": "s0",
@@ -10,18 +12,20 @@
       "links": [
         "s11",
         "s1"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s1",
-      "kind": "battle",
+      "kind": "normal",
       "name": "Moor Edge",
       "x": 131,
       "y": 677,
       "links": [
         "s0",
         "s2"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s2",
@@ -32,11 +36,12 @@
       "links": [
         "s1",
         "s3"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s3",
-      "kind": "event",
+      "kind": "normal",
       "name": "Crossroads",
       "x": 56,
       "y": 430,
@@ -44,66 +49,72 @@
         "s2",
         "s4",
         "s9"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s4",
-      "kind": "battle",
+      "kind": "normal",
       "name": "Thornwood",
       "x": 76,
       "y": 288,
       "links": [
         "s3",
         "s5"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s5",
-      "kind": "treasure",
+      "kind": "chest",
       "name": "Old Cairn",
       "x": 131,
       "y": 183,
       "links": [
         "s4",
         "s6"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s6",
-      "kind": "shrine",
+      "kind": "spell",
       "name": "Moon Shrine",
       "x": 206,
       "y": 145,
       "links": [
         "s5",
         "s7"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s7",
-      "kind": "battle",
+      "kind": "normal",
       "name": "Fen Path",
       "x": 281,
       "y": 183,
       "links": [
         "s6",
         "s8"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s8",
-      "kind": "quest",
+      "kind": "potion",
       "name": "Hermit Hut",
       "x": 336,
       "y": 287,
       "links": [
         "s7",
         "s9"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s9",
-      "kind": "event",
+      "kind": "normal",
       "name": "Windy Ridge",
       "x": 356,
       "y": 430,
@@ -111,29 +122,61 @@
         "s8",
         "s10",
         "s3"
-      ]
+      ],
+      "area": "ring"
     },
     {
       "id": "s10",
-      "kind": "bossgate",
+      "kind": "boss",
       "name": "Iron Gate",
       "x": 336,
       "y": 572,
       "links": [
         "s9",
         "s11"
-      ]
+      ],
+      "area": "ring",
+      "boss": "thornwood-warden",
+      "opens": null
     },
     {
       "id": "s11",
-      "kind": "battle",
+      "kind": "normal",
       "name": "Ravine",
       "x": 281,
       "y": 677,
       "links": [
         "s10",
         "s0"
-      ]
+      ],
+      "area": "ring"
     }
-  ]
+  ],
+  "areas": {
+    "ring": {
+      "id": "ring",
+      "name": "The Ring",
+      "theme": "meadow",
+      "tier": 1,
+      "levels": [
+        1,
+        4
+      ],
+      "mobs": [
+        "slime",
+        "wolf",
+        "bandit",
+        "wisp"
+      ],
+      "miniBosses": [
+        "wolf-alpha"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 412,
+        "height": 915
+      }
+    }
+  }
 }

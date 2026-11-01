@@ -1,0 +1,11 @@
+{
+  "_about": "Quests (mine, 2026-11-01, from Robin's list: direction between bosses). A town offers one at a time to a character; up to three are carried; a town that was answered waits before it asks again. Rewards are the kind's numbers times the area's tier times the count; a hunt or a boss may add a unique of the tier.",
+  "maxActive": 3,
+  "cooldownMs": 600000,
+  "kinds": {
+    "cull":   { "weight": 50, "text": "Thin the {target}: beat {count} of them.",        "count": [3, 5], "gold": 12, "xp": 8,  "unique": 0 },
+    "chests": { "weight": 25, "text": "Open {count} chests in {area}.",                   "count": [2, 3], "gold": 20, "xp": 10, "unique": 0 },
+    "hunt":   { "weight": 15, "text": "Hunt down the {target} prowling the wilds.",       "count": [1, 1], "gold": 60, "xp": 40, "unique": 0.25 },
+    "boss":   { "weight": 10, "text": "Bring down {target}.",                              "count": [1, 1], "gold": 90, "xp": 60, "unique": 0.5 }
+  }
+}
