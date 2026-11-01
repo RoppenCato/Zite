@@ -39,9 +39,9 @@ import {
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
-import { preloadBackdrops } from '../backdrop.ts';
+import { releaseBackdrops } from '../backdrop.ts';
 import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
-import { preloadCreatures } from '../creatures.ts';
+import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
@@ -153,6 +153,8 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** The area whose creatures and backdrop are kept in memory. */
+  private artArea = '';
   /** The last tap on the world, for a double tap. */
   private lastTap = { at: -Infinity, x: 0, y: 0 };
   /** True while a question's window is up. */
@@ -885,8 +887,6 @@ export class BoardScene extends Phaser.Scene {
     });
     preloadHero(this);
     preloadLoot(this);
-    preloadCreatures(this);
-    preloadBackdrops(this);
     preloadBoardKits(this);
     preloadKit(this);
     audio.preload(this);
@@ -1542,6 +1542,12 @@ export class BoardScene extends Phaser.Scene {
     const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
     if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
+    // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
+    if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
+      this.artArea = area.id;
+      releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
+      releaseBackdrops(this.game, area.theme);
+    }
     const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : ''].filter(Boolean).join(', ');
     this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried || (area?.name ?? '')} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }

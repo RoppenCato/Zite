@@ -8,8 +8,8 @@
 
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
-import { Backdrop } from '../backdrop.ts';
-import { creatureReady, Figure } from '../creatures.ts';
+import { Backdrop, preloadBackdrop } from '../backdrop.ts';
+import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
@@ -44,6 +44,10 @@ export const FIGHT_LAYOUT = {
   promptY: 708,
   barW: 150,
 } as const;
+
+/** The title stops short of the ? at the top right. */
+const TITLE_X = 180;
+const TITLE_W = 340;
 
 /** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
 export const FIGHT_BUTTONS = {
@@ -83,6 +87,8 @@ interface Option {
   color: number;
   enabled: boolean;
   onTap: () => void;
+  /** Smaller than the rest: a label of two lines. */
+  size?: string;
 }
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
@@ -125,6 +131,15 @@ export class FightScene extends Phaser.Scene {
     this.log = deps.log;
   }
 
+  /** Only this enemy and this area's backdrop are loaded, here, the first time they are met. */
+  preload(): void {
+    const me = this.game_.me;
+    if (!me.fight) return;
+    const board = this.game_.state.board;
+    preloadCreature(this, me.fight.enemy.id);
+    preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
+  }
+
   create(): void {
     const me = this.game_.me;
     const fight = me.fight;
@@ -158,7 +173,9 @@ export class FightScene extends Phaser.Scene {
     }
     const feetY = this.backdrop.feetY;
 
-    this.add.text(CENTRE, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 5 }).setOrigin(0.5);
+    const title = this.add.text(TITLE_X, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 5 }).setOrigin(0.5);
+    // A long name must not run under the ? (mine, 2026-11-01: the Sleepy Owlbear Cub did).
+    for (let size = 19; title.width > TITLE_W && size >= 14; size--) title.setFontSize(size);
     this.lines = [];
     // One line of what just happened, so it never runs into the enemy's tell.
     this.history = this.add.text(22, L.historyY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4, wordWrap: { width: 368 }, maxLines: 1 }).setOrigin(0, 0);
@@ -183,7 +200,7 @@ export class FightScene extends Phaser.Scene {
     }
     const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
     this.enemyBar = new Bar(this, enemyBarX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
-    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, 1);
 
     let heroTop: number;
     if (heroReady(this)) {
@@ -198,7 +215,7 @@ export class FightScene extends Phaser.Scene {
     }
     this.heroBar = new Bar(this, L.heroBarX, heroTop - 26, L.barW, BAR_H, COLORS.button);
     this.manaBar = new Bar(this, L.heroBarX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (L.heroBarX - 6) } }).setOrigin(0.5, 1);
 
     this.message = this.add
       .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
@@ -245,7 +262,8 @@ export class FightScene extends Phaser.Scene {
   }
 
   /** The known abilities with their mana costs; dimmed when mana is short. */
-  private showAbilities(): void {
+  /** The abilities, four a page when they do not all fit beside Back, so Back is always there (mine, 2026-11-01: a sixth pushed it off and could strand you). */
+  private showAbilities(page = 0): void {
     const me = this.game_.me;
     this.prompt.setText('Which ability? The ? up top says what each does.');
     const f = me.fight;
@@ -259,14 +277,22 @@ export class FightScene extends Phaser.Scene {
       const meterOk = !a?.meter || (f?.meter ?? 0) >= a.meter;
       const meterAllOk = !a?.meterAll || (f?.meter ?? 0) > 0;
       return {
-        text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''} · ${mana} MP${cost ? ` · ${cost}` : ''}${used ? ' · used' : ''}`,
+        text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''}
+${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
+        size: '14px',
         color: 0x8e6ad9,
         enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used,
         onTap: () => this.pick({ kind: 'ability', ability: id }),
       };
     });
-    options.push({ text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() });
-    this.setOptions(options);
+    const back: Option = { text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() };
+    if (options.length <= 5) {
+      this.setOptions([...options, back]);
+      return;
+    }
+    const pages = Math.ceil(options.length / 4);
+    const next = (page + 1) % pages;
+    this.setOptions([...options.slice(page * 4, page * 4 + 4), { text: `More (${page + 1} of ${pages})`, color: 0x8e6ad9, enabled: true, onTap: () => this.showAbilities(next) }, back]);
   }
 
   /** The move is chosen: now how to take the blow. */
@@ -594,7 +620,7 @@ export class FightScene extends Phaser.Scene {
     const slots = [FIGHT_BUTTONS.a, FIGHT_BUTTONS.b, FIGHT_BUTTONS.c, FIGHT_BUTTONS.d, FIGHT_BUTTONS.e, FIGHT_BUTTONS.f];
     options.slice(0, slots.length).forEach((o, i) => {
       const slot = slots[i]!;
-      const { button } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, '16px', () => {
+      const { button } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, o.size ?? '16px', () => {
         if (o.enabled && !this.busy) o.onTap();
         else sfx.play('ui/tap-denied');
       });

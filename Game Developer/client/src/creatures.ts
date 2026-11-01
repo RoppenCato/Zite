@@ -67,11 +67,24 @@ const CREATURES: Record<string, CreatureFiles> = {
   },
 };
 
-/** Queue every creature's atlas; call from a scene's preload. */
-export function preloadCreatures(scene: Phaser.Scene): void {
-  for (const c of Object.values(CREATURES)) {
-    if (!scene.textures.exists(c.key)) scene.load.atlas(c.key, c.png, c.json);
-    if (c.phase2 && !scene.textures.exists(c.phase2.key)) scene.load.atlas(c.phase2.key, c.phase2.png, c.phase2.json);
+/** Queue one creature's atlas; the fight's preload calls it, so only what you meet costs memory (chapter 2, step 1). */
+export function preloadCreature(scene: Phaser.Scene, enemyId: string): void {
+  const c = CREATURES[enemyId];
+  if (!c) return;
+  if (!scene.textures.exists(c.key)) scene.load.atlas(c.key, c.png, c.json);
+  if (c.phase2 && !scene.textures.exists(c.phase2.key)) scene.load.atlas(c.phase2.key, c.phase2.png, c.phase2.json);
+}
+
+/** Let go of every creature's atlas and clips but these: walking into another area frees the last one's. */
+export function releaseCreatures(game: Phaser.Game, keep: readonly string[]): void {
+  const kept = new Set(keep);
+  for (const [id, c] of Object.entries(CREATURES)) {
+    if (kept.has(id)) continue;
+    for (const atlas of c.phase2 ? [c, c.phase2] : [c]) {
+      if (!game.textures.exists(atlas.key)) continue;
+      for (const action of Object.keys(atlas.actions)) game.anims.remove(`${atlas.key}/${action}`);
+      game.textures.remove(atlas.key);
+    }
   }
 }
 

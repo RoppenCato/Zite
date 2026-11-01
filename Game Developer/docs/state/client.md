@@ -445,3 +445,7 @@ The HUD's row is Map, Hero (the bag), Quests and Settings. Robin: "you have to g
 ## What you own, in the shop (Robin, 2026-11-01)
 
 A green tag beside the name: on Gear "Worn", "Worn, 2 in bag" or "1 in bag", counted by the piece's base so a rare tin sword counts as a tin sword; on Items "You have 3". Nothing owned, no tag.
+
+## Loading by area (chapter 2, step 1, 2026-11-01)
+
+A creature's atlas and an area's backdrop load in `FightScene.preload`, the first time they are met, and walking into another area frees the last one's (`releaseCreatures`, `releaseBackdrops`, called from `refreshHud`). The board no longer loads any creature at the start. **The ability page** shows four a page with More and Back once there are six (the sixth used to push Back off the screen, which could strand you), each on two lines: the name, then the cost. Long enemy names shrink to stay clear of the ?; the two status lines wrap inside the screen. `tools/pane-bot.js` plays the real scenes in the pane (see its head).

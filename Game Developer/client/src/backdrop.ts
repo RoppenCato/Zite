@@ -47,9 +47,16 @@ const BACKDROPS: Record<string, BackdropFiles> = {
   },
 };
 
-export function preloadBackdrops(scene: Phaser.Scene): void {
-  for (const b of Object.values(BACKDROPS)) {
-    for (const s of b.strips) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
+/** Queue a theme's strips; the fight's preload calls it. */
+export function preloadBackdrop(scene: Phaser.Scene, theme: string): void {
+  for (const s of BACKDROPS[theme]?.strips ?? []) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
+}
+
+/** Let go of every theme's strips but this one's. */
+export function releaseBackdrops(game: Phaser.Game, keep: string): void {
+  for (const [theme, b] of Object.entries(BACKDROPS)) {
+    if (theme === keep) continue;
+    for (const s of b.strips) if (game.textures.exists(s.key)) game.textures.remove(s.key);
   }
 }
 

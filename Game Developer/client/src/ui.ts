@@ -46,7 +46,7 @@ export function makeButton(
   const frame = (state: 'idle' | 'pressed' | 'dim') => `btn_${kind}_${big ? 'big' : 'small'}_${state}`;
   const face = plate(scene, frame('idle'), 0, 0, width, height);
   if (tint !== null) face.setTint(tint);
-  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3 }).setOrigin(0.5);
+  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3, align: 'center' }).setOrigin(0.5);
   for (let px = parseInt(fontSize, 10); px > 13 && label.width > width - 14; px--) label.setFontSize(`${px}px`);
   const button = scene.add.container(x, y, [face, label]).setSize(width, height);
   button.setInteractive({ useHandCursor: true });
