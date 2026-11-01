@@ -148,6 +148,9 @@ One npm project at this folder's root (Node 22.12 or newer; built with 24). `REA
 ## Things to know before changing code
 
 - A change to `rules/` runs the tests; a change to the protocol updates `docs/state/protocol.md` and both sides.
+- Working on the world, regions, monsters, bosses, locations or lore: read `docs/world-content.md` first, the Enchanted
+  Kingdoms content catalogue (Robin, 2026-11-01: keep the seeded graph architecture; its names, mechanics and difficulty
+  values are proposals until he confirms them), and `docs/world-content-mapping.md`, how it maps onto the game as built.
 - Saves and the database carry a version from day one, and a migration from each version to the next.
 - Test with the sound off: open pages with `?mute=1` in the pane.
 - Never read the canvas back in the loop; never set a filter per frame; never `createPattern` from a picture; bake once.
@@ -167,6 +170,8 @@ docs/coop-research.md     the research behind the technical direction: the sourc
 docs/idea-bank.md         undecided ideas and the open questions, with who asked and when
 docs/art-demands.md       what art the game needs and in what order, for the Art Director
 docs/names.md             everything in the game that carries a name, for the theme; all placeholders until Robin names them
+docs/world-content.md     the Enchanted Kingdoms content catalogue: twelve region archetypes, their creatures, bosses and places (a proposal)
+docs/world-content-mapping.md  how the catalogue maps onto the areas, themes and data as built, and what Robin has to confirm
 docs/state/               how each system stands now (rules, client, server, world, protocol, art, sound, pages)
 rules/                    the game as a pure function: board, dice, spaces, fights, items, world generation; its tests
 client/                   the Phaser PWA
