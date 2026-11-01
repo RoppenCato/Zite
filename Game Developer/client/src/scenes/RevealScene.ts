@@ -211,7 +211,7 @@ export class RevealScene extends Phaser.Scene {
     const words = cardWords(prize);
     const ink = RARITY_INK[words.tier] ?? COLORS.text;
     this.rim.setTint(RARITY_TINT[words.tier] ?? 0xffffff);
-    const art = prize.kind === 'gear' ? gearIcon(this, prize.gear) : null;
+    const art = prize.kind === 'gear' ? gearIcon(this, prize.gear, (this.scene.get('board') as BoardScene).classId()) : null;
     this.squareArt?.destroy();
     this.squareArt = null;
     if (art) {

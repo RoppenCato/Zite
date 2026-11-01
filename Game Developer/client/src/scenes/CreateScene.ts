@@ -4,7 +4,8 @@
 // Layout mine.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, plainGear, WORLD_DATA, type Character, type ClassId } from '../../../rules/src/index.ts';
+import { Hero, heroReady, preloadHero, releaseClasses } from '../hero.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
@@ -44,7 +45,7 @@ export const CREATE_LAYOUT = {
 } as const;
 
 /** The classes offered (Robin, 2026-11-01: Alpha 1 with the Knight alone; the rules keep all four, chapter 2 opens the rest). */
-export const OFFERED: readonly ClassId[] = ['warrior'];
+export const OFFERED: readonly ClassId[] = ['warrior', 'rogue', 'mage', 'ranger'];
 const LATER = CLASS_IDS.filter((id) => !OFFERED.includes(id));
 
 const CARD_COLORS: Record<ClassId, number> = {
@@ -69,6 +70,7 @@ export class CreateScene extends Phaser.Scene {
 
   preload(): void {
     preloadKit(this);
+    preloadHero(this, OFFERED);
     // The character screen's backdrop and the wordmark (Mitch, AD, 2026-11-01): dusk over the kingdom, and the name with the stolen crown.
     if (!this.textures.exists('character-backdrop')) this.load.image('character-backdrop', backdropJpg);
     if (!this.textures.exists('wordmark')) this.load.image('wordmark', wordmarkPng);
@@ -181,6 +183,7 @@ export class CreateScene extends Phaser.Scene {
   }
 
   private start(game: GameHolder, line: string): void {
+    releaseClasses(this.game, game.me.classId);
     this.deps.log.note(line);
     this.deps.onCreated(game);
     for (const { key, scene } of playScenes(game, this.deps.log)) this.scene.add(key, scene, false);
@@ -209,13 +212,19 @@ export class CreateScene extends Phaser.Scene {
       this.choose(id);
     });
     const left = CENTRE - CARD_W / 2 + 16;
+    // The class itself on its card: bare but for its weapon, so its colours and hair show (Mitch, AD's art, 2026-11-01).
+    if (heroReady(this, id)) {
+      const look = { classId: id, equipment: { weapon: plainGear('card', 'weapon', 1) } } as unknown as Character;
+      new Hero(this, look, CENTRE + CARD_W / 2 - 44, y + CARD_H / 2 - 6, 0.3);
+    }
     this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: ink });
     this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: ink });
-    this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}  ${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
+    this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}
+${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
       fontFamily: FONT,
       fontSize: '13px',
       color: dim,
-      wordWrap: { width: CARD_W - 32 },
+      wordWrap: { width: CARD_W - 110 },
     });
   }
 

@@ -6,7 +6,25 @@
 // has no art yet shows the Tin piece. Files are 2x and face left; `face(true)` flips the whole hero to face right.
 
 import Phaser from 'phaser';
-import type { Character, GearItem, Slot } from '../../rules/src/index.ts';
+import type { Character, ClassId, GearItem, Slot } from '../../rules/src/index.ts';
+import tricksterBodyJson from '../../assets/hero_classes/trickster/body.json?url';
+import tricksterBodyPng from '../../assets/hero_classes/trickster/body.png';
+import tricksterWeaponJson from '../../assets/hero_classes/trickster/weapon.json?url';
+import tricksterWeaponPng from '../../assets/hero_classes/trickster/weapon.png';
+import tricksterIconsJson from '../../assets/hero_classes/trickster/icons.json?url';
+import tricksterIconsPng from '../../assets/hero_classes/trickster/icons.png';
+import wizardBodyJson from '../../assets/hero_classes/wizard/body.json?url';
+import wizardBodyPng from '../../assets/hero_classes/wizard/body.png';
+import wizardWeaponJson from '../../assets/hero_classes/wizard/weapon.json?url';
+import wizardWeaponPng from '../../assets/hero_classes/wizard/weapon.png';
+import wizardIconsJson from '../../assets/hero_classes/wizard/icons.json?url';
+import wizardIconsPng from '../../assets/hero_classes/wizard/icons.png';
+import archerBodyJson from '../../assets/hero_classes/archer/body.json?url';
+import archerBodyPng from '../../assets/hero_classes/archer/body.png';
+import archerWeaponJson from '../../assets/hero_classes/archer/weapon.json?url';
+import archerWeaponPng from '../../assets/hero_classes/archer/weapon.png';
+import archerIconsJson from '../../assets/hero_classes/archer/icons.json?url';
+import archerIconsPng from '../../assets/hero_classes/archer/icons.png';
 import bodyJson from '../../assets/hero_gear/body.json?url';
 import bodyPng from '../../assets/hero_gear/body.png';
 import bootsJson from '../../assets/hero_gear/boots.json?url';
@@ -59,6 +77,43 @@ const TEX = {
   icons: { key: 'hero_icons', png: iconsPng, json: iconsJson },
 } as const;
 type TexName = keyof typeof TEX;
+interface Tex {
+  key: string;
+  png: string;
+  json: string;
+}
+interface ClassArt {
+  body: Tex;
+  weapon: Tex;
+  icons: Tex;
+  /** The weapon slot's piece is `<rank>_<part>`. */
+  part: string;
+}
+
+/** What each class has of its own (Mitch, AD, 2026-11-01); all four wear the same gear atlases, so one class counts once. */
+const CLASS_ART: Record<ClassId, ClassArt> = {
+  warrior: { body: TEX.body, weapon: TEX.swords, icons: TEX.icons, part: 'sword' },
+  rogue: {
+    body: { key: 'hero_body_trickster', png: tricksterBodyPng, json: tricksterBodyJson },
+    weapon: { key: 'hero_weapon_trickster', png: tricksterWeaponPng, json: tricksterWeaponJson },
+    icons: { key: 'hero_icons_trickster', png: tricksterIconsPng, json: tricksterIconsJson },
+    part: 'dagger',
+  },
+  mage: {
+    body: { key: 'hero_body_wizard', png: wizardBodyPng, json: wizardBodyJson },
+    weapon: { key: 'hero_weapon_wizard', png: wizardWeaponPng, json: wizardWeaponJson },
+    icons: { key: 'hero_icons_wizard', png: wizardIconsPng, json: wizardIconsJson },
+    part: 'staff',
+  },
+  ranger: {
+    body: { key: 'hero_body_archer', png: archerBodyPng, json: archerBodyJson },
+    weapon: { key: 'hero_weapon_archer', png: archerWeaponPng, json: archerWeaponJson },
+    icons: { key: 'hero_icons_archer', png: archerIconsPng, json: archerIconsJson },
+    part: 'bow',
+  },
+};
+/** The atlases every class shares: the gear and its icons. */
+const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons];
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
@@ -70,49 +125,66 @@ const RANK_WORDS = ['tin', 'copper', 'iron', 'silver', 'moonsilver', 'sunsteel',
 const SLOT_PART: Record<Slot, string> = { weapon: 'sword', shield: 'shield', helm: 'hat', armour: 'coat', gloves: 'gloves', boots: 'boots', cape: 'cape', trinket: 'charm' };
 const SLOT_TEX: Record<Slot, TexName> = { weapon: 'swords', shield: 'shields', helm: 'hats', armour: 'coats', gloves: 'gloves', boots: 'boots', cape: 'capes', trinket: 'charms' };
 
-/** Queue the hero's textures; call from a scene's preload. */
-export function preloadHero(scene: Phaser.Scene): void {
-  for (const t of Object.values(TEX)) {
+/** The character screen loaded every class to show them: only the one played stays in memory. */
+export function releaseClasses(game: Phaser.Game, keep: ClassId): void {
+  for (const [id, art] of Object.entries(CLASS_ART)) {
+    if (id === keep) continue;
+    for (const t of [art.body, art.weapon]) if (game.textures.exists(t.key)) game.textures.remove(t.key);
+    if (art.icons !== TEX.icons && game.textures.exists(art.icons.key)) game.textures.remove(art.icons.key);
+  }
+}
+
+/** Queue the shared gear and these classes' own atlases; call from a scene's preload. */
+export function preloadHero(scene: Phaser.Scene, classes: readonly ClassId[]): void {
+  const art = [...new Set(classes)].flatMap((c) => [CLASS_ART[c].body, CLASS_ART[c].weapon, CLASS_ART[c].icons]);
+  for (const t of [...SHARED, ...art]) {
     if (!scene.textures.exists(t.key)) scene.load.atlas(t.key, t.png, t.json);
   }
 }
 
-export function heroReady(scene: Phaser.Scene): boolean {
-  return Object.values(TEX).every((t) => scene.textures.exists(t.key));
+export function heroReady(scene: Phaser.Scene, classId: ClassId): boolean {
+  const art = CLASS_ART[classId];
+  return [...SHARED, art.body, art.weapon, art.icons].every((t) => scene.textures.exists(t.key));
 }
 
-function has(scene: Phaser.Scene, tex: TexName, frame: string): boolean {
-  return scene.textures.exists(TEX[tex].key) && scene.textures.get(TEX[tex].key).has(frame);
+function has(scene: Phaser.Scene, key: string, frame: string): boolean {
+  return scene.textures.exists(key) && scene.textures.get(key).has(frame);
 }
+
+const partOf = (slot: Slot, classId: ClassId): string => (slot === 'weapon' ? CLASS_ART[classId].part : SLOT_PART[slot]);
+const texOf = (slot: Slot, classId: ClassId): string => (slot === 'weapon' ? CLASS_ART[classId].weapon.key : TEX[SLOT_TEX[slot]].key);
 
 /** The art of a piece worn: its rank's piece when drawn, else Tin's; null when the slot has no art at all. */
-function pieceFor(scene: Phaser.Scene, g: GearItem): string | null {
-  const part = SLOT_PART[g.slot];
-  const tex = SLOT_TEX[g.slot];
+function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): string | null {
+  const part = partOf(g.slot, classId);
+  const key = texOf(g.slot, classId);
   for (const word of [RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
-    if (has(scene, tex, `${word}_${part}/stand/0001`)) return `${word}_${part}`;
+    if (has(scene, key, `${word}_${part}/stand/0001`)) return `${word}_${part}`;
   }
   return null;
 }
 
-/** The icon of a piece, for the bag and the loot card: its rank's when drawn, else Tin's; null when none. */
-export function gearIcon(scene: Phaser.Scene, g: GearItem): { texture: string; frame: string } | null {
-  const part = SLOT_PART[g.slot];
+/** The icon of a piece, for the bag and the loot card, in this class's weapon: its rank's when drawn, else Tin's; null when none. */
+export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { texture: string; frame: string } | null {
+  const part = partOf(g.slot, classId);
+  const key = g.slot === 'weapon' ? CLASS_ART[classId].icons.key : TEX.icons.key;
   for (const word of [RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
-    if (has(scene, 'icons', `${word}_${part}`)) return { texture: TEX.icons.key, frame: `${word}_${part}` };
+    if (has(scene, key, `${word}_${part}`)) return { texture: key, frame: `${word}_${part}` };
   }
   return null;
 }
 
 interface Layer {
-  tex: TexName;
+  key: string;
   piece: string;
 }
 
 /** The layers a character's wardrobe calls for, in Mitch, AD's draw order. */
 function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const eq = c.equipment;
-  const worn = (slot: Slot): string | null => (eq[slot] ? pieceFor(scene, eq[slot]!) : null);
+  const art = CLASS_ART[c.classId];
+  const body = art.body.key;
+  const worn = (slot: Slot): string | null => (eq[slot] ? pieceFor(scene, eq[slot]!, c.classId) : null);
   const cape = worn('cape');
   const boots = worn('boots');
   const coat = worn('armour');
@@ -122,22 +194,22 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const sword = worn('weapon');
   const shield = worn('shield');
   const layers: (Layer | null)[] = [
-    cape ? { tex: 'capes', piece: cape } : null,
-    { tex: 'body', piece: 'body' },
-    boots ? { tex: 'boots', piece: boots } : { tex: 'boots', piece: 'boots_base' },
-    coat ? { tex: 'coats', piece: coat } : null,
-    { tex: 'body', piece: 'far_front' },
-    gloves ? { tex: 'gloves', piece: `${gloves}_far` } : null,
-    charm ? { tex: 'charms', piece: charm } : null,
-    { tex: 'body', piece: 'head' },
-    hat ? { tex: 'hats', piece: hat } : { tex: 'body', piece: 'hair' },
-    { tex: 'body', piece: 'arm' },
-    coat ? { tex: 'coats', piece: `${coat}_near` } : null,
-    sword ? { tex: 'swords', piece: sword } : null,
-    gloves ? { tex: 'gloves', piece: `${gloves}_near` } : { tex: 'body', piece: 'hand' },
-    shield ? { tex: 'shields', piece: shield } : null,
+    cape ? { key: TEX.capes.key, piece: cape } : null,
+    { key: body, piece: 'body' },
+    { key: TEX.boots.key, piece: boots ?? 'boots_base' },
+    coat ? { key: TEX.coats.key, piece: coat } : null,
+    { key: body, piece: 'far_front' },
+    gloves ? { key: TEX.gloves.key, piece: `${gloves}_far` } : null,
+    charm ? { key: TEX.charms.key, piece: charm } : null,
+    { key: body, piece: 'head' },
+    hat ? { key: TEX.hats.key, piece: hat } : { key: body, piece: 'hair' },
+    { key: body, piece: 'arm' },
+    coat ? { key: TEX.coats.key, piece: `${coat}_near` } : null,
+    sword ? { key: art.weapon.key, piece: sword } : null,
+    gloves ? { key: TEX.gloves.key, piece: `${gloves}_near` } : { key: body, piece: 'hand' },
+    shield ? { key: TEX.shields.key, piece: shield } : null,
   ];
-  return layers.filter((l): l is Layer => !!l && has(scene, l.tex, `${l.piece}/stand/0001`));
+  return layers.filter((l): l is Layer => !!l && has(scene, l.key, `${l.piece}/stand/0001`));
 }
 
 /** A hero in layers. `root` is a container whose x, y is where the feet stand; the scene calls `update(delta)` each frame. */
@@ -146,7 +218,9 @@ export class Hero {
   private readonly scene: Phaser.Scene;
   private readonly scale: number;
   private right = false;
-  private layers: { sprite: Phaser.GameObjects.Sprite; tex: TexName; piece: string }[] = [];
+  private layers: { sprite: Phaser.GameObjects.Sprite; key: string; piece: string }[] = [];
+  /** This class's own atlas: a frame found there overrides the shared one (the Wizard's and Archer's hands move differently). */
+  private bodyKey = '';
   private clip: HeroAction = 'stand';
   private index = 0;
   private elapsed = 0;
@@ -164,11 +238,12 @@ export class Hero {
 
   /** The layers rebuilt from what the character wears; the clip goes on from the same frame. */
   wear(character: Character): void {
+    this.bodyKey = CLASS_ART[character.classId].body.key;
     const wanted = layersFor(this.scene, character);
-    const same = wanted.length === this.layers.length && wanted.every((l, i) => l.piece === this.layers[i]!.piece && l.tex === this.layers[i]!.tex);
+    const same = wanted.length === this.layers.length && wanted.every((l, i) => l.piece === this.layers[i]!.piece && l.key === this.layers[i]!.key);
     if (same) return;
     for (const l of this.layers) l.sprite.destroy();
-    this.layers = wanted.map((l) => ({ ...l, sprite: this.scene.add.sprite(0, 0, TEX[l.tex].key, `${l.piece}/stand/0001`) }));
+    this.layers = wanted.map((l) => ({ ...l, sprite: this.scene.add.sprite(0, 0, l.key, `${l.piece}/stand/0001`) }));
     this.root.add(this.layers.map((l) => l.sprite));
     this.apply();
   }
@@ -225,9 +300,10 @@ export class Hero {
     const frame = clip.frames[this.index]!;
     for (const l of this.layers) {
       const name = `${l.piece}/${this.clip}/${frame.n}`;
-      const ok = this.scene.textures.get(TEX[l.tex].key).has(name);
+      const key = has(this.scene, this.bodyKey, name) ? this.bodyKey : l.key;
+      const ok = key === this.bodyKey || has(this.scene, key, name);
       l.sprite.setVisible(ok);
-      if (ok && l.sprite.frame.name !== name) l.sprite.setFrame(name);
+      if (ok && (l.sprite.frame.name !== name || l.sprite.texture.key !== key)) l.sprite.setTexture(key, name);
     }
     if (frame.a0 !== undefined && frame.a1 !== undefined) {
       const t = Math.min(1, this.elapsed / Math.max(1, frame.delay));

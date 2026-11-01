@@ -62,7 +62,7 @@ async function tick() {
     const s = sm.getScene('shop');
     if (s.inFlight) return 'shop';
     const tier = g.state.board.areas[g.state.board.spaces[me.space]?.area]?.tier ?? 1;
-    const want = r.SLOTS.filter((x) => (me.equipment[x]?.rank ?? 0) < tier).map((x) => [x, r.plainGear('p', x, tier).price]).filter(([, c]) => c <= me.gold);
+    const want = r.SLOTS.filter((x) => (me.equipment[x]?.rank ?? 0) < tier && me.equipment[x]?.rarity !== 'rare' && me.bag.length < 12).map((x) => [x, r.plainGear('p', x, tier).price]).filter(([, c]) => c <= me.gold);
     // In the rules a higher plain piece goes on by itself.
     if (want.length) { note(`L${me.level} buys rank ${tier} ${want[0][0]}`); s.buy({ slot: want[0][0] }); return 'buy'; }
     if ((me.items.potion ?? 0) < 3 && me.gold >= 25) { s.buy({ item: 'potion' }); return 'buy'; }
@@ -86,8 +86,8 @@ async function tick() {
     const boss = bossSpace(g, me);
     let t;
     if (me.hp < st.maxHp * 0.5) t = nearest(['church', 'town']);
-    else if (r.SLOTS.some((x) => (me.equipment[x]?.rank ?? 0) < tier) && me.gold > 60) t = nearest(['shop', 'town']);
-    else if (boss && me.level >= g.state.board.areas[boss.area].tier * 4 + 1) t = boss;
+    else if (me.bag.length < 12 && r.SLOTS.some((x) => (me.equipment[x]?.rank ?? 0) < tier && me.equipment[x]?.rarity === 'common') && me.gold > 90) t = nearest(['shop', 'town']);
+    else if (boss && me.level >= g.state.board.areas[boss.area].tier * 4) t = boss;
     else t = sp[opts[Math.floor(Math.random() * opts.length)]];
     b.onSpaceTap(opts.sort((a, c) => dist(sp[a], t) - dist(sp[c], t))[0]);
     return 'chose';
@@ -121,7 +121,7 @@ W.bot = {
     let c = r.makeCharacter(g.player, name, classId, g.state.board);
     const equipment = { ...c.equipment };
     r.SLOTS.forEach((s, i) => { equipment[s] = r.plainGear(`t${i}`, s, 1); });
-    c = { ...c, level: 6, opened: [...new Set([...c.opened, forest.id])], space: town.id, equipment, gold: 500, items: { ...c.items, potion: 3 } };
+    c = { ...c, level: 7, xp: r.PROGRESSION.xpForLevel[6] ?? c.xp, opened: [...new Set([...c.opened, forest.id])], space: town.id, equipment, gold: 500, items: { ...c.items, potion: 3 } };
     const st = r.stats(c);
     c = { ...c, hp: st.maxHp, mana: st.maxMana };
     g.state = { ...g.state, spawns: {}, characters: { ...g.state.characters, [g.player]: c } };

@@ -207,7 +207,7 @@ export class FightScene extends Phaser.Scene {
     this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, 1);
 
     let heroTop: number;
-    if (heroReady(this)) {
+    if (heroReady(this, me.classId)) {
       this.hero = new Hero(this, me, L.heroX, feetY, HERO_FIGHT_SCALE);
       this.hero.face(true);
       this.heroBody = this.hero.root;

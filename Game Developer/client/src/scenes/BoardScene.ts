@@ -52,6 +52,7 @@ import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import type { FightOutcome, FightScene } from './FightScene.ts';
 import type { AskRequest } from './AskScene.ts';
+import type { ClassId } from '../../../rules/src/index.ts';
 import type { Chip, HudScene } from './HudScene.ts';
 import { moments } from './MomentScene.ts';
 
@@ -396,6 +397,11 @@ export class BoardScene extends Phaser.Scene {
   toggleMap(): void {
     if (this.following) this.overview();
     else this.follow(false);
+  }
+
+  /** The class being played, for a loot card's weapon. */
+  classId(): ClassId {
+    return this.game_.me.classId;
   }
 
   /** Hero: what you wear and carry. */
@@ -897,7 +903,7 @@ export class BoardScene extends Phaser.Scene {
       fill.destroy();
       this.children.getByName('bar-back')?.destroy();
     });
-    preloadHero(this);
+    preloadHero(this, Object.values(this.game_.state.characters).map((c) => c.classId));
     preloadLoot(this);
     // Every open area's kit and the next one's, which waits under the cloud.
     const { areas } = this.game_.state.board;
@@ -910,7 +916,7 @@ export class BoardScene extends Phaser.Scene {
   private drawToken(): void {
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space]!;
-    if (heroReady(this)) {
+    if (heroReady(this, me.classId)) {
       // The hero stands on the spot: his feet at the spot's centre, a touch up (the container sits above it).
       this.hero = new Hero(this, me, 0, SPACE_RADIUS + 2, HERO_BOARD_SCALE);
       this.hero.face(true);
@@ -948,7 +954,18 @@ export class BoardScene extends Phaser.Scene {
       const fresh = !mark;
       if (!mark) {
         // Others stand in what they wear, a little smaller than you (chapter 2, step 8); circles only if the hero's art is missing.
-        const figure = heroReady(this) ? new Hero(this, c, 0, 8, HERO_BOARD_SCALE * 0.85) : null;
+        const figure = heroReady(this, c.classId) ? new Hero(this, c, 0, 8, HERO_BOARD_SCALE * 0.85) : null;
+        // Someone of a class not loaded yet: a circle until it is, then the figure.
+        if (!figure) {
+          const id = c.id;
+          preloadHero(this, [c.classId]);
+          this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+            this.others.get(id)?.destroy();
+            this.others.delete(id);
+            this.drawOthers();
+          });
+          this.load.start();
+        }
         if (figure) this.otherHeroes.set(c.id, figure);
         const body: Phaser.GameObjects.GameObject[] = figure ? [figure.root] : [this.add.circle(0, 0, TOKEN_RADIUS - 3, CLASS_COLORS[c.classId] ?? 0xffffff, 1).setStrokeStyle(2, 0x101318, 1), this.add.text(0, 0, CLASS_DATA[c.classId].name.charAt(0), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5)];
         const name = this.add.text(0, 12, c.name, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 3, resolution: 2 }).setOrigin(0.5, 0);

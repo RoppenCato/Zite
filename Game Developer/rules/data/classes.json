@@ -25,7 +25,7 @@
   },
   "rogue": {
     "name": "Trickster",
-    "style": "Low base damage, chains crits, slips blows.",
+    "style": "Chains crits, slips blows.",
     "hp": 100,
     "mana": 25,
     "attack": 9,
