@@ -7,6 +7,8 @@
 import type Phaser from 'phaser';
 import uiJson from '../../assets/sound/ui/ui.json?url';
 import uiOgg from '../../assets/sound/ui/ui.ogg';
+import fightJson from '../../assets/sound/fight/fight.json?url';
+import fightOgg from '../../assets/sound/fight/fight.ogg';
 import { settings } from './settings.ts';
 
 interface SpriteFile {
@@ -17,7 +19,10 @@ interface SpriteFile {
   volume: number;
 }
 
-const SPRITES: SpriteFile[] = [{ key: 'ui', json: uiJson, ogg: uiOgg, volume: 0.8 }];
+const SPRITES: SpriteFile[] = [
+  { key: 'ui', json: uiJson, ogg: uiOgg, volume: 0.8 },
+  { key: 'fight', json: fightJson, ogg: fightOgg, volume: 1 },
+];
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b' };
 

@@ -19,7 +19,7 @@ ambience and creature voices; each wave tagged with its chapter), with the forma
 phone: OGG Vorbis, short sounds as audio sprites under 1.5 MB each, music as seamless loops of 30 to 60 s under 1.5 MB,
 the first load under 3 MB of sound, effects around −16 LUFS and music around −18.
 
-**The fight's hooks** (wired 2026-11-01, silent until Nigel, SD's `fight.ogg`; the ability ids are those of
+**The fight's hooks** (wired 2026-11-01; Nigel, SD's `assets/sound/fight/fight.ogg` and `fight.json` landed the same evening with all 60 and play at full; the ability ids are those of
 `rules/data/abilities.json`): `fight/begin` when the screen opens; on the round sent, `fight/swing`, `fight/charge`,
 `fight/flee`, `fight/potion`, `fight/mana-potion` or `fight/ability-<id>` (the Knight's: heavy-blow, shield-bash,
 war-cry, execute, rally, shield-wall); on the blow's frame `fight/hit-light`, `fight/hit-heavy` (a seventh of the
