@@ -22,6 +22,13 @@ const CENTRE = DESIGN_WIDTH / 2;
 /** The tag's green. */
 const OWNED = 0x2f7d4f;
 
+/** What you wear in the slot now, by the same number, for a piece of another kind. */
+function compareWorn(g: GearItem, worn: GearItem | null): string {
+  if (!worn || worn.base === g.base) return '';
+  const stat = Object.keys(g.stats)[0] as keyof GearItem['stats'] | undefined;
+  return stat ? ` · you have +${worn.stats[stat] ?? 0}` : '';
+}
+
 /** How much of this kind of piece you own: "Worn", "Worn, 2 in bag", "1 in bag", or nothing. */
 export function ownedGear(worn: GearItem | null, bag: GearItem[], base: string): string {
   const wearing = worn?.base === base;
@@ -129,7 +136,7 @@ export class ShopScene extends Phaser.Scene {
     } else if (tab === 'buy') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier);
-        row(i, g.name, this.ink.text, describeGear(g).split(' · ').slice(2).join(' · '), `${g.price} g`, 'Buy', () => this.buy({ slot }), ownedGear(me.equipment[slot], me.bag, g.base));
+        row(i, g.name, this.ink.text, `${describeGear(g).split(' · ').slice(2).join(' · ')}${compareWorn(g, me.equipment[slot])}`, `${g.price} g`, 'Buy', () => this.buy({ slot }), ownedGear(me.equipment[slot], me.bag, g.base));
       });
     } else if (tab === 'items') {
       ITEM_IDS.forEach((id, i) => {

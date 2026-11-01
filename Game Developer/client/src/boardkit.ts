@@ -12,6 +12,11 @@ import propsJson from '../../assets/board_meadows/board_props.json?url';
 import propsPng from '../../assets/board_meadows/board_props.png';
 import coverPng from '../../assets/board_meadows/cover.png';
 import placementJson from '../../assets/board_meadows/placement_cloverfield.json';
+import forestGroundJson from '../../assets/board_forest/board_ground.json?url';
+import forestGroundPng from '../../assets/board_forest/board_ground.png';
+import forestPropsJson from '../../assets/board_forest/board_props.json?url';
+import forestPropsPng from '../../assets/board_forest/board_props.png';
+import forestPlacementJson from '../../assets/board_forest/placement_wobblewood.json';
 
 export interface Placement {
   name: string;
@@ -34,9 +39,14 @@ interface Kit {
   flat: Set<string>;
   /** The hand-laid props by area id. */
   placements: Record<string, Placement[]>;
+  /** The banner moved along from the area's middle, clear of a landmark. */
+  bannerDx?: number;
+  files: { groundPng: string; groundJson: string; propsPng: string; propsJson: string };
 }
 
 const SCALE = 0.5;
+/** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
+export const TOP_MARGIN = 20;
 export const KIT_DEPTH = { ground: 0, flat: 1, roads: 2, plates: 3, props: 5, names: 6, cover: 8 } as const;
 
 const KITS: Record<string, Kit> = {
@@ -59,17 +69,45 @@ const KITS: Record<string, Kit> = {
     ],
     flat: new Set(['clover', 'worn', 'hill']),
     placements: { meadows: placementJson as Placement[] },
+    files: { groundPng, groundJson, propsPng, propsJson },
+  },
+  // Mitch, AD's Wobblewood (2026-11-01): the cover and the banner are the meadows'.
+  forest: {
+    ground: 'forest_ground',
+    props: 'forest_props',
+    cover: 'board_cover',
+    banner: 'board_banner',
+    tiles: [
+      { frame: 'ground_a', weight: 40 },
+      { frame: 'ground_b', weight: 40 },
+      { frame: 'ground_c', weight: 20 },
+    ],
+    tile: 128,
+    road: [
+      { width: 30, color: 0x7f6240, alpha: 1 },
+      { width: 25, color: 0xb58f5e, alpha: 1 },
+      { width: 10, color: 0xd0b280, alpha: 0.8 },
+    ],
+    flat: new Set(['clover', 'worn']),
+    bannerDx: -340,
+    placements: { thornwood: forestPlacementJson as Placement[] },
+    files: { groundPng: forestGroundPng, groundJson: forestGroundJson, propsPng: forestPropsPng, propsJson: forestPropsJson },
   },
 };
 
 const PLATES: Record<SpaceKind, string> = { normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
 
-export function preloadBoardKits(scene: Phaser.Scene): void {
-  const k = KITS.meadow!;
-  if (!scene.textures.exists(k.ground)) scene.load.atlas(k.ground, groundPng, groundJson);
-  if (!scene.textures.exists(k.props)) scene.load.atlas(k.props, propsPng, propsJson);
-  if (!scene.textures.exists(k.cover)) scene.load.image(k.cover, coverPng);
-  if (!scene.textures.exists(k.banner)) scene.load.image(k.banner, bannerPng);
+/** Queue the kits of these themes, and the cover and banner they share. The board is drawn whole, so an area's kit must be here before it opens. */
+export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[]): void {
+  const shared = KITS.meadow!;
+  if (!scene.textures.exists(shared.cover)) scene.load.image(shared.cover, coverPng);
+  if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
+  for (const theme of new Set(['meadow', ...themes])) {
+    const k = KITS[theme];
+    if (!k) continue;
+    if (!scene.textures.exists(k.ground)) scene.load.atlas(k.ground, k.files.groundPng, k.files.groundJson);
+    if (!scene.textures.exists(k.props)) scene.load.atlas(k.props, k.files.propsPng, k.files.propsJson);
+  }
 }
 
 /** The kit for a theme, when its atlases are loaded; null keeps the shapes. */
@@ -97,6 +135,11 @@ export function standingDepth(footY: number): number {
   return KIT_DEPTH.props + footY * 0.0001;
 }
 
+/** An earlier area's ground lies over a later one's where their bounds meet. */
+export function groundDepth(tier: number): number {
+  return KIT_DEPTH.ground + 0.5 - tier * 0.001;
+}
+
 /** The area's ground: tiles over its bounds, chosen per cell from the seed. */
 export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: string, boardWidth: number, boardHeight: number): void {
   const b = area.bounds;
@@ -116,7 +159,7 @@ export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: s
         pick -= tile.weight;
       }
       // A touch over size, so the tiles overlap by a pixel or two and the camera's fractional zooms show no seam between them.
-      scene.add.image(x + t / 2, y + t / 2, kit.ground, frame).setScale(SCALE * 1.02).setDepth(KIT_DEPTH.ground);
+      scene.add.image(x + t / 2, y + t / 2, kit.ground, frame).setScale(SCALE * 1.02).setDepth(groundDepth(area.tier));
     }
   }
 }
@@ -124,7 +167,7 @@ export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: s
 /** The area's name on the kit's banner at the top of its bounds. */
 export function drawKitBanner(scene: Phaser.Scene, kit: Kit, area: Area, font: string): void {
   const b = area.bounds;
-  const x = b.x + b.width / 2;
+  const x = b.x + b.width / 2 + (kit.bannerDx ?? 0);
   const y = b.y + 40;
   scene.add.image(x, y, kit.banner).setScale(SCALE).setDepth(KIT_DEPTH.names).setAlpha(0.92);
   scene.add
@@ -173,16 +216,25 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
     if (!scene.textures.get(kit.props).has(p.name)) continue;
     const sprite = scene.add.image(p.x, p.y, kit.props, p.name).setScale(SCALE);
     sprite.setDepth(kit.flat.has(p.name) ? KIT_DEPTH.flat : standingDepth(p.y));
+    if (sprite.getBounds().top < area.bounds.y + TOP_MARGIN) tall.set(area.id, [...(tall.get(area.id) ?? []), sprite]);
   }
   return list.length;
 }
 
 /** The cover over an area not yet open: the kit's cloud, tiled, with a little dark over it. */
-export function drawKitCover(scene: Phaser.Scene, kit: Kit, area: Area): Phaser.GameObjects.Container {
+export function drawKitCover(scene: Phaser.Scene, kit: Kit, area: Area, bottom = area.bounds.y + area.bounds.height): Phaser.GameObjects.Container {
   const b = area.bounds;
-  const cloud = scene.add.tileSprite(0, 0, b.width, b.height, kit.cover).setTileScale(SCALE).setAlpha(0.96);
-  const dark = scene.add.rectangle(0, 0, b.width, b.height, 0x0b0d14, 0.3);
-  return scene.add.container(b.x + b.width / 2, b.y + b.height / 2, [cloud, dark]).setDepth(KIT_DEPTH.cover);
+  const height = bottom - b.y;
+  const cloud = scene.add.tileSprite(0, 0, b.width, height, kit.cover).setTileScale(SCALE).setAlpha(0.96);
+  const dark = scene.add.rectangle(0, 0, b.width, height, 0x0b0d14, 0.3);
+  return scene.add.container(b.x + b.width / 2, b.y + height / 2, [cloud, dark]).setDepth(KIT_DEPTH.cover);
+}
+
+/** Props that rise past their area's top, by area: once the area is open they stand over the next area's cloud (the glade's gate does). */
+const tall = new Map<string, Phaser.GameObjects.Image[]>();
+
+export function raiseTallProps(areaId: string): void {
+  for (const sprite of tall.get(areaId) ?? []) sprite.setDepth(KIT_DEPTH.cover + 0.5);
 }
 
 export type { Kit };

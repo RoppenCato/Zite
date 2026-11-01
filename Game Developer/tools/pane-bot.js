@@ -63,6 +63,7 @@ async function tick() {
     if (s.inFlight) return 'shop';
     const tier = g.state.board.areas[g.state.board.spaces[me.space]?.area]?.tier ?? 1;
     const want = r.SLOTS.filter((x) => (me.equipment[x]?.rank ?? 0) < tier).map((x) => [x, r.plainGear('p', x, tier).price]).filter(([, c]) => c <= me.gold);
+    // In the rules a higher plain piece goes on by itself.
     if (want.length) { note(`L${me.level} buys rank ${tier} ${want[0][0]}`); s.buy({ slot: want[0][0] }); return 'buy'; }
     if ((me.items.potion ?? 0) < 3 && me.gold >= 25) { s.buy({ item: 'potion' }); return 'buy'; }
     b.shopLeft();

@@ -449,3 +449,7 @@ A green tag beside the name: on Gear "Worn", "Worn, 2 in bag" or "1 in bag", cou
 ## Loading by area (chapter 2, step 1, 2026-11-01)
 
 A creature's atlas and an area's backdrop load in `FightScene.preload`, the first time they are met, and walking into another area frees the last one's (`releaseCreatures`, `releaseBackdrops`, called from `refreshHud`). The board no longer loads any creature at the start. **The ability page** shows four a page with More and Back once there are six (the sixth used to push Back off the screen, which could strand you), each on two lines: the name, then the cost. Long enemy names shrink to stay clear of the ?; the two status lines wrap inside the screen. `tools/pane-bot.js` plays the real scenes in the pane (see its head).
+
+## The forest's art on screen (2026-11-01)
+
+A closed area's cloud stops 20 px into an earlier area it overlaps, so the next area does not hide the forest's first spots and banner; a prop that rises past its area's top (the glade's gate) stands above the cloud once its area is open (`raiseTallProps`). An earlier area's ground lies over a later one's (`groundDepth`). **A fix for every backdrop:** the density camera keeps a scroll, so a strip scrolling slower than 1 sat too far left and left a gap at the right; it now starts further along. A strip taller than the band is cut at the HUD. **Buying** a plain piece of a higher rank wears it when the worn one is plain and lower; the old one goes to the bag (mine); the shop shows "you have +n" beside a piece of another kind.

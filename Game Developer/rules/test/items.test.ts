@@ -4,7 +4,7 @@ import { apply, newGame } from '../src/game.ts';
 import { plainGear, stats } from '../src/gear.ts';
 import { legalPaths } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
-import type { Action, Character, GameState, Slot } from '../src/types.ts';
+import type { Action, Character, GameState, GearItem, Slot } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
@@ -167,5 +167,29 @@ describe('the dice cards', () => {
     const ok = apply(s, use('plus-one'), makeRng('x'), NOW);
     expect(ok.state).not.toBe(s);
     expect(s).toEqual(snapshot);
+  });
+});
+
+describe('buying a higher plain piece', () => {
+  const inForestTown = (old: GearItem) => {
+    const s = newGame({ seed: 'buy', player: 'p', name: 'R', classId: 'warrior' });
+    const town = Object.values(s.board.spaces).find((x) => x.kind === 'town' && s.board.areas[x.area]?.tier === 2)!;
+    const me = s.characters.p!;
+    return { ...s, characters: { p: { ...me, space: town.id, gold: 500, equipment: { ...me.equipment, weapon: old } } } };
+  };
+
+  it('goes on, and the old one goes to the bag', () => {
+    const old = plainGear('old', 'weapon', 1);
+    const r = apply(inForestTown(old), { type: 'buy', id: 'b1', player: 'p', slot: 'weapon' } as Action, makeRng('x'), 0);
+    expect(r.state.characters.p!.equipment.weapon!.rank).toBe(2);
+    expect(r.state.characters.p!.bag.map((g) => g.id)).toEqual(['old']);
+    expect(r.events).toContainEqual(expect.objectContaining({ type: 'equipped', replaced: old }));
+  });
+
+  it('leaves a rare piece on: it may be the better one', () => {
+    const old = { ...plainGear('old', 'weapon', 1), rarity: 'rare' as const };
+    const r = apply(inForestTown(old), { type: 'buy', id: 'b1', player: 'p', slot: 'weapon' } as Action, makeRng('x'), 0);
+    expect(r.state.characters.p!.equipment.weapon!.id).toBe('old');
+    expect(r.state.characters.p!.bag[0]!.rank).toBe(2);
   });
 });

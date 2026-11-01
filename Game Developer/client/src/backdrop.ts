@@ -9,6 +9,10 @@ import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
 import midPng from '../../assets/meadow_fight/mid.png';
 import nearPng from '../../assets/meadow_fight/near.png';
+import forestFarPng from '../../assets/forest_fight/far.png';
+import forestGroundPng from '../../assets/forest_fight/ground.png';
+import forestMidPng from '../../assets/forest_fight/mid.png';
+import forestNearPng from '../../assets/forest_fight/near.png';
 import { DESIGN_WIDTH, HUD_HEIGHT } from './layout.ts';
 
 interface Strip {
@@ -22,6 +26,8 @@ interface Strip {
   scroll: number;
   /** Pixels a second the strip drifts sideways on its own. */
   drift: number;
+  /** 1 for a soft strip kept at 1x in its file; the rest are 2x. */
+  tileScale?: number;
 }
 
 interface BackdropFiles {
@@ -43,6 +49,18 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'meadow-mid', png: midPng, w: 1024, h: 300, bottom: 24, scroll: 0.45, drift: 0 },
       { key: 'meadow-near', png: nearPng, w: 1024, h: 140, bottom: 8, scroll: 0.8, drift: 0 },
       { key: 'meadow-ground', png: groundPng, w: 512, h: 120, bottom: 120, scroll: 1, drift: 0 },
+    ],
+  },
+  // Mitch, AD's Wobblewood (2026-11-01): far and mid are 1x in their files, which saves about 9.5 MB decoded.
+  forest: {
+    sky: { top: 0x8ed2b4, bottom: 0xf0f6c8 },
+    soil: 0x3a3a34,
+    feet: 14,
+    strips: [
+      { key: 'forest-far', png: forestFarPng, w: 1024, h: 300, bottom: 40, scroll: 0.15, drift: 2, tileScale: 1 },
+      { key: 'forest-mid', png: forestMidPng, w: 1024, h: 470, bottom: 24, scroll: 0.45, drift: 0, tileScale: 1 },
+      { key: 'forest-near', png: forestNearPng, w: 1024, h: 140, bottom: 8, scroll: 0.8, drift: 0 },
+      { key: 'forest-ground', png: forestGroundPng, w: 512, h: 120, bottom: 120, scroll: 1, drift: 0 },
     ],
   },
 };
@@ -80,7 +98,14 @@ export class Backdrop {
     }
     for (const s of b.strips) {
       if (!scene.textures.exists(s.key)) continue;
-      const sprite = scene.add.tileSprite(DESIGN_WIDTH / 2, groundY + s.bottom - s.h / 2, DESIGN_WIDTH, s.h, s.key).setTileScale(0.5).setScrollFactor(s.scroll, 1);
+      // A strip taller than the band is cut at the HUD; its bottom stays where it belongs (Wobblewood's leaves reach the top).
+      const lowest = groundY + s.bottom;
+      const shown = Math.min(s.h, lowest - HUD_HEIGHT);
+      const scale = s.tileScale ?? 0.5;
+      // The camera holds a scroll for the screen's density; a strip that scrolls slower must start that much further along, or its right side falls short.
+      const along = (s.scroll - 1) * scene.cameras.main.scrollX;
+      const sprite = scene.add.tileSprite(DESIGN_WIDTH / 2 + along, lowest - shown / 2, DESIGN_WIDTH, shown, s.key).setTileScale(scale).setScrollFactor(s.scroll, 1);
+      sprite.tilePositionY = (s.h - shown) / scale;
       if (s.drift) this.drifting.push({ sprite, drift: s.drift });
     }
     this.feetY = groundY + b.feet;

@@ -40,7 +40,7 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
-import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
+import { groundDepth, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
@@ -655,7 +655,7 @@ export class BoardScene extends Phaser.Scene {
       this.kitted = true;
       return;
     }
-    const g = this.add.graphics().setDepth(0);
+    const g = this.add.graphics().setDepth(groundDepth(area.tier));
     g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
     g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
     // The name sits in the margin above the area's top spots, faint, readable from the overview.
@@ -782,7 +782,10 @@ export class BoardScene extends Phaser.Scene {
     // The meadow's cloud over any closed area, kit or not: nothing shows until it opens.
     const kit = kitFor(this, area.theme) ?? kitFor(this, 'meadow');
     if (kit) {
-      this.covers.set(area.id, drawKitCover(this, kit, area));
+      // A closed area's cloud stops at the top of an area before it, or it would hide that area's first spots and banner.
+      const b = area.bounds;
+      const under = Object.values(this.game_.state.board.areas).filter((a) => a.tier < area.tier && a.bounds.x < b.x + b.width && a.bounds.x + a.bounds.width > b.x && a.bounds.y > b.y && a.bounds.y < b.y + b.height);
+      this.covers.set(area.id, drawKitCover(this, kit, area, Math.min(b.y + b.height, ...under.map((a) => a.bounds.y + TOP_MARGIN))));
       return;
     }
     const b = area.bounds;
@@ -793,6 +796,7 @@ export class BoardScene extends Phaser.Scene {
   private refreshCovers(): void {
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
+    for (const areaId of opened) raiseTallProps(areaId);
   }
 
   /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
@@ -887,7 +891,10 @@ export class BoardScene extends Phaser.Scene {
     });
     preloadHero(this);
     preloadLoot(this);
-    preloadBoardKits(this);
+    // Every open area's kit and the next one's, which waits under the cloud.
+    const { areas } = this.game_.state.board;
+    const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 1;
+    preloadBoardKits(this, Object.values(areas).filter((a) => a.tier <= reach).map((a) => a.theme));
     preloadKit(this);
     audio.preload(this);
   }

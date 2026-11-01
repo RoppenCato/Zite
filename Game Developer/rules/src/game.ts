@@ -484,9 +484,15 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
     const got = nextGearId(state);
     const gear = plainGear(got.id, action.slot, tier);
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
-    const empty = !character.equipment[action.slot];
+    const old = character.equipment[action.slot];
+    const empty = !old;
     if (!empty && character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
     const gold = character.gold - gear.price;
+    // A plain piece of a higher rank replaces a plain lower one, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
+    if (old && old.rarity === 'common' && old.rank < gear.rank) {
+      const worn = { ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } };
+      return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: old }] };
+    }
     // A piece for an empty slot goes straight on (Robin, 2026-11-01).
     if (empty) {
       const worn = { ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } };
