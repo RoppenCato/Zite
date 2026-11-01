@@ -160,14 +160,17 @@ export class FightScene extends Phaser.Scene {
     // The contact shadows, then the figures, so they stand on the ground.
     this.add.ellipse(L.heroX, feetY, 64, 16, 0x000000, 0.22);
     const enemyArt = creatureReady(this, enemy.id);
-    this.add.ellipse(L.enemyX, feetY, enemyArt ? 96 : 110, enemyArt ? 18 : 20, 0x000000, 0.22);
-
     let enemyTop: number;
     if (enemyArt) {
       this.enemy = new Figure(this, enemy.id, L.enemyX, feetY);
+      if (enemy.phase === 2) this.enemy.setPhase(2);
+      const shadow = this.enemy.shadow();
+      this.add.ellipse(L.enemyX + shadow.dx, feetY, shadow.width, Math.max(14, shadow.width * 0.16), 0x000000, 0.22);
+      this.enemy.sprite.setDepth(1);
       this.enemyBody = this.enemy.sprite;
       enemyTop = feetY - this.enemy.headHeight();
     } else {
+      this.add.ellipse(L.enemyX, feetY, 110, 20, 0x000000, 0.22);
       this.enemyBody = this.add.circle(L.enemyX, feetY - 56, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
       this.add.text(L.enemyX, feetY - 56, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       enemyTop = feetY - 112;
@@ -407,6 +410,7 @@ export class FightScene extends Phaser.Scene {
         this.refreshStatus();
         break;
       case 'phase':
+        this.enemy?.setPhase(2);
         sfx.play('fight/phase');
         sfx.play(`creature/${this.enemyId}/surge`);
         this.say(e.text);

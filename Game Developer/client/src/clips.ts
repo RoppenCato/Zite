@@ -12,6 +12,9 @@ export interface ActionFrame {
   a1?: number;
   /** The top of the figure this frame, from the pivot (for a bar or a marker over it). */
   head?: { x: number; y: number };
+  /** The painted bounds this frame, from the pivot: left-top and right-bottom. */
+  lt?: { x: number; y: number };
+  rb?: { x: number; y: number };
 }
 
 export interface ActionData {

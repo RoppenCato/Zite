@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "bandit/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 222,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 222,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 222,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.6892,
+    "y": 1.0077
+   }
+  },
+  "bandit/attack1/0007": {
+   "frame": {
+    "x": 226,
+    "y": 2,
+    "w": 233,
+    "h": 255
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 233,
+    "h": 255
+   },
+   "sourceSize": {
+    "w": 233,
+    "h": 255
+   },
+   "pivot": {
+    "x": 0.6996,
+    "y": 0.9882
+   }
+  },
+  "bandit/attack1/0005": {
+   "frame": {
+    "x": 461,
+    "y": 2,
+    "w": 212,
+    "h": 251
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 251
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 251
+   },
+   "pivot": {
+    "x": 0.6274,
+    "y": 0.996
+   }
+  },
+  "bandit/attack1/0008": {
+   "frame": {
+    "x": 675,
+    "y": 2,
+    "w": 236,
+    "h": 242
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 236,
+    "h": 242
+   },
+   "sourceSize": {
+    "w": 236,
+    "h": 242
+   },
+   "pivot": {
+    "x": 0.6568,
+    "y": 0.9752
+   }
+  },
+  "bandit/attack1/0011": {
+   "frame": {
+    "x": 2,
+    "y": 264,
+    "w": 193,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.5181,
+    "y": 0.9703
+   }
+  },
+  "bandit/stand/0005": {
+   "frame": {
+    "x": 197,
+    "y": 264,
+    "w": 190,
+    "h": 235
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 235
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 235
+   },
+   "pivot": {
+    "x": 0.5105,
+    "y": 0.9702
+   }
+  },
+  "bandit/stand/0006": {
+   "frame": {
+    "x": 389,
+    "y": 264,
+    "w": 190,
+    "h": 235
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 235
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 235
+   },
+   "pivot": {
+    "x": 0.5105,
+    "y": 0.9702
+   }
+  },
+  "bandit/stand/0001": {
+   "frame": {
+    "x": 581,
+    "y": 264,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 0.9697
+   }
+  },
+  "bandit/stand/0004": {
+   "frame": {
+    "x": 775,
+    "y": 264,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 0.9697
+   }
+  },
+  "bandit/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 502,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 1
+   }
+  },
+  "bandit/move/0004": {
+   "frame": {
+    "x": 196,
+    "y": 502,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 1
+   }
+  },
+  "bandit/attack1/0012": {
+   "frame": {
+    "x": 390,
+    "y": 502,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 0.9697
+   }
+  },
+  "bandit/die1/0001": {
+   "frame": {
+    "x": 584,
+    "y": 502,
+    "w": 192,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.5104,
+    "y": 0.9697
+   }
+  },
+  "bandit/stand/0002": {
+   "frame": {
+    "x": 778,
+    "y": 502,
+    "w": 196,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.5102,
+    "y": 0.9693
+   }
+  },
+  "bandit/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 735,
+    "w": 196,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.5102,
+    "y": 0.9693
+   }
+  },
+  "bandit/move/0005": {
+   "frame": {
+    "x": 200,
+    "y": 735,
+    "w": 197,
+    "h": 227
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 227
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 227
+   },
+   "pivot": {
+    "x": 0.5279,
+    "y": 0.978
+   }
+  },
+  "bandit/move/0006": {
+   "frame": {
+    "x": 399,
+    "y": 735,
+    "w": 197,
+    "h": 227
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 227
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 227
+   },
+   "pivot": {
+    "x": 0.5279,
+    "y": 0.978
+   }
+  },
+  "bandit/move/0002": {
+   "frame": {
+    "x": 598,
+    "y": 735,
+    "w": 197,
+    "h": 225
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 225
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 225
+   },
+   "pivot": {
+    "x": 0.4924,
+    "y": 0.9867
+   }
+  },
+  "bandit/move/0003": {
+   "frame": {
+    "x": 797,
+    "y": 735,
+    "w": 197,
+    "h": 225
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 225
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 225
+   },
+   "pivot": {
+    "x": 0.4924,
+    "y": 0.9867
+   }
+  },
+  "bandit/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 965,
+    "w": 201,
+    "h": 222
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 222
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 222
+   },
+   "pivot": {
+    "x": 0.4975,
+    "y": 0.9685
+   }
+  },
+  "bandit/hit1/0001": {
+   "frame": {
+    "x": 205,
+    "y": 965,
+    "w": 225,
+    "h": 222
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 225,
+    "h": 222
+   },
+   "sourceSize": {
+    "w": 225,
+    "h": 222
+   },
+   "pivot": {
+    "x": 0.4356,
+    "y": 0.9414
+   }
+  },
+  "bandit/attack1/0010": {
+   "frame": {
+    "x": 432,
+    "y": 965,
+    "w": 217,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 217,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 217,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5438,
+    "y": 0.9682
+   }
+  },
+  "bandit/attack1/0009": {
+   "frame": {
+    "x": 651,
+    "y": 965,
+    "w": 240,
+    "h": 214
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 214
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 214
+   },
+   "pivot": {
+    "x": 0.5917,
+    "y": 0.9626
+   }
+  },
+  "bandit/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1189,
+    "w": 204,
+    "h": 212
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 212
+   },
+   "sourceSize": {
+    "w": 204,
+    "h": 212
+   },
+   "pivot": {
+    "x": 0.4804,
+    "y": 0.9623
+   }
+  },
+  "bandit/attack1/0002": {
+   "frame": {
+    "x": 208,
+    "y": 1189,
+    "w": 211,
+    "h": 210
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 211,
+    "h": 210
+   },
+   "sourceSize": {
+    "w": 211,
+    "h": 210
+   },
+   "pivot": {
+    "x": 0.4834,
+    "y": 0.9619
+   }
+  },
+  "bandit/attack1/0003": {
+   "frame": {
+    "x": 421,
+    "y": 1189,
+    "w": 222,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 222,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 222,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4775,
+    "y": 0.9554
+   }
+  },
+  "bandit/attack1/0004": {
+   "frame": {
+    "x": 645,
+    "y": 1189,
+    "w": 228,
+    "h": 197
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 228,
+    "h": 197
+   },
+   "sourceSize": {
+    "w": 228,
+    "h": 197
+   },
+   "pivot": {
+    "x": 0.4825,
+    "y": 0.9543
+   }
+  },
+  "bandit/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1403,
+    "w": 213,
+    "h": 194
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 194
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 194
+   },
+   "pivot": {
+    "x": 0.4601,
+    "y": 0.9485
+   }
+  },
+  "bandit/die1/0004": {
+   "frame": {
+    "x": 217,
+    "y": 1403,
+    "w": 224,
+    "h": 142
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 142
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 142
+   },
+   "pivot": {
+    "x": 0.4777,
+    "y": 0.9366
+   }
+  },
+  "bandit/die1/0005": {
+   "frame": {
+    "x": 443,
+    "y": 1403,
+    "w": 190,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.3684,
+    "y": 0.9118
+   }
+  },
+  "bandit/die1/0006": {
+   "frame": {
+    "x": 635,
+    "y": 1403,
+    "w": 202,
+    "h": 73
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 73
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 73
+   },
+   "pivot": {
+    "x": 0.3861,
+    "y": 0.863
+   }
+  },
+  "bandit/die1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 1599,
+    "w": 202,
+    "h": 62
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 62
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 62
+   },
+   "pivot": {
+    "x": 0.396,
+    "y": 0.7742
+   }
+  },
+  "bandit/die1/0008": {
+   "frame": {
+    "x": 206,
+    "y": 1599,
+    "w": 203,
+    "h": 51
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 203,
+    "h": 51
+   },
+   "sourceSize": {
+    "w": 203,
+    "h": 51
+   },
+   "pivot": {
+    "x": 0.4039,
+    "y": 0.6667
+   }
+  }
+ },
+ "meta": {
+  "image": "bandit.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 130,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bandit/stand/0001",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 224
+     },
+     "delay": 130,
+     "lt": {
+      "x": -98,
+      "y": -224
+     },
+     "rb": {
+      "x": 94,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    },
+    {
+     "name": "bandit/stand/0002",
+     "w": 196,
+     "h": 228,
+     "origin": {
+      "x": 100,
+      "y": 221
+     },
+     "delay": 130,
+     "lt": {
+      "x": -100,
+      "y": -221
+     },
+     "rb": {
+      "x": 96,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     }
+    },
+    {
+     "name": "bandit/stand/0003",
+     "w": 196,
+     "h": 228,
+     "origin": {
+      "x": 100,
+      "y": 221
+     },
+     "delay": 130,
+     "lt": {
+      "x": -100,
+      "y": -221
+     },
+     "rb": {
+      "x": 96,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     }
+    },
+    {
+     "name": "bandit/stand/0004",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 224
+     },
+     "delay": 130,
+     "lt": {
+      "x": -98,
+      "y": -224
+     },
+     "rb": {
+      "x": 94,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    },
+    {
+     "name": "bandit/stand/0005",
+     "w": 190,
+     "h": 235,
+     "origin": {
+      "x": 97,
+      "y": 228
+     },
+     "delay": 130,
+     "lt": {
+      "x": -97,
+      "y": -228
+     },
+     "rb": {
+      "x": 93,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "bandit/stand/0006",
+     "w": 190,
+     "h": 235,
+     "origin": {
+      "x": 97,
+      "y": 228
+     },
+     "delay": 130,
+     "lt": {
+      "x": -97,
+      "y": -228
+     },
+     "rb": {
+      "x": 93,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bandit/move/0001",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 231
+     },
+     "delay": 100,
+     "lt": {
+      "x": -98,
+      "y": -231
+     },
+     "rb": {
+      "x": 94,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -231
+     }
+    },
+    {
+     "name": "bandit/move/0002",
+     "w": 197,
+     "h": 225,
+     "origin": {
+      "x": 97,
+      "y": 222
+     },
+     "delay": 100,
+     "lt": {
+      "x": -97,
+      "y": -222
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -222
+     }
+    },
+    {
+     "name": "bandit/move/0003",
+     "w": 197,
+     "h": 225,
+     "origin": {
+      "x": 97,
+      "y": 222
+     },
+     "delay": 100,
+     "lt": {
+      "x": -97,
+      "y": -222
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -222
+     }
+    },
+    {
+     "name": "bandit/move/0004",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 231
+     },
+     "delay": 100,
+     "lt": {
+      "x": -98,
+      "y": -231
+     },
+     "rb": {
+      "x": 94,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -231
+     }
+    },
+    {
+     "name": "bandit/move/0005",
+     "w": 197,
+     "h": 227,
+     "origin": {
+      "x": 104,
+      "y": 222
+     },
+     "delay": 100,
+     "lt": {
+      "x": -104,
+      "y": -222
+     },
+     "rb": {
+      "x": 93,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -222
+     }
+    },
+    {
+     "name": "bandit/move/0006",
+     "w": 197,
+     "h": 227,
+     "origin": {
+      "x": 104,
+      "y": 222
+     },
+     "delay": 100,
+     "lt": {
+      "x": -104,
+      "y": -222
+     },
+     "rb": {
+      "x": 93,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -222
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bandit/attack1/0001",
+     "w": 201,
+     "h": 222,
+     "origin": {
+      "x": 100,
+      "y": 215
+     },
+     "delay": 67,
+     "lt": {
+      "x": -100,
+      "y": -215
+     },
+     "rb": {
+      "x": 101,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -215
+     }
+    },
+    {
+     "name": "bandit/attack1/0002",
+     "w": 211,
+     "h": 210,
+     "origin": {
+      "x": 102,
+      "y": 202
+     },
+     "delay": 67,
+     "lt": {
+      "x": -102,
+      "y": -202
+     },
+     "rb": {
+      "x": 109,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -202
+     }
+    },
+    {
+     "name": "bandit/attack1/0003",
+     "w": 222,
+     "h": 202,
+     "origin": {
+      "x": 106,
+      "y": 193
+     },
+     "delay": 67,
+     "lt": {
+      "x": -106,
+      "y": -193
+     },
+     "rb": {
+      "x": 116,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -193
+     }
+    },
+    {
+     "name": "bandit/attack1/0004",
+     "w": 228,
+     "h": 197,
+     "origin": {
+      "x": 110,
+      "y": 188
+     },
+     "delay": 100,
+     "lt": {
+      "x": -110,
+      "y": -188
+     },
+     "rb": {
+      "x": 118,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -188
+     }
+    },
+    {
+     "name": "bandit/attack1/0005",
+     "w": 212,
+     "h": 251,
+     "origin": {
+      "x": 133,
+      "y": 250
+     },
+     "delay": 67,
+     "lt": {
+      "x": -133,
+      "y": -250
+     },
+     "rb": {
+      "x": 79,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -250
+     }
+    },
+    {
+     "name": "bandit/attack1/0006",
+     "w": 222,
+     "h": 260,
+     "origin": {
+      "x": 153,
+      "y": 262
+     },
+     "delay": 50,
+     "lt": {
+      "x": -153,
+      "y": -262
+     },
+     "rb": {
+      "x": 69,
+      "y": -2
+     },
+     "head": {
+      "x": 0,
+      "y": -262
+     }
+    },
+    {
+     "name": "bandit/attack1/0007",
+     "w": 233,
+     "h": 255,
+     "origin": {
+      "x": 163,
+      "y": 252
+     },
+     "delay": 134,
+     "lt": {
+      "x": -163,
+      "y": -252
+     },
+     "rb": {
+      "x": 70,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -252
+     }
+    },
+    {
+     "name": "bandit/attack1/0008",
+     "w": 236,
+     "h": 242,
+     "origin": {
+      "x": 155,
+      "y": 236
+     },
+     "delay": 67,
+     "lt": {
+      "x": -155,
+      "y": -236
+     },
+     "rb": {
+      "x": 81,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -236
+     }
+    },
+    {
+     "name": "bandit/attack1/0009",
+     "w": 240,
+     "h": 214,
+     "origin": {
+      "x": 142,
+      "y": 206
+     },
+     "delay": 67,
+     "lt": {
+      "x": -142,
+      "y": -206
+     },
+     "rb": {
+      "x": 98,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -206
+     }
+    },
+    {
+     "name": "bandit/attack1/0010",
+     "w": 217,
+     "h": 220,
+     "origin": {
+      "x": 118,
+      "y": 213
+     },
+     "delay": 67,
+     "lt": {
+      "x": -118,
+      "y": -213
+     },
+     "rb": {
+      "x": 99,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -213
+     }
+    },
+    {
+     "name": "bandit/attack1/0011",
+     "w": 193,
+     "h": 236,
+     "origin": {
+      "x": 100,
+      "y": 229
+     },
+     "delay": 67,
+     "lt": {
+      "x": -100,
+      "y": -229
+     },
+     "rb": {
+      "x": 93,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     }
+    },
+    {
+     "name": "bandit/attack1/0012",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 224
+     },
+     "delay": 67,
+     "lt": {
+      "x": -98,
+      "y": -224
+     },
+     "rb": {
+      "x": 94,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bandit/hit1/0001",
+     "w": 225,
+     "h": 222,
+     "origin": {
+      "x": 98,
+      "y": 209
+     },
+     "delay": 600,
+     "lt": {
+      "x": -98,
+      "y": -209
+     },
+     "rb": {
+      "x": 127,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -209
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bandit/die1/0001",
+     "w": 192,
+     "h": 231,
+     "origin": {
+      "x": 98,
+      "y": 224
+     },
+     "delay": 83,
+     "lt": {
+      "x": -98,
+      "y": -224
+     },
+     "rb": {
+      "x": 94,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bandit/die1/0002",
+     "w": 204,
+     "h": 212,
+     "origin": {
+      "x": 98,
+      "y": 204
+     },
+     "delay": 83,
+     "lt": {
+      "x": -98,
+      "y": -204
+     },
+     "rb": {
+      "x": 106,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -204
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bandit/die1/0003",
+     "w": 213,
+     "h": 194,
+     "origin": {
+      "x": 98,
+      "y": 184
+     },
+     "delay": 83,
+     "lt": {
+      "x": -98,
+      "y": -184
+     },
+     "rb": {
+      "x": 115,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -184
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bandit/die1/0004",
+     "w": 224,
+     "h": 142,
+     "origin": {
+      "x": 107,
+      "y": 133
+     },
+     "delay": 83,
+     "lt": {
+      "x": -107,
+      "y": -133
+     },
+     "rb": {
+      "x": 117,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -133
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bandit/die1/0005",
+     "w": 190,
+     "h": 102,
+     "origin": {
+      "x": 70,
+      "y": 93
+     },
+     "delay": 83,
+     "lt": {
+      "x": -70,
+      "y": -93
+     },
+     "rb": {
+      "x": 120,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -93
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bandit/die1/0006",
+     "w": 202,
+     "h": 73,
+     "origin": {
+      "x": 78,
+      "y": 63
+     },
+     "delay": 83,
+     "lt": {
+      "x": -78,
+      "y": -63
+     },
+     "rb": {
+      "x": 124,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -63
+     },
+     "a0": 255,
+     "a1": 170
+    },
+    {
+     "name": "bandit/die1/0007",
+     "w": 202,
+     "h": 62,
+     "origin": {
+      "x": 80,
+      "y": 48
+     },
+     "delay": 83,
+     "lt": {
+      "x": -80,
+      "y": -48
+     },
+     "rb": {
+      "x": 122,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -48
+     },
+     "a0": 170,
+     "a1": 80
+    },
+    {
+     "name": "bandit/die1/0008",
+     "w": 203,
+     "h": 51,
+     "origin": {
+      "x": 82,
+      "y": 34
+     },
+     "delay": 83,
+     "lt": {
+      "x": -82,
+      "y": -34
+     },
+     "rb": {
+      "x": 121,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -34
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

@@ -41,7 +41,7 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/scenes/FightScene.ts` | the fight, side on: the area's backdrop, the hero at the left, the enemy at the right as the Art Director's figure or a circle, bars over each, the tell over the enemy, the words and buttons on the strip under the ground; two taps a round, the events played back a beat apart with a blow landing on its frame; `FIGHT_LAYOUT`, `FIGHT_BUTTONS` |
 | `src/boardkit.ts` | the board from kits by theme (the meadows so far): ground tiles chosen per cell from the seed, roads stroked in the kit's three colours along the links, spot plates by kind, the hand-laid props sorted by their foot, the area banner, the cloud cover; `kitFor`, `standingDepth`, `preloadBoardKits` |
 | `src/backdrop.ts` | the fight backdrops by theme: a code sky, the Art Director's strips as tiling sprites with scroll factors, the soil; `Backdrop`, `preloadBackdrops` |
-| `src/creatures.ts` | the creatures' atlases by enemy id (the Jelly Slime so far); `Figure` plays a creature's clips, `blowMs` says when its blow lands; `preloadCreatures` |
+| `src/creatures.ts` | the creatures' atlases by enemy id (all six of the meadows, King Goo with a second atlas for his phase), each with its scale and blow frame; `Figure` plays a creature's clips, `setPhase(2)` swaps to the angrier clips where the second atlas has them, `blowMs` says when its blow lands, `shadow()` sizes its contact shadow from its painted bounds; `preloadCreatures` |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
 | `src/scenes/BagScene.ts` | the bag: the eight worn slots as a grid of tiles in their rarity frames, a detail plate for the piece tapped, the carried pieces as cards, the flasks and cards as icons with counts; Wear or Take off and Drop act on the piece tapped; Close |
 | `src/hires.ts` | the canvas at the device's pixel density: a scene plugin that zooms every scene's camera by `DPR` onto the design rectangle and renders every text at `DPR` |
@@ -196,8 +196,11 @@ the Art Director's strips as tiling sprites placed by their bottoms against the 
 (far 0.15, the tree line 0.45, the hedge 0.8, the ground 1), the far strip drifting 2 px a second, and the soil colour
 under the ground band down to y 720; a theme with no strips yet gets the sky and plain soil. The fighters' feet stand 14
 px below the ground strip's top: the hero at x 112 at 150 CSS px facing right, the enemy at x 300, the Art Director's
-figure (`creatures.ts`, by the enemy's id, the Jelly Slime at 120) or the old circle with a letter until its art
-comes. Contact shadows under both. Over each figure its bars (the hero's HP and MP with the status line above; the
+figure (`creatures.ts`, by the enemy's id: the Jelly Slime 120 CSS px at 0.5, the Grumpy Sprout 130, the Meadow Bandit 110,
+the Bumbling Bee 120 hovering, the Mushroom Muncher 190 at 0.8, King Goo 300 at 1 with his body set forward of his pivot so
+he spans about x 165 to 408) or the old circle with a letter for a creature with no art. King Goo's second phase swaps his
+stand and attack to the `goo2` atlas (the crown slipped, the face angry) on the `phase` event; his move, hit and death stay
+from the first. The contact shadow is sized from the figure's painted bounds, smaller under the Bee. Contact shadows under both. Over each figure its bars (the hero's HP and MP with the status line above; the
 enemy's HP with its tell and status above, in white with a dark stroke so they read on the sky); the title (name, level,
 role) at the top with the two history lines under it. The strip from y 720 holds the message, the prompt and the three
 rows of buttons (`FIGHT_BUTTONS`, at y 800, 842, 884; Continue at 842).
