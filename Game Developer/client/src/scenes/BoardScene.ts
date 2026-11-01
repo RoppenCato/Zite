@@ -372,14 +372,25 @@ export class BoardScene extends Phaser.Scene {
 
   /** The bag: what you wear and carry. Not while a fight or a shop is up. */
   openBag(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('reveal')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    // Bag again closes it; Bag over the atlas switches (Robin, 2026-11-01: pressing a button again should close its menu).
+    if (this.scene.isActive('bag')) {
+      this.bagClosed();
+      return;
+    }
+    if (this.scene.isActive('atlas')) this.atlasClosed();
     sfx.play('ui/sheet-open');
     this.scene.launch('bag');
   }
 
   /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
   openAtlas(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas') || this.scene.isActive('reveal')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    if (this.scene.isActive('atlas')) {
+      this.atlasClosed();
+      return;
+    }
+    if (this.scene.isActive('bag')) this.bagClosed();
     sfx.play('ui/sheet-open');
     this.scene.launch('atlas');
   }

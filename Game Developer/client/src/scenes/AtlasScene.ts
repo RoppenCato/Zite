@@ -83,12 +83,15 @@ export class AtlasScene extends Phaser.Scene {
     shown.forEach((area, i) => {
       const y = firstRowY + i * rowStep;
       const open = me.opened.includes(area.id);
-      const swatch = this.add.rectangle(34, y + 14, 20, 40, THEME_COLORS[area.theme] ?? COLORS.ground, 1).setStrokeStyle(2, 0x101318, 1);
-      this.rows.push(swatch);
-      const name = `${area.name} · tier ${area.tier}${area.id === here ? ' · you are here' : ''}`;
+      // The name on one line (the tier and the levels are in the line under it); 'here' marks where you stand.
+      const name = `${area.name}${area.id === here ? ' · here' : ''}`;
       if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, rowStep - 6));
-      this.rows.push(this.add.text(54, y - 6, name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', wordWrap: { width: 250 }, color: open ? this.ink.text : this.ink.dim }));
-      this.rows.push(this.add.text(54, y + 14, this.detail(area, open), { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
+      const swatch = this.add.rectangle(36, y + 12, 16, 40, THEME_COLORS[area.theme] ?? COLORS.ground, 1).setStrokeStyle(2, 0x2a2030, 1);
+      this.rows.push(swatch);
+      const title = this.add.text(54, y - 8, name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: open ? this.ink.text : this.ink.dim });
+      for (let px = 15; px > 11 && title.width > 250; px--) title.setFontSize(`${px}px`);
+      this.rows.push(title);
+      this.rows.push(this.add.text(54, y + 12, `Tier ${area.tier}. ${this.detail(area, open)}`, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
       if (open) this.rows.push(makeButton(this, go.x, y + 12, go.w, go.h, 'Go', COLORS.button, '14px', () => (this.scene.get('board') as BoardScene).atlasFrame(area.id)).button);
     });
     if (pages > 1) {
