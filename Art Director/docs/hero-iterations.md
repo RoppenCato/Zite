@@ -343,3 +343,14 @@ All of it done inside the one-form body, since a joint is a bend in the contour,
 - The shoulder joints are fixed points of the torso (7.5 and 2.5 px behind the hips' line, 4 below the neck) in every
   frame, so the arms connect in the same place throughout.
 - The walk rolls the feet: the toe up at the front contact, the heel up at the back as the foot pushes off.
+
+Robin, 2026-11-01, a second anatomy pass pasted in: the neck first (a thin, exposed peg between a floating head and the
+shirt), the head and shoulders as one structure, torso volume, distinct upper arms and forearms, a clearer waist, thighs
+and calves, feet and weight. The neck was a separate rounded rectangle drawn under the head, and the head had moved up
+with the taller body, so the peg showed. Now the neck is part of the body's one contour: it rises 5 reference px from
+the shoulders, 6 wide at the top, and widens through two slopes into rounded shoulder caps; the skin above the collar is
+painted inside the form with the chin's shadow across its top and the collar's V under it; the head sits 5 px down onto
+it. The chest curves out (12.5), the waist narrows (10), the hips flare (12). Each leg has a thigh (4.6), a knee (3.6), a
+calf fuller at the back (3.5 front, 4.1 back) and an ankle (3.0). The sleeve cap is fuller (27 px) where the arm meets
+the shoulder. The rest of the pass (joints fixed to the torso, fixed limb lengths, the lunge through the hips, the fall
+losing balance first) was already in place.

@@ -57,17 +57,17 @@ function body(g, F) {
   const legOf = (ankle, foot, xTop, near) => {                                                                 // a leg's points: the thigh from its top at the hips to the knee, the shin to the ankle, the boot
     const t = T(xTop, 3), knee = bendPoint(t, ankle, LEG, 1), d1 = unit(v(t, knee)), d2 = unit(v(knee, ankle)), dk = unit(add(d1, d2));
     const n1 = [-d1[1], d1[0]], nk = [-dk[1], dk[0]], n2 = [-d2[1], d2[0]], f = unit(foot || [-1, 0]), u = [-f[1], f[0]];   // normals point forward of the leg; u up from the sole
-    const hwT = 4.3 * S, hwK = 3.7 * S, hwA = 3.2 * S, A = add(ankle, d2, -3.5 * S);
+    const hwT = 4.6 * S, hwK = 3.6 * S, hwA = 3.0 * S, A = add(ankle, d2, -3.5 * S), calf = add(knee, v(knee, ankle), 0.42);
     return { near, t, knee, ankle, d2, f, u,
-      frontTop: add(t, n1, hwT), frontKnee: add(knee, nk, hwK * 1.08), frontAnkle: add(A, n2, hwA), backAnkle: add(A, n2, -hwA), backKnee: add(knee, nk, -hwK * 0.92), backTop: add(t, n1, -hwT),
+      frontTop: add(t, n1, hwT), frontKnee: add(knee, nk, hwK * 1.08), frontCalf: add(calf, n2, 3.5 * S), frontAnkle: add(A, n2, hwA), backAnkle: add(A, n2, -hwA), backCalf: add(calf, n2, -4.1 * S), backKnee: add(knee, nk, -hwK * 0.92), backTop: add(t, n1, -hwT),
       toeTop: add(add(ankle, f, 7.5 * S), u, 4 * S), toe: add(add(ankle, f, 9.5 * S), u, 0.5 * S), soleFront: add(add(ankle, f, 8.5 * S), u, -2 * S), soleBack: add(add(ankle, f, -3 * S), u, -2 * S), heel: add(add(ankle, f, -4 * S), u, 0.5 * S), heelTop: add(add(ankle, f, -3.2 * S), u, 4 * S) };
   };
   const nearLeg = legOf(px(F.ankleN), F.footN, -3, true), farLeg = legOf(px(F.ankleF), F.footF, 3, false);
   const [front, back] = nearLeg.ankle[0] <= farLeg.ankle[0] ? [nearLeg, farLeg] : [farLeg, nearLeg];           // the leg further forward leads the contour
-  const round = L => [L.frontTop, L.frontKnee, L.frontAnkle, L.toeTop, L.toe, L.toe, L.soleFront, L.soleBack, L.heel, L.heel, L.heelTop, L.backKnee, L.backTop];   // doubled corners stay crisp
+  const round = L => [L.frontTop, L.frontKnee, L.frontCalf, L.frontAnkle, L.toeTop, L.toe, L.toe, L.soleFront, L.soleBack, L.heel, L.heel, L.heelTop, L.backCalf, L.backKnee, L.backTop];   // doubled corners stay crisp
   // the torso: the neck into sloping shoulders, a chest, a narrower waist, the hips flaring over the legs
-  const contour = () => smoothClosed(g, [T(-5, -h - 1), T(-11.5, -h + 2.5), T(-11.5, -h * 0.6), T(-10, -h * 0.25), T(-11.5, 1.5), ...round(front), T(0, 6.5), ...round(back), T(11.5, 1.5), T(10, -h * 0.25), T(11.5, -h * 0.6), T(11.5, -h + 2.5), T(5, -h - 1)]);
-  const stripe = L => { g.beginPath(); [L.frontTop, L.frontKnee, L.frontAnkle, L.backAnkle, L.backKnee, L.backTop].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
+  const contour = () => smoothClosed(g, [T(-6, -h - 5), T(-6.5, -h - 1.5), T(-9.5, -h + 0.5), T(-12.5, -h + 3.5), T(-12.5, -h * 0.62), T(-10, -h * 0.25), T(-12, 1.5), ...round(front), T(0, 6.5), ...round(back), T(12, 1.5), T(10, -h * 0.25), T(11.5, -h * 0.62), T(12.5, -h + 3.5), T(9.5, -h + 0.5), T(6.5, -h - 1.5), T(6, -h - 5)]);   // the neck (Robin's second pass, 2026-11-01: no peg) widens into the shoulders inside the one contour
+  const stripe = L => { g.beginPath(); [L.frontTop, L.frontKnee, L.frontCalf, L.frontAnkle, L.backAnkle, L.backCalf, L.backKnee, L.backTop].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
   const boot = L => { g.beginPath(); [L.frontAnkle, L.toeTop, L.toe, L.soleFront, L.soleBack, L.heel, L.heelTop, L.backAnkle].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
   const across = (L, t) => P.lin(g, L.frontKnee[0], L.frontKnee[1], L.backKnee[0], L.backKnee[1], [[0, t.light], [0.5, t.mid], [1, t.dark]]);
   g.save(); contour(); g.clip();
@@ -88,16 +88,19 @@ function body(g, F) {
   g.beginPath(); [T(-3.5, -h - 1), T(0, -h + 3), T(3.5, -h - 1)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = TUNIC.deep; g.fill();   // the collar's V
   g.beginPath(); [T(-16, -4.5), T(0, -3), T(16, -4.5), T(16, -2.5), T(-16, -2.5)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = alpha(TUNIC.deep, 0.35); g.fill();   // the hem's shade
   g.restore();
+  g.beginPath(); [T(-10, -h - 7), T(10, -h - 7), T(10, -h + 0.5), T(0, -h + 1.8), T(-10, -h + 0.5)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath();   // the neck's skin above the collar, part of the one form
+  const nc = T(0, -h - 2); g.fillStyle = P.lin(g, nc[0] - side[0] * 8 * S, nc[1] - side[1] * 8 * S, nc[0] + side[0] * 8 * S, nc[1] + side[1] * 8 * S, [[0, SKIN.mid], [0.5, SKIN.dark], [1, SKIN.deep]]); g.fill();
+  g.beginPath(); [T(-10, -h - 7), T(10, -h - 7), T(10, -h - 3), T(-10, -h - 3)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = alpha(INK, 0.16); g.fill();   // the chin's shadow on the neck
+  g.beginPath(); [T(-3.5, -h + 0.2), T(0, -h + 3.2), T(3.5, -h + 0.2)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = TUNIC.deep; g.fill();   // the collar's V under the neck
   g.beginPath(); [T(-16, 1), T(16, 1), T(16, 3.5), T(-16, 3.5)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = alpha(INK, 0.18); g.fill();   // the tunic's shadow on the trousers
   g.restore();
-  const nk = T(0, -h - 2); g.beginPath(); P.rr(g, nk[0] - 4 * S, nk[1] - 4 * S, 8 * S, 6 * S, 8); g.fillStyle = SKIN.dark; g.fill();                        // the neck, under the head
   contour(); ink(g);
 }
 // ---- an arm: ONE form from the shoulder to the hand, with the upper arm, the elbow, the forearm, the wrist and the hand as its sections; two fixed segments, so the reach is the same in every pose ----
 function reach(shoulder, hand) { const d = v(shoulder, hand), D = len(d); return D > 2 * ARM - 1 ? add(shoulder, unit(d), 2 * ARM - 1) : hand; }   // the hand, pulled within the arm's reach
 function arm(g, shoulder, hand0, near, o = {}) {
   const hand = reach(shoulder, hand0), elbow = bendPoint(shoulder, hand, ARM, o.bend === undefined ? -1 : o.bend), d = unit(v(elbow, hand)), nd = [-d[1], d[0]];
-  const wrist = add(hand, d, -8), tip = add(hand, d, 6), pts = [shoulder, elbow, wrist, tip], ws = [24, 19, 14, 20];
+  const wrist = add(hand, d, -8), tip = add(hand, d, 6), pts = [shoulder, elbow, wrist, tip], ws = [27, 19, 14, 20];
   const ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }, tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep };
   const n = pts.length, L = [], R = [];
   for (let i = 0; i < n; i++) { const dd = unit(v(pts[Math.max(0, i - 1)], pts[Math.min(n - 1, i + 1)])), nn = [-dd[1], dd[0]]; L.push(add(pts[i], nn, -ws[i] / 2)); R.push(add(pts[i], nn, ws[i] / 2)); }
@@ -218,7 +221,7 @@ const ACTIONS = {
 };
 // ---- a frame: back to front, the sword behind if the pose says, the far arm, the ONE body, the head, the sword, the near arm ----
 function drawFrame(g, F) {
-  const neck = pxB(F.neck), hips = pxB(F.hips), headC = pxB(F.head), up = unit(v(hips, neck)), side = [-up[1], up[0]], h = len(v(hips, neck)) / S;   // 'side' points to screen right (the back); forward is -side
+  const neck = pxB(F.neck), hips = pxB(F.hips), up = unit(v(hips, neck)), side = [-up[1], up[0]], h = len(v(hips, neck)) / S, headC = add(pxB(F.head), up, -5);   // the head sits down on the neck   // 'side' points to screen right (the back); forward is -side
   const T = (x, y) => add(add(hips, side, x * S), up, -y * S);
   const shoulderN = T(7.5, -h + 4), shoulderF = T(2.5, -h + 4), hasSword = F.sword !== null && F.sword !== undefined;   // the shoulder joints inside the torso's upper corners, the same place in every frame
   const handN = reach(shoulderN, pxB(F.handN));
