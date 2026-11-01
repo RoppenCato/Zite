@@ -65,6 +65,9 @@ export class FightScene extends Phaser.Scene {
   private manaBar!: Bar;
   private heroStatus!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
+  /** The two lines before the message, dimmer: a round reads as a short log (mine, 2026-11-01). */
+  private history!: Phaser.GameObjects.Text;
+  private lines: string[] = [];
   private prompt!: Phaser.GameObjects.Text;
   private buttons: Phaser.GameObjects.Container[] = [];
   private continueButton!: Phaser.GameObjects.Container;
@@ -107,8 +110,10 @@ export class FightScene extends Phaser.Scene {
     this.add.text(CENTRE, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
     this.enemyStatus = this.add.text(CENTRE, 318, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center' }).setOrigin(0.5, 0);
 
+    this.lines = [];
+    this.history = this.add.text(CENTRE, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } }).setOrigin(0.5, 0);
     this.message = this.add
-      .text(CENTRE, 346, `${enemy.name} blocks the way!`, { fontFamily: FONT, fontSize: '16px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
+      .text(CENTRE, 370, `${enemy.name} blocks the way!`, { fontFamily: FONT, fontSize: '16px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
       .setOrigin(0.5, 0);
 
     this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
@@ -135,13 +140,15 @@ export class FightScene extends Phaser.Scene {
   private showMoves(): void {
     const me = this.game_.me;
     const potions = me.items.potion ?? 0;
-    this.prompt.setText('Your move');
+    const manaPotions = me.items['mana-potion'] ?? 0;
+    this.prompt.setText(`Round ${me.fight?.round ?? 1} · your move`);
     this.setOptions([
       { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
       { text: 'Abilities', color: 0x8e6ad9, enabled: Object.keys(me.abilities).length > 0, onTap: () => this.showAbilities() },
       { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
       { text: potions > 1 ? `Potion ×${potions}` : 'Potion', color: 0x4aa3df, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: 'potion' }) },
       { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
+      { text: manaPotions > 1 ? `Mana ×${manaPotions}` : 'Mana Potion', color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: 'mana-potion' }) },
     ]);
   }
 
@@ -388,6 +395,9 @@ export class FightScene extends Phaser.Scene {
       e.phase === 2 ? 'raging' : '',
     ].filter(Boolean);
     this.enemyStatus.setText(enemyBits.join(' · '));
+    // A wind-up held: the enemy rings red until it lands.
+    if (e.charged) this.enemyBody.setStrokeStyle(8, 0xff5a4a, 1);
+    else this.enemyBody.setStrokeStyle(4, 0x101318, 1);
     const meter = CLASS_DATA[this.game_.me.classId].meter;
     const heroBits = [
       meter ? `${meter.name} ${'●'.repeat(f.meter ?? 0)}${'○'.repeat(Math.max(0, PROGRESSION.meterMax - (f.meter ?? 0)))}` : '',
@@ -454,7 +464,13 @@ export class FightScene extends Phaser.Scene {
   }
 
   private say(text: string): void {
-    if (text) this.message.setText(text);
+    if (!text) return;
+    const last = this.message.text;
+    if (last && last !== text) {
+      this.lines = [...this.lines, last].slice(-2);
+      this.history.setText(this.lines.join('\n'));
+    }
+    this.message.setText(text);
   }
 
   private setBusy(busy: boolean): void {

@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 7;
+export const STATE_VERSION = 8;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -134,8 +134,26 @@ export interface GearItem {
   price: number;
 }
 
-/** A pending question the character must answer before rolling again: the gambler's, or a pick of one ability in two. */
-export type Offer = { kind: 'gamble'; stake: number } | { kind: 'ability'; options: string[] };
+/** A town's errand (mine, 2026-11-01, from Robin's list: direction between bosses): what to do, where, how far along, what it pays. */
+export interface Quest {
+  /** The space id of the town that gave it: one errand a town. */
+  id: string;
+  kind: 'cull' | 'chests' | 'hunt' | 'boss';
+  town: string;
+  area: string;
+  /** The creature to beat (cull, hunt, boss); null for chests. */
+  target: string | null;
+  count: number;
+  done: number;
+  gold: number;
+  xp: number;
+  /** The chance the reward holds a unique of the tier. */
+  unique: number;
+  text: string;
+}
+
+/** A pending question the character must answer before rolling again: the gambler's, a town's errand, or a piece that found no room in the bag. */
+export type Offer = { kind: 'gamble'; stake: number } | { kind: 'quest'; quest: Quest } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
   id: string;
@@ -171,6 +189,10 @@ export interface Character {
   /** Times each boss space's boss was beaten. */
   bossKills: Record<string, number>;
   offer: Offer | null;
+  /** The errands carried, one a town at most. */
+  quests: Quest[];
+  /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */
+  picks: string[][];
 }
 
 export interface EnemyMove {
@@ -296,8 +318,8 @@ export type Action =
   | { type: 'move'; id: string; player: string; path: string[] }
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
-  /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
-  | { type: 'buy'; id: string; player: string; item?: string; slot?: Slot }
+  /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot; in a town, an ability from the trainer. */
+  | { type: 'buy'; id: string; player: string; item?: string; slot?: Slot; ability?: string }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }
@@ -307,6 +329,10 @@ export type Action =
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
   /** The answer to a pick of one ability in two. */
   | { type: 'pick'; id: string; player: string; ability: string }
+  /** The answer to a town's errand. */
+  | { type: 'quest'; id: string; player: string; accept: boolean }
+  /** The answer for a piece that found no room in the bag: sold on the spot, or left. */
+  | { type: 'keep'; id: string; player: string; choice: 'sell' | 'drop' }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
   | { type: 'tick'; id: string; player: string };
 
@@ -327,6 +353,8 @@ export type RejectReason =
   | 'already used'
   | 'no such ability'
   | 'not at a shop'
+  | 'not in a town'
+  | 'bag full'
   | 'not enough gold'
   | 'no such item'
   | 'no such gear'
@@ -358,8 +386,21 @@ export type GameEvent =
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
+  /** A level crossed owes a pick of one ability in two, answered on the board. */
+  | { type: 'pickOwed'; action: string; player: string; options: string[]; level: number }
   /** One of two abilities taken at a level (the other stays for a shrine to teach). */
   | { type: 'picked'; action: string; player: string; ability: string; rank: number }
+  /** A town's errand taken or declined. */
+  | { type: 'questTaken'; action: string; player: string; quest: Quest }
+  | { type: 'questDeclined'; action: string; player: string; quest: Quest }
+  /** An errand moved along; `quest` is how it stands now. */
+  | { type: 'questProgress'; action: string; player: string; quest: Quest }
+  /** An errand turned in; what it paid follows as gold, levels and maybe loot. */
+  | { type: 'questDone'; action: string; player: string; quest: Quest }
+  /** A piece that found no room in the bag: it waits in `offer` for keep, or was sold at once for `sold` when something else was pending. */
+  | { type: 'bagFull'; action: string; player: string; gear: GearItem; sold: number | null }
+  /** An ability bought from a town's trainer: learned, or a rank gained. */
+  | { type: 'trained'; action: string; player: string; ability: string; rank: number; price: number; gold: number }
   /** A wandering merchant: the shop is open here. */
   | { type: 'merchant'; action: string; player: string }
   /** A fight began against this enemy, on this space. */

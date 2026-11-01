@@ -56,7 +56,7 @@ describe('the shop', () => {
   it('prices every item and gives each one a use', () => {
     for (const [id, item] of Object.entries(ITEMS)) {
       expect(item.price, id).toBeGreaterThan(0);
-      expect(Boolean(item.heal) !== Boolean(item.dice), `${id} is a potion or a dice card`).toBe(true);
+      expect(Boolean(item.healShare || item.manaShare) !== Boolean(item.dice), `${id} is a potion or a dice card`).toBe(true);
     }
   });
 });

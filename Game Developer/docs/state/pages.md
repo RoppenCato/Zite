@@ -60,8 +60,9 @@ before it lifts (it pans the camera, and lifting it on a spot is not a tap); a p
 together; a mouse wheel over the band zooms by a tenth a notch. `tools/drive-board.mjs` does all of this headless against
 the built game (`node tools/drive-board.mjs [url]`, Chromium through Playwright, CDP touch events): the character screen,
 the camera, hints, the covered areas and the bosses, a reload mid-choice, an old save, a fight with its two taps, a reload
-mid-fight, the enemy's next move and the class meter on the fight screen, the shop, the bag, a dice card, a potion, a
-level's pick of one ability in two answered in the chips, the Iron Gate's boss dropping a unique or an epic and Thornwood
+mid-fight, the enemy's next move and the class meter on the fight screen, the shop, the bag, a dice card, a potion and
+the mana potion among the moves, a level's pick of one ability in two answered in the chips, the trainer in Ashford, an
+errand taken, a full bag's piece sold from the chips, the Iron Gate's boss dropping a unique or an epic and Thornwood
 opening, the Briar King and Frostpeak, the Frost Matriarch and the first grown area laid and drawn (then its boss and
 the second), and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first and plants saves of its own.
 

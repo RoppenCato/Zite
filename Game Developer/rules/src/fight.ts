@@ -11,6 +11,7 @@ import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
+import { questProgress } from './quests.ts';
 import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
@@ -289,10 +290,11 @@ export function fightRound(state: GameState, action: FightAction, character: Cha
       const item = ITEMS[move.item];
       if (!item) return reject(state, action, 'no such item');
       if ((r.c.items[move.item] ?? 0) <= 0) return reject(state, action, 'none left');
-      if (!item.heal) return reject(state, action, 'not now');
+      if (!item.healShare && !item.manaShare) return reject(state, action, 'not now');
       r.c = spend(r.c, move.item);
       events.push({ type: 'used', action: id, player, item: move.item });
-      r.c = heal(r.c, item.heal, action, events);
+      if (item.healShare) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * item.healShare)), action, events);
+      if (item.manaShare) r.c = restoreMana(r.c, Math.max(1, Math.round(r.s.maxMana * item.manaShare)), action, events);
       break;
     }
     case 'flee': {
@@ -647,6 +649,7 @@ function win(r: Round): ApplyResult {
   let next: Character = { ...c, gold: c.gold + gold, fight: null };
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
+  next = questProgress(next, { beat: e.id }, action, events);
 
   const space = r.state.board.spaces[f.space];
   const area = space ? r.state.board.areas[space.area] : undefined;
@@ -682,14 +685,8 @@ function win(r: Round): ApplyResult {
     }
   }
 
-  // A level that offers a pick: one ability in two, answered on the board.
-  if (PROGRESSION.pickLevels.some((l) => l > levelBefore && l <= next.level) && !next.offer) {
-    const options = pickOptions(next, rng);
-    if (options.length === 2) {
-      next = { ...next, offer: { kind: 'ability', options } };
-      events.push({ type: 'offer', action: id, player, offer: next.offer! });
-    }
-  }
+  // The levels crossed owe their picks of one ability in two, answered on the board.
+  next = offerPicks(next, rng, levelBefore, action, events);
 
   let spawns = s.spawns;
   if (f.spawn && spawns[f.space]) {
@@ -698,6 +695,19 @@ function win(r: Round): ApplyResult {
     events.push({ type: 'despawned', action: id, player, space: f.space });
   }
   return { state: { ...withCharacter(s, next), spawns }, events };
+}
+
+/** The levels crossed between `from` and the character's level now owe their picks (one each), when there is something to pick. */
+export function offerPicks(c: Character, rng: Rng, from: number, action: Action, events: GameEvent[]): Character {
+  let next = c;
+  for (const level of PROGRESSION.pickLevels) {
+    if (level <= from || level > next.level) continue;
+    const options = pickOptions(next, rng);
+    if (options.length !== 2) break;
+    next = { ...next, picks: [...next.picks, options] };
+    events.push({ type: 'pickOwed', action: action.id, player: action.player, options, level });
+  }
+  return next;
 }
 
 /** Two abilities of the class to choose between: unknown ones first, then ones with a rank to gain. */

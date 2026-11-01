@@ -8,7 +8,7 @@ from `rules/src/index.ts`, never from the files inside.
 
 | File | What it holds |
 | --- | --- |
-| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (7) |
+| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (8) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
 | `src/data.ts` | the numbers from `data/*.json`, typed |
 | `src/world.ts` | `buildBoard(world)`: the board from the world's areas, hubs and roads (`docs/state/world.md`); `addArea`, `addRoad`, `setBounds`, `checkOpens` for the generator; `KIND_LETTERS`, `GROWN` |
@@ -18,17 +18,19 @@ from `rules/src/index.ts`, never from the files inside.
 | `src/fight.ts` | `creature(id, bestiary)`, `makeEnemy`, `startFight`, `freshFight`, `pickMove`, `intentEvent`, `pickOptions`, `fightRound`: one round of the fight; a boss's fall grows the board |
 | `src/common.ts` | gold, healing, mana, xp and levels (`levelFor`, `gainXp`), the bag, `sellPrice` |
 | `src/hints.ts` | `hintFor(state, space, player, now)`: what touching a spot says; `countdown` |
+| `src/quests.ts` | the towns' errands: `newQuest`, `questProgress`, `questLine` |
 | `src/game.ts` | `newGame`, `apply`, `makeBoard`, `makeCharacter`; the board, landing, the shop and the bag, dice cards, the gamble, the tick |
-| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, 5 to 6, 6 to 7), or null |
+| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8), or null |
 | `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; the Summit opens `gen-1` |
 | `data/themes.json` | the grown areas: the eight themes with their names, adjectives and creatures, the words for places, the four creature shapes, the base numbers and the growth a tier, the cell |
 | `data/spaces.json` | the kinds of spot: label, road letter, the hint, how long a used spot waits |
 | `data/enemies.json` | every creature: level, role (mob, mini, boss), numbers, xp and gold, its moves (with effects to read), a boss's second phase |
 | `data/classes.json` | each class: numbers, growth a level, the starting kit of abilities, the style line, its meter (Rage, Combo, Flow, Focus) |
 | `data/abilities.json` | every ability (six a class): class, mana, meter cost, text, three ranks of effect |
-| `data/gear.json` | ten ranks by tier and the growth beyond them, each slot's base and numbers, rarities (with their affix counts; unique never rolled), affixes, the proper names, drop, unique and sell odds |
+| `data/gear.json` | ten ranks by tier and the growth beyond them, each slot's base and numbers, rarities (with their affix counts; unique never rolled), affixes, the proper names, drop, unique and sell odds, the bag's limit (12) |
 | `data/uniques.json` | the uniques: slot, earliest tier, power, value, text |
-| `data/items.json` | the potion and the four dice cards: text and price |
+| `data/items.json` | the potion (four tenths of max HP), the mana potion (half the mana) and the four dice cards: text and price |
+| `data/quests.json` | the errands: how many are carried, the town's wait, the four kinds with their counts, pay and unique chance |
 | `data/surprises.json` | what a wild spot holds, as weights |
 | `data/progression.json` | the xp table, crits, flee, death, charge, mana a round, the guards, chests, the gamble, spawns |
 | `data/dice.json` | the die: 6 sides |
@@ -38,19 +40,21 @@ from `rules/src/index.ts`, never from the files inside.
 ## The state
 
 ```
-GameState { version: 7, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem }
+GameState { version: 8, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem }
 Board     { start, width, height, spaces: { [id]: Space }, areas: { [id]: Area }, bestiary: { [id]: EnemyData } }
 Space     { id, kind, name, x, y, links, area, boss?, opens? }   x, y in world pixels; a road spot's name is ""
 Area      { id, name, theme, tier, levels: [lo, hi], mobs, miniBosses, bounds }
 Character { id, name, classId, level, xp, gold, hp, mana, maxHp, maxMana, attack, defense, space, steps, fight,
             items, equipment: { weapon, armour, helm, boots, trinket }, bag: GearItem[], abilities: { [id]: rank },
-            opened: area ids, cooldowns: { [space]: until } (also charm, phoenix), bossKills: { [space]: n }, offer }
+            opened: area ids, cooldowns: { [space]: until } (also charm, phoenix, quest:<town>), bossKills: { [space]: n },
+            offer, quests: Quest[], picks: string[][] }
 GearItem  { id, slot, rank, rarity, name, base, stats, affixes: Affix[], unique?, price }
 Fight     { enemy, round, charged, attackUp, barrier, evade, space, spawn, meter, strikes, sureCrit, windup, companion, mark,
             trap, skip, poisoned, weak, used }
 Enemy     { id, name, level, role, hp, maxHp, attack, defense, xp, gold, moves, charged, stunned, weakened, poison, next,
             armoured, evade, phase, phase2 }
-Offer     { kind: 'gamble', stake } | { kind: 'ability', options: [a, b] }
+Offer     { kind: 'gamble', stake } | { kind: 'quest', quest } | { kind: 'loot', gear }
+Quest     { id (the town's space), kind: cull | chests | hunt | boss, town, area, target, count, done, gold, xp, unique, text }
 Spawn     { kind: miniboss | merchant, enemy, until }
 Die       { sides, last }
 ```
@@ -70,9 +74,10 @@ the first area open. **6 (2026-10-31) made the world grow**: the board is rebuil
 leads on) and the areas each character had opened are laid again; a character stays where it stood if that spot is
 still there and in an open area, else goes to the start; the rest is kept as it was. **7 (2026-11-01) brought the
 uniques, the meters and the intents**: a piece's one `affix` becomes its `affixes`, a fight in progress gains the
-fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends). A state
-missing its seed or characters, or with a character of an unknown class, gives null; so does anything that is not a
-state we know. The holder then starts a fresh game.
+fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends). **8
+(2026-11-01) brought the errands, the trainer and the bag's limit**: a character gains `quests` and `picks`; a pick
+that sat in `offer` moves to `picks`. A state missing its seed or characters, or with a character of an unknown
+class, gives null; so does anything that is not a state we know. The holder then starts a fresh game.
 
 ## The actions
 
@@ -94,10 +99,18 @@ region actor stores answers by id). A refused action returns the **same** state 
   item`, `no such gear`.
 - **`equip { gear }`**, **`unequip { slot }`**, **`drop { gear }`**: the bag and the five slots, not in a fight; what
   was worn goes back to the bag; HP and mana are capped at the new maximum. `no such gear` otherwise.
-- **`pick { ability }`**: the answer to a level's pick of one ability in two (`offer.kind === 'ability'`, asked when a
-  fight ends past a level in `pickLevels`: 4, 8, 12, …): the one chosen is learned, or gains a rank; the other waits
-  for a shrine. `picked { ability, rank }`; `nothing to answer`, `no such ability`. The board waits with `answer first`
-  until it is answered, as for the gambler.
+- **`pick { ability }`**: the answer to a level's pick of one ability in two (`picks[0]`, owed when a fight or an
+  errand's pay crosses a level in `pickLevels`: 4, 8, 12, …; `pickOwed { options, level }`): the one chosen is learned,
+  or gains a rank; the other waits for a shrine. `picked { ability, rank }`; `nothing to answer`, `no such ability`.
+  The board waits with `answer first` while picks are owed, as for an offer.
+- **`quest { accept }`**: the answer to a town's errand (`offer.kind === 'quest'`): taken (`questTaken`) into `quests`,
+  or declined (`questDeclined`), and the town waits `cooldownMs` (10 minutes) before asking again.
+- **`keep { choice: 'sell' | 'drop' }`**: the answer for a piece that found no room in the bag (`offer.kind ===
+  'loot'`): sold for half its worth (`sold`) or left (`dropped`).
+- **`buy { ability }`**: the trainer, standing in a **town**: an ability of the class not yet known for
+  `training.learn` (60) times the tier, a rank for one known for `training.rank` (80) times the tier times the rank it
+  has; `trained { ability, rank, price, gold }`; `not in a town`, `no such ability`, `not now` at the top rank, `not
+  enough gold`.
 - **`use { item: 'charm' }`**: no card but a worn Lucky Charm: the pending roll rolled again, once every five minutes
   (`cooldowns.charm`); `used`, `steps`; `not now` while it is spent, `no such item` without the charm.
 - **`use { item, value? }`**: a dice card while a roll is pending and the board is free (below). A potion is not used
@@ -109,11 +122,11 @@ region actor stores answers by id). A refused action returns the **same** state 
 
 | Kind | On landing | Events after `landed` |
 | --- | --- | --- |
-| town | HP and mana back to full; the shop is open while you stand there | `rested { hp, mana }` |
+| town | HP and mana back to full; the shop and the trainer are open while you stand there; an errand paid, told or offered (below) | `rested { hp, mana }`, then `questDone`, `nothing { text }` or `offer` |
 | shop | nothing by itself; the shop is open while you stand there | none |
 | normal (the wilds) | what has spawned there, else a roll by `surprises.json`: a **fight** with one of the area's mobs (70), a **chest** (10), a **merchant** (8), a **gamble** (7), one of the area's **mini-bosses** (5) | `fight`, or `chest …`, `merchant`, `offer` |
 | chest | gold (`chest.gold` times the tier), gear of the tier's rank with a chance, a potion or a card with a chance; then empty for 5 minutes | `chest`, `gold`, `loot`, `found`; later `empty { until }` |
-| potion (spring) | one potion; then dry for 3 minutes | `found`; later `empty` |
+| potion (spring) | one potion and one mana potion; then dry for 3 minutes | `found`, `found`; later `empty` |
 | spell (shrine) | a new ability of the class, else a rank for one known (up to 3), else nothing; then quiet for 10 minutes | `learned { ability, rank }` or `nothing`; later `empty` |
 | boss | the boss fight, unless the boss is away (5 minutes after it fell, per character) | `fight`, or `nothing` |
 
@@ -122,14 +135,29 @@ if less; nobody bothers the broke. **The gamble** is answered with `gamble`: a d
 3), double or nothing on the stake (`gambled { choice, roll, won, delta, gold }`), or `pass` (`nothing`). Until it is
 answered the board waits. Every draw comes from the stream, so a walk that lands on one shifts the dice that follow.
 
-## Items: the shop, the potion, the dice cards (the brief's dice cards, "found or bought")
+## The towns' errands (mine, 2026-11-01, from Robin's list: quests in towns give direction between bosses)
 
-`data/items.json`: a **Potion** (25 gold, heals 50 in a fight; drinking it is the round) and four dice cards: **Reroll**
+`quests.json`. **Landing in a town** with no errand from it, none owed from a decline or a turn-in in the last ten
+minutes, fewer than `maxActive` (3) carried and nothing else pending, offers one: **cull** (thin a creature of the area,
+3 to 5 of them), **chests** (open 2 or 3 in the area), **hunt** (the area's mini-boss), **boss** (the area's boss), by
+weight 50 / 25 / 15 / 10; a kind the area cannot give falls back to culling. It pays the kind's gold and xp times the
+tier times the count (a cull of four Slimes in the meadows: 48 gold, 32 xp), and a hunt or a boss adds a unique of the
+tier one time in four or one in two. **Progress** is counted where it happens: a creature beaten in any fight
+(`questProgress`), a chest opened in the area (a chest spot or a wild spot's chest). **Back in the town** with it done:
+`questDone`, the gold, the xp (with its levels and picks), the loot; then the town waits ten minutes before asking
+again. Unfinished, the town says how it stands (`nothing { text }`); the hint on the town does too. One errand a town,
+kept by the town's space id.
+
+## Items: the shop, the potions, the dice cards (the brief's dice cards, "found or bought")
+
+`data/items.json`: a **Potion** (25 gold, heals four tenths of max HP in a fight; drinking it is the round), a **Mana
+Potion** (25, half the mana back) and four dice cards: **Reroll**
 (20), **+1** (12), **−1** (12, never below one), **Exactly N** (40). A dice card needs a roll pending and the board free
 (`not now` otherwise): Reroll draws `rng.int(sides)` again; +1 adds one (a walk of seven is allowed, no board has a dead
 end that would strand it); −1 takes one; Exactly N sets `value`, a whole number from 1 to the die's sides (`bad value`).
 Events `used { item }`, `steps { steps }`; the die shows the new number. One fewer each use; `none left`; `no such item`.
-Potions and cards are also found in chests and dropped by creatures (`consumableDrop`).
+Potions and cards are also found in chests (a potion, a mana potion or a card: 40 / 20 / 40) and dropped by creatures
+(`consumableDrop`); a spring gives one flask of each.
 
 ## Gear (Robin, 2026-10-31: randomized, tiered, named; five slots; numbers mine)
 
@@ -297,6 +325,9 @@ the numbers above are the retune. Where it stands:
   the Bog King 98 / 100 / 85 / 100; two levels under, half to eight in ten; four under, only the Warrior. The Ranger's
   rank-3 kit (a Mark on a four-arrow Volley, a Trap for every wind-up) makes it the strongest past tier 4 and the Mage
   the softest: a thing to feel before it is tuned from a table.
+- **With the errands and the trainer (2026-11-01)** the bots take every errand and sell what the bag cannot hold; the
+  errands' xp brings level 8 around turn 140 and level 14 around 300, and three bots in thirty-two beat the Matriarch
+  in 500 turns. The bots do not train yet.
 
 Nothing here has been played; these are the first numbers to be felt and changed in `rules/data`.
 
@@ -313,7 +344,8 @@ Nothing here has been played; these are the first numbers to be felt and changed
 | `test/fight.test.ts` | a round pinned from one seed for each class's kit; charge; the guards' arithmetic and the dodge's odds; shadowstep, barrier, war cry; mana and unknown abilities; wind-ups; lifesteal and thorns; flee; death with gear kept, waking only in an open area; levels; loot by role; a boss opening an area and counting its falls; a spawn cleared; the refusals |
 | `test/kits.test.ts` | the four meters and what fills them; every new ability of every class; the pick of one in two: its options, when it is asked, how it is answered and refused |
 | `test/enemies.test.ts` | the intent told at the start and every round and used the round after; a wind-up told as one; every effect (poison and Ironbrow, drain, weaken, armour, evade, heal); every family has something to read; the bosses' second phases, hand-laid and grown |
-| `test/uniques.test.ts` | every unique's shape and every power's unique; making one; a legendary's two affixes; what bosses, minis and mobs drop; every power in play; a version-6 save coming up to 7 |
+| `test/uniques.test.ts` | every unique's shape and every power's unique; making one; a legendary's two affixes; what bosses, minis and mobs drop; every power in play; a version-6 save coming up to date |
+| `test/quests.test.ts` | the errands: offered, every kind drawn, taken and declined with the town's wait, moved along by fights and chests, paid in town; the trainer's prices and refusals; the bag's limit, its question and the sale on the spot; the flasks by share and the spring's two |
 | `test/items.test.ts` | the shop (consumables, plain gear by rank, towns and merchants, refusals), selling, equip, unequip, drop, the dice cards |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |
 

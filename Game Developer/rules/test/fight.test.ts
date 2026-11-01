@@ -250,9 +250,9 @@ describe('a fight', () => {
     const { rounds } = playOut(state, rng, [[{ kind: 'item', item: 'potion' }, 'block'], [attack, 'block']]);
     expect(rounds[0]).toEqual([
       { type: 'used', item: 'potion' },
-      { type: 'healed', amount: 50, hp: 90 },
+      { type: 'healed', amount: 48, hp: 88 },
       { type: 'guarded', guard: 'block' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 85, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 83, absorbed: 0 },
     ]);
     expect(rounds[2]).toEqual([{ type: 'rejected', reason: 'none left' }]);
     expect(apply(state, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'none left' });

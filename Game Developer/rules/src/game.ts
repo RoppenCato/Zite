@@ -2,10 +2,11 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
-import { ABILITIES, CLASS_DATA, DICE_DATA, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
-import { addLoot, giveGold, giveItem, nextGearId, reject, sellPrice, spend, withCharacter } from './common.ts';
-import { fightRound, intentEvent, startFight } from './fight.ts';
-import { plainGear, powers, rollGear, stats } from './gear.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
+import { addLoot, gainXp, giveGold, giveItem, nextGearId, reject, sellPrice, spend, withCharacter } from './common.ts';
+import { fightRound, intentEvent, offerPicks, startFight } from './fight.ts';
+import { plainGear, powers, rollGear, rollUnique, stats } from './gear.ts';
+import { newQuest, questLine, questProgress } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { buildBoard } from './world.ts';
@@ -41,6 +42,8 @@ type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
 type PickAction = Extract<Action, { type: 'pick' }>;
+type QuestAction = Extract<Action, { type: 'quest' }>;
+type KeepAction = Extract<Action, { type: 'keep' }>;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
@@ -76,6 +79,8 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     cooldowns: {},
     bossKills: {},
     offer: null,
+    quests: [],
+    picks: [],
   };
 }
 
@@ -120,13 +125,17 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return gamble(state, action, character, rng);
     case 'pick':
       return pick(state, action, character);
+    case 'quest':
+      return answerQuest(state, action, character, now);
+    case 'keep':
+      return keep(state, action, character);
   }
 }
 
 /** Why the board will not take a turn right now, or null. */
 function boardBusy(c: Character): 'finish the fight first' | 'answer first' | null {
   if (c.fight) return 'finish the fight first';
-  if (c.offer) return 'answer first';
+  if (c.offer || c.picks.length) return 'answer first';
   return null;
 }
 
@@ -186,19 +195,43 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   switch (space.kind) {
     case 'town': {
       const s = stats(c);
-      const rested = { ...c, hp: s.maxHp, mana: s.maxMana };
+      let rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana };
       events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
-      return { state: withCharacter(state, rested), events };
+      // The town's errand: paid when done, told when not, offered when there is none from here.
+      const mine = rested.quests.find((q) => q.town === space.id);
+      let st = state;
+      if (mine && mine.done >= mine.count) {
+        events.push({ type: 'questDone', action: id, player, quest: mine });
+        rested = { ...rested, quests: rested.quests.filter((q) => q !== mine), cooldowns: { ...rested.cooldowns, [`quest:${space.id}`]: now + QUESTS.cooldownMs } };
+        rested = giveGold(rested, mine.gold, action, events);
+        rested = gainXp(rested, mine.xp, action, events);
+        rested = offerPicks(rested, rng, c.level, action, events);
+        if (mine.unique > 0 && rng.next() < mine.unique) {
+          const got = nextGearId(st);
+          st = got.state;
+          const unique = rollUnique(got.id, tier, tier, rng);
+          if (unique) rested = addLoot(rested, unique, action, events);
+        }
+      } else if (mine) {
+        events.push({ type: 'nothing', action: id, player, text: `Your errand here: ${questLine(mine)}` });
+      } else if ((c.cooldowns[`quest:${space.id}`] ?? 0) <= now && rested.quests.length < QUESTS.maxActive && !rested.offer) {
+        const quest = newQuest(state, rested, space, rng);
+        if (quest) {
+          rested = { ...rested, offer: { kind: 'quest', quest } };
+          events.push({ type: 'offer', action: id, player, offer: rested.offer! });
+        }
+      }
+      return { state: withCharacter(st, rested), events };
     }
     case 'shop':
       return { state: withCharacter(state, c), events };
     case 'chest': {
       if (onCooldown) return empty();
-      return openChest(state, cooled(c), tier, action, rng, events);
+      return openChest(state, cooled(c), tier, space.area, action, rng, events);
     }
     case 'potion': {
       if (onCooldown) return empty();
-      return { state: withCharacter(state, giveItem(cooled(c), 'potion', 1, action, events)), events };
+      return { state: withCharacter(state, giveItem(giveItem(cooled(c), 'potion', 1, action, events), 'mana-potion', 1, action, events)), events };
     }
     case 'spell': {
       if (onCooldown) return empty();
@@ -220,7 +253,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         return { state: withCharacter(state, c), events };
       }
       const what = surprise(rng);
-      if (what === 'chest') return openChest(state, c, tier, action, rng, events);
+      if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
       if (what === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
@@ -261,11 +294,11 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
   return { state: withCharacter(state, fighting), events };
 }
 
-/** A chest: gold by the tier, maybe gear of the tier's rank, maybe a potion or a card. */
-function openChest(state: GameState, c: Character, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+/** A chest: gold by the tier, maybe gear of the tier's rank, maybe a potion or a card; an errand for chests moves along. */
+function openChest(state: GameState, c: Character, tier: number, areaId: string, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
   events.push({ type: 'chest', action: action.id, player: action.player });
   const [lo, hi] = PROGRESSION.chest.gold;
-  let next = giveGold(c, tier * (lo + rng.int(hi - lo + 1) - 1), action, events);
+  let next = giveGold(questProgress(c, { chest: areaId }, action, events), tier * (lo + rng.int(hi - lo + 1) - 1), action, events);
   let s = state;
   if (rng.next() < PROGRESSION.chest.gearChance) {
     const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
@@ -275,7 +308,8 @@ function openChest(state: GameState, c: Character, tier: number, action: Action,
   }
   if (rng.next() < PROGRESSION.chest.consumableChance) {
     const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
-    next = rng.next() < 0.6 ? giveItem(next, 'potion', 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
+    const roll = rng.next();
+    next = roll < 0.4 ? giveItem(next, 'potion', 1, action, events) : roll < 0.6 ? giveItem(next, 'mana-potion', 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
   return { state: withCharacter(s, next), events };
 }
@@ -310,6 +344,7 @@ function atShop(state: GameState, c: Character): boolean {
 
 function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
+  if (action.ability !== undefined) return train(state, action, character, action.ability);
   if (!atShop(state, character)) return reject(state, action, 'not at a shop');
   if (action.item !== undefined) {
     const item = ITEMS[action.item];
@@ -324,10 +359,30 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
     const got = nextGearId(state);
     const gear = plainGear(got.id, action.slot, tier);
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
+    if (character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
     const gold = character.gold - gear.price;
     return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
   }
   return reject(state, action, 'no such item');
+}
+
+/**
+ * The trainer, in a town (Robin, 2026-10-31: skills are bought, found or earned): an ability of the class not yet known
+ * for `training.learn` times the tier, a rank for one known for `training.rank` times the tier times the rank it has.
+ */
+function train(state: GameState, action: BuyAction, character: Character, abilityId: string): ApplyResult {
+  const here = state.board.spaces[character.space];
+  if (here?.kind !== 'town') return reject(state, action, 'not in a town');
+  const ability = ABILITIES[abilityId];
+  if (!ability || ability.classId !== character.classId) return reject(state, action, 'no such ability');
+  const rank = character.abilities[abilityId] ?? 0;
+  if (rank >= ability.ranks.length) return reject(state, action, 'not now');
+  const tier = state.board.areas[here.area]?.tier ?? 1;
+  const price = rank === 0 ? PROGRESSION.training.learn * tier : PROGRESSION.training.rank * tier * rank;
+  if (character.gold < price) return reject(state, action, 'not enough gold');
+  const gold = character.gold - price;
+  const next = { ...character, gold, abilities: { ...character.abilities, [abilityId]: rank + 1 } };
+  return { state: withCharacter(state, next), events: [{ type: 'trained', action: action.id, player: action.player, ability: abilityId, rank: rank + 1, price, gold }] };
 }
 
 function sell(state: GameState, action: SellAction, character: Character): ApplyResult {
@@ -442,14 +497,40 @@ function gamble(state: GameState, action: GambleAction, character: Character, rn
   return { state: withCharacter(state, { ...character, gold, offer: null }), events: [{ type: 'gambled', action: action.id, player: action.player, choice: action.choice, roll, won, delta, gold }] };
 }
 
-/** The pick of one ability in two that a level offered: the one chosen is learned, or gains a rank; the other waits for a shrine. */
+/** The pick of one ability in two that a level owed, the first of the list: the one chosen is learned, or gains a rank; the other waits for a shrine. */
 function pick(state: GameState, action: PickAction, character: Character): ApplyResult {
-  const offer = character.offer;
-  if (!offer || offer.kind !== 'ability') return reject(state, action, 'nothing to answer');
-  if (!offer.options.includes(action.ability) || !ABILITIES[action.ability]) return reject(state, action, 'no such ability');
+  const options = character.picks[0];
+  if (!options) return reject(state, action, 'nothing to answer');
+  if (!options.includes(action.ability) || !ABILITIES[action.ability]) return reject(state, action, 'no such ability');
   const rank = Math.min((character.abilities[action.ability] ?? 0) + 1, ABILITIES[action.ability]!.ranks.length);
-  const next = { ...character, offer: null, abilities: { ...character.abilities, [action.ability]: rank } };
+  const next = { ...character, picks: character.picks.slice(1), abilities: { ...character.abilities, [action.ability]: rank } };
   return { state: withCharacter(state, next), events: [{ type: 'picked', action: action.id, player: action.player, ability: action.ability, rank }] };
+}
+
+/** The town's errand taken or declined; a declined town waits before it asks again. */
+function answerQuest(state: GameState, action: QuestAction, character: Character, now: number): ApplyResult {
+  const offer = character.offer;
+  if (!offer || offer.kind !== 'quest') return reject(state, action, 'nothing to answer');
+  const quest = offer.quest;
+  if (action.accept) {
+    const next = { ...character, offer: null, quests: [...character.quests, quest] };
+    return { state: withCharacter(state, next), events: [{ type: 'questTaken', action: action.id, player: action.player, quest }] };
+  }
+  const next = { ...character, offer: null, cooldowns: { ...character.cooldowns, [`quest:${quest.town}`]: now + QUESTS.cooldownMs } };
+  return { state: withCharacter(state, next), events: [{ type: 'questDeclined', action: action.id, player: action.player, quest }] };
+}
+
+/** The piece that found no room in the bag: sold for half its worth, or left where it lay. */
+function keep(state: GameState, action: KeepAction, character: Character): ApplyResult {
+  const offer = character.offer;
+  if (!offer || offer.kind !== 'loot') return reject(state, action, 'nothing to answer');
+  const gear = offer.gear;
+  if (action.choice === 'sell') {
+    const price = sellPrice(gear);
+    const gold = character.gold + price;
+    return { state: withCharacter(state, { ...character, offer: null, gold }), events: [{ type: 'sold', action: action.id, player: action.player, gear, price, gold }] };
+  }
+  return { state: withCharacter(state, { ...character, offer: null }), events: [{ type: 'dropped', action: action.id, player: action.player, gear }] };
 }
 
 // ---- the world's tick ---------------------------------------------------------------------------------------------------

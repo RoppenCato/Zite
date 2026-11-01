@@ -49,10 +49,20 @@ export function spend(c: Character, item: string): Character {
   return { ...c, items };
 }
 
-/** Gear into the bag. */
+/**
+ * Gear into the bag; a full bag (`bagLimit`) holds the piece in `offer` to be sold or left (Robin, 2026-10-31: a bag limit
+ * with a sell-or-drop choice), or, when something else is pending, sells it on the spot.
+ */
 export function addLoot(c: Character, gear: GearItem, action: Action, events: GameEvent[]): Character {
   events.push({ type: 'loot', action: action.id, player: action.player, gear });
-  return { ...c, bag: [...c.bag, gear] };
+  if (c.bag.length < GEAR.bagLimit) return { ...c, bag: [...c.bag, gear] };
+  if (!c.offer) {
+    events.push({ type: 'bagFull', action: action.id, player: action.player, gear, sold: null });
+    return { ...c, offer: { kind: 'loot', gear } };
+  }
+  const price = sellPrice(gear);
+  events.push({ type: 'bagFull', action: action.id, player: action.player, gear, sold: price });
+  return { ...c, gold: c.gold + price };
 }
 
 /** The level a total of `xp` gives, from the progression table: 1 at 0 xp, the table's length at most. */

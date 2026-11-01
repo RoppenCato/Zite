@@ -6,7 +6,7 @@ import { cellFor, generateArea, grownIndex, growBoard, peekArea } from '../src/g
 import { hintFor } from '../src/hints.ts';
 import { legalPaths, nearestTown } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
-import type { Board, Character, GameState } from '../src/types.ts';
+import type { Board, Character, GameEvent, GameState } from '../src/types.ts';
 import { grownWorld } from './fixtures/grown.ts';
 
 const P = 'p1';
@@ -224,9 +224,12 @@ describe('in play', () => {
     expect(state.board.width).toBe(3 * CELL.width);
     expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Molten Tyrant' });
     // The levels gained offer a pick of abilities, answered first; then it plays on from the Summit into the pass.
-    expect(me(state).offer?.kind).toBe('ability');
-    const picked = apply(state, { type: 'pick', id: 'p1', player: P, ability: (me(state).offer as { options: string[] }).options[0]! }, makeRng('w'), NOW);
-    expect(picked.events[0]?.type).toBe('picked');
+    expect(me(state).picks.length).toBeGreaterThan(0);
+    let picked = { state, events: [] as GameEvent[] };
+    while (me(picked.state).picks.length) {
+      picked = apply(picked.state, { type: 'pick', id: `p${me(picked.state).picks.length}`, player: P, ability: me(picked.state).picks[0]![0]! }, makeRng('w'), NOW);
+      expect(picked.events[0]?.type).toBe('picked');
+    }
     const rolled = apply({ ...picked.state, characters: { [P]: { ...me(picked.state), steps: 0 } } }, { type: 'roll', id: 'r1', player: P }, makeRng('w'), NOW).state;
     const open = new Set(me(rolled).opened);
     const paths = legalPaths(rolled.board, 'summit', rolled.die.last!, open);

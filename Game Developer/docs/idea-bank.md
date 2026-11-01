@@ -24,12 +24,11 @@ the date, and comes off this list.
 
 ## Open after the decisions of 2026-10-31 (`docs/decisions-2026-10-31.md`)
 
-10. **Quest givers**: the brief lists them as a space type; Robin's spot list of 2026-10-31 does not. Quests in towns
-    later, or not at all?
-11. **A bag limit**: the gear bag has no limit yet (mine); a limit with a sell-or-drop choice would push players to shops.
-12. **Mana potions** and a mana spot, once the fights show whether mana runs short.
-13. **Trainers in towns** selling ability ranks for gold, beside the shrines that teach for free (Robin: skills are bought,
-    found or earned; only found is built).
+10. ~~Quest givers~~: built as the towns' errands (2026-11-01, `docs/state/rules.md`); a quest giver as a spot of its
+    own is still open.
+11. ~~A bag limit~~: twelve, with sell or leave (2026-11-01).
+12. ~~Mana potions~~: built (2026-11-01); a mana spot of its own is still open (the spring gives both flasks).
+13. ~~Trainers in towns~~: built (2026-11-01), in the town's shop under Train.
 14. **Shared bosses**: a boss's 5-minute return is per character now (mine, for solo play); with the server, is a boss one
     creature for everyone or one per player?
 15. ~~The fourth area and the generator~~: built (2026-10-31, `docs/state/world.md`); the fourth area is the first

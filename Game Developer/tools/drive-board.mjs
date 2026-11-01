@@ -21,10 +21,10 @@ mkdirSync(OUT, { recursive: true });
 const PAGE = process.argv[2] ?? 'http://localhost:4173/';
 const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
-const STATE_VERSION = 7; // rules/src/types.ts
+const STATE_VERSION = 8; // rules/src/types.ts
 const B = { map: [72, 836], bag: [206, 836], log: [340, 836], roll: [206, 884] }; // HudScene BUTTONS
 const F = { a: [110, 600], b: [302, 600], c: [110, 652], d: [302, 652], e: [110, 704], f: [302, 704], cont: [206, 652] }; // FightScene FIGHT_BUTTONS
-const SHOP = { row: (i) => 224 + i * 44, buyX: 356, leave: [206, 706], tabSell: [272, 178] };
+const SHOP = { row: (i) => 222 + i * 40, buyX: 356, leave: [206, 706], tabSell: [272, 178] }; // ShopScene SHOP_LAYOUT: five slots, then potion, mana potion, reroll, +1, -1, exact
 const BAG = { close: [364, 126], wearX: 364, carriedY: 456 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -316,7 +316,7 @@ const shopOpen = await ev(() => ({ active: boardWorld.phaser.scene.isActive('sho
 check('tapping the shop you stand on opens it and dims Roll', shopOpen.active && shopOpen.rollAlpha < 1, JSON.stringify(shopOpen));
 await shot('12-shop');
 await tapAt(SHOP.buyX, SHOP.row(5)); // the potion
-await tapAt(SHOP.buyX, SHOP.row(7)); // +1
+await tapAt(SHOP.buyX, SHOP.row(8)); // +1
 await tapAt(SHOP.buyX, SHOP.row(0)); // the copper sword
 const bought = await ev(() => ({ gold: boardWorld.game.me.gold, items: boardWorld.game.me.items, bag: boardWorld.game.me.bag.map((g) => g.name), message: boardWorld.phaser.scene.getScene('shop').message.text, stats: boardWorld.phaser.scene.getScene('hud').stats.text }));
 check('Buy takes the gold and fills the bag; the HUD follows', bought.gold === 150 - 25 - 12 - 30 && bought.items.potion === 1 && bought.items['plus-one'] === 1 && bought.bag[0] === 'Copper Sword' && /Gold 83/.test(bought.stats) && /Bought Copper Sword for 30 gold/.test(bought.message), JSON.stringify(bought));
@@ -356,12 +356,12 @@ const plusOne = await ev(() => ({ steps: boardWorld.game.me.steps, items: boardW
 check('the +1 chip adds a step, spends the card, relights the choices and shows the new number', plusOne.steps === chips.steps + 1 && plusOne.items['plus-one'] === undefined && plusOne.chips === 0 && plusOne.die === String(plusOne.steps) && plusOne.choices > 0 && /\+1: now \d+ steps?\./.test(plusOne.message), JSON.stringify(plusOne));
 
 // A potion in a fight: a save in a fight with one in the bag.
-await stockSave({ space: 'ashford-millford-1', steps: 0, hp: 30, items: { potion: 1 }, offer: null, fight: { enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 30, maxHp: 30, attack: 6, defense: 2, xp: 6, gold: 8, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'ashford-millford-1', spawn: false } });
+await stockSave({ space: 'ashford-millford-1', steps: 0, hp: 30, items: { potion: 1, 'mana-potion': 1 }, offer: null, fight: { enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 30, maxHp: 30, attack: 6, defense: 2, xp: 6, gold: 8, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'ashford-millford-1', spawn: false } });
 await page.reload();
 await ready();
 await sleep(400);
 const potionShown = await ev(() => ({ active: boardWorld.phaser.scene.isActive('fight'), buttons: boardWorld.phaser.scene.getScene('fight').buttons.map((b) => b.list[1].text) }));
-check('a fight with a potion in the bag offers Potion among the moves', potionShown.active && potionShown.buttons[3] === 'Potion', JSON.stringify(potionShown));
+check('a fight with a potion in the bag offers Potion among the moves, and a mana potion the Mana Potion', potionShown.active && potionShown.buttons[3] === 'Potion' && potionShown.buttons[5] === 'Mana Potion', JSON.stringify(potionShown));
 await tapAt(...F.d); // Potion
 await sleep(150);
 await tapAt(...F.a); // Block
@@ -450,7 +450,7 @@ const answered = await ev(() => ({ offer: boardWorld.game.me.offer, gold: boardW
 check('Low answers it: the die shows, ten gold won or lost, Roll back', answered.offer === null && (answered.gold === 90 || answered.gold === 110) && /The die shows \d: you (win|lose) 10 gold/.test(answered.message) && answered.chips === 0 && answered.rollAlpha === 1, JSON.stringify(answered));
 
 // A level's pick: one ability in two, in the chips; the one tapped is learned.
-await stockSave({ ...STRONG, space: 'ashford', gold: 100, offer: { kind: 'ability', options: ['war-cry', 'execute'] } });
+await stockSave({ ...STRONG, space: 'ashford', gold: 100, offer: null, picks: [['war-cry', 'execute']] });
 await page.reload();
 await ready();
 const pickAsked = await ev(() => ({ chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text }));
@@ -458,8 +458,56 @@ check('a page opened on a level\'s pick asks it in the chips', JSON.stringify(pi
 chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[1].x, y: row.y }; });
 await tapAt(chipPos.x, chipPos.y); // Execute
 await sleep(300);
-const pickedUp = await ev(() => ({ offer: boardWorld.game.me.offer, abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.length }));
-check('tapping Execute learns it, clears the question and says what it does', pickedUp.offer === null && pickedUp.abilities.execute === 1 && /^Learned Execute\. Spend 3 Rage/.test(pickedUp.message) && pickedUp.chips === 0, JSON.stringify(pickedUp));
+const pickedUp = await ev(() => ({ picks: boardWorld.game.me.picks.length, abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.length }));
+check('tapping Execute learns it, clears the question and says what it does', pickedUp.picks === 0 && pickedUp.abilities.execute === 1 && /^Learned Execute\. Spend 3 Rage/.test(pickedUp.message) && pickedUp.chips === 0, JSON.stringify(pickedUp));
+
+// The trainer: in Ashford's shop under Train, War Cry learned for the tier's price.
+await stockSave({ ...STRONG, space: 'ashford', gold: 500, abilities: { 'heavy-blow': 1, 'shield-bash': 1 }, quests: [], picks: [], cooldowns: { 'quest:ashford': Date.now() + 600000 } });
+await page.reload();
+await ready();
+await settle();
+await tapSpace('ashford', spaces);
+await sleep(400);
+await tapAt(316, 178); // Train
+await sleep(150);
+const trainTab = await ev(() => boardWorld.phaser.scene.getScene('shop').children.list.filter((o) => o.text && /^(Heavy Blow|Shield Bash|War Cry|Execute|Rally|Shield Wall)/.test(o.text)).map((o) => o.text));
+check('a town\'s shop has a Train tab listing the class\'s six abilities', trainTab.length === 6 && trainTab[2] === 'War Cry', JSON.stringify(trainTab));
+await tapAt(SHOP.buyX, SHOP.row(2)); // Learn War Cry
+const trained = await ev(() => ({ gold: boardWorld.game.me.gold, rank: boardWorld.game.me.abilities['war-cry'], message: boardWorld.phaser.scene.getScene('shop').message.text }));
+check('Learn teaches War Cry for 60 gold in a tier-1 town', trained.rank === 1 && trained.gold === 440 && /Learned War Cry for 60 gold/.test(trained.message), JSON.stringify(trained));
+await tapAt(...SHOP.leave);
+await sleep(300);
+
+// An errand: walking into Ashford with none from there asks one in the chips; Take it carries it.
+await stockSave({ ...STRONG, space: 'ashford-millford-1', steps: 1, quests: [], picks: [], cooldowns: {} }, { die: { sides: 6, last: 1 } });
+await page.reload();
+await ready();
+await settle();
+await frameChoice('ashford');
+await tapSpace('ashford', spaces);
+await sleep(1200);
+await settle();
+const errand = await ev(() => ({ offer: boardWorld.game.me.offer?.kind, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('landing in a town asks an errand in the chips', errand.offer === 'quest' && JSON.stringify(errand.chips) === '["Take it","Not now"]' && /An errand from Ashford/.test(errand.message), JSON.stringify(errand));
+chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[0].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y); // Take it
+await sleep(300);
+const took = await ev(() => ({ quests: boardWorld.game.me.quests.length, offer: boardWorld.game.me.offer, message: boardWorld.phaser.scene.getScene('hud').message.text, hint: boardWorld.rules.hintFor(boardWorld.game.state, 'ashford', 'local', Date.now()) }));
+check('Take it carries the errand and the town\'s hint says how it stands', took.quests === 1 && took.offer === null && /^Errand taken:/.test(took.message) && /Your errand:/.test(took.hint), JSON.stringify(took));
+
+// A full bag: the piece that found no room waits in the chips; Sell takes its half.
+const twelve = await ev(() => Array.from({ length: 12 }, (_, i) => boardWorld.rules.plainGear(`h${i}`, 'helm', 1)));
+const extra = await ev(() => boardWorld.rules.plainGear('x1', 'weapon', 2));
+await stockSave({ ...STRONG, space: 'ashford', gold: 100, bag: twelve, offer: { kind: 'loot', gear: extra } });
+await page.reload();
+await ready();
+const fullBag = await ev(() => ({ chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('a piece with no room in the bag is asked about in the chips', JSON.stringify(fullBag.chips) === '["Sell for 45","Leave it"]' && /Your bag is full/.test(fullBag.message), JSON.stringify(fullBag));
+chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[0].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y); // Sell
+await sleep(300);
+const soldExtra = await ev(() => ({ gold: boardWorld.game.me.gold, offer: boardWorld.game.me.offer, bag: boardWorld.game.me.bag.length, message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('Sell takes half its worth and frees the board', soldExtra.gold === 145 && soldExtra.offer === null && soldExtra.bag === 12 && /Sold Iron Sword for 45 gold/.test(soldExtra.message), JSON.stringify(soldExtra));
 
 // A wandering merchant camped on the next spot: the walk opens his shop.
 await stockSave({ ...STRONG, space: 'ashford', steps: 1, gold: 100 }, { die: { sides: 6, last: 1 }, spawns: { 'ashford-millford-1': { kind: 'merchant', enemy: null, until: Date.now() + 600000 } } });

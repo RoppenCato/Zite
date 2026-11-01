@@ -226,10 +226,16 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
       }
       continue;
     }
+    if (me.picks.length) {
+      // A level's pick takes an ability not yet known first.
+      const options = me.picks[0]!;
+      state = apply(state, act('pick', { ability: options.find((a) => !me.abilities[a]) ?? options[0]! }), rng, now).state;
+      continue;
+    }
     if (me.offer) {
-      // The gambler is waved on; a level's pick takes an ability not yet known first.
-      const pick = me.offer.kind === 'ability' ? (me.offer.options.find((a) => !me.abilities[a]) ?? me.offer.options[0]!) : null;
-      state = apply(state, pick ? act('pick', { ability: pick }) : act('gamble', { choice: 'pass' }), rng, now).state;
+      // The gambler is waved on, an errand taken, a piece with no room in the bag sold.
+      const answer: Action = me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'quest' ? act('quest', { accept: true }) : act('keep', { choice: 'sell' });
+      state = apply(state, answer, rng, now).state;
       continue;
     }
     if (me.steps > 0) {

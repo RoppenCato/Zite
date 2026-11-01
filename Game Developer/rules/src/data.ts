@@ -12,6 +12,7 @@ import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
+import questsJson from '../data/quests.json' with { type: 'json' };
 import type { World } from './world.ts';
 import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind } from './types.ts';
 
@@ -105,13 +106,21 @@ export interface SpaceKindData {
   cooldownMs?: number;
 }
 
-/** A thing to carry: a potion, or a dice card that changes a pending roll. */
+/** A thing to carry: a potion (a share of max HP or mana), or a dice card that changes a pending roll. */
 export interface ItemData {
   name: string;
   text: string;
   price: number;
-  heal?: number;
+  healShare?: number;
+  manaShare?: number;
   dice?: 'reroll' | 'plus' | 'minus' | 'exact';
+}
+
+/** The towns' errands: how many are carried, how long a town waits before asking again, and the kinds with their numbers. */
+export interface QuestsData {
+  maxActive: number;
+  cooldownMs: number;
+  kinds: Record<'cull' | 'chests' | 'hunt' | 'boss', { weight: number; text: string; count: [number, number]; gold: number; xp: number; unique: number }>;
 }
 
 export interface GearData {
@@ -132,6 +141,8 @@ export interface GearData {
   uniqueChance: Record<'mob' | 'mini' | 'boss', number>;
   consumableDrop: { potion: number; card: number };
   sellShare: number;
+  /** How many pieces the bag carries; one more asks to be sold or left. */
+  bagLimit: number;
 }
 
 /** What the generator draws from to grow an area: its theme's names and creatures, the shapes of creatures, the cell grid. */
@@ -167,6 +178,8 @@ export interface ProgressionData {
   meterMax: number;
   /** The levels at which a character picks one ability in two. */
   pickLevels: number[];
+  /** The trainers' prices a tier: to learn an ability, and a rank (times the rank). */
+  training: { learn: number; rank: number };
 }
 
 /** The world the game plays on: areas, hubs and roads; `buildBoard` lays the spots. */
@@ -185,6 +198,8 @@ export const THEMES = themesJson as ThemesData;
 const { _about: _uniquesAbout, ...uniqueEntries } = uniquesJson as unknown as { _about: string } & Record<string, UniqueData>;
 export const UNIQUES = uniqueEntries as Record<string, UniqueData>;
 export const UNIQUE_IDS = Object.keys(UNIQUES);
+const { _about: _questsAbout, ...questEntries } = questsJson as unknown as { _about: string } & QuestsData;
+export const QUESTS = questEntries as QuestsData;
 
 export const SPACE_KINDS = Object.keys(SPACE_KIND_DATA) as SpaceKind[];
 export const CLASS_IDS = Object.keys(CLASS_DATA) as ClassId[];

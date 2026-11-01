@@ -15,6 +15,7 @@ import {
   hintFor,
   ITEMS,
   reachable,
+  sellPrice,
   SPACE_KIND_DATA,
   stats,
   type Area,
@@ -99,8 +100,10 @@ export class BoardScene extends Phaser.Scene {
   private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
   /** The areas drawn so far: the world grows as bosses fall, and a new area is drawn when it comes (mine, 2026-10-31). */
   private readonly drawn = new Set<string>();
-  /** When the fight, the shop or the bag last closed: the tap that closed it must not also reach the spot under the button (mine, 2026-10-31). */
+  /** When the fight, the shop or the bag last closed, in ms and in frames: the tap that closed it must not also reach the spot
+   * under the button (mine, 2026-10-31), not even when the closing frame runs long drawing a grown area. */
   private overlayClosedAt = -Infinity;
+  private overlayClosedFrame = -Infinity;
   private links!: Phaser.GameObjects.Graphics;
   private border!: Phaser.GameObjects.Graphics;
   private token!: Phaser.GameObjects.Container;
@@ -147,7 +150,7 @@ export class BoardScene extends Phaser.Scene {
     hud.setDie(this.game_.state.die.last === null ? '–' : String(this.game_.state.die.last));
     if (me.fight) {
       this.openFight();
-    } else if (me.offer) {
+    } else if (me.offer || me.picks.length) {
       this.offerChoice();
     } else if (me.steps > 0) {
       this.setBusy(true);
@@ -210,6 +213,7 @@ export class BoardScene extends Phaser.Scene {
   bagClosed(): void {
     this.scene.stop('bag');
     this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
     this.refreshHud();
   }
 
@@ -255,6 +259,7 @@ export class BoardScene extends Phaser.Scene {
   shopLeft(): void {
     this.scene.stop('shop');
     this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
     const space = this.game_.state.board.spaces[this.game_.me.space];
     const again = space?.kind === 'shop' || space?.kind === 'town' ? ' Tap it again to go back in.' : '';
     this.finish(`Left ${space?.name || 'the shop'}.${again}`);
@@ -264,6 +269,7 @@ export class BoardScene extends Phaser.Scene {
   fightOver(outcome: FightOutcome): void {
     this.scene.stop('fight');
     this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
     const me = this.game_.me;
     if (outcome.type === 'died') {
       const town = this.game_.state.board.spaces[me.space]!;
@@ -276,8 +282,8 @@ export class BoardScene extends Phaser.Scene {
     this.refreshClocks();
     this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
     this.finish(outcome.summary);
-    // A level crossed in the fight may ask for a pick of abilities now.
-    if (this.game_.me.offer) this.offerChoice();
+    // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
+    if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
   }
 
   // ---- drawing -----------------------------------------------------------------------------------------------------
@@ -352,7 +358,7 @@ export class BoardScene extends Phaser.Scene {
     circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
     // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
     circle.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-      if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250) this.onSpaceTap(space.id);
+      if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250 && this.game.loop.frame - this.overlayClosedFrame > 3) this.onSpaceTap(space.id);
     });
     this.circles.set(space.id, circle);
 
@@ -669,23 +675,67 @@ export class BoardScene extends Phaser.Scene {
     return chips;
   }
 
-  /** Whatever question is pending: the gambler's, or a pick of one ability in two. */
+  /** Whatever question is pending: the gambler's, a town's errand, a piece with no room in the bag, or a level's pick of one ability in two. */
   private offerChoice(): void {
-    const offer = this.game_.me.offer;
-    if (!offer) return;
-    if (offer.kind === 'gamble') this.offerGamble();
-    else this.offerPick();
+    const me = this.game_.me;
+    const offer = me.offer;
+    if (offer?.kind === 'gamble') this.offerGamble();
+    else if (offer?.kind === 'quest') this.offerQuest();
+    else if (offer?.kind === 'loot') this.offerKeep();
+    else if (me.picks.length) this.offerPick();
   }
 
   /** A level's pick: the two abilities as chips; the one tapped is learned (mine, 2026-11-01). */
   private offerPick(): void {
-    const offer = this.game_.me.offer;
-    if (!offer || offer.kind !== 'ability') return;
+    const options = this.game_.me.picks[0];
+    if (!options) return;
     this.setBusy(true);
     const name = (id: string) => ABILITIES[id]?.name ?? id;
     const known = (id: string) => this.game_.me.abilities[id] ?? 0;
-    this.setMessage(`Level ${this.game_.me.level}: pick one. ${offer.options.map((id) => `${name(id)}: ${ABILITIES[id]?.text ?? ''}`).join(' ')}`);
-    this.hud?.setChips(offer.options.map((id) => ({ text: known(id) ? `${name(id)} R${known(id) + 1}` : name(id), onTap: () => this.answerPick(id) })));
+    this.setMessage(`Level ${this.game_.me.level}: pick one. ${options.map((id) => `${name(id)}: ${ABILITIES[id]?.text ?? ''}`).join(' ')}`);
+    this.hud?.setChips(options.map((id) => ({ text: known(id) ? `${name(id)} R${known(id) + 1}` : name(id), onTap: () => this.answerPick(id) })));
+  }
+
+  /** A town's errand: Take it or Not now (mine, 2026-11-01). */
+  private offerQuest(): void {
+    const offer = this.game_.me.offer;
+    if (!offer || offer.kind !== 'quest') return;
+    this.setBusy(true);
+    const q = offer.quest;
+    this.setMessage(`An errand from ${this.game_.state.board.spaces[q.town]?.name ?? 'the town'}: ${q.text} Pays ${q.gold} gold and ${q.xp} xp${q.unique ? ', maybe a unique' : ''}.`);
+    this.hud?.setChips([
+      { text: 'Take it', onTap: () => this.answerQuest(true) },
+      { text: 'Not now', onTap: () => this.answerQuest(false) },
+    ]);
+  }
+
+  answerQuest(accept: boolean): void {
+    const events = this.game_.act({ type: 'quest', player: this.game_.player, accept });
+    this.hud?.setChips([]);
+    const taken = events.find((e) => e.type === 'questTaken');
+    this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
+    this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
+  }
+
+  /** A piece with no room in the bag: sold on the spot, or left (Robin, 2026-10-31: a bag limit with a sell-or-drop choice). */
+  private offerKeep(): void {
+    const offer = this.game_.me.offer;
+    if (!offer || offer.kind !== 'loot') return;
+    this.setBusy(true);
+    const g = offer.gear;
+    this.setMessage(`Your bag is full. ${describeGear(g)}: sell it here for ${sellPrice(g)} gold, or leave it?`);
+    this.hud?.setChips([
+      { text: `Sell for ${sellPrice(g)}`, onTap: () => this.answerKeep('sell') },
+      { text: 'Leave it', onTap: () => this.answerKeep('drop') },
+    ]);
+  }
+
+  answerKeep(choice: 'sell' | 'drop'): void {
+    const events = this.game_.act({ type: 'keep', player: this.game_.player, choice });
+    this.hud?.setChips([]);
+    const sold = events.find((e) => e.type === 'sold');
+    const dropped = events.find((e) => e.type === 'dropped');
+    this.finish(sold?.type === 'sold' ? `Sold ${sold.gear.name} for ${sold.price} gold.` : dropped?.type === 'dropped' ? `Left ${dropped.gear.name} behind.` : this.describe(events));
   }
 
   answerPick(ability: string): void {
@@ -780,7 +830,7 @@ export class BoardScene extends Phaser.Scene {
         this.openFight();
         return;
       }
-      if (me.offer) {
+      if (me.offer || me.picks.length) {
         this.offerChoice();
         return;
       }
@@ -875,6 +925,18 @@ export class BoardScene extends Phaser.Scene {
           break;
         case 'picked':
           parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
+          break;
+        case 'questProgress':
+          parts.push(`Errand: ${e.quest.done} of ${e.quest.count}.`);
+          break;
+        case 'questDone':
+          parts.push(`Errand done: ${e.quest.text}`);
+          break;
+        case 'bagFull':
+          parts.push(e.sold !== null ? `No room in the bag: ${e.gear.name} sold for ${e.sold} gold.` : '');
+          break;
+        case 'levelled':
+          parts.push(`Level ${e.level}!`);
           break;
         case 'empty':
           parts.push(`Empty for now; again in ${countdown(e.until - this.game_.now())}.`);

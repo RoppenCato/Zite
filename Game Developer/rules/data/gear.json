@@ -35,6 +35,7 @@
   "uniqueChance": { "mob": 0, "mini": 0.1, "boss": 0.5 },
   "consumableDrop": { "potion": 0.2, "card": 0.08 },
   "sellShare": 0.5,
+  "bagLimit": 12,
   "rankGrowth": 1.35,
   "priceGrowth": 1.8
 }

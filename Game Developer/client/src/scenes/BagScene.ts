@@ -2,7 +2,7 @@
 // Equip, unequip and drop each send one intent. Opened from the HUD's Bag button; Close gives the board back.
 
 import Phaser from 'phaser';
-import { describeGear, ITEMS, SLOTS, stats, type GearItem, type Slot } from '../../../rules/src/index.ts';
+import { describeGear, GEAR, ITEMS, SLOTS, stats, type GearItem, type Slot } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
@@ -33,6 +33,7 @@ export class BagScene extends Phaser.Scene {
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
   private numbers!: Phaser.GameObjects.Text;
+  private carried!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
 
   constructor(deps: BagSceneDeps) {
@@ -48,7 +49,7 @@ export class BagScene extends Phaser.Scene {
     const { close } = BAG_LAYOUT;
     makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());
     this.add.text(24, BAG_LAYOUT.wornY - 30, 'Worn', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: COLORS.dim });
-    this.add.text(24, BAG_LAYOUT.carriedY - 30, 'Carried', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: COLORS.dim });
+    this.carried = this.add.text(24, BAG_LAYOUT.carriedY - 30, 'Carried', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: COLORS.dim });
     this.message = this.add.text(CENTRE, 720, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5, 0);
     this.refresh();
     this.log.note('bag open');
@@ -58,6 +59,7 @@ export class BagScene extends Phaser.Scene {
     for (const r of this.rows) r.destroy();
     this.rows = [];
     const me = this.game_.me;
+    this.carried.setText(`Carried ${me.bag.length} of ${GEAR.bagLimit}`);
     const s = stats(me);
     const extras = [s.crit > 0.1 ? `crit ${Math.round(s.crit * 100)}%` : '', s.dodge ? `dodge +${Math.round(s.dodge * 100)}%` : '', s.lifesteal ? `lifesteal ${Math.round(s.lifesteal * 100)}%` : '', s.thorns ? `thorns ${Math.round(s.thorns * 100)}%` : ''].filter(Boolean);
     this.numbers.setText(`Attack ${s.attack} · Defense ${s.defense} · HP ${me.hp}/${s.maxHp} · Mana ${me.mana}/${s.maxMana}${extras.length ? ` · ${extras.join(' · ')}` : ''}`);

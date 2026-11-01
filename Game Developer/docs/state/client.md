@@ -20,7 +20,7 @@ Director's sprites come later. The client never decides anything: it sends inten
 | `src/scenes/BoardScene.ts` | the world, the token, the camera, the touch input, hints; `roll`, `toggleMap`, `openBag`, `downloadLog`, `useCard`, `answerGamble` |
 | `src/scenes/HudScene.ts` | the top panel, the chip row, the message line, Map, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips` |
 | `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
-| `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, Leave |
+| `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
 | `src/scenes/BagScene.ts` | the bag: what is worn, what is carried, the numbers, flasks and cards; Wear, Take off, Drop, Close |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
 
@@ -72,9 +72,11 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - **A tap on any spot** that is not lit says what it is (`hintFor`) in the message line and flashes its ring; a tap on
   the shop or town you stand on opens the shop again. The tap that closes the fight, the shop or the bag never also
   counts on the spot under the button (a quarter-second guard), so Continue over a spot keeps the fight's summary.
-- **Questions in the chip row**: the gambler's (High, Low, Walk on) and **a level's pick of one ability in two** (the
-  two names as chips, the message saying what each does; the one tapped is learned, `pick`). **A Lucky Charm** worn adds
-  a Charm chip to a pending roll (a re-roll; the chip shows the wait while it is spent).
+- **Questions in the chip row**: the gambler's (High, Low, Walk on); **a town's errand** (Take it, Not now; the message
+  says what it asks and pays); **a piece with no room in the bag** (Sell for n, Leave it); and **a level's pick of one
+  ability in two** (the two names as chips, the message saying what each does; the one tapped is learned, `pick`),
+  asked after the fight that owed it and whenever the board is free. **A Lucky Charm** worn adds a Charm chip to a
+  pending roll (a re-roll; the chip shows the wait while it is spent).
 - **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then asks the rules
   where the roll can end inside the open areas (`reachable` with `opened`). **One place and no dice card in the bag: the
   token walks at once. Otherwise those spots light up** (a pulsing yellow ring, radius 42), the camera frames them, the
@@ -121,9 +123,11 @@ next** ("next: Venom Bite (poison)", "next: it winds up Smash", "next: Smash lan
 poisoned, weakened, hardened, fading, raging); the message line; the character as a circle of radius 26, its HP bar
 (green) and mana bar (blue), a status line in teal that **leads with the class meter as dots** ("Rage ●●○○○"; then
 charged, hits harder, barrier, evading, sure crit, marked, hawk, meteor in n, trap set, time bent, poisoned, weakened); a
-prompt. **A round is two taps.** First the move, in two rows of two and a third row: **Attack**, **Abilities** (then the
-known abilities with their mana and meter costs, dimmed when mana or meter is short or the once-a-fight one is used, and
-Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with none), **Flee**. Then the guard:
+prompt that counts the rounds. The two lines said before the message stay above it, dimmer: a round reads as a short
+log; the enemy rings red while it holds a wind-up. **A round is two taps.** First the move, in two rows of two and a
+third row: **Attack**, **Abilities** (then the known abilities with their mana and meter costs, dimmed when mana or meter
+is short or the once-a-fight one is used, and Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with
+none), **Flee**, **Mana Potion ×n**. Then the guard:
 **Block (half)**, **Dodge (luck)**, **Brace (+mana)**, **Counter (hit back)**, and Back. The round is one intent
 (`game.act({ type: 'fight', move, guard })`) and its events are **played back one at a time, 450 ms apart**: a hit
 flashes the one struck and floats the damage up (bigger and yellow on a crit), the bars tween, the message says the blow,
@@ -134,17 +138,20 @@ crit aside. On `won`, `died` or a lucky `fled` the rows give way to **Continue**
 
 ## The shop scene (mine, 2026-10-31)
 
-The shop's name (or "Wandering Merchant") and your gold at the top; two sides, **Buy** and **Sell**. Buy lists the plain
-piece of the area's rank for each of the five slots with its number and price, then the potion and the four dice cards
-with their text and how many you hold; a Buy button each (80 by 32 at x 356, rows from y 224, 44 apart). Sell lists the
-gear in the bag with its rarity colour and half its worth. The message line says what happened; **Leave** (220 by 50 at
-y 706) calls the board's `shopLeft`. The HUD's gold follows every buy.
+The shop's name (or "Wandering Merchant") and your gold at the top; two sides, **Buy** and **Sell**, and in a town a
+third, **Train** (the three tabs then share the row at x 96, 206 and 316). Buy lists the plain piece of the area's rank
+for each of the five slots with its number and price, then the potion, the mana potion and the four dice cards with
+their text and how many you hold; a Buy button each (80 by 32 at x 356, eleven rows from y 222, 40 apart). Sell lists
+the gear in the bag with its rarity colour and half its worth, and how full the bag is. Train lists the class's six
+abilities with rank, text and costs, and a **Learn** or **Rank up** button at the trainer's price (greyed at the top
+rank). The message line says what happened; **Leave** (220 by 50 at y 706) calls the board's `shopLeft`. The HUD's gold
+follows every buy.
 
 ## The bag scene (mine, 2026-10-31)
 
 "Bag" and the numbers with everything on (attack, defense, HP, mana, crit, dodge, lifesteal, thorns); **Worn**: the five
-slots, each with its piece in its rarity colour (or "nothing") and a **Take off** button; **Carried**: up to six pieces
-with **Wear** and **Drop**; the flasks and cards at the bottom; **Close** at the top right. Opened from the HUD's Bag
+slots, each with its piece in its rarity colour (or "nothing") and a **Take off** button; **Carried n of 12**: up to
+six pieces shown with **Wear** and **Drop**; the flasks and cards at the bottom; **Close** at the top right. Opened from the HUD's Bag
 button, not while a fight or the shop is up.
 
 ## The save (`local-game.ts`)

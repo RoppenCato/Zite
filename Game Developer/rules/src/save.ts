@@ -2,7 +2,7 @@ import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
-import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem } from './types.ts';
+import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
 interface StateV1 {
@@ -42,7 +42,17 @@ interface StateV5 {
   spawns: GameState['spawns'];
   nextItem: number;
 }
-/** A version-6 state: today's shape, but gear carried one `affix` and a fight knew no meter, intent or phase. */
+/** A version-7 state: today's shape, but a character carried no errands and its level's pick sat in `offer`. */
+interface StateV7 {
+  version: 7;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
+/** A version-6 state: the shape of 7, but gear carried one `affix` and a fight knew no meter, intent or phase. */
 interface StateV6 {
   version: 6;
   seed: string;
@@ -77,20 +87,39 @@ interface OldCharacter {
  * area) and the areas a character had opened are laid again, so everything else is kept as it was.
  * 6 → 7 (2026-11-01): uniques, meters and intents. A piece's one `affix` becomes its `affixes`; a fight in progress gains
  * the fields it did not have (meter 0, nothing in the air, the enemy's next move unknown until the round ends).
+ * 7 → 8 (2026-11-01): errands and the bag's limit. A character gains `quests` and `picks`; a pick that sat in `offer`
+ * moves to `picks`.
  */
 export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 6) return fromVersion6(raw as StateV6);
+  if (candidate.version === 7) return fromVersion7(raw as StateV7);
+  if (candidate.version === 6) {
+    const v7 = fromVersion6(raw as StateV6);
+    return v7 ? fromVersion7(v7 as unknown as StateV7) : null;
+  }
   if (candidate.version === 5) {
     const v6 = fromVersion5(raw as StateV5);
-    return v6 ? fromVersion6(v6 as unknown as StateV6) : null;
+    const v7 = v6 ? fromVersion6(v6 as unknown as StateV6) : null;
+    return v7 ? fromVersion7(v7 as unknown as StateV7) : null;
   }
   if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
     return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
   }
   return null;
+}
+
+function fromVersion7(old: StateV7): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+    const offer = c.offer as (Offer | { kind: 'ability'; options: string[] }) | null;
+    const owed = offer && offer.kind === 'ability' ? [offer.options] : [];
+    characters[id] = { ...c, offer: offer && offer.kind === 'ability' ? null : offer, quests: c.quests ?? [], picks: [...(c.picks ?? []), ...owed] };
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
 }
 
 /** A piece as version 6 stored it: one affix or none. */

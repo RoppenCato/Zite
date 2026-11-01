@@ -5,6 +5,7 @@ import { GEAR, SPACE_KIND_DATA } from './data.ts';
 import { creature } from './fight.ts';
 import { rankName } from './gear.ts';
 import { grownIndex, peekArea } from './generate.ts';
+import { questLine } from './quests.ts';
 import type { GameState } from './types.ts';
 
 /** A clock reading of ms left: "4:12". */
@@ -43,8 +44,11 @@ export function hintFor(state: GameState, spaceId: string, player: string, now: 
       return `${where}: learn an ability of your class, or improve one you know.${again}`;
     case 'shop':
       return `${where}: ${rank} gear, potions and dice cards; it buys what you carry.`;
-    case 'town':
-      return `${where}: rest, HP and mana to full. A shop.`;
+    case 'town': {
+      const mine = me?.quests.find((q) => q.town === spaceId);
+      const errand = mine ? ` Your errand: ${questLine(mine)}` : (me?.cooldowns[`quest:${spaceId}`] ?? 0) > now ? '' : ' Someone here may have an errand.';
+      return `${where}: rest, HP and mana to full. A shop, a trainer.${errand}`;
+    }
     case 'boss': {
       const boss = space.boss ? creature(space.boss, bestiary) : undefined;
       const grown = space.opens ? grownIndex(space.opens) : null;
