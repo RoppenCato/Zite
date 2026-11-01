@@ -336,6 +336,7 @@ export class BoardScene extends Phaser.Scene {
   /** Roll the die; then walk, or light up the places the roll can end and wait for a tap. */
   roll(): void {
     if (this.busy) {
+      sfx.play('ui/tap-denied');
       if (this.choices_) this.setMessage('Tap a lit spot first.');
       return;
     }
@@ -1227,7 +1228,16 @@ export class BoardScene extends Phaser.Scene {
         const to = { x: s.x, y: s.y - SPACE_RADIUS - 6 };
         const faceRight = to.x >= from.x;
         from = to;
-        return { x: to.x, y: to.y, duration: STEP_MS, ease: 'Sine.easeInOut', onStart: () => this.hero?.face(faceRight) };
+        return {
+          x: to.x,
+          y: to.y,
+          duration: STEP_MS,
+          ease: 'Sine.easeInOut',
+          onStart: () => {
+            this.hero?.face(faceRight);
+            sfx.play('ui/step-grass');
+          },
+        };
       }),
       onComplete: () => {
         this.hero?.play('stand');

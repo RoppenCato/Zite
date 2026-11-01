@@ -120,74 +120,89 @@
       "end": 6.9395,
       "loop": false
     },
-    "ui/chest-shimmer": {
+    "ui/step-grass-1": {
       "start": 6.9895,
-      "end": 8.4895,
+      "end": 7.0563,
+      "loop": false
+    },
+    "ui/step-grass-2": {
+      "start": 7.1063,
+      "end": 7.2315,
+      "loop": false
+    },
+    "ui/step-grass-3": {
+      "start": 7.2815,
+      "end": 7.3606,
+      "loop": false
+    },
+    "ui/chest-shimmer": {
+      "start": 7.4106,
+      "end": 8.9106,
       "loop": false
     },
     "ui/chest-card-1": {
-      "start": 8.5395,
-      "end": 8.8009,
+      "start": 8.9606,
+      "end": 9.222,
       "loop": false
     },
     "ui/chest-card-2": {
-      "start": 8.8509,
-      "end": 9.1152,
+      "start": 9.272,
+      "end": 9.5362,
       "loop": false
     },
     "ui/chest-card-3": {
-      "start": 9.1652,
-      "end": 9.4233,
+      "start": 9.5862,
+      "end": 9.8443,
       "loop": false
     },
     "ui/chest-ding": {
-      "start": 9.4733,
-      "end": 9.8917,
+      "start": 9.8943,
+      "end": 10.3127,
       "loop": false
     },
     "ui/chest-burst-common": {
-      "start": 9.9417,
-      "end": 10.0503,
+      "start": 10.3628,
+      "end": 10.4714,
       "loop": false
     },
     "ui/chest-burst-uncommon": {
-      "start": 10.1003,
-      "end": 10.5998,
+      "start": 10.5214,
+      "end": 11.0209,
       "loop": false
     },
     "ui/chest-burst-rare": {
-      "start": 10.6498,
-      "end": 11.3755,
+      "start": 11.0709,
+      "end": 11.7965,
       "loop": false
     },
     "ui/chest-burst-epic": {
-      "start": 11.4255,
-      "end": 12.4406,
+      "start": 11.8465,
+      "end": 12.8616,
       "loop": false
     },
     "ui/chest-burst-legendary": {
-      "start": 12.4906,
-      "end": 14.2888,
+      "start": 12.9116,
+      "end": 14.7098,
       "loop": false
     },
     "ui/chest-burst-unique": {
-      "start": 14.3388,
-      "end": 15.67,
+      "start": 14.7598,
+      "end": 16.091,
       "loop": false
     },
     "ui/level-up": {
-      "start": 15.72,
-      "end": 17.22,
+      "start": 16.141,
+      "end": 17.641,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 17.27,
-      "end": 19.1977,
+      "start": 17.691,
+      "end": 19.6187,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 19.2477,
-      "end": 21.1622,
+      "start": 19.6687,
+      "end": 21.5832,
       "loop": false
     }
   }

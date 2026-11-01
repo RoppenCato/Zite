@@ -11,6 +11,7 @@ import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, t
 import { Backdrop } from '../backdrop.ts';
 import { creatureReady, Figure } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
+import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -110,6 +111,7 @@ export class FightScene extends Phaser.Scene {
   /** The move chosen, waiting for its guard. */
   private pendingMove: FightMove | null = null;
   private enemyName = '';
+  private enemyId = '';
   private enemyMaxHp = 1;
 
   constructor(deps: FightSceneDeps) {
@@ -135,6 +137,7 @@ export class FightScene extends Phaser.Scene {
     this.enemy = null;
     this.hero = null;
     this.enemyName = enemy.name;
+    this.enemyId = enemy.id;
     this.enemyMaxHp = enemy.maxHp;
 
     // The screen covers the band and the HUD's strip and takes every touch, so nothing reaches the board under it.
@@ -195,6 +198,7 @@ export class FightScene extends Phaser.Scene {
     this.manaBar.set(me.mana, s.maxMana, true);
     this.refreshStatus();
     this.showMoves();
+    sfx.play('fight/begin');
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
   }
 
@@ -263,6 +267,7 @@ export class FightScene extends Phaser.Scene {
     const move = this.pendingMove;
     this.pendingMove = null;
     this.setBusy(true);
+    sfx.play(move.kind === 'ability' ? `fight/ability-${move.ability}` : move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
         this.log.note(`fight ${move.kind}${'ability' in move ? ` ${move.ability}` : ''}/${guard}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);
@@ -332,14 +337,18 @@ export class FightScene extends Phaser.Scene {
           this.hero?.play('attack1');
           this.after(this.hero?.blowMs() ?? 0, () => {
             this.enemy?.play('hit1');
+            sfx.play(e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+            sfx.play(`creature/${this.enemyId}/hit`);
             this.flash(this.enemyBody, e.damage, e.crit);
             this.enemyBar.set(e.hp, this.enemyMaxHp);
           });
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
         } else {
           this.enemy?.play('attack1');
+          sfx.play(`creature/${this.enemyId}/attack`);
           this.after(this.enemy?.blowMs() ?? 0, () => {
             this.hero?.play('hit1');
+            sfx.play(e.crit || e.damage >= s.maxHp * 0.15 ? 'fight/enemy-hit-heavy' : 'fight/enemy-hit-light');
             this.flash(this.heroBody, e.damage, e.crit);
             this.heroBar.set(e.hp, s.maxHp);
           });
@@ -349,16 +358,20 @@ export class FightScene extends Phaser.Scene {
       case 'missed':
         if (e.by === 'enemy') {
           this.enemy?.play('attack1');
+          sfx.play(`creature/${this.enemyId}/attack`);
           this.hero?.play('stand');
         } else this.hero?.play('attack1');
+        sfx.play('fight/miss');
         this.say(e.by === 'enemy' ? `${e.move} misses!` : 'You miss.');
         break;
       case 'charged':
+        if (e.by === 'enemy') sfx.play('fight/enemy-windup');
         this.say(e.by === 'player' ? 'You gather power: the next hit lands twice as hard.' : `${this.enemyName} winds up ${e.move}! Guard well.`);
         this.refreshStatus();
         break;
       case 'guarded':
         if (e.guard === 'block' || e.guard === 'brace' || e.guard === 'counter') this.hero?.play('defend', true);
+        if (e.guard !== 'none') sfx.play(`fight/guard-${e.guard}`);
         this.say({ block: 'You raise your guard.', dodge: 'You step aside…', brace: 'You brace.', counter: 'You wait for the opening…', none: '' }[e.guard]);
         break;
       case 'skipped':
@@ -368,10 +381,12 @@ export class FightScene extends Phaser.Scene {
         this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
+        sfx.play(`fight/effect-${e.kind}`);
         this.say(this.effectText(e.target, e.kind, e.rounds));
         this.refreshStatus();
         break;
       case 'poisoned':
+        sfx.play('fight/effect-poison-tick');
         if (e.target === 'enemy') {
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
@@ -386,10 +401,12 @@ export class FightScene extends Phaser.Scene {
         this.refreshStatus();
         break;
       case 'phase':
+        sfx.play('fight/phase');
         this.say(e.text);
         this.refreshStatus();
         break;
       case 'meter':
+        sfx.play('fight/meter-pip');
         this.refreshStatus();
         break;
       case 'stolen':
@@ -400,10 +417,12 @@ export class FightScene extends Phaser.Scene {
         this.say(`${this.enemyName} heals ${e.amount}.`);
         break;
       case 'drained':
+        sfx.play('fight/effect-drained');
         this.manaBar.set(e.left, s.maxMana);
         this.say(`${this.enemyName} drinks ${e.mana} mana from you.`);
         break;
       case 'revived':
+        sfx.play('fight/revive');
         this.heroBar.set(e.hp, s.maxHp);
         this.say(e.by === 'phoenix' ? `The Phoenix Feather burns: you rise with ${e.hp} HP!` : `The Phoenix Helm pulls you back to ${e.hp} HP.`);
         break;
@@ -411,6 +430,8 @@ export class FightScene extends Phaser.Scene {
         this.hero?.play('attack1');
         this.after(this.hero?.blowMs() ?? 0, () => {
           this.enemy?.play('hit1');
+          sfx.play('fight/hit-light');
+          sfx.play(`creature/${this.enemyId}/hit`);
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
         });
@@ -425,21 +446,30 @@ export class FightScene extends Phaser.Scene {
         break;
       case 'healed':
         this.heroBar.set(e.hp, s.maxHp);
-        if (e.amount > 0) this.say(`You feel better: +${e.amount} HP.`);
+        if (e.amount > 0) {
+          sfx.play('fight/heal');
+          this.say(`You feel better: +${e.amount} HP.`);
+        }
         break;
       case 'fled':
         if (e.ok) this.end({ type: 'fled', loot: [], enemy: this.enemyName, summary: 'You got away.' }, 'You got away!');
-        else this.say('No escape!');
+        else {
+          sfx.play('fight/caught');
+          this.say('No escape!');
+        }
         break;
       case 'won': {
         this.hero?.play('stand');
         this.enemy?.play('die1');
+        sfx.play(`creature/${this.enemyId}/die`);
+        sfx.play('fight/victory');
         const tip = tips.take('won');
         this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
       }
       case 'loot':
         // The drop is told here and shown by the loot reveal once the fight closes (chapter 1, step 2).
+        sfx.play('fight/drop');
         this.say(`It drops ${e.gear.name} (${e.gear.rarity})!`);
         if (this.outcome) this.outcome = { ...this.outcome, loot: [...this.outcome.loot, ...gearIn([e])] };
         break;
@@ -477,6 +507,7 @@ export class FightScene extends Phaser.Scene {
       }
       case 'died': {
         this.hero?.play('die1');
+        sfx.play('fight/defeat');
         const town = this.game_.state.board.spaces[e.town]?.name ?? e.town;
         this.heroBar.set(0, s.maxHp);
         this.end({ type: 'died', loot: [], enemy: this.enemyName, summary: `You wake in ${town} with ${e.lostGold} gold less.` }, `You fall. You wake in ${town}, ${e.lostGold} gold lighter.`);
@@ -519,6 +550,7 @@ export class FightScene extends Phaser.Scene {
       const slot = slots[i]!;
       const { button } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, '16px', () => {
         if (o.enabled && !this.busy) o.onTap();
+        else sfx.play('ui/tap-denied');
       });
       if (!o.enabled) button.setAlpha(0.4);
       this.buttons.push(button);

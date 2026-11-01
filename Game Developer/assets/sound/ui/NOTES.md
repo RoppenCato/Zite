@@ -147,3 +147,15 @@ the spots. Miles, GD decides; the spec changes in one line either way.
 
 **For Robin's ear:** whether the level up is a tune you could hum after a week of hearing it; whether the boss down is big enough
 without being long; whether the area opened is a swell or a sigh.
+
+# The steps on grass (2026-11-01, late)
+
+`step_grass` (`ui/step-grass-1` to `-3`): Kenney's grass footsteps (CC0, on this PC in the Survival studio's `sfx/world/ref/kenney/`),
+three of the five, played as recorded, cut to under 0.13 s with a short fade, under a 7 kHz low-pass. Robin's library-first rule:
+nothing made, a recording chosen. 65 to 123 ms; soft (centre 550 to 830 Hz, a third under 250 Hz); 9 dB under the die's land
+(gain 0.372), since a walk plays one every 260 ms. The surface changes by area later (wood, road, roots, moss, snow).
+
+**Listen:** `preview-turn.mp3` (8 s): one whole turn as the game plays it: the roll (shake, tumble, land B), eight steps on grass at the
+game's pace, a rare chest (the glow, the lid, the card, the ding). On the phone page: Chapter 1, the row "One whole turn".
+
+The sprite now: `game/ui.ogg` 21.6 s, 154 KB, 41 sounds, 21 names.
