@@ -43,37 +43,69 @@ function bendPoint(A, B2, L, k) {   // the joint between A and B for two segment
   const d = v(A, B2), D = len(d), m = [(A[0] + B2[0]) / 2, (A[1] + B2[1]) / 2], u = unit(d), nn = [-u[1], u[0]], h = Math.sqrt(Math.max(0, L * L - D * D / 4));
   return add(m, nn, k * h);
 }
-// ---- the parts, each in frame pixels; fills only, the unit's stamp draws the line ----
-function torso(g, hips, neck) {   // the tunic from the hips to the neck, a short skin neck, the belt at the hem
-  const d = unit(v(hips, neck)), L = len(v(hips, neck)); g.save(); g.translate(hips[0], hips[1]); g.rotate(ang(d) + Math.PI / 2); const s = L / 100;
-  g.beginPath(); P.rr(g, -14, -112 * s, 28, 26 * s, 8); g.fillStyle = SKIN.dark; g.fill();                                                          // the neck
-  const body = () => smoothClosed(g, [[-31, -96 * s], [-34, -60 * s], [-36, -14 * s], [-32, 6], [0, 10], [32, 6], [36, -14 * s], [34, -60 * s], [30, -96 * s], [0, -102 * s]]);
-  body(); g.fillStyle = P.rad(g, -22, -70 * s, -8, -50 * s, 86, [[0, TUNIC.light], [0.5, TUNIC.mid], [1, TUNIC.dark]]); g.fill();
-  g.save(); body(); g.clip(); g.fillStyle = BELT.mid; g.fillRect(-40, -16 * s, 80, 14); g.fillStyle = BELT.dark; g.fillRect(-40, -4 * s, 80, 4);   // the belt
-  g.beginPath(); P.rr(g, -8, -17 * s, 16, 15, 3); g.fillStyle = GOLD.mid; g.fill(); ink(g, 1.4, 0.7); g.fillStyle = GOLD.light; g.fillRect(-6, -15 * s, 5, 4);
-  g.beginPath(); g.moveTo(-12, -98 * s); g.lineTo(0, -82 * s); g.lineTo(12, -98 * s); g.closePath(); g.fillStyle = TUNIC.deep; g.fill();                  // the collar's V
-  g.beginPath(); g.moveTo(-36, -30 * s); g.quadraticCurveTo(0, -22 * s, 36, -30 * s); g.lineTo(36, 10); g.lineTo(-36, 10); g.closePath(); g.fillStyle = alpha(TUNIC.deep, 0.35); g.fill();   // the hem's shade
-  g.restore(); g.restore();
-}
-function leg(g, hip, ankle, near, o = {}) {   // thigh and shin as one tube, the knee bent forward, the boot at the ankle with its toe forward; the near leg gets a thin edge so it reads in front
-  const knee = bendPoint(hip, ankle, 30, o.kneeSide || 1), t = near ? PANTS : { light: PANTS.mid, mid: PANTS.dark, dark: PANTS.dark }, b = near ? BOOT : { light: BOOT.mid, mid: BOOT.dark, dark: BOOT.dark };
-  const d = unit(v(knee, ankle)), f = o.foot || [-1, 0];   // the foot's direction (forward, flat), or as the pose says
-  const toe = add(ankle, f, 30), heel = add(ankle, f, -10), up = [-f[1], f[0]];                                             // 'up' is the normal to the foot, pointing up when flat
-  const boot = () => { g.beginPath(); g.moveTo(...add(ankle, d, -12)); g.lineTo(...add(add(ankle, [-d[1] * 13, d[0] * 13]), d, -10)); g.lineTo(...add(heel, up, -2)); g.quadraticCurveTo(...add(heel, up, 10), ...add(toe, up, 8)); g.quadraticCurveTo(...add(toe, up, 14), ...add(toe, up, 4)); g.lineTo(...add(add(ankle, [d[1] * 13, -d[0] * 13]), d, -10)); g.closePath(); };
-  tube(g, [hip, knee, ankle], [26, 23, 21], t, { edge: near });
-  boot(); g.fillStyle = P.lin(g, ankle[0], ankle[1] - 16, ankle[0], ankle[1] + 12, [[0, b.light], [0.5, b.mid], [1, b.dark]]); g.fill(); if (near) { boot(); inner(g); }
-  g.beginPath(); g.moveTo(...add(heel, up, 9)); g.lineTo(...add(toe, up, 8)); g.lineWidth = 2.5; g.strokeStyle = alpha(b.dark, 0.7); g.stroke();   // the sole's line
-}
-function arm(g, shoulder, hand, near, o = {}) {   // sleeve and forearm; the elbow bent to the side the pose says
-  const elbow = bendPoint(shoulder, hand, 25.5, o.bend === undefined ? -1 : o.bend), tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep }, ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep };
-  tube(g, [elbow, hand], [18, 16], ts); tube(g, [shoulder, elbow], [22, 19], tt);
-}
-function fist(g, p, dir, near, grips) {   // a ball of a hand, the thumb toward the sword
-  const t = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }; g.save(); g.translate(p[0], p[1]); g.rotate(ang(dir));
-  g.beginPath(); g.ellipse(0, 0, 13, 11.5, 0, 0, 7); g.fillStyle = P.rad(g, -4, -4, 0, 0, 15, [[0, t.light], [0.6, t.mid], [1, t.dark]]); g.fill();
-  g.beginPath(); g.ellipse(7, -6, 5, 4, 0.4, 0, 7); g.fillStyle = t.light; g.fill(); inner(g);
-  if (grips) { g.beginPath(); g.moveTo(-5, -6); g.quadraticCurveTo(2, -1, -5, 5); inner(g); }
+// ---- the body: ONE drawn contour from the neck round both legs and boots and back, painted inside, one line round it ----
+// Robin, 2026-11-01: "the body doesn't look one form, arms and legs are still their own parts". So no torso shape with leg
+// tubes under it: the contour below is a single closed path (shoulder, chest, the hem flaring over the front leg, down to
+// the front boot, up to the crotch, down the back leg to its boot, up the back), filled once, the tunic and the boots
+// painted inside it as colour zones, and the one line stroked round the whole. The legs are short straight stubs from the
+// hips to the boots, as the reference's are; the knee is a bend in the contour, never a joint.
+function body(g, F) {
+  const N = px(F.neck), Hp = px(F.hips), up = unit(v(Hp, N)), side = [-up[1], up[0]], h = len(v(Hp, N)) / S;   // side = screen right = the back; h the torso's height in reference px
+  const T = (x, y) => add(add(Hp, side, x * S), up, -y * S);                                                   // torso-local: x back-positive, y down-positive, in reference px
+  const legOf = (ankle, foot, xTop, near) => {                                                                 // a leg's points from its top at the hips to its boot
+    const t = T(xTop, 3), d = unit(v(t, ankle)), n = [-d[1], d[0]], f = unit(foot || [-1, 0]), u = [-f[1], f[0]];   // n points forward of the leg, u up from the sole
+    const hwT = 4.2 * S, hwA = 3.6 * S, mid = add(t, v(t, ankle), 0.5), A = add(ankle, d, -4 * S);
+    return { near, t, ankle, d, n, f, u,
+      frontTop: add(t, n, hwT), frontMid: add(mid, n, (hwT + hwA) / 2), frontAnkle: add(A, n, hwA), backAnkle: add(A, n, -hwA), backMid: add(mid, n, -(hwT + hwA) / 2), backTop: add(t, n, -hwT),
+      toeTop: add(add(ankle, f, 8.5 * S), u, 4.5 * S), toe: add(add(ankle, f, 11 * S), u, 0.5 * S), soleFront: add(add(ankle, f, 10 * S), u, -2 * S), soleBack: add(add(ankle, f, -3.5 * S), u, -2 * S), heel: add(add(ankle, f, -4.5 * S), u, 0.5 * S), heelTop: add(add(ankle, f, -3.6 * S), u, 4.5 * S) };
+  };
+  const nearLeg = legOf(px(F.ankleN), F.footN, -3, true), farLeg = legOf(px(F.ankleF), F.footF, 3, false);
+  const [front, back] = nearLeg.ankle[0] <= farLeg.ankle[0] ? [nearLeg, farLeg] : [farLeg, nearLeg];           // the leg further forward leads the contour
+  const round = L => [L.frontTop, L.frontMid, L.frontAnkle, L.toeTop, L.toe, L.toe, L.soleFront, L.soleBack, L.heel, L.heel, L.heelTop, L.backMid, L.backTop];   // doubled corners stay crisp
+  const contour = () => smoothClosed(g, [T(-5, -h - 1), T(-10.5, -h + 2.5), T(-11.5, -h * 0.55), T(-11, -h * 0.2), T(-12, 1.5), ...round(front), T(0, 6.5), ...round(back), T(12, 1.5), T(11, -h * 0.2), T(11.5, -h * 0.55), T(10.5, -h + 2.5), T(5, -h - 1)]);
+  const stripe = L => { g.beginPath(); [L.frontTop, L.frontMid, L.frontAnkle, L.backAnkle, L.backMid, L.backTop].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
+  const boot = L => { g.beginPath(); [L.frontAnkle, L.toeTop, L.toe, L.soleFront, L.soleBack, L.heel, L.heelTop, L.backAnkle].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
+  const across = (L, t) => P.lin(g, L.frontMid[0], L.frontMid[1], L.backMid[0], L.backMid[1], [[0, t.light], [0.5, t.mid], [1, t.dark]]);
+  g.save(); contour(); g.clip();
+  g.fillStyle = PANTS.mid; g.fillRect(0, 0, W, H);                                                                                        // the ground tone of the whole form
+  for (const L of [farLeg, nearLeg]) {                                                                                                       // the far leg first, darker; the near leg over it
+    const tp = L.near ? PANTS : { light: PANTS.mid, mid: PANTS.dark, dark: PANTS.dark }, tb = L.near ? BOOT : { light: BOOT.mid, mid: BOOT.dark, dark: BOOT.dark };
+    stripe(L); g.fillStyle = across(L, tp); g.fill();
+    boot(L); g.fillStyle = P.lin(g, L.ankle[0], L.ankle[1] - 5 * S, L.ankle[0], L.ankle[1] + 2 * S, [[0, tb.light], [0.45, tb.mid], [1, tb.dark]]); g.fill();
+    g.beginPath(); g.moveTo(...add(L.heel, L.u, 1.5 * S)); g.lineTo(...add(L.toe, L.u, 1.5 * S)); g.lineWidth = 2.4; g.strokeStyle = alpha(tb.dark, 0.7); g.stroke();   // the sole's line
+    if (L.near) { stripe(L); inner(g); boot(L); inner(g); }                                                                                 // a thin edge so the near leg reads in front of the far one
+  }
+  const tunic = () => { g.beginPath(); [T(-16, -h - 8), T(16, -h - 8), T(16, 1), T(-16, 1)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };   // the tunic zone, cut by the contour
+  g.save(); tunic(); g.clip(); const c = T(-3, -h * 0.6);
+  g.fillStyle = P.rad(g, c[0], c[1], c[0] + side[0] * 4, c[1] + side[1] * 4, 30 * S, [[0, TUNIC.light], [0.5, TUNIC.mid], [1, TUNIC.dark]]); g.fillRect(0, 0, W, H);
+  g.beginPath(); [T(-16, -2.5), T(16, -2.5), T(16, 0.6), T(-16, 0.6)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = BELT.mid; g.fill();   // the belt
+  g.beginPath(); [T(-16, 0), T(16, 0), T(16, 1), T(-16, 1)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = BELT.dark; g.fill();
+  const bk = T(-2, -1.2); g.beginPath(); g.ellipse(bk[0], bk[1], 2.6 * S, 2.2 * S, 0, 0, 7); g.fillStyle = GOLD.mid; g.fill(); ink(g, 1.4, 0.7);                                  // the buckle
+  g.beginPath(); [T(-3.5, -h - 1), T(0, -h + 3), T(3.5, -h - 1)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = TUNIC.deep; g.fill();   // the collar's V
+  g.beginPath(); [T(-16, -4.5), T(0, -3), T(16, -4.5), T(16, -2.5), T(-16, -2.5)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = alpha(TUNIC.deep, 0.35); g.fill();   // the hem's shade
   g.restore();
+  g.beginPath(); [T(-16, 1), T(16, 1), T(16, 3.5), T(-16, 3.5)].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); g.fillStyle = alpha(INK, 0.18); g.fill();   // the tunic's shadow on the trousers
+  g.restore();
+  const nk = T(0, -h - 2); g.beginPath(); P.rr(g, nk[0] - 4 * S, nk[1] - 4 * S, 8 * S, 6 * S, 8); g.fillStyle = SKIN.dark; g.fill();                        // the neck, under the head
+  contour(); ink(g);
+}
+// ---- an arm: ONE tapered form from the shoulder to the hand, the hand its rounded end (no separate fist), the sleeve a colour zone ----
+function arm(g, shoulder, hand, near, o = {}) {
+  const elbow = bendPoint(shoulder, hand, 25.5, o.bend === undefined ? -1 : o.bend), d = unit(v(elbow, hand));
+  const wrist = add(hand, d, -7), tip = add(hand, d, 7), pts = [shoulder, elbow, wrist, tip], ws = [26, 21, 17, 23];
+  const ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }, tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep };
+  const n = pts.length, L = [], R = [];
+  for (let i = 0; i < n; i++) { const dd = unit(v(pts[Math.max(0, i - 1)], pts[Math.min(n - 1, i + 1)])), nn = [-dd[1], dd[0]]; L.push(add(pts[i], nn, -ws[i] / 2)); R.push(add(pts[i], nn, ws[i] / 2)); }
+  const path = () => { g.beginPath(); g.moveTo(...L[0]); for (let i = 1; i < n; i++) g.lineTo(...L[i]); g.arc(tip[0], tip[1], ws[n - 1] / 2, ang(d) - Math.PI / 2, ang(d) + Math.PI / 2); for (let i = n - 1; i >= 0; i--) g.lineTo(...R[i]); const d0 = unit(v(pts[1], pts[0])); g.arc(pts[0][0], pts[0][1], ws[0] / 2, ang(d0) - Math.PI / 2, ang(d0) + Math.PI / 2); g.closePath(); };
+  const dd = unit(v(shoulder, hand)), nn = [-dd[1], dd[0]], lightSide = (nn[0] + nn[1] * 0.5) < 0 ? -1 : 1, c = elbow;
+  g.save(); path(); g.clip();
+  g.fillStyle = P.lin(g, c[0] - nn[0] * 13 * lightSide, c[1] - nn[1] * 13 * lightSide, c[0] + nn[0] * 13 * lightSide, c[1] + nn[1] * 13 * lightSide, [[0, ts.light], [0.45, ts.mid], [1, ts.dark]]); g.fillRect(0, 0, W, H);
+  const cuff = add(shoulder, v(shoulder, elbow), 0.75), du = unit(v(shoulder, elbow)), nu = [-du[1], du[0]];                                            // the sleeve: the upper arm to just above the elbow
+  g.beginPath(); g.moveTo(...add(add(shoulder, du, -30), nu, -30)); g.lineTo(...add(cuff, nu, -30)); g.quadraticCurveTo(...add(cuff, du, 5), ...add(cuff, nu, 30)); g.lineTo(...add(add(shoulder, du, -30), nu, 30)); g.closePath();
+  g.fillStyle = P.lin(g, c[0] - nn[0] * 13 * lightSide, c[1] - nn[1] * 13 * lightSide, c[0] + nn[0] * 13 * lightSide, c[1] + nn[1] * 13 * lightSide, [[0, tt.light], [0.45, tt.mid], [1, tt.dark]]); g.fill();
+  g.beginPath(); g.moveTo(...add(cuff, nu, -14)); g.quadraticCurveTo(...add(cuff, du, 5), ...add(cuff, nu, 14)); inner(g);                             // the cuff's edge
+  g.beginPath(); g.moveTo(...add(add(hand, d, -3), [-d[1], d[0]], -6)); g.quadraticCurveTo(...add(hand, d, 4), ...add(add(hand, d, -3), [-d[1], d[0]], 6)); inner(g);   // the fingers' curl
+  g.restore(); path(); ink(g);
 }
 function sword(g, grip, deg) {   // from the grip point along the angle (0 forward, 90 up): pommel, grip, guard, the long slim blade (the reference's is as long as its body is tall); drawn with its own lines
   g.save(); g.translate(grip[0], grip[1]); g.rotate(rad(deg) + Math.PI);   // the blade runs toward screen left at 0 degrees, up at 90
@@ -133,7 +165,7 @@ function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out 
 // ---- the poses, in the reference's units: x forward is negative, y up is negative, the feet at 0,0 ----
 // fields: neck, hips, head (centre), tilt (degrees, positive leans the head back), handN, bendN (the elbow's side), ankleN, ankleF, footN/footF (the foot's direction),
 // sword (degrees: 0 forward, 90 up) or null, swordZ ('front' over the body, 'back' behind it), handF (the far hand, drawn behind, or none), face, delay
-const stand = (dy, face) => ({ neck: [-4, -32 - dy], hips: [-5, -21 - dy * 0.6], head: [-6, -47 - dy], tilt: 0, handN: [2, -14 - dy * 0.6], bendN: -1, ankleN: [-9, -2], ankleF: [1, -2], sword: -18, swordZ: 'front', face, delay: 350 });
+const stand = (dy, face) => ({ neck: [-4, -32 - dy], hips: [-5, -21 - dy * 0.6], head: [-6, -47 - dy], tilt: 0, handN: [2, -14 - dy * 0.6], bendN: -1, ankleN: [-7, -2], ankleF: [2, -2], sword: -18, swordZ: 'front', face, delay: 350 });
 function walk(i, n) {   // a stride: the near leg forward at 0, the far leg half a cycle on; a lifted foot while it swings forward
   const t = i / n, c = Math.cos(2 * Math.PI * t), s = Math.sin(2 * Math.PI * t), c2 = -c, s2 = -s;
   const lift = sv => Math.min(0, sv) * 8, bob = Math.abs(s) * 1.2;
@@ -160,20 +192,18 @@ const ACTIONS = {
     { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 83, swordFree: [-16, 0, 6], a0: 150, a1: 0 },
   ],
 };
-// ---- a frame: the units placed from the pose and stamped back to front, each under its one silhouette line ----
+// ---- a frame: back to front, the sword behind if the pose says, the far arm, the ONE body, the head, the sword, the near arm ----
 function drawFrame(g, F) {
-  const neck = px(F.neck), hips = px(F.hips), headC = px(F.head), handN = px(F.handN), ankleN = px(F.ankleN), ankleF = px(F.ankleF);
+  const neck = px(F.neck), hips = px(F.hips), headC = px(F.head), handN = px(F.handN);
   const up = unit(v(hips, neck)), side = [-up[1], up[0]];                                   // 'side' points to screen right (the back) when the body is upright; forward is -side
-  const shoulderN = add(add(neck, up, -7), side, 16), shoulderF = add(add(neck, up, -7), side, 8);   // the shoulders at the torso's back half, where the reference hangs its arm
-  const hipN = add(hips, side, -5), hipF = add(hips, side, 5), hasSword = F.sword !== null && F.sword !== undefined;
+  const shoulderN = add(add(neck, up, -8), side, 14), shoulderF = add(add(neck, up, -8), side, 6), hasSword = F.sword !== null && F.sword !== undefined;   // the shoulders in the torso's back half, where the reference hangs its arm
   if (F.swordFree) { const q = px(F.swordFree); sword(g, q, F.swordFree[2]); }                      // a dropped sword lies on the ground, behind everything
   if (hasSword && F.swordZ === 'back') sword(g, handN, F.sword);
-  if (F.handF) { const hf = px(F.handF); stamp(g, h => { arm(h, shoulderF, hf, false, { bend: 1 }); fist(h, hf, v(shoulderF, hf), false, false); }); }
-  stamp(g, h => { leg(h, hipF, ankleF, false, { foot: F.footF, kneeSide: 1 }); torso(h, hips, neck); leg(h, hipN, ankleN, true, { foot: F.footN, kneeSide: 1 }); });   // the body: both legs and the tunic, one line round the whole
+  if (F.handF) arm(g, shoulderF, px(F.handF), false, { bend: 1 });
+  body(g, F);
   stamp(g, h => head(h, headC, F.tilt, F.face));
   if (hasSword && F.swordZ !== 'back') sword(g, handN, F.sword);
-  const dir = hasSword ? [-Math.cos(rad(F.sword)), -Math.sin(rad(F.sword))] : v(shoulderN, handN);
-  stamp(g, h => { arm(h, shoulderN, handN, true, { bend: F.bendN }); fist(h, handN, dir, true, hasSword); });   // the near arm with its fist, over the sword's grip
+  arm(g, shoulderN, handN, true, { bend: F.bendN });
   return { headTop: add(headC, [Math.sin(rad(F.tilt)) * 70, -Math.cos(rad(F.tilt)) * 70]), tip: hasSword ? add(handN, [-Math.cos(rad(F.sword)) * 128, -Math.sin(rad(F.sword)) * 128]) : null, shoulder: shoulderN };
 }
 (async () => {

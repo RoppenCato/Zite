@@ -288,3 +288,15 @@ fist) is filled on its own canvas and stamped under ONE silhouette line round ev
 reference's body is one picture; only a thin inner edge on the near leg and the hairline sit inside. The far eye is now the
 near eye's mirror about the face's centre line (the heavy lids both rise toward the centre, the brows mirror too), while the
 iris's lean and the highlight stay on the light's side, as a real pair of eyes does.
+
+Robin, 2026-11-01, next: "the body doesn't look one form; arms and legs are still their own parts and that's causing weird
+behaviour; the body proportion looks a bit odd." A union of tubes under one line was still a doll of tubes. Now `body()` in
+`tools/doll.js` draws the whole body as ONE contour per frame: from the neck down the chest, the hem flaring over the front
+leg, down that leg to its boot, round the boot, up to the crotch, down the back leg, round its boot, up the back to the
+neck; filled once, the tunic, the belt, the far leg's shade and the two boots painted inside it as colour zones, and the one
+line stroked round the whole. The legs are short straight stubs from the hips to big boots, as the reference's are (its
+legs are about a third of the body, its shoes big and bright); there is no knee joint, a bend is a bend in the contour.
+The arm is one tapered form from the shoulder to a rounded end that is the hand (no fist ball), the sleeve a colour zone
+with a thin cuff line, the fingers a thin curl. The stand plants the feet as the reference does (the front toe 15 ahead,
+the back toe 6). Checked beside the reference at the same height: the head, the short belted body, the stubby legs, the
+boots and the sword's length now sit the same.
