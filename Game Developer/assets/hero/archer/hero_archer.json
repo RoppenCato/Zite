@@ -1,0 +1,1262 @@
+{
+ "frames": {
+  "hero_archer/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 181,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.5083,
+    "y": 0.9469
+   }
+  },
+  "hero_archer/move/0003": {
+   "frame": {
+    "x": 185,
+    "y": 2,
+    "w": 181,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.5083,
+    "y": 0.9469
+   }
+  },
+  "hero_archer/stand/0001": {
+   "frame": {
+    "x": 368,
+    "y": 2,
+    "w": 180,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.4611,
+    "y": 0.9549
+   }
+  },
+  "hero_archer/stand/0002": {
+   "frame": {
+    "x": 550,
+    "y": 2,
+    "w": 180,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.4611,
+    "y": 0.9634
+   }
+  },
+  "hero_archer/stand/0003": {
+   "frame": {
+    "x": 732,
+    "y": 2,
+    "w": 181,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.4586,
+    "y": 0.969
+   }
+  },
+  "hero_archer/stand/0004": {
+   "frame": {
+    "x": 2,
+    "y": 362,
+    "w": 181,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.4586,
+    "y": 0.9634
+   }
+  },
+  "hero_archer/hit1/0002": {
+   "frame": {
+    "x": 185,
+    "y": 362,
+    "w": 196,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.3214,
+    "y": 0.9521
+   }
+  },
+  "hero_archer/move/0001": {
+   "frame": {
+    "x": 383,
+    "y": 362,
+    "w": 180,
+    "h": 354
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 354
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 354
+   },
+   "pivot": {
+    "x": 0.5111,
+    "y": 0.9718
+   }
+  },
+  "hero_archer/move/0004": {
+   "frame": {
+    "x": 565,
+    "y": 362,
+    "w": 180,
+    "h": 354
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 354
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 354
+   },
+   "pivot": {
+    "x": 0.5111,
+    "y": 0.9718
+   }
+  },
+  "hero_archer/die1/0001": {
+   "frame": {
+    "x": 747,
+    "y": 362,
+    "w": 209,
+    "h": 354
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 354
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 354
+   },
+   "pivot": {
+    "x": 0.2967,
+    "y": 0.952
+   }
+  },
+  "hero_archer/move/0005": {
+   "frame": {
+    "x": 2,
+    "y": 719,
+    "w": 190,
+    "h": 353
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 353
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 353
+   },
+   "pivot": {
+    "x": 0.5316,
+    "y": 0.9603
+   }
+  },
+  "hero_archer/move/0006": {
+   "frame": {
+    "x": 194,
+    "y": 719,
+    "w": 190,
+    "h": 353
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 353
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 353
+   },
+   "pivot": {
+    "x": 0.5316,
+    "y": 0.9603
+   }
+  },
+  "hero_archer/hit1/0001": {
+   "frame": {
+    "x": 386,
+    "y": 719,
+    "w": 226,
+    "h": 352
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 226,
+    "h": 352
+   },
+   "sourceSize": {
+    "w": 226,
+    "h": 352
+   },
+   "pivot": {
+    "x": 0.2655,
+    "y": 0.9403
+   }
+  },
+  "hero_archer/attack1/0001": {
+   "frame": {
+    "x": 614,
+    "y": 719,
+    "w": 180,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4611,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/attack1/0002": {
+   "frame": {
+    "x": 796,
+    "y": 719,
+    "w": 193,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4974,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1074,
+    "w": 199,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4975,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/attack1/0004": {
+   "frame": {
+    "x": 203,
+    "y": 1074,
+    "w": 205,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 205,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 205,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4976,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/attack1/0005": {
+   "frame": {
+    "x": 410,
+    "y": 1074,
+    "w": 199,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5126,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/attack1/0006": {
+   "frame": {
+    "x": 611,
+    "y": 1074,
+    "w": 180,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4611,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/defend/0001": {
+   "frame": {
+    "x": 793,
+    "y": 1074,
+    "w": 193,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.456,
+    "y": 0.9883
+   }
+  },
+  "hero_archer/defend/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1419,
+    "w": 259,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.5444,
+    "y": 0.9882
+   }
+  },
+  "hero_archer/die1/0002": {
+   "frame": {
+    "x": 263,
+    "y": 1419,
+    "w": 264,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 264,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 264,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.2083,
+    "y": 0.8824
+   }
+  },
+  "hero_archer/die1/0003": {
+   "frame": {
+    "x": 529,
+    "y": 1419,
+    "w": 347,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 347,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 347,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.0807,
+    "y": 0.819
+   }
+  },
+  "hero_archer/die1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1761,
+    "w": 335,
+    "h": 113
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 335,
+    "h": 113
+   },
+   "sourceSize": {
+    "w": 335,
+    "h": 113
+   },
+   "pivot": {
+    "x": 0.0448,
+    "y": 0.646
+   }
+  },
+  "hero_archer/die1/0005": {
+   "frame": {
+    "x": 339,
+    "y": 1761,
+    "w": 335,
+    "h": 111
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 335,
+    "h": 111
+   },
+   "sourceSize": {
+    "w": 335,
+    "h": 111
+   },
+   "pivot": {
+    "x": 0.0448,
+    "y": 0.6396
+   }
+  },
+  "hero_archer/die1/0006": {
+   "frame": {
+    "x": 676,
+    "y": 1761,
+    "w": 335,
+    "h": 111
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 335,
+    "h": 111
+   },
+   "sourceSize": {
+    "w": 335,
+    "h": 111
+   },
+   "pivot": {
+    "x": 0.0448,
+    "y": 0.6396
+   }
+  }
+ },
+ "meta": {
+  "image": "hero_archer.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_archer/stand/0001",
+     "w": 180,
+     "h": 355,
+     "origin": {
+      "x": 83,
+      "y": 339
+     },
+     "delay": 150,
+     "lt": {
+      "x": -83,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 16
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/stand/0002",
+     "w": 180,
+     "h": 355,
+     "origin": {
+      "x": 83,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -83,
+      "y": -342
+     },
+     "rb": {
+      "x": 97,
+      "y": 13
+     },
+     "head": {
+      "x": -9,
+      "y": -330
+     }
+    },
+    {
+     "name": "hero_archer/stand/0003",
+     "w": 181,
+     "h": 355,
+     "origin": {
+      "x": 83,
+      "y": 344
+     },
+     "delay": 150,
+     "lt": {
+      "x": -83,
+      "y": -344
+     },
+     "rb": {
+      "x": 98,
+      "y": 11
+     },
+     "head": {
+      "x": -9,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_archer/stand/0004",
+     "w": 181,
+     "h": 355,
+     "origin": {
+      "x": 83,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -83,
+      "y": -342
+     },
+     "rb": {
+      "x": 98,
+      "y": 13
+     },
+     "head": {
+      "x": -9,
+      "y": -329
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_archer/move/0001",
+     "w": 180,
+     "h": 354,
+     "origin": {
+      "x": 92,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 10
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_archer/move/0002",
+     "w": 181,
+     "h": 358,
+     "origin": {
+      "x": 92,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 19
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_archer/move/0003",
+     "w": 181,
+     "h": 358,
+     "origin": {
+      "x": 92,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 19
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_archer/move/0004",
+     "w": 180,
+     "h": 354,
+     "origin": {
+      "x": 92,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -92,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 10
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_archer/move/0005",
+     "w": 190,
+     "h": 353,
+     "origin": {
+      "x": 101,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -101,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 14
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_archer/move/0006",
+     "w": 190,
+     "h": 353,
+     "origin": {
+      "x": 101,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -101,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 14
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_archer/attack1/0001",
+     "w": 180,
+     "h": 343,
+     "origin": {
+      "x": 83,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -83,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/attack1/0002",
+     "w": 193,
+     "h": 343,
+     "origin": {
+      "x": 96,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -96,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/attack1/0003",
+     "w": 199,
+     "h": 343,
+     "origin": {
+      "x": 99,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -99,
+      "y": -339
+     },
+     "rb": {
+      "x": 100,
+      "y": 4
+     },
+     "head": {
+      "x": -6,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/attack1/0004",
+     "w": 205,
+     "h": 343,
+     "origin": {
+      "x": 102,
+      "y": 339
+     },
+     "delay": 134,
+     "lt": {
+      "x": -102,
+      "y": -339
+     },
+     "rb": {
+      "x": 103,
+      "y": 4
+     },
+     "head": {
+      "x": -3,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/attack1/0005",
+     "w": 199,
+     "h": 343,
+     "origin": {
+      "x": 102,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -102,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_archer/attack1/0006",
+     "w": 180,
+     "h": 343,
+     "origin": {
+      "x": 83,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -83,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    }
+   ]
+  },
+  "defend": {
+   "delay": 100,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_archer/defend/0001",
+     "w": 193,
+     "h": 342,
+     "origin": {
+      "x": 88,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -338
+     },
+     "rb": {
+      "x": 105,
+      "y": 4
+     },
+     "head": {
+      "x": -1,
+      "y": -325
+     }
+    },
+    {
+     "name": "hero_archer/defend/0002",
+     "w": 259,
+     "h": 340,
+     "origin": {
+      "x": 141,
+      "y": 336
+     },
+     "delay": 100,
+     "lt": {
+      "x": -141,
+      "y": -336
+     },
+     "rb": {
+      "x": 118,
+      "y": 4
+     },
+     "head": {
+      "x": 6,
+      "y": -324
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_archer/hit1/0001",
+     "w": 226,
+     "h": 352,
+     "origin": {
+      "x": 60,
+      "y": 331
+     },
+     "delay": 150,
+     "lt": {
+      "x": -60,
+      "y": -331
+     },
+     "rb": {
+      "x": 166,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -331
+     }
+    },
+    {
+     "name": "hero_archer/hit1/0002",
+     "w": 196,
+     "h": 355,
+     "origin": {
+      "x": 63,
+      "y": 338
+     },
+     "delay": 120,
+     "lt": {
+      "x": -63,
+      "y": -338
+     },
+     "rb": {
+      "x": 133,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_archer/die1/0001",
+     "w": 209,
+     "h": 354,
+     "origin": {
+      "x": 62,
+      "y": 337
+     },
+     "delay": 90,
+     "lt": {
+      "x": -62,
+      "y": -337
+     },
+     "rb": {
+      "x": 147,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -337
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_archer/die1/0002",
+     "w": 264,
+     "h": 340,
+     "origin": {
+      "x": 55,
+      "y": 300
+     },
+     "delay": 90,
+     "lt": {
+      "x": -55,
+      "y": -300
+     },
+     "rb": {
+      "x": 209,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -300
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_archer/die1/0003",
+     "w": 347,
+     "h": 221,
+     "origin": {
+      "x": 28,
+      "y": 181
+     },
+     "delay": 90,
+     "lt": {
+      "x": -28,
+      "y": -181
+     },
+     "rb": {
+      "x": 319,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_archer/die1/0004",
+     "w": 335,
+     "h": 113,
+     "origin": {
+      "x": 15,
+      "y": 73
+     },
+     "delay": 90,
+     "lt": {
+      "x": -15,
+      "y": -73
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -73
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_archer/die1/0005",
+     "w": 335,
+     "h": 111,
+     "origin": {
+      "x": 15,
+      "y": 71
+     },
+     "delay": 90,
+     "lt": {
+      "x": -15,
+      "y": -71
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -71
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "hero_archer/die1/0006",
+     "w": 335,
+     "h": 111,
+     "origin": {
+      "x": 15,
+      "y": 71
+     },
+     "delay": 90,
+     "lt": {
+      "x": -15,
+      "y": -71
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -71
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

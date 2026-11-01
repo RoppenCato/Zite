@@ -201,6 +201,22 @@ slots, each with its piece in its rarity colour (or "nothing") and a **Take off*
 six pieces shown with **Wear** and **Drop**; the flasks and cards at the bottom; **Close** at the top right. Opened from the HUD's Bag
 button, not while a fight or the shop is up.
 
+## The hero on screen (`hero.ts`, 2026-11-01)
+
+`client/src/hero.ts` loads the hero's sets (`assets/hero/<set>/hero_<set>.png` and `.json`, imported through Vite so the build
+carries them), makes a Phaser animation per clip from the atlas's `actions` block (each frame's own delay; `stand` and
+`move` loop), and the class `Hero` plays them on a sprite whose x, y is the feet (the frames carry a pivot at the feet, which
+Phaser applies on every frame change). The files face left; `face(true)` flips. `heroSetFor(character)` picks the set: a
+coat worn shows `plate`, otherwise `tunic` (mine, for the test); `refreshHud` swaps the set when the wardrobe changes.
+
+- **On the board** the token is the hero at 0.15 of the file (about 45 CSS px), feet on the spot, facing right; a walk
+  plays `move` and turns him the way each step goes, then `stand`.
+- **In the fight** the hero stands at the left (feet at 70, 470) at 0.45 (about 135 CSS px) facing the enemy, which moved
+  to the right (x 300); the history and message texts sit at x 266 in a 270-wide column beside him. The round's events
+  drive the clips: a hit landed plays `attack1`, a hit taken `hit1`, Block, Brace and Counter hold `defend` until the
+  blow, a miss of yours `attack1`, a fall `die1` with the last two frames fading, a win `stand`.
+- With no set loaded the circle and the letter draw as before.
+
 ## The save (`local-game.ts`) and the account (`remote-game.ts`)
 
 **Solo**: `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On

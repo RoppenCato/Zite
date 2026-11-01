@@ -28,6 +28,7 @@ import {
   type SpaceKind,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
+import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
@@ -121,6 +122,8 @@ export class BoardScene extends Phaser.Scene {
   private links!: Phaser.GameObjects.Graphics;
   private border!: Phaser.GameObjects.Graphics;
   private token!: Phaser.GameObjects.Container;
+  /** The hero drawn from the atlas, when a set is loaded; otherwise the token is a circle with a letter. */
+  private hero: Hero | null = null;
   private hud: HudScene | null = null;
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
@@ -630,9 +633,21 @@ export class BoardScene extends Phaser.Scene {
     }
   }
 
+  preload(): void {
+    preloadHero(this);
+  }
+
   private drawToken(): void {
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space]!;
+    const set = heroSetFor(me);
+    if (heroReady(this, set)) {
+      // The hero stands on the spot: the sprite's feet at the spot's centre, a touch up (the container sits above it).
+      this.hero = new Hero(this, set, 0, SPACE_RADIUS + 2, HERO_BOARD_SCALE);
+      this.hero.face(true);
+      this.token = this.add.container(space.x, space.y - SPACE_RADIUS - 6, [this.hero.sprite]).setDepth(10);
+      return;
+    }
     const body = this.add.circle(0, 0, TOKEN_RADIUS, CLASS_COLORS[me.classId] ?? 0xffffff, 1);
     body.setStrokeStyle(3, 0x101318, 1);
     const letter = this.add
@@ -1108,13 +1123,21 @@ export class BoardScene extends Phaser.Scene {
 
   private walk(path: string[], done: () => void): void {
     const spaces = this.game_.state.board.spaces;
+    this.hero?.play('move');
+    let from = { x: this.token.x, y: this.token.y };
     this.tweens.chain({
       targets: this.token,
       tweens: path.map((id) => {
         const s = spaces[id]!;
-        return { x: s.x, y: s.y - SPACE_RADIUS - 6, duration: STEP_MS, ease: 'Sine.easeInOut' };
+        const to = { x: s.x, y: s.y - SPACE_RADIUS - 6 };
+        const faceRight = to.x >= from.x;
+        from = to;
+        return { x: to.x, y: to.y, duration: STEP_MS, ease: 'Sine.easeInOut', onStart: () => this.hero?.face(faceRight) };
       }),
-      onComplete: done,
+      onComplete: () => {
+        this.hero?.play('stand');
+        done();
+      },
     });
   }
 
@@ -1147,6 +1170,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** The HUD's lines: level, HP, mana, gold; the area and the spot. The fight, shop and bag scenes call it too. */
   refreshHud(): void {
+    if (this.hero) this.hero.show(heroSetFor(this.game_.me));
     const me = this.game_.me;
     const s = stats(me);
     const space = this.game_.state.board.spaces[me.space];

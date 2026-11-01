@@ -1,7 +1,7 @@
 # The art
 
-The board scene still draws shapes and labels (2026-10-31); four pieces of scrapped art sit in `assets/` as stand-ins and are
-not drawn yet. This file says what art is in the game, and holds the budgets the Art Director (Mitch, AD since 2026-11-01; Perry, AD before) builds to, set by me on
+The board and the fight draw the hero from the Art Director's test sets since 2026-11-01 (`client/src/hero.ts`); everything
+else is still shapes and labels. Four pieces of scrapped art sit in `assets/` as stand-ins and are not drawn. This file says what art is in the game, and holds the budgets the Art Director (Mitch, AD since 2026-11-01; Perry, AD before) builds to, set by me on
 2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
 arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
 here, so the game builds without the studios' folders. **What the game needs drawn, and in what order, is `docs/art-demands.md`.**
@@ -11,6 +11,7 @@ here, so the game builds without the studios' folders. **What the game needs dra
 | Folder | What | Since | Drawn by the client? |
 | --- | --- | --- | --- |
 | `assets/warrior/` | the Knight, the player's first class character: `warrior.png` (1024 by 1024, palette PNG, 98 KB) and `warrior.json` (Phaser 3 JSON hash, 23 trimmed frames, pivot at the feet, plus an `actions` block with each frame's delay, origin, bounds and head); `frames/`, `sheet.png`, `compare.png`, `screen.png`, `warrior.gif` and `build/` are for looking and making | 2026-10-31 (Robin: "go with that for now; we can get back to it later") | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
+| `assets/hero/` | **the hero's five test sets** from Mitch, AD (2026-11-01): tunic, plate, mage, mix, archer, each one atlas in the game's form (26 frames: stand 4, move 6, attack1 6 with the fourth held, defend 2, hit1 2, die1 6 with the last two fading; `hero_<set>/<action>/0001`, pivot at the feet, facing left; 2048 by 2048 palette PNGs of 144 to 230 KB, 16 MB decoded; the archer 1024 by 2048) with NOTES.md | 2026-11-01 | **tunic and plate are wired in** (`client/src/hero.ts`): the Knight on the board at 0.15 of the file (stand, move facing the way he walks) and in the fight at 0.45 (stand; attack1 on a hit landed; hit1 on a hit taken; defend held on Block, Brace and Counter; die1 with its fade on a fall). A character wearing any coat shows the plate set, otherwise the tunic (mine, for the test). The other three sets are in the folder, not loaded |
 | `assets/puffwort/` | the Puffwort, a meadow monster that hops: `puffwort.png` (1024 by 2048, 158 KB), `puffwort.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 | `assets/bumble/` | the Honey Bumble, a meadow monster that flies: it hovers about 50 CSS px above its origin, which stays on the ground: `bumble.png` (1024 by 1024, 103 KB), `bumble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |
 | `assets/bramble/` | the Bramble Bun, a meadow monster that rolls: `bramble.png` (1024 by 2048, 134 KB), `bramble.json`, 33 frames | 2026-10-31 | not yet; scrapped art (Robin, 2026-11-01), kept as a stand-in until the new art lands |

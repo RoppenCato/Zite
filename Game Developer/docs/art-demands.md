@@ -24,7 +24,7 @@ shape. Every drop is a whole folder in the Art Director's `out/<name>/` with NOT
 
 | Piece | State |
 | --- | --- |
-| The hero's construction: one skeleton with slots, five test sets (tunic, plate, mage, mix, archer) in the Art Director's `out/hero/` | approved by Robin; being wired in as the Knight (`docs/state/art.md`) |
+| The hero's construction: one skeleton with slots, five test sets (tunic, plate, mage, mix, archer) in `assets/hero/` | approved by Robin; the tunic and plate sets drawn as the Knight on the board and in the fight since 2026-11-01 (`docs/state/art.md`); the rest poses will be re-exported after Robin approves the attachment system |
 | The old Warrior and the three old meadow monsters in `assets/` | scrapped art, stand-ins only |
 | Everything else | shapes |
 

@@ -6,6 +6,7 @@
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
+import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { settings } from '../settings.ts';
@@ -64,7 +65,9 @@ export class FightScene extends Phaser.Scene {
   private enemyBody!: Phaser.GameObjects.Arc;
   private enemyBar!: Bar;
   private enemyStatus!: Phaser.GameObjects.Text;
-  private heroBody!: Phaser.GameObjects.Arc;
+  private heroBody!: Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite;
+  /** The hero drawn from the atlas when a set is loaded. */
+  private hero: Hero | null = null;
   private heroBar!: Bar;
   private manaBar!: Bar;
   private heroStatus!: Phaser.GameObjects.Text;
@@ -110,18 +113,26 @@ export class FightScene extends Phaser.Scene {
 
     this.add.text(CENTRE, 128, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
     this.enemyBar = new Bar(this, CENTRE, 162, BAR_W, BAR_H, 0xd9534f);
-    this.enemyBody = this.add.circle(CENTRE, 250, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
-    this.add.text(CENTRE, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    this.enemyBody = this.add.circle(300, 250, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
+    this.add.text(300, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
     this.enemyStatus = this.add.text(CENTRE, 318, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center' }).setOrigin(0.5, 0);
 
     this.lines = [];
-    this.history = this.add.text(CENTRE, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } }).setOrigin(0.5, 0);
+    this.history = this.add.text(266, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: 270 } }).setOrigin(0.5, 0);
     this.message = this.add
-      .text(CENTRE, 370, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
+      .text(266, 370, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
       .setOrigin(0.5, 0);
 
-    this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
-    this.add.text(CENTRE, 440, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    const set = heroSetFor(me);
+    if (heroReady(this, set)) {
+      // The hero at the left facing the enemy, feet on the ground line under the message (the side view's first step).
+      this.hero = new Hero(this, set, 70, 470, HERO_FIGHT_SCALE);
+      this.hero.face(true);
+      this.heroBody = this.hero.sprite;
+    } else {
+      this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
+      this.add.text(CENTRE, 440, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
+    }
     this.heroBar = new Bar(this, CENTRE, 486, BAR_W, BAR_H, COLORS.button);
     this.manaBar = new Bar(this, CENTRE, 510, BAR_W, 14, COLORS.mana, 0, 'MP');
     this.heroStatus = this.add.text(CENTRE, 524, '', { fontFamily: FONT, fontSize: '13px', color: '#7fd8d8', align: 'center' }).setOrigin(0.5, 0);
@@ -264,16 +275,20 @@ export class FightScene extends Phaser.Scene {
     switch (e.type) {
       case 'hit':
         if (e.by === 'player') {
+          this.hero?.play('attack1');
           this.flash(this.enemyBody, e.damage, e.crit);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
         } else {
+          this.hero?.play('hit1');
           this.flash(this.heroBody, e.damage, e.crit);
           this.heroBar.set(e.hp, s.maxHp);
           this.say(`${e.move} hits you for ${e.damage}${e.absorbed ? ` (${e.absorbed} soaked)` : ''}${e.crit ? ', a crit!' : '.'}`);
         }
         break;
       case 'missed':
+        if (e.by === 'enemy') this.hero?.play('stand');
+        else this.hero?.play('attack1');
         this.say(e.by === 'enemy' ? `${e.move} misses!` : 'You miss.');
         break;
       case 'charged':
@@ -281,6 +296,7 @@ export class FightScene extends Phaser.Scene {
         this.refreshStatus();
         break;
       case 'guarded':
+        if (e.guard === 'block' || e.guard === 'brace' || e.guard === 'counter') this.hero?.play('defend', true);
         this.say({ block: 'You raise your guard.', dodge: 'You step aside…', brace: 'You brace.', counter: 'You wait for the opening…', none: '' }[e.guard]);
         break;
       case 'skipped':
@@ -350,6 +366,7 @@ export class FightScene extends Phaser.Scene {
         else this.say('No escape!');
         break;
       case 'won': {
+        this.hero?.play('stand');
         const tip = tips.take('won');
         this.end({ type: 'won', summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
@@ -384,6 +401,7 @@ export class FightScene extends Phaser.Scene {
         break;
       }
       case 'died': {
+        this.hero?.play('die1');
         const town = this.game_.state.board.spaces[e.town]?.name ?? e.town;
         this.heroBar.set(0, s.maxHp);
         this.end({ type: 'died', summary: `You wake in ${town} with ${e.lostGold} gold less.` }, `You fall. You wake in ${town}, ${e.lostGold} gold lighter.`);
@@ -503,7 +521,7 @@ export class FightScene extends Phaser.Scene {
     }
   }
 
-  private flash(body: Phaser.GameObjects.Arc, damage: number, crit: boolean): void {
+  private flash(body: Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite, damage: number, crit: boolean): void {
     if (!settings.get().fewerEffects) this.tweens.add({ targets: body, alpha: 0.25, duration: 80, yoyo: true, repeat: 1 });
     const number = this.add
       .text(body.x + 40, body.y - 40, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '30px' : '22px', fontStyle: 'bold', color: crit ? '#fff27a' : COLORS.text })

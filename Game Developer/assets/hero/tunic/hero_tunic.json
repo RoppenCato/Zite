@@ -1,0 +1,1262 @@
+{
+ "frames": {
+  "hero_tunic/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 180,
+    "h": 398
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 398
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 398
+   },
+   "pivot": {
+    "x": 0.4611,
+    "y": 0.9899
+   }
+  },
+  "hero_tunic/attack1/0002": {
+   "frame": {
+    "x": 184,
+    "y": 2,
+    "w": 186,
+    "h": 380
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 186,
+    "h": 380
+   },
+   "sourceSize": {
+    "w": 186,
+    "h": 380
+   },
+   "pivot": {
+    "x": 0.3978,
+    "y": 0.9895
+   }
+  },
+  "hero_tunic/stand/0003": {
+   "frame": {
+    "x": 372,
+    "y": 2,
+    "w": 214,
+    "h": 348
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 348
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 348
+   },
+   "pivot": {
+    "x": 0.5421,
+    "y": 0.9885
+   }
+  },
+  "hero_tunic/move/0004": {
+   "frame": {
+    "x": 588,
+    "y": 2,
+    "w": 210,
+    "h": 348
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 348
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 348
+   },
+   "pivot": {
+    "x": 0.581,
+    "y": 0.9885
+   }
+  },
+  "hero_tunic/stand/0002": {
+   "frame": {
+    "x": 800,
+    "y": 2,
+    "w": 213,
+    "h": 346
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 346
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 346
+   },
+   "pivot": {
+    "x": 0.5446,
+    "y": 0.9884
+   }
+  },
+  "hero_tunic/stand/0004": {
+   "frame": {
+    "x": 1015,
+    "y": 2,
+    "w": 214,
+    "h": 346
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 346
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 346
+   },
+   "pivot": {
+    "x": 0.5421,
+    "y": 0.9884
+   }
+  },
+  "hero_tunic/move/0001": {
+   "frame": {
+    "x": 1231,
+    "y": 2,
+    "w": 210,
+    "h": 345
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 345
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 345
+   },
+   "pivot": {
+    "x": 0.581,
+    "y": 0.9971
+   }
+  },
+  "hero_tunic/hit1/0002": {
+   "frame": {
+    "x": 1443,
+    "y": 2,
+    "w": 246,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 246,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 246,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.4593,
+    "y": 0.9826
+   }
+  },
+  "hero_tunic/die1/0001": {
+   "frame": {
+    "x": 1691,
+    "y": 2,
+    "w": 259,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.4324,
+    "y": 0.9797
+   }
+  },
+  "hero_tunic/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 402,
+    "w": 213,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5446,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/move/0003": {
+   "frame": {
+    "x": 217,
+    "y": 402,
+    "w": 193,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5389,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/move/0005": {
+   "frame": {
+    "x": 412,
+    "y": 402,
+    "w": 229,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 229,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 229,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.6114,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/attack1/0001": {
+   "frame": {
+    "x": 643,
+    "y": 402,
+    "w": 180,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.4278,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/hit1/0001": {
+   "frame": {
+    "x": 825,
+    "y": 402,
+    "w": 275,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 275,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 275,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.3964,
+    "y": 0.965
+   }
+  },
+  "hero_tunic/attack1/0006": {
+   "frame": {
+    "x": 1102,
+    "y": 402,
+    "w": 237,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 237,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 237,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.6329,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/defend/0001": {
+   "frame": {
+    "x": 1341,
+    "y": 402,
+    "w": 268,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 268,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 268,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.6082,
+    "y": 0.9883
+   }
+  },
+  "hero_tunic/attack1/0005": {
+   "frame": {
+    "x": 1611,
+    "y": 402,
+    "w": 261,
+    "h": 341
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 261,
+    "h": 341
+   },
+   "sourceSize": {
+    "w": 261,
+    "h": 341
+   },
+   "pivot": {
+    "x": 0.7088,
+    "y": 0.9853
+   }
+  },
+  "hero_tunic/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 747,
+    "w": 193,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.5389,
+    "y": 0.9971
+   }
+  },
+  "hero_tunic/move/0006": {
+   "frame": {
+    "x": 197,
+    "y": 747,
+    "w": 229,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 229,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 229,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.6114,
+    "y": 0.9971
+   }
+  },
+  "hero_tunic/defend/0002": {
+   "frame": {
+    "x": 428,
+    "y": 747,
+    "w": 284,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 284,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.6056,
+    "y": 0.9882
+   }
+  },
+  "hero_tunic/attack1/0004": {
+   "frame": {
+    "x": 714,
+    "y": 747,
+    "w": 278,
+    "h": 339
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 278,
+    "h": 339
+   },
+   "sourceSize": {
+    "w": 278,
+    "h": 339
+   },
+   "pivot": {
+    "x": 0.7482,
+    "y": 0.9823
+   }
+  },
+  "hero_tunic/die1/0002": {
+   "frame": {
+    "x": 994,
+    "y": 747,
+    "w": 309,
+    "h": 335
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 309,
+    "h": 335
+   },
+   "sourceSize": {
+    "w": 309,
+    "h": 335
+   },
+   "pivot": {
+    "x": 0.3236,
+    "y": 0.8955
+   }
+  },
+  "hero_tunic/die1/0003": {
+   "frame": {
+    "x": 1305,
+    "y": 747,
+    "w": 370,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 370,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 370,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.1378,
+    "y": 0.819
+   }
+  },
+  "hero_tunic/die1/0005": {
+   "frame": {
+    "x": 1677,
+    "y": 747,
+    "w": 324,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 324,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 324,
+    "h": 144
+   },
+   "pivot": {
+    "x": 0.0123,
+    "y": 0.7222
+   }
+  },
+  "hero_tunic/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1089,
+    "w": 324,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 324,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 324,
+    "h": 144
+   },
+   "pivot": {
+    "x": 0.0123,
+    "y": 0.7222
+   }
+  },
+  "hero_tunic/die1/0004": {
+   "frame": {
+    "x": 328,
+    "y": 1089,
+    "w": 323,
+    "h": 139
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 323,
+    "h": 139
+   },
+   "sourceSize": {
+    "w": 323,
+    "h": 139
+   },
+   "pivot": {
+    "x": 0.0093,
+    "y": 0.7122
+   }
+  }
+ },
+ "meta": {
+  "image": "hero_tunic.png",
+  "size": {
+   "w": 2048,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_tunic/stand/0001",
+     "w": 213,
+     "h": 343,
+     "origin": {
+      "x": 116,
+      "y": 339
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_tunic/stand/0002",
+     "w": 213,
+     "h": 346,
+     "origin": {
+      "x": 116,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -342
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -330
+     }
+    },
+    {
+     "name": "hero_tunic/stand/0003",
+     "w": 214,
+     "h": 348,
+     "origin": {
+      "x": 116,
+      "y": 344
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -344
+     },
+     "rb": {
+      "x": 98,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_tunic/stand/0004",
+     "w": 214,
+     "h": 346,
+     "origin": {
+      "x": 116,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -342
+     },
+     "rb": {
+      "x": 98,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -329
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_tunic/move/0001",
+     "w": 210,
+     "h": 345,
+     "origin": {
+      "x": 122,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -122,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 1
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_tunic/move/0002",
+     "w": 193,
+     "h": 340,
+     "origin": {
+      "x": 104,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -104,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 1
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_tunic/move/0003",
+     "w": 193,
+     "h": 343,
+     "origin": {
+      "x": 104,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -104,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 4
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_tunic/move/0004",
+     "w": 210,
+     "h": 348,
+     "origin": {
+      "x": 122,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -122,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 4
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_tunic/move/0005",
+     "w": 229,
+     "h": 343,
+     "origin": {
+      "x": 140,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -140,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 4
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_tunic/move/0006",
+     "w": 229,
+     "h": 340,
+     "origin": {
+      "x": 140,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -140,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 1
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_tunic/attack1/0001",
+     "w": 180,
+     "h": 343,
+     "origin": {
+      "x": 77,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -77,
+      "y": -339
+     },
+     "rb": {
+      "x": 103,
+      "y": 4
+     },
+     "head": {
+      "x": -4,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_tunic/attack1/0002",
+     "w": 186,
+     "h": 380,
+     "origin": {
+      "x": 74,
+      "y": 376
+     },
+     "delay": 67,
+     "lt": {
+      "x": -74,
+      "y": -376
+     },
+     "rb": {
+      "x": 112,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_tunic/attack1/0003",
+     "w": 180,
+     "h": 398,
+     "origin": {
+      "x": 83,
+      "y": 394
+     },
+     "delay": 67,
+     "lt": {
+      "x": -83,
+      "y": -394
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_tunic/attack1/0004",
+     "w": 278,
+     "h": 339,
+     "origin": {
+      "x": 208,
+      "y": 333
+     },
+     "delay": 134,
+     "lt": {
+      "x": -208,
+      "y": -333
+     },
+     "rb": {
+      "x": 70,
+      "y": 6
+     },
+     "head": {
+      "x": -36,
+      "y": -321
+     }
+    },
+    {
+     "name": "hero_tunic/attack1/0005",
+     "w": 261,
+     "h": 341,
+     "origin": {
+      "x": 185,
+      "y": 336
+     },
+     "delay": 67,
+     "lt": {
+      "x": -185,
+      "y": -336
+     },
+     "rb": {
+      "x": 76,
+      "y": 5
+     },
+     "head": {
+      "x": -30,
+      "y": -324
+     }
+    },
+    {
+     "name": "hero_tunic/attack1/0006",
+     "w": 237,
+     "h": 342,
+     "origin": {
+      "x": 150,
+      "y": 338
+     },
+     "delay": 67,
+     "lt": {
+      "x": -150,
+      "y": -338
+     },
+     "rb": {
+      "x": 87,
+      "y": 4
+     },
+     "head": {
+      "x": -19,
+      "y": -325
+     }
+    }
+   ]
+  },
+  "defend": {
+   "delay": 100,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_tunic/defend/0001",
+     "w": 268,
+     "h": 342,
+     "origin": {
+      "x": 163,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -163,
+      "y": -338
+     },
+     "rb": {
+      "x": 105,
+      "y": 4
+     },
+     "head": {
+      "x": -1,
+      "y": -325
+     }
+    },
+    {
+     "name": "hero_tunic/defend/0002",
+     "w": 284,
+     "h": 340,
+     "origin": {
+      "x": 172,
+      "y": 336
+     },
+     "delay": 100,
+     "lt": {
+      "x": -172,
+      "y": -336
+     },
+     "rb": {
+      "x": 112,
+      "y": 4
+     },
+     "head": {
+      "x": 6,
+      "y": -324
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_tunic/hit1/0001",
+     "w": 275,
+     "h": 343,
+     "origin": {
+      "x": 109,
+      "y": 331
+     },
+     "delay": 150,
+     "lt": {
+      "x": -109,
+      "y": -331
+     },
+     "rb": {
+      "x": 166,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -331
+     }
+    },
+    {
+     "name": "hero_tunic/hit1/0002",
+     "w": 246,
+     "h": 344,
+     "origin": {
+      "x": 113,
+      "y": 338
+     },
+     "delay": 120,
+     "lt": {
+      "x": -113,
+      "y": -338
+     },
+     "rb": {
+      "x": 133,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_tunic/die1/0001",
+     "w": 259,
+     "h": 344,
+     "origin": {
+      "x": 112,
+      "y": 337
+     },
+     "delay": 90,
+     "lt": {
+      "x": -112,
+      "y": -337
+     },
+     "rb": {
+      "x": 147,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -337
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_tunic/die1/0002",
+     "w": 309,
+     "h": 335,
+     "origin": {
+      "x": 100,
+      "y": 300
+     },
+     "delay": 90,
+     "lt": {
+      "x": -100,
+      "y": -300
+     },
+     "rb": {
+      "x": 209,
+      "y": 35
+     },
+     "head": {
+      "x": 0,
+      "y": -300
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_tunic/die1/0003",
+     "w": 370,
+     "h": 221,
+     "origin": {
+      "x": 51,
+      "y": 181
+     },
+     "delay": 90,
+     "lt": {
+      "x": -51,
+      "y": -181
+     },
+     "rb": {
+      "x": 319,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_tunic/die1/0004",
+     "w": 323,
+     "h": 139,
+     "origin": {
+      "x": 3,
+      "y": 99
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -99
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -99
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_tunic/die1/0005",
+     "w": 324,
+     "h": 144,
+     "origin": {
+      "x": 4,
+      "y": 104
+     },
+     "delay": 90,
+     "lt": {
+      "x": -4,
+      "y": -104
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -104
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "hero_tunic/die1/0006",
+     "w": 324,
+     "h": 144,
+     "origin": {
+      "x": 4,
+      "y": 104
+     },
+     "delay": 90,
+     "lt": {
+      "x": -4,
+      "y": -104
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -104
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}
