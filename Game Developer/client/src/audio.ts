@@ -33,7 +33,20 @@ const SPRITES: SpriteFile[] = [
 ];
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 // A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
-const ALIASES: Record<string, string> = { 'ui/die-land': 'ui/die-land-b', 'ui/arrive-church': 'ui/arrive-shrine' };
+const ALIASES: Record<string, string> = {
+  'ui/die-land': 'ui/die-land-b',
+  'ui/arrive-church': 'ui/arrive-shrine',
+  // Chapter 2's names (Nigel, SD), silent or borrowed until his drops land.
+  'fight/meter-pip-trickster': 'fight/meter-pip',
+  'fight/meter-pip-wizard': 'fight/meter-pip',
+  'fight/meter-pip-archer': 'fight/meter-pip',
+  'ui/step-roots-1': 'ui/step-grass',
+  'ui/step-roots-2': 'ui/step-grass',
+  'ui/step-roots-3': 'ui/step-grass',
+  'ui/step-moss-1': 'ui/step-grass',
+  'ui/step-moss-2': 'ui/step-grass',
+  'ui/step-moss-3': 'ui/step-grass',
+};
 
 /** The music, one file per piece, streamed through an audio element and looped whole (Nigel, SD's board theme, 2026-11-01). */
 const MUSIC: Record<string, string> = { 'music/meadows-board': meadowsBoardOgg };

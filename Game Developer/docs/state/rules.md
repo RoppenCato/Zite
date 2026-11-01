@@ -409,3 +409,5 @@ these are the events (the skill `shared-world`).
 - **King Goo stays at 700 / 30 / 11 for now.** Robin found the bosses "very overtuned? But maybe they should be for a bit". The wall above assumes all eight slots in tin at level 5 or 6; without gear it is 5% at his own level. Before auto-equip a player easily met him unworn, so this is to be felt again before any number moves.
 
 - State version 14: every character gains `questsDone`, the errands finished, the last twenty kept for the quest log (Robin, 2026-11-01).
+
+- **The Archer's starting attack is 10, was 8** (mine, 2026-11-01): the bots won 35% against King Goo at level 6 and now 65%, in line with the Trickster and the Wizard (72%, 75%). Against Grumblebark at level 8 in Copper: Knight 97%, Trickster 85%, Wizard 85%, Archer 92%. A first setting; nobody has felt these classes.

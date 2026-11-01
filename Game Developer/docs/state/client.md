@@ -453,3 +453,7 @@ A creature's atlas and an area's backdrop load in `FightScene.preload`, the firs
 ## The forest's art on screen (2026-11-01)
 
 A closed area's cloud stops 20 px into an earlier area it overlaps, so the next area does not hide the forest's first spots and banner; a prop that rises past its area's top (the glade's gate) stands above the cloud once its area is open (`raiseTallProps`). An earlier area's ground lies over a later one's (`groundDepth`). **A fix for every backdrop:** the density camera keeps a scroll, so a strip scrolling slower than 1 sat too far left and left a gap at the right; it now starts further along. A strip taller than the band is cut at the HUD. **Buying** a plain piece of a higher rank wears it when the worn one is plain and lower; the old one goes to the bag (mine); the shop shows "you have +n" beside a piece of another kind.
+
+## Other players on the board (chapter 2, step 8, 2026-11-01)
+
+Others stand beside the spot as figures in what they wear, at 0.85 of your size, with their name under them; seen with two real windows on a throwaway world. They show the Knight's art until the classes land. **Chapter 2's sound names** are wired (`fight/meter-pip-<class>`, `ui/step-roots-n`, `ui/step-moss-n`, `fight/meteor-land`): borrowed or silent until Nigel, SD's drops land.

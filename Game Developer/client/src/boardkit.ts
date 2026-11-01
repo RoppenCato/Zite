@@ -89,7 +89,7 @@ const KITS: Record<string, Kit> = {
       { width: 10, color: 0xd0b280, alpha: 0.8 },
     ],
     flat: new Set(['clover', 'worn']),
-    bannerDx: -340,
+    bannerDx: -170,
     placements: { thornwood: forestPlacementJson as Placement[] },
     files: { groundPng: forestGroundPng, groundJson: forestGroundJson, propsPng: forestPropsPng, propsJson: forestPropsJson },
   },

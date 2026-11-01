@@ -50,13 +50,13 @@ the world over the tunnel; a chest opening makes Robin smile; the frame log show
 
 ## Chapter 2: Tumbletree. Wobblewood Forest, levels 4 to 8. **Alpha 2**
 
-**Game**: the Trickster, the Wizard and the Archer drawn with their sets; the Iron and Silver pieces; the second area's
+**Game**: the Trickster, the Wizard and the Archer drawn with their sets; the Copper pieces in the second area's shop (the rank follows the tier); the second area's
 spots and the Grumblebark gate (exists in rules); the errands and trainer polished for a second town; the other players'
 marks and notes drawn with the UI kit; the first balance pass over four classes against Grumblebark.
 
 **Art** (waves 2 and 4): the three classes on the skeleton with their weapons (dagger, bow, staff); the 24 ability icons
 and the fight effects; Wobblewood's kit, backdrop, Twigling, Moss Goblin, Sporeling, Nutkin Thief, the Sleepy Owlbear
-Cub and Grumblebark; the Iron and Silver gear icons.
+Cub and Grumblebark; the Copper gear icons (in).
 
 **Sound** (wave 4): the three classes' abilities and meters, Wobblewood's themes and bed, its six creatures' voices.
 

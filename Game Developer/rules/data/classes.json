@@ -78,7 +78,7 @@
     "style": "Strikes first, many small hits.",
     "hp": 100,
     "mana": 25,
-    "attack": 8,
+    "attack": 10,
     "defense": 6,
     "gold": 50,
     "crit": 0.15,

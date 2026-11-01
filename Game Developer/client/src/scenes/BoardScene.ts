@@ -67,6 +67,11 @@ const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circl
 const RING_RADIUS = 42;
 const TOKEN_RADIUS = 15;
 const DOUBLE_TAP_MS = 320;
+/** The steps on an area's ground; the forest takes turns on roots and moss (Nigel, SD), the rest on grass until theirs come. */
+function stepSound(theme: string | undefined): string {
+  if (theme !== 'forest') return 'ui/step-grass';
+  return `ui/step-${Math.random() < 0.5 ? 'roots' : 'moss'}-${1 + Math.floor(Math.random() * 3)}`;
+}
 const STEP_MS = 260;
 const LIT = 0xfff27a;
 
@@ -153,6 +158,8 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** The other players' figures, by id: `others` holds their marks. */
+  private readonly otherHeroes = new Map<string, Hero>();
   /** The area whose creatures and backdrop are kept in memory. */
   private artArea = '';
   /** The last tap on the world, for a double tap. */
@@ -346,6 +353,7 @@ export class BoardScene extends Phaser.Scene {
   override update(_time: number, delta: number): void {
     this.log.frame(delta);
     this.hero?.update(delta);
+    for (const other of this.otherHeroes.values()) other.update(delta);
     this.lastZoom = this.cameras.main.zoom;
     if (this.kitted && this.token) this.token.setDepth(standingDepth(this.token.y + SPACE_RADIUS + 6));
     this.cull();
@@ -939,14 +947,17 @@ export class BoardScene extends Phaser.Scene {
       let mark = this.others.get(c.id);
       const fresh = !mark;
       if (!mark) {
-        const body = this.add.circle(0, 0, TOKEN_RADIUS - 3, CLASS_COLORS[c.classId] ?? 0xffffff, 1).setStrokeStyle(2, 0x101318, 1);
-        const letter = this.add.text(0, 0, CLASS_DATA[c.classId].name.charAt(0), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
-        const name = this.add.text(0, 14, c.name, { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: COLORS.text, resolution: 2 }).setOrigin(0.5, 0);
-        mark = this.add.container(0, 0, [body, letter, name]).setDepth(9);
+        // Others stand in what they wear, a little smaller than you (chapter 2, step 8); circles only if the hero's art is missing.
+        const figure = heroReady(this) ? new Hero(this, c, 0, 8, HERO_BOARD_SCALE * 0.85) : null;
+        if (figure) this.otherHeroes.set(c.id, figure);
+        const body: Phaser.GameObjects.GameObject[] = figure ? [figure.root] : [this.add.circle(0, 0, TOKEN_RADIUS - 3, CLASS_COLORS[c.classId] ?? 0xffffff, 1).setStrokeStyle(2, 0x101318, 1), this.add.text(0, 0, CLASS_DATA[c.classId].name.charAt(0), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5)];
+        const name = this.add.text(0, 12, c.name, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 3, resolution: 2 }).setOrigin(0.5, 0);
+        mark = this.add.container(0, 0, [...body, name]).setDepth(9);
         this.others.set(c.id, mark);
       }
-      const x = space.x + 30 + n * 18;
-      const y = space.y - SPACE_RADIUS + 4;
+      this.otherHeroes.get(c.id)?.wear(c);
+      const x = space.x + 34 + n * 26;
+      const y = space.y + 6;
       if (fresh || settings.get().fewerEffects) mark.setPosition(x, y);
       else if (mark.x !== x || mark.y !== y) this.tweens.add({ targets: mark, x, y, duration: 300, ease: 'Sine.easeInOut' });
       mark.setAlpha(online.has(c.id) ? 1 : 0.45);
@@ -955,6 +966,7 @@ export class BoardScene extends Phaser.Scene {
       if (!seen.has(id)) {
         mark.destroy();
         this.others.delete(id);
+        this.otherHeroes.delete(id);
       }
     }
   }
@@ -1497,7 +1509,7 @@ export class BoardScene extends Phaser.Scene {
           ease: 'Sine.easeInOut',
           onStart: () => {
             this.hero?.face(faceRight);
-            sfx.play('ui/step-grass');
+            sfx.play(stepSound(this.game_.state.board.areas[this.game_.state.board.spaces[this.game_.me.space]?.area ?? '']?.theme));
           },
         };
       }),

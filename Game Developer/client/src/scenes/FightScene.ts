@@ -8,6 +8,7 @@
 
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
+import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
@@ -44,6 +45,9 @@ export const FIGHT_LAYOUT = {
   promptY: 708,
   barW: 150,
 } as const;
+
+/** Each class's meter has its own pip (Nigel, SD); the plain one is the Knight's. */
+const METER_PIP: Partial<Record<ClassId, string>> = { rogue: 'fight/meter-pip-trickster', mage: 'fight/meter-pip-wizard', ranger: 'fight/meter-pip-archer' };
 
 /** The title stops short of the ? at the top right. */
 const TITLE_X = 180;
@@ -390,6 +394,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
           this.after(this.hero?.blowMs() ?? 0, () => {
             this.enemy?.play('hit1');
             sfx.play(e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+            if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
             sfx.play(`creature/${this.enemyId}/hit`);
             this.flash(this.enemyBody, e.damage, e.crit);
             this.enemyBar.set(e.hp, this.enemyMaxHp);
@@ -456,12 +461,14 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'phase':
         this.enemy?.setPhase(2);
         sfx.play('fight/phase');
+        // Grumblebark's second phase: the whole forest shakes (art-demands, wave 4).
+        if (this.enemyId === 'briar-king' && !settings.get().fewerEffects) this.cameras.main.shake(700, 0.012);
         sfx.play(`creature/${this.enemyId}/surge`);
         this.say(e.text);
         this.refreshStatus();
         break;
       case 'meter':
-        sfx.play('fight/meter-pip');
+        sfx.play(METER_PIP[this.game_.me.classId] ?? 'fight/meter-pip');
         this.refreshStatus();
         break;
       case 'stolen':

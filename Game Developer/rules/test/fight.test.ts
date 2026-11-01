@@ -196,30 +196,21 @@ describe('a fight', () => {
   it('Archer, Triple Shot: three arrows, and the enemy does not strike back in the first round', () => {
     const { state, rng } = begin('ranger');
     const { state: end, rounds } = playOut(state, rng, [[ability('volley'), 'block']]);
-    expect(rounds.slice(0, 2)).toEqual([
-      [
-        { type: 'mana', delta: -5, mana: 20 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 8, crit: true, hp: 32, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 6, crit: false, hp: 26, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 7, crit: false, hp: 19, absorbed: 0 },
-        { type: 'mana', delta: 2, mana: 22 },
-      ],
-      [
-        { type: 'mana', delta: -5, mana: 17 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 5, crit: false, hp: 14, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 5, crit: false, hp: 9, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Triple Shot', damage: 4, crit: false, hp: 5, absorbed: 0 },
-        { type: 'guarded', guard: 'block' },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 3, crit: false, hp: 97, absorbed: 0 },
-        { type: 'mana', delta: 2, mana: 19 },
-      ],
+    expect(rounds[0]).toEqual([
+      { type: 'mana', delta: -5, mana: 20 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 10, crit: true, hp: 30, absorbed: 0 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 7, crit: false, hp: 23, absorbed: 0 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 8, crit: false, hp: 15, absorbed: 0 },
+      { type: 'mana', delta: 2, mana: 22 },
     ]);
-    expect(rounds[2]!.slice(0, 3)).toEqual([
-      { type: 'mana', delta: -5, mana: 14 },
-      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 7, crit: false, hp: 0, absorbed: 0 },
+    expect(rounds[1]!.slice(0, 5)).toEqual([
+      { type: 'mana', delta: -5, mana: 17 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 6, crit: false, hp: 9, absorbed: 0 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 6, crit: false, hp: 3, absorbed: 0 },
+      { type: 'hit', by: 'player', move: 'Triple Shot', damage: 5, crit: false, hp: 0, absorbed: 0 },
       { type: 'won', xp: 5, gold: 6 },
     ]);
-    expect(me(end).hp).toBe(97);
+    expect(me(end).hp).toBe(100);
     // Other classes take the first blow at once.
     const w = begin('warrior');
     expect(types(apply(w.state, turn(attack), w.rng, NOW).events)).toEqual(['hit', 'hit']);

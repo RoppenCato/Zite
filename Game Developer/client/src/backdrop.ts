@@ -58,7 +58,7 @@ const BACKDROPS: Record<string, BackdropFiles> = {
     feet: 14,
     strips: [
       { key: 'forest-far', png: forestFarPng, w: 1024, h: 300, bottom: 40, scroll: 0.15, drift: 2, tileScale: 1 },
-      { key: 'forest-mid', png: forestMidPng, w: 1024, h: 470, bottom: 24, scroll: 0.45, drift: 0, tileScale: 1 },
+      { key: 'forest-mid', png: forestMidPng, w: 1024, h: 420, bottom: 24, scroll: 0.45, drift: 0, tileScale: 1 },
       { key: 'forest-near', png: forestNearPng, w: 1024, h: 140, bottom: 8, scroll: 0.8, drift: 0 },
       { key: 'forest-ground', png: forestGroundPng, w: 512, h: 120, bottom: 120, scroll: 1, drift: 0 },
     ],

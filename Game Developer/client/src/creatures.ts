@@ -24,6 +24,27 @@ import slimePng from '../../assets/slime/slime.png';
 import sproutData from '../../assets/sprout/sprout.json';
 import sproutJson from '../../assets/sprout/sprout.json?url';
 import sproutPng from '../../assets/sprout/sprout.png';
+import twiglingData from '../../assets/forest/twigling/twigling.json';
+import twiglingJson from '../../assets/forest/twigling/twigling.json?url';
+import twiglingPng from '../../assets/forest/twigling/twigling.png';
+import mossGoblinData from '../../assets/forest/moss_goblin/moss_goblin.json';
+import mossGoblinJson from '../../assets/forest/moss_goblin/moss_goblin.json?url';
+import mossGoblinPng from '../../assets/forest/moss_goblin/moss_goblin.png';
+import sporelingData from '../../assets/forest/sporeling/sporeling.json';
+import sporelingJson from '../../assets/forest/sporeling/sporeling.json?url';
+import sporelingPng from '../../assets/forest/sporeling/sporeling.png';
+import nutkinData from '../../assets/forest/nutkin/nutkin.json';
+import nutkinJson from '../../assets/forest/nutkin/nutkin.json?url';
+import nutkinPng from '../../assets/forest/nutkin/nutkin.png';
+import owlbearData from '../../assets/forest/owlbear/owlbear.json';
+import owlbearJson from '../../assets/forest/owlbear/owlbear.json?url';
+import owlbearPng from '../../assets/forest/owlbear/owlbear.png';
+import grumblebarkData from '../../assets/forest/grumblebark/grumblebark.json';
+import grumblebarkJson from '../../assets/forest/grumblebark/grumblebark.json?url';
+import grumblebarkPng from '../../assets/forest/grumblebark/grumblebark.png';
+import grumblebark2Data from '../../assets/forest/grumblebark2/grumblebark2.json';
+import grumblebark2Json from '../../assets/forest/grumblebark2/grumblebark2.json?url';
+import grumblebark2Png from '../../assets/forest/grumblebark2/grumblebark2.png';
 import { clipMs, ensureClips, msBefore, type ActionData } from './clips.ts';
 
 export type FigureAction = 'stand' | 'move' | 'attack1' | 'hit1' | 'die1' | 'defend';
@@ -64,6 +85,22 @@ const CREATURES: Record<string, CreatureFiles> = {
     scale: 0.9,
     blowFrame: 5,
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
+  },
+  // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  'spider': { key: 'twigling', png: twiglingPng, json: twiglingJson, actions: actionsOf(twiglingData), scale: 0.5, blowFrame: 7 },
+  'treant': { key: 'moss_goblin', png: mossGoblinPng, json: mossGoblinJson, actions: actionsOf(mossGoblinData), scale: 0.5, blowFrame: 4 },
+  'outlaw': { key: 'sporeling', png: sporelingPng, json: sporelingJson, actions: actionsOf(sporelingData), scale: 0.5, blowFrame: 7 },
+  'wraith': { key: 'nutkin', png: nutkinPng, json: nutkinJson, actions: actionsOf(nutkinData), scale: 0.5, blowFrame: 7 },
+  'spider-queen': { key: 'owlbear', png: owlbearPng, json: owlbearJson, actions: actionsOf(owlbearData), scale: 0.7273, blowFrame: 5 },
+  'briar-king': {
+    key: 'grumblebark',
+    png: grumblebarkPng,
+    json: grumblebarkJson,
+    actions: actionsOf(grumblebarkData),
+    // Under the file's 1.1429, as with King Goo, so his body stops short of the hero (Robin, 2026-11-01: "you are almost hugging it").
+    scale: 0.92,
+    blowFrame: 5,
+    phase2: { key: 'grumblebark2', png: grumblebark2Png, json: grumblebark2Json, actions: actionsOf(grumblebark2Data) },
   },
 };
 

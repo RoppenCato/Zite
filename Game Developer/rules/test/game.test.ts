@@ -75,7 +75,7 @@ describe('a new game', () => {
   it('gives each class its own numbers and kit from the data', () => {
     expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'mage' }).characters[P]).toMatchObject({ hp: 85, mana: 40, attack: 14, defense: 4, gold: 50, abilities: { fireball: 1, 'frost-bolt': 1 } });
     expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'rogue' }).characters[P]).toMatchObject({ hp: 100, gold: 60, abilities: { backstab: 1, 'poison-blade': 1 } });
-    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 100, attack: 8, abilities: { volley: 1, 'aimed-shot': 1 } });
+    expect(newGame({ seed: 'x', player: P, name: 'R', classId: 'ranger' }).characters[P]).toMatchObject({ hp: 100, attack: 10, abilities: { volley: 1, 'aimed-shot': 1 } });
   });
 });
 
