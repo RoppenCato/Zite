@@ -81,7 +81,9 @@ theme's names at the area's levels (lo, lo + 1, lo + 2, lo + 3) in four shapes (
 glass cannon; a wall with a wind-up), a **mini-boss** at hi + 1 and the **boss** at hi + 2. The numbers are
 Frostpeak's (`themes.json` `base`: mob 260 HP, 38 attack, 11 defense, 42 xp, 48 gold; mini 700 / 48 / 16; boss 1200 /
 46 / 15, 700 xp, 600 gold) grown a tier at a time: **HP ×1.25, attack ×1.15, defense ×1.12, xp and gold ×1.3** (the
-bots' walls set these: `docs/state/rules.md`, Balance). Gen-1's Molten Tyrant has 1500 HP; gen-8's Jungle Idol about 7200. The area's **gear rank is its tier**: the ten named ranks
+bots' walls set these: `docs/state/rules.md`, Balance). Gen-1's Molten Tyrant has 1650 HP; gen-8's Jungle Idol about 7900. **Under half its HP a grown boss rages in its theme's way**
+(`themes.json` `rage`): a line ("The Molten Tyrant burns brighter!") and one more move with the theme's effect (fire
+and swamp poison, water weakens, desert fades, crystal hardens, shadow drains mana, sky strikes harder, jungle regrows). The area's **gear rank is its tier**: the ten named ranks
 (Copper, Iron, Steel, Mithril, Adamant, Runed, Dragonbone, Starforged, Voidsteel, Sunmetal) and then "Rank 11", …;
 beyond the slot tables a rank's number grows ×1.35 and its price ×1.8 (`gear.json` `rankGrowth`, `priceGrowth`).
 

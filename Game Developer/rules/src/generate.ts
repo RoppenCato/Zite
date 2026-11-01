@@ -274,6 +274,11 @@ export function generateArea(seed: string, n: number): GrownArea {
       { name: 'Roar', power: 2, weight: 1, charge: true },
     ],
   };
+  const bossMoves = [
+    { name: 'Claw', power: 1, weight: 2 },
+    { name: 'Fury', power: 2, weight: 1, charge: true },
+  ];
+  const rage = THEMES.rage[peek.theme];
   bestiary[bossId] = {
     name: theme.boss,
     level: peek.levels[1] + 2,
@@ -283,10 +288,9 @@ export function generateArea(seed: string, n: number): GrownArea {
     defense: scale(THEMES.base.boss.defense, THEMES.perTier.defense),
     xp: scale(THEMES.base.boss.xp, THEMES.perTier.reward),
     gold: scale(THEMES.base.boss.gold, THEMES.perTier.reward),
-    moves: [
-      { name: 'Claw', power: 1, weight: 2 },
-      { name: 'Fury', power: 2, weight: 1, charge: true },
-    ],
+    moves: bossMoves.map((m) => ({ ...m })),
+    // Under half its HP a grown boss rages in its theme's way: one more move, with a line.
+    ...(rage ? { phase2: { at: 0.5, text: rage.text.replace('{boss}', theme.boss), moves: [...bossMoves.map((m) => ({ ...m })), { ...rage.move }] } } : {}),
   };
 
   const area: WorldArea = { id: peek.id, name: peek.name, theme: peek.theme, tier: peek.tier, levels: peek.levels, mobs, miniBosses: [miniId], hubs, roads };

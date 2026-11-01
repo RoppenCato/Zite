@@ -16,7 +16,12 @@
     "kit": [
       "heavy-blow",
       "shield-bash"
-    ]
+    ],
+    "meter": {
+      "name": "Rage",
+      "gain": "hurt",
+      "text": "Rage builds from every blow you take, more from a wound-up one."
+    }
   },
   "rogue": {
     "name": "Rogue",
@@ -37,7 +42,12 @@
     "kit": [
       "backstab",
       "poison-blade"
-    ]
+    ],
+    "meter": {
+      "name": "Combo",
+      "gain": "hit",
+      "text": "Combo builds from every hit you land."
+    }
   },
   "mage": {
     "name": "Mage",
@@ -56,7 +66,12 @@
     "kit": [
       "fireball",
       "frost-bolt"
-    ]
+    ],
+    "meter": {
+      "name": "Flow",
+      "gain": "round",
+      "text": "Flow builds a point every round."
+    }
   },
   "ranger": {
     "name": "Ranger",
@@ -78,6 +93,11 @@
       "volley",
       "aimed-shot"
     ],
-    "firstStrike": true
+    "firstStrike": true,
+    "meter": {
+      "name": "Focus",
+      "gain": "miss",
+      "text": "Focus builds when a blow misses you and when you crit."
+    }
   }
 }

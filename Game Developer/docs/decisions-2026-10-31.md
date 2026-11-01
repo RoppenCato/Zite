@@ -23,7 +23,9 @@ Robin's, 2026-10-31, in his words where they were short enough; what is mine is 
   simply too hard.
 - **Bosses are the gates to new areas**: they stand on the spot that leads into the next area. **Land exactly on the boss**
   to fight it. Once it is dead, that part of the map opens.
-- **Bosses can be killed again**, with better loot. A boss is back **5 minutes** after it died.
+- **Bosses can be killed again.** A boss is back **5 minutes** after it died. **Bosses as such give better loot** (Robin,
+  2026-10-31, the evening: not better loot for killing the same boss again; bosses drop the good things: uniques and
+  nothing under epic).
 
 ## Gear and inventory
 
@@ -43,6 +45,14 @@ Robin's, 2026-10-31, in his words where they were short enough; what is mine is 
   ranks are bought, found or earned** as you go.
 - **Mana for everyone** is the resource for abilities.
 - **Death**: back to the nearest town, a fifth of the gold lost, gear kept (unchanged from the brief).
+
+## The evening of the same day (Robin, 2026-10-31)
+
+- **Make the loot interesting**: unique weapons and trinkets whose effects change how you play, each in its own way.
+- **Fun abilities for the classes**, making them feel different and exciting, not only bigger numbers.
+- **Do the whole list** (uniques and boss loot, class kits, readable enemies, potions by tier, fight presentation,
+  quests, trainers, a bag limit, theme events, more shapes and key chests, a world map, performance, the first minutes,
+  the protocol and the server, shared bosses and traces), in the Game Developer's order, nothing waiting on graphics.
 
 ## Names
 

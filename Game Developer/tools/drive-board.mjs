@@ -21,7 +21,7 @@ mkdirSync(OUT, { recursive: true });
 const PAGE = process.argv[2] ?? 'http://localhost:4173/';
 const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
-const STATE_VERSION = 6; // rules/src/types.ts
+const STATE_VERSION = 7; // rules/src/types.ts
 const B = { map: [72, 836], bag: [206, 836], log: [340, 836], roll: [206, 884] }; // HudScene BUTTONS
 const F = { a: [110, 600], b: [302, 600], c: [110, 652], d: [302, 652], e: [110, 704], f: [302, 704], cont: [206, 652] }; // FightScene FIGHT_BUTTONS
 const SHOP = { row: (i) => 224 + i * 44, buyX: 356, leave: [206, 706], tabSell: [272, 178] };
@@ -264,6 +264,8 @@ for (let i = 0; i < 12 && !(await inFight()); i++) {
 await sleep(500);
 const fightOn = await ev(() => ({ active: boardWorld.phaser.scene.isActive('fight'), enemy: boardWorld.game.me.fight?.enemy.name, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha, message: boardWorld.phaser.scene.getScene('hud').message.text, buttons: boardWorld.phaser.scene.getScene('fight').buttons.map((b) => b.list[1].text) }));
 check('a wild spot opens the fight screen with the moves, and dims Roll', fightOn.active && !!fightOn.enemy && fightOn.rollAlpha < 1 && /blocks the way/.test(fightOn.message) && fightOn.buttons[0] === 'Attack' && fightOn.buttons.includes('Flee'), JSON.stringify(fightOn));
+const told = await ev(() => { const f = boardWorld.phaser.scene.getScene('fight'); return { enemy: f.enemyStatus.text, hero: f.heroStatus.text, next: boardWorld.game.me.fight?.enemy.next?.name }; });
+check('the fight screen tells the enemy\'s next move and shows the class meter', new RegExp(`^next: ${told.next}`).test(told.enemy) && /^Rage [●○]{5}/.test(told.hero), JSON.stringify(told));
 await shot('9-fight-open');
 await tapAt(...F.a); // Attack: now the guards
 await sleep(200);
@@ -301,7 +303,7 @@ const stockSave = (patch, statePatch = {}) => ev(({ patch, statePatch }) => {
   boardWorld.game.state = state;
 }, { patch, statePatch });
 /** A fight against `enemy` as the rules would start it, with the enemy patched. */
-const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => ({ enemy: { ...boardWorld.rules.makeEnemy(enemy, boardWorld.game.state.board.bestiary), ...enemyPatch }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn: false }), { enemy, space, enemyPatch });
+const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => boardWorld.rules.freshFight({ ...boardWorld.rules.makeEnemy(enemy, boardWorld.game.state.board.bestiary), ...enemyPatch }, space, false), { enemy, space, enemyPatch });
 const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
 const STRONG = { level: 10, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, fight: null, offer: null, steps: 0, items: {}, equipment: NO_GEAR };
 await stockSave({ space: 'tinker', steps: 0, gold: 150, items: {}, fight: null, offer: null, hp: 60, bag: [] });
@@ -447,6 +449,18 @@ await sleep(300);
 const answered = await ev(() => ({ offer: boardWorld.game.me.offer, gold: boardWorld.game.me.gold, message: boardWorld.phaser.scene.getScene('hud').message.text, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.length, rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha }));
 check('Low answers it: the die shows, ten gold won or lost, Roll back', answered.offer === null && (answered.gold === 90 || answered.gold === 110) && /The die shows \d: you (win|lose) 10 gold/.test(answered.message) && answered.chips === 0 && answered.rollAlpha === 1, JSON.stringify(answered));
 
+// A level's pick: one ability in two, in the chips; the one tapped is learned.
+await stockSave({ ...STRONG, space: 'ashford', gold: 100, offer: { kind: 'ability', options: ['war-cry', 'execute'] } });
+await page.reload();
+await ready();
+const pickAsked = await ev(() => ({ chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text }));
+check('a page opened on a level\'s pick asks it in the chips', JSON.stringify(pickAsked.chips) === '["War Cry","Execute"]' && /pick one/.test(pickAsked.message) && /Execute/.test(pickAsked.message), JSON.stringify(pickAsked));
+chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[1].x, y: row.y }; });
+await tapAt(chipPos.x, chipPos.y); // Execute
+await sleep(300);
+const pickedUp = await ev(() => ({ offer: boardWorld.game.me.offer, abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.length }));
+check('tapping Execute learns it, clears the question and says what it does', pickedUp.offer === null && pickedUp.abilities.execute === 1 && /^Learned Execute\. Spend 3 Rage/.test(pickedUp.message) && pickedUp.chips === 0, JSON.stringify(pickedUp));
+
 // A wandering merchant camped on the next spot: the walk opens his shop.
 await stockSave({ ...STRONG, space: 'ashford', steps: 1, gold: 100 }, { die: { sides: 6, last: 1 }, spawns: { 'ashford-millford-1': { kind: 'merchant', enemy: null, until: Date.now() + 600000 } } });
 await page.reload();
@@ -509,7 +523,7 @@ await tapSpace('moon', spaces);
 await sleep(1000);
 await settle();
 const learned = await ev(() => ({ abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text }));
-check('landing on the Moon Shrine teaches the third ability', learned.abilities['war-cry'] === 1 && /Learned war cry, rank 1/.test(learned.message), JSON.stringify(learned));
+check('landing on the Moon Shrine teaches the third ability', learned.abilities['war-cry'] === 1 && /Learned War Cry, rank 1/.test(learned.message), JSON.stringify(learned));
 await stockSave({ ...STRONG, space: 'ashford-millford-1', xp: 29, level: 1, fight: await plantedFight('slime', 'ashford-millford-1', { hp: 1 }) });
 await page.reload();
 await ready();
@@ -589,7 +603,8 @@ const bossFight = await ev(() => ({ active: boardWorld.phaser.scene.isActive('fi
 check('landing exactly on the gate starts the boss fight', bossFight.active && bossFight.enemy === 'Thornwood Warden' && bossFight.role === 'boss', JSON.stringify(bossFight));
 await shot('16-boss-fight');
 const bossRounds = await finishFight();
-const opened = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, kills: boardWorld.game.me.bossKills, coverThornwood: s.covers.get('thornwood').visible, label: s.bossLabels.get('gate').text, message: boardWorld.phaser.scene.getScene('hud').message.text }; });
+const opened = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, kills: boardWorld.game.me.bossKills, coverThornwood: s.covers.get('thornwood').visible, label: s.bossLabels.get('gate').text, message: boardWorld.phaser.scene.getScene('hud').message.text, loot: boardWorld.game.me.bag.at(-1) }; });
+check('the Warden drops the good stuff: a unique, or nothing under epic', !!opened.loot && ['unique', 'epic', 'legendary'].includes(opened.loot.rarity) && (opened.loot.rarity !== 'unique' || typeof opened.loot.unique === 'string'), JSON.stringify(opened.loot));
 check('the Warden falls: Thornwood opens, its cover lifts, the gate counts down to the boss\'s return', opened.opened.includes('thornwood') && opened.kills.gate === 1 && opened.coverThornwood === false && /back in \d+:\d\d/.test(opened.label) && /Thornwood is open/.test(opened.message), JSON.stringify({ bossRounds, ...opened }));
 await shot('17-area-opened');
 

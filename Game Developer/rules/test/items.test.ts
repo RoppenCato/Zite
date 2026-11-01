@@ -63,7 +63,7 @@ describe('the shop', () => {
 
 describe('the wardrobe', () => {
   const sword = plainGear('g1', 'weapon', 1);
-  const better = { ...plainGear('g2', 'weapon', 2), rarity: 'rare' as const, affix: { kind: 'crit' as const, value: 0.1 } };
+  const better = { ...plainGear('g2', 'weapon', 2), rarity: 'rare' as const, affixes: [{ kind: 'crit' as const, value: 0.1 }] };
   const helm = plainGear('g3', 'helm', 1);
 
   it('equips from the bag into the piece\'s slot, swapping out what was worn; the numbers follow', () => {

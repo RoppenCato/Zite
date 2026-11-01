@@ -9,7 +9,9 @@ import {
   CLASS_DATA,
   countdown,
   describeGear,
+  ABILITIES,
   creature,
+  powers,
   hintFor,
   ITEMS,
   reachable,
@@ -146,7 +148,7 @@ export class BoardScene extends Phaser.Scene {
     if (me.fight) {
       this.openFight();
     } else if (me.offer) {
-      this.offerGamble();
+      this.offerChoice();
     } else if (me.steps > 0) {
       this.setBusy(true);
       this.offerChoices();
@@ -274,6 +276,8 @@ export class BoardScene extends Phaser.Scene {
     this.refreshClocks();
     this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
     this.finish(outcome.summary);
+    // A level crossed in the fight may ask for a pick of abilities now.
+    if (this.game_.me.offer) this.offerChoice();
   }
 
   // ---- drawing -----------------------------------------------------------------------------------------------------
@@ -656,13 +660,50 @@ export class BoardScene extends Phaser.Scene {
         chips.push({ text, onTap: () => this.useCard(id) });
       }
     }
+    // A Lucky Charm worn: a re-roll, once every so often.
+    const lucky = powers(me).lucky;
+    if (lucky) {
+      const left = (me.cooldowns.charm ?? 0) - this.game_.now();
+      chips.push({ text: left > 0 ? `Charm ${countdown(left)}` : 'Charm', onTap: () => (left > 0 ? this.setMessage(`The charm is spent; again in ${countdown(left)}.`) : this.useCard('charm')) });
+    }
     return chips;
+  }
+
+  /** Whatever question is pending: the gambler's, or a pick of one ability in two. */
+  private offerChoice(): void {
+    const offer = this.game_.me.offer;
+    if (!offer) return;
+    if (offer.kind === 'gamble') this.offerGamble();
+    else this.offerPick();
+  }
+
+  /** A level's pick: the two abilities as chips; the one tapped is learned (mine, 2026-11-01). */
+  private offerPick(): void {
+    const offer = this.game_.me.offer;
+    if (!offer || offer.kind !== 'ability') return;
+    this.setBusy(true);
+    const name = (id: string) => ABILITIES[id]?.name ?? id;
+    const known = (id: string) => this.game_.me.abilities[id] ?? 0;
+    this.setMessage(`Level ${this.game_.me.level}: pick one. ${offer.options.map((id) => `${name(id)}: ${ABILITIES[id]?.text ?? ''}`).join(' ')}`);
+    this.hud?.setChips(offer.options.map((id) => ({ text: known(id) ? `${name(id)} R${known(id) + 1}` : name(id), onTap: () => this.answerPick(id) })));
+  }
+
+  answerPick(ability: string): void {
+    const events = this.game_.act({ type: 'pick', player: this.game_.player, ability });
+    this.hud?.setChips([]);
+    const picked = events.find((e) => e.type === 'picked');
+    if (picked?.type === 'picked') {
+      this.log.note(`picked ${picked.ability} rank ${picked.rank}`);
+      this.finish(`Learned ${ABILITIES[picked.ability]?.name ?? picked.ability}${picked.rank > 1 ? `, rank ${picked.rank}` : ''}. ${ABILITIES[picked.ability]?.text ?? ''}`.trim());
+    } else {
+      this.finish(this.describe(events));
+    }
   }
 
   /** The gambler's question in the HUD's row. */
   private offerGamble(): void {
     const offer = this.game_.me.offer;
-    if (!offer) return;
+    if (!offer || offer.kind !== 'gamble') return;
     this.setBusy(true);
     this.setMessage(`A gambler offers double or nothing on ${offer.stake} gold. The die: high (4 to 6) or low (1 to 3)?`);
     this.hud?.setChips([
@@ -740,7 +781,7 @@ export class BoardScene extends Phaser.Scene {
         return;
       }
       if (me.offer) {
-        this.offerGamble();
+        this.offerChoice();
         return;
       }
       if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
@@ -830,7 +871,10 @@ export class BoardScene extends Phaser.Scene {
           parts.push(e.amount > 0 ? `Healed ${e.amount} HP.` : '');
           break;
         case 'learned':
-          parts.push(`Learned ${e.ability.replace(/-/g, ' ')}, rank ${e.rank}.`);
+          parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
+          break;
+        case 'picked':
+          parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
           break;
         case 'empty':
           parts.push(`Empty for now; again in ${countdown(e.until - this.game_.now())}.`);

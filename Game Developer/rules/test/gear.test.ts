@@ -21,14 +21,14 @@ describe('gear', () => {
   });
 
   it('a plain piece is the common rank item of its slot, priced from the table', () => {
-    expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Iron Sword', base: 'iron sword', stats: { attack: 8 }, affix: null, price: 90 });
+    expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Iron Sword', base: 'iron sword', stats: { attack: 8 }, affixes: [], price: 90 });
     expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Copper Helm', stats: { maxHp: 12 }, price: 20 });
     expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Steel Amulet', stats: { maxMana: 20 } });
   });
 
   it('rolls rarities by weight, and a boost skips the lowest', () => {
     const count = (boost: number) => {
-      const n: Record<Rarity, number> = { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0 };
+      const n: Record<Rarity, number> = { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0, unique: 0 };
       for (let i = 0; i < 4000; i++) n[rollRarity(makeRng(i), boost)]++;
       return n;
     };
@@ -55,12 +55,14 @@ describe('gear', () => {
       expect(value).toBeGreaterThanOrEqual(Math.floor(def.perRank[1]! * rar.mult * (1 - GEAR.roll)));
       expect(value).toBeLessThanOrEqual(Math.ceil(def.perRank[1]! * rar.mult * (1 + GEAR.roll)));
       expect(Object.keys(g.stats)).toEqual([def.stat]);
-      expect(g.affix !== null).toBe(rar.affix);
-      if (g.affix) {
-        const range = GEAR.affixes[g.affix.kind];
-        expect(g.affix.value).toBeGreaterThanOrEqual(range.min);
-        expect(g.affix.value).toBeLessThanOrEqual(range.max);
+      expect(g.affixes.length).toBe(rar.affixes);
+      expect(new Set(g.affixes.map((a) => a.kind)).size).toBe(g.affixes.length);
+      for (const affix of g.affixes) {
+        const range = GEAR.affixes[affix.kind];
+        expect(affix.value).toBeGreaterThanOrEqual(range.min);
+        expect(affix.value).toBeLessThanOrEqual(range.max);
       }
+      expect(g.rarity).not.toBe('unique');
       if (rar.named) expect(GEAR.names[slot]).toContain(g.name);
       else expect(g.name).toBe(`Iron ${def.base}`);
       expect(g.base).toBe(`iron ${def.base.toLowerCase()}`);
@@ -71,25 +73,25 @@ describe('gear', () => {
 
   it('describes a piece in one line', () => {
     expect(describeGear(plainGear('g', 'weapon', 1))).toBe('Copper Sword · common · +4 attack');
-    const named = { ...plainGear('g', 'weapon', 2), name: 'Stormborn', rarity: 'epic' as const, stats: { attack: 14 }, affix: { kind: 'crit' as const, value: 0.12 } };
+    const named = { ...plainGear('g', 'weapon', 2), name: 'Stormborn', rarity: 'epic' as const, stats: { attack: 14 }, affixes: [{ kind: 'crit' as const, value: 0.12 }] };
     expect(describeGear(named)).toBe('Stormborn, iron sword · epic · +14 attack · +12% crit chance');
   });
 
   it('adds what is worn to the base numbers: stats, crit, dodge, lifesteal, thorns, vigor', () => {
     const board = makeBoard();
     const c = makeCharacter('p', 'R', 'warrior', board);
-    expect(stats(c)).toEqual({ attack: 12, defense: 8, maxHp: 120, maxMana: 20, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0 });
+    expect(stats(c)).toEqual({ attack: 12, defense: 8, maxHp: 120, maxMana: 20, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0, powers: {} });
     const worn = {
       ...c,
       equipment: {
-        weapon: { ...plainGear('w', 'weapon', 2), affix: { kind: 'crit' as const, value: 0.15 } },
-        armour: { ...plainGear('a', 'armour', 1), affix: { kind: 'thorns' as const, value: 0.2 } },
-        helm: { ...plainGear('h', 'helm', 1), affix: { kind: 'vigor' as const, value: 0.1 } },
-        boots: { ...plainGear('b', 'boots', 1), affix: { kind: 'dodge' as const, value: 0.1 } },
-        trinket: { ...plainGear('t', 'trinket', 1), affix: { kind: 'lifesteal' as const, value: 0.2 } },
+        weapon: { ...plainGear('w', 'weapon', 2), affixes: [{ kind: 'crit' as const, value: 0.15 }] },
+        armour: { ...plainGear('a', 'armour', 1), affixes: [{ kind: 'thorns' as const, value: 0.2 }] },
+        helm: { ...plainGear('h', 'helm', 1), affixes: [{ kind: 'vigor' as const, value: 0.1 }] },
+        boots: { ...plainGear('b', 'boots', 1), affixes: [{ kind: 'dodge' as const, value: 0.1 }] },
+        trinket: { ...plainGear('t', 'trinket', 1), affixes: [{ kind: 'lifesteal' as const, value: 0.2 }] },
       },
     };
-    expect(stats(worn)).toEqual({ attack: 20, defense: 13, maxHp: Math.round(132 * 1.1), maxMana: 26, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2 });
-    expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary']);
+    expect(stats(worn)).toEqual({ attack: 20, defense: 13, maxHp: Math.round(132 * 1.1), maxMana: 26, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, powers: {} });
+    expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique']);
   });
 });

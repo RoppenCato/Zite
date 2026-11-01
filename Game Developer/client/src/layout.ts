@@ -39,6 +39,7 @@ export const THEME_COLORS: Record<string, number> = {
 
 /** The colours of the rarities, as text colours. */
 export const RARITY_COLORS: Record<string, string> = {
+  unique: '#ff9f43',
   common: '#e8e4d8',
   uncommon: '#6fcf7a',
   rare: '#5aa9ff',

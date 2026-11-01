@@ -19,7 +19,7 @@ Director's sprites come later. The client never decides anything: it sends inten
 | `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop and bag scenes made together |
 | `src/scenes/BoardScene.ts` | the world, the token, the camera, the touch input, hints; `roll`, `toggleMap`, `openBag`, `downloadLog`, `useCard`, `answerGamble` |
 | `src/scenes/HudScene.ts` | the top panel, the chip row, the message line, Map, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips` |
-| `src/scenes/FightScene.ts` | the fight screen: a move, then a guard, the round played back; Continue |
+| `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, Leave |
 | `src/scenes/BagScene.ts` | the bag: what is worn, what is carried, the numbers, flasks and cards; Wear, Take off, Drop, Close |
 | `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
@@ -72,6 +72,9 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - **A tap on any spot** that is not lit says what it is (`hintFor`) in the message line and flashes its ring; a tap on
   the shop or town you stand on opens the shop again. The tap that closes the fight, the shop or the bag never also
   counts on the spot under the button (a quarter-second guard), so Continue over a spot keeps the fight's summary.
+- **Questions in the chip row**: the gambler's (High, Low, Walk on) and **a level's pick of one ability in two** (the
+  two names as chips, the message saying what each does; the one tapped is learned, `pick`). **A Lucky Charm** worn adds
+  a Charm chip to a pending roll (a re-roll; the chip shows the wait while it is spent).
 - **Roll** calls `game.act({ type: 'roll' })`, shows the value in the die box with a small pulse, then asks the rules
   where the roll can end inside the open areas (`reachable` with `opened`). **One place and no dice card in the bag: the
   token walks at once. Otherwise those spots light up** (a pulsing yellow ring, radius 42), the camera frames them, the
@@ -113,16 +116,21 @@ opaque panel that takes every touch, and call the board back when they close (`f
 ## The fight scene (Robin, 2026-10-31: a turn-based RPG with a defensive choice, one thumb; layout and pacing mine)
 
 An opaque panel over the band; the HUD stays above. From the top: the enemy's name, level and role, its HP bar (260 by
-18, red), the enemy as a circle of radius 56 with its initial, a status line in orange (**"winding up Smash!"**, stunned,
-poisoned, weakened); the message line; the character as a circle of radius 26, its HP bar (green) and mana bar (blue),
-a status line in teal (charged, hits harder, barrier, evading); a prompt. **A round is two taps.** First the move, in two
-rows of two and a third row: **Attack**, **Abilities** (then the known abilities with their mana costs, dimmed when mana
-is short, and Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with none), **Flee**. Then the guard:
+18, red), the enemy as a circle of radius 56 with its initial, a status line in orange that **leads with what it will do
+next** ("next: Venom Bite (poison)", "next: it winds up Smash", "next: Smash lands, hard. Block it!"; then stunned,
+poisoned, weakened, hardened, fading, raging); the message line; the character as a circle of radius 26, its HP bar
+(green) and mana bar (blue), a status line in teal that **leads with the class meter as dots** ("Rage ●●○○○"; then
+charged, hits harder, barrier, evading, sure crit, marked, hawk, meteor in n, trap set, time bent, poisoned, weakened); a
+prompt. **A round is two taps.** First the move, in two rows of two and a third row: **Attack**, **Abilities** (then the
+known abilities with their mana and meter costs, dimmed when mana or meter is short or the once-a-fight one is used, and
+Back), **Charge** ("Charged" while held), **Potion ×n** (dimmed with none), **Flee**. Then the guard:
 **Block (half)**, **Dodge (luck)**, **Brace (+mana)**, **Counter (hit back)**, and Back. The round is one intent
 (`game.act({ type: 'fight', move, guard })`) and its events are **played back one at a time, 450 ms apart**: a hit
 flashes the one struck and floats the damage up (bigger and yellow on a crit), the bars tween, the message says the blow,
-the miss, the wind-up, the stun (or a boss shrugging it off), the poison, the counter, the drink, the loot, the level,
-the boss falling, the area opening. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
+the miss, the wind-up, the stun (or a boss shrugging it off), the poison on either side, the counter, the drink, the
+loot, the level, the boss falling, the area opening, and the new things: the boss's second phase in its own words, time
+bending, a trap springing, gold lifted, the enemy healing or draining mana, a Phoenix catching a fall, Ironbrow turning a
+crit aside. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
 
 ## The shop scene (mine, 2026-10-31)
 

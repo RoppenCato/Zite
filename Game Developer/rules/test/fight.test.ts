@@ -17,6 +17,9 @@ const brief = (e: GameEvent): Brief => {
   const { action: _a, player: _p, ...rest } = e;
   return rest;
 };
+/** The meter and the intent are bookkeeping every round carries; the pins below read the blows without them (they have their own tests). */
+const blows = (e: GameEvent): boolean => e.type !== 'meter' && e.type !== 'intent';
+const types = (events: GameEvent[]): string[] => events.filter(blows).map((e) => e.type);
 
 /**
  * A character of `classId` on the ring's start with one step owed, walked onto s1 (the wilds) with the seed's stream:
@@ -44,7 +47,7 @@ function playOut(state: GameState, rng: Rng, plan: [FightMove, Guard][], max = 3
     const [move, guard] = plan[i % plan.length]!;
     const r = apply(state, turn(move, guard, `f${i}`), rng, NOW);
     state = r.state;
-    rounds.push(r.events.map(brief));
+    rounds.push(r.events.filter(blows).map(brief));
   }
   return { state, rounds };
 }
@@ -53,7 +56,7 @@ describe('a fight', () => {
   it('begins on a wild spot against the area\'s creature drawn from the seed: a Slime for the seed ashford, on s1', () => {
     const { state } = begin('warrior');
     expect(me(state).fight).toEqual({
-      enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 6, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null },
+      enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 6, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null, next: { name: 'Splat', power: 1, weight: 1 }, armoured: null, evade: 0, phase: 1, phase2: null },
       round: 1,
       charged: false,
       attackUp: null,
@@ -61,8 +64,19 @@ describe('a fight', () => {
       evade: 0,
       space: 's1',
       spawn: false,
+      meter: 0,
+      strikes: 0,
+      sureCrit: 0,
+      windup: null,
+      companion: null,
+      mark: null,
+      trap: 0,
+      skip: 0,
+      poisoned: null,
+      weak: null,
+      used: [],
     });
-    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10, hp: 850 });
+    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10, hp: 935 });
     expect(() => makeEnemy('dragon')).toThrow(/no such enemy/);
   });
 
@@ -107,14 +121,14 @@ describe('a fight', () => {
       [
         { type: 'charged', by: 'player', move: 'Charge' },
         { type: 'guarded', guard: 'dodge' },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 4, crit: false, hp: 116, absorbed: 0 },
+        { type: 'hit', by: 'enemy', move: 'Splat', damage: 10, crit: true, hp: 110, absorbed: 0 },
       ],
       [
         { type: 'mana', delta: -4, mana: 16 },
         { type: 'hit', by: 'player', move: 'Heavy Blow', damage: 39, crit: false, hp: 1, absorbed: 0 },
         { type: 'guarded', guard: 'brace' },
         { type: 'mana', delta: 4, mana: 20 },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: false, hp: 111, absorbed: 0 },
+        { type: 'hit', by: 'enemy', move: 'Splat', damage: 6, crit: false, hp: 104, absorbed: 0 },
       ],
     ]);
     expect(rounds[3]).toEqual([
@@ -141,21 +155,22 @@ describe('a fight', () => {
       { type: 'mana', delta: -5, mana: 20 },
       { type: 'hit', by: 'player', move: 'Poison Blade', damage: 10, crit: true, hp: 30, absorbed: 0 },
       { type: 'effect', target: 'enemy', kind: 'poison', rounds: 3 },
-      { type: 'poisoned', damage: 5, hp: 25 },
+      { type: 'poisoned', target: 'enemy', damage: 5, hp: 25 },
       { type: 'guarded', guard: 'counter' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 9, crit: false, hp: 91, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 8, crit: false, hp: 92, absorbed: 0 },
       { type: 'countered', damage: 6, hp: 19 },
       { type: 'mana', delta: 2, mana: 22 },
     ]);
     expect(rounds[1]).toEqual([
       { type: 'hit', by: 'player', move: 'Attack', damage: 8, crit: false, hp: 11, absorbed: 0 },
-      { type: 'poisoned', damage: 5, hp: 6 },
+      { type: 'poisoned', target: 'enemy', damage: 5, hp: 6 },
       { type: 'guarded', guard: 'counter' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 6, crit: false, hp: 85, absorbed: 0 },
-      { type: 'countered', damage: 6, hp: 0 },
-      { type: 'won', xp: 5, gold: 6 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 7, crit: false, hp: 85, absorbed: 0 },
+      { type: 'countered', damage: 3, hp: 3 },
+      { type: 'mana', delta: 2, mana: 24 },
     ]);
-    expect(me(end)).toMatchObject({ hp: 85, mana: 22, gold: 66, xp: 5 });
+    expect(rounds[2]).toContainEqual({ type: 'won', xp: 5, gold: 6 });
+    expect(me(end)).toMatchObject({ hp: 85, mana: 19, gold: 66, xp: 5 });
   });
 
   it('Mage, Frost Bolt and Fireball: a chill that weakens the enemy, then a huge hit; mana trickles back each round', () => {
@@ -166,7 +181,7 @@ describe('a fight', () => {
         { type: 'mana', delta: -6, mana: 34 },
         { type: 'hit', by: 'player', move: 'Frost Bolt', damage: 26, crit: true, hp: 14, absorbed: 0 },
         { type: 'effect', target: 'enemy', kind: 'weakened', rounds: 2 },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 7, crit: false, hp: 78, absorbed: 0 },
+        { type: 'hit', by: 'enemy', move: 'Splat', damage: 6, crit: false, hp: 79, absorbed: 0 },
         { type: 'mana', delta: 2, mana: 36 },
       ],
       [
@@ -175,7 +190,7 @@ describe('a fight', () => {
         { type: 'won', xp: 5, gold: 6 },
       ],
     ]);
-    expect(me(end)).toMatchObject({ hp: 78, mana: 28, fight: null });
+    expect(me(end)).toMatchObject({ hp: 79, mana: 28, fight: null });
   });
 
   it('Ranger, Volley: three arrows, and the enemy does not strike back in the first round', () => {
@@ -191,9 +206,9 @@ describe('a fight', () => {
       ],
       [
         { type: 'mana', delta: -5, mana: 17 },
-        { type: 'hit', by: 'player', move: 'Volley', damage: 7, crit: false, hp: 12, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Volley', damage: 4, crit: false, hp: 8, absorbed: 0 },
-        { type: 'hit', by: 'player', move: 'Volley', damage: 4, crit: false, hp: 4, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Volley', damage: 5, crit: false, hp: 14, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Volley', damage: 5, crit: false, hp: 9, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Volley', damage: 4, crit: false, hp: 5, absorbed: 0 },
         { type: 'guarded', guard: 'block' },
         { type: 'hit', by: 'enemy', move: 'Splat', damage: 3, crit: false, hp: 97, absorbed: 0 },
         { type: 'mana', delta: 2, mana: 19 },
@@ -201,13 +216,13 @@ describe('a fight', () => {
     ]);
     expect(rounds[2]!.slice(0, 3)).toEqual([
       { type: 'mana', delta: -5, mana: 14 },
-      { type: 'hit', by: 'player', move: 'Volley', damage: 5, crit: false, hp: 0, absorbed: 0 },
+      { type: 'hit', by: 'player', move: 'Volley', damage: 7, crit: false, hp: 0, absorbed: 0 },
       { type: 'won', xp: 5, gold: 6 },
     ]);
     expect(me(end).hp).toBe(97);
     // Other classes take the first blow at once.
     const w = begin('warrior');
-    expect(apply(w.state, turn(attack), w.rng, NOW).events.map((e) => e.type)).toEqual(['hit', 'hit']);
+    expect(types(apply(w.state, turn(attack), w.rng, NOW).events)).toEqual(['hit', 'hit']);
   });
 
   it('Shield Bash stuns: the enemy loses its next turn', () => {
@@ -237,7 +252,7 @@ describe('a fight', () => {
       { type: 'used', item: 'potion' },
       { type: 'healed', amount: 50, hp: 90 },
       { type: 'guarded', guard: 'block' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 2, crit: false, hp: 88, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 85, absorbed: 0 },
     ]);
     expect(rounds[2]).toEqual([{ type: 'rejected', reason: 'none left' }]);
     expect(apply(state, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'none left' });
@@ -272,15 +287,15 @@ describe('a fight', () => {
   it('Shadowstep makes the next blows miss; Arcane Shield soaks a blow; War Cry lifts the next hits', () => {
     const rogue = versus('rogue', 'slime', { abilities: { backstab: 1, shadowstep: 1 } }, { hp: 1000 });
     const slipped = apply(rogue, turn(ability('shadowstep'), 'none'), makeRng('x'), NOW);
-    expect(slipped.events.map((e) => e.type)).toEqual(['mana', 'effect', 'missed', 'mana']);
+    expect(types(slipped.events)).toEqual(['mana', 'effect', 'missed', 'mana']);
     expect(me(slipped.state).fight!.evade).toBe(1);
     const next = apply(slipped.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);
-    expect(next.events.map((e) => e.type)).toEqual(['hit', 'missed', 'mana']);
+    expect(types(next.events)).toEqual(['hit', 'missed', 'mana']);
     expect(me(next.state).fight!.evade).toBe(0);
 
     const mage = versus('mage', 'slime', { abilities: { fireball: 1, 'arcane-shield': 1 } }, { hp: 1000 });
     const shielded = apply(mage, turn(ability('arcane-shield'), 'none'), makeRng('x'), NOW);
-    expect(shielded.events[1]).toMatchObject({ type: 'effect', kind: 'barrier', rounds: 30 });
+    expect(shielded.events[1]).toMatchObject({ type: 'effect', kind: 'barrier', rounds: 26 }); // three tenths of 85 HP
     const soaked = shielded.events.find((e) => e.type === 'hit' && e.by === 'enemy');
     expect(soaked).toMatchObject({ damage: 0, hp: 85 });
     if (soaked?.type === 'hit') expect(soaked.absorbed).toBeGreaterThan(0);
@@ -321,12 +336,12 @@ describe('a fight', () => {
   });
 
   it('worn gear counts: lifesteal heals on a hit, thorns bite back on a blow', () => {
-    const drinker = versus('warrior', 'slime', { hp: 100, equipment: { weapon: { ...plainGear('w', 'weapon', 1), affix: { kind: 'lifesteal', value: 0.2 } }, armour: { ...plainGear('a', 'armour', 1), affix: { kind: 'thorns', value: 0.3 } }, helm: null, boots: null, trinket: null } }, { hp: 1000 });
+    const drinker = versus('warrior', 'slime', { hp: 100, equipment: { weapon: { ...plainGear('w', 'weapon', 1), affixes: [{ kind: 'lifesteal', value: 0.2 }] }, armour: { ...plainGear('a', 'armour', 1), affixes: [{ kind: 'thorns', value: 0.3 }] }, helm: null, boots: null, trinket: null } }, { hp: 1000 });
     const r = apply(drinker, turn(attack, 'none'), makeRng('x'), NOW);
-    const types = r.events.map((e) => e.type);
-    expect(types[0]).toBe('hit');
-    expect(types[1]).toBe('healed');
-    expect(types).toContain('countered');
+    const seen = types(r.events);
+    expect(seen[0]).toBe('hit');
+    expect(seen[1]).toBe('healed');
+    expect(seen).toContain('countered');
   });
 
   it('Flee: a coin from the stream; a failed try costs the blow, a lucky one ends the fight where you stand', () => {

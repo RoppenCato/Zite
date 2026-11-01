@@ -4,8 +4,8 @@
 
 import { ABILITIES, CLASS_DATA, DICE_DATA, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
 import { addLoot, giveGold, giveItem, nextGearId, reject, sellPrice, spend, withCharacter } from './common.ts';
-import { fightRound, startFight } from './fight.ts';
-import { plainGear, rollGear, stats } from './gear.ts';
+import { fightRound, intentEvent, startFight } from './fight.ts';
+import { plainGear, powers, rollGear, stats } from './gear.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { buildBoard } from './world.ts';
@@ -40,6 +40,7 @@ type UnequipAction = Extract<Action, { type: 'unequip' }>;
 type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
+type PickAction = Extract<Action, { type: 'pick' }>;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
@@ -114,9 +115,11 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'drop':
       return drop(state, action, character);
     case 'use':
-      return useCard(state, action, character, rng);
+      return useCard(state, action, character, rng, now);
     case 'gamble':
       return gamble(state, action, character, rng);
+    case 'pick':
+      return pick(state, action, character);
   }
 }
 
@@ -134,8 +137,13 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   if (busy) return reject(state, action, busy);
   if (character.steps > 0) return reject(state, action, 'finish your move first');
   const value = rng.int(state.die.sides);
-  const next = withCharacter({ ...state, die: { ...state.die, last: value } }, { ...character, steps: value });
-  return { state: next, events: [{ type: 'rolled', action: action.id, player: action.player, value }] };
+  const events: GameEvent[] = [{ type: 'rolled', action: action.id, player: action.player, value }];
+  // Striders: a roll of one becomes two.
+  const strider = powers(character).strider;
+  const steps = value === 1 && strider ? strider : value;
+  if (steps !== value) events.push({ type: 'steps', action: action.id, player: action.player, steps });
+  const next = withCharacter({ ...state, die: { ...state.die, last: steps } }, { ...character, steps });
+  return { state: next, events };
 }
 
 function move(state: GameState, action: MoveAction, character: Character, rng: Rng, now: number): ApplyResult {
@@ -166,7 +174,10 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   const tier = area?.tier ?? 1;
   const kind = SPACE_KIND_DATA[space.kind];
   const onCooldown = (c.cooldowns[space.id] ?? 0) > now;
-  const cooled = (ch: Character): Character => (kind.cooldownMs ? { ...ch, cooldowns: { ...ch.cooldowns, [space.id]: now + kind.cooldownMs } } : ch);
+  // Pathfinders: chests, springs and shrines give again in half the time.
+  const pathfinder = space.kind === 'chest' || space.kind === 'potion' || space.kind === 'spell' ? powers(c).pathfinder : undefined;
+  const wait = (kind.cooldownMs ?? 0) * (pathfinder ? 0.5 : 1);
+  const cooled = (ch: Character): Character => (wait ? { ...ch, cooldowns: { ...ch.cooldowns, [space.id]: now + wait } } : ch);
   const empty = (): ApplyResult => {
     events.push({ type: 'empty', action: id, player, space: space.id, until: c.cooldowns[space.id] ?? now });
     return { state: withCharacter(state, c), events };
@@ -199,11 +210,11 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         events.push({ type: 'nothing', action: id, player, text: `${space.name} is quiet: the boss is not back yet.` });
         return { state: withCharacter(state, c), events };
       }
-      return begin(state, c, space.boss, space.id, false, action, events);
+      return begin(state, c, space.boss, space.id, false, action, rng, events);
     }
     case 'normal': {
       const spawn = state.spawns[space.id];
-      if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, events);
+      if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);
       if (spawn?.kind === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
@@ -221,11 +232,11 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         return { state: withCharacter(state, offered), events };
       }
       if (what === 'miniboss' && area && area.miniBosses.length) {
-        return begin(state, c, area.miniBosses[rng.int(area.miniBosses.length) - 1]!, space.id, false, action, events);
+        return begin(state, c, area.miniBosses[rng.int(area.miniBosses.length) - 1]!, space.id, false, action, rng, events);
       }
       const mobs = area?.mobs ?? [];
       if (!mobs.length) return { state: withCharacter(state, c), events };
-      return begin(state, c, mobs[rng.int(mobs.length) - 1]!, space.id, false, action, events);
+      return begin(state, c, mobs[rng.int(mobs.length) - 1]!, space.id, false, action, rng, events);
     }
   }
 }
@@ -242,9 +253,11 @@ function surprise(rng: Rng): keyof typeof SURPRISES {
   return 'fight';
 }
 
-function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, events: GameEvent[]): ApplyResult {
-  const fighting = startFight(c, enemy, space, spawn, state.board.bestiary);
-  events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...fighting.fight!.enemy, moves: fighting.fight!.enemy.moves.map((m) => ({ ...m })) }, space });
+function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+  const fighting = startFight(c, enemy, space, spawn, state.board.bestiary, rng);
+  const e = fighting.fight!.enemy;
+  events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...e, moves: e.moves.map((m) => ({ ...m })) }, space });
+  events.push(intentEvent(e, action.id, action.player));
   return { state: withCharacter(state, fighting), events };
 }
 
@@ -358,8 +371,27 @@ function drop(state: GameState, action: DropAction, character: Character): Apply
   return { state: withCharacter(state, { ...character, bag: character.bag.filter((g) => g.id !== gear.id) }), events: [{ type: 'dropped', action: action.id, player: action.player, gear }] };
 }
 
-/** A dice card: a roll must be pending and the board free. It changes the steps owed and the die shows the new number. */
-function useCard(state: GameState, action: UseAction, character: Character, rng: Rng): ApplyResult {
+/**
+ * A dice card: a roll must be pending and the board free. It changes the steps owed and the die shows the new number.
+ * The item `charm` is no card but a worn Lucky Charm: a re-roll once every so often (its value, in ms).
+ */
+function useCard(state: GameState, action: UseAction, character: Character, rng: Rng, now: number): ApplyResult {
+  if (action.item === 'charm') {
+    const lucky = powers(character).lucky;
+    if (!lucky) return reject(state, action, 'no such item');
+    const busy = boardBusy(character);
+    if (busy) return reject(state, action, busy);
+    if (character.steps === 0 || (character.cooldowns.charm ?? 0) > now) return reject(state, action, 'not now');
+    const steps = rng.int(state.die.sides);
+    const c = { ...character, steps, cooldowns: { ...character.cooldowns, charm: now + lucky } };
+    return {
+      state: withCharacter({ ...state, die: { ...state.die, last: steps } }, c),
+      events: [
+        { type: 'used', action: action.id, player: action.player, item: 'charm' },
+        { type: 'steps', action: action.id, player: action.player, steps },
+      ],
+    };
+  }
   const item = ITEMS[action.item];
   if (!item) return reject(state, action, 'no such item');
   if ((character.items[action.item] ?? 0) <= 0) return reject(state, action, 'none left');
@@ -397,7 +429,7 @@ function useCard(state: GameState, action: UseAction, character: Character, rng:
 /** The gambler's offer: double or nothing on a die, high (4 to 6) or low (1 to 3); or walk on. */
 function gamble(state: GameState, action: GambleAction, character: Character, rng: Rng): ApplyResult {
   const offer = character.offer;
-  if (!offer) return reject(state, action, 'nothing to answer');
+  if (!offer || offer.kind !== 'gamble') return reject(state, action, 'nothing to answer');
   if (action.choice === 'pass') {
     return { state: withCharacter(state, { ...character, offer: null }), events: [{ type: 'nothing', action: action.id, player: action.player, text: 'You walk on.' }] };
   }
@@ -408,6 +440,16 @@ function gamble(state: GameState, action: GambleAction, character: Character, rn
   const delta = won ? stake : -stake;
   const gold = character.gold + delta;
   return { state: withCharacter(state, { ...character, gold, offer: null }), events: [{ type: 'gambled', action: action.id, player: action.player, choice: action.choice, roll, won, delta, gold }] };
+}
+
+/** The pick of one ability in two that a level offered: the one chosen is learned, or gains a rank; the other waits for a shrine. */
+function pick(state: GameState, action: PickAction, character: Character): ApplyResult {
+  const offer = character.offer;
+  if (!offer || offer.kind !== 'ability') return reject(state, action, 'nothing to answer');
+  if (!offer.options.includes(action.ability) || !ABILITIES[action.ability]) return reject(state, action, 'no such ability');
+  const rank = Math.min((character.abilities[action.ability] ?? 0) + 1, ABILITIES[action.ability]!.ranks.length);
+  const next = { ...character, offer: null, abilities: { ...character.abilities, [action.ability]: rank } };
+  return { state: withCharacter(state, next), events: [{ type: 'picked', action: action.id, player: action.player, ability: action.ability, rank }] };
 }
 
 // ---- the world's tick ---------------------------------------------------------------------------------------------------

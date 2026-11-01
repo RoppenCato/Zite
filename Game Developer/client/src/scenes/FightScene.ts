@@ -4,7 +4,7 @@
 // at a time. The layout and the pacing are mine.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, stats, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { LocalGame } from '../local-game.ts';
@@ -149,12 +149,20 @@ export class FightScene extends Phaser.Scene {
   private showAbilities(): void {
     const me = this.game_.me;
     this.prompt.setText('Which ability?');
+    const f = me.fight;
+    const meterName = CLASS_DATA[me.classId].meter?.name ?? 'meter';
+    const arcane = powers(me).arcane;
     const options: Option[] = Object.entries(me.abilities).map(([id, rank]) => {
       const a = ABILITIES[id];
+      const mana = a ? (arcane ? Math.ceil(a.mana * arcane) : a.mana) : 0;
+      const cost = a?.meterAll ? `all ${meterName}` : a?.meter ? `${a.meter} ${meterName}` : '';
+      const used = !!a?.oncePerFight && !!f?.used?.includes(id);
+      const meterOk = !a?.meter || (f?.meter ?? 0) >= a.meter;
+      const meterAllOk = !a?.meterAll || (f?.meter ?? 0) > 0;
       return {
-        text: `${a?.name ?? id} ${rank > 1 ? `R${rank} ` : ''}· ${a?.mana ?? 0} MP`,
+        text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''} · ${mana} MP${cost ? ` · ${cost}` : ''}${used ? ' · used' : ''}`,
         color: 0x8e6ad9,
-        enabled: !!a && me.mana >= a.mana,
+        enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used,
         onTap: () => this.pick({ kind: 'ability', ability: id }),
       };
     });
@@ -230,23 +238,50 @@ export class FightScene extends Phaser.Scene {
         this.say({ block: 'You raise your guard.', dodge: 'You step aside…', brace: 'You brace.', counter: 'You wait for the opening…', none: '' }[e.guard]);
         break;
       case 'skipped':
-        this.say(`${this.enemyName} is stunned and loses its turn.`);
+        this.say({ stunned: `${this.enemyName} is stunned and loses its turn.`, warped: `Time bends: ${this.enemyName} loses its turn.`, trapped: `${this.enemyName} springs your trap and loses its turn!` }[e.reason]);
         break;
       case 'resisted':
-        this.say(`${this.enemyName} shrugs it off.`);
+        this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
-        this.say(
-          e.target === 'enemy'
-            ? { stunned: `${this.enemyName} is stunned for ${e.rounds}.`, weakened: `${this.enemyName} is weakened for ${e.rounds} rounds.`, poison: `${this.enemyName} is poisoned for ${e.rounds} rounds.`, attackUp: '', barrier: '', evade: '' }[e.kind]
-            : { attackUp: `Your hits land harder for ${e.rounds} rounds.`, barrier: `A barrier of ${e.rounds} forms round you.`, evade: `You slip into the shadows: the next ${e.rounds} blows miss.`, stunned: '', weakened: '', poison: '' }[e.kind],
-        );
+        this.say(this.effectText(e.target, e.kind, e.rounds));
         this.refreshStatus();
         break;
       case 'poisoned':
-        this.flash(this.enemyBody, e.damage, false);
+        if (e.target === 'enemy') {
+          this.flash(this.enemyBody, e.damage, false);
+          this.enemyBar.set(e.hp, this.enemyMaxHp);
+          this.say(`The poison bites ${this.enemyName} for ${e.damage}.`);
+        } else {
+          this.flash(this.heroBody, e.damage, false);
+          this.heroBar.set(e.hp, s.maxHp);
+          this.say(`The poison bites you for ${e.damage}.`);
+        }
+        break;
+      case 'intent':
+        this.refreshStatus();
+        break;
+      case 'phase':
+        this.say(e.text);
+        this.refreshStatus();
+        break;
+      case 'meter':
+        this.refreshStatus();
+        break;
+      case 'stolen':
+        this.say(`You lift ${e.gold} gold from its purse.`);
+        break;
+      case 'enemyHealed':
         this.enemyBar.set(e.hp, this.enemyMaxHp);
-        this.say(`The poison bites ${this.enemyName} for ${e.damage}.`);
+        this.say(`${this.enemyName} heals ${e.amount}.`);
+        break;
+      case 'drained':
+        this.manaBar.set(e.left, s.maxMana);
+        this.say(`${this.enemyName} drinks ${e.mana} mana from you.`);
+        break;
+      case 'revived':
+        this.heroBar.set(e.hp, s.maxHp);
+        this.say(e.by === 'phoenix' ? `The Phoenix Feather burns: you rise with ${e.hp} HP!` : `The Phoenix Helm pulls you back to ${e.hp} HP.`);
         break;
       case 'countered':
         this.flash(this.enemyBody, e.damage, false);
@@ -344,14 +379,70 @@ export class FightScene extends Phaser.Scene {
     }
     const e = f.enemy;
     const enemyBits = [
-      e.charged ? `winding up ${e.charged}!` : '',
+      this.intentText(e),
       e.stunned ? `stunned ${e.stunned}` : '',
       e.poison ? `poisoned ${e.poison.rounds}` : '',
       e.weakened ? `weakened ${e.weakened.rounds}` : '',
+      e.armoured ? `hardened ${e.armoured.rounds}` : '',
+      e.evade ? 'fading' : '',
+      e.phase === 2 ? 'raging' : '',
     ].filter(Boolean);
     this.enemyStatus.setText(enemyBits.join(' · '));
-    const heroBits = [f.charged ? 'charged' : '', f.attackUp ? `hits harder ${f.attackUp.rounds}` : '', f.barrier ? `barrier ${f.barrier}` : '', f.evade ? `evading ${f.evade}` : ''].filter(Boolean);
+    const meter = CLASS_DATA[this.game_.me.classId].meter;
+    const heroBits = [
+      meter ? `${meter.name} ${'●'.repeat(f.meter ?? 0)}${'○'.repeat(Math.max(0, PROGRESSION.meterMax - (f.meter ?? 0)))}` : '',
+      f.charged ? 'charged' : '',
+      f.attackUp ? `hits harder ${f.attackUp.rounds}` : '',
+      f.barrier ? `barrier ${f.barrier}` : '',
+      f.evade ? `evading ${f.evade}` : '',
+      f.sureCrit ? `sure crit ${f.sureCrit}` : '',
+      f.mark ? `marked ${f.mark.hits}` : '',
+      f.companion ? `${f.companion.name.toLowerCase()} ${f.companion.rounds}` : '',
+      f.windup ? `${f.windup.name.toLowerCase()} in ${f.windup.rounds}` : '',
+      f.trap ? 'trap set' : '',
+      f.skip ? `time bent ${f.skip}` : '',
+      f.poisoned ? `poisoned ${f.poisoned.rounds}` : '',
+      f.weak ? `weakened ${f.weak.rounds}` : '',
+    ].filter(Boolean);
     this.heroStatus.setText(heroBits.join(' · '));
+  }
+
+  /** What the enemy will do next, from its intent: the thing to pick a guard for (mine, 2026-11-01). */
+  private intentText(e: Enemy): string {
+    if (e.charged) return `next: ${e.charged} lands, hard. Block it!`;
+    const mv = e.next;
+    if (!mv) return '';
+    if (mv.charge) return `next: it winds up ${mv.name}`;
+    const effect = mv.effect ? { poison: 'poison', drain: 'drains mana', armour: 'hardens', evade: 'fades', heal: 'heals', weaken: 'weakens you' }[mv.effect] : '';
+    return `next: ${mv.name}${effect ? ` (${effect})` : ''}`;
+  }
+
+  private effectText(target: 'player' | 'enemy', kind: string, rounds: number): string {
+    const n = this.enemyName;
+    if (target === 'enemy') {
+      switch (kind) {
+        case 'stunned': return `${n} is stunned for ${rounds}.`;
+        case 'weakened': return `${n} is weakened for ${rounds} ${rounds === 1 ? 'round' : 'rounds'}.`;
+        case 'poison': return `${n} is poisoned for ${rounds} rounds.`;
+        case 'armoured': return `${n} hardens: its hide is thicker for ${rounds} rounds.`;
+        case 'evade': return `${n} fades: your next hit will miss.`;
+        case 'mark': return `${n} is marked: your next ${rounds} hits land harder.`;
+        case 'trap': return 'A trap is set: its next wind-up will fail.';
+        case 'skip': return `Time bends round ${n}: it loses ${rounds} ${rounds === 1 ? 'turn' : 'turns'}.`;
+        default: return '';
+      }
+    }
+    switch (kind) {
+      case 'attackUp': return `Your hits land harder for ${rounds} rounds.`;
+      case 'barrier': return `A barrier of ${rounds} forms round you.`;
+      case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
+      case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
+      case 'companion': return `Your hawk takes wing: it strikes at the end of every round for ${rounds} rounds.`;
+      case 'windup': return `A meteor is called: it lands in ${rounds} rounds, whatever you do.`;
+      case 'poison': return `You are poisoned for ${rounds} rounds.`;
+      case 'weakened': return `You are weakened for ${rounds} rounds: your hits land softer.`;
+      default: return '';
+    }
   }
 
   private flash(body: Phaser.GameObjects.Arc, damage: number, crit: boolean): void {

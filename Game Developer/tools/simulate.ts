@@ -81,13 +81,25 @@ function fightMove(me: Character): { move: FightMove; guard: Guard } {
     for (const [id, rank] of Object.entries(me.abilities)) {
       const a = ABILITIES[id];
       if (!a || me.mana < a.mana) continue;
+      if (a.meter && f.meter < a.meter) continue;
+      if (a.meterAll && f.meter < 3) continue;
+      if (a.oncePerFight && f.used.includes(id)) continue;
+      if (f.windup) continue; // one spell in the air at a time is enough
       const r = a.ranks[Math.min(rank, a.ranks.length) - 1]!;
-      const value = (r.power ?? 0) * (r.hits ?? 1) + (r.stun && e.role === 'mob' ? 1.2 : 0) + (r.poison ? 1.0 : 0) + (r.weaken && e.role !== 'mob' ? 0.8 : 0);
+      const low = e.hp < e.maxHp * (r.executeBelow ?? 0);
+      let value = (low && r.executePower ? r.executePower : (r.power ?? 0)) * (r.hits ?? 1) + (r.perMeter ?? 0) * f.meter;
+      value += (r.stun && e.role === 'mob' ? 1.2 : 0) + (r.poison ? 1.0 : 0) + (r.weaken && e.role !== 'mob' ? 0.8 : 0) + (r.skip ? 1.5 : 0) + (r.mark && !f.mark ? 1.2 : 0) + (r.companion && !f.companion ? 1.4 : 0);
+      value += r.healShare && me.hp < s.maxHp * 0.6 ? 2 : 0;
+      value += (r.barrierShare || r.barrierPerMana) && me.hp < s.maxHp * 0.5 && !f.barrier ? 1.3 : 0;
+      value += r.trap && !f.trap && e.role !== 'mob' ? 1.1 : 0;
+      value += r.windup ? 0.6 : 0; // a meteor two rounds out is worth less than its power says
+      value += r.steal ? 0.5 : 0;
       if (value > 1.05 && (!best || value > best.value)) best = { id, value };
     }
     if (best) move = { kind: 'ability', ability: best.id };
   }
-  const guard: Guard = e.charged ? 'block' : s.dodge >= 0.1 ? 'dodge' : me.mana < 6 ? 'brace' : me.hp < s.maxHp * 0.5 ? 'block' : 'counter';
+  // The intent is shown a round ahead: block the heavy blow, step aside from a move that carries an effect, else as before.
+  const guard: Guard = e.charged ? 'block' : e.next?.effect && e.next.power > 0 ? 'dodge' : s.dodge >= 0.1 ? 'dodge' : me.mana < 6 ? 'brace' : me.hp < s.maxHp * 0.5 ? 'block' : 'counter';
   return { move, guard };
 }
 
@@ -215,7 +227,9 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
       continue;
     }
     if (me.offer) {
-      state = apply(state, act('gamble', { choice: 'pass' }), rng, now).state;
+      // The gambler is waved on; a level's pick takes an ability not yet known first.
+      const pick = me.offer.kind === 'ability' ? (me.offer.options.find((a) => !me.abilities[a]) ?? me.offer.options[0]!) : null;
+      state = apply(state, pick ? act('pick', { ability: pick }) : act('gamble', { choice: 'pass' }), rng, now).state;
       continue;
     }
     if (me.steps > 0) {
@@ -268,7 +282,10 @@ function wall(classId: ClassId, boss: string, level: number, rank: number, seeds
     me = { ...me, level, maxHp: me.maxHp + growth.hp * (level - 1), maxMana: me.maxMana + growth.mana * (level - 1), attack: me.attack + growth.attack * (level - 1), defense: me.defense + growth.defense * (level - 1) };
     const equipment = { ...me.equipment };
     if (rank > 0) for (const slot of SLOTS) equipment[slot] = plainGear(`w-${slot}`, slot, rank);
-    me = { ...me, equipment, items: { potion: 2 } };
+    // The kit a character of the level would have: every ability of the class, ranked by the level (picks and shrines).
+    const kitRank = level >= 16 ? 3 : level >= 8 ? 2 : 1;
+    const abilities = Object.fromEntries(Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === classId).map((a) => [a, kitRank]));
+    me = { ...me, equipment, items: { potion: 2 }, abilities };
     const s = stats(me);
     me = { ...me, hp: s.maxHp, mana: s.maxMana };
     // Square up on the ring's boss spot by hand: the fight itself is what we measure.
@@ -287,9 +304,9 @@ function wall(classId: ClassId, boss: string, level: number, rank: number, seeds
 }
 
 // A tiny hand-made fight state, through the public surface: makeEnemy is exported; the Fight shape is public.
-import { makeEnemy, CLASS_DATA } from '../rules/src/index.ts';
+import { makeEnemy, freshFight, CLASS_DATA } from '../rules/src/index.ts';
 function startFightOn(boss: string, bestiary: Record<string, EnemyData>) {
-  return { enemy: makeEnemy(boss, bestiary), round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'gate', spawn: false };
+  return freshFight(makeEnemy(boss, bestiary), 'gate', false);
 }
 function await_import_classes(classId: ClassId) {
   return CLASS_DATA[classId];

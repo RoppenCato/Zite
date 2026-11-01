@@ -26,7 +26,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('a new game', () => {
   it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(6);
+    expect(s.version).toBe(7);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
@@ -36,7 +36,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(6);
+    expect(s.version).toBe(7);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(me(s)).toEqual({
@@ -187,15 +187,23 @@ describe('landing', () => {
   });
 
   it('at a shrine teaches a new ability of the class, then improves one, then has nothing more', () => {
+    const warrior = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === 'warrior');
+    expect(warrior).toHaveLength(6);
     const first = apply(about('s5'), move(['s6']), makeRng('ashford'), NOW);
-    expect(first.events[2]).toEqual({ type: 'learned', action: 'm1', player: P, ability: 'war-cry', rank: 1 });
-    expect(me(first.state).abilities).toEqual({ 'heavy-blow': 1, 'shield-bash': 1, 'war-cry': 1 });
+    const taught = first.events[2];
+    expect(taught).toMatchObject({ type: 'learned', action: 'm1', player: P, rank: 1 });
+    if (taught?.type === 'learned') {
+      expect(warrior).toContain(taught.ability);
+      expect(['heavy-blow', 'shield-bash']).not.toContain(taught.ability);
+      expect(me(first.state).abilities).toEqual({ 'heavy-blow': 1, 'shield-bash': 1, [taught.ability]: 1 });
+    }
     expect(me(first.state).cooldowns.s6).toBe(NOW + 600000);
-    const knowsAll = apply(about('s5', { abilities: { 'heavy-blow': 1, 'shield-bash': 1, 'war-cry': 1 } }), move(['s6']), makeRng('ashford'), NOW);
+    const all = (rank: number) => Object.fromEntries(warrior.map((a) => [a, rank]));
+    const knowsAll = apply(about('s5', { abilities: all(1) }), move(['s6']), makeRng('ashford'), NOW);
     const learned = knowsAll.events[2];
     expect(learned).toMatchObject({ type: 'learned', rank: 2 });
     if (learned?.type === 'learned') expect(ABILITIES[learned.ability]?.classId).toBe('warrior');
-    const master = apply(about('s5', { abilities: { 'heavy-blow': 3, 'shield-bash': 3, 'war-cry': 3 } }), move(['s6']), makeRng('ashford'), NOW);
+    const master = apply(about('s5', { abilities: all(3) }), move(['s6']), makeRng('ashford'), NOW);
     expect(master.events[2]).toMatchObject({ type: 'nothing' });
     const soon = apply({ ...first.state, characters: { [P]: { ...me(first.state), space: 's5', steps: 1 } } }, move(['s6'], 'm2'), makeRng('ashford'), NOW + 1);
     expect(soon.events[2]).toMatchObject({ type: 'empty', space: 's6' });
@@ -203,7 +211,7 @@ describe('landing', () => {
 
   it('on a boss spot starts the boss fight, unless the boss is away for its five minutes', () => {
     const { state, events } = apply(about('s9'), move(['s10']), makeRng('x'), NOW);
-    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 500 }) });
+    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 550 }) });
     expect(me(state).fight).toMatchObject({ space: 's10', spawn: false, round: 1 });
     const away = apply(about('s9', { cooldowns: { s10: NOW + 1000 } }), move(['s10']), makeRng('x'), NOW);
     expect(away.events[2]).toMatchObject({ type: 'nothing', text: expect.stringContaining('not back yet') });
@@ -365,7 +373,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 7 })).toBeNull();
+    expect(migrate({ version: 8 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -385,7 +393,7 @@ describe('a stored state', () => {
   it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
     const s = migrate(structuredClone(older(version)));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(6);
+    expect(s!.version).toBe(7);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
     expect(s!.die).toEqual({ sides: 6, last: null });
@@ -432,7 +440,7 @@ describe('a stored state', () => {
     const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
     const s = migrate(structuredClone(v5));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(6);
+    expect(s!.version).toBe(7);
     expect(s!.board).toEqual(makeBoard());
     expect(s!.characters.p1).toEqual(p1);
     expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });

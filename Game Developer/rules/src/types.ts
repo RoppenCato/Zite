@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 6;
+export const STATE_VERSION = 7;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -11,11 +11,48 @@ export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 export type Slot = 'weapon' | 'armour' | 'helm' | 'boots' | 'trinket';
 export const SLOTS: readonly Slot[] = ['weapon', 'armour', 'helm', 'boots', 'trinket'];
 
-export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
-export const RARITIES: readonly Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+/** Unique is never rolled by chance: it is the rarity of the named pieces with powers that bosses carry (uniques.json). */
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'unique';
+export const RARITIES: readonly Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique'];
 
 /** A named piece's special effect. */
 export type AffixKind = 'crit' | 'lifesteal' | 'dodge' | 'thorns' | 'vigor';
+export interface Affix {
+  kind: AffixKind;
+  value: number;
+}
+
+/**
+ * What a unique does (Robin, 2026-10-31: loot with effects that change how you play). The rules read these by name;
+ * `uniques.json` gives each unique one, with a value.
+ */
+export type PowerKind =
+  | 'twinStrike'
+  | 'quickdraw'
+  | 'frostbrand'
+  | 'venom'
+  | 'arcane'
+  | 'bloodthirst'
+  | 'thunder'
+  | 'sunblade'
+  | 'ward'
+  | 'mirror'
+  | 'bulwark'
+  | 'secondWind'
+  | 'scholar'
+  | 'ironbrow'
+  | 'strider'
+  | 'windstep'
+  | 'pathfinder'
+  | 'greed'
+  | 'regen'
+  | 'manaWell'
+  | 'lucky'
+  | 'phoenix'
+  | 'fury';
+
+/** What an enemy's move does besides its blow: the guard has something to read. */
+export type EnemyEffect = 'poison' | 'drain' | 'armour' | 'evade' | 'heal' | 'weaken';
 
 /** The defensive choice made before the enemy's blow (Robin, 2026-10-31: different kinds; these four are mine). */
 export type Guard = 'none' | 'block' | 'dodge' | 'brace' | 'counter';
@@ -60,6 +97,7 @@ export interface EnemyData {
   xp: number;
   gold: number;
   moves: EnemyMove[];
+  phase2?: EnemyPhase;
 }
 
 /**
@@ -89,15 +127,15 @@ export interface GearItem {
   /** The plain description under a proper name: "iron sword". */
   base: string;
   stats: Partial<Record<GearStat, number>>;
-  affix: { kind: AffixKind; value: number } | null;
+  /** Rare and up carry one; a legendary two; a unique one beside its power. */
+  affixes: Affix[];
+  /** The id in uniques.json when the piece is a unique: its power is read from there. */
+  unique?: string;
   price: number;
 }
 
-/** A pending question the character must answer before rolling again. */
-export interface Offer {
-  kind: 'gamble';
-  stake: number;
-}
+/** A pending question the character must answer before rolling again: the gambler's, or a pick of one ability in two. */
+export type Offer = { kind: 'gamble'; stake: number } | { kind: 'ability'; options: string[] };
 
 export interface Character {
   id: string;
@@ -141,6 +179,15 @@ export interface EnemyMove {
   weight: number;
   /** A wind-up: no blow this round, the next one hits for `enemyCharge` times as much. */
   charge?: boolean;
+  /** What the move does besides (or instead of) its blow. */
+  effect?: EnemyEffect;
+}
+
+/** A boss's second wind: under `at` of its HP it switches to these moves, with a line to say. */
+export interface EnemyPhase {
+  at: number;
+  text: string;
+  moves: EnemyMove[];
 }
 
 /** The enemy as it stands in a fight. */
@@ -162,6 +209,15 @@ export interface Enemy {
   stunned: number;
   weakened: { rounds: number; mult: number } | null;
   poison: { rounds: number; damage: number } | null;
+  /** What it will do next round, shown ahead so the guard can be chosen for it (mine, 2026-10-31); null before it is known. */
+  next: EnemyMove | null;
+  /** Hardened: its defense multiplied for some rounds. */
+  armoured: { rounds: number; mult: number } | null;
+  /** Player hits that will miss it. */
+  evade: number;
+  /** 1 until a boss's second phase begins, then 2. */
+  phase: number;
+  phase2: EnemyPhase | null;
 }
 
 export interface Fight {
@@ -179,6 +235,27 @@ export interface Fight {
   space: string;
   /** True when the enemy is a spawn on the board, cleared when it falls. */
   spawn: boolean;
+  /** The class's meter (Rage, Combo, Flow, Focus), 0 to `meterMax`; abilities spend it. */
+  meter: number;
+  /** Hits the player has landed this fight (Stormcaller counts them). */
+  strikes: number;
+  /** Player hits that will surely crit. */
+  sureCrit: number;
+  /** A spell in the air (Meteor): it lands when `rounds` reaches 0. */
+  windup: { name: string; power: number; rounds: number } | null;
+  /** A companion striking at the end of each round. */
+  companion: { name: string; rounds: number; power: number } | null;
+  /** The next `hits` player hits land `mult` times as hard. */
+  mark: { hits: number; mult: number } | null;
+  /** Enemy wind-ups that will fail. */
+  trap: number;
+  /** Enemy turns lost to Time Warp: nothing resists it. */
+  skip: number;
+  /** The player's poison and weakening, from the enemy's moves. */
+  poisoned: { rounds: number; damage: number } | null;
+  weak: { rounds: number; mult: number } | null;
+  /** Once-a-fight things already used: ability ids, and powers such as ward, secondWind, quickdraw. */
+  used: string[];
 }
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
@@ -228,6 +305,8 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for Exactly N. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
+  /** The answer to a pick of one ability in two. */
+  | { type: 'pick'; id: string; player: string; ability: string }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
   | { type: 'tick'; id: string; player: string };
 
@@ -244,6 +323,8 @@ export type RejectReason =
   | 'that way is closed'
   | 'not in a fight'
   | 'not enough mana'
+  | 'not enough meter'
+  | 'already used'
   | 'no such ability'
   | 'not at a shop'
   | 'not enough gold'
@@ -277,6 +358,8 @@ export type GameEvent =
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
+  /** One of two abilities taken at a level (the other stays for a shrine to teach). */
+  | { type: 'picked'; action: string; player: string; ability: string; rank: number }
   /** A wandering merchant: the shop is open here. */
   | { type: 'merchant'; action: string; player: string }
   /** A fight began against this enemy, on this space. */
@@ -286,13 +369,27 @@ export type GameEvent =
   | { type: 'missed'; action: string; player: string; by: 'player' | 'enemy'; move: string }
   | { type: 'charged'; action: string; player: string; by: 'player' | 'enemy'; move: string }
   | { type: 'guarded'; action: string; player: string; guard: Guard }
-  /** The enemy lost its turn. */
-  | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' }
-  /** A mini-boss or a boss shrugged an effect off. */
-  | { type: 'resisted'; action: string; player: string; kind: 'stunned' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade'; rounds: number }
-  /** The enemy's poison bit; `hp` is what it left. */
-  | { type: 'poisoned'; action: string; player: string; damage: number; hp: number }
+  /** The enemy lost its turn: stunned, caught in time (Time Warp), or its wind-up sprang a trap. */
+  | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
+  /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
+  | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  /** A poison bit; `hp` is what it left. */
+  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number }
+  /** What the enemy will do next round. */
+  | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
+  /** A boss's second phase began. */
+  | { type: 'phase'; action: string; player: string; text: string }
+  /** The class's meter moved; `name` is Rage, Combo, Flow or Focus. */
+  | { type: 'meter'; action: string; player: string; name: string; value: number; max: number }
+  /** Gold lifted from the enemy in the fight. */
+  | { type: 'stolen'; action: string; player: string; gold: number; total: number }
+  /** The enemy healed itself; `hp` is the new value. */
+  | { type: 'enemyHealed'; action: string; player: string; amount: number; hp: number }
+  /** A blow that would have felled you did not: a power caught you; `hp` is where it left you. */
+  | { type: 'revived'; action: string; player: string; by: 'secondWind' | 'phoenix'; hp: number }
+  /** The enemy drank mana from you. */
+  | { type: 'drained'; action: string; player: string; mana: number; left: number }
   /** A free blow back after taking one (the counter guard, or thorns); `hp` is the enemy's. */
   | { type: 'countered'; action: string; player: string; damage: number; hp: number }
   | { type: 'mana'; action: string; player: string; delta: number; mana: number }

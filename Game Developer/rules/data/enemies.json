@@ -57,6 +57,12 @@
         "name": "Cheap Shot",
         "power": 1.5,
         "weight": 1
+      },
+      {
+        "name": "Dirty Trick",
+        "power": 0.6,
+        "weight": 1,
+        "effect": "weaken"
       }
     ]
   },
@@ -73,7 +79,13 @@
       {
         "name": "Spark",
         "power": 1,
-        "weight": 1
+        "weight": 2
+      },
+      {
+        "name": "Siphon",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
       }
     ]
   },
@@ -81,7 +93,7 @@
     "name": "Wolf Alpha",
     "level": 5,
     "role": "mini",
-    "hp": 220,
+    "hp": 242,
     "attack": 19,
     "defense": 6,
     "xp": 40,
@@ -97,6 +109,12 @@
         "power": 2,
         "weight": 1,
         "charge": true
+      },
+      {
+        "name": "Savage Bite",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "poison"
       }
     ]
   },
@@ -104,7 +122,7 @@
     "name": "Thornwood Warden",
     "level": 6,
     "role": "boss",
-    "hp": 500,
+    "hp": 550,
     "attack": 26,
     "defense": 9,
     "xp": 150,
@@ -121,7 +139,30 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Warden's bark splits and thorns burst out!",
+      "moves": [
+        {
+          "name": "Club",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Smash",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Thorn Burst",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    }
   },
   "spider": {
     "name": "Thorn Spider",
@@ -136,12 +177,18 @@
       {
         "name": "Bite",
         "power": 1,
-        "weight": 3
+        "weight": 2
       },
       {
         "name": "Pounce",
         "power": 1.4,
         "weight": 1
+      },
+      {
+        "name": "Venom Bite",
+        "power": 0.8,
+        "weight": 2,
+        "effect": "poison"
       }
     ]
   },
@@ -165,6 +212,12 @@
         "power": 1.6,
         "weight": 1,
         "charge": true
+      },
+      {
+        "name": "Regrow",
+        "power": 0,
+        "weight": 1,
+        "effect": "heal"
       }
     ]
   },
@@ -185,8 +238,9 @@
       },
       {
         "name": "Barbed Arrow",
-        "power": 1.5,
-        "weight": 1
+        "power": 1.2,
+        "weight": 1,
+        "effect": "poison"
       }
     ]
   },
@@ -203,7 +257,19 @@
       {
         "name": "Touch",
         "power": 1,
-        "weight": 1
+        "weight": 2
+      },
+      {
+        "name": "Fade",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      },
+      {
+        "name": "Chill Touch",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "drain"
       }
     ]
   },
@@ -211,7 +277,7 @@
     "name": "Spider Queen",
     "level": 9,
     "role": "mini",
-    "hp": 400,
+    "hp": 440,
     "attack": 30,
     "defense": 11,
     "xp": 90,
@@ -227,6 +293,12 @@
         "power": 2,
         "weight": 1,
         "charge": true
+      },
+      {
+        "name": "Web",
+        "power": 0,
+        "weight": 1,
+        "effect": "weaken"
       }
     ]
   },
@@ -234,7 +306,7 @@
     "name": "Briar King",
     "level": 10,
     "role": "boss",
-    "hp": 850,
+    "hp": 935,
     "attack": 36,
     "defense": 12,
     "xp": 350,
@@ -251,7 +323,36 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Briar King rages: the thorns close in!",
+      "moves": [
+        {
+          "name": "Thorn Whip",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Briar Crush",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Strangle",
+          "power": 1.2,
+          "weight": 1,
+          "effect": "weaken"
+        },
+        {
+          "name": "Regrow",
+          "power": 0,
+          "weight": 1,
+          "effect": "heal"
+        }
+      ]
+    }
   },
   "ice-wolf": {
     "name": "Ice Wolf",
@@ -271,7 +372,8 @@
       {
         "name": "Frost Lunge",
         "power": 1.4,
-        "weight": 1
+        "weight": 1,
+        "effect": "weaken"
       }
     ]
   },
@@ -311,7 +413,13 @@
       {
         "name": "Chill",
         "power": 1,
-        "weight": 1
+        "weight": 2
+      },
+      {
+        "name": "Siphon",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
       }
     ]
   },
@@ -335,6 +443,12 @@
         "power": 1.8,
         "weight": 1,
         "charge": true
+      },
+      {
+        "name": "Harden",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
       }
     ]
   },
@@ -342,7 +456,7 @@
     "name": "Yeti Elder",
     "level": 13,
     "role": "mini",
-    "hp": 700,
+    "hp": 770,
     "attack": 48,
     "defense": 16,
     "xp": 170,
@@ -358,6 +472,12 @@
         "power": 2,
         "weight": 1,
         "charge": true
+      },
+      {
+        "name": "Chill Howl",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
       }
     ]
   },
@@ -365,7 +485,7 @@
     "name": "Frost Matriarch",
     "level": 14,
     "role": "boss",
-    "hp": 1200,
+    "hp": 1320,
     "attack": 46,
     "defense": 15,
     "xp": 700,
@@ -382,6 +502,34 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Matriarch's heart freezes over!",
+      "moves": [
+        {
+          "name": "Ice Claw",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Blizzard",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Frozen Heart",
+          "power": 0,
+          "weight": 1,
+          "effect": "armour"
+        },
+        {
+          "name": "Shatter",
+          "power": 1.3,
+          "weight": 1
+        }
+      ]
+    }
   }
 }

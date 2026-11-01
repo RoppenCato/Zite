@@ -8,11 +8,12 @@
     "trinket": { "base": "Amulet", "stat": "maxMana", "perRank": [6, 12, 20],  "price": [25, 75, 180] }
   },
   "rarities": {
-    "common":    { "mult": 1.0,  "weight": 60, "priceMult": 1,   "affix": false, "named": false },
-    "uncommon":  { "mult": 1.2,  "weight": 25, "priceMult": 1.6, "affix": false, "named": false },
-    "rare":      { "mult": 1.45, "weight": 10, "priceMult": 2.5, "affix": true,  "named": false },
-    "epic":      { "mult": 1.75, "weight": 4,  "priceMult": 4,   "affix": true,  "named": true },
-    "legendary": { "mult": 2.2,  "weight": 1,  "priceMult": 7,   "affix": true,  "named": true }
+    "common":    { "mult": 1.0,  "weight": 60, "priceMult": 1,   "affixes": 0, "named": false },
+    "uncommon":  { "mult": 1.2,  "weight": 25, "priceMult": 1.6, "affixes": 0,   "named": false },
+    "rare":      { "mult": 1.45, "weight": 10, "priceMult": 2.5, "affixes": 1,   "named": false },
+    "epic":      { "mult": 1.75, "weight": 4,  "priceMult": 4,   "affixes": 1,   "named": true },
+    "legendary": { "mult": 2.2,  "weight": 1,  "priceMult": 7,   "affixes": 2,   "named": true },
+    "unique":    { "mult": 1.9,  "weight": 0,  "priceMult": 8,   "affixes": 1,  "named": true }
   },
   "roll": 0.15,
   "affixes": {
@@ -30,7 +31,8 @@
     "trinket": ["Moontear", "Everflame", "Heartstone", "Wyrmseye"]
   },
   "dropChance": { "mob": 0.12, "mini": 0.5, "boss": 1 },
-  "rarityBoost": { "mob": 0, "mini": 1, "boss": 2 },
+  "rarityBoost": { "mob": 0, "mini": 2, "boss": 3 },
+  "uniqueChance": { "mob": 0, "mini": 0.1, "boss": 0.5 },
   "consumableDrop": { "potion": 0.2, "card": 0.08 },
   "sellShare": 0.5,
   "rankGrowth": 1.35,

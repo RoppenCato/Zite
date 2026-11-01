@@ -61,5 +61,15 @@
     "chancePerTick": 0.5,
     "lifeMs": 600000,
     "miniboss": 0.7
-  }
+  },
+  "meterMax": 5,
+  "pickLevels": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ]
 }

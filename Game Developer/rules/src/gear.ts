@@ -1,11 +1,12 @@
-// Gear (Robin, 2026-10-31): a rank by tier (copper, iron, steel), a rarity from common to legendary with rolled
-// numbers, and named pieces with a special effect. What is worn adds to the character's base numbers.
+// Gear (Robin, 2026-10-31): a rank by tier (copper, iron, steel, …), a rarity from common to legendary with rolled
+// numbers, named pieces with special effects, and uniques whose powers change how you play (Robin, 2026-10-31, the
+// evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
-import { CLASS_DATA, GEAR, PROGRESSION } from './data.ts';
+import { CLASS_DATA, GEAR, PROGRESSION, UNIQUE_IDS, UNIQUES } from './data.ts';
 import type { Rng } from './rng.ts';
-import { RARITIES, SLOTS, type AffixKind, type Character, type GearItem, type Rarity, type Slot } from './types.ts';
+import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type GearItem, type PowerKind, type Rarity, type Slot } from './types.ts';
 
-/** The numbers a fight uses: the base from class and levels, plus everything worn. */
+/** The numbers a fight uses: the base from class and levels, plus everything worn, and the powers of the uniques worn. */
 export interface Stats {
   attack: number;
   defense: number;
@@ -15,6 +16,18 @@ export interface Stats {
   dodge: number;
   lifesteal: number;
   thorns: number;
+  powers: Partial<Record<PowerKind, number>>;
+}
+
+/** The powers of the uniques worn, by kind, with their values. Two of a kind add up. */
+export function powers(c: Character): Partial<Record<PowerKind, number>> {
+  const out: Partial<Record<PowerKind, number>> = {};
+  for (const slot of SLOTS) {
+    const g = c.equipment[slot];
+    const u = g?.unique ? UNIQUES[g.unique] : undefined;
+    if (u) out[u.power] = (out[u.power] ?? 0) + u.value;
+  }
+  return out;
 }
 
 export function stats(c: Character): Stats {
@@ -35,27 +48,34 @@ export function stats(c: Character): Stats {
     defense += g.stats.defense ?? 0;
     maxHp += g.stats.maxHp ?? 0;
     maxMana += g.stats.maxMana ?? 0;
-    if (g.affix) {
-      switch (g.affix.kind) {
+    for (const affix of g.affixes ?? []) {
+      switch (affix.kind) {
         case 'crit':
-          crit += g.affix.value;
+          crit += affix.value;
           break;
         case 'dodge':
-          dodge += g.affix.value;
+          dodge += affix.value;
           break;
         case 'lifesteal':
-          lifesteal += g.affix.value;
+          lifesteal += affix.value;
           break;
         case 'thorns':
-          thorns += g.affix.value;
+          thorns += affix.value;
           break;
         case 'vigor':
-          vigor += g.affix.value;
+          vigor += affix.value;
           break;
       }
     }
   }
-  return { attack, defense, maxHp: Math.round(maxHp * (1 + vigor)), maxMana, crit, dodge, lifesteal, thorns };
+  maxHp = Math.round(maxHp * (1 + vigor));
+  const p = powers(c);
+  if (p.bloodthirst) {
+    // Gorefang: harder the more HP is missing, up to the value more.
+    const missing = Math.min(1, Math.max(0, 1 - c.hp / Math.max(1, maxHp)));
+    attack = Math.round(attack * (1 + p.bloodthirst * missing));
+  }
+  return { attack, defense, maxHp, maxMana, crit, dodge, lifesteal, thorns, powers: p };
 }
 
 /** The rank's name for a tier: Copper for 1, Iron for 2, …; "Rank n" beyond the names. */
@@ -85,12 +105,15 @@ export function plainGear(id: string, slot: Slot, rank: number): GearItem {
   const r = Math.max(1, Math.floor(rank));
   const def = GEAR.slots[slot];
   const base = `${rankName(r)} ${def.base}`;
-  return { id, slot, rank: r, rarity: 'common', name: base, base: base.toLowerCase(), stats: { [def.stat]: rankStat(slot, r) }, affix: null, price: rankPrice(slot, r) };
+  return { id, slot, rank: r, rarity: 'common', name: base, base: base.toLowerCase(), stats: { [def.stat]: rankStat(slot, r) }, affixes: [], price: rankPrice(slot, r) };
 }
 
-/** A rarity by weight; `boost` skips that many of the lowest rarities (a mini-boss never drops common, a boss nothing under rare). */
+/**
+ * A rarity by weight; `boost` skips that many of the lowest rarities (a mini-boss never drops common or uncommon, a boss
+ * nothing under epic). Unique has no weight: it never comes up here.
+ */
 export function rollRarity(rng: Rng, boost: number): Rarity {
-  const pool = RARITIES.slice(Math.min(boost, RARITIES.length - 1));
+  const pool = RARITIES.filter((r) => GEAR.rarities[r].weight > 0).slice(Math.min(boost, RARITIES.length - 2));
   const total = pool.reduce((sum, r) => sum + GEAR.rarities[r].weight, 0);
   let pick = rng.next() * total;
   for (const r of pool) {
@@ -100,9 +123,21 @@ export function rollRarity(rng: Rng, boost: number): Rarity {
   return pool[pool.length - 1]!;
 }
 
+/** `count` affixes, all of different kinds, each with a value in its range. Two numbers from the stream each. */
+function rollAffixes(count: number, rng: Rng): Affix[] {
+  const kinds = Object.keys(GEAR.affixes) as AffixKind[];
+  const out: Affix[] = [];
+  for (let i = 0; i < count && kinds.length; i++) {
+    const kind = kinds.splice(rng.int(kinds.length) - 1, 1)[0]!;
+    const range = GEAR.affixes[kind];
+    out.push({ kind, value: Math.round((range.min + rng.next() * (range.max - range.min)) * 100) / 100 });
+  }
+  return out;
+}
+
 /**
- * A rolled piece: the rarity, the rank's number times the rarity's multiplier swung by `roll` either way, an affix
- * when the rarity has one, a proper name when it is named. Four to six numbers from the stream.
+ * A rolled piece: the rarity, the rank's number times the rarity's multiplier swung by `roll` either way, the rarity's
+ * affixes (a legendary carries two), a proper name when it is named. Four to eight numbers from the stream.
  */
 export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng): GearItem {
   const r = Math.max(1, Math.floor(rank));
@@ -112,26 +147,47 @@ export function rollGear(id: string, slot: Slot, rank: number, boost: number, rn
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
   const value = Math.max(1, Math.round(rankStat(slot, r) * rar.mult * swing));
   const plain = `${rankName(r)} ${def.base}`;
-  let affix: GearItem['affix'] = null;
-  if (rar.affix) {
-    const kinds = Object.keys(GEAR.affixes) as AffixKind[];
-    const kind = kinds[rng.int(kinds.length) - 1]!;
-    const range = GEAR.affixes[kind];
-    affix = { kind, value: Math.round((range.min + rng.next() * (range.max - range.min)) * 100) / 100 };
-  }
+  const affixes = rollAffixes(rar.affixes, rng);
   let name = plain;
   if (rar.named) {
     const names = GEAR.names[slot];
     name = names[rng.int(names.length) - 1]!;
   }
-  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affix, price: Math.round(rankPrice(slot, r) * rar.priceMult) };
+  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes, price: Math.round(rankPrice(slot, r) * rar.priceMult) };
 }
 
-/** One line on a piece: "Stormborn, iron sword · epic · +14 attack · +12% crit chance". */
+/** The uniques a tier's bosses carry: every unique from that tier or an earlier one. */
+export function uniquePool(tier: number): string[] {
+  return UNIQUE_IDS.filter((u) => UNIQUES[u]!.tier <= tier);
+}
+
+/** The unique `uniqueId` at `rank`: its number as a unique's (the top multiplier, swung), one affix, its power. */
+export function makeUnique(id: string, uniqueId: string, rank: number, rng: Rng): GearItem {
+  const u = UNIQUES[uniqueId];
+  if (!u) throw new Error(`no such unique: ${uniqueId}`);
+  const r = Math.max(1, Math.floor(rank));
+  const def = GEAR.slots[u.slot];
+  const rar = GEAR.rarities.unique;
+  const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
+  const value = Math.max(1, Math.round(rankStat(u.slot, r) * rar.mult * swing));
+  const plain = `${rankName(r)} ${def.base}`;
+  return { id, slot: u.slot, rank: r, rarity: 'unique', name: u.name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes: rollAffixes(rar.affixes, rng), unique: uniqueId, price: Math.round(rankPrice(u.slot, r) * rar.priceMult) };
+}
+
+/** One of the tier's uniques at `rank`, or null when the tier has none. */
+export function rollUnique(id: string, tier: number, rank: number, rng: Rng): GearItem | null {
+  const pool = uniquePool(tier);
+  if (!pool.length) return null;
+  return makeUnique(id, pool[rng.int(pool.length) - 1]!, rank, rng);
+}
+
+/** One line on a piece: "Stormborn, iron sword · epic · +14 attack · +12% crit chance"; a unique adds what its power does. */
 export function describeGear(g: GearItem): string {
   const parts = [g.name === capitalise(g.base) ? g.name : `${g.name}, ${g.base}`, g.rarity];
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
-  if (g.affix) parts.push(`+${Math.round(g.affix.value * 100)}% ${GEAR.affixes[g.affix.kind].text}`);
+  for (const affix of g.affixes ?? []) parts.push(`+${Math.round(affix.value * 100)}% ${GEAR.affixes[affix.kind].text}`);
+  const u = g.unique ? UNIQUES[g.unique] : undefined;
+  if (u) parts.push(u.text);
   return parts.join(' · ');
 }
 
