@@ -1,11 +1,12 @@
 // The guide (Robin, 2026-11-01: "its a bit hard to tell what skills etc do in combat. I think there needs to be some sort
-// of guide in the menu on what things do and how battle works."). Opened from the World sheet and from the ? in a fight;
+// of guide in the menu on what things do and how battle works."). Opened from Settings and from the ? in a fight;
 // it lies over everything and takes every touch until Close. The numbers are read from the rules' data, so a retune
 // shows here by itself.
 
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT } from '../layout.ts';
@@ -20,6 +21,8 @@ interface Entry {
   text: string;
   /** Written dim: an ability not known yet. */
   dim?: boolean;
+  /** An ability's icon beside it. */
+  icon?: string;
 }
 interface Page {
   name: string;
@@ -82,8 +85,14 @@ export class GuideScene extends Phaser.Scene {
     for (const t of this.tabs) t.label.setColor(t.index === this.page ? '#ffe9a8' : '#f7efdc');
     let y = HUD_HEIGHT + 118;
     for (const e of this.pages()[this.page]!.entries) {
-      const title = this.add.text(28, y, e.title, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: e.dim ? dim : ink });
-      const text = this.add.text(28, y + 20, e.text, { fontFamily: FONT, fontSize: '14px', color: dim, wordWrap: { width: DESIGN_WIDTH - 56 }, lineSpacing: 1 });
+      const pic = e.icon ? abilityIcon(this, e.icon, 44, y + 18, 32) : null;
+      if (pic) {
+        this.rows.push(pic);
+        if (e.dim) pic.setAlpha(0.55);
+      }
+      const textX = pic ? 68 : 28;
+      const title = this.add.text(textX, y, e.title, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: e.dim ? dim : ink });
+      const text = this.add.text(textX, y + 20, e.text, { fontFamily: FONT, fontSize: '14px', color: dim, wordWrap: { width: DESIGN_WIDTH - textX - 28 }, lineSpacing: 1 });
       this.rows.push(title, text);
       y += 20 + text.height + 10;
     }
@@ -101,7 +110,7 @@ export class GuideScene extends Phaser.Scene {
       const a = ABILITIES[id]!;
       const rank = me.abilities[id];
       const cost = [a.mana ? `${a.mana} mana` : '', a.meter && meter ? `${a.meter} ${meter.name}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ');
-      return { title: `${a.name}${rank ? ` · rank ${rank}` : ''}`, text: `${a.text}${cost ? ` Costs ${cost}.` : ''}`, dim: !rank };
+      return { title: `${a.name}${rank ? ` · rank ${rank}` : ''}`, text: `${a.text}${cost ? ` Costs ${cost}.` : ''}`, dim: !rank, icon: id };
     };
     return [
       {

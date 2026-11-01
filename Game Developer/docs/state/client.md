@@ -457,3 +457,7 @@ A closed area's cloud stops 20 px into an earlier area it overlaps, so the next 
 ## Other players on the board (chapter 2, step 8, 2026-11-01)
 
 Others stand beside the spot as figures in what they wear, at 0.85 of your size, with their name under them; seen with two real windows on a throwaway world. They show the Knight's art until the classes land. **Chapter 2's sound names** are wired (`fight/meter-pip-<class>`, `ui/step-roots-n`, `ui/step-moss-n`, `fight/meteor-land`): borrowed or silent until Nigel, SD's drops land.
+
+## The four classes and the effects (chapter 2, steps 5 and 6, 2026-11-02)
+
+`hero.ts` loads the shared gear plus each class's body, weapon and weapon icons (`CLASS_ART`); a frame in the class's body atlas overrides the shared one. The character screen loads all four to show them on their cards, then `releaseClasses` frees three. **Effects** (`effects.ts`): `playOnce` where a blow lands, `fly` for the arrow and the Falling Star, `HeldEffects` for what lasts (charge, poison, weaken, stun as chill, barrier as the bubble, the enemy's wind-up), `Owl` for the Archer's friend; all off with fewer effects. Ability icons are on the fight's buttons, the trainer's rows and the guide. Not used yet: `burn`.

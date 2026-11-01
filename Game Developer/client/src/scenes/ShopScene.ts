@@ -8,6 +8,7 @@ import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEM_IDS, ITEMS, plainGear, 
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
@@ -102,11 +103,14 @@ export class ShopScene extends Phaser.Scene {
     this.gold.setText(`Gold ${me.gold}`);
     const { firstRowY, rowStep, button } = SHOP_LAYOUT;
     const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
-    const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void, own = ''): void => {
+    const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void, own = '', ability = ''): void => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
       // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
-      const title = this.add.text(26, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5);
+      const pic = ability ? abilityIcon(this, ability, 40, y, 34) : null;
+      if (pic) this.rows.push(pic);
+      const textX = pic ? 62 : 26;
+      const title = this.add.text(textX, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5);
       this.rows.push(title);
       // What you already own, as a green tag beside the name (Robin, 2026-11-01: "easy to see in the shops if you already own an item (or how many)").
       if (own) {
@@ -115,7 +119,7 @@ export class ShopScene extends Phaser.Scene {
         this.rows.push(pill, tag);
         tag.setDepth(1);
       }
-      this.rows.push(this.add.text(26, y + 10, detail, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 236 }, maxLines: 1 }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(textX, y + 10, detail, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: pic ? 200 : 236 }, maxLines: 1 }).setOrigin(0, 0.5));
       this.rows.push(this.add.text(292, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
@@ -131,7 +135,7 @@ export class ShopScene extends Phaser.Scene {
         const cost = `${a.mana} MP${a.meterAll ? `, all ${meterName}` : a.meter ? `, ${a.meter} ${meterName}` : ''}`;
         row(i, `${a.name}${rank ? ` · rank ${rank}` : ''}`, rank ? this.ink.text : this.ink.dim, `${a.text} ${cost}.`, top ? 'top' : `${price} g`, top ? '—' : rank ? 'Rank up' : 'Learn', () => {
           if (!top) this.buy({ ability: id });
-        });
+        }, '', id);
       });
     } else if (tab === 'buy') {
       SLOTS.forEach((slot, i) => {

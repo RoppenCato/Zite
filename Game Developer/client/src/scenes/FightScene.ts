@@ -12,6 +12,7 @@ import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
+import { abilityIcon, fly, HeldEffects, Owl, playOnce, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate } from '../kit.ts';
@@ -93,6 +94,8 @@ interface Option {
   onTap: () => void;
   /** Smaller than the rest: a label of two lines. */
   size?: string;
+  /** An ability's icon at the button's left. */
+  icon?: string;
 }
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
@@ -109,6 +112,12 @@ export class FightScene extends Phaser.Scene {
   private heroBody!: Body;
   /** The hero drawn from the atlas when a set is loaded. */
   private hero: Hero | null = null;
+  /** The clips held while a state lasts, and the Archer's owl while it fights. */
+  private held!: HeldEffects;
+  private owl: Owl | null = null;
+  private feetY = 0;
+  private tallEnemy = false;
+  private enemyBarY = 0;
   private heroBar!: Bar;
   private manaBar!: Bar;
   private heroStatus!: Phaser.GameObjects.Text;
@@ -141,6 +150,7 @@ export class FightScene extends Phaser.Scene {
     if (!me.fight) return;
     const board = this.game_.state.board;
     preloadCreature(this, me.fight.enemy.id);
+    preloadEffects(this, me.classId === 'ranger');
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
 
@@ -176,6 +186,9 @@ export class FightScene extends Phaser.Scene {
       plate(this, 'panel_message', CENTRE, L.messageY + 22, 384, 56);
     }
     const feetY = this.backdrop.feetY;
+    this.feetY = feetY;
+    this.held = new HeldEffects(this);
+    this.owl = null;
 
     const title = this.add.text(TITLE_X, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 5 }).setOrigin(0.5);
     // A long name must not run under the ? (mine, 2026-11-01: the Sleepy Owlbear Cub did).
@@ -204,7 +217,10 @@ export class FightScene extends Phaser.Scene {
     }
     const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
     this.enemyBar = new Bar(this, enemyBarX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
-    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, 1);
+    // A boss too tall for words over his bar has them under it, clear of the title (mine, 2026-11-02).
+    this.tallEnemy = enemyTop - 26 < L.historyY + 70;
+    this.enemyBarY = enemyTop - 26;
+    this.enemyStatus = this.add.text(enemyBarX, this.tallEnemy ? enemyTop - 12 : enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, this.tallEnemy ? 0 : 1);
 
     let heroTop: number;
     if (heroReady(this, me.classId)) {
@@ -284,6 +300,7 @@ export class FightScene extends Phaser.Scene {
         text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''}
 ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         size: '14px',
+        icon: id,
         color: 0x8e6ad9,
         enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used,
         onTap: () => this.pick({ kind: 'ability', ability: id }),
@@ -389,9 +406,19 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'hit':
         if (e.by === 'player') {
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
-          this.hero?.play('attack1');
-          this.step(this.heroBody, 34);
-          this.after(this.hero?.blowMs() ?? 0, () => {
+          const byOwl = e.move === ABILITIES.hawk?.name;
+          const star = e.move === ABILITIES.meteor?.name;
+          if (byOwl) this.owl?.strike(FIGHT_LAYOUT.enemyX - 70);
+          else {
+            this.hero?.play('attack1');
+            this.step(this.heroBody, 34);
+          }
+          this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs() ?? 0), () => {
+            const at = this.spot('enemy', 'chest');
+            const land = () => playOnce(this, star ? 'star_impact' : e.crit ? 'crit_burst' : 'hit_spark', at.x, at.y);
+            if (star) fly(this, 'falling_star', { x: at.x, y: HUD_HEIGHT + 20 }, at, settings.ms(260), land);
+            else if (this.game_.me.classId === 'ranger' && !byOwl) fly(this, 'arrow', this.spot('hero', 'chest'), at, settings.ms(130), land);
+            else land();
             this.enemy?.play('hit1');
             sfx.play(e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
             if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
@@ -406,6 +433,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
           this.step(this.enemyBody, -30);
           this.after(this.enemy?.blowMs() ?? 0, () => {
             this.hero?.play('hit1');
+            const hurt = this.spot('hero', 'chest');
+            playOnce(this, e.crit ? 'crit_burst' : 'hit_spark', hurt.x, hurt.y);
             sfx.play(e.crit || e.damage >= s.maxHp * 0.15 ? 'fight/enemy-hit-heavy' : 'fight/enemy-hit-light');
             this.flash(this.heroBody, e.damage, e.crit);
             this.heroBar.set(e.hp, s.maxHp);
@@ -420,6 +449,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
           this.hero?.play('stand');
         } else this.hero?.play('attack1');
         sfx.play('fight/miss');
+        {
+          const at = this.spot(e.by === 'enemy' ? 'hero' : 'enemy', 'chest');
+          playOnce(this, 'dodge_whoosh', at.x, at.y);
+        }
         this.say(e.by === 'enemy' ? `${e.move} misses!` : 'You miss.');
         break;
       case 'charged':
@@ -430,6 +463,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'guarded':
         if (e.guard === 'block' || e.guard === 'brace' || e.guard === 'counter') this.hero?.play('defend', true);
         if (e.guard !== 'none') sfx.play(`fight/guard-${e.guard}`);
+        if (e.guard === 'block' || e.guard === 'brace') {
+          const at = this.spot('hero', 'chest');
+          playOnce(this, 'block_shield', at.x + 20, at.y);
+        }
         this.say({ block: 'You raise your guard.', dodge: 'You step aside…', brace: 'You brace.', counter: 'You wait for the opening…', none: '' }[e.guard]);
         break;
       case 'skipped':
@@ -462,7 +499,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         this.enemy?.setPhase(2);
         sfx.play('fight/phase');
         // Grumblebark's second phase: the whole forest shakes (art-demands, wave 4).
-        if (this.enemyId === 'briar-king' && !settings.get().fewerEffects) this.cameras.main.shake(700, 0.012);
+        if (this.enemyId === 'briar-king' && !settings.get().fewerEffects) this.cameras.main.shake(700, 0.006);
         sfx.play(`creature/${this.enemyId}/surge`);
         this.say(e.text);
         this.refreshStatus();
@@ -491,6 +528,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'countered':
         this.hero?.play('attack1');
         this.after(this.hero?.blowMs() ?? 0, () => {
+          const at = this.spot('enemy', 'chest');
+          playOnce(this, 'counter_flash', at.x, at.y);
           this.enemy?.play('hit1');
           sfx.play('fight/hit-light');
           sfx.play(`creature/${this.enemyId}/hit`);
@@ -505,11 +544,19 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         break;
       case 'used':
         this.say(`You drink a ${ITEMS[e.item]?.name ?? e.item}.`);
+        if (ITEMS[e.item]?.manaShare) {
+          const at = this.spot('hero', 'chest');
+          playOnce(this, 'mana_sparkle', at.x, at.y);
+        }
         break;
       case 'healed':
         this.heroBar.set(e.hp, s.maxHp);
         if (e.amount > 0) {
           sfx.play('fight/heal');
+          {
+            const at = this.spot('hero', 'chest');
+            playOnce(this, 'heal_glow', at.x, at.y);
+          }
           this.say(`You feel better: +${e.amount} HP.`);
         }
         break;
@@ -551,6 +598,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
         break;
       case 'levelled':
+        {
+          const at = this.spot('hero', 'chest');
+          playOnce(this, 'levelup_burst', at.x, at.y);
+        }
         this.heroBar.set(me.hp, s.maxHp);
         this.manaBar.set(me.mana, s.maxMana);
         this.say(`Level ${e.level}! HP ${e.maxHp}, mana ${e.maxMana}, attack ${e.attack}, defense ${e.defense}.`);
@@ -627,13 +678,25 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const slots = [FIGHT_BUTTONS.a, FIGHT_BUTTONS.b, FIGHT_BUTTONS.c, FIGHT_BUTTONS.d, FIGHT_BUTTONS.e, FIGHT_BUTTONS.f];
     options.slice(0, slots.length).forEach((o, i) => {
       const slot = slots[i]!;
-      const { button } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, o.size ?? '16px', () => {
+      const { button, label } = makeButton(this, slot.x, slot.y, slot.w, slot.h, o.text, o.color, o.size ?? '16px', () => {
         if (o.enabled && !this.busy) o.onTap();
         else sfx.play('ui/tap-denied');
       });
+      const pic = o.icon ? abilityIcon(this, o.icon, -slot.w / 2 + 24, -2, 30) : null;
+      if (pic) {
+        button.add(pic);
+        label.setX(14);
+        for (let px = 13; label.width > slot.w - 56 && px > 11; px--) label.setFontSize(px);
+      }
       if (!o.enabled) button.setAlpha(0.4);
       this.buttons.push(button);
     });
+  }
+
+  /** Where an effect goes on a figure. */
+  private spot(who: 'hero' | 'enemy', where: 'chest' | 'head'): { x: number; y: number } {
+    const height = who === 'hero' ? 150 : (this.enemy?.headHeight() ?? 56);
+    return { x: who === 'hero' ? FIGHT_LAYOUT.heroX : FIGHT_LAYOUT.enemyX, y: this.feetY - height * (where === 'chest' ? 0.5 : 0.95) };
   }
 
   /** What is on each side: wind-ups, stuns, poison, weakening; charges, buffs, barriers, evasion. */
@@ -642,6 +705,9 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     if (!f) {
       this.enemyStatus.setText('');
       this.heroStatus.setText('');
+      this.held.clear();
+      this.owl?.destroy();
+      this.owl = null;
       return;
     }
     const e = f.enemy;
@@ -680,6 +746,26 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       f.weak ? `weakened ${f.weak.rounds}` : '',
     ].filter(Boolean);
     this.heroStatus.setText(heroBits.join(' · '));
+    // What lasts is seen on the figure (Mitch, AD's clips). No clip of its own: burn; Firework hits as a plain hit for now.
+    const heroChest = this.spot('hero', 'chest');
+    const heroHead = this.spot('hero', 'head');
+    const foeChest = this.spot('enemy', 'chest');
+    const foeHead = this.spot('enemy', 'head');
+    this.held.set('charge_glow', !!f.charged, heroChest.x, heroChest.y);
+    this.held.set('poison_drip', !!f.poisoned, heroHead.x, heroHead.y);
+    this.held.set('weaken', !!f.weak, heroHead.x, heroHead.y);
+    this.held.set('bubble_shield', !!f.barrier, heroChest.x, heroChest.y, 'bubble', 'bubble_pop');
+    // Beside the bar on a tall boss, where it is not under the words.
+    if (this.tallEnemy) this.held.set('windup_tell', !!e.charged, FIGHT_LAYOUT.enemyX - FIGHT_LAYOUT.barW / 2 - 14, this.enemyBarY + 6);
+    else this.held.set('windup_tell', !!e.charged, foeHead.x, foeHead.y - 14);
+    this.held.set('poison_drip', !!e.poison, foeHead.x, foeHead.y + 20);
+    this.held.set('weaken', !!e.weakened, foeChest.x, foeChest.y);
+    this.held.set('chill', !!e.stunned, foeChest.x, foeChest.y);
+    if (f.companion && !this.owl && this.game_.me.classId === 'ranger' && !settings.get().fewerEffects) this.owl = new Owl(this, FIGHT_LAYOUT.heroX + 84, this.feetY - 70);
+    else if (!f.companion && this.owl) {
+      this.owl.destroy();
+      this.owl = null;
+    }
   }
 
   /** What the enemy will do next, from its intent: the thing to pick a guard for (mine, 2026-11-01). */
@@ -712,7 +798,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'barrier': return `A barrier of ${rounds} forms round you.`;
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
-      case 'companion': return `Your hawk takes wing: it strikes at the end of every round for ${rounds} rounds.`;
+      case 'companion': return `Your owl takes wing: it strikes at the end of every round for ${rounds} rounds.`;
       case 'windup': return `A meteor is called: it lands in ${rounds} rounds, whatever you do.`;
       case 'poison': return `You are poisoned for ${rounds} rounds.`;
       case 'weakened': return `You are weakened for ${rounds} rounds: your hits land softer.`;

@@ -120,8 +120,8 @@ W.bot = {
     const town = Object.values(g.state.board.spaces).find((s) => s.area === forest.id && s.kind === 'town');
     let c = r.makeCharacter(g.player, name, classId, g.state.board);
     const equipment = { ...c.equipment };
-    r.SLOTS.forEach((s, i) => { equipment[s] = r.plainGear(`t${i}`, s, 1); });
-    c = { ...c, level: 7, xp: r.PROGRESSION.xpForLevel[6] ?? c.xp, opened: [...new Set([...c.opened, forest.id])], space: town.id, equipment, gold: 500, items: { ...c.items, potion: 3 } };
+    r.SLOTS.forEach((s, i) => { equipment[s] = r.plainGear(`t${i}`, s, 2); });
+    c = { ...c, level: 8, xp: r.PROGRESSION.xpForLevel[7] ?? c.xp, opened: [...new Set([...c.opened, forest.id])], space: town.id, equipment, gold: 500, items: { ...c.items, potion: 3 } };
     const st = r.stats(c);
     c = { ...c, hp: st.maxHp, mana: st.maxMana };
     g.state = { ...g.state, spawns: {}, characters: { ...g.state.characters, [g.player]: c } };

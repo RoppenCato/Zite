@@ -44,6 +44,7 @@ import { groundDepth, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, d
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
+import { preloadAbilityIcons } from '../effects.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
@@ -910,6 +911,7 @@ export class BoardScene extends Phaser.Scene {
     const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 1;
     preloadBoardKits(this, Object.values(areas).filter((a) => a.tier <= reach).map((a) => a.theme));
     preloadKit(this);
+    preloadAbilityIcons(this);
     audio.preload(this);
   }
 
