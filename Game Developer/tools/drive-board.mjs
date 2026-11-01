@@ -306,7 +306,7 @@ const stockSave = (patch, statePatch = {}, freshBoard = false) => ev(({ patch, s
   localStorage.setItem('boardworld.save', JSON.stringify({ version: 1, state, rng: 424242 }));
   // The page ticks the world once a minute and saves after it; the planted state must be what it saves.
   boardWorld.game.state = state;
-}, { patch, statePatch });
+}, { patch, statePatch, freshBoard });
 /** A fight against `enemy` as the rules would start it, with the enemy patched. */
 const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => boardWorld.rules.freshFight({ ...boardWorld.rules.makeEnemy(enemy, boardWorld.game.state.board.bestiary), ...enemyPatch }, space, false), { enemy, space, enemyPatch });
 const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
