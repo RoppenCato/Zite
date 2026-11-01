@@ -256,6 +256,11 @@ name is what the phone shows on install), standalone, portrait, dark theme, icon
 
 ## Not here yet
 
+**The UI layer from the kit, with the press feel Robin asked for on 2026-11-01**: a squash on touch and a pop on release, a
+tick sound, a short vibration on Android through `navigator.vibrate`, sparkles on chosen cards and chips, bars that tick;
+today a button only scales to 0.95 for 70 ms. Also the loot reveal screen (the chest's glow by rarity, the open, the burst,
+the card), the side-view fight and the board renderer from the kits, and the audio layer (`docs/state/sound.md`).
+
 A second hand-laid pass at the numbers once Robin has played; sound (`?mute=1` is the convention for test pages once
 sound exists); a quieter way to type the server's address and a code than the browser's prompt; the install prompt; the
 world boss in the atlas's list.
