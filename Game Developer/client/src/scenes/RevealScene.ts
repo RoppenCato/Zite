@@ -177,8 +177,8 @@ export class RevealScene extends Phaser.Scene {
     this.tweens.add({ targets: this.chest, scaleX: LOOT_SCALE, scaleY: LOOT_SCALE, duration: 300, ease: 'Back.easeOut' });
     const flash = this.add.circle(CENTRE, REVEAL_LAYOUT.mouthY, 40, 0xffffff, 0.9).setDepth(5).setBlendMode(Phaser.BlendModes.ADD);
     this.tweens.add({ targets: flash, scale: 5, alpha: 0, duration: 260, ease: 'Quad.easeOut', onComplete: () => flash.destroy() });
-    this.tweens.add({ targets: this.lid, y: chestY - 520, angle: 540, duration: 680, ease: 'Quad.easeOut' });
-    this.tweens.add({ targets: this.lid, alpha: 0, delay: 360, duration: 260, onComplete: () => this.lid.setVisible(false) });
+    // Blown clean off the top of the screen, so it never hangs over the words.
+    this.tweens.add({ targets: this.lid, y: -160, angle: 720, duration: 520, ease: 'Linear', onComplete: () => this.lid.setVisible(false) });
   }
 
   /** The glow swells, the particles fly, the first card comes out. */
