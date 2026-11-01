@@ -5,7 +5,7 @@
 import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
 import { addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, offerPicks, startFight } from './fight.ts';
-import { plainGear, powers, rollGear, rollUnique, stats } from './gear.ts';
+import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
 import { newQuest, questLine, questProgress } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -79,7 +79,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     steps: 0,
     fight: null,
     items: {},
-    equipment: { weapon: null, armour: null, helm: null, boots: null, trinket: null },
+    equipment: emptyEquipment(),
     bag: [],
     abilities,
     opened: [start.area],

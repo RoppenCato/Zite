@@ -72,7 +72,7 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 
 ## Gear and loot (Robin, 2026-10-31)
 - **Gear is randomized and tiered** like WoW's or Diablo's: common, uncommon, rare, epic, legendary. **Every piece has a rank by level** (copper sword, iron sword, …), and you can find **a named version** ("Thistledown", an iron sword with a special effect) that feels special.
-- **Equipment slots: weapon, armour, helm, boots, trinket.**
+- **Equipment slots: weapon, shield, helm, armour, gloves, boots, cape, trinket** (Robin, 2026-10-31 the first five; 2026-11-01 shield, gloves and cape, so that what shows on the character can be worn piece by piece).
 - **A simple inventory**: keep the weapons and armour you found and switch to whatever you want; a bag for potions and the like.
 - **Make the loot interesting**: unique weapons and trinkets whose effects change how you play, each in its own way. Bosses drop them.
 

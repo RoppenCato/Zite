@@ -44,9 +44,7 @@ the date, and comes off this list.
 
 ## Open after gear shows on the character (Robin, 2026-11-01)
 
-17. **The gear slots.** The rules have weapon, armour, helm, boots and trinket (Robin, 2026-10-31); Robin's words of
-    2026-11-01 name gloves, capes and shields too. Adding three slots touches gear, the shop, the bag, the stats and the
-    budgets (another three layers on every character). Robin decides whether and when.
+17. ~~The gear slots~~: decided (Robin, 2026-11-01): shield, gloves and cape added, eight slots in all; in the brief.
 
 ## Ideas noted in the brief, not decided
 

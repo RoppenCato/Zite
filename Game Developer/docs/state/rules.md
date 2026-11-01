@@ -52,7 +52,7 @@ Board     { start, width, height, spaces: { [id]: Space }, areas: { [id]: Area }
 Space     { id, kind, name, x, y, links, area, boss?, opens?, locked? }   x, y in world pixels; a road spot's name is ""
 Area      { id, name, theme, tier, levels: [lo, hi], mobs, miniBosses, bounds }
 Character { id, name, classId, level, xp, gold, hp, mana, maxHp, maxMana, attack, defense, space, steps, fight,
-            items, equipment: { weapon, armour, helm, boots, trinket }, bag: GearItem[], abilities: { [id]: rank },
+            items, equipment: { weapon, shield, helm, armour, gloves, boots, cape, trinket }, bag: GearItem[], abilities: { [id]: rank },
             opened: area ids, cooldowns: { [space]: until } (also charm, phoenix, quest:<town>), bossKills: { [space]: n },
             offer, quests: Quest[], picks: string[][], keys: { [area]: n } }
 GearItem  { id, slot, rank, rarity, name, base, stats, affixes: Affix[], unique?, price }
@@ -106,7 +106,7 @@ region actor stores answers by id). A refused action returns the **same** state 
   has camped), not in a fight. A consumable for its price; the **plain common piece of the area's rank** for a slot;
   a piece from the bag sold for half its worth (`sellShare`). Refused with `not at a shop`, `not enough gold`, `no such
   item`, `no such gear`.
-- **`equip { gear }`**, **`unequip { slot }`**, **`drop { gear }`**: the bag and the five slots, not in a fight; what
+- **`equip { gear }`**, **`unequip { slot }`**, **`drop { gear }`**: the bag and the eight slots, not in a fight; what
   was worn goes back to the bag; HP and mana are capped at the new maximum. `no such gear` otherwise.
 - **`pick { ability }`**: the answer to a level's pick of one ability in two (`picks[0]`, owed when a fight or an
   errand's pay crosses a level in `pickLevels`: 4, 8, 12, …; `pickOwed { options, level }`): the one chosen is learned,
@@ -176,9 +176,9 @@ Events `used { item }`, `steps { steps }`; the die shows the new number. One few
 Potions and cards are also found in chests (a potion, a mana potion or a card: 40 / 20 / 40) and dropped by creatures
 (`consumableDrop`); a spring gives one flask of each.
 
-## Gear (Robin, 2026-10-31: randomized, tiered, named; five slots; numbers mine)
+## Gear (Robin, 2026-10-31: randomized, tiered, named; five slots, and on 2026-11-01 shield, gloves and cape as well; numbers mine)
 
-Slots: weapon, armour, helm, boots, trinket. A piece has a **rank** by tier (Tin 1, Copper 2, Iron 3, Silver 4,
+Slots, in the worn order: weapon (attack), shield (defense), helm (max HP), armour (defense), gloves (attack), boots (defense), cape (max HP), trinket (max mana); the shield, gloves and cape numbers are smaller than their neighbours' (shield 2/4/6 defense, gloves 2/3/5 attack, cape 8/16/26 HP by rank), first settings not yet run through the bots. A piece has a **rank** by tier (Tin 1, Copper 2, Iron 3, Silver 4,
 Moonsilver 5, Sunsteel 6, Dragonscale 7, Starglass 8, Crownsteel 9, Everbright 10, then "Rank 11", …) and a **rarity**
 (common, uncommon, rare, epic, legendary, weights 60 / 25 / 10 / 4 / 1), its one number from the slot's table times the
 rarity's multiplier (1, 1.2, 1.45, 1.75, 2.2) swung 15 percent either way: weapon attack 4 / 8 / 13, armour defense

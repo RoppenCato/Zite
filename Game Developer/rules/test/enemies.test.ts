@@ -66,7 +66,7 @@ describe("the enemies' effects", () => {
     expect(bitten.events).toContainEqual(expect.objectContaining({ type: 'effect', target: 'player', kind: 'poison', rounds: 3 }));
     expect(fight(bitten.state).poisoned).toEqual({ rounds: 2, damage: 6 });
     expect(bitten.events).toContainEqual(expect.objectContaining({ type: 'poisoned', target: 'player', damage: 6 }));
-    const helmed = versus('warrior', 'spider', { equipment: { weapon: null, armour: null, helm: makeUnique('h', 'ironbrow', 1, makeRng('u')), boots: null, trinket: null } }, { hp: 5000, next: mv('Venom Bite', 0.8, 'poison') });
+    const helmed = versus('warrior', 'spider', { equipment: { shield: null, gloves: null, cape: null, weapon: null, armour: null, helm: makeUnique('h', 'ironbrow', 1, makeRng('u')), boots: null, trinket: null } }, { hp: 5000, next: mv('Venom Bite', 0.8, 'poison') });
     const shrugged = apply(helmed, turn(attack), makeRng('x'), NOW);
     expect(shrugged.events).toContainEqual(expect.objectContaining({ type: 'resisted', kind: 'poison' }));
     expect(fight(shrugged.state).poisoned).toBeNull();

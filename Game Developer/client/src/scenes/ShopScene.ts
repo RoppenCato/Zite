@@ -23,9 +23,9 @@ export const SHOP_LAYOUT = {
   tabSell: { x: 272, y: 178, w: 120, h: 34 },
   /** In a town the three tabs share the row. */
   townTabs: { buy: { x: 96, y: 178, w: 100, h: 34 }, sell: { x: 206, y: 178, w: 100, h: 34 }, train: { x: 316, y: 178, w: 100, h: 34 } },
-  firstRowY: 222,
-  rowStep: 40,
-  rows: 11,
+  firstRowY: 216,
+  rowStep: 33,
+  rows: 14,
   button: { x: 356, w: 80, h: 32 },
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;

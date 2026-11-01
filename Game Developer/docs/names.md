@@ -102,7 +102,7 @@ The fight's own words: the moves **Attack, Abilities, Charge, Honey Tonic, Flee*
 
 ## 5. Gear (`gear.json`, `uniques.json`)
 
-- **Slots and their plain names**: weapon (Sword), armour (Coat), helm (Hat), boots (Boots), trinket (Charm).
+- **Slots and their plain names**, in the worn order: weapon (Sword), shield (Shield), helm (Hat), armour (Coat), gloves (Gloves), boots (Boots), cape (Cape), trinket (Charm). Shield, gloves and cape came on 2026-11-01 (Robin); their proper names from epic up: shields Thornguard, Moonward, Sunbuckler, Turtleback; gloves Nimblefingers, Honeygrips, Frostmitts, Ironknuckles; capes Dandelion Cloak, Nightveil, Starcloak, Foxtail.
 - **Ranks by level** (ten, then "Rank 11…"): Tin, Copper, Iron, Silver, Moonsilver, Sunsteel, Dragonscale, Starglass, Crownsteel, Everbright. A piece reads "Copper Sword", "Silver Boots".
 - **Rarities**: common, uncommon, rare, epic, legendary. From epic up a piece gets a proper name in front:
   weapons Thistledown, Honeystinger, Moonpetal, Sunflare, Frostnip, Oathsworn, Briarsong, Starfallen; armour Oakheart, Cloverweave, Snugshell, Moonmantle, Sunwarden; helms Acorncap, Starbrow, Bumblecrest, Owlgaze; boots Puddlejumpers, Windhoppers, Tiptoes, Rootwalkers; trinkets Moontear, Firefly, Fourleaf, Dragonwink.

@@ -336,7 +336,7 @@ describe('a fight', () => {
   });
 
   it('worn gear counts: lifesteal heals on a hit, thorns bite back on a blow', () => {
-    const drinker = versus('warrior', 'slime', { hp: 100, equipment: { weapon: { ...plainGear('w', 'weapon', 1), affixes: [{ kind: 'lifesteal', value: 0.2 }] }, armour: { ...plainGear('a', 'armour', 1), affixes: [{ kind: 'thorns', value: 0.3 }] }, helm: null, boots: null, trinket: null } }, { hp: 1000 });
+    const drinker = versus('warrior', 'slime', { hp: 100, equipment: { shield: null, gloves: null, cape: null, weapon: { ...plainGear('w', 'weapon', 1), affixes: [{ kind: 'lifesteal', value: 0.2 }] }, armour: { ...plainGear('a', 'armour', 1), affixes: [{ kind: 'thorns', value: 0.3 }] }, helm: null, boots: null, trinket: null } }, { hp: 1000 });
     const r = apply(drinker, turn(attack, 'none'), makeRng('x'), NOW);
     const seen = types(r.events);
     expect(seen[0]).toBe('hit');
@@ -370,7 +370,7 @@ describe('a fight', () => {
   });
 
   it('beaten: back on your feet in the nearest town with HP and mana full and a fifth of the gold gone, gear kept', () => {
-    const doomed = versus('mage', 'bandit', { hp: 5, mana: 3, gold: 50, bag: [plainGear('b', 'boots', 1)], equipment: { weapon: plainGear('w', 'weapon', 1), armour: null, helm: null, boots: null, trinket: null } }, {}, 's7');
+    const doomed = versus('mage', 'bandit', { hp: 5, mana: 3, gold: 50, bag: [plainGear('b', 'boots', 1)], equipment: { weapon: plainGear('w', 'weapon', 1), shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null } }, {}, 's7');
     const { state, events } = apply(doomed, turn(attack, 'none'), makeRng('x'), NOW);
     expect(events.at(-1)).toEqual({ type: 'died', action: 'f1', player: P, town: 's0', lostGold: 10 });
     expect(me(state)).toMatchObject({ hp: 85, mana: 40, gold: 40, space: 's0', steps: 0, fight: null, offer: null });

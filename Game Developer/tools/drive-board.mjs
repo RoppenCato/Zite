@@ -309,7 +309,7 @@ const stockSave = (patch, statePatch = {}, freshBoard = false) => ev(({ patch, s
 }, { patch, statePatch, freshBoard });
 /** A fight against `enemy` as the rules would start it, with the enemy patched. */
 const plantedFight = (enemy, space, enemyPatch = {}) => ev(({ enemy, space, enemyPatch }) => boardWorld.rules.freshFight({ ...boardWorld.rules.makeEnemy(enemy, boardWorld.game.state.board.bestiary), ...enemyPatch }, space, false), { enemy, space, enemyPatch });
-const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
+const NO_GEAR = { weapon: null, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null };
 const STRONG = { level: 10, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, fight: null, offer: null, steps: 0, items: {}, equipment: NO_GEAR };
 await stockSave({ space: 'tinker', steps: 0, gold: 150, items: {}, fight: null, offer: null, hp: 60, bag: [] });
 await page.reload();

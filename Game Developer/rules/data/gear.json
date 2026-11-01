@@ -26,18 +26,18 @@
         220
       ]
     },
-    "armour": {
-      "base": "Coat",
+    "shield": {
+      "base": "Shield",
       "stat": "defense",
       "perRank": [
-        3,
-        6,
-        10
+        2,
+        4,
+        6
       ],
       "price": [
         25,
-        80,
-        200
+        75,
+        180
       ]
     },
     "helm": {
@@ -54,6 +54,34 @@
         150
       ]
     },
+    "armour": {
+      "base": "Coat",
+      "stat": "defense",
+      "perRank": [
+        3,
+        6,
+        10
+      ],
+      "price": [
+        25,
+        80,
+        200
+      ]
+    },
+    "gloves": {
+      "base": "Gloves",
+      "stat": "attack",
+      "perRank": [
+        2,
+        3,
+        5
+      ],
+      "price": [
+        20,
+        60,
+        150
+      ]
+    },
     "boots": {
       "base": "Boots",
       "stat": "defense",
@@ -61,6 +89,20 @@
         2,
         4,
         7
+      ],
+      "price": [
+        20,
+        60,
+        150
+      ]
+    },
+    "cape": {
+      "base": "Cape",
+      "stat": "maxHp",
+      "perRank": [
+        8,
+        16,
+        26
       ],
       "price": [
         20,
@@ -166,12 +208,11 @@
       "Briarsong",
       "Starfallen"
     ],
-    "armour": [
-      "Oakheart",
-      "Cloverweave",
-      "Snugshell",
-      "Moonmantle",
-      "Sunwarden"
+    "shield": [
+      "Thornguard",
+      "Moonward",
+      "Sunbuckler",
+      "Turtleback"
     ],
     "helm": [
       "Acorncap",
@@ -179,11 +220,30 @@
       "Bumblecrest",
       "Owlgaze"
     ],
+    "armour": [
+      "Oakheart",
+      "Cloverweave",
+      "Snugshell",
+      "Moonmantle",
+      "Sunwarden"
+    ],
+    "gloves": [
+      "Nimblefingers",
+      "Honeygrips",
+      "Frostmitts",
+      "Ironknuckles"
+    ],
     "boots": [
       "Puddlejumpers",
       "Windhoppers",
       "Tiptoes",
       "Rootwalkers"
+    ],
+    "cape": [
+      "Dandelion Cloak",
+      "Nightveil",
+      "Starcloak",
+      "Foxtail"
     ],
     "trinket": [
       "Moontear",

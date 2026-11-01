@@ -84,6 +84,9 @@ describe('gear', () => {
     const worn = {
       ...c,
       equipment: {
+        shield: null,
+        gloves: null,
+        cape: null,
         weapon: { ...plainGear('w', 'weapon', 2), affixes: [{ kind: 'crit' as const, value: 0.15 }] },
         armour: { ...plainGear('a', 'armour', 1), affixes: [{ kind: 'thorns' as const, value: 0.2 }] },
         helm: { ...plainGear('h', 'helm', 1), affixes: [{ kind: 'vigor' as const, value: 0.1 }] },

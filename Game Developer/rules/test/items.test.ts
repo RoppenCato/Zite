@@ -49,7 +49,7 @@ describe('the shop', () => {
     expect(me(state).bag).toEqual([]);
     expect(apply(at('s2', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'nope' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such gear' });
     expect(apply(at('s1', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
-    const worn = at('s2', { equipment: { weapon: sword, armour: null, helm: null, boots: null, trinket: null } });
+    const worn = at('s2', { equipment: { weapon: sword, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null } });
     expect(apply(worn, { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such gear' });
   });
 
@@ -84,7 +84,7 @@ describe('the wardrobe', () => {
   });
 
   it('unequips into the bag and caps HP and mana at the new maximum', () => {
-    const worn = at('s1', { hp: 132, maxHp: 120, mana: 26, maxMana: 20, equipment: { weapon: null, armour: null, helm, boots: null, trinket: plainGear('g4', 'trinket', 1) } });
+    const worn = at('s1', { hp: 132, maxHp: 120, mana: 26, maxMana: 20, equipment: { shield: null, gloves: null, cape: null, weapon: null, armour: null, helm, boots: null, trinket: plainGear('g4', 'trinket', 1) } });
     const bare = apply(worn, { type: 'unequip', id: 'u1', player: P, slot: 'helm' }, makeRng('x'), NOW);
     expect(bare.events).toEqual([{ type: 'unequipped', action: 'u1', player: P, gear: helm }]);
     expect(me(bare.state)).toMatchObject({ hp: 120, mana: 26 });

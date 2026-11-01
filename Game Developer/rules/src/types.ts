@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 11;
+export const STATE_VERSION = 12;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -8,8 +8,9 @@ export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
 /** The equipment slots (Robin, 2026-10-31). */
-export type Slot = 'weapon' | 'armour' | 'helm' | 'boots' | 'trinket';
-export const SLOTS: readonly Slot[] = ['weapon', 'armour', 'helm', 'boots', 'trinket'];
+/** The gear slots, in the order they are worn and shown (Robin, 2026-10-31 the first five; 2026-11-01 shield, gloves and cape, so that what shows on the character can be worn piece by piece). */
+export type Slot = 'weapon' | 'shield' | 'helm' | 'armour' | 'gloves' | 'boots' | 'cape' | 'trinket';
+export const SLOTS: readonly Slot[] = ['weapon', 'shield', 'helm', 'armour', 'gloves', 'boots', 'cape', 'trinket'];
 
 /** Unique is never rolled by chance: it is the rarity of the named pieces with powers that bosses carry (uniques.json). */
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'unique';

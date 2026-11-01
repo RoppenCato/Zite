@@ -56,9 +56,9 @@ each 180 wide; the moves fill a to e (Attack, Abilities, Charge, Honey Tonic, Fl
 Dodge, Brace, Counter, Back); Continue at (206, 652) once the fight is over. A round's events play 450 ms apart; the
 scene's `busy` is true meanwhile.
 
-**The shop**: Buy rows from y 224, 44 apart (the five slots, then potion, Do-Over, +1, −1, Fairy Pick), Buy at x 356; the
-Sell side at (272, 178); Leave at (206, 706). **The bag**: Close at (364, 126); the worn rows from y 212 with Take off at
-x 364; the carried rows from y 456 with Wear at x 364 and Drop at x 288.
+**The shop**: Buy rows from y 216, 33 apart (the eight slots, then Honey Tonic, Moon Dew, Do-Over, Hop, Hold, Fairy Pick), Buy at x 356; the
+Sell side at (272, 178); Leave at (206, 706). **The bag**: Close at (364, 126); the eight worn rows from y 206, 36 apart, with
+Take off at x 364; the carried rows from y 520, 36 apart, with Wear at x 364 and Drop at x 288.
 
 **Gestures from a script**: a tap is a touch down and up at one point; a drag is a touch that moves more than 8 pixels
 before it lifts (it pans the camera, and lifting it on a spot is not a tap); a pinch is two touches moving apart or

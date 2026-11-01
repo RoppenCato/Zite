@@ -1,4 +1,4 @@
-// The bag: what you wear in the five slots, what you carry, your numbers with it all on, and the flasks and cards.
+// The bag: what you wear in the eight slots, what you carry, your numbers with it all on, and the flasks and cards.
 // Equip, unequip and drop each send one intent. Opened from the HUD's Bag button; Close gives the board back.
 
 import Phaser from 'phaser';
@@ -15,15 +15,15 @@ export interface BagSceneDeps {
 }
 
 const CENTRE = DESIGN_WIDTH / 2;
-const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', armour: 'Armour', helm: 'Helm', boots: 'Boots', trinket: 'Trinket' };
+const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 /** Where things sit, in design pixels (the driver taps them here). */
 export const BAG_LAYOUT = {
   close: { x: 364, y: 126, w: 72, h: 32 },
-  wornY: 212,
-  wornStep: 42,
-  carriedY: 456,
-  carriedStep: 40,
-  carriedRows: 6,
+  wornY: 206,
+  wornStep: 36,
+  carriedY: 520,
+  carriedStep: 36,
+  carriedRows: 5,
   button: { x: 364, w: 72, h: 30 },
   dropX: 288,
 } as const;

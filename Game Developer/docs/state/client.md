@@ -187,7 +187,7 @@ someone else brings it down the screen says so with this player's share and ends
 
 The shop's name (or "Wandering Merchant") and your gold at the top; two sides, **Buy** and **Sell**, and in a town a
 third, **Train** (the three tabs then share the row at x 96, 206 and 316). Buy lists the plain piece of the area's rank
-for each of the five slots with its number and price, then the potion, the mana potion and the four dice cards with
+for each of the eight slots with its number and price, then the potion, the mana potion and the four dice cards with
 their text and how many you hold; a Buy button each (80 by 32 at x 356, eleven rows from y 222, 40 apart). Sell lists
 the gear in the bag with its rarity colour and half its worth, and how full the bag is. Train lists the class's six
 abilities with rank, text and costs, and a **Learn** or **Rank up** button at the trainer's price (greyed at the top

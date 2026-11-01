@@ -1,3 +1,4 @@
+import { emptyEquipment } from './gear.ts';
 import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
@@ -115,28 +116,45 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 10) return fromVersion10(raw as StateV10);
-  if (candidate.version === 9) return relay(fromVersion9(raw as StateV9));
-  if (candidate.version === 8) return relay(fromVersion8(raw as StateV8));
+  if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
+  if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
+  if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
+  if (candidate.version === 8) return fillSlots(relay(fromVersion8(raw as StateV8)));
   if (candidate.version === 7) {
     const v8 = fromVersion7(raw as StateV7);
-    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
+    return v8 ? fillSlots(relay(fromVersion8(v8 as unknown as StateV8))) : null;
   }
   if (candidate.version === 6) {
     const v7 = fromVersion6(raw as StateV6);
     const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
-    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
+    return v8 ? fillSlots(relay(fromVersion8(v8 as unknown as StateV8))) : null;
   }
   if (candidate.version === 5) {
     const v6 = fromVersion5(raw as StateV5);
     const v7 = v6 ? fromVersion6(v6 as unknown as StateV6) : null;
     const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
-    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
+    return v8 ? fillSlots(relay(fromVersion8(v8 as unknown as StateV8))) : null;
   }
   if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
-    return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
+    return fillSlots(fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4));
   }
   return null;
+}
+
+/** A state as version 11 stored it: five gear slots. */
+type StateV11 = Omit<GameState, 'version'> & { version: 11 };
+
+/**
+ * 11 → 12 (2026-11-01): shield, gloves and cape join the gear slots (Robin). Every character's wardrobe gains the three,
+ * empty; everything else is kept. Older states pass through here last.
+ */
+function fillSlots(state: GameState | null): GameState | null {
+  if (!state) return null;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(state.characters)) {
+    characters[id] = { ...c, equipment: { ...emptyEquipment(), ...(c.equipment ?? {}) } };
+  }
+  return { ...state, version: STATE_VERSION, characters };
 }
 
 /** A state as version 10 stored it: today's shape, the board laid under the old names. */

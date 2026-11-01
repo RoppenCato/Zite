@@ -78,6 +78,11 @@ export function stats(c: Character): Stats {
   return { attack, defense, maxHp, maxMana, crit, dodge, lifesteal, thorns, powers: p };
 }
 
+/** A wardrobe with nothing in any slot. */
+export function emptyEquipment(): Record<Slot, GearItem | null> {
+  return Object.fromEntries(SLOTS.map((s) => [s, null])) as Record<Slot, GearItem | null>;
+}
+
 /** The rank's name for a tier: Copper for 1, Iron for 2, …; "Rank n" beyond the names. */
 export function rankName(rank: number): string {
   const r = Math.max(1, Math.floor(rank));

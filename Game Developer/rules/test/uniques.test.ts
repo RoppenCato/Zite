@@ -19,7 +19,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 const fight = (s: GameState) => me(s).fight!;
 const hits = (events: GameEvent[], by: 'player' | 'enemy') => events.filter((e): e is Extract<GameEvent, { type: 'hit' }> => e.type === 'hit' && e.by === by);
 const bite: EnemyMove = { name: 'Bite', power: 1, weight: 1 };
-const NO_GEAR = { weapon: null, armour: null, helm: null, boots: null, trinket: null };
+const NO_GEAR = { weapon: null, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null };
 
 /** The unique worn alone, at rank 1, by a character of the class; the fight patched by hand. */
 function wearing(uniqueId: string, classId: ClassId = 'warrior', patch: Partial<Character> = {}): Character {
@@ -249,7 +249,7 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(11);
+    expect(s!.version).toBe(12);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).picks).toEqual([]);
     expect(me(s!).keys).toEqual({});
