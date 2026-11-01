@@ -8,6 +8,7 @@ import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { audio, type LoopHandle } from '../audio.ts';
 import { feel } from '../feel.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
@@ -44,6 +45,8 @@ export class HudScene extends Phaser.Scene {
   private place!: Phaser.GameObjects.Text;
   private dieText!: Phaser.GameObjects.Text;
   private dieBox!: Phaser.GameObjects.Container;
+  /** A roll under way: when it began, the tumble's sound, the faces flickering. */
+  private rolling: { started: number; tumble: LoopHandle | null; flicker: Phaser.Time.TimerEvent | null; was: string } | null = null;
   private message!: Phaser.GameObjects.Text;
   private rollButton!: Phaser.GameObjects.Container;
   private mapLabel!: Phaser.GameObjects.Text;
@@ -74,10 +77,78 @@ export class HudScene extends Phaser.Scene {
     this.name.setText(`${me.name} the ${CLASS_DATA[me.classId].name}`);
   }
 
-  /** The number in the die box; `pulse` gives it a small bounce for a fresh roll. */
+  /** The number in the die box; `pulse` gives it a small bounce when a card changed the steps. */
   setDie(text: string, pulse = false): void {
     this.dieText.setText(text);
     if (pulse) this.tweens.add({ targets: this.dieBox, scaleX: 1.25, scaleY: 1.25, duration: 120, yoyo: true, ease: 'Quad.easeOut' });
+  }
+
+  /**
+   * The roll begins the moment Roll is tapped, before the world answers (chapter 1, step 3): the die shakes in the hand
+   * (Nigel, SD's shake), then tumbles with the faces flickering (his tumble, looped) until `landDie`. The answer from a
+   * server arrives under the tumble, so the wait is never seen.
+   */
+  startRoll(): void {
+    if (this.rolling) return;
+    this.rolling = { started: this.time.now, tumble: null, flicker: null, was: this.dieText.text };
+    audio.play('ui/die-shake');
+    if (!settings.ms(1)) return;
+    this.tweens.killTweensOf(this.dieBox);
+    this.dieBox.setScale(1).setAngle(0);
+    this.tweens.add({
+      targets: this.dieBox,
+      angle: { from: -9, to: 9 },
+      duration: 40,
+      yoyo: true,
+      repeat: 3,
+      onComplete: () => {
+        const r = this.rolling;
+        if (!r) return;
+        this.dieBox.setAngle(0);
+        r.tumble = audio.loop('ui/die-tumble');
+        r.flicker = this.time.addEvent({ delay: 70, loop: true, callback: () => this.dieText.setText(String(1 + Math.floor(Math.random() * 6))) });
+      },
+    });
+  }
+
+  /** The die lands on `value`: a bounce, a glow round the box, the landing sound pitched a little by the face; then `done`. */
+  landDie(value: number, done: () => void): void {
+    const r = this.rolling;
+    this.rolling = null;
+    const quick = !settings.ms(1);
+    const land = () => {
+      r?.flicker?.remove(false);
+      r?.tumble?.stop();
+      this.tweens.killTweensOf(this.dieBox);
+      this.dieBox.setAngle(0);
+      this.dieText.setText(String(value));
+      audio.play('ui/die-land', { rate: 0.94 + value * 0.025 });
+      feel.buzz(15);
+      if (!quick) {
+        this.dieBox.setScale(1.35);
+        this.tweens.add({ targets: this.dieBox, scaleX: 1, scaleY: 1, duration: 280, ease: 'Back.easeOut' });
+        const glow = this.add.circle(this.dieBox.x, this.dieBox.y, 34).setStrokeStyle(4, 0xfff27a, 0.9).setDepth(5);
+        this.tweens.add({ targets: glow, scale: 2.1, alpha: 0, duration: 380, ease: 'Quad.easeOut', onComplete: () => glow.destroy() });
+      }
+      done();
+    };
+    // The shake and a little of the tumble are always seen, even when the answer is instant.
+    const minMs = quick ? 0 : 620;
+    const elapsed = r ? this.time.now - r.started : minMs;
+    if (elapsed >= minMs) land();
+    else this.time.delayedCall(minMs - elapsed, land);
+  }
+
+  /** The world refused the roll: the die goes back to what it showed. */
+  cancelRoll(): void {
+    const r = this.rolling;
+    this.rolling = null;
+    if (!r) return;
+    r.flicker?.remove(false);
+    r.tumble?.stop();
+    this.tweens.killTweensOf(this.dieBox);
+    this.dieBox.setAngle(0).setScale(1);
+    this.dieText.setText(r.was);
   }
 
   setMessage(text: string): void {

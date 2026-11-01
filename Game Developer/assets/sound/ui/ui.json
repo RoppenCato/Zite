@@ -1,0 +1,79 @@
+{
+  "spritemap": {
+    "ui/die-shake-1": {
+      "start": 0,
+      "end": 0.3256,
+      "loop": false
+    },
+    "ui/die-shake-2": {
+      "start": 0.3756,
+      "end": 0.7748,
+      "loop": false
+    },
+    "ui/die-shake-3": {
+      "start": 0.8248,
+      "end": 1.1827,
+      "loop": false
+    },
+    "ui/die-tumble-1": {
+      "start": 1.2327,
+      "end": 1.8327,
+      "loop": true
+    },
+    "ui/die-tumble-2": {
+      "start": 1.8827,
+      "end": 2.4827,
+      "loop": true
+    },
+    "ui/die-tumble-3": {
+      "start": 2.5327,
+      "end": 3.1327,
+      "loop": true
+    },
+    "ui/die-land-a-1": {
+      "start": 3.1827,
+      "end": 3.3142,
+      "loop": false
+    },
+    "ui/die-land-a-2": {
+      "start": 3.3643,
+      "end": 3.493,
+      "loop": false
+    },
+    "ui/die-land-a-3": {
+      "start": 3.543,
+      "end": 3.6805,
+      "loop": false
+    },
+    "ui/die-land-b-1": {
+      "start": 3.7305,
+      "end": 4.0089,
+      "loop": false
+    },
+    "ui/die-land-b-2": {
+      "start": 4.0589,
+      "end": 4.3417,
+      "loop": false
+    },
+    "ui/die-land-b-3": {
+      "start": 4.3917,
+      "end": 4.6773,
+      "loop": false
+    },
+    "ui/die-land-c-1": {
+      "start": 4.7273,
+      "end": 5.0226,
+      "loop": false
+    },
+    "ui/die-land-c-2": {
+      "start": 5.0726,
+      "end": 5.3674,
+      "loop": false
+    },
+    "ui/die-land-c-3": {
+      "start": 5.4174,
+      "end": 5.7129,
+      "loop": false
+    }
+  }
+}

@@ -37,6 +37,7 @@ import {
   type SpaceKind,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
+import { audio } from '../audio.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
@@ -46,6 +47,7 @@ import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import type { FightOutcome, FightScene } from './FightScene.ts';
 import type { Chip, HudScene } from './HudScene.ts';
+import { moments } from './MomentScene.ts';
 
 export interface BoardSceneDeps {
   game: GameHolder;
@@ -168,7 +170,9 @@ export class BoardScene extends Phaser.Scene {
     this.game_.onChange = (what) => this.onWorldChange(what);
     this.time.addEvent({ delay: 1000, loop: true, callback: () => this.refreshClocks() });
     this.log.note(`board scene ready: ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
+    audio.init(this.game);
     this.scene.launch('hud');
+    this.scene.launch('moment');
     // For looking at the loot reveal without finding a chest: ?reveal=rare, ?reveal=all (the pane, Robin's phone).
     const which = new URLSearchParams(window.location.search).get('reveal');
     if (which) this.time.delayedCall(700, () => this.showcase(which));
@@ -335,15 +339,17 @@ export class BoardScene extends Phaser.Scene {
     }
     this.hud?.setChips([]);
     this.setBusy(true);
+    this.hud?.startRoll();
     this.send({ type: 'roll', player: this.game_.player }, (rolled) => {
       const roll = rolled.find((e) => e.type === 'rolled');
       if (!roll || roll.type !== 'rolled') {
+        this.hud?.cancelRoll();
         this.finish(this.describe(rolled));
         return;
       }
-      this.hud?.setDie(String(roll.value), true);
       this.log.note(`rolled ${roll.value}`);
-      this.offerChoices();
+      if (this.hud) this.hud.landDie(roll.value, () => this.offerChoices());
+      else this.offerChoices();
     });
   }
 
@@ -457,6 +463,16 @@ export class BoardScene extends Phaser.Scene {
       // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
       if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
     });
+  }
+
+  /** The big moments in a batch of events (chapter 1, step 3): a level crossed, an area opened. Fights show their own. */
+  private showMoments(events: GameEvent[]): void {
+    const m = moments(this);
+    if (!m) return;
+    for (const e of events) {
+      if (e.type === 'levelled') m.levelUp(e.level, `HP ${e.maxHp} · mana ${e.maxMana} · attack ${e.attack} · defense ${e.defense}`);
+      else if (e.type === 'opened') m.opened(this.game_.state.board.areas[e.area]?.name ?? e.area);
+    }
   }
 
   /**
@@ -703,6 +719,7 @@ export class BoardScene extends Phaser.Scene {
   preload(): void {
     preloadHero(this);
     preloadLoot(this);
+    audio.preload(this);
   }
 
   private drawToken(): void {
@@ -1189,6 +1206,7 @@ export class BoardScene extends Phaser.Scene {
         }
         this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
       };
+      this.showMoments(moved);
       const chest = moved.some((e) => e.type === 'chest');
       this.reveal(prizesIn(moved), chest ? (space.kind === 'chest' ? 'A chest!' : 'A chest in the wilds!') : `Found ${space.name ? `at ${space.name}` : 'here'}`, after);
     });

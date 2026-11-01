@@ -36,9 +36,11 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    name in its colour and its one-line power; a tap or two seconds moves on; a chest's gold, gear and flask queue as cards.
    *Needs*: the shimmer, bursts and ding from Nigel, SD when they come. *Done*: a chest opening makes Robin smile (his
    verdict pending: `?reveal=all` shows it without finding a chest).
-3. **The moments.** The level up (a burst and the new level, the ability pick after it), the boss down banner, the area
-   opened swell, the die landing (a bounce and a glow on the settled face). *Needs*: the banners and the die from the UI
-   kit; the level-up, boss-down and die-landing sounds. *Done*: the four dopamine moments read as moments.
+3. **The moments** (done 2026-11-01, `client/src/scenes/MomentScene.ts`, `HudScene.startRoll`/`landDie`, `client/src/audio.ts`).
+   The level up (a burst and the new level, the ability pick after it), the boss down banner, the area opened swell, the
+   die's roll (the shake on the tap, the tumble with the faces flickering, the landing with a bounce and a glow, Nigel, SD's
+   sounds pitched a little by the face). *Needs*: the banners and the die from the UI kit when it comes; the level-up,
+   boss-down and area-opened sounds. *Done*: the four dopamine moments read as moments.
 4. **The fight, side on.** The fight screen rebuilt around the hero at 150 CSS px: a layered backdrop (the sky a code
    gradient, two or three strips, a ground band), the hero at the left with his feet on the ground, the enemy at the right
    at its size (a circle by role until its art), HP bars over each figure, the enemy's tell above it, the message as a strip
@@ -77,7 +79,8 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
 12. **Alpha 1.** The "done when" of chapter 1 walked through on Robin's phone and a friend's; the frame log read; the
     docs in `docs/state/` current; main tagged `alpha-1`.
 
-Steps 1 to 3 and 8 need no art to start and are first. Step 4 starts on placeholders as soon as 3 is done, step 5 after
+Steps 1 to 3 and 8 need no art to start and are first. Robin, 2026-11-01: steps 3 to 10 go ahead in my order
+(Mitch, AD's Jelly Slime and fight backdrop landed as step 3 closed, so step 4 builds on them). Step 4 starts on placeholders as soon as 3 is done, step 5 after
 4, step 6 when the UI kit lands (its code starts earlier on the placeholder atlas), step 7 when the first sprite lands,
 step 9 when the parts land, 10 and 11 near the end, 12 last.
 

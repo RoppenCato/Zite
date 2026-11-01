@@ -14,6 +14,7 @@ import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
+import { moments } from './MomentScene.ts';
 
 export interface FightSceneDeps {
   game: GameHolder;
@@ -388,10 +389,12 @@ export class FightScene extends Phaser.Scene {
         this.heroBar.set(me.hp, s.maxHp);
         this.manaBar.set(me.mana, s.maxMana);
         this.say(`Level ${e.level}! HP ${e.maxHp}, mana ${e.maxMana}, attack ${e.attack}, defense ${e.defense}.`);
+        moments(this)?.levelUp(e.level, `HP ${e.maxHp} · mana ${e.maxMana} · attack ${e.attack} · defense ${e.defense}`);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} Level ${e.level}!` };
         break;
       case 'bossDown':
         this.say(`${this.enemyName} falls. It will be back in five minutes.`);
+        moments(this)?.bossDown(this.enemyName);
         break;
       case 'worldBossDown':
         this.say(`${this.enemyName} falls to all of you! ${e.shares.length === 1 ? 'The reward is yours alone.' : `${e.shares.length} fighters share the reward.`}`);
@@ -403,6 +406,7 @@ export class FightScene extends Phaser.Scene {
       case 'opened': {
         const area = this.game_.state.board.areas[e.area];
         this.say(`The way to ${area?.name ?? e.area} is open!`);
+        moments(this)?.opened(area?.name ?? e.area);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${area?.name ?? e.area} is open!` };
         break;
       }

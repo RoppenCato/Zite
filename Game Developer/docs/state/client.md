@@ -25,11 +25,13 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop, bag, atlas and reveal scenes made together |
 | `src/scenes/RevealScene.ts` | the loot reveal: the chest glows in the colour of its best prize, opens, bursts, and gives each prize on a card; a tap or a wait moves on; `REVEAL_LAYOUT` |
 | `src/loot.ts` | loads Mitch, AD's chest, glow, card and particle sheets; `prizesIn` and `gearIn` (what a landing's or a fight's events put on cards), `tierOf`, `cardWords` |
+| `src/audio.ts` | the sounds: Nigel, SD's audio sprites loaded with the board, `audio.play(name)` (a family such as `ui/die-land` picks a variant; a name no sprite holds is silent), `audio.loop`, the sound setting and `?mute=1` |
+| `src/scenes/MomentScene.ts` | the banners over everything: `levelUp`, `bossDown`, `opened`; queued; no input; `moments(scene)` reaches it |
 | `src/clips.ts` | the studios' atlas form: `ensureClips` turns an atlas's `actions` block into animations keyed `<atlas>/<action>` with each frame's delay |
 | `src/scenes/BoardScene.ts` | the world, the token, the other players' marks, the camera, the touch input, hints, culling; `roll`, `toggleMap`, `openAtlas`, `openBag`, `downloadLog`, `useCard`, `answerGamble`; `send` (one intent at a time), `onWorldChange` |
 | `src/scenes/AtlasScene.ts` | the world as a list: the areas by tier, bosses, kills, errands, where you are; Go frames one; the settings behind a button |
 | `src/tips.ts` | the first minutes: a few lines said once (the start, the first choice, fight, win and boss), kept in storage |
-| `src/settings.ts` | sound (for later), fewer effects, larger text; kept in storage; `ms()` and `font()` for the scenes |
+| `src/settings.ts` | sound, fewer effects, larger text, vibration; kept in storage; `ms()` and `font()` for the scenes |
 | `src/scenes/HudScene.ts` | the top panel (with the link line under the die: solo, online · n here, reconnecting), the chip row, the message line, Map, World, Bag, Log and Roll; `setStats`, `setDie`, `setMessage`, `setBusy`, `setFollowing`, `setChips`, `setLink` |
 | `src/scenes/FightScene.ts` | the fight: the enemy with its next move told, the character with the class meter, two taps a round, the events played back a beat apart, Continue |
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
@@ -243,6 +245,24 @@ animation when opening. The aim is dopamine hits." Built on Mitch, AD's pieces (
   rarities in a row) on a page with a save; or in the pane, `boardWorld.phaser.scene.getScene('board').showcase('epic')`.
 - **Tests**: `client/test/loot.test.ts` covers the pure parts (Vitest now includes `client/test/`); the scene is judged in
   the pane.
+
+## The moments (chapter 1 step 3, 2026-11-01)
+
+- **The die's roll** (`HudScene.startRoll`, `landDie`, `cancelRoll`): the roll begins on the tap, before the world answers.
+  The box rocks for 320 ms (Nigel, SD's `ui/die-shake`), then the faces flicker every 70 ms with his `ui/die-tumble`
+  looping, until the answer lands it: the final face, a bounce from 1.35 (Back.easeOut, 280 ms), a glow ring that grows
+  and fades, `ui/die-land` with the rate 0.94 + face × 0.025, a buzz. The shake and a little of the tumble are always
+  seen (620 ms at least), so a local answer and a server's look the same; a refused roll puts the old face back. Fewer
+  effects: the face at once. The board lights the spots after the landing.
+- **The banners** (`MomentScene`, added last in `play.ts` so it draws over the fight and the reveal; it takes no input):
+  the level up ("Level 3!" in gold with the new numbers, a burst of sparkles and a ring, `ui/level-up`), the boss down
+  (in red, a stronger buzz and a small shake, `ui/boss-down`), the area opened (in green, a slower swell and a wide ring,
+  `ui/area-opened`). A plate of 340 by 86 drawn by code until the UI kit's banners come. Each holds 1.3 s and lifts away;
+  several queue. The board shows them for a landing's events (`showMoments`), the fight at the beat of its own events.
+- **The sounds** (`audio.ts`): `assets/sound/ui/ui.ogg` and `ui.json` (Nigel, SD's sprite, copied whole from his
+  `out/sfx/ui/game/`), loaded by the board's preload with Phaser's audio sprite loader; the UI sprite plays at 0.8 of
+  full. `ui/die-land` is an alias for his candidate B until Robin picks. Every hook the scenes call is listed in
+  `docs/state/sound.md`.
 
 - **On the board** the token is the hero at 0.15 of the file (about 45 CSS px), feet on the spot, facing right; a walk
   plays `move` and turns him the way each step goes, then `stand`.

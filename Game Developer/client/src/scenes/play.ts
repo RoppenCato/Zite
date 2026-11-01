@@ -1,5 +1,5 @@
 // The scenes of play, made together once there is a game: the board starts, launches the HUD, and opens the fight,
-// the shop, the bag or the loot reveal over both when one begins. main.ts starts them straight from a save; CreateScene adds them after
+// the shop, the bag or the loot reveal over both when one begins; the moments scene sits over everything for its banners. main.ts starts them straight from a save; CreateScene adds them after
 // the character is made.
 
 import type { GameLog } from '../game-log.ts';
@@ -9,6 +9,7 @@ import { BagScene } from './BagScene.ts';
 import { BoardScene } from './BoardScene.ts';
 import { FightScene } from './FightScene.ts';
 import { HudScene } from './HudScene.ts';
+import { MomentScene } from './MomentScene.ts';
 import { RevealScene } from './RevealScene.ts';
 import { ShopScene } from './ShopScene.ts';
 
@@ -21,5 +22,6 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'bag', scene: new BagScene({ game, log }) },
     { key: 'atlas', scene: new AtlasScene({ game, log }) },
     { key: 'reveal', scene: new RevealScene({ log }) },
+    { key: 'moment', scene: new MomentScene() },
   ];
 }

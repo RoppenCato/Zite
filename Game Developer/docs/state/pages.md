@@ -99,5 +99,5 @@ level by level (`docs/state/rules.md`, Balance). A minute for the defaults. Reru
 - A camera pan or zoom takes 350 ms; read `worldView` and `zoom` after that, not straight after a tap.
 - Spots that give again after a while and bosses' returns run on the page's clock (`Date.now()`); a planted save with
   `cooldowns` in the past makes them give at once.
-- `?mute=1` is the convention for test pages once sound exists; nothing reads it yet. The atlas's Settings has four
+- `?mute=1` keeps a page silent (`client/src/audio.ts` reads it; the die has sounds since 2026-11-01): every test page opens with it. The atlas's Settings has four
   rows (Sound, Effects, Text, Vibration) and then World and Start over; the pane cannot feel the vibration.

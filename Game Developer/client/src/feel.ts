@@ -4,13 +4,14 @@
 // effect respects the "fewer effects" setting; the buzz has a setting of its own.
 
 import Phaser from 'phaser';
+import { audio } from './audio.ts';
 import { settings } from './settings.ts';
 
 type Pressable = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform;
 
-/** The sound hook: the audio layer (chapter 1, step 7) fills it in; until then a press is silent. */
+/** The sound hook: a name from the Sound Director's sprites (`audio.ts`); a name with no sound yet is silent. */
 export const sfx = {
-  play: (_name: string): void => {},
+  play: (name: string): void => audio.play(name),
 };
 
 export const feel = {
