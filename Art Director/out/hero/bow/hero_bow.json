@@ -1,0 +1,1262 @@
+{
+ "frames": {
+  "hero_bow/stand/0004": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 200,
+    "h": 359
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 200,
+    "h": 359
+   },
+   "sourceSize": {
+    "w": 200,
+    "h": 359
+   },
+   "pivot": {
+    "x": 0.51,
+    "y": 0.9526
+   }
+  },
+  "hero_bow/move/0002": {
+   "frame": {
+    "x": 204,
+    "y": 2,
+    "w": 216,
+    "h": 359
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 216,
+    "h": 359
+   },
+   "sourceSize": {
+    "w": 216,
+    "h": 359
+   },
+   "pivot": {
+    "x": 0.588,
+    "y": 0.9443
+   }
+  },
+  "hero_bow/move/0003": {
+   "frame": {
+    "x": 422,
+    "y": 2,
+    "w": 216,
+    "h": 359
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 216,
+    "h": 359
+   },
+   "sourceSize": {
+    "w": 216,
+    "h": 359
+   },
+   "pivot": {
+    "x": 0.588,
+    "y": 0.9443
+   }
+  },
+  "hero_bow/move/0005": {
+   "frame": {
+    "x": 640,
+    "y": 2,
+    "w": 190,
+    "h": 359
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 359
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 359
+   },
+   "pivot": {
+    "x": 0.5316,
+    "y": 0.9443
+   }
+  },
+  "hero_bow/move/0006": {
+   "frame": {
+    "x": 832,
+    "y": 2,
+    "w": 190,
+    "h": 359
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 359
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 359
+   },
+   "pivot": {
+    "x": 0.5316,
+    "y": 0.9443
+   }
+  },
+  "hero_bow/stand/0001": {
+   "frame": {
+    "x": 1024,
+    "y": 2,
+    "w": 199,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.5126,
+    "y": 0.9469
+   }
+  },
+  "hero_bow/stand/0002": {
+   "frame": {
+    "x": 1225,
+    "y": 2,
+    "w": 199,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.5126,
+    "y": 0.9553
+   }
+  },
+  "hero_bow/stand/0003": {
+   "frame": {
+    "x": 1426,
+    "y": 2,
+    "w": 200,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 200,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 200,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.51,
+    "y": 0.9609
+   }
+  },
+  "hero_bow/move/0001": {
+   "frame": {
+    "x": 1628,
+    "y": 2,
+    "w": 196,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.551,
+    "y": 0.9609
+   }
+  },
+  "hero_bow/move/0004": {
+   "frame": {
+    "x": 1826,
+    "y": 2,
+    "w": 196,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.551,
+    "y": 0.9609
+   }
+  },
+  "hero_bow/hit1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 363,
+    "w": 216,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 216,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 216,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.3843,
+    "y": 0.9521
+   }
+  },
+  "hero_bow/die1/0001": {
+   "frame": {
+    "x": 220,
+    "y": 363,
+    "w": 224,
+    "h": 353
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 353
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 353
+   },
+   "pivot": {
+    "x": 0.3438,
+    "y": 0.9547
+   }
+  },
+  "hero_bow/hit1/0001": {
+   "frame": {
+    "x": 446,
+    "y": 363,
+    "w": 234,
+    "h": 350
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 234,
+    "h": 350
+   },
+   "sourceSize": {
+    "w": 234,
+    "h": 350
+   },
+   "pivot": {
+    "x": 0.2906,
+    "y": 0.9457
+   }
+  },
+  "hero_bow/attack1/0001": {
+   "frame": {
+    "x": 682,
+    "y": 363,
+    "w": 209,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5359,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/attack1/0002": {
+   "frame": {
+    "x": 893,
+    "y": 363,
+    "w": 220,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 220,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 220,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5591,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/attack1/0003": {
+   "frame": {
+    "x": 1115,
+    "y": 363,
+    "w": 260,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 260,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 260,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.6154,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/attack1/0004": {
+   "frame": {
+    "x": 1377,
+    "y": 363,
+    "w": 266,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.6128,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/attack1/0005": {
+   "frame": {
+    "x": 1645,
+    "y": 363,
+    "w": 226,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 226,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 226,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5708,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 720,
+    "w": 210,
+    "h": 343
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 343
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 343
+   },
+   "pivot": {
+    "x": 0.5381,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/defend/0001": {
+   "frame": {
+    "x": 214,
+    "y": 720,
+    "w": 203,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 203,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 203,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.4828,
+    "y": 0.9883
+   }
+  },
+  "hero_bow/defend/0002": {
+   "frame": {
+    "x": 419,
+    "y": 720,
+    "w": 205,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 205,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 205,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.4537,
+    "y": 0.9882
+   }
+  },
+  "hero_bow/die1/0002": {
+   "frame": {
+    "x": 626,
+    "y": 720,
+    "w": 264,
+    "h": 335
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 264,
+    "h": 335
+   },
+   "sourceSize": {
+    "w": 264,
+    "h": 335
+   },
+   "pivot": {
+    "x": 0.2083,
+    "y": 0.8955
+   }
+  },
+  "hero_bow/die1/0003": {
+   "frame": {
+    "x": 892,
+    "y": 720,
+    "w": 347,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 347,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 347,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.0807,
+    "y": 0.819
+   }
+  },
+  "hero_bow/die1/0004": {
+   "frame": {
+    "x": 1241,
+    "y": 720,
+    "w": 340,
+    "h": 131
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 340,
+    "h": 131
+   },
+   "sourceSize": {
+    "w": 340,
+    "h": 131
+   },
+   "pivot": {
+    "x": 0.0588,
+    "y": 0.6947
+   }
+  },
+  "hero_bow/die1/0005": {
+   "frame": {
+    "x": 1583,
+    "y": 720,
+    "w": 339,
+    "h": 131
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 339,
+    "h": 131
+   },
+   "sourceSize": {
+    "w": 339,
+    "h": 131
+   },
+   "pivot": {
+    "x": 0.056,
+    "y": 0.6947
+   }
+  },
+  "hero_bow/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1065,
+    "w": 339,
+    "h": 131
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 339,
+    "h": 131
+   },
+   "sourceSize": {
+    "w": 339,
+    "h": 131
+   },
+   "pivot": {
+    "x": 0.056,
+    "y": 0.6947
+   }
+  }
+ },
+ "meta": {
+  "image": "hero_bow.png",
+  "size": {
+   "w": 2048,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_bow/stand/0001",
+     "w": 199,
+     "h": 358,
+     "origin": {
+      "x": 102,
+      "y": 339
+     },
+     "delay": 150,
+     "lt": {
+      "x": -102,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 19
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/stand/0002",
+     "w": 199,
+     "h": 358,
+     "origin": {
+      "x": 102,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -102,
+      "y": -342
+     },
+     "rb": {
+      "x": 97,
+      "y": 16
+     },
+     "head": {
+      "x": -9,
+      "y": -330
+     }
+    },
+    {
+     "name": "hero_bow/stand/0003",
+     "w": 200,
+     "h": 358,
+     "origin": {
+      "x": 102,
+      "y": 344
+     },
+     "delay": 150,
+     "lt": {
+      "x": -102,
+      "y": -344
+     },
+     "rb": {
+      "x": 98,
+      "y": 14
+     },
+     "head": {
+      "x": -9,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_bow/stand/0004",
+     "w": 200,
+     "h": 359,
+     "origin": {
+      "x": 102,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -102,
+      "y": -342
+     },
+     "rb": {
+      "x": 98,
+      "y": 17
+     },
+     "head": {
+      "x": -9,
+      "y": -329
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hero_bow/move/0001",
+     "w": 196,
+     "h": 358,
+     "origin": {
+      "x": 108,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -108,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 14
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_bow/move/0002",
+     "w": 216,
+     "h": 359,
+     "origin": {
+      "x": 127,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -127,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 20
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_bow/move/0003",
+     "w": 216,
+     "h": 359,
+     "origin": {
+      "x": 127,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -127,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 20
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_bow/move/0004",
+     "w": 196,
+     "h": 358,
+     "origin": {
+      "x": 108,
+      "y": 344
+     },
+     "delay": 100,
+     "lt": {
+      "x": -108,
+      "y": -344
+     },
+     "rb": {
+      "x": 88,
+      "y": 14
+     },
+     "head": {
+      "x": -18,
+      "y": -332
+     }
+    },
+    {
+     "name": "hero_bow/move/0005",
+     "w": 190,
+     "h": 359,
+     "origin": {
+      "x": 101,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -101,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 20
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    },
+    {
+     "name": "hero_bow/move/0006",
+     "w": 190,
+     "h": 359,
+     "origin": {
+      "x": 101,
+      "y": 339
+     },
+     "delay": 100,
+     "lt": {
+      "x": -101,
+      "y": -339
+     },
+     "rb": {
+      "x": 89,
+      "y": 20
+     },
+     "head": {
+      "x": -18,
+      "y": -326
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_bow/attack1/0001",
+     "w": 209,
+     "h": 343,
+     "origin": {
+      "x": 112,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -112,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/attack1/0002",
+     "w": 220,
+     "h": 343,
+     "origin": {
+      "x": 123,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -123,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/attack1/0003",
+     "w": 260,
+     "h": 343,
+     "origin": {
+      "x": 160,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -160,
+      "y": -339
+     },
+     "rb": {
+      "x": 100,
+      "y": 4
+     },
+     "head": {
+      "x": -6,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/attack1/0004",
+     "w": 266,
+     "h": 343,
+     "origin": {
+      "x": 163,
+      "y": 339
+     },
+     "delay": 134,
+     "lt": {
+      "x": -163,
+      "y": -339
+     },
+     "rb": {
+      "x": 103,
+      "y": 4
+     },
+     "head": {
+      "x": -3,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/attack1/0005",
+     "w": 226,
+     "h": 343,
+     "origin": {
+      "x": 129,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -129,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    },
+    {
+     "name": "hero_bow/attack1/0006",
+     "w": 210,
+     "h": 343,
+     "origin": {
+      "x": 113,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -113,
+      "y": -339
+     },
+     "rb": {
+      "x": 97,
+      "y": 4
+     },
+     "head": {
+      "x": -9,
+      "y": -327
+     }
+    }
+   ]
+  },
+  "defend": {
+   "delay": 100,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_bow/defend/0001",
+     "w": 203,
+     "h": 342,
+     "origin": {
+      "x": 98,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -98,
+      "y": -338
+     },
+     "rb": {
+      "x": 105,
+      "y": 4
+     },
+     "head": {
+      "x": -1,
+      "y": -325
+     }
+    },
+    {
+     "name": "hero_bow/defend/0002",
+     "w": 205,
+     "h": 340,
+     "origin": {
+      "x": 93,
+      "y": 336
+     },
+     "delay": 100,
+     "lt": {
+      "x": -93,
+      "y": -336
+     },
+     "rb": {
+      "x": 112,
+      "y": 4
+     },
+     "head": {
+      "x": 6,
+      "y": -324
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_bow/hit1/0001",
+     "w": 234,
+     "h": 350,
+     "origin": {
+      "x": 68,
+      "y": 331
+     },
+     "delay": 150,
+     "lt": {
+      "x": -68,
+      "y": -331
+     },
+     "rb": {
+      "x": 166,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -331
+     }
+    },
+    {
+     "name": "hero_bow/hit1/0002",
+     "w": 216,
+     "h": 355,
+     "origin": {
+      "x": 83,
+      "y": 338
+     },
+     "delay": 120,
+     "lt": {
+      "x": -83,
+      "y": -338
+     },
+     "rb": {
+      "x": 133,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hero_bow/die1/0001",
+     "w": 224,
+     "h": 353,
+     "origin": {
+      "x": 77,
+      "y": 337
+     },
+     "delay": 90,
+     "lt": {
+      "x": -77,
+      "y": -337
+     },
+     "rb": {
+      "x": 147,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -337
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_bow/die1/0002",
+     "w": 264,
+     "h": 335,
+     "origin": {
+      "x": 55,
+      "y": 300
+     },
+     "delay": 90,
+     "lt": {
+      "x": -55,
+      "y": -300
+     },
+     "rb": {
+      "x": 209,
+      "y": 35
+     },
+     "head": {
+      "x": 0,
+      "y": -300
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_bow/die1/0003",
+     "w": 347,
+     "h": 221,
+     "origin": {
+      "x": 28,
+      "y": 181
+     },
+     "delay": 90,
+     "lt": {
+      "x": -28,
+      "y": -181
+     },
+     "rb": {
+      "x": 319,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_bow/die1/0004",
+     "w": 340,
+     "h": 131,
+     "origin": {
+      "x": 20,
+      "y": 91
+     },
+     "delay": 90,
+     "lt": {
+      "x": -20,
+      "y": -91
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -91
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hero_bow/die1/0005",
+     "w": 339,
+     "h": 131,
+     "origin": {
+      "x": 19,
+      "y": 91
+     },
+     "delay": 90,
+     "lt": {
+      "x": -19,
+      "y": -91
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -91
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "hero_bow/die1/0006",
+     "w": 339,
+     "h": 131,
+     "origin": {
+      "x": 19,
+      "y": 91
+     },
+     "delay": 90,
+     "lt": {
+      "x": -19,
+      "y": -91
+     },
+     "rb": {
+      "x": 320,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -91
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

@@ -39,10 +39,15 @@ Warrior and three meadow monsters) as stand-ins until new art lands.
 - **The shell stays**: the board from a raised camera in 2D, fights as their own side-view screen, areas as kits of data,
   monsters and characters as named actions with frame data, Miles, GD's budgets and atlas form. All of it is in
   `docs/direction.md`.
-- **The look is not decided, and there are no reference pictures.** Robin, 2026-11-01: MapleStory is not used as a
-  reference, and the three example pictures Perry, AD was given are not used either; both are gone from this studio. The
-  look comes from Robin. Ask him what this game should look like and which references he loves, and show him pictures
-  while you ask (MITCH.md, "Your first session"). Concepts as two or three real, different stills before any set.
+- **The look is not decided.** Robin, 2026-11-01: MapleStory is not used as a reference, and the three example pictures
+  Perry, AD was given are not used either; both are gone from this studio. Later that day Robin put two things in this
+  folder: `Examples/` (four pictures of the look, described in `docs/direction.md`; screenshots and key art of
+  published games, study only, never copied) and `ART_DIRECTION.md`, a proposal written from a conversation with him. In
+  it, Robin's own preferences are **an Enchanted Kingdoms theme, simple graphics, and a mix of bright and playful with
+  magical and adventurous** (Robin, 2026-11-01); everything else in it (palettes, proportions, region names, class list)
+  is a proposal until he approves it in a phone-size picture. Robin, 2026-11-01: "people not animals"; "I think I
+  actually really like the simple MapleStory graphics that you see in the other examples." The draft of the look is in
+  `docs/direction.md`. Concepts as two or three real, different stills before any set.
 - **Then one still all the way**: the hero standing on the first area's ground beside one monster, at phone size, with the
   game's chrome on. Agree the look on that picture before anything moves. Then write the direction sheet
   (`docs/direction.md`, "The look") with the date and Robin's words.
@@ -121,6 +126,9 @@ between two atlases when comparing. Keep a copy of the page's HTML in the scratc
 ```
 CLAUDE.md                   this brief
 MITCH.md                    Colin, AD's letter: how Robin works, the Survival game's lessons, where to get art and motion
+ART_DIRECTION.md            the Enchanted Kingdoms proposal (2026-11-01): Robin's three preferences, the rest proposed
+Examples/                   the pictures of the look Robin gave (2026-11-01); study only, never copied. The Read tool
+                            cannot open AVIF: draw it onto a canvas with @napi-rs/canvas and save a PNG in the scratch folder
 docs/direction.md           the shell that stays (the world's form, the action set, the kits, the hand-over list, the
                             check) and the look, once decided
 docs/techniques.md          what the craft guides teach (readability, sprites from Blender, NPR, gaits), from the Survival game

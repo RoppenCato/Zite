@@ -4,15 +4,64 @@ Robin, 2026-11-01: the art direction of 2026-10-31 is scrapped; the shell stays;
 pictures carried over (MapleStory and the three example pictures are both out). Rewritten by Mitch, AD the same day. The game's own `docs/state/art.md` and `docs/art-demands.md`
 are the authority on budgets, file form and what is needed; this sheet is what the studio builds to.
 
-## The look (not decided)
+## The look (a draft, mine, 2026-11-01; to be checked against the first still and then rewritten in Robin's words)
 
-To be written after the first still, with the date and Robin's words: one sentence for the look, then the colours, the
-line, the light, the proportions, the sizes, and a short check. Until then nothing about the look is decided.
+**What Robin has said** (2026-11-01): an Enchanted Kingdoms theme, simple graphics, bright and playful mixed with magical
+and adventurous (from the conversation behind `ART_DIRECTION.md`); "people not animals"; "I think I actually really like
+the simple MapleStory graphics that you see in the other examples." And: the MapleStory project on this PC (the extracted
+library) is not used; MapleStory as a general reference is fine. The heroes are painted here in code (Robin, 2026-11-01).
+The pictures are in `Examples/`:
+
+- **Ex1** (a raised-camera cartoon beach from a published game): the board's camera. Flat fills, a thick warm dark line,
+  one long flat cast shadow per upright thing, a quiet ground. Study for the board kit's camera and shadows, not for the
+  characters (animals, and flatter than Robin wants).
+- **Ex2** (key art of two chibi heroes, a swordsman and a witch): the heroes. People, about two and a half heads tall, a
+  big head, big eyes with a coloured iris and a highlight, spiky hair, a big hat, simple clothes in two or three colours.
+- **Ex3** (a painted hillside village of mushroom houses, round trees, a grass lip over a cliff body, mushrooms in the
+  grass): the places. Lush and soft, no outline on the far planes, paler with distance, floating islands and clouds.
+- **Ex4** (a poster of four round monsters: a snail, a mushroom, a pig, a slime in a wizard's hat): the monsters, and the
+  simplicity Robin means. One clean black line of even weight, flat bright fills with one soft shade, a huge simple face
+  on the front of one round shape.
+
+**The sentence (mine):** *A bright storybook fantasy drawn simply: round chunky shapes with one clean dark line, flat
+saturated colour with one soft shade, big simple faces; chibi people as heroes; lush soft places behind them; the board
+seen from above with everything standing on it and casting a shadow.*
+
+- **Colour.** Bright and saturated, chosen, never computed: the fill, one shade a step darker and cooler, and a small
+  highlight only on things that shine (a slime, a cap, an eye). No gradients beyond that shade, no grey, no texture on the
+  near things. Each area one palette; the magical areas add violet, cyan and glow.
+- **Line.** One clean dark line of even weight round every near thing (near-black on the monsters and heroes, a warm
+  dark brown on props and ground pieces so they sit back); thinner inside; none on the far planes. Tested at the real
+  size on the phone, never zoomed.
+- **Light.** From above: the top edge bright, the shade underneath, the shadow cooler than the light. On the board every
+  upright thing casts one flat shadow in the same direction.
+- **Shapes.** Round and chunky; a monster is one shape with a face taking most of its front; a hero is a big head on a
+  compact body with one garment, one class shape and one weapon; props are simple and fat; nothing thin, nothing fussy.
+- **Places.** Lush behind, quiet underfoot: a bright grass lip over a darker cliff body; mushroom houses, round trees,
+  soft far planes without line; props everywhere in clusters, every repeat its own size and lean.
+- **Sizes.** The game's numbers above; the player's height is open (show two sizes in the first still).
+- **Check.** Reads as one shape at a quarter size; the line even and clean at phone size; one light; nothing grey;
+  nothing thin gone black; beside the hero on its ground with a shadow at its foot it belongs.
+
+`ART_DIRECTION.md` is read beside this sheet; where it names classes or regions, the game's own names win. Since the
+evening of 2026-11-01 those are the Enchanted Kingdoms' (the game's `docs/names.md`): the classes are the Knight, the
+Trickster, the Wizard and the Archer; the first areas Cloverfield Meadows, Wobblewood Forest and Honeyhill Fields, the start
+Puddlewick Village; the gear ranks run Tin to Everbright. The hybrid test's sets were named before this (tunic, plate, mage).
 
 **Open with Robin:** what this game should look like and which references he loves (asked with pictures); the player's
 height on screen (100 CSS px was Perry, AD's number; Robin's own sheet stood 118 and he liked its presence); the mood of
 the first area; whether the hero's still is painted here or made with his image tool from a brief and then cut and
 animated here.
+
+## Equipment shows on the character (Robin, 2026-11-01)
+
+"Visible equipment progression is extremely important for this game. Players must be able to wear different armor sets,
+helmets, gloves, boots, and capes, and wield different weapons and shields. All of these must remain visible during
+animation." So a class character is one skeleton with slots (head, torso, hips, boots, hands, back, near arm, far arm,
+weapon, off-hand), each filled by a procedural part (drawn from the skeleton's points) or a raster part (a master picture
+placed at a joint with its pivot and turned with the limb); every frame is the same skeleton and parts, so nothing
+flickers. The test of this is in `docs/log.md` (2026-11-01, the hybrid hero) and `tools/hybrid/`. This overrides the Game
+Developer's note of 2026-11-01 that gear does not show on the character; Miles, GD is told.
 
 ## The world's form (Robin, 2026-10-31)
 
