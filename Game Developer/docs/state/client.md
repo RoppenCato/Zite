@@ -88,15 +88,18 @@ opaque panel that takes every touch, and call the board back when they close (`f
   are smaller (radius 20) and bare, the others radius 26; **a boss spot is big (radius 34), dark red, named, with its
   boss's level under it**, and dims with a countdown while the boss is away. Hubs show their names (bold 13 px) below
   zoom 0.45 hidden. **Whatever has spawned** bobs as a badge above its spot: a red "!" for a mini-boss, a yellow "$" for a
-  merchant; redrawn whenever the spawns change (`LocalGame.onSpawns`) and after a fight. A clock once a second refreshes
-  the boss labels.
+  merchant; **a world boss as a big purple W with its HP written above it**, for everyone to see shrink; redrawn
+  whenever the spawns change (`onSpawns`) and after a fight. **A spot with notes** carries a small pale mark to its left
+  (a quote mark, or how many). A clock once a second refreshes the boss labels.
 - **The token** is a container (a circle of radius 15 with the class's first letter) just above its spot. **The other
   players** (co-op) stand as smaller marks (radius 12, the class letter, the name under it) to the right of their spot,
   fanned when several share one, full when online and dim when not; they glide when their player moves. The place line
   says "with Bo" when someone shares your spot, a tapped spot says who is there, and a line in the message tells of a
   newcomer, an area opened, a boss beaten, a level reached or a fall by someone else.
-- **A tap on any spot** that is not lit says what it is (`hintFor`) in the message line and flashes its ring; a tap on
-  the shop or town you stand on opens the shop again. The tap that closes the fight, the shop or the bag never also
+- **A tap on any spot** that is not lit says what it is (`hintFor`, the notes left there last) in the message line and
+  flashes its ring; a tap on the shop or town you stand on opens the shop again; **a tap on the spot you stand on**
+  (any other kind, the board free) adds "Leave a note here?" and the four notes as chips; the one tapped is left
+  (`trace`), the spot gets its mark, and the others hear of it. The tap that closes the fight, the shop or the bag never also
   counts on the spot under the button (a quarter-second guard), so Continue over a spot keeps the fight's summary.
 - **Questions in the chip row**: the gambler's (High, Low, Walk on); **a town's errand** (Take it, Not now; the message
   says what it asks and pays); **a piece with no room in the bag** (Sell for n, Leave it); and **a level's pick of one
@@ -176,6 +179,9 @@ the miss, the wind-up, the stun (or a boss shrugging it off), the poison on eith
 loot, the level, the boss falling, the area opening, and the new things: the boss's second phase in its own words, time
 bending, a trap springing, gold lifted, the enemy healing or draining mana, a Phoenix catching a fall, Ironbrow turning a
 crit aside. On `won`, `died` or a lucky `fled` the rows give way to **Continue**, which hands the board a one-line summary.
+**A world boss** says "world boss" in the header and what a shared fight is in the first line; its bar follows the HP in
+the spawn when others hit it (`refreshFromState`, called by the board on every change to the player or the spawns); when
+someone else brings it down the screen says so with this player's share and ends as a win; when it leaves, "is gone".
 
 ## The shop scene (mine, 2026-10-31)
 
@@ -235,5 +241,5 @@ name is what the phone shows on install), standalone, portrait, dark theme, icon
 ## Not here yet
 
 A second hand-laid pass at the numbers once Robin has played; sound (`?mute=1` is the convention for test pages once
-sound exists); shared bosses and traces on the board (Piece 5); a quieter way to type the server's address and a code
-than the browser's prompt; the install prompt.
+sound exists); a quieter way to type the server's address and a code than the browser's prompt; the install prompt; the
+world boss in the atlas's list.

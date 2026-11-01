@@ -261,7 +261,7 @@ export class RemoteGame implements GameHolder {
     this.note(`snapshot v${snap.version}: ${snap.player}, ${snap.online.length} online`);
     if (before) {
       this.onSpawns?.();
-      this.onChange?.({ others: true, me: true, board: before.board !== snap.state.board, link: true, events: [] });
+      this.onChange?.({ others: true, me: true, board: before.board !== snap.state.board, spawns: true, traces: true, link: true, events: [] });
     }
     // An intent that was in flight when the socket went: the same id again; the server answers from its store if it had it.
     if (this.pending) this.sendPending();
@@ -281,6 +281,8 @@ export class RemoteGame implements GameHolder {
     let others = false;
     let me = false;
     let board = false;
+    let spawns = false;
+    let traces = false;
     if (delta) {
       const before = this.state;
       this.state = mergeDelta(this.state, delta);
@@ -291,7 +293,9 @@ export class RemoteGame implements GameHolder {
         }
       }
       board = !!delta.board;
-      if (delta.spawns && delta.spawns !== before.spawns) this.onSpawns?.();
+      spawns = !!delta.spawns && delta.spawns !== before.spawns;
+      traces = !!delta.traces && delta.traces !== before.traces;
+      if (spawns) this.onSpawns?.();
     }
     let link = false;
     if (online) {
@@ -299,7 +303,7 @@ export class RemoteGame implements GameHolder {
       this.online = online;
       others = others || link;
     }
-    if (!mine && (others || me || board || link || events.length)) this.onChange?.({ others, me, board, link, events });
+    if (!mine && (others || me || board || spawns || traces || link || events.length)) this.onChange?.({ others, me, board, spawns, traces, link, events });
   }
 
   private onError(reason: string, action?: string): void {
@@ -329,7 +333,7 @@ export class RemoteGame implements GameHolder {
       return;
     }
     if (this.closedForGood) return;
-    this.onChange?.({ others: false, me: false, board: false, link: true, events: [] });
+    this.onChange?.({ others: false, me: false, board: false, spawns: false, traces: false, link: true, events: [] });
     this.reconnect(RETRY_MS[Math.min(this.tries, RETRY_MS.length - 1)]!);
   }
 
@@ -340,7 +344,7 @@ export class RemoteGame implements GameHolder {
       this.retryTimer = null;
       this.tries += 1;
       this.reason = 'reconnecting';
-      this.onChange?.({ others: false, me: false, board: false, link: true, events: [] });
+      this.onChange?.({ others: false, me: false, board: false, spawns: false, traces: false, link: true, events: [] });
       this.open()
         .then((snap) => {
           this.take(snap);
@@ -352,7 +356,7 @@ export class RemoteGame implements GameHolder {
           // An unknown account cannot be retried into existence; anything else is tried again.
           if (why === 'unknown account') {
             this.closedForGood = true;
-            this.onChange?.({ others: false, me: false, board: false, link: true, events: [] });
+            this.onChange?.({ others: false, me: false, board: false, spawns: false, traces: false, link: true, events: [] });
             return;
           }
           this.reconnect(RETRY_MS[Math.min(this.tries, RETRY_MS.length - 1)]!);

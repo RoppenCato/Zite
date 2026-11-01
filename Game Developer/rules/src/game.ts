@@ -2,9 +2,9 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
-import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, WORLD_DATA } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
 import { addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
-import { fightRound, intentEvent, offerPicks, startFight } from './fight.ts';
+import { fightRound, intentEvent, makeEnemy, offerPicks, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats } from './gear.ts';
 import { newQuest, questLine, questProgress } from './quests.ts';
 import { checkPath } from './paths.ts';
@@ -15,6 +15,7 @@ import {
   STATE_VERSION,
   type Action,
   type ApplyResult,
+  type Area,
   type Board,
   type Character,
   type ClassId,
@@ -22,6 +23,7 @@ import {
   type GameState,
   type Space,
   type Spawn,
+  type Trace,
 } from './types.ts';
 
 export interface NewGameOptions {
@@ -45,6 +47,7 @@ type PickAction = Extract<Action, { type: 'pick' }>;
 type QuestAction = Extract<Action, { type: 'quest' }>;
 type KeepAction = Extract<Action, { type: 'keep' }>;
 type JoinAction = Extract<Action, { type: 'join' }>;
+type TraceAction = Extract<Action, { type: 'trace' }>;
 
 /** The longest name a character may have. */
 export const MAX_NAME = 12;
@@ -105,6 +108,7 @@ export function newWorld(o: { seed: string; board?: Board }): GameState {
     die: { sides: DICE_DATA.sides, last: null },
     spawns: {},
     nextItem: 1,
+    traces: {},
   };
 }
 
@@ -140,7 +144,19 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return answerQuest(state, action, character, now);
     case 'keep':
       return keep(state, action, character);
+    case 'trace':
+      return trace(state, action, character, now);
   }
+}
+
+/** A note on the spot you stand on (mine, 2026-11-01): one of the set lines, one a player a spot, newest first, a few a spot. */
+function trace(state: GameState, action: TraceAction, c: Character, now: number): ApplyResult {
+  if (c.fight) return reject(state, action, 'finish the fight first');
+  if (!TRACES.includes(action.text)) return reject(state, action, 'bad value');
+  const note: Trace = { player: c.id, name: c.name, text: action.text, at: now };
+  const others = (state.traces[c.space] ?? []).filter((t) => t.player !== c.id);
+  const traces = { ...state.traces, [c.space]: [note, ...others].slice(0, PROGRESSION.traces.perSpace) };
+  return { state: { ...state, traces }, events: [{ type: 'traced', action: action.id, player: action.player, space: c.space, trace: note }] };
 }
 
 /** A new character for the player at the start, the way `newGame` makes the first; a player already here is refused. */
@@ -275,6 +291,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'normal': {
       const spawn = state.spawns[space.id];
+      if (spawn?.kind === 'worldboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events, spawn);
       if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);
       if (spawn?.kind === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
@@ -315,8 +332,13 @@ function surprise(rng: Rng): keyof typeof SURPRISES {
   return 'fight';
 }
 
-function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
-  const fighting = startFight(c, enemy, space, spawn, state.board.bestiary, rng);
+function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, rng: Rng, events: GameEvent[], shared?: Spawn): ApplyResult {
+  let fighting = startFight(c, enemy, space, spawn, state.board.bestiary, rng);
+  if (shared) {
+    // A world boss: its HP is the spawn's, whatever others have done to it already.
+    const f = fighting.fight!;
+    fighting = { ...fighting, fight: { ...f, shared: true, enemy: { ...f.enemy, hp: shared.hp ?? f.enemy.hp, maxHp: shared.maxHp ?? f.enemy.maxHp } } };
+  }
   const e = fighting.fight!.enemy;
   events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...e, moves: e.moves.map((m) => ({ ...m })) }, space });
   events.push(intentEvent(e, action.id, action.player));
@@ -625,12 +647,33 @@ function keep(state: GameState, action: KeepAction, character: Character): Apply
 function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyResult {
   const events: GameEvent[] = [];
   const spawns: Record<string, Spawn> = { ...state.spawns };
+  let characters = state.characters;
   let changed = false;
   for (const [space, spawn] of Object.entries(spawns)) {
     if (spawn.until <= now) {
       delete spawns[space];
       changed = true;
+      if (spawn.kind === 'worldboss') {
+        // Its time ran out: whoever was still fighting it is let go.
+        const fighters = Object.values(characters).filter((c) => c.fight?.shared && c.fight.space === space);
+        if (fighters.length) {
+          characters = { ...characters };
+          for (const c of fighters) characters[c.id] = { ...c, fight: null };
+        }
+        events.push({ type: 'bossLeft', action: action.id, player: action.player, space, enemy: spawn.enemy ?? '', players: fighters.map((c) => c.id) });
+      }
       events.push({ type: 'despawned', action: action.id, player: action.player, space });
+    }
+  }
+  // Old notes fade.
+  let traces = state.traces;
+  for (const [space, notes] of Object.entries(traces)) {
+    const kept = notes.filter((t) => t.at + PROGRESSION.traces.lifeMs > now);
+    if (kept.length !== notes.length) {
+      if (traces === state.traces) traces = { ...traces };
+      if (kept.length) traces[space] = kept;
+      else delete traces[space];
+      changed = true;
     }
   }
   const settings = PROGRESSION.spawns;
@@ -655,5 +698,28 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       events.push({ type: 'spawned', action: action.id, player: action.player, space, spawn });
     }
   }
-  return changed ? { state: { ...state, spawns }, events } : { state, events };
+  // A world boss (mine, 2026-11-01): now and then, when none is about, the boss of the highest area anyone has opened
+  // rages on a wild spot there with HP for a crowd, for a while; everyone who lands there fights the same HP.
+  const wb = PROGRESSION.worldBoss;
+  if (!Object.values(spawns).some((s) => s.kind === 'worldboss') && rng.next() < wb.chancePerTick) {
+    const open = new Set<string>();
+    const standing = new Set<string>();
+    for (const c of Object.values(characters)) {
+      for (const a of c.opened) open.add(a);
+      standing.add(c.space);
+    }
+    const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
+    const gate = frontier ? Object.values(state.board.spaces).find((s) => s.area === frontier.id && s.kind === 'boss' && s.boss) : undefined;
+    const enemy = gate?.boss ?? frontier?.miniBosses[0] ?? null;
+    const wilds = frontier ? Object.values(state.board.spaces).filter((s) => s.area === frontier.id && s.kind === 'normal' && !spawns[s.id] && !standing.has(s.id)).map((s) => s.id).sort() : [];
+    if (enemy && wilds.length) {
+      const space = wilds[rng.int(wilds.length) - 1]!;
+      const hp = Math.round(makeEnemy(enemy, state.board.bestiary).maxHp * wb.hpMult);
+      const spawn: Spawn = { kind: 'worldboss', enemy, until: now + wb.lifeMs, hp, maxHp: hp, hitters: {} };
+      spawns[space] = spawn;
+      changed = true;
+      events.push({ type: 'spawned', action: action.id, player: action.player, space, spawn });
+    }
+  }
+  return changed ? { state: { ...state, spawns, characters, traces }, events } : { state, events };
 }

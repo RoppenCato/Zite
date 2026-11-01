@@ -21,7 +21,7 @@ mkdirSync(OUT, { recursive: true });
 const PAGE = process.argv[2] ?? 'http://localhost:4173/';
 const HUD_H = 100; // layout.ts HUD_HEIGHT
 const BAND_H = 640; // layout.ts VIEW_HEIGHT
-const STATE_VERSION = 9; // rules/src/types.ts
+const STATE_VERSION = 10; // rules/src/types.ts
 const B = { map: [60, 836], world: [158, 836], bag: [256, 836], log: [354, 836], roll: [206, 884] }; // HudScene BUTTONS
 const F = { a: [110, 600], b: [302, 600], c: [110, 652], d: [302, 652], e: [110, 704], f: [302, 704], cont: [206, 652] }; // FightScene FIGHT_BUTTONS
 const SHOP = { row: (i) => 222 + i * 40, buyX: 356, leave: [206, 706], tabSell: [272, 178] }; // ShopScene SHOP_LAYOUT: five slots, then potion, mana potion, reroll, +1, -1, exact
@@ -379,7 +379,8 @@ await shot('15-fight-potion');
 await finishFight();
 
 // The fight's other buttons: an ability from the menu, Charge then a Counter, Flee.
-await stockSave({ ...STRONG, space: 'ashford-millford-3', abilities: { 'heavy-blow': 1, 'shield-bash': 1 }, fight: await plantedFight('bandit', 'ashford-millford-3', { hp: 900, maxHp: 900 }) });
+// A wolf: no weakening, so the charged blow below is judged on its own.
+await stockSave({ ...STRONG, space: 'ashford-millford-3', abilities: { 'heavy-blow': 1, 'shield-bash': 1 }, fight: await plantedFight('wolf', 'ashford-millford-3', { hp: 900, maxHp: 900 }) });
 await page.reload();
 await ready();
 await sleep(400);

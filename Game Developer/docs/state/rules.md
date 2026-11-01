@@ -9,7 +9,7 @@ here too, so the client and the server share them (`docs/state/protocol.md`).
 
 | File | What it holds |
 | --- | --- |
-| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (9) |
+| `src/types.ts` | the state, the actions, the events, the reject reasons, `STATE_VERSION` (10) |
 | `src/rng.ts` | the seeded random stream: `makeRng(seed)`, `resumeRng(state)`, `hashSeed` |
 | `src/data.ts` | the numbers from `data/*.json`, typed |
 | `src/world.ts` | `buildBoard(world)`: the board from the world's areas, hubs and roads (`docs/state/world.md`); `addArea`, `addRoad`, `setBounds`, `checkOpens` for the generator; `KIND_LETTERS`, `GROWN` |
@@ -23,7 +23,7 @@ here too, so the client and the server share them (`docs/state/protocol.md`).
 | `src/game.ts` | `newGame`, `newWorld` (nobody in it yet), `apply`, `makeBoard`, `makeCharacter`, `MAX_NAME` (12); joining, the board, landing, the shop and the bag, dice cards, the gamble, the tick |
 | `src/delta.ts` | `diffState(before, after)`: what changed, by reference, or null; `mergeDelta`, `mergeDeltas` |
 | `src/protocol.ts` | `PROTOCOL_VERSION` (1), `MAX_FRAME`, `RATE`, `BATCH_MS`, and the message types both sides import (`docs/state/protocol.md`) |
-| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8, 9), or null |
+| `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8, 9, 10), or null |
 | `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; the Summit opens `gen-1` |
 | `data/themes.json` | the grown areas: the eight themes with their names, adjectives and creatures, the words for places, the four creature shapes, the base numbers and the growth a tier, the cell |
 | `data/spaces.json` | the kinds of spot: label, road letter, the hint, how long a used spot waits |
@@ -37,7 +37,8 @@ here too, so the client and the server share them (`docs/state/protocol.md`).
 | `data/surprises.json` | what a wild spot holds, as weights (a fight, a chest, a merchant, a gamble, a mini-boss, the theme's event) |
 | `data/events.json` | the themes' events on wild spots: a line and what it does |
 | `data/shapes.json` | two more shapes for the generator, each with a locked vault |
-| `data/progression.json` | the xp table, crits, flee, death, charge, mana a round, the guards, chests, the gamble, spawns |
+| `data/progression.json` | the xp table, crits, flee, death, charge, mana a round, the guards, chests, the gamble, spawns, the world boss, the notes |
+| `data/traces.json` | the four notes a player may leave on a spot |
 | `data/dice.json` | the die: 6 sides |
 | `test/fixtures/ring.json`, `ring.ts` | the first twelve-spot ring in today's shape, kept as a test board: `ringBoard()` |
 | `test/fixtures/grown.ts` | `grownWorld(seed, count)`: the world grown `count` areas, for the board checks |
@@ -45,7 +46,8 @@ here too, so the client and the server share them (`docs/state/protocol.md`).
 ## The state
 
 ```
-GameState { version: 9, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem }
+GameState { version: 10, seed, board, characters: { [id]: Character }, die, spawns: { [space]: Spawn }, nextItem,
+            traces: { [space]: Trace[] } }
 Board     { start, width, height, spaces: { [id]: Space }, areas: { [id]: Area }, bestiary: { [id]: EnemyData } }
 Space     { id, kind, name, x, y, links, area, boss?, opens?, locked? }   x, y in world pixels; a road spot's name is ""
 Area      { id, name, theme, tier, levels: [lo, hi], mobs, miniBosses, bounds }
@@ -54,13 +56,14 @@ Character { id, name, classId, level, xp, gold, hp, mana, maxHp, maxMana, attack
             opened: area ids, cooldowns: { [space]: until } (also charm, phoenix, quest:<town>), bossKills: { [space]: n },
             offer, quests: Quest[], picks: string[][], keys: { [area]: n } }
 GearItem  { id, slot, rank, rarity, name, base, stats, affixes: Affix[], unique?, price }
-Fight     { enemy, round, charged, attackUp, barrier, evade, space, spawn, meter, strikes, sureCrit, windup, companion, mark,
-            trap, skip, poisoned, weak, used }
+Fight     { enemy, round, charged, attackUp, barrier, evade, space, spawn, shared?, meter, strikes, sureCrit, windup, companion,
+            mark, trap, skip, poisoned, weak, used }
 Enemy     { id, name, level, role, hp, maxHp, attack, defense, xp, gold, moves, charged, stunned, weakened, poison, next,
             armoured, evade, phase, phase2 }
 Offer     { kind: 'gamble', stake } | { kind: 'quest', quest } | { kind: 'loot', gear }
 Quest     { id (the town's space), kind: cull | chests | hunt | boss, town, area, target, count, done, gold, xp, unique, text }
-Spawn     { kind: miniboss | merchant, enemy, until }
+Spawn     { kind: miniboss | merchant | worldboss, enemy, until, hp?, maxHp?, hitters?: { [player]: damage } }
+Trace     { player, name, text, at }
 Die       { sides, last }
 ```
 
@@ -126,6 +129,9 @@ region actor stores answers by id). A refused action returns the **same** state 
   name, classId, space }`. Sent by whoever makes accounts (the server; `newGame` for the solo game), never by a player.
   `already here` for a player who exists; `bad value` for an empty name (names are trimmed to `MAX_NAME`, 12) or an
   unknown class.
+- **`trace { text }`**: a note on the spot the character stands on, one of the four lines in `traces.json` (`bad value`
+  otherwise; `finish the fight first` in a fight): `traced { space, trace }`. One a player a spot (a new one replaces
+  yours), newest first, three a spot at most; they fade after a day (the tick).
 - **`tick`**: the world moves (below); sent by whoever holds the state, not by a player.
 
 ## What landing does (mine, 2026-10-31, after Robin's spot list of the same day)
@@ -271,7 +277,25 @@ one on a free wild spot of an open area nobody stands on: a mini-boss of the are
 `lifeMs` (10 minutes); `spawned { space, spawn }`. Landing there meets it. A tick that changes nothing gives the same
 state back, so the actor's version does not move.
 
+### The world boss (mine, 2026-11-01, from Robin's list: shared bosses; the gate bosses stay each player's own)
+
+Now and then a tick (`worldBoss.chancePerTick`, 2 in 100, so about once in fifty minutes) when none is about brings
+**the boss of the highest area anyone has opened** onto a free wild spot of that area, with **HP for a crowd**
+(`hpMult` 2.5 times the boss's) and a window (`lifeMs`, 30 minutes): `spawned` with `kind: 'worldboss'`, `hp`, `maxHp`
+and an empty tally of `hitters`. **Everyone who lands there fights the same beast**: the fight is the usual one
+(`fight.shared`), but each round reads the HP from the spawn first (others may have hit it since) and writes it back
+after, with the damage dealt added to the player's tally; a round against a beast already gone ends the fight with
+`nothing: "The beast is gone."`. **When it falls**, everyone in the tally is paid **by their share of the damage**, never
+under `minShare` (a quarter): xp and gold of the boss times the share, and a boss's drop roll each (a unique half the
+time), the picks owed by the levels crossed; the one who struck the last blow gets the usual `won` and loot events, the
+others' pieces change in the same action and their fights on it end; `worldBossDown { space, enemy, shares }` and
+`despawned`. **When its time is up** the tick takes it away and lets go whoever was still fighting it (`bossLeft { space,
+enemy, players }`). The bots meet it like any spawn. In solo play it comes just the same, a big fight for one.
+
 ## Hints (Robin, 2026-10-31: touching a spot tells what you could meet, not everything)
+
+A wild spot with a world boss says so with its HP left and its time; **every spot's hint ends with the notes left there**
+(`traceLine`: who, what, how long ago).
 
 `hintFor(state, space, player, now)`: the spot's name and area; the wilds say the levels, which creatures roam there and
 that gear of the rank turns up now and then, and whether something prowls or camps there; a chest, a spring or a shrine
@@ -359,6 +383,7 @@ Nothing here has been played; these are the first numbers to be felt and changed
 | `test/quests.test.ts` | the errands: offered, every kind drawn, taken and declined with the town's wait, moved along by fights and chests, paid in town; the trainer's prices and refusals; the bag's limit, its question and the sale on the spot; the flasks by share and the spring's two |
 | `test/vaults.test.ts` | every theme's event and what it does (a hurt never to the last point); the two shapes with their vaults among the generator's; a vault locked, its key from the mini-boss once, its richer loot with the key spent; a version-8 save coming up |
 | `test/items.test.ts` | the shop (consumables, plain gear by rank, towns and merchants, refusals), selling, equip, unequip, drop, the dice cards |
+| `test/coop.test.ts` | the world boss: coming with a tick in the highest open area with HP for a crowd and only one at a time; fought together with the HP read and written back and the damage tallied; paid by share with the floor when it falls, fights ended, spot cleared; leaving on time; a round against one already gone; the hint. The notes: left, replaced, capped, faded, refused, read on a tap, in the delta. A version-9 save coming up |
 | `test/shared.test.ts` | joining (a second character at the start, the refusals, two players rolling from one stream); the delta (null when nothing changed, the acting character and the die after a roll, the spawns after a tick, the whole board when a boss lays an area, bundling); two bots playing six hundred actions on the world with ticks between, a client folding every delta ending with exactly the server's state |
 | `test/purity.test.ts` | no `Math.random`, `Date`, timers, DOM, storage, network, console or package imports in `rules/src` |
 

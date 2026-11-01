@@ -19,6 +19,8 @@ import {
   sellPrice,
   SPACE_KIND_DATA,
   stats,
+  TRACES,
+  traceLine,
   type Area,
   type Board,
   type GameEvent,
@@ -108,6 +110,8 @@ export class BoardScene extends Phaser.Scene {
   private readonly bossLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly covers = new Map<string, Phaser.GameObjects.Rectangle>();
   private readonly spawnMarks = new Map<string, Phaser.GameObjects.Container>();
+  /** The notes left on spots (mine, 2026-11-01): a small mark to the left of the spot. */
+  private readonly traceMarks = new Map<string, Phaser.GameObjects.Container>();
   /** The areas drawn so far: the world grows as bosses fall, and a new area is drawn when it comes (mine, 2026-10-31). */
   private readonly drawn = new Set<string>();
   /** When the fight, the shop or the bag last closed, in ms and in frames: the tap that closed it must not also reach the spot
@@ -142,6 +146,7 @@ export class BoardScene extends Phaser.Scene {
     this.drawToken();
     this.drawOthers();
     this.drawSpawns();
+    this.drawTraces();
     this.refreshClocks();
     this.setupCamera(board);
     this.setupInput();
@@ -209,15 +214,17 @@ export class BoardScene extends Phaser.Scene {
       this.drawOthers();
       this.refreshHud(); // "with Bo" in the place line
     }
+    if (what.traces || what.board) this.drawTraces();
     if (what.me) {
       this.refreshHud();
       this.refreshClocks();
-      if (this.scene.isActive('fight')) (this.scene.get('fight') as FightScene).refreshFromState();
-      else if (!this.inFlight && !this.busy) {
+      if (!this.scene.isActive('fight') && !this.inFlight && !this.busy) {
         this.placeToken();
         this.resume();
       }
     }
+    // The fight screen follows the state too: a world boss hit by others, or a fall that paid this player.
+    if ((what.me || what.spawns) && this.scene.isActive('fight')) (this.scene.get('fight') as FightScene).refreshFromState(what.events);
     if (what.link) this.refreshLink();
     const line = this.othersLine(what.events);
     if (line) {
@@ -231,10 +238,21 @@ export class BoardScene extends Phaser.Scene {
     const { characters, board } = this.game_.state;
     const name = (id: string) => characters[id]?.name ?? 'Someone';
     for (const e of events) {
+      if (e.type === 'spawned' && e.spawn.kind === 'worldboss' && e.spawn.enemy) {
+        const sp = board.spaces[e.space];
+        return `A world boss rages in ${board.areas[sp?.area ?? '']?.name ?? 'the wilds'}: the ${creature(e.spawn.enemy, board.bestiary)?.name ?? e.spawn.enemy}! Land there to fight it together.`;
+      }
+      if (e.type === 'bossLeft') return `The ${creature(e.enemy, board.bestiary)?.name ?? e.enemy} is gone from ${board.spaces[e.space]?.name || 'the wilds'}.`;
       if (e.player === this.game_.player) continue;
       switch (e.type) {
         case 'joined':
           return `${e.name} the ${CLASS_DATA[e.classId].name} has joined the world.`;
+        case 'worldBossDown': {
+          const mine = e.shares.find((x) => x.player === this.game_.player);
+          return `${name(e.player)} brought down the ${creature(e.enemy, board.bestiary)?.name ?? e.enemy}!${mine ? ` Your share: +${mine.xp} xp, +${mine.gold} gold.` : ''}`;
+        }
+        case 'traced':
+          return `${e.trace.name} left a note at ${board.spaces[e.space]?.name || 'a spot in the wilds'}: "${e.trace.text}".`;
         case 'opened':
           return `${name(e.player)} opened ${board.areas[e.area]?.name ?? e.area}!`;
         case 'bossDown':
@@ -277,6 +295,7 @@ export class BoardScene extends Phaser.Scene {
       if (this.choices_) this.setMessage('Tap a lit spot first.');
       return;
     }
+    this.hud?.setChips([]);
     this.setBusy(true);
     this.send({ type: 'roll', player: this.game_.player }, (rolled) => {
       const roll = rolled.find((e) => e.type === 'rolled');
@@ -549,6 +568,16 @@ export class BoardScene extends Phaser.Scene {
     for (const [spaceId, spawn] of Object.entries(spawns)) {
       const space = board.spaces[spaceId];
       if (!space) continue;
+      if (spawn.kind === 'worldboss') {
+        // The world boss: a big purple badge with its HP under it, for everyone to see shrink.
+        const badge = this.add.circle(0, 0, 20, 0x8e3fd9, 1).setStrokeStyle(3, 0x101318, 1);
+        const text = this.add.text(0, 0, 'W', { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#fff27a', resolution: 2 }).setOrigin(0.5);
+        const hp = this.add.text(0, -24, `${spawn.hp ?? '?'} / ${spawn.maxHp ?? '?'}`, { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#e8e4d8', resolution: 2 }).setOrigin(0.5, 1);
+        const mark = this.add.container(space.x + 26, space.y - 34, [badge, text, hp]).setDepth(9);
+        this.tweens.add({ targets: mark, y: mark.y - 8, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+        this.spawnMarks.set(spaceId, mark);
+        continue;
+      }
       const mini = spawn.kind === 'miniboss';
       const badge = this.add.circle(0, 0, 14, mini ? 0xd9534f : 0xe8b84a, 1).setStrokeStyle(3, 0x101318, 1);
       const text = this.add.text(0, 0, mini ? '!' : '$', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
@@ -556,6 +585,35 @@ export class BoardScene extends Phaser.Scene {
       this.tweens.add({ targets: mark, y: mark.y - 6, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       this.spawnMarks.set(spaceId, mark);
     }
+  }
+
+  /** The notes: a small pale mark to the left of a spot that has any; the tap's hint reads them. */
+  private drawTraces(): void {
+    for (const mark of this.traceMarks.values()) mark.destroy();
+    this.traceMarks.clear();
+    const { board, traces } = this.game_.state;
+    for (const [spaceId, notes] of Object.entries(traces ?? {})) {
+      const space = board.spaces[spaceId];
+      if (!space || !notes.length) continue;
+      const badge = this.add.circle(0, 0, 10, 0xe8e4d8, 1).setStrokeStyle(2, 0x101318, 1);
+      const text = this.add.text(0, 0, notes.length > 1 ? String(notes.length) : '"', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
+      this.traceMarks.set(spaceId, this.add.container(space.x - 22, space.y - 22, [badge, text]).setDepth(8));
+    }
+  }
+
+  /** Leave one of the set notes on the spot you stand on. */
+  private leaveNote(text: string): void {
+    this.send({ type: 'trace', player: this.game_.player, text }, (events) => {
+      this.hud?.setChips([]);
+      const traced = events.find((e) => e.type === 'traced');
+      if (traced?.type === 'traced') {
+        this.log.note(`note left: ${text}`);
+        this.drawTraces();
+        this.setMessage(`You leave a note here: "${text}". Others who tap this spot will read it.`);
+      } else {
+        this.setMessage(this.describe(events));
+      }
+    });
   }
 
   /** The boss labels: level, and how long until a beaten boss is back. Once a second; the link line with it. */
@@ -962,6 +1020,13 @@ export class BoardScene extends Phaser.Scene {
         this.openShop(false);
         return;
       }
+      // Your own spot, free: the hint, and the notes you could leave as chips.
+      if (!this.busy && id === me.space) {
+        this.flashHint(id);
+        this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())} Leave a note here?`);
+        this.hud?.setChips(TRACES.map((text) => ({ text, onTap: () => this.leaveNote(text) })));
+        return;
+      }
       this.flashHint(id);
       const bossTip = space.kind === 'boss' ? tips.take('boss') : null;
       const here = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === id).map((c) => c.name);
@@ -1019,7 +1084,8 @@ export class BoardScene extends Phaser.Scene {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
       const where = space.name ? `on ${space.name} (${kind})` : space.kind === 'normal' ? 'in the wilds' : `on a ${kind}`;
-      const story = this.describeLanding(moved);
+      const notes = traceLine(this.game_.state, landed.space, this.game_.now());
+      const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
       const me = this.game_.me;
       if (me.fight) {

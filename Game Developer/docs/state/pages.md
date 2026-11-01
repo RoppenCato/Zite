@@ -77,9 +77,13 @@ and drives two headless phones through it: the character screen says where the w
 and the code land in the phone's storage); B joins and both see each other (marks, "with …", "online · 2 here", a line
 about the newcomer); A rolls and walks and B sees the mark move; A reloads through the connect screen and is the same
 character; the server is stopped (the HUD says reconnecting) and started again (both reconnect on their own); B rolls
-after that; a third phone brings A's character with her code; the settings show the address and the code. Screenshots
-in `tools/out/coop/`. Thirteen checks; the browser's own "WebSocket connection failed" lines while the server is down are
-not counted as errors.
+after that; a third phone brings A's character with her code; the settings show the address and the code; then the
+server is stopped once more, **a world boss is planted on every free wild spot of the meadows straight in the database**
+(there is no action that makes one) and started again: both phones draw the badges; A taps her own spot and leaves
+"Danger!" from the chips; B gets the mark, the line and the hint; A rolls onto a world boss (the screen says so) and
+strikes once; B sees the shared HP drop in his state, on the badge and in the hint. Screenshots in `tools/out/coop/`.
+Nineteen checks; the browser's own "WebSocket connection failed" lines while the server is down are not counted as
+errors.
 
 ## The balance simulation
 

@@ -31,7 +31,7 @@ export const FIGHT_BUTTONS = {
 
 const STEP_MS = 450; // between two events of a round
 /** The first fight's line, said once (tips.ts). */
-const TIP_FIGHT = 'Pick a move, then how you take the blow. The orange line says what the enemy does next: Block a wind-up, Dodge a poison.';
+const TIP_FIGHT = 'Pick a move, then a guard. The orange line says what comes next.';
 const CENTRE = DESIGN_WIDTH / 2;
 const BAR_W = 260;
 const BAR_H = 18;
@@ -108,7 +108,7 @@ export class FightScene extends Phaser.Scene {
     // The panel covers the band and takes every touch, so nothing reaches the board under it.
     this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
 
-    this.add.text(CENTRE, 128, `${enemy.name} · level ${enemy.level}${enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.text(CENTRE, 128, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
     this.enemyBar = new Bar(this, CENTRE, 162, BAR_W, BAR_H, 0xd9534f);
     this.enemyBody = this.add.circle(CENTRE, 250, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
     this.add.text(CENTRE, 250, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
@@ -117,7 +117,7 @@ export class FightScene extends Phaser.Scene {
     this.lines = [];
     this.history = this.add.text(CENTRE, 336, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } }).setOrigin(0.5, 0);
     this.message = this.add
-      .text(CENTRE, 370, `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(16), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
+      .text(CENTRE, 370, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 50 } })
       .setOrigin(0.5, 0);
 
     this.heroBody = this.add.circle(CENTRE, 440, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
@@ -214,15 +214,24 @@ export class FightScene extends Phaser.Scene {
     );
   }
 
-  /** The state changed under the fight (a reconnect brought a snapshot): the bars and the lines follow it. */
-  refreshFromState(): void {
+  /**
+   * The state changed under the fight: others hit the world boss, someone brought it down and this player was paid, or a
+   * reconnect brought a snapshot. The bars and the lines follow it; a fight that ended elsewhere ends here too.
+   */
+  refreshFromState(events: GameEvent[] = []): void {
     const me = this.game_.me;
     if (!me.fight) {
-      if (!this.outcome) this.end({ type: 'fled', summary: 'The fight is over.' }, 'The fight is over.');
+      if (this.outcome) return;
+      const down = events.find((e) => e.type === 'worldBossDown');
+      const share = down?.type === 'worldBossDown' ? down.shares.find((x) => x.player === this.game_.player) : undefined;
+      if (share) this.end({ type: 'won', summary: `The ${this.enemyName} fell to all of you. Your share: +${share.xp} xp, +${share.gold} gold.` }, `${this.enemyName} falls! Your share: +${share.xp} xp, +${share.gold} gold.`);
+      else this.end({ type: 'fled', summary: 'The fight is over.' }, events.some((e) => e.type === 'bossLeft') ? `${this.enemyName} is gone.` : 'The fight is over.');
+      if (!this.busy) this.play([], 0);
       return;
     }
     const s = stats(me);
-    this.enemyBar.set(me.fight.enemy.hp, this.enemyMaxHp, true);
+    const hp = me.fight.shared ? (this.game_.state.spawns[me.fight.space]?.hp ?? me.fight.enemy.hp) : me.fight.enemy.hp;
+    this.enemyBar.set(Math.min(hp, me.fight.enemy.hp), this.enemyMaxHp, true);
     this.heroBar.set(me.hp, s.maxHp, true);
     this.manaBar.set(me.mana, s.maxMana, true);
     this.refreshStatus();
@@ -234,6 +243,8 @@ export class FightScene extends Phaser.Scene {
       this.setBusy(false);
       this.refreshStatus();
       (this.scene.get('board') as BoardScene).refreshHud();
+      // A fight that ended without a win, a fall or an escape (a world boss gone): over all the same.
+      if (!this.outcome && !this.game_.me.fight) this.end({ type: 'fled', summary: 'The fight is over.' }, this.message.text || 'The fight is over.');
       if (this.outcome) {
         for (const b of this.buttons) b.setVisible(false);
         this.prompt.setText('');
@@ -358,6 +369,13 @@ export class FightScene extends Phaser.Scene {
         break;
       case 'bossDown':
         this.say(`${this.enemyName} falls. It will be back in five minutes.`);
+        break;
+      case 'worldBossDown':
+        this.say(`${this.enemyName} falls to all of you! ${e.shares.length === 1 ? 'The reward is yours alone.' : `${e.shares.length} fighters share the reward.`}`);
+        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${e.shares.length === 1 ? 'Fought alone.' : `Shared by ${e.shares.length}.`}` };
+        break;
+      case 'nothing':
+        this.say(e.text);
         break;
       case 'opened': {
         const area = this.game_.state.board.areas[e.area];

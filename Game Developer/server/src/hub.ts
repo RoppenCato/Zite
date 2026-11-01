@@ -24,9 +24,9 @@ import type { Account, Accounts } from './accounts.ts';
 import type { ActionResult, RegionActor } from './region-actor.ts';
 
 /** The actions a client may send; the rest are the server's own. */
-const WIRE_ACTIONS = new Set<string>(['roll', 'move', 'fight', 'buy', 'sell', 'equip', 'unequip', 'drop', 'use', 'gamble', 'pick', 'quest', 'keep']);
+const WIRE_ACTIONS = new Set<string>(['roll', 'move', 'fight', 'buy', 'sell', 'equip', 'unequip', 'drop', 'use', 'gamble', 'pick', 'quest', 'keep', 'trace']);
 /** The events the others hear about: what shows on the board or is worth a line. A fight's blows stay with the fighter. */
-const SHARED_EVENTS = new Set<GameEvent['type']>(['joined', 'moved', 'won', 'died', 'opened', 'bossDown', 'levelled', 'spawned', 'despawned', 'questDone']);
+const SHARED_EVENTS = new Set<GameEvent['type']>(['joined', 'moved', 'won', 'died', 'opened', 'bossDown', 'levelled', 'spawned', 'despawned', 'questDone', 'traced', 'worldBossDown', 'bossLeft']);
 
 type JoinMessage = Extract<ClientMessage, { type: 'join' }>;
 type IntentMessage = Extract<ClientMessage, { type: 'intent' }>;

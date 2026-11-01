@@ -2,7 +2,8 @@
 // shared feature). Starts the real server on a port of its own with a database of its own, serves the built client, and
 // drives two headless phones through it: each makes a character on the server, each sees the other arrive, stand and
 // move; a reload comes back as the same character; the server is stopped and started and the phones reconnect; a third
-// phone brings a character over with its recovery code. Screenshots land in tools/out/coop/.
+// phone brings a character over with its recovery code; a note left by one is read by the other; a world boss planted
+// in the database is fought by one while the other watches its shared HP drop. Screenshots land in tools/out/coop/.
 //
 //   npm run build && npm run preview &
 //   node tools/drive-coop.mjs [pageUrl] [serverPort]
@@ -25,6 +26,8 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DB_DIR = mkdtempSync(join(tmpdir(), 'zite-coop-'));
 const DB_PATH = join(DB_DIR, 'world.db');
 const B = { map: [60, 836], world: [158, 836], bag: [256, 836], log: [354, 836], roll: [206, 884] };
+const F = { a: [110, 600], cont: [206, 652] }; // FightScene FIGHT_BUTTONS: Attack, then Block in the same slot; Continue
+const WORLD_BOSS_HP = 1375;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const results = [];
@@ -69,7 +72,7 @@ async function phone(name) {
   const ev = (fn, arg) => page.evaluate(fn, arg);
   const ready = async () => { await page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.getScene('hud')?.message?.text, null, { timeout: 20000 }); await sleep(500); };
   const shot = (file) => page.screenshot({ path: `${OUT}/${file}.png` });
-  const me = () => ev(() => ({ player: boardWorld.game?.player, name: boardWorld.game?.me.name, space: boardWorld.game?.me.space, steps: boardWorld.game?.me.steps, link: boardWorld.game?.link(), others: Object.values(boardWorld.game?.state.characters ?? {}).filter((c) => c.id !== boardWorld.game.player).map((c) => ({ id: c.id, name: c.name, space: c.space })), marks: [...boardWorld.phaser.scene.getScene('board').others.keys()], linkText: boardWorld.phaser.scene.getScene('hud').linkText.text, place: boardWorld.phaser.scene.getScene('hud').place.text, message: boardWorld.phaser.scene.getScene('hud').message.text }));
+  const me = () => ev(() => ({ player: boardWorld.game?.player, name: boardWorld.game?.me.name, space: boardWorld.game?.me.space, steps: boardWorld.game?.me.steps, fight: boardWorld.game?.me.fight ? { enemy: boardWorld.game.me.fight.enemy.name, hp: boardWorld.game.me.fight.enemy.hp, shared: !!boardWorld.game.me.fight.shared } : null, link: boardWorld.game?.link(), others: Object.values(boardWorld.game?.state.characters ?? {}).filter((c) => c.id !== boardWorld.game.player).map((c) => ({ id: c.id, name: c.name, space: c.space })), marks: [...boardWorld.phaser.scene.getScene('board').others.keys()], spawnMarks: boardWorld.phaser.scene.getScene('board').spawnMarks.size, traceMarks: [...boardWorld.phaser.scene.getScene('board').traceMarks.keys()], linkText: boardWorld.phaser.scene.getScene('hud').linkText.text, place: boardWorld.phaser.scene.getScene('hud').place.text, message: boardWorld.phaser.scene.getScene('hud').message.text }));
   /** Wait until the page's view of the world satisfies `pred`. */
   const until = async (pred, ms = 8000) => { const t0 = Date.now(); let last; while (Date.now() - t0 < ms) { last = await me(); if (pred(last)) return last; await sleep(150); } return last; };
   return { name, page, context, tapAt, ev, ready, shot, me, until };
@@ -123,18 +126,20 @@ const sawMove = await b.until((m) => m.others[0]?.space === movedA.space);
 check('B sees Anna\'s mark move to where she landed, without doing anything', sawMove.others[0]?.space === movedA.space && sawMove.marks.length === 1, JSON.stringify(sawMove));
 await b.shot('3-b-sees-a-move');
 // Whatever A landed in: a fight, a question or a shop is finished so the next steps find her free.
-await settleA();
-async function settleA() {
-  for (let i = 0; i < 40; i++) {
-    const st = await a.ev(() => ({ fight: !!boardWorld.game.me.fight, offer: !!boardWorld.game.me.offer || boardWorld.game.me.picks.length > 0, shop: boardWorld.phaser.scene.isActive('shop'), fightScene: boardWorld.phaser.scene.isActive('fight'), fightBusy: boardWorld.phaser.scene.getScene('fight')?.busy, outcome: !!boardWorld.phaser.scene.getScene('fight')?.outcome }));
+await settle(a);
+/** Finish whatever a phone's landing brought: a fight (Attack and Block to the end, Continue), a shop (Leave), a question (the first chip). */
+async function settle(p) {
+  for (let i = 0; i < 60; i++) {
+    const st = await p.ev(() => ({ fight: !!boardWorld.game.me.fight, offer: !!boardWorld.game.me.offer || boardWorld.game.me.picks.length > 0, shop: boardWorld.phaser.scene.isActive('shop'), fightScene: boardWorld.phaser.scene.isActive('fight'), fightBusy: boardWorld.phaser.scene.getScene('fight')?.busy, outcome: !!boardWorld.phaser.scene.getScene('fight')?.outcome }));
     if (st.fightScene) {
       if (st.fightBusy) { await sleep(300); continue; }
-      if (st.outcome) { await a.tapAt(206, 652); await sleep(400); continue; }
-      await a.tapAt(110, 600); await sleep(150); await a.tapAt(110, 600); await sleep(300); // Attack, Block
+      if (st.outcome) { await p.tapAt(206, 652); await sleep(400); continue; }
+      await p.tapAt(110, 600); await sleep(150); await p.tapAt(110, 600); await sleep(600); // Attack, Block, the round's playback
       continue;
     }
-    if (st.shop) { await a.tapAt(206, 706); await sleep(300); continue; } // Leave
-    if (st.offer) { await a.ev(() => boardWorld.phaser.scene.getScene('hud').chipRow.list[0]?.emit('pointerdown')); await sleep(400); continue; }
+    if (st.shop) { await p.tapAt(206, 706); await sleep(300); continue; } // Leave
+    if (st.offer) { await p.ev(() => boardWorld.phaser.scene.getScene('hud').chipRow.list[0]?.emit('pointerdown')); await sleep(400); continue; }
+    if (st.fight) { await sleep(300); continue; } // the fight scene is on its way
     return;
   }
 }
@@ -167,6 +172,7 @@ if (rolledB.steps > 0) {
 const movedB = await b.until((m) => m.space !== 'ashford' && m.steps === 0, 10000);
 const sawMoveB = await a.until((m) => m.others[0]?.space === movedB.space);
 check('after the reconnect B rolls and walks, and A sees Bo\'s mark move', movedB.space !== 'ashford' && sawMoveB.others[0]?.space === movedB.space, JSON.stringify({ movedB: movedB.space, sawMoveB: sawMoveB.others }));
+await settle(b);
 
 // A third phone brings Anna over with her code; Anna's own phone still works.
 const c = await phone('C');
@@ -189,6 +195,85 @@ await sleep(200);
 const settingsA = await a.ev(() => [...boardWorld.phaser.scene.getScene('atlas').children.list].filter((o) => o.text).map((o) => o.text).filter((t) => /Online at|Your code/.test(t)));
 check('the settings show the world\'s address with the players here, and the account\'s code', settingsA.some((t) => /Online at ws:\/\/localhost/.test(t) && /2 players here/.test(t)) && settingsA.some((t) => t.includes(accountA.recovery)), JSON.stringify(settingsA));
 await a.shot('6-settings-online');
+
+await a.tapAt(364, 126); // Close the atlas
+await sleep(300);
+
+// ---- the shared world: notes, and a world boss fought by one while the other watches ----------------------------------
+// The server is stopped, a world boss is planted on every free wild spot of the meadows straight in the database (there is
+// no action that makes one: the tick brings it now and then), and the server is started again; both phones reconnect.
+await stopServer();
+const { default: Database } = await import('better-sqlite3');
+{
+  const db = new Database(DB_PATH);
+  const row = db.prepare("SELECT state FROM regions WHERE id = 'region-0'").get();
+  const state = JSON.parse(row.state);
+  const standing = new Set(Object.values(state.characters).map((ch) => ch.space));
+  let planted = 0;
+  for (const sp of Object.values(state.board.spaces)) {
+    if (sp.area === 'meadows' && sp.kind === 'normal' && !standing.has(sp.id) && !state.spawns[sp.id]) {
+      state.spawns[sp.id] = { kind: 'worldboss', enemy: 'thornwood-warden', until: Date.now() + 3_600_000, hp: WORLD_BOSS_HP, maxHp: WORLD_BOSS_HP, hitters: {} };
+      planted++;
+    }
+  }
+  db.prepare("UPDATE regions SET state = ?, version = version + 1 WHERE id = 'region-0'").run(JSON.stringify(state));
+  db.close();
+  console.log(`planted ${planted} world bosses`);
+}
+await startServer();
+const bossesA = await a.until((m) => m.link?.kind === 'online' && m.spawnMarks > 5, 30000);
+const bossesB = await b.until((m) => m.link?.kind === 'online' && m.spawnMarks > 5, 30000);
+check('after the restart both phones draw the planted world bosses as badges', bossesA.spawnMarks > 5 && bossesB.spawnMarks === bossesA.spawnMarks, JSON.stringify({ a: bossesA.spawnMarks, b: bossesB.spawnMarks }));
+await a.shot('7-world-bosses');
+
+// A taps her own spot: the hint, and the notes as chips; the first chip leaves "Danger!".
+const ownSpot = await a.ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const sp = boardWorld.game.state.board.spaces[boardWorld.game.me.space]; const c = s.cameras.main; return { id: sp.id, x: (sp.x - c.worldView.x) * c.zoom, y: 100 + (sp.y - c.worldView.y) * c.zoom }; });
+await a.tapAt(ownSpot.x, ownSpot.y);
+await sleep(300);
+const chips = await a.ev(() => { const hud = boardWorld.phaser.scene.getScene('hud'); return { texts: hud.chipRow.list.map((ch) => ch.list[1]?.text), firstX: hud.chipRow.x + (hud.chipRow.list[0]?.x ?? 0), y: hud.chipRow.y, message: hud.message.text }; });
+check('a tap on her own spot gives the hint and the four notes as chips', JSON.stringify(chips.texts) === '["Danger!","Loot here","Boss near","Help!"]' && /Leave a note here\?/.test(chips.message), JSON.stringify(chips));
+await a.tapAt(chips.firstX, chips.y);
+const noted = await a.until((m) => m.traceMarks.includes(ownSpot.id));
+check('the first chip leaves the note: the message says so and the spot gets its mark', /You leave a note here: "Danger!"/.test(noted.message) && noted.traceMarks.includes(ownSpot.id), JSON.stringify({ message: noted.message, marks: noted.traceMarks }));
+const readB = await b.until((m) => m.traceMarks.includes(ownSpot.id));
+const hintB = await b.ev(({ id }) => boardWorld.rules.hintFor(boardWorld.game.state, id, boardWorld.game.player, boardWorld.game.now()), { id: ownSpot.id });
+check('B gets the note: the mark on his board, the line in his message, and the hint reads it', readB.traceMarks.includes(ownSpot.id) && /Anna left a note at/.test(readB.message) && /Notes here: Anna: "Danger!" \(just now\)/.test(hintB), JSON.stringify({ message: readB.message, hint: hintB }));
+await b.shot('8-b-reads-note');
+
+// A rolls onto a world boss (every wild spot has one): the fight screen says so; one round, and B sees the HP drop.
+let fightA = null;
+for (let attempt = 0; attempt < 4 && !fightA; attempt++) {
+  await a.tapAt(...B.roll);
+  await sleep(400);
+  const rolled = await a.until((m) => m.steps > 0 || m.fight || m.space !== ownSpot.id);
+  if (rolled.steps > 0) {
+    const choice = await a.ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const st = boardWorld.game.state; const ids = [...s.choices.keys()]; const id = ids.find((x) => st.spawns[x]?.kind === 'worldboss') ?? ids[0]; const sp = st.board.spaces[id]; const c = s.cameras.main; return { id, x: (sp.x - c.worldView.x) * c.zoom, y: 100 + (sp.y - c.worldView.y) * c.zoom }; });
+    await a.tapAt(choice.x, choice.y);
+  }
+  const landed = await a.until((m) => m.steps === 0 && (m.fight || !boardWorldBusy(m)), 10000);
+  if (landed.fight?.shared) fightA = landed;
+  else await settle(a);
+}
+function boardWorldBusy(m) { return m.message === ''; }
+if (fightA) await a.page.waitForFunction(() => boardWorld.phaser.scene.isActive('fight') && boardWorld.phaser.scene.getScene('fight').children.list.length > 5, null, { timeout: 15000 });
+await sleep(300);
+const header = fightA ? await a.ev(() => [...boardWorld.phaser.scene.getScene('fight').children.list].find((o) => o.text && /world boss/.test(o.text))?.text ?? '') : '';
+check('A lands on a world boss: the fight is the shared one and the screen says world boss', !!fightA?.fight?.shared && fightA.fight.hp === WORLD_BOSS_HP && /world boss/.test(header), JSON.stringify({ fight: fightA?.fight, header }));
+await a.shot('9-a-world-boss-fight');
+await a.tapAt(...F.a); // Attack
+await sleep(250);
+await a.tapAt(...F.a); // Block
+const struck = await a.until((m) => !m.fight || m.fight.hp < WORLD_BOSS_HP, 15000);
+const bossSpot = struck.space;
+let hpB = null;
+for (let i = 0; i < 40 && (hpB === null || hpB >= WORLD_BOSS_HP); i++) {
+  hpB = await b.ev(({ id }) => boardWorld.game.state.spawns[id]?.hp ?? null, { id: bossSpot });
+  await sleep(150);
+}
+const badgeB = await b.ev(({ id }) => boardWorld.phaser.scene.getScene('board').spawnMarks.get(id)?.list[2]?.text ?? '', { id: bossSpot });
+const hintBoss = await b.ev(({ id }) => boardWorld.rules.hintFor(boardWorld.game.state, id, boardWorld.game.player, boardWorld.game.now()), { id: bossSpot });
+check('after one round B sees the shared HP drop in his state, on the badge, and in the hint', hpB !== null && hpB < WORLD_BOSS_HP && hpB === struck.fight?.hp && badgeB === `${hpB} / ${WORLD_BOSS_HP}` && new RegExp(`A world boss, the Thornwood Warden, rages here: ${hpB} of ${WORLD_BOSS_HP} HP left`).test(hintBoss), JSON.stringify({ hpB, mine: struck.fight?.hp, badgeB, hintBoss }));
+await b.shot('10-b-sees-shared-hp');
 
 const logErrors = await a.ev(() => boardWorld.log.errorCount);
 check('no page errors on either phone and none in the game log', errors.length === 0 && logErrors === 0, `${errors.join(' | ')} log errors ${logErrors}`);

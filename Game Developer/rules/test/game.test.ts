@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ABILITIES, ENEMIES } from '../src/data.ts';
+import { ABILITIES, ENEMIES, PROGRESSION } from '../src/data.ts';
 import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
@@ -26,7 +26,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('a new game', () => {
   it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(9);
+    expect(s.version).toBe(10);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
@@ -36,7 +36,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(9);
+    expect(s.version).toBe(10);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(me(s)).toEqual({
@@ -304,6 +304,12 @@ describe('the world\'s tick', () => {
         expect(world.board.spaces[space]!.area).toBe('meadows');
         expect(world.board.spaces[space]!.kind).toBe('normal');
         expect(space).not.toBe('ashford');
+        if (spawn.kind === 'worldboss') {
+          // Now and then the world boss: the meadows' own boss, for longer, on top of the cap (coop.test.ts has the rest).
+          expect(spawn.until).toBe(NOW + PROGRESSION.worldBoss.lifeMs);
+          expect(spawn.enemy).toBe('thornwood-warden');
+          continue;
+        }
         expect(spawn.until).toBe(NOW + 600000);
         if (spawn.kind === 'miniboss') expect(spawn.enemy).toBe('wolf-alpha');
         else expect(spawn.enemy).toBeNull();
@@ -382,7 +388,7 @@ describe('a stored state', () => {
     expect(migrate(structuredClone(s))).toEqual(s);
     expect(migrate(null)).toBeNull();
     expect(migrate('junk')).toBeNull();
-    expect(migrate({ version: 10 })).toBeNull();
+    expect(migrate({ version: 99 })).toBeNull();
     expect(migrate({ version: 0 })).toBeNull();
     expect(migrate({})).toBeNull();
   });
@@ -402,7 +408,7 @@ describe('a stored state', () => {
   it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
     const s = migrate(structuredClone(older(version)));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(9);
+    expect(s!.version).toBe(10);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
     expect(s!.die).toEqual({ sides: 6, last: null });
@@ -449,7 +455,7 @@ describe('a stored state', () => {
     const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
     const s = migrate(structuredClone(v5));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(9);
+    expect(s!.version).toBe(10);
     expect(s!.board).toEqual(makeBoard());
     expect(s!.characters.p1).toEqual(p1);
     expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });

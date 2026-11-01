@@ -62,8 +62,8 @@ only erasable syntax (no enums, no parameter properties), which `tsconfig.json` 
   answer is a **`result`** with the events, `replayed` and the delta; everyone else on the region is owed an **`event`**.
 - **Bundling**: what a socket is owed is gathered for `BATCH_MS` (60 ms) and sent as one `event`: deltas merged
   (`mergeDeltas`), the events in order (only the shared ones: joined, moved, won, died, opened, bossDown, levelled,
-  spawned, despawned, questDone; a fight's blows stay with the fighter), the version the latest, the online list when it
-  changed.
+  spawned, despawned, questDone, traced, worldBossDown, bossLeft; a fight's blows stay with the fighter), the version the
+  latest, the online list when it changed.
 - **`leave`** and a closed socket drop the player from `online`; the others hear it. `tick()` runs the world's tick and
   tells everyone what spawned or left. `close()` ends every socket when the server stops.
 - A thrown error inside the rules (a malformed action) answers `that could not be done` and is logged; the actor's state
@@ -105,5 +105,6 @@ is installed; the address it prints (`https://….trycloudflare.com`) is opened 
 ## Not here yet
 
 Many regions (the world is one region today, so one actor holds every character); the fight room; the presence actor,
-geohash and QR tokens; the boss-window timer that survives a restart; shared bosses and traces (Piece 5); hashing the
-tokens; a script that compares two clients' states with the server's beyond `drive-coop.mjs`.
+geohash and QR tokens; hashing the tokens; a script that compares two clients' states with the server's beyond
+`drive-coop.mjs`. The world boss's window is a deadline in the state (`spawn.until`), checked by the minute's tick,
+which survives a restart with the state.

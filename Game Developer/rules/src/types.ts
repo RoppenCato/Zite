@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 9;
+export const STATE_VERSION = 10;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -261,6 +261,8 @@ export interface Fight {
   space: string;
   /** True when the enemy is a spawn on the board, cleared when it falls. */
   spawn: boolean;
+  /** True against a world boss: its HP lives in the spawn and is shared by everyone fighting it. */
+  shared?: boolean;
   /** The class's meter (Rage, Combo, Flow, Focus), 0 to `meterMax`; abilities spend it. */
   meter: number;
   /** Hits the player has landed this fight (Stormcaller counts them). */
@@ -286,9 +288,21 @@ export interface Fight {
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
 export interface Spawn {
-  kind: 'miniboss' | 'merchant';
+  kind: 'miniboss' | 'merchant' | 'worldboss';
   enemy: string | null;
   until: number;
+  /** A world boss (mine, 2026-11-01): its HP, shared by everyone who fights it, and the damage each player dealt. */
+  hp?: number;
+  maxHp?: number;
+  hitters?: Record<string, number>;
+}
+
+/** A note a player left on a spot (mine, 2026-11-01). */
+export interface Trace {
+  player: string;
+  name: string;
+  text: string;
+  at: number;
 }
 
 export interface Die {
@@ -306,6 +320,8 @@ export interface GameState {
   spawns: Record<string, Spawn>;
   /** The next gear id's number. */
   nextItem: number;
+  /** The notes left on spots, newest first. */
+  traces: Record<string, Trace[]>;
 }
 
 /** What the player does in a round (Robin, 2026-10-31: attack, items, spells and abilities, charging). */
@@ -340,6 +356,8 @@ export type Action =
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
   /** A new character for `player` at the start. Sent by whoever makes accounts: the server, or the local holder. */
   | { type: 'join'; id: string; player: string; name: string; classId: ClassId }
+  /** A note on the spot the character stands on: one of the set lines (rules/data/traces.json). */
+  | { type: 'trace'; id: string; player: string; text: string }
   | { type: 'tick'; id: string; player: string };
 
 export type RejectReason =
@@ -467,6 +485,11 @@ export type GameEvent =
   | { type: 'spawned'; action: string; player: string; space: string; spawn: Spawn }
   | { type: 'despawned'; action: string; player: string; space: string }
   | { type: 'joined'; action: string; player: string; name: string; classId: ClassId; space: string }
+  | { type: 'traced'; action: string; player: string; space: string; trace: Trace }
+  /** A world boss fell: everyone who hit it is paid by their share of the damage. */
+  | { type: 'worldBossDown'; action: string; player: string; space: string; enemy: string; shares: { player: string; damage: number; xp: number; gold: number }[] }
+  /** A world boss's time ran out: it left, and the fights on it ended. */
+  | { type: 'bossLeft'; action: string; player: string; space: string; enemy: string; players: string[] }
   | { type: 'rejected'; action: string; player: string; reason: RejectReason };
 
 export interface ApplyResult {

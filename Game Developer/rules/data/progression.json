@@ -62,6 +62,16 @@
     "lifeMs": 600000,
     "miniboss": 0.7
   },
+  "worldBoss": {
+    "chancePerTick": 0.02,
+    "lifeMs": 1800000,
+    "hpMult": 2.5,
+    "minShare": 0.25
+  },
+  "traces": {
+    "perSpace": 3,
+    "lifeMs": 86400000
+  },
   "meterMax": 5,
   "pickLevels": [
     4,

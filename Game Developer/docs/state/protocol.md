@@ -46,7 +46,9 @@ ping    { type: 'ping' }
   joins once; a second `join` is an error. A wrong `protocol` is refused with `protocol 1 needed`, and the client reloads.
 - `intent.action` is the rules' action **without `player`**: the server stamps the account's id on it and never believes
   one sent by the client. `id` is a UUID the client made (rule 3): a retry sends the same id and gets the stored answer.
-  `tick` and `join` are the server's own and are refused from a client (`not yours to send`).
+  The kinds a client may send: roll, move, fight, buy, sell, equip, unequip, drop, use, gamble, pick, quest, keep, trace;
+  `tick` and `join` are the server's own and are refused from a client (`not yours to send`); anything else is
+  `unknown action`.
 - Before `join`, only `ping` is answered; an `intent` gets `error 'join first'`.
 
 ## Messages from the server
@@ -67,7 +69,9 @@ pong     { type: 'pong', serverTime }
   fresh and the state changed. A replayed answer carries no delta: the client that retries has just rejoined and holds a
   snapshot at least as new; it plays the events and keeps its state.
 - `event` carries what others and the world did since the last one, **batched**: at most one every 60 ms a socket, the
-  deltas merged, the events in order, the version the latest. `online` is in it when someone came or went.
+  deltas merged, the events in order, the version the latest. `online` is in it when someone came or went. Only the
+  events worth a line travel to others: joined, moved, won, died, opened, bossDown, levelled, spawned, despawned,
+  questDone, traced, worldBossDown, bossLeft; a fight's blows stay with the fighter (the delta carries the pieces).
 - `serverTime` is in every answer so the client can draw its countdowns (spawns leave at `until`, spots give again at
   their time) from the server's clock, never from a countdown sent down (rule 6). There are no turn deadlines yet: no
   fight is timed (the brief: no timers, no punishment for being away).
@@ -75,7 +79,8 @@ pong     { type: 'pong', serverTime }
 ## The delta
 
 ```
-delta { characters?: { [id]: Character }, spawns?: { [space]: Spawn }, board?: Board, die?: Die, nextItem?: number }
+delta { characters?: { [id]: Character }, spawns?: { [space]: Spawn }, board?: Board, die?: Die, nextItem?: number,
+        traces?: { [space]: Trace[] } }
 ```
 
 A part is present only when it changed, found by reference (`rules/src/delta.ts`, `diffState`): the rules never change a
@@ -108,4 +113,5 @@ server's state, so a mutation in place would be caught the day it is written.
 ## Not here yet
 
 Many regions (the world is one region today, so one actor holds every character); a fight room for live joint fights;
-presence by place (the geohash cell) and QR tokens; push; deltas smaller than a whole character.
+presence by place (the geohash cell) and QR tokens; push; deltas smaller than a whole character. A world boss and the
+notes on spots travel inside the state (spawns and traces), with no message of their own.

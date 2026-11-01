@@ -12,7 +12,7 @@ import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { questProgress } from './quests.ts';
-import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard } from './types.ts';
+import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Spawn } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
 
@@ -125,7 +125,33 @@ interface Round {
  * (or a Quickdraw) that strikes first. The guard is read when the blow comes. Then the companion strikes, the poisons
  * and effects count down, the meter and the mana move, and the enemy's next move is chosen and shown.
  */
+/**
+ * One round; against a world boss the HP is read from the spawn first and written back after, with the damage dealt
+ * added to the player's tally (mine, 2026-11-01). A world boss that is gone ends the fight with nothing to show.
+ */
 export function fightRound(state: GameState, action: FightAction, character: Character, rng: Rng, now: number): ApplyResult {
+  if (!character.fight) return reject(state, action, 'not in a fight');
+  if (!character.fight.shared) return fightRoundOf(state, action, character, rng, now);
+  const space = character.fight.space;
+  const spawn = state.spawns[space];
+  if (!spawn || spawn.kind !== 'worldboss') {
+    const events: GameEvent[] = [{ type: 'nothing', action: action.id, player: action.player, text: 'The beast is gone.' }];
+    return { state: withCharacter(state, { ...character, fight: null }), events };
+  }
+  const e = character.fight.enemy;
+  const hp = Math.min(e.hp, spawn.hp ?? e.hp);
+  const synced: Character = { ...character, fight: { ...character.fight, enemy: { ...e, hp, maxHp: spawn.maxHp ?? e.maxHp } } };
+  const r = fightRoundOf(state, action, synced, rng, now);
+  const left = r.state.spawns[space];
+  if (!left || left.kind !== 'worldboss') return r; // it fell this round: the shared win took the spawn away
+  const after = r.state.characters[character.id]!;
+  const now_hp = after.fight?.shared && after.fight.space === space ? after.fight.enemy.hp : hp;
+  const dealt = Math.max(0, hp - now_hp);
+  const written: Spawn = { ...left, hp: now_hp, hitters: { ...(left.hitters ?? {}), [character.id]: (left.hitters?.[character.id] ?? 0) + dealt } };
+  return { state: { ...r.state, spawns: { ...r.state.spawns, [space]: written } }, events: r.events };
+}
+
+function fightRoundOf(state: GameState, action: FightAction, character: Character, rng: Rng, now: number): ApplyResult {
   if (!character.fight) return reject(state, action, 'not in a fight');
   const cls = CLASS_DATA[character.classId];
   const events: GameEvent[] = [];
@@ -631,6 +657,7 @@ function survive(r: Round): boolean {
  * away for a while; a spawn is cleared; a level that offers a pick of abilities asks it.
  */
 function win(r: Round): ApplyResult {
+  if (r.f.shared) return worldBossDown(r);
   const { f, rng, events, now } = r;
   const action = r.action;
   const c = r.c;
@@ -701,6 +728,63 @@ function win(r: Round): ApplyResult {
     events.push({ type: 'despawned', action: id, player, space: f.space });
   }
   return { state: { ...withCharacter(s, next), spawns }, events };
+}
+
+/**
+ * A world boss fell (mine, 2026-11-01): everyone who hit it shares the reward by their damage, never under `minShare`:
+ * xp and gold, and a boss's drop roll each (a unique half the time). The one who struck the last blow gets the usual
+ * events; the others' pieces change in the same action and their fights on it end. The spawn goes.
+ */
+function worldBossDown(r: Round): ApplyResult {
+  const { f, rng, events } = r;
+  const action = r.action;
+  const e = f.enemy;
+  const id = action.id;
+  const player = action.player;
+  const space = f.space;
+  const spawn = r.state.spawns[space];
+  const tally: Record<string, number> = { ...(spawn?.hitters ?? {}) };
+  // The last blow took whatever was left when this round began.
+  tally[player] = (tally[player] ?? 0) + Math.max(1, spawn?.hp ?? e.hp);
+  const total = Object.values(tally).reduce((a, b) => a + b, 0) || 1;
+  const rank = r.state.board.areas[r.state.board.spaces[space]?.area ?? '']?.tier ?? 1;
+  let s = r.state;
+  const shares: { player: string; damage: number; xp: number; gold: number }[] = [];
+  const characters = { ...s.characters };
+  for (const [who, damage] of Object.entries(tally).sort(([a], [b]) => (a === player ? -1 : b === player ? 1 : a.localeCompare(b)))) {
+    const c = characters[who];
+    if (!c) continue;
+    const share = Math.max(PROGRESSION.worldBoss.minShare, damage / total);
+    const mine = who === player;
+    const p = powers(c);
+    let xp = Math.round(e.xp * share);
+    let gold = Math.round(e.gold * share);
+    if (p.scholar) xp = Math.round(xp * p.scholar);
+    if (p.greed) {
+      gold = Math.round(gold * p.greed);
+      xp = Math.round(xp / p.greed);
+    }
+    const out: GameEvent[] = mine ? events : [];
+    if (mine) events.push({ type: 'won', action: id, player, xp, gold });
+    let next: Character = { ...c, gold: c.gold + gold, fight: c.fight?.shared && c.fight.space === space ? null : c.fight };
+    const levelBefore = next.level;
+    next = gainXp(next, xp, action, out);
+    next = questProgress(next, { beat: e.id }, action, out);
+    if (rng.next() < GEAR.dropChance.boss) {
+      const got = nextGearId(s);
+      s = got.state;
+      const unique = rng.next() < GEAR.uniqueChance.boss ? rollUnique(got.id, rank, rank, rng) : null;
+      next = addLoot(next, unique ?? rollGear(got.id, SLOTS[rng.int(SLOTS.length) - 1]!, rank, GEAR.rarityBoost.boss, rng), action, out);
+    }
+    next = offerPicks(next, rng, levelBefore, action, out);
+    characters[who] = next;
+    shares.push({ player: who, damage, xp, gold });
+  }
+  events.push({ type: 'worldBossDown', action: id, player, space, enemy: e.id, shares });
+  const spawns = { ...s.spawns };
+  delete spawns[space];
+  events.push({ type: 'despawned', action: id, player, space });
+  return { state: { ...s, characters, spawns }, events };
 }
 
 /** The levels crossed between `from` and the character's level now owe their picks (one each), when there is something to pick. */

@@ -8,6 +8,21 @@ import { grownIndex, peekArea } from './generate.ts';
 import { questLine } from './quests.ts';
 import type { GameState } from './types.ts';
 
+/** A rough age: "just now", "5 min ago", "2 h ago". */
+function ago(ms: number): string {
+  const m = Math.floor(ms / 60_000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m} min ago`;
+  return `${Math.floor(m / 60)} h ago`;
+}
+
+/** The notes left on a spot, newest first, or "" (mine, 2026-11-01). */
+export function traceLine(state: GameState, spaceId: string, now: number): string {
+  const notes = state.traces?.[spaceId] ?? [];
+  if (!notes.length) return '';
+  return `Notes here: ${notes.map((t) => `${t.name}: "${t.text}" (${ago(now - t.at)})`).join('; ')}.`;
+}
+
 /** A clock reading of ms left: "4:12". */
 export function countdown(ms: number): string {
   const s = Math.max(0, Math.ceil(ms / 1000));
@@ -15,6 +30,12 @@ export function countdown(ms: number): string {
 }
 
 export function hintFor(state: GameState, spaceId: string, player: string, now: number): string {
+  const line = hintLine(state, spaceId, player, now);
+  const notes = traceLine(state, spaceId, now);
+  return notes ? `${line} ${notes}` : line;
+}
+
+function hintLine(state: GameState, spaceId: string, player: string, now: number): string {
   const space = state.board.spaces[spaceId];
   if (!space) return '';
   const area = state.board.areas[space.area];
@@ -33,7 +54,14 @@ export function hintFor(state: GameState, spaceId: string, player: string, now: 
   switch (space.kind) {
     case 'normal': {
       const mobs = (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
-      const prowl = spawn?.kind === 'miniboss' && spawn.enemy ? ` A ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here!` : spawn?.kind === 'merchant' ? ' A wandering merchant has camped here.' : '';
+      const prowl =
+        spawn?.kind === 'worldboss' && spawn.enemy
+          ? ` A world boss, the ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
+          : spawn?.kind === 'miniboss' && spawn.enemy
+            ? ` A ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here!`
+            : spawn?.kind === 'merchant'
+              ? ' A wandering merchant has camped here.'
+              : '';
       return `${where}, levels ${area?.levels[0]} to ${area?.levels[1]}: ${mobs} roam here. Gold, xp, now and then ${rank} gear, and sometimes something else.${prowl}`;
     }
     case 'chest': {

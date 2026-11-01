@@ -141,8 +141,9 @@ describe('a client folding deltas', () => {
       const delta = diffState(server, r.state);
       if (delta) {
         changes++;
-        // Only the acting player's character is in it: nothing the other player did not do changes their piece.
-        if (action.type !== 'tick') expect(Object.keys(delta.characters ?? {}).filter((id) => id !== action.player)).toEqual([]);
+        // Only the acting player's character is in it: nothing the other player did not do changes their piece, unless a
+        // world boss fell and paid everyone who hit it.
+        if (action.type !== 'tick' && !r.events.some((e) => e.type === 'worldBossDown')) expect(Object.keys(delta.characters ?? {}).filter((id) => id !== action.player)).toEqual([]);
         client = mergeDelta(client, structuredClone(delta));
       } else {
         expect(r.state).toBe(server);

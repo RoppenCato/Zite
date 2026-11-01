@@ -29,9 +29,10 @@ the date, and comes off this list.
 11. ~~A bag limit~~: twelve, with sell or leave (2026-11-01).
 12. ~~Mana potions~~: built (2026-11-01); a mana spot of its own is still open (the spring gives both flasks).
 13. ~~Trainers in towns~~: built (2026-11-01), in the town's shop under Train.
-14. **Shared bosses**: a boss's 5-minute return is per character now (mine, for solo play); with the server, is a boss one
-    creature for everyone or one per player? The gate bosses stay per player (each opens their own way); a **world
-    boss** everyone hits together is what Piece 5 builds (mine, 2026-11-01), for Robin to judge.
+14. ~~Shared bosses~~: built as the **world boss** (2026-11-01, `docs/state/rules.md`): now and then the boss of the
+    highest open area rages on a wild spot there with HP for a crowd, everyone who lands fights the same HP and is paid
+    by share when it falls. The gate bosses stay each player's own (each opens their own way): whether an area should
+    open for everyone once anyone beat its boss is Robin's call.
 15. ~~The fourth area and the generator~~: built (2026-10-31, `docs/state/world.md`); the fourth area is the first
     grown one, fire. Two more shapes and the themes' events came 2026-11-01; more shapes are always welcome.
 16. **The far tiers' curve** (mine, 2026-10-31): the grown creatures grow ×1.25 HP a tier and gear ×1.35 a rank past the

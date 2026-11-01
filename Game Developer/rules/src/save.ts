@@ -43,6 +43,16 @@ interface StateV5 {
   nextItem: number;
 }
 /** A version-8 state: today's shape, but a character carried no keys. */
+/** A version-9 state: today's shape without the notes on spots. */
+interface StateV9 {
+  version: 9;
+  seed: string;
+  board: Board;
+  characters: Record<string, Character>;
+  die: { sides: number; last: number | null };
+  spawns: GameState['spawns'];
+  nextItem: number;
+}
 interface StateV8 {
   version: 8;
   seed: string;
@@ -105,6 +115,7 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
+  if (candidate.version === 9) return fromVersion9(raw as StateV9);
   if (candidate.version === 8) return fromVersion8(raw as StateV8);
   if (candidate.version === 7) {
     const v8 = fromVersion7(raw as StateV7);
@@ -127,6 +138,15 @@ export function migrate(raw: unknown): GameState | null {
   return null;
 }
 
+/** From 9: the notes on spots arrive, none yet. */
+function fromVersion9(old: StateV9): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  for (const c of Object.values(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+  }
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters: old.characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
+}
+
 function fromVersion8(old: StateV8): GameState | null {
   if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
   const characters: Record<string, Character> = {};
@@ -134,7 +154,7 @@ function fromVersion8(old: StateV8): GameState | null {
     if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
     characters[id] = { ...c, keys: c.keys ?? {} };
   }
-  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
 }
 
 function fromVersion7(old: StateV7): GameState | null {
@@ -146,7 +166,7 @@ function fromVersion7(old: StateV7): GameState | null {
     const owed = offer && offer.kind === 'ability' ? [offer.options] : [];
     characters[id] = { ...c, offer: offer && offer.kind === 'ability' ? null : offer, quests: c.quests ?? [], picks: [...(c.picks ?? []), ...owed] };
   }
-  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
 }
 
 /** A piece as version 6 stored it: one affix or none. */
@@ -172,7 +192,7 @@ function fromVersion6(old: StateV6): GameState | null {
     }
     characters[id] = { ...c, equipment, bag: (c.bag as OldGear[]).map((g) => gear(g)!), fight };
   }
-  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
+  return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
 }
 
 function fromVersion5(old: StateV5): GameState | null {
@@ -187,7 +207,7 @@ function fromVersion5(old: StateV5): GameState | null {
     characters[id] = { ...c, id, opened: opened.length ? opened : [board.spaces[board.start]!.area], space, steps: space === c.space ? c.steps : 0, fight: space === c.space ? c.fight : null };
   }
   const spawns = Object.fromEntries(Object.entries(old.spawns ?? {}).filter(([space]) => board.spaces[space]));
-  return { version: STATE_VERSION, seed: old.seed, board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1 };
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
 }
 
 function fromOlder(old: StateV1 | StateV2 | StateV3 | StateV4): GameState | null {
@@ -213,5 +233,5 @@ function fromOlder(old: StateV1 | StateV2 | StateV3 | StateV4): GameState | null
     characters[id] = { ...grown, hp: grown.maxHp, mana: grown.maxMana };
   }
   const sides = typeof old.die?.sides === 'number' ? old.die.sides : DICE_DATA.sides;
-  return { version: STATE_VERSION, seed: old.seed, board, characters, die: { sides, last: null }, spawns: {}, nextItem: 1 };
+  return { version: STATE_VERSION, seed: old.seed, board, characters, die: { sides, last: null }, spawns: {}, nextItem: 1, traces: {} };
 }

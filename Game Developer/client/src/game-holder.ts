@@ -39,6 +39,8 @@ export interface WorldChange {
   others: boolean;
   me: boolean;
   board: boolean;
+  spawns: boolean;
+  traces: boolean;
   link: boolean;
   events: GameEvent[];
 }

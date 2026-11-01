@@ -3,7 +3,7 @@
 // and the client folds it in with mergeDelta. A test plays hundreds of random actions through diffState and mergeDelta
 // and checks the client's state is the server's, so a change in place would be caught the day it is written.
 
-import type { Board, Character, Die, GameState, Spawn } from './types.ts';
+import type { Board, Character, Die, GameState, Spawn, Trace } from './types.ts';
 
 export interface Delta {
   /** Whole characters, by id: only those that changed. */
@@ -14,6 +14,8 @@ export interface Delta {
   board?: Board;
   die?: Die;
   nextItem?: number;
+  /** The whole map of notes, when it changed. */
+  traces?: Record<string, Trace[]>;
 }
 
 /** The parts of `after` that are not the same objects as in `before`; null when nothing changed. */
@@ -47,6 +49,10 @@ export function diffState(before: GameState, after: GameState): Delta | null {
     delta.nextItem = after.nextItem;
     any = true;
   }
+  if (before.traces !== after.traces) {
+    delta.traces = after.traces;
+    any = true;
+  }
   return any ? delta : null;
 }
 
@@ -59,6 +65,7 @@ export function mergeDelta(state: GameState, delta: Delta): GameState {
     board: delta.board ?? state.board,
     die: delta.die ?? state.die,
     nextItem: delta.nextItem ?? state.nextItem,
+    traces: delta.traces ?? state.traces,
   };
 }
 
