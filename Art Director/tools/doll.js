@@ -167,31 +167,45 @@ function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out 
 // ---- the poses, in the reference's units: x forward is negative, y up is negative, the feet at 0,0 ----
 // fields: neck, hips, head (centre), tilt (degrees, positive leans the head back), handN, bendN (the elbow's side), ankleN, ankleF, footN/footF (the foot's direction),
 // sword (degrees: 0 forward, 90 up) or null, swordZ ('front' over the body, 'back' behind it), handF (the far hand, drawn behind, or none), face, delay
-const stand = (dy, face) => ({ neck: [-4, -32 - dy], hips: [-5, -21 - dy * 0.6], head: [-6, -47 - dy], tilt: 0, handN: [2, -14 - dy * 0.6], bendN: -1, ankleN: [-7, -2], ankleF: [2, -2], sword: -18, swordZ: 'front', face, delay: 350 });
-function walk(i, n) {   // a stride: the near leg forward at 0, the far leg half a cycle on; a lifted foot while it swings forward
+// (Robin's review notes, 2026-11-01: the lunge jumped in one frame, the windup looked like the stand, the hit was one pose, the fall repeated its last
+// pose, the walk was stiff. So: every action has a clear anticipation, action and recovery; the sword moves on one arc; the body bobs and leans; each
+// action its own timing. The feet are the origin in every frame, so nothing drifts.)
+const stand = (i) => {   // a visible breath: the chest rises, the shoulders with it, the sword's tip dips; a blink at the top
+  const r = [0, 0.9, 1.5, 0.9][i];
+  return { neck: [-4, -32 - r], hips: [-5, -21 - r * 0.5], head: [-6, -47 - r], tilt: -r, handN: [2, -14 - r * 0.6], bendN: -1, ankleN: [-7, -2], ankleF: [2, -2], sword: -18 + r * 3, swordZ: 'front', face: i === 2 ? 'blink' : 'open', delay: 300 };
+};
+function walk(i, n) {   // a stride: the near leg forward at 0, the far leg half a cycle on; the body drops at contact and rises at the passing, leans forward, the sword arm swings
   const t = i / n, c = Math.cos(2 * Math.PI * t), s = Math.sin(2 * Math.PI * t), c2 = -c, s2 = -s;
-  const lift = sv => Math.min(0, sv) * 8, bob = Math.abs(s) * 1.2;
-  return { neck: [-6, -31 - bob], hips: [-5, -20 - bob], head: [-9, -46 - bob], tilt: -5, handN: [-3 + 4 * c, -15 - bob], bendN: -1, ankleN: [-14 * c - 3, -2 + lift(s)], ankleF: [-14 * c2 - 3, -2 + lift(s2)], footN: [-1, lift(s) * 0.03], footF: [-1, lift(s2) * 0.03], sword: 4, swordZ: 'front', face: 'open', delay: 120 };
+  const lift = sv => Math.min(0, sv) * 8, bob = 1.6 * Math.abs(s) - 0.8, lean = 2;
+  return { neck: [-6 - lean, -31 - bob], hips: [-5, -20 - bob], head: [-9 - lean, -46 - bob], tilt: -6, handN: [-2 + 5 * c, -15 - bob + 1.5 * s], bendN: -1,
+    ankleN: [-14 * c - 3, -2 + lift(s)], ankleF: [-14 * c2 - 3, -2 + lift(s2)], footN: [-1, lift(s) * 0.03], footF: [-1, lift(s2) * 0.03], sword: 6 + 7 * s, swordZ: 'front', face: 'open', delay: 110 };
 }
 const ACTIONS = {
-  stand: [stand(0, 'open'), stand(0.6, 'open'), stand(1.2, 'blink'), stand(0.6, 'open')],
+  stand: [0, 1, 2, 3].map(stand),
   move: [0, 1, 2, 3, 4, 5].map(i => walk(i, 6)),
-  attack1: [
-    { neck: [1, -30], hips: [1, -20], head: [-1, -45], tilt: 8, handN: [7, -37], bendN: -1, ankleN: [-7, -2], ankleF: [9, -2], sword: 150, swordZ: 'back', face: 'grr', delay: 200 },
-    { neck: [-2, -31], hips: [-1, -20.5], head: [-4, -46], tilt: 4, handN: [-5, -42], bendN: -1, ankleN: [-9, -2], ankleF: [9, -2], sword: 105, swordZ: 'back', face: 'grr', delay: 100 },
-    { neck: [-14, -28], hips: [-9, -19], head: [-17, -43], tilt: -8, handN: [-24, -32], bendN: 1, ankleN: [-26, -2], ankleF: [8, -2], sword: 45, swordZ: 'front', face: 'grr', delay: 67, smear: true },
-    { neck: [-21, -26], hips: [-13, -18], head: [-25, -41], tilt: -12, handN: [-33, -15], bendN: 1, ankleN: [-30, -2], ankleF: [10, -2], sword: -8, swordZ: 'front', face: 'grr', delay: 150, smear: true },
-    { neck: [-20, -26], hips: [-13, -18], head: [-24, -41], tilt: -10, handN: [-32, -14], bendN: 1, ankleN: [-30, -2], ankleF: [10, -2], sword: -18, swordZ: 'front', face: 'grr', delay: 150 },
-    { neck: [-9, -30], hips: [-7, -20], head: [-12, -45], tilt: -4, handN: [-8, -15], bendN: -1, ankleN: [-16, -2], ankleF: [4, -2], sword: -24, swordZ: 'front', face: 'open', delay: 100 },
+  attack1: [   // anticipation (coiled back, the sword over the shoulder), the top of the arc, the cut in two frames with a trail, the strike held, the follow-through, the recovery
+    { neck: [3, -31], hips: [3, -21], head: [2, -46], tilt: 10, handN: [6, -34], bendN: -1, ankleN: [-6, -2], ankleF: [9, -2], sword: 140, swordZ: 'back', face: 'grr', delay: 180 },
+    { neck: [0, -32], hips: [1, -21], head: [-2, -47], tilt: 4, handN: [-2, -44], bendN: -1, ankleN: [-8, -2], ankleF: [9, -2], sword: 100, swordZ: 'back', face: 'grr', delay: 120 },
+    { neck: [-10, -29], hips: [-6, -20], head: [-13, -44], tilt: -6, handN: [-22, -36], bendN: 1, ankleN: [-20, -2], ankleF: [8, -2], sword: 50, swordZ: 'front', face: 'grr', delay: 60, smear: true },
+    { neck: [-18, -27], hips: [-11, -19], head: [-22, -42], tilt: -12, handN: [-33, -22], bendN: 1, ankleN: [-28, -2], ankleF: [9, -2], sword: 8, swordZ: 'front', face: 'grr', delay: 60, smear: true },
+    { neck: [-21, -26], hips: [-13, -18], head: [-25, -41], tilt: -12, handN: [-34, -14], bendN: 1, ankleN: [-30, -2], ankleF: [10, -2], sword: -14, swordZ: 'front', face: 'grr', delay: 160 },
+    { neck: [-17, -28], hips: [-11, -19], head: [-20, -43], tilt: -8, handN: [-26, -14], bendN: 1, ankleN: [-26, -2], ankleF: [8, -2], sword: -30, swordZ: 'front', face: 'grr', delay: 120 },
+    { neck: [-7, -31], hips: [-6, -21], head: [-9, -46], tilt: -2, handN: [-6, -15], bendN: -1, ankleN: [-12, -2], ankleF: [4, -2], sword: -22, swordZ: 'front', face: 'open', delay: 100 },
   ],
-  hit1: [{ neck: [6, -29], hips: [3, -20], head: [8, -43], tilt: 16, handN: [-6, -27], bendN: 1, ankleN: [-11, -2], ankleF: [12, -2], sword: 62, swordZ: 'front', handF: [12, -22], face: 'hurt', delay: 600 }],
-  die1: [
-    { neck: [8, -28], hips: [4, -20], head: [10, -42], tilt: 22, handN: [-8, -26], bendN: 1, ankleN: [-12, -2], ankleF: [13, -2], sword: 70, swordZ: 'front', handF: [14, -22], face: 'hurt', delay: 83 },
-    { neck: [10, -22], hips: [3, -14], head: [13, -36], tilt: 30, handN: [-9, -18], bendN: 1, ankleN: [-16, -2], ankleF: [11, -2], footF: [-0.3, -1], sword: null, swordZ: 'front', handF: [14, -16], face: 'hurt', delay: 83, swordFree: [-16, 0, 6] },
-    { neck: [18, -12], hips: [6, -9], head: [24, -24], tilt: 55, handN: [-2, -12], bendN: 1, ankleN: [-18, -1], ankleF: [8, -3], footF: [-0.6, -0.8], sword: null, handF: [20, -8], face: 'dead', delay: 83, swordFree: [-16, 0, 6] },
-    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 83, swordFree: [-16, 0, 6] },
-    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 83, swordFree: [-16, 0, 6], a0: 255, a1: 150 },
-    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 83, swordFree: [-16, 0, 6], a0: 150, a1: 0 },
+  hit1: [   // the impact (thrown back, the sword up, the far arm out), the recoil settling, recovering toward the stand
+    { neck: [7, -28], hips: [4, -20], head: [10, -42], tilt: 18, handN: [-4, -28], bendN: 1, ankleN: [-10, -2], ankleF: [13, -2], sword: 60, swordZ: 'front', handF: [12, -23], face: 'hurt', delay: 250 },
+    { neck: [5, -30], hips: [3, -21], head: [7, -44], tilt: 10, handN: [0, -22], bendN: 1, ankleN: [-9, -2], ankleF: [10, -2], sword: 30, swordZ: 'front', handF: [11, -20], face: 'hurt', delay: 200 },
+    { neck: [0, -32], hips: [-2, -21], head: [-2, -47], tilt: 3, handN: [2, -16], bendN: -1, ankleN: [-8, -2], ankleF: [4, -2], sword: 0, swordZ: 'front', face: 'open', delay: 150 },
+  ],
+  die1: [   // the impact, losing balance (the back foot lifts), the knees give and the sword drops, falling, ground contact (the legs still up), settled, then the fade
+    { neck: [8, -28], hips: [4, -20], head: [10, -42], tilt: 22, handN: [-8, -26], bendN: 1, ankleN: [-12, -2], ankleF: [13, -2], sword: 70, swordZ: 'front', handF: [14, -22], face: 'hurt', delay: 90 },
+    { neck: [12, -27], hips: [5, -19], head: [15, -41], tilt: 32, handN: [-10, -24], bendN: 1, ankleN: [-14, -2], ankleF: [12, -5], footF: [-0.5, -0.9], sword: 80, swordZ: 'front', handF: [16, -20], face: 'hurt', delay: 90 },
+    { neck: [12, -21], hips: [4, -14], head: [16, -35], tilt: 34, handN: [-8, -16], bendN: 1, ankleN: [-16, -2], ankleF: [10, -2], sword: null, swordZ: 'front', handF: [15, -15], face: 'hurt', delay: 90, swordFree: [-18, 0, 8] },
+    { neck: [18, -13], hips: [6, -9], head: [24, -25], tilt: 55, handN: [-2, -12], bendN: 1, ankleN: [-18, -1], ankleF: [8, -3], footF: [-0.6, -0.8], sword: null, handF: [20, -9], face: 'dead', delay: 90, swordFree: [-18, 0, 8] },
+    { neck: [25, -6], hips: [8, -5], head: [37, -10], tilt: 80, handN: [4, -11], bendN: 1, ankleN: [-18, -3], ankleF: [-8, -5], footN: [-1, 0.2], footF: [-0.9, -0.3], sword: null, handF: [24, -4], face: 'dead', delay: 90, swordFree: [-18, 0, 8] },
+    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 90, swordFree: [-18, 0, 8] },
+    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 90, swordFree: [-18, 0, 8], a0: 255, a1: 140 },
+    { neck: [26, -5], hips: [8, -5], head: [38, -8], tilt: 82, handN: [6, -10], bendN: 1, ankleN: [-18, -1], ankleF: [-8, -2], footN: [-1, 0], footF: [-0.9, -0.4], sword: null, handF: [24, -3], face: 'dead', delay: 90, swordFree: [-18, 0, 8], a0: 140, a1: 0 },
   ],
 };
 // ---- a frame: back to front, the sword behind if the pose says, the far arm, the ONE body, the head, the sword, the near arm ----

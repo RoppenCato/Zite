@@ -306,3 +306,22 @@ looks a bit like a midget." So our Warrior leaves the reference's head-half-the-
 head, hands) are stretched taller by 1.12 with the feet where they were, and the head is drawn at 0.78 of its reference
 size (its face and eyes with it), which puts the head at about 42 percent of the height; the arm is longer and a touch
 slimmer, the torso a touch slimmer. The player stays 100 CSS px tall. (`K` and `HS` in `tools/doll.js`.)
+
+Robin, 2026-11-01, review notes pasted in (position drift, a stiff walk, abrupt sword angles, no clear windup, strike and
+recovery, a one-pose hit, an abrupt fall with repeated final poses, balance, repetitive frames, timing). What was true of
+the sheet: the lunge arrived in one 67 ms frame, the windup stood like the stand with only the arm raised, the hit was one
+pose, the fall's last three frames were the same pose fading (the fade does not show on a sheet), the stand's breath was
+too small to see, the walk's body did not bob or lean. The pivot was already the feet in every frame. Reworked:
+
+- stand 4 at 300 ms: the chest rises 1.5 px (reference units), the sword's tip dips with it, a blink at the top.
+- move 6 at 110 ms: the body drops at contact and rises at the passing, leans forward, the sword arm swings and the
+  blade's angle follows it.
+- attack1 7 frames: coiled back with the sword over the shoulder (180 ms), the top of the arc (120), the cut in two frames
+  with the trail (60, 60), the strike held (160), the follow-through with the blade dipping (120), the recovery (100). The
+  sword runs one arc: 140, 100, 50, 8, -14, -30, -22 degrees.
+- hit1 3 frames: the impact thrown back with the far arm out (250), the recoil settling (200), recovering toward the
+  stand (150).
+- die1 8 at 90 ms: the impact, losing balance with the back foot lifting, the knees giving and the sword dropping,
+  falling, the ground contact with the legs still up, settled, then two frames fading.
+
+28 frames, three over Miles, GD's "about 25"; the atlas still fits 1024 by 2048 and shrinks to a palette PNG at delivery.
