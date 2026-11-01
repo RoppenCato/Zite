@@ -166,6 +166,7 @@ CLAUDE.md                 this brief
 docs/coop-research.md     the research behind the technical direction: the sources and what each taught
 docs/idea-bank.md         undecided ideas and the open questions, with who asked and when
 docs/art-demands.md       what art the game needs and in what order, for the Art Director
+docs/names.md             everything in the game that carries a name, for the theme; all placeholders until Robin names them
 docs/state/               how each system stands now (rules, client, server, world, protocol, art, sound, pages)
 rules/                    the game as a pure function: board, dice, spaces, fights, items, world generation; its tests
 client/                   the Phaser PWA
