@@ -6,7 +6,7 @@ folder, `C:\dev\Zite\Game Developer`, is the game: the code, the rules, the serv
 
 ```
 C:\dev\Zite\Game Developer   Miles, GD   this folder, the game
-C:\dev\Zite\Art Director     Perry, AD   the art studio; delivers into its out/
+C:\dev\Zite\Art Director     Mitch, AD   the art studio (Perry, AD until 2026-11-01); delivers into its out/
 C:\dev\Zite\Sound Director   Nigel, SD   the sound studio; delivers into its out/
 ```
 

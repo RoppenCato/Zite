@@ -1,13 +1,13 @@
 # Art demands: what the game needs drawn, and in what order
 
-Miles, GD, 2026-11-01, at Robin's request. This is the Game Developer's list for the Art Director (Perry, AD): every piece
+Miles, GD, 2026-11-01, at Robin's request. This is the Game Developer's list for the Art Director (Mitch, AD since 2026-11-01; Perry, AD before): every piece
 the game as it stands needs, grouped in waves, first wave first. The budgets, the file form and how a drop is delivered
 are in `docs/state/art.md`; this file says what and when. Sizes here are **CSS (design) pixels; the files are 2x**.
 The order is mine; Robin changes it with a word.
 
 **Later the same day Robin scrapped the art direction** and kept the shell (the raised-camera board, side-view fights,
 kits as data, the budgets and the atlas form), so this list stands as it is; the new art session starts from the Art
-Director's `HANDOVER.md`. The four delivered pieces are stand-ins now, nothing more.
+Director's `CLAUDE.md` and `docs/direction.md`. The four delivered pieces are stand-ins now, nothing more.
 
 ## The order, and why
 
@@ -100,8 +100,14 @@ at most 824 by 1830 at 2x, or the board kit's strips reused). The placeholder ic
 - **The Trickster, the Wizard, the Archer** on the Warrior's rig: 25 frames each (stand 4, move 6, attack1 6, hit1 1, die1 6),
   all four the same height (to be reconfirmed with Robin: 100 CSS px was the old number, his own sheet
   stood 118), facing left, at most 400 KB each. Their standing frame is the class card's picture; no separate portraits
-  (mine). Gear does **not** show on the character (mine, 2026-11-01: one sprite a class whatever is worn; a swappable
-  weapon layer is a later idea if Robin wants it).
+  (mine). **Gear shows on the character** (Robin, 2026-11-01: "Visible equipment progression is extremely important for
+  this game. Players must be able to wear different armor sets, helmets, gloves, boots, and capes, and wield different
+  weapons and shields. All of these must remain visible during animation."). The studio's way (Mitch, AD): one skeleton a
+  class with slots (head, torso, hips, boots, hands, back, near arm, far arm, weapon, off-hand); the whole figure with its
+  worn set is rendered into the same atlas form as today, so the loader does not change for the first drops; which sets
+  exist and when they are rendered is Robin's to decide once he has judged the studio's test. What the game must then
+  do: pick the atlas for the class and the worn set (or draw the slots as layers on one skeleton, if the drops come that
+  way); the gear data gains a look per piece. Not built yet.
 - **Ability icons**, 24, 40 px, one atlas, in this order: Knight (Mighty Swing, Shield Bonk, Battle Hymn, Finishing Flourish, Second Wind, Shield
   Wall), Trickster (Sneak Jab, Nettle Knife, Vanishing Act, Puff of Smoke, Sticky Fingers, Grand Finale), Wizard (Firework, Snowball Hex, Arcane
   Shield, Pocket Watch, Falling Star, Moonlight Veil), Archer (Triple Shot, Bullseye, Net Toss, Tripwire, Owl Friend, Painted Target).
@@ -199,6 +205,7 @@ About 70 monsters in all at 300 KB each is 21 MB over the whole game, loaded an 
 ## For Robin to say yes or no to
 
 1. The player's height on screen: 100 CSS px, or bigger (your own sheet stood 118).
-2. Gear does not show on the character; one sprite a class (wave 2).
+2. The gear slots on the character: today the rules have weapon, armour, helm, boots and trinket; Robin's words of
+   2026-11-01 add gloves, capes and shields. Adding them to the rules (gear, shop, bag, stats) is a decision for Robin.
 3. The order itself: the meadows complete, then the UI, then the other classes, then the next areas. If you would rather
    see the four classes before the meadows' boss, say so and waves 1c and 2 swap.

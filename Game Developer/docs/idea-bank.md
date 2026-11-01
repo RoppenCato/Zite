@@ -15,7 +15,8 @@ the date, and comes off this list.
    region either way; a shard is a second copy of a region's live state.)
 5. **Each class's own skills and spells** (Robin, 2026-10-31: the class is chosen at character creation and the classes must feel different to play): which moves each class has, how they fit the fight's turn, and what "defend" is for each.
 6. ~~Working title~~: **Zite** (Robin, 2026-10-31). In the brief's title.
-7. **The names of the three sessions** (Miles, GD; Perry, AD; Nigel, SD are mine, 2026-10-31).
+7. **The names of the three sessions** (Miles, GD; Perry, AD; Nigel, SD are mine, 2026-10-31). Mitch, AD is the Art
+   Director since 2026-11-01 (Robin).
 8. **The technical direction** in `CLAUDE.md` (Phaser 4, the pure rules package, a Node server on Robin's PC behind a
    Cloudflare Tunnel): mine, for Robin to confirm or change. Decided by Robin on 2026-10-31: the PC may stay on, with the
    option of moving the server later; Android first, iOS later.
@@ -40,6 +41,12 @@ the date, and comes off this list.
     tables, so the bots' walls, flat at about nine wins in ten from tier 4 to 9, ease towards ten in ten past tier 10.
     Either gear slows (×1.3) or the creatures' growth climbs after tier 9; to be felt first, there is a long way to tier
     10.
+
+## Open after gear shows on the character (Robin, 2026-11-01)
+
+17. **The gear slots.** The rules have weapon, armour, helm, boots and trinket (Robin, 2026-10-31); Robin's words of
+    2026-11-01 name gloves, capes and shields too. Adding three slots touches gear, the shop, the bag, the stats and the
+    budgets (another three layers on every character). Robin decides whether and when.
 
 ## Ideas noted in the brief, not decided
 

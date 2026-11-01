@@ -1,7 +1,7 @@
 # The art
 
 The board scene still draws shapes and labels (2026-10-31); four pieces of scrapped art sit in `assets/` as stand-ins and are
-not drawn yet. This file says what art is in the game, and holds the budgets the Art Director (Perry, AD) builds to, set by me on
+not drawn yet. This file says what art is in the game, and holds the budgets the Art Director (Mitch, AD since 2026-11-01; Perry, AD before) builds to, set by me on
 2026-10-31 when Perry asked, from Robin's rule that the art must stay small for the phone (Robin, 2026-10-31). Deliveries
 arrive in `C:\dev\Zite\Art Director\out/<name>/` with a NOTES.md; the whole folder is copied into `assets/` and committed
 here, so the game builds without the studios' folders. **What the game needs drawn, and in what order, is `docs/art-demands.md`.**
@@ -39,6 +39,17 @@ session (Mitch, AD) starts from the Art Director's `CLAUDE.md` and `docs/directi
 2026-11-01): the look comes from Robin, asked with pictures. The theme is Enchanted Kingdoms (the brief, "The look"). **The player's height
 is to be reconfirmed with Robin**: 100 CSS px was Perry, AD's number with mine; Robin's own sheet stood 118 and he liked
 its presence. What the game needs, in order, is `docs/art-demands.md`.
+
+## Gear shows on the character (Robin, 2026-11-01)
+
+Robin: "Visible equipment progression is extremely important for this game. Players must be able to wear different armor
+sets, helmets, gloves, boots, and capes, and wield different weapons and shields. All of these must remain visible during
+animation." The studio's way (Mitch, AD): one skeleton a class with slots (head, torso, hips, boots, hands, back, near arm,
+far arm, weapon, off-hand), the whole figure with its worn set rendered into today's atlas form, so the loader is unchanged
+for the first drops; which sets exist is Robin's call after the studio's test (`Art Director/work/hybrid/`). On the game's
+side, when the first set lands: a look per piece of gear in the data, and the client picking the atlas for the class and
+the worn set. The rules' five gear slots against Robin's list (gloves, capes, shields) is an open point for him
+(`docs/idea-bank.md`).
 
 ## Where art lives and how it reaches the phone
 
