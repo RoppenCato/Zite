@@ -1,6 +1,8 @@
-// Small pieces of chrome shared by the scenes. Shapes and labels only; the art comes later.
+// Small pieces of chrome shared by the scenes. Shapes and labels only; the art comes later. Every button has the press
+// feel (feel.ts): it squashes on touch, answers at once, pops on release, buzzes and ticks.
 
 import Phaser from 'phaser';
+import { feel, sfx } from './feel.ts';
 import { COLORS, FONT } from './layout.ts';
 
 export interface Button {
@@ -8,7 +10,7 @@ export interface Button {
   label: Phaser.GameObjects.Text;
 }
 
-/** A rounded button that presses in a little and calls `onTap` on the press (so it answers at once on a phone). */
+/** A rounded button that squashes on the press, calls `onTap` at once (so it answers within a frame), and pops on release. */
 export function makeButton(
   scene: Phaser.Scene,
   x: number,
@@ -29,9 +31,13 @@ export function makeButton(
   const button = scene.add.container(x, y, [g, label]).setSize(w, h);
   button.setInteractive({ useHandCursor: true });
   button.on('pointerdown', () => {
-    scene.tweens.add({ targets: button, scaleX: 0.95, scaleY: 0.95, duration: 70, yoyo: true });
+    feel.press(scene, button);
+    feel.buzz();
+    sfx.play('ui/tap');
     onTap();
   });
+  button.on('pointerup', () => feel.release(scene, button));
+  button.on('pointerout', () => feel.release(scene, button));
   return { button, label };
 }
 
@@ -55,7 +61,9 @@ export class Bar {
 
   set(value: number, max: number, now = false): void {
     const scaleX = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-    this.text.setText(`${this.label} ${value}/${max}`);
+    const line = `${this.label} ${value}/${max}`;
+    if (this.text.text && this.text.text !== line && !now) feel.tick(this.scene, this.text);
+    this.text.setText(line);
     this.scene.tweens.killTweensOf(this.fill);
     if (now) this.fill.setScale(scaleX, 1);
     else this.scene.tweens.add({ targets: this.fill, scaleX, duration: 220, ease: 'Quad.easeOut' });

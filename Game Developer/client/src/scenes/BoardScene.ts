@@ -28,6 +28,7 @@ import {
   type SpaceKind,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
+import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
@@ -494,7 +495,15 @@ export class BoardScene extends Phaser.Scene {
     circle.setInteractive(new Phaser.Geom.Circle(radius, radius, TAP_RADIUS), Phaser.Geom.Circle.Contains);
     // A tap is a release that did not travel: a drag that ends on a spot is not a tap.
     circle.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-      if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250 && this.game.loop.frame - this.overlayClosedFrame > 3) this.onSpaceTap(space.id);
+      if (pointer.getDistance() < TAP_MAX && this.time.now - this.overlayClosedAt > 250 && this.game.loop.frame - this.overlayClosedFrame > 3) {
+        if (this.choices_?.has(space.id)) {
+          // A lit spot chosen: a ripple of its light, a buzz, and the walk begins.
+          feel.sparkle(this, space.x, space.y, LIT, 12, 9);
+          feel.buzz(12);
+          sfx.play('ui/choice');
+        }
+        this.onSpaceTap(space.id);
+      }
     });
     this.circles.set(space.id, circle);
 

@@ -25,7 +25,7 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
 
 ## The steps
 
-1. **The press feel.** Every button squashes on touch and pops on release, within a frame; a tick sound and, on Android, a
+1. **The press feel** (done 2026-11-01, `client/src/feel.ts`). Every button squashes on touch and pops on release, within a frame; a tick sound and, on Android, a
    short vibration (a setting, on by default); chips and cards sparkle when chosen; a bar ticks when its number moves;
    nothing waits on a load to react. One place in the code (`client/src/ui.ts`) serves every screen. *Needs*: nothing to
    start; the tap and tick sounds from Nigel, SD when they come. *Done*: every tap in the game answers at once in the pane

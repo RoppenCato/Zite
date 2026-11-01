@@ -1,6 +1,6 @@
 // The settings (mine, 2026-11-01, from Robin's list and the brief's "fewer effects" switch): sound on or off (for the
 // sound layer to come), fewer effects (no tweens: bars and cameras jump, blows do not flash), larger text. Kept in
-// localStorage; read where they matter.
+// localStorage; read where they matter. Vibration (2026-11-01): the short buzz on a press, on phones that have it.
 
 const KEY = 'boardworld.settings';
 
@@ -8,9 +8,10 @@ export interface Settings {
   sound: boolean;
   fewerEffects: boolean;
   largeText: boolean;
+  vibration: boolean;
 }
 
-const DEFAULTS: Settings = { sound: true, fewerEffects: false, largeText: false };
+const DEFAULTS: Settings = { sound: true, fewerEffects: false, largeText: false, vibration: true };
 
 function load(storage: Storage | null): Settings {
   try {

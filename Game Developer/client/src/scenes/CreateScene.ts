@@ -8,6 +8,7 @@ import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, WORLD_DATA, type ClassId } 
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
+import { feel, sfx } from '../feel.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
 
@@ -150,7 +151,12 @@ export class CreateScene extends Phaser.Scene {
     const g = this.add.graphics();
     this.cards.set(id, g);
     const zone = this.add.zone(CENTRE, y, CARD_W, CARD_H).setInteractive({ useHandCursor: true });
-    zone.on('pointerdown', () => this.choose(id));
+    zone.on('pointerdown', () => {
+      feel.buzz();
+      sfx.play('ui/card');
+      feel.sparkle(this, CENTRE - CARD_W / 2 + 28, y - CARD_H / 2 + 22, 0xfff27a);
+      this.choose(id);
+    });
     const left = CENTRE - CARD_W / 2 + 16;
     this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text });
     this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: COLORS.text });

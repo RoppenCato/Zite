@@ -217,6 +217,18 @@ coat worn shows `plate`, otherwise `tunic` (mine, for the test); `refreshHud` sw
   blow, a miss of yours `attack1`, a fall `die1` with the last two frames fading, a win `stand`.
 - With no set loaded the circle and the letter draw as before.
 
+## The feel of a press (`feel.ts`, 2026-11-01; chapter 1, step 1)
+
+Robin: the UI snappy and responsive, small effects on every press. `client/src/feel.ts` is the one place: `press` squashes
+a thing to 0.94 in 60 ms the moment the finger lands, `release` pops it to 1.05 and back in 90 ms when the finger lifts or
+leaves, `buzz` vibrates the phone for 10 ms through `navigator.vibrate` where it exists (Android; a **Vibration** setting,
+on by default, in the atlas's Settings), `sparkle` throws seven small dots out from a point in a colour, `tick` pulses a
+text once, and `sfx.play(name)` is the hook the audio layer fills in (step 7; silent until then). `makeButton` in `ui.ts`
+uses them for every button in the game: squash, buzz, `ui/tap`, the tap answered on the press itself, the pop on release.
+A class card chosen sparkles and buzzes (`ui/card`); a chip tapped sparkles; a lit spot tapped ripples in its light,
+buzzes and plays `ui/choice`; a bar whose number moved ticks its text. All of it respects "fewer effects" (no tweens) and
+the vibration setting.
+
 ## The save (`local-game.ts`) and the account (`remote-game.ts`)
 
 **Solo**: `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On
@@ -256,10 +268,9 @@ name is what the phone shows on install), standalone, portrait, dark theme, icon
 
 ## Not here yet
 
-**The UI layer from the kit, with the press feel Robin asked for on 2026-11-01**: a squash on touch and a pop on release, a
-tick sound, a short vibration on Android through `navigator.vibrate`, sparkles on chosen cards and chips, bars that tick;
-today a button only scales to 0.95 for 70 ms. Also the loot reveal screen (the chest's glow by rarity, the open, the burst,
-the card), the side-view fight and the board renderer from the kits, and the audio layer (`docs/state/sound.md`).
+**The UI layer from the kit** (chapter 1, step 6), the loot reveal screen (the chest's glow by rarity, the open, the burst,
+the card; step 2), the side-view fight and the board renderer from the kits (steps 4 and 5), and the audio layer
+(`docs/state/sound.md`, step 7).
 
 A second hand-laid pass at the numbers once Robin has played; sound (`?mute=1` is the convention for test pages once
 sound exists); a quieter way to type the server's address and a code than the browser's prompt; the install prompt; the

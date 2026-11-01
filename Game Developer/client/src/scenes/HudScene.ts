@@ -8,6 +8,7 @@ import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { feel } from '../feel.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -106,7 +107,11 @@ export class HudScene extends Phaser.Scene {
     let x = -(widths.reduce((a, b) => a + b, 0) + gap * (chips.length - 1)) / 2;
     chips.forEach((chip, i) => {
       const w = widths[i]!;
-      const { button } = makeButton(this, x + w / 2, 0, w, 30, chip.text, 0x8e6ad9, '14px', chip.onTap);
+      const cx = x + w / 2;
+      const { button } = makeButton(this, cx, 0, w, 30, chip.text, 0x8e6ad9, '14px', () => {
+        feel.sparkle(this, this.chipRow.x + cx, this.chipRow.y, 0xd8c8ff, 60, 6);
+        chip.onTap();
+      });
       this.chipRow.add(button);
       x += w + gap;
     });

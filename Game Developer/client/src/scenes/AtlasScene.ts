@@ -91,7 +91,7 @@ export class AtlasScene extends Phaser.Scene {
     }
   }
 
-  /** The three settings as rows with a toggle each (mine, 2026-11-01: sound for the sound layer to come, fewer effects, larger text),
+  /** The four settings as rows with a toggle each (mine, 2026-11-01: sound for the sound layer to come, fewer effects, larger text, vibration),
    * then the world (the server, or solo) and the account (the code for another phone, starting over). */
   private showSettings(): void {
     const s = settings.get();
@@ -100,6 +100,7 @@ export class AtlasScene extends Phaser.Scene {
       { name: 'Sound', text: 'Music and sounds, when they come. Off keeps the game quiet.', value: s.sound, on: 'On', off: 'Off', set: (v) => settings.set({ sound: v }) },
       { name: 'Effects', text: 'Fewer: bars and the camera jump instead of gliding, blows do not flash. For a slow phone.', value: !s.fewerEffects, on: 'Full', off: 'Fewer', set: (v) => settings.set({ fewerEffects: !v }) },
       { name: 'Text', text: 'Larger text in the message lines, from the next screen on.', value: s.largeText, on: 'Large', off: 'Normal', set: (v) => settings.set({ largeText: v }) },
+      { name: 'Vibration', text: 'A short buzz when you press, on phones that can.', value: s.vibration, on: 'On', off: 'Off', set: (v) => settings.set({ vibration: v }) },
     ];
     rows.forEach((row, i) => {
       const y = firstRowY + i * rowStep;

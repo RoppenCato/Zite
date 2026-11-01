@@ -30,6 +30,10 @@ How each system stands lives in `docs/state/` (the skill `system-state`). Undeci
 - Plain words, short sentences, no jargon. The story of a change goes in its commit message, long write-ups in `docs/`; when
   something here changes, change it here (no dated paragraph appended below an old one).
 - **Say what you think**, with a reason. Robin decides.
+- **The studios decide their own work for now** (Robin, 2026-11-01: "When you need art or sound, just ask Mitch and Nigel. Let
+  them know they have my permission to make decisions for now."): ask Mitch, AD and Nigel, SD directly, in the plan's order
+  (`docs/plan-chapter-1.md`), and take their calls as made. Robin keeps the design (the brief), the numbers he wants to feel,
+  installs on the PC and the cloud credits.
 - Robin plays on his phone and follows from it: every build he can try is a link, and anything to look at is a picture sent
   into the chat (SendUserFile), never only a path. **Tell Robin exactly how to test a thing.**
 - **Judge at phone size**: the browser pane's mobile preset, or an Android size such as 412 by 915; screenshots cropped at
