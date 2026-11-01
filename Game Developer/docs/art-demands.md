@@ -38,7 +38,8 @@ pieces stretch, so draw their corners and edges with care.
 | --- | --- | --- | --- |
 | Panel backgrounds: the HUD band, the bottom band, the message box, a modal sheet (shop, bag, atlas, settings) | 4 | 9-slice, 16 px corners | parchment, wood or stone in the theme's hand, but quiet: text sits on it |
 | Cards: a class card on the character screen, a shop row, a bag row, an atlas row, a chip in the row under the board | 5 | 9-slice | two states each: idle and chosen |
-| Buttons: the big green action (Roll, Begin, Continue), the plain button (Map, World, Bag, Log, Back, Close), the danger button (Drop, Flee), each in idle, pressed and dim | 3 × 3 | 220 by 66 and 80 by 50, 9-slice | the Roll button is the most pressed thing in the game: make it a pleasure |
+| Buttons: the big green action (Roll, Begin, Continue), the plain button (Map, World, Bag, Log, Back, Close), the danger button (Drop, Flee), each in idle, pressed and dim | 3 × 3 | 220 by 66 and 80 by 50, 9-slice | the Roll button is the most pressed thing in the game: make it a pleasure; the pressed state is drawn as pushed in (a shadow lost, the face a touch darker), the game squashes it on touch and pops it on release (Robin, 2026-11-01: snappy, responsive, small effects on every press) |
+| Press and feedback effects: a tap ring, a small sparkle for a chosen card or chip, a ripple for a lit spot tapped, a tick glyph for a bar that moved | 4 | 32 to 64, 3 to 5 frames | the micro-effects behind the feel; the sounds are in `docs/sound-demands.md` wave 1 |
 | The die: six faces, a rolling blur, a settled glow | 8 | 56 | the roll's moment; the glow is the "it landed" beat |
 | HP and MP bars (frame, fill, a tick when it changes), the class meter (empty and full pips) | 6 | bar 160 by 14; pip 12 | |
 | Spot-kind icons: wilds, town, shop, chest, spring, shrine, boss; also used in hints and the atlas | 7 | 32 | |

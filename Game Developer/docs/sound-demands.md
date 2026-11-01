@@ -105,15 +105,22 @@ ground, and the voices of its four mobs, mini-boss and boss (18). The second rou
 
 ## Rules for every piece (mine, 2026-11-01; the budgets the game can carry)
 
-- **Format**: OGG Vorbis, 44.1 kHz, effects mono at quality 4, music stereo at quality 5. Chrome on Android plays it;
-  when iOS comes, the same files as AAC in `.m4a` beside them (the game loads whichever plays). The studio's MP3 habit is
-  fine for listening copies, not for the game.
-- **Short sounds come as audio sprites**: one `.ogg` plus a `.json` of `{ name: [start, length] }` in milliseconds per
-  wave (`ui`, `fight`, `creatures-<area>`), with 50 ms of silence between sounds. One request, one decode, no gap on
-  first play. A sprite stays under 1.5 MB on disk and under 60 s in all (about 10 MB decoded).
-- **Music is a loop**, seamless, with the loop points in NOTES.md; 30 to 60 s; under 1.5 MB each. The game streams music
-  through an audio element and decodes only the sprites, so loops cost no memory but the player hears a loop every
-  minute: write them to bear it.
+- **Format**: OGG Vorbis at the studio's 48 kHz (the phone's audio context runs at 48 kHz; the browser resamples
+  anything), encoded at the studio with ffmpeg (libvorbis): effects mono at quality 4, music stereo at quality 4 (about
+  128 kbps), quality 5 only where a piece suffers. WAV masters stay in the studio's `work/` (git ignores WAV in `out/`, so
+  they would never reach the game). Chrome on Android plays OGG; when iOS comes, the same files as AAC in `.m4a` beside
+  them. Confirmed with Nigel, SD on 2026-11-01.
+- **Short sounds come as audio sprites**: one `.ogg` plus a `.json` per wave (`ui`, `fight`, `creatures-<area>`) in the
+  audiosprite form the game loads straight, `{ "spritemap": { "ui/tap": { "start": 0, "end": 0.15, "loop": false }, … } }`
+  in seconds, `loop` true for the few that loop (the die's tumble, the bee's hover), with 50 ms of silence between sounds.
+  One request, one decode, no gap on first play. A sprite stays under 1.5 MB on disk and under 60 s in all (about 10 MB
+  decoded).
+- **Music is a loop**, seamless, with the loop points in NOTES.md. The game streams music through an audio element and
+  decodes only the sprites, so a loop costs no memory; what it costs is disk and download. So: the title loop 30 to 45 s
+  (under 1 MB; it is in the first load); an area's **board theme up to 2.5 minutes** (under 2.5 MB; it is the one heard
+  for hours, written long so it does not tire, as Robin likes); its fight theme 45 to 60 s (heard in bursts); its boss
+  and town themes 60 to 90 s; an area's music in all under 6 MB, loaded when the player enters the area and kept by the
+  service worker after that.
 - **Loudness**: effects peak at −3 dBFS and sit around −16 LUFS; music around −18 LUFS; the UI set a touch quieter than
   the fight set; nothing clipped, nothing with a click at its start or end; a 5 ms fade on both ends of every effect.
 - **Length** matters more than richness: a tap is 150 ms, a hit 300, a fanfare 1.5 s. Only the four dopamine sounds and
@@ -124,8 +131,10 @@ ground, and the voices of its four mobs, mini-boss and boss (18). The second rou
 - **First load** (the title loop, the UI sprite, the fight sprite): under 3 MB; an area's music, bed and voices load when
   the player enters it.
 - **Delivery**: `out/<name>/` with the files, the sprite JSON and NOTES.md (what each sound is, when it plays, loop points,
-  loudness, the Sonic Pi source's name); I copy the folder into `assets/sound/` and wire it in; the mute switch and a
-  music and effects volume go in the settings when the first drop lands.
+  loudness, the Sonic Pi source's name, and for a sound reused from the Survival game its source and licence: Kenney's
+  are CC0, Robin's own are his); I copy the folder into `assets/sound/` and wire it in; the mute switch and a music and
+  effects volume go in the settings when the first drop lands. Reused effects are welcome where they fit (Robin,
+  2026-11-01); the four dopamine sounds are new and ours.
 
 ## What I build when the first drop lands
 

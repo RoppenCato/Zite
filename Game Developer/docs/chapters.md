@@ -25,7 +25,9 @@ like winning.
 - Gear in eight slots, the shop, the bag, the trainer, errands, dice cards, the gamble, spawns: exists.
 - Accounts and the shared world on Robin's PC (join, reconnect, two phones, notes, the world boss): exists.
 - **To build**: the hero drawn from the atlas on the board and in the fight, with the worn set showing (the loader, the
-  layered parts when they come); the UI layer drawing the kit instead of rectangles; **the loot reveal** (the chest glows
+  layered parts when they come); the UI layer drawing the kit instead of rectangles, **snappy and responsive** (Robin, 2026-11-01: every tap answered within a
+  frame; a press squashes and pops with a tick and, on Android, a short vibration; cards and chips sparkle when chosen; bars
+  tick when they move; nothing waits on a load to react); **the loot reveal** (the chest glows
   in the rarity colour, opens with a burst, the piece slides out on a card) for chests, vaults and boss drops; the level-up
   and boss-down moments; a character screen for the Knight alone (the other classes come in chapter 2; the rules keep all
   four); the tunnel set up for friends; the install page.
