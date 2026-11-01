@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#1b1f2a" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/pwa-192x192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
     <title>Zite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,6 +34,11 @@
       }
       canvas {
         display: block;
+      }
+      /* Phaser's DOM layer (the name field) is laid out at the canvas's pixel size and scaled down by a transform; the
+         flex centring above centres that larger box, so the transform must shrink it about its centre to sit on the canvas. */
+      #game > div {
+        transform-origin: center center !important;
       }
     </style>
   </head>

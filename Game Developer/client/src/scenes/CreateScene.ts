@@ -9,6 +9,8 @@ import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
 import { feel, sfx } from '../feel.ts';
+import backdropJpg from '../../../assets/brand/character_backdrop.jpg';
+import wordmarkPng from '../../../assets/brand/wordmark.png';
 import { CREAM, INK, kitReady, plate, preloadKit } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
@@ -67,11 +69,16 @@ export class CreateScene extends Phaser.Scene {
 
   preload(): void {
     preloadKit(this);
+    // The character screen's backdrop and the wordmark (Mitch, AD, 2026-11-01): dusk over the kingdom, and the name with the stolen crown.
+    if (!this.textures.exists('character-backdrop')) this.load.image('character-backdrop', backdropJpg);
+    if (!this.textures.exists('wordmark')) this.load.image('wordmark', wordmarkPng);
   }
 
   create(): void {
-    this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.add.text(CENTRE, 100, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
+    if (this.textures.exists('character-backdrop')) this.add.image(CENTRE, DESIGN_HEIGHT / 2, 'character-backdrop').setScale(0.5);
+    if (this.textures.exists('wordmark')) this.add.image(CENTRE, 62, 'wordmark').setScale(210 / 627);
+    else this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.text(CENTRE, 124, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
 
     const { input, begin, code } = CREATE_LAYOUT;
     this.add.text(input.x - input.w / 2, 140, 'Your name', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
@@ -94,7 +101,32 @@ export class CreateScene extends Phaser.Scene {
       'user-select:text',
       '-webkit-user-select:text',
     ].join(';'));
-    this.add.dom(input.x, input.y, this.nameField);
+    // Placed by hand over the canvas (not Phaser's DOM layer, which sits off under the device-density canvas): the
+    // canvas's box on screen gives the scale from design pixels to CSS pixels, on every resize.
+    this.nameField.style.position = 'absolute';
+    this.nameField.style.zIndex = '10';
+    const parent = this.game.canvas.parentElement ?? document.body;
+    parent.appendChild(this.nameField);
+    const place = (): void => {
+      const rect = this.game.canvas.getBoundingClientRect();
+      const host = parent.getBoundingClientRect();
+      const s = rect.width / DESIGN_WIDTH;
+      this.nameField.style.left = `${rect.left - host.left + (input.x - input.w / 2) * s}px`;
+      this.nameField.style.top = `${rect.top - host.top + (input.y - input.h / 2) * s}px`;
+      this.nameField.style.width = `${input.w * s}px`;
+      this.nameField.style.height = `${input.h * s}px`;
+      this.nameField.style.fontSize = `${20 * s}px`;
+      this.nameField.style.borderRadius = `${12 * s}px`;
+      this.nameField.style.padding = `0 ${14 * s}px`;
+    };
+    place();
+    this.scale.on(Phaser.Scale.Events.RESIZE, place);
+    window.addEventListener('resize', place);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scale.off(Phaser.Scale.Events.RESIZE, place);
+      window.removeEventListener('resize', place);
+      this.nameField.remove();
+    });
 
     this.add.text(CENTRE, 234, OFFERED.length > 1 ? 'Pick a class. Each one fights its own way.' : 'Your class, for now.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
     OFFERED.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));

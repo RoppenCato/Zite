@@ -25,7 +25,7 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/kit.ts` | the UI kit: `preloadKit`, `plate` (a nine-slice at a design size, the corner from the json), `icon`, `fx` (the tap ring, the spark, the ripple, the tick), `sheet` (a parchment sheet over the dimmed world), `sheetInk`; the text colours cream and ink |
 | `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules with the browser's clock, ticks, saves; `actNow` for scripts |
 | `src/game-log.ts` | the frame log and error log, downloadable |
-| `src/scenes/CreateScene.ts` | the character screen: the name field, the class cards (`OFFERED`: the Knight alone in chapter 1, Robin, 2026-11-01, with a line that the other three come in chapter 2; the rules keep all four), Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
+| `src/scenes/CreateScene.ts` | the character screen on Mitch, AD's dusk backdrop with his wordmark (the crown on the i is the one King Goo stole): the name field, the class cards (`OFFERED`: the Knight alone in chapter 1, Robin, 2026-11-01, with a line that the other three come in chapter 2; the rules keep all four), Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
 | `src/scenes/ConnectScene.ts` | co-op, with an account on this phone: "connecting…", tries again on its own, Play offline for now, Start over when the account is gone |
 | `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop, bag, atlas and reveal scenes made together |
 | `src/scenes/RevealScene.ts` | the loot reveal: the chest glows in the colour of its best prize, opens, bursts, and gives each prize on a card; a tap or a wait moves on; `REVEAL_LAYOUT` |
@@ -45,7 +45,7 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/scenes/ShopScene.ts` | the shop: Buy (gear by rank, potions, cards) and Sell, and in a town Train (the class's abilities from the trainer); Leave |
 | `src/scenes/BagScene.ts` | the bag: the eight worn slots as a grid of tiles in their rarity frames, a detail plate for the piece tapped, the carried pieces as cards, the flasks and cards as icons with counts; Wear or Take off and Drop act on the piece tapped; Close |
 | `src/hires.ts` | the canvas at the device's pixel density: a scene plugin that zooms every scene's camera by `DPR` onto the design rectangle and renders every text at `DPR` |
-| `public/icon.svg`, `public/pwa-*.png` | the icon placeholders (`npm run icons` remakes the PNGs from `tools/make-icons.mjs`) |
+| `public/pwa-*.png`, `public/icon.svg` | the app icon from Mitch, AD (2026-11-01; the 512 also serves as maskable); the page's favicon is the 192 PNG; `icon.svg` is a leftover placeholder, and `npm run icons` would overwrite the PNGs with placeholders, so do not run it |
 
 ## Size and scaling (mine, 2026-10-31)
 

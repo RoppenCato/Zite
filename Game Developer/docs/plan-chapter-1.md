@@ -19,7 +19,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 | Fourth | **the meadows' board kit** with its props (step 5; landed 2026-11-01) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
 | Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9; the body and Tin landed 2026-11-01) | **the meadows' creature voices** (six creatures, three each) |
 | Sixth | the other five meadows creatures and **King Goo** (step 4's tail; landed 2026-11-01) | |
-| Last | the **wordmark, the app icon, the character-screen backdrop** (step 11) | |
+| Last | the **wordmark, the app icon, the character-screen backdrop** (step 11; landed 2026-11-01 night) | |
 
 A drop that comes early is wired the day it lands; a drop that comes late leaves its placeholder a little longer.
 
@@ -83,7 +83,8 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
     to 6 and King Goo retuned so a Knight beats him by level 5 or 6 in the area's gear. *Needs*: nothing. *Done*: the
     numbers in `docs/state/rules.md` are current.
 11. **Friends on the tunnel, the install page.** cloudflared in front of the server and the built client; the title screen
-    says how to install on Android (add to home screen) and shows the world's address; the icon and wordmark from the kit.
+    says how to install on Android (add to home screen) and shows the world's address; the icon and wordmark from the kit
+    (the wordmark, the icon and the character screen's backdrop are in since 2026-11-01 night).
     *Needs*: the icon, the wordmark, the backdrop. *Done*: a friend installs Zite from a link and plays with Robin.
 12. **Alpha 1.** The "done when" of chapter 1 walked through on Robin's phone and a friend's; the frame log read; the
     docs in `docs/state/` current; main tagged `alpha-1`.
