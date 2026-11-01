@@ -115,27 +115,61 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 9) return fromVersion9(raw as StateV9);
-  if (candidate.version === 8) return fromVersion8(raw as StateV8);
+  if (candidate.version === 10) return fromVersion10(raw as StateV10);
+  if (candidate.version === 9) return relay(fromVersion9(raw as StateV9));
+  if (candidate.version === 8) return relay(fromVersion8(raw as StateV8));
   if (candidate.version === 7) {
     const v8 = fromVersion7(raw as StateV7);
-    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
   }
   if (candidate.version === 6) {
     const v7 = fromVersion6(raw as StateV6);
     const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
-    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
   }
   if (candidate.version === 5) {
     const v6 = fromVersion5(raw as StateV5);
     const v7 = v6 ? fromVersion6(v6 as unknown as StateV6) : null;
     const v8 = v7 ? fromVersion7(v7 as unknown as StateV7) : null;
-    return v8 ? fromVersion8(v8 as unknown as StateV8) : null;
+    return v8 ? relay(fromVersion8(v8 as unknown as StateV8)) : null;
   }
   if (candidate.version === 1 || candidate.version === 2 || candidate.version === 3 || candidate.version === 4) {
     return fromOlder(raw as StateV1 | StateV2 | StateV3 | StateV4);
   }
   return null;
+}
+
+/** A state as version 10 stored it: today's shape, the board laid under the old names. */
+type StateV10 = Omit<GameState, 'version'> & { version: 10 };
+
+/**
+ * 10 → 11 (2026-11-01): the Enchanted Kingdoms names (Robin: names yes, order A). Spot and area ids did not change, so
+ * the board is laid again from today's data, the areas a character had opened laid again too, and everything else kept.
+ */
+function fromVersion10(old: StateV10): GameState | null {
+  if (typeof old.seed !== 'string' || typeof old.characters !== 'object' || old.characters === null) return null;
+  for (const c of Object.values(old.characters)) {
+    if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
+  }
+  return relay({ ...old, version: STATE_VERSION });
+}
+
+/**
+ * Lay the board again from today's data (names change, ids do not), keeping whatever stands on it. Only a board laid
+ * from the world's data is laid again (its start is the world's start); a test's own board, such as the ring, is kept.
+ */
+function relay(state: GameState | null): GameState | null {
+  if (!state) return null;
+  let board = makeBoard();
+  if (state.board.start !== board.start) return state;
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(state.characters)) {
+    for (const areaId of c.opened ?? []) if (!board.areas[areaId]) board = growBoard(board, state.seed, areaId);
+    characters[id] = board.spaces[c.space] ? c : { ...c, space: board.start, steps: 0, fight: null };
+  }
+  const spawns = Object.fromEntries(Object.entries(state.spawns ?? {}).filter(([space]) => board.spaces[space]));
+  const traces = Object.fromEntries(Object.entries(state.traces ?? {}).filter(([space]) => board.spaces[space]));
+  return { ...state, board, characters, spawns, traces };
 }
 
 /** From 9: the notes on spots arrive, none yet. */

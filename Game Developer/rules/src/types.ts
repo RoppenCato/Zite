@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 10;
+export const STATE_VERSION = 11;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'boss';
@@ -80,6 +80,8 @@ export interface Area {
   id: string;
   name: string;
   theme: string;
+  /** The kingdom or territory the area belongs to: a label for the atlas and the hints (the Enchanted Kingdoms catalogue). */
+  kingdom?: string;
   tier: number;
   levels: [number, number];
   mobs: string[];

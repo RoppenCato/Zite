@@ -1,14 +1,63 @@
 {
   "_about": "What a wild spot does now and then besides a fight, by the theme of its area (mine, 2026-11-01, from Robin's list: theme events). A share of max HP or mana, gold by the tier, a flask or a card; the text is what the player reads.",
-  "meadow":  { "text": "A quiet picnic spot in the sun: you rest a while.",          "kind": "heal",  "value": 0.2 },
-  "forest":  { "text": "Brambles snag you on the way through.",                       "kind": "hurt",  "value": 0.06 },
-  "ice":     { "text": "The cold bites: frostbite.",                                   "kind": "hurt",  "value": 0.08 },
-  "fire":    { "text": "A crack in the ground spits lava: you jump, not quite in time.", "kind": "hurt", "value": 0.1 },
-  "water":   { "text": "The tide leaves a drowned purse on the shingle.",             "kind": "gold",  "value": 15 },
-  "swamp":   { "text": "A will-o'-the-wisp leads you to a lost flask.",               "kind": "flask", "value": 1 },
-  "desert":  { "text": "An oasis: water, shade, and a moment's peace.",               "kind": "heal",  "value": 0.25 },
-  "crystal": { "text": "The crystals hum: your mind clears.",                         "kind": "mana",  "value": 0.5 },
-  "shadow":  { "text": "Something in the dark drinks your strength.",                 "kind": "hurt",  "value": 0.1 },
-  "sky":     { "text": "A storm rolls in and throws your die about.",                 "kind": "card",  "value": 1 },
-  "jungle":  { "text": "Ripe fruit hangs within reach.",                              "kind": "heal",  "value": 0.15 }
+  "meadow": {
+    "text": "A quiet picnic spot in the clover: you rest a while.",
+    "kind": "heal",
+    "value": 0.2
+  },
+  "forest": {
+    "text": "A leaning tree shakes a shower of acorns onto your head.",
+    "kind": "hurt",
+    "value": 0.06
+  },
+  "harvest": {
+    "text": "A jar of enchanted honey left on a fence post: sweet relief.",
+    "kind": "heal",
+    "value": 0.2
+  },
+  "glimmerlake": {
+    "text": "The sunken bell rings under the water, and a drowned purse washes up.",
+    "kind": "gold",
+    "value": 15
+  },
+  "moonwhisper": {
+    "text": "A moonlit witch swaps your voice for a moment; when it comes back, your mind is clear.",
+    "kind": "mana",
+    "value": 0.5
+  },
+  "thunderstone": {
+    "text": "Storm crystals crackle underfoot: a shock.",
+    "kind": "hurt",
+    "value": 0.08
+  },
+  "sunfall": {
+    "text": "A mirrored oasis: water, shade, and a moment of peace.",
+    "kind": "heal",
+    "value": 0.25
+  },
+  "frostveil": {
+    "text": "A frozen statue speaks a warning too late: the cold bites.",
+    "kind": "hurt",
+    "value": 0.08
+  },
+  "thornhollow": {
+    "text": "The fae have turned the signposts round; beside the wrong path lies a lost flask.",
+    "kind": "flask",
+    "value": 1
+  },
+  "starfall": {
+    "text": "A falling star rattles your die about.",
+    "kind": "card",
+    "value": 1
+  },
+  "embercrown": {
+    "text": "A crack in the black rock spits lava: you jump, not quite in time.",
+    "kind": "hurt",
+    "value": 0.1
+  },
+  "shattered": {
+    "text": "A royal mirror repeats your last boast, and something behind it drinks your strength.",
+    "kind": "hurt",
+    "value": 0.1
+  }
 }

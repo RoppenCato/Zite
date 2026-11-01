@@ -18,7 +18,7 @@ const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player:
 
 describe("the themes' events", () => {
   it('every theme has one of a known kind with a line to read', () => {
-    for (const theme of ['meadow', 'forest', 'ice', ...THEMES.order]) {
+    for (const theme of ['meadow', 'forest', 'harvest', ...THEMES.order]) {
       const ev = EVENTS[theme];
       expect(ev, theme).toBeDefined();
       expect(['heal', 'hurt', 'gold', 'mana', 'flask', 'card']).toContain(ev!.kind);
@@ -128,7 +128,7 @@ describe('a version-8 save', () => {
     delete c.keys;
     const v8 = { ...structuredClone(today), version: 8, characters: { [P]: c } };
     const s = migrate(structuredClone(v8));
-    expect(s!.version).toBe(10);
+    expect(s!.version).toBe(11);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).quests).toEqual([]);
   });

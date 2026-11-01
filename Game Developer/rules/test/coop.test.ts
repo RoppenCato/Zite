@@ -147,7 +147,7 @@ describe('the world boss', () => {
 
   it('is told of on a tap, with its HP and its time', () => {
     const s = withBoss(two(), 900);
-    expect(hintFor(s, 's1', 'p1', NOW)).toMatch(/A world boss, the Thornwood Warden, rages here: 900 of 1375 HP left, gone in 30:00\. Everyone who lands here fights the same beast/);
+    expect(hintFor(s, 's1', 'p1', NOW)).toMatch(/A world boss, King Goo, rages here: 900 of 1375 HP left, gone in 30:00\. Everyone who lands here fights the same beast/);
   });
 });
 
@@ -198,7 +198,7 @@ describe('a version-9 save', () => {
     const { traces: _t, ...v9 } = { ...s, version: 9 as const };
     const up = migrate(v9);
     expect(up).not.toBeNull();
-    expect(up!.version).toBe(10);
+    expect(up!.version).toBe(11);
     expect(up!.traces).toEqual({});
     expect(up!.characters).toEqual(s.characters);
   });

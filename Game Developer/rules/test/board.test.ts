@@ -128,7 +128,7 @@ describe('the world', () => {
   it('is Zite: three areas by tier, about 180 spots, starting in the town Ashford in the meadows', () => {
     expect(WORLD_DATA.name).toBe('Zite');
     expect(board.start).toBe('ashford');
-    expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Ashford', area: 'meadows' });
+    expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Puddlewick Village', area: 'meadows' });
     expect(Object.values(board.areas).map((a) => [a.id, a.tier])).toEqual([
       ['meadows', 1],
       ['thornwood', 2],

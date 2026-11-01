@@ -95,7 +95,7 @@ await a.tapAt(206, 812); // Begin
 await a.ready();
 const joinedA = await a.me();
 const accountA = await a.ev(() => JSON.parse(localStorage.getItem('boardworld.account') ?? 'null'));
-check('Begin makes the account on the server: Anna the Rogue at Ashford, online alone, the token and the code kept on the phone', joinedA.name === 'Anna' && joinedA.space === 'ashford' && joinedA.link?.kind === 'online' && joinedA.link.online === 1 && joinedA.linkText === 'online' && /^p-/.test(accountA?.player ?? '') && typeof accountA?.token === 'string' && /^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(accountA?.recovery ?? ''), JSON.stringify({ joinedA, accountA }));
+check('Begin makes the account on the server: Anna the Rogue at Puddlewick Village, online alone, the token and the code kept on the phone', joinedA.name === 'Anna' && joinedA.space === 'ashford' && joinedA.link?.kind === 'online' && joinedA.link.online === 1 && joinedA.linkText === 'online' && /^p-/.test(accountA?.player ?? '') && typeof accountA?.token === 'string' && /^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(accountA?.recovery ?? ''), JSON.stringify({ joinedA, accountA }));
 await a.shot('1-a-alone');
 
 // B joins: both see each other.
@@ -106,7 +106,7 @@ await b.page.fill('#game input', 'Bo');
 await b.tapAt(206, 812); // Begin, the Warrior
 await b.ready();
 const joinedB = await b.me();
-check('B joins as Bo the Warrior and sees Anna standing at Ashford, online two', joinedB.name === 'Bo' && joinedB.others.length === 1 && joinedB.others[0].name === 'Anna' && joinedB.others[0].space === 'ashford' && joinedB.marks.length === 1 && joinedB.link?.online === 2 && joinedB.linkText === 'online · 2 here', JSON.stringify(joinedB));
+check('B joins as Bo the Warrior and sees Anna standing at Puddlewick Village, online two', joinedB.name === 'Bo' && joinedB.others.length === 1 && joinedB.others[0].name === 'Anna' && joinedB.others[0].space === 'ashford' && joinedB.marks.length === 1 && joinedB.link?.online === 2 && joinedB.linkText === 'online · 2 here', JSON.stringify(joinedB));
 const sawB = await a.until((m) => m.others.length === 1 && m.link?.online === 2);
 check('A hears Bo arrive: a mark for him, "with Bo" in the place line, the link says two, a line in the message', sawB.others[0]?.name === 'Bo' && sawB.marks.length === 1 && sawB.linkText === 'online · 2 here' && /with Bo/.test(sawB.place) && /Bo the Warrior has joined the world/.test(sawB.message), JSON.stringify(sawB));
 await a.shot('2-a-sees-b');
@@ -272,7 +272,7 @@ for (let i = 0; i < 40 && (hpB === null || hpB >= WORLD_BOSS_HP); i++) {
 }
 const badgeB = await b.ev(({ id }) => boardWorld.phaser.scene.getScene('board').spawnMarks.get(id)?.list[2]?.text ?? '', { id: bossSpot });
 const hintBoss = await b.ev(({ id }) => boardWorld.rules.hintFor(boardWorld.game.state, id, boardWorld.game.player, boardWorld.game.now()), { id: bossSpot });
-check('after one round B sees the shared HP drop in his state, on the badge, and in the hint', hpB !== null && hpB < WORLD_BOSS_HP && hpB === struck.fight?.hp && badgeB === `${hpB} / ${WORLD_BOSS_HP}` && new RegExp(`A world boss, the Thornwood Warden, rages here: ${hpB} of ${WORLD_BOSS_HP} HP left`).test(hintBoss), JSON.stringify({ hpB, mine: struck.fight?.hp, badgeB, hintBoss }));
+check('after one round B sees the shared HP drop in his state, on the badge, and in the hint', hpB !== null && hpB < WORLD_BOSS_HP && hpB === struck.fight?.hp && badgeB === `${hpB} / ${WORLD_BOSS_HP}` && new RegExp(`A world boss, the King Goo, rages here: ${hpB} of ${WORLD_BOSS_HP} HP left`).test(hintBoss), JSON.stringify({ hpB, mine: struck.fight?.hp, badgeB, hintBoss }));
 await b.shot('10-b-sees-shared-hp');
 
 const logErrors = await a.ev(() => boardWorld.log.errorCount);

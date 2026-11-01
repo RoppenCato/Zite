@@ -24,17 +24,18 @@ export const COLORS = {
 
 /** The ground of each area's theme (mine; placeholders until the art comes). */
 export const THEME_COLORS: Record<string, number> = {
-  meadow: 0x24302a,
-  forest: 0x1e281e,
-  ice: 0x24303c,
-  fire: 0x32241f,
-  water: 0x1f2a36,
-  swamp: 0x252e22,
-  desert: 0x343022,
-  crystal: 0x2a2738,
-  shadow: 0x1c1b26,
-  sky: 0x22313c,
-  jungle: 0x1e2f20,
+  meadow: 0x24332a, // clover green
+  forest: 0x1f2a1c, // wobblewood leaf and bark
+  harvest: 0x34301c, // honey and wheat
+  glimmerlake: 0x1c2f36, // turquoise water
+  moonwhisper: 0x26203a, // lavender and violet
+  thunderstone: 0x262c33, // slate
+  sunfall: 0x383020, // sandstone and gold
+  frostveil: 0x24303c, // ice blue
+  thornhollow: 0x1f2a22, // deep moss and thorn purple
+  starfall: 0x1e1b33, // deep purple and star gold
+  embercrown: 0x30201c, // charcoal and ember
+  shattered: 0x2a2436, // royal violet and ivory
 };
 
 /** The colours of the rarities, as text colours. */

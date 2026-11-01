@@ -1,8 +1,8 @@
-// A balance look at the rules, no screen: bots play from Ashford under a plain policy and the bosses are fought level
+// A balance look at the rules, no screen: bots play from Puddlewick Village under a plain policy and the bosses are fought level
 // by level in plain gear of the rank. Pure and seeded, so a run repeats. Run: node tools/simulate.ts [turns] [seeds]
 //
-// It prints, per class: turns to each level, deaths, gold and gear, the first win over the Thornwood Warden, the
-// Briar King and the Frost Matriarch, how far into the grown areas the bots get; then the wall: the share of fights won
+// It prints, per class: turns to each level, deaths, gold and gear, the first win over the King Goo, the
+// Grumblebark and the Queen Bumble, how far into the grown areas the bots get; then the wall: the share of fights won
 // against each boss, hand-laid and grown, at each level with the area's plain gear.
 
 import {
@@ -329,7 +329,7 @@ const fmt = (n: number | null | undefined, w = 5): string => (n === null || n ==
 
 console.log(`Bots: ${SEEDS} seeds per class, ${TURNS} turns each (a turn is one roll).\n`);
 const TIERS = [1, 2, 3, 4, 5, 6];
-console.log('class    | turns to level 2   3   4   5   6   7   8  10  14  18 | deaths/100t  by tier 1..6 | fights/100t rests/100t | rounds per fight t1..t6 | HP left after a win t1..t6 | Warden: tries  first win (turn)  beaten | Briar: tries  beaten | Matriarch beaten (turn) | top tier  gen-1  gen-2  gen-3 (turn) | lvl  gold  gear stranded');
+console.log('class    | turns to level 2   3   4   5   6   7   8  10  14  18 | deaths/100t  by tier 1..6 | fights/100t rests/100t | rounds per fight t1..t6 | HP left after a win t1..t6 | King Goo: tries  first win (turn)  beaten | Briar: tries  beaten | Queen Bumble beaten (turn) | top tier  gen-1  gen-2  gen-3 (turn) | lvl  gold  gear stranded');
 for (const classId of CLASSES) {
   const runs: Run[] = [];
   for (let i = 0; i < SEEDS; i++) runs.push(simulate(classId, `sim-${classId}-${i}`, TURNS));

@@ -14,7 +14,7 @@ Director's `HANDOVER.md`. The four delivered pieces are stand-ins now, nothing m
 1. **What the player sees most comes first**: the board of the first area, the fight of the first area, and the UI that
    is on every screen. The board is the thing the player looks at most (the brief).
 2. **One area complete before the next**: the meadows all the way (board kit, fight backdrop, its four mobs, its
-   mini-boss, its boss), then Thornwood, then Frostpeak, then the eight grown themes one at a time. Half an area everywhere
+   mini-boss, its boss), then Wobblewood Forest, then Honeyhill Fields, then the eight grown themes one at a time. Half an area everywhere
    looks worse than one finished area and placeholders beyond it.
 3. **Characters before decorations**: the monster you fight before the bush you pass.
 4. **Within the budgets, always**: a piece that does not fit is drawn smaller, not excepted (`docs/state/art.md`).
@@ -32,7 +32,7 @@ nothing waits on art to be playable; each drop replaces its shape.
 | Everything else | shapes |
 
 **Wave 0 is mine, not the studio's**: the atlas loader; the Warrior on the board (`stand` at 0.6, `move` on the walk) and in
-the fight (`stand`, `attack1`, `hit1`, `die1`); the three monsters in the fight. The meadows' mobs keep their rules names (Slime, Moor Wolf, Bandit, Marsh Wisp) until the new art
+the fight (`stand`, `attack1`, `hit1`, `die1`); the three monsters in the fight. The meadows' mobs keep their rules names (Jelly Slime, Grumpy Sprout, Meadow Bandit, Bumbling Bee) until the new art
 names them; the stand-ins wear those names meanwhile.
 
 ## Wave 1: the meadows, complete (the first minutes of the game)
@@ -40,7 +40,7 @@ names them; the stand-ins wear those names meanwhile.
 ### 1a. The meadows' board kit
 
 The board is seen from a raised camera in 2D (the brief, "The look"): a tilted ground with cliff faces where the land
-steps up, roads flat on it, everything standing on it upright. Ashford Meadows is one cell of 1400 by 1900 world pixels
+steps up, roads flat on it, everything standing on it upright. Cloverfield Meadows is one cell of 1400 by 1900 world pixels
 with 60 spots; the ground is tiles and strips, never one picture.
 
 | Piece | Count | Size | Notes |
@@ -63,12 +63,12 @@ variants (a spring, a road, the town's gate) later if there is appetite.
 
 | Creature | Role | Level | Size | State |
 | --- | --- | --- | --- | --- |
-| Slime (the name follows the art) | mob | 1 | 120 | **needed**; a stand-in exists |
-| Moor Wolf | mob | 2 | 140 | **needed**; a stand-in exists |
-| Bandit | mob | 3 | 110 | **needed** |
-| Marsh Wisp (flies, drains mana) | mob | 3 | 120 | **needed**; a stand-in exists |
-| **The meadows' mini-boss** (the rules call it Wolf Alpha; the name follows the art) | mini | 5 | 180 to 200 | **needed** |
-| **The Thornwood Warden** at the Iron Gate | boss | 6 | 300 to 400 | **needed**; a second phase under half HP (its bark splits): a second `stand` (6) and `attack1` (12) if a second atlas fits, else a tint done in code |
+| Jelly Slime (the name follows the art) | mob | 1 | 120 | **needed**; a stand-in exists |
+| Grumpy Sprout | mob | 2 | 140 | **needed**; a stand-in exists |
+| Meadow Bandit | mob | 3 | 110 | **needed** |
+| Bumbling Bee (flies, drains mana) | mob | 3 | 120 | **needed**; a stand-in exists |
+| **The meadows' mini-boss** (the rules call it Mushroom Muncher; the name follows the art) | mini | 5 | 180 to 200 | **needed** |
+| **The King Goo** at the King Goo's Gate | boss | 6 | 300 to 400 | **needed**; a second phase under half HP (its bark splits): a second `stand` (6) and `attack1` (12) if a second atlas fits, else a tint done in code |
 
 The five actions as delivered (stand 6, move 6, hit1 1, die1 8, attack1 12); the blow lands on the held frame.
 
@@ -109,31 +109,31 @@ at most 824 by 1830 at 2x, or the board kit's strips reused). The placeholder ic
   whoosh, counter flash, charge glow, poison drip, chill, burn, weaken, heal glow, mana sparkle, the wind-up tell over an
   enemy's head, a level-up burst.
 
-## Wave 3: Thornwood (tier 2, levels 4 to 8)
+## Wave 3: Wobblewood Forest (tier 2, levels 4 to 8)
 
 The forest's board kit (as 1a, forest ground and trees instead of grass), its fight backdrop (as 1b), and its creatures:
 
 | Creature | Role | Level | Size |
 | --- | --- | --- | --- |
-| Thorn Spider | mob | 5 | 120 |
-| Old Treant | mob | 6 | 200 |
-| Outlaw Archer | mob | 6 | 110 |
-| Wood Wraith | mob | 7 | 140 |
-| Spider Queen | mini | 9 | 200 |
-| The Briar King at the Briar Gate | boss | 10 | 350; second phase: it regrows |
+| Twigling | mob | 5 | 120 |
+| Moss Goblin | mob | 6 | 200 |
+| Sporeling | mob | 6 | 110 |
+| Nutkin Thief | mob | 7 | 140 |
+| Sleepy Owlbear Cub | mini | 9 | 200 |
+| The Grumblebark at the Grumblebark's Glade | boss | 10 | 350; second phase: it regrows |
 
-## Wave 4: Frostpeak (tier 3, levels 8 to 12)
+## Wave 4: Honeyhill Fields (tier 3, levels 8 to 12)
 
-The ice board kit (snow, ice, rock faces), its fight backdrop, and:
+The harvest board kit (grain, orchards, hives, hay bales, windmills), its fight backdrop, and:
 
 | Creature | Role | Level | Size |
 | --- | --- | --- | --- |
-| Ice Wolf | mob | 9 | 130 |
-| Yeti | mob | 10 | 200 |
-| Frost Wisp | mob | 10 | 110 |
-| Ice Golem | mob | 11 | 220 |
-| Yeti Elder | mini | 13 | 240 |
-| The Frost Matriarch at the Summit | boss | 14 | 400; second phase: its heart freezes over |
+| Honey Blob | mob | 9 | 130 |
+| Corn Goblin | mob | 10 | 200 |
+| Buzzbug | mob | 10 | 110 |
+| Apple Mimic | mob | 11 | 220 |
+| Scarecrow Scrapper | mini | 13 | 240 |
+| The Queen Bumble at Queen Bumble's Hive | boss | 14 | 400; second phase: its heart freezes over |
 
 ## Wave 5: gear icons
 
@@ -148,23 +148,24 @@ The ice board kit (snow, ice, rock faces), its fight backdrop, and:
 
 ## Wave 6: the grown themes, one at a time, in the generator's order
 
-Beyond Frostpeak the world is laid from the seed, a theme at a time, round and round. Each theme needs a board kit (as
+Beyond Honeyhill Fields the world is laid from the seed, a theme at a time, round and round. Each theme needs a board kit (as
 1a, in its ground), a fight backdrop (as 1b), four mobs, a mini-boss and a boss with a second phase. Until a theme's art
 exists its areas draw with the shapes in the theme's colour, so the game keeps growing meanwhile. The second round of
-themes (Ashen Reach after Emberfall, …) reuses the art under new names: nothing new to draw, a tint at most.
+themes (Ashen Reach after Glimmerlake Shores, …) reuses the art under new names: nothing new to draw, a tint at most.
 
-| Order | Theme | First area | Mobs (four shapes: a skitterer, a brute, a wisp, a stalker) | Boss |
-| --- | --- | --- | --- | --- |
-| 1 | fire | Emberfall | Cinder Hound, Magma Crawler, Ash Wraith, Flame Imp | Molten Tyrant |
-| 2 | water | Mistwater | Tide Crab, Drowned Sailor, Reef Serpent, Mist Siren | Abyssal Leviathan |
-| 3 | swamp | Murkfen | Bog Leech, Mire Troll, Marsh Hag, Rot Stalker | Bog King |
-| 4 | desert | Sunscar | Sand Scarab, Dune Raider, Sun Scorpion, Dust Djinn | Sun Pharaoh |
-| 5 | crystal | Glimmerdeep | Shard Beetle, Prism Golem, Glass Wisp, Geode Lurker | Prismatic Queen |
-| 6 | shadow | Duskmoor | Night Stalker, Umbral Wolf, Dread Shade, Void Imp | Dusk Lord |
-| 7 | sky | Skyreach | Storm Hawk, Cloud Ray, Gale Sprite, Thunder Ram | Storm Titan |
-| 8 | jungle | Verdant Tangle | Vine Viper, Shadow Jaguar, Poison Frog, Ape Brute | Jungle Idol |
+| Order | Theme (kingdom) | First area | Mobs (four shapes: a skitterer, a brute, a wisp, a stalker) | Mini-boss | Boss |
+| --- | --- | --- | --- | --- | --- |
+| 1 | glimmerlake (Glimmerlake Marches) | Glimmerlake Shores | Bubble Imp, Shellback, River Sprite, Marsh Goblin | Crystal Crab | Lord Ripplefin |
+| 2 | moonwhisper (Moonspire Kingdom) | Moonwhisper Woods | Moon Moth, Lantern Wisp, Dream Fox, Hexcap | Spellbound Doll | Lady Nightbloom |
+| 3 | thunderstone (Stormward Highlands) | Thunderstone Highlands | Pebble Golem, Storm Bat, Rock Hopper, Spark Imp | Iron Goblin | Boulderbelly |
+| 4 | sunfall (Suncrest Kingdom) | Sunfall Expanse | Sand Skitter, Scarab Guard, Dust Wraith, Relic Mimic | Sunstone Sentinel | Pharaoh Solmar |
+| 5 | frostveil (Frostveil Kingdom) | Frostveil Peaks | Snow Puff, Icefang Wolf, Frost Spirit, Crystal Corn Goblin | Frozen Knight | Glaciorn |
+| 6 | thornhollow (Thornhollow Wilds) | Thornhollow Wilds | Thornling, Briar Wolf, Rotcap, Shadow Wisp | Cursed Stag | The Briar Queen |
+| 7 | starfall (Moonspire Kingdom) | Starfall Dominion | Astral Wisp, Spell Eater, Rune Knight, Voidling | Arcane Construct | Archmage Veyra |
+| 8 | embercrown (Embercrown Range) | Embercrown Mountains | Emberling, Ash Drake, Magma Golem, Flamefang | Obsidian Guardian | Ignarox, the Crownfire Dragon |
+| 9 | shattered (The Shattered Crown) | The Shattered Crown | Crownless Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King |
 
-Each theme's mini-boss is named in the data when its art comes (the generator makes one from the theme's brute today).
+Each theme's creatures, mini-boss and boss are the catalogue's, in `rules/data/themes.json`.
 
 ## Wave 7: co-op and proximity pieces (when those systems exist)
 

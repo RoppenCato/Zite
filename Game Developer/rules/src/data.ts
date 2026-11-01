@@ -151,7 +151,7 @@ export interface GearData {
 /** What the generator draws from to grow an area: its theme's names and creatures, the shapes of creatures, the cell grid. */
 export interface ThemesData {
   order: string[];
-  themes: Record<string, { areas: string[]; adjectives: string[]; mobs: string[]; mini: string; boss: string }>;
+  themes: Record<string, { areas: string[]; adjectives: string[]; mobs: string[]; mini: string; boss: string; kingdom?: string }>;
   places: Record<string, string[]>;
   archetypes: { hp: number; attack: number; defense: number; moves: EnemyMove[] }[];
   /** A grown boss's second phase by theme: the line (with {boss}) and the move it adds. */

@@ -107,7 +107,7 @@ describe('a boss\'s second phase', () => {
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'phase', text: ENEMIES['thornwood-warden']!.phase2!.text }));
     const e = fight(r.state).enemy;
     expect(e.phase).toBe(2);
-    expect(e.moves.map((m) => m.name)).toContain('Thorn Burst');
+    expect(e.moves.map((m) => m.name)).toContain('Acid Splash');
     const again = apply(r.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);
     expect(again.events.some((ev) => ev.type === 'phase')).toBe(false);
     expect(ENEMIES['briar-king']!.phase2!.moves.some((m) => m.effect === 'heal')).toBe(true);
@@ -117,9 +117,9 @@ describe('a boss\'s second phase', () => {
 
   it('a grown boss rages in its theme\'s way', () => {
     const tyrant = generateArea('ashford', 1).bestiary['g1-boss']!;
-    expect(tyrant.phase2).toMatchObject({ at: 0.5, text: 'The Molten Tyrant burns brighter!' });
-    expect(tyrant.phase2!.moves.map((m) => m.name)).toEqual(['Claw', 'Fury', 'Immolate']);
-    const idol = generateArea('ashford', 8).bestiary['g8-boss']!;
-    expect(idol.phase2!.moves.some((m) => m.effect === 'heal')).toBe(true);
+    expect(tyrant.phase2).toMatchObject({ at: 0.5, text: 'Lord Ripplefin calls the lake to rise!' });
+    expect(tyrant.phase2!.moves.map((m) => m.name)).toEqual(['Claw', 'Fury', 'Undertow']);
+    const queen = generateArea('ashford', 6).bestiary['g6-boss']!; // the Thornhollow Wilds: the Briar Queen regrows
+    expect(queen.phase2!.moves.some((m) => m.effect === 'heal')).toBe(true);
   });
 });

@@ -66,9 +66,9 @@ together; a mouse wheel over the band zooms by a tenth a notch. `tools/drive-boa
 the built game (`node tools/drive-board.mjs [url]`, Chromium through Playwright, CDP touch events): the character screen,
 the camera, hints, the covered areas and the bosses, a reload mid-choice, an old save, a fight with its two taps, a reload
 mid-fight, the enemy's next move and the class meter on the fight screen, the shop, the bag, a dice card, a potion and
-the mana potion among the moves, a level's pick of one ability in two answered in the chips, the trainer in Ashford, an
-errand taken, a full bag's piece sold from the chips, the World button's atlas with Go and the settings' toggles, the Iron Gate's boss dropping a unique or an epic and Thornwood
-opening, the Briar King and Frostpeak, the Frost Matriarch and the first grown area laid and drawn (then its boss and
+the mana potion among the moves, a level's pick of one ability in two answered in the chips, the trainer in Puddlewick Village, an
+errand taken, a full bag's piece sold from the chips, the World button's atlas with Go and the settings' toggles, the King Goo's Gate's boss dropping a unique or an epic and Wobblewood Forest
+opening, the Grumblebark and Honeyhill Fields, the Queen Bumble and the first grown area laid and drawn (then its boss and
 the second), and a reset, with screenshots in `tools/out/shots/`. It clears the page's save first and plants saves of its own.
 
 **Two phones in one world**: `node tools/drive-coop.mjs [pageUrl] [serverPort]` starts the real server on a port of its
@@ -87,7 +87,7 @@ errors.
 
 ## The balance simulation
 
-`node tools/simulate.ts [turns] [seeds]` needs no browser: bots of each class play from Ashford and each boss is fought
+`node tools/simulate.ts [turns] [seeds]` needs no browser: bots of each class play from Puddlewick Village and each boss is fought
 level by level (`docs/state/rules.md`, Balance). A minute for the defaults. Rerun it after changing any number in
 `rules/data`.
 

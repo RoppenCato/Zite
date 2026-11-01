@@ -1,7 +1,7 @@
 // Drives the built game headless at phone size (412 by 915, touch) and checks it end to end: the character screen,
 // the camera over the world (follow, overview of what is open, framing a roll, drag, pinch, wheel, hub names by zoom),
 // a hint on a tapped spot, the closed areas and the bosses on the board, a reload mid-choice, an old save, landings,
-// the world growing past the Summit,
+// the world growing past Queen Bumble's Hive,
 // a fight (two taps a round, a reload mid-fight, Continue), the shop and the bag, a dice card, a potion in a fight,
 // and a reset. Screenshots land in tools/out/shots/.
 //
@@ -101,7 +101,7 @@ await tapAt(206, 536); // the third card: Mage
 await tapAt(206, 812); // Begin
 await ready();
 const created = await ev(() => ({ create: boardWorld.phaser.scene.isActive('create'), name: boardWorld.game?.me.name, classId: boardWorld.game?.me.classId, space: boardWorld.game?.me.space, header: boardWorld.phaser.scene.getScene('hud').name.text, opened: boardWorld.game?.me.opened }));
-check('Begin makes the character and starts the board: Driver the Mage on Ashford, the meadows open', !created.create && created.name === 'Driver' && created.classId === 'mage' && created.space === 'ashford' && created.header === 'Driver the Mage' && JSON.stringify(created.opened) === '["meadows"]', JSON.stringify(created));
+check('Begin makes the character and starts the board: Driver the Mage on Puddlewick Village, the meadows open', !created.create && created.name === 'Driver' && created.classId === 'mage' && created.space === 'ashford' && created.header === 'Driver the Mage' && JSON.stringify(created.opened) === '["meadows"]', JSON.stringify(created));
 await page.reload();
 await ready();
 const kept = await ev(() => ({ create: boardWorld.phaser.scene.isActive('create'), name: boardWorld.game?.me.name }));
@@ -139,9 +139,9 @@ await settle();
 await tapSpace('ashford-millford-1', spaces);
 await sleep(300);
 c = await cam();
-check('tapping a spot tells about it: the area, the levels, what roams there', /Ashford Meadows, levels 1 to 4/.test(c.message) && /roam here/.test(c.message), c.message);
+check('tapping a spot tells about it: the area, the levels, what roams there', /Cloverfield Meadows, levels 1 to 4/.test(c.message) && /roam here/.test(c.message), c.message);
 
-// Roll: from Ashford every roll has three ways to go, so the choices are framed.
+// Roll: from Puddlewick Village every roll has three ways to go, so the choices are framed.
 await ev(() => boardWorld.phaser.scene.getScene('board').roll());
 await settle();
 c = await cam();
@@ -240,7 +240,7 @@ const ringsLit = await ev(() => [...boardWorld.phaser.scene.getScene('board').ri
 check('reload mid-choice relights the same choice and frames it', litBefore && c.choices && c.choices.join() === litBefore.join() && ringsLit === c.choices.length && c.following === false && c.steps > 0, JSON.stringify({ litBefore, after: c.choices, ringsLit }));
 await shot('7-reload-mid-choice');
 
-// A version-1 save (the ring) opens on the world, the character on Ashford, rested.
+// A version-1 save (the ring) opens on the world, the character on Puddlewick Village, rested.
 await ev(() => {
   const v1 = { version: 1, seed: 'old-seed', board: { start: 's0', spaces: {} }, characters: { local: { id: 'local', name: 'Robin', classId: 'warrior', hp: 77, maxHp: 120, attack: 12, defense: 8, gold: 95, space: 's7', steps: 3 } }, die: { sides: 6, last: 3 } };
   localStorage.setItem('boardworld.save', JSON.stringify({ version: 1, state: v1, rng: 123456 }));
@@ -292,7 +292,7 @@ const back = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'
 check('Continue closes the fight: Roll is back, the HUD shows the level, the token stands where the character is', !back.active && /^Lv \d+ /.test(back.stats) && back.rollAlpha === 1 && /(Beat the|wake in)/.test(back.message) && back.tokenOnMe, JSON.stringify(back));
 await shot('11-after-fight');
 
-// The shop: a save standing on Tinker Cart with gold; tap the shop you stand on, buy a potion, a +1 and a sword, leave.
+// The shop: a save standing on Merchant Cart with gold; tap the shop you stand on, buy a potion, a +1 and a sword, leave.
 /** Plant a save: the current state with the character patched (and the state itself, for spawns and the die). */
 const stockSave = (patch, statePatch = {}, freshBoard = false) => ev(({ patch, statePatch, freshBoard }) => {
   const state = structuredClone(boardWorld.game.state);
@@ -332,7 +332,7 @@ check('the Sell side lists the sword at half its price', sellTab.some((t) => t =
 await tapAt(...SHOP.leave);
 await sleep(400);
 const left = await ev(() => ({ active: boardWorld.phaser.scene.isActive('shop'), rollAlpha: boardWorld.phaser.scene.getScene('hud').rollButton.alpha, message: boardWorld.phaser.scene.getScene('hud').message.text }));
-check('Leave closes the shop and gives Roll back', !left.active && left.rollAlpha === 1 && /Left Tinker Cart/.test(left.message), JSON.stringify(left));
+check('Leave closes the shop and gives Roll back', !left.active && left.rollAlpha === 1 && /Left Merchant Cart/.test(left.message), JSON.stringify(left));
 
 // The bag: wear the sword.
 await tapAt(...B.bag);
@@ -361,7 +361,7 @@ const plusOne = await ev(() => ({ steps: boardWorld.game.me.steps, items: boardW
 check('the +1 chip adds a step, spends the card, relights the choices and shows the new number', plusOne.steps === chips.steps + 1 && plusOne.items['plus-one'] === undefined && plusOne.chips === 0 && plusOne.die === String(plusOne.steps) && plusOne.choices > 0 && /\+1: now \d+ steps?\./.test(plusOne.message), JSON.stringify(plusOne));
 
 // A potion in a fight: a save in a fight with one in the bag.
-await stockSave({ space: 'ashford-millford-1', steps: 0, hp: 30, items: { potion: 1, 'mana-potion': 1 }, offer: null, fight: { enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 30, maxHp: 30, attack: 6, defense: 2, xp: 6, gold: 8, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'ashford-millford-1', spawn: false } });
+await stockSave({ space: 'ashford-millford-1', steps: 0, hp: 30, items: { potion: 1, 'mana-potion': 1 }, offer: null, fight: { enemy: { id: 'slime', name: 'Jelly Slime', level: 1, role: 'mob', hp: 30, maxHp: 30, attack: 6, defense: 2, xp: 6, gold: 8, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null }, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space: 'ashford-millford-1', spawn: false } });
 await page.reload();
 await ready();
 await sleep(400);
@@ -484,7 +484,7 @@ check('Learn teaches War Cry for 60 gold in a tier-1 town', trained.rank === 1 &
 await tapAt(...SHOP.leave);
 await sleep(300);
 
-// An errand: walking into Ashford with none from there asks one in the chips; Take it carries it.
+// An errand: walking into Puddlewick Village with none from there asks one in the chips; Take it carries it.
 await stockSave({ ...STRONG, space: 'ashford-millford-1', steps: 1, quests: [], picks: [], cooldowns: {} }, { die: { sides: 6, last: 1 } });
 await page.reload();
 await ready();
@@ -494,7 +494,7 @@ await tapSpace('ashford', spaces);
 await sleep(1200);
 await settle();
 const errand = await ev(() => ({ offer: boardWorld.game.me.offer?.kind, chips: boardWorld.phaser.scene.getScene('hud').chipRow.list.map((b) => b.list[1].text), message: boardWorld.phaser.scene.getScene('hud').message.text }));
-check('landing in a town asks an errand in the chips', errand.offer === 'quest' && JSON.stringify(errand.chips) === '["Take it","Not now"]' && /An errand from Ashford/.test(errand.message), JSON.stringify(errand));
+check('landing in a town asks an errand in the chips', errand.offer === 'quest' && JSON.stringify(errand.chips) === '["Take it","Not now"]' && /An errand from Puddlewick Village/.test(errand.message), JSON.stringify(errand));
 chipPos = await ev(() => { const row = boardWorld.phaser.scene.getScene('hud').chipRow; return { x: row.x + row.list[0].x, y: row.y }; });
 await tapAt(chipPos.x, chipPos.y); // Take it
 await sleep(300);
@@ -577,7 +577,7 @@ await tapSpace('moon', spaces);
 await sleep(1000);
 await settle();
 const learned = await ev(() => ({ abilities: boardWorld.game.me.abilities, message: boardWorld.phaser.scene.getScene('hud').message.text }));
-check('landing on the Moon Shrine teaches the third ability', learned.abilities['war-cry'] === 1 && /Learned War Cry, rank 1/.test(learned.message), JSON.stringify(learned));
+check('landing on the Forest Shrine teaches the third ability', learned.abilities['war-cry'] === 1 && /Learned War Cry, rank 1/.test(learned.message), JSON.stringify(learned));
 await stockSave({ ...STRONG, space: 'ashford-millford-1', xp: 29, level: 1, fight: await plantedFight('slime', 'ashford-millford-1', { hp: 1 }) });
 await page.reload();
 await ready();
@@ -595,11 +595,11 @@ await ready();
 await sleep(400);
 await attackRound();
 const dead = await ev(() => ({ outcome: boardWorld.phaser.scene.getScene('fight').outcome?.type, message: boardWorld.phaser.scene.getScene('fight').message.text, space: boardWorld.game.me.space, gold: boardWorld.game.me.gold, hp: boardWorld.game.me.hp }));
-check('beaten: the fight screen says where you wake and what it cost', dead.outcome === 'died' && /wake in Ashford, 20 gold lighter/.test(dead.message) && dead.space === 'ashford' && dead.gold === 80 && dead.hp === 400, JSON.stringify(dead));
+check('beaten: the fight screen says where you wake and what it cost', dead.outcome === 'died' && /wake in Puddlewick Village, 20 gold lighter/.test(dead.message) && dead.space === 'ashford' && dead.gold === 80 && dead.hp === 400, JSON.stringify(dead));
 await tapAt(...F.cont);
 await sleep(500);
 const woke = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const sp = boardWorld.game.state.board.spaces.ashford; return { tokenOnTown: Math.abs(s.token.x - sp.x) < 1, message: boardWorld.phaser.scene.getScene('hud').message.text, following: s.following }; });
-check('Continue puts the token in Ashford and the camera on it', woke.tokenOnTown && /wake in Ashford/.test(woke.message) && woke.following, JSON.stringify(woke));
+check('Continue puts the token in Puddlewick Village and the camera on it', woke.tokenOnTown && /wake in Puddlewick Village/.test(woke.message) && woke.following, JSON.stringify(woke));
 
 // Hints on a boss and on a covered spot.
 await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); s.frame([boardWorld.game.state.board.spaces.gate, boardWorld.game.state.board.spaces.edge]); });
@@ -607,13 +607,13 @@ await settle();
 await tapSpace('gate', spaces);
 await sleep(300);
 const bossHint = await ev(() => boardWorld.phaser.scene.getScene('hud').message.text);
-check('tapping the Iron Gate names the Warden, its level and what it opens', /Thornwood Warden, level 6, at Iron Gate/.test(bossHint) && /open Thornwood/.test(bossHint), bossHint);
+check('tapping the King Goo's Gate names King Goo, its level and what it opens', /King Goo, level 6, at King Goo's Gate/.test(bossHint) && /open Wobblewood Forest/.test(bossHint), bossHint);
 await tapSpace('edge', spaces);
 await sleep(300);
 const coveredHint = await ev(() => boardWorld.phaser.scene.getScene('hud').message.text);
-check('tapping a spot under a cover says the area is closed and which boss opens it', /Thornwood \(tier 2, levels 4 to 8\): closed/.test(coveredHint) && /Beat Thornwood Warden at Iron Gate/.test(coveredHint), coveredHint);
+check('tapping a spot under a cover says the area is closed and which boss opens it', /Wobblewood Forest \(tier 2, levels 4 to 8\): closed/.test(coveredHint) && /Beat King Goo at King Goo's Gate/.test(coveredHint), coveredHint);
 
-// A level-one Warrior cannot beat the Warden: the wall.
+// A level-one Warrior cannot beat King Goo: the wall.
 await stockSave({ level: 1, hp: 120, maxHp: 120, mana: 20, maxMana: 20, attack: 12, defense: 8, space: 'moon-gate-3', steps: 1, fight: null, offer: null, items: {}, equipment: NO_GEAR, cooldowns: {}, bossKills: {}, opened: ['meadows'] }, { die: { sides: 6, last: 1 } });
 await page.reload();
 await ready();
@@ -624,7 +624,7 @@ await sleep(1200);
 await settle();
 const wallRounds = await finishFight();
 const wall = await ev(() => ({ space: boardWorld.game.me.space, kills: boardWorld.game.me.bossKills.gate, opened: boardWorld.game.me.opened, message: boardWorld.phaser.scene.getScene('hud').message.text }));
-check('a level-one Warrior with no gear is beaten by the Warden and wakes in Millford', wall.kills === undefined && wall.space === 'millford' && !wall.opened.includes('thornwood') && /wake in Millford/.test(wall.message), JSON.stringify({ wallRounds, ...wall }));
+check('a level-one Warrior with no gear is beaten by King Goo and wakes in Old Mill', wall.kills === undefined && wall.space === 'millford' && !wall.opened.includes('thornwood') && /wake in Old Mill/.test(wall.message), JSON.stringify({ wallRounds, ...wall }));
 
 // A spawned mini-boss: land on it, beat it, it leaves the board.
 await stockSave({ ...STRONG, space: 'ashford', steps: 1 }, { die: { sides: 6, last: 1 }, spawns: { 'ashford-millford-1': { kind: 'miniboss', enemy: 'wolf-alpha', until: Date.now() + 600000 } } });
@@ -636,33 +636,33 @@ await tapSpace('ashford-millford-1', spaces);
 await sleep(1200);
 await settle();
 const miniFight = await ev(() => ({ enemy: boardWorld.game.me.fight?.enemy.name, spawn: boardWorld.game.me.fight?.spawn }));
-check('landing where a mini-boss prowls fights it', miniFight.enemy === 'Wolf Alpha' && miniFight.spawn === true, JSON.stringify(miniFight));
+check('landing where a mini-boss prowls fights it', miniFight.enemy === 'Mushroom Muncher' && miniFight.spawn === true, JSON.stringify(miniFight));
 await finishFight();
 const miniGone = await ev(() => ({ spawns: Object.keys(boardWorld.game.state.spawns), badges: [...boardWorld.phaser.scene.getScene('board').spawnMarks.keys()] }));
 check('beaten, it leaves the board and its badge goes (the world may have spawned elsewhere meanwhile)', !miniGone.spawns.includes('ashford-millford-1') && !miniGone.badges.includes('ashford-millford-1') && miniGone.badges.length === miniGone.spawns.length, JSON.stringify(miniGone));
 
-// The boss on the board: a save next to the Iron Gate, strong enough; land exactly on it; beat it; Thornwood opens.
+// The boss on the board: a save next to the King Goo's Gate, strong enough; land exactly on it; beat it; Wobblewood Forest opens.
 await stockSave({ space: 'moon-gate-3', steps: 1, hp: 400, maxHp: 400, mana: 60, maxMana: 60, attack: 60, defense: 30, level: 10, fight: null, offer: null, opened: ['meadows'], cooldowns: {} });
 await ev(() => { const s = JSON.parse(localStorage.getItem('boardworld.save')); s.state.die.last = 1; localStorage.setItem('boardworld.save', JSON.stringify(s)); });
 await page.reload();
 await ready();
 await settle();
 c = await cam();
-check('a roll of one next to the Iron Gate lights the gate and one other way, not the road beyond', c.choices && c.choices.includes('gate') && !c.choices.includes('gate-edge-1'), JSON.stringify(c.choices));
+check('a roll of one next to the King Goo's Gate lights the gate and one other way, not the road beyond', c.choices && c.choices.includes('gate') && !c.choices.includes('gate-edge-1'), JSON.stringify(c.choices));
 await frameChoice('gate');
 await tapSpace('gate', spaces);
 await sleep(1200);
 await settle();
 const bossFight = await ev(() => ({ active: boardWorld.phaser.scene.isActive('fight'), enemy: boardWorld.game.me.fight?.enemy.name, role: boardWorld.game.me.fight?.enemy.role }));
-check('landing exactly on the gate starts the boss fight', bossFight.active && bossFight.enemy === 'Thornwood Warden' && bossFight.role === 'boss', JSON.stringify(bossFight));
+check('landing exactly on the gate starts the boss fight', bossFight.active && bossFight.enemy === 'King Goo' && bossFight.role === 'boss', JSON.stringify(bossFight));
 await shot('16-boss-fight');
 const bossRounds = await finishFight();
 const opened = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, kills: boardWorld.game.me.bossKills, coverThornwood: s.covers.get('thornwood').visible, label: s.bossLabels.get('gate').text, message: boardWorld.phaser.scene.getScene('hud').message.text, loot: boardWorld.game.me.bag.at(-1) }; });
-check('the Warden drops the good stuff: a unique, or nothing under epic', !!opened.loot && ['unique', 'epic', 'legendary'].includes(opened.loot.rarity) && (opened.loot.rarity !== 'unique' || typeof opened.loot.unique === 'string'), JSON.stringify(opened.loot));
-check('the Warden falls: Thornwood opens, its cover lifts, the gate counts down to the boss\'s return', opened.opened.includes('thornwood') && opened.kills.gate === 1 && opened.coverThornwood === false && /back in \d+:\d\d/.test(opened.label) && /Thornwood is open/.test(opened.message), JSON.stringify({ bossRounds, ...opened }));
+check('King Goo drops the good stuff: a unique, or nothing under epic', !!opened.loot && ['unique', 'epic', 'legendary'].includes(opened.loot.rarity) && (opened.loot.rarity !== 'unique' || typeof opened.loot.unique === 'string'), JSON.stringify(opened.loot));
+check('King Goo falls: Wobblewood Forest opens, its cover lifts, the gate counts down to the boss\'s return', opened.opened.includes('thornwood') && opened.kills.gate === 1 && opened.coverThornwood === false && /back in \d+:\d\d/.test(opened.label) && /Wobblewood Forest is open/.test(opened.message), JSON.stringify({ bossRounds, ...opened }));
 await shot('17-area-opened');
 
-// The Briar Gate opens Frostpeak; then a look at the two further areas.
+// The Grumblebark's Glade opens Honeyhill Fields; then a look at the two further areas.
 await stockSave({ ...STRONG, attack: 90, defense: 40, hp: 600, maxHp: 600, space: 'thicket-briar-3', steps: 1, opened: ['meadows', 'thornwood'], cooldowns: {}, bossKills: {} }, { die: { sides: 6, last: 1 } });
 await page.reload();
 await ready();
@@ -672,10 +672,10 @@ await tapSpace('briar', spaces);
 await sleep(1200);
 await settle();
 const briarFight = await ev(() => boardWorld.game.me.fight?.enemy.name);
-check('landing exactly on the Briar Gate starts the Briar King', briarFight === 'Briar King', String(briarFight));
+check('landing exactly on the Grumblebark's Glade starts the Grumblebark', briarFight === 'Grumblebark', String(briarFight));
 await finishFight();
 const frost = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); return { opened: boardWorld.game.me.opened, cover: s.covers.get('frostpeak').visible, message: boardWorld.phaser.scene.getScene('hud').message.text }; });
-check('the Briar King falls and Frostpeak opens', frost.opened.includes('frostpeak') && frost.cover === false && /Frostpeak is open/.test(frost.message), JSON.stringify(frost));
+check('the Grumblebark falls and Honeyhill Fields opens', frost.opened.includes('frostpeak') && frost.cover === false && /Honeyhill Fields is open/.test(frost.message), JSON.stringify(frost));
 await ev(() => boardWorld.phaser.scene.getScene('board').toggleMap());
 await sleep(400);
 await settle();
@@ -686,7 +686,7 @@ await shot('21-thornwood');
 await frameArea('frostpeak');
 await shot('22-frostpeak');
 
-// The Summit: the Frost Matriarch falls and the world grows. The first grown area is laid from the seed and opened, drawn
+// Queen Bumble's Hive: the Queen Bumble falls and the world grows. The first grown area is laid from the seed and opened, drawn
 // on the spot with its ground, roads, spots and boss, and the map is wider for it; the hint at its gate names the next.
 await stockSave({ ...STRONG, attack: 120, defense: 60, hp: 900, maxHp: 900, space: 'summit', opened: ['meadows', 'thornwood', 'frostpeak'], cooldowns: {}, bossKills: {}, fight: await plantedFight('frost-matriarch', 'summit', { hp: 1 }) });
 await page.reload();
@@ -702,7 +702,7 @@ const grown = await ev(() => {
   const gate = own.find((x) => x.kind === 'boss');
   return { opened: boardWorld.game.me.opened, area: area && { name: area.name, tier: area.tier, theme: area.theme }, width: b.width, camWidth: s.cameras.main.getBounds().width, cover: s.covers.get('gen-1')?.visible, drawn: own.filter((x) => s.circles.has(x.id)).length, spaces: own.length, message: boardWorld.phaser.scene.getScene('hud').message.text, gate: gate && { id: gate.id, boss: gate.boss, bossName: b.bestiary[gate.boss]?.name, label: s.bossLabels.get(gate.id)?.text } };
 });
-check('the Frost Matriarch falls: the first grown area is laid and opened, drawn spot for spot with its boss, the map wider', atSummit.enemy === 'Frost Matriarch' && grown.opened.includes('gen-1') && grown.area?.tier === 4 && grown.width > atSummit.width && grown.camWidth === grown.width && grown.cover === false && grown.spaces >= 40 && grown.drawn === grown.spaces && new RegExp(`${grown.area?.name} is open`).test(grown.message) && /level \d+/.test(grown.gate?.label ?? ''), JSON.stringify({ atSummit, ...grown }));
+check('the Queen Bumble falls: the first grown area is laid and opened, drawn spot for spot with its boss, the map wider', atSummit.enemy === 'Queen Bumble' && grown.opened.includes('gen-1') && grown.area?.tier === 4 && grown.width > atSummit.width && grown.camWidth === grown.width && grown.cover === false && grown.spaces >= 40 && grown.drawn === grown.spaces && new RegExp(`${grown.area?.name} is open`).test(grown.message) && /level \d+/.test(grown.gate?.label ?? ''), JSON.stringify({ atSummit, ...grown }));
 await frameArea('gen-1');
 await shot('23-grown-area');
 const grownSpaces = await ev(() => Object.fromEntries(Object.values(boardWorld.game.state.board.spaces).map((s) => [s.id, { x: s.x, y: s.y, kind: s.kind }])));
@@ -733,8 +733,8 @@ await settle();
 await tapAt(...B.world);
 await sleep(400);
 const atlas = await ev(() => ({ active: boardWorld.phaser.scene.isActive('atlas'), rows: boardWorld.phaser.scene.getScene('atlas').children.list.filter((o) => o.text && /tier \d/.test(o.text)).map((o) => o.text) }));
-check('World opens the atlas: the areas by tier, the open ones bright, you are here', atlas.active && atlas.rows.length === 3 && atlas.rows[0] === 'Ashford Meadows · tier 1 · you are here' && atlas.rows[1] === 'Thornwood · tier 2' && atlas.rows[2] === 'Frostpeak · tier 3', JSON.stringify(atlas));
-await tapAt(364, 176 + 74 + 12); // Go, Thornwood
+check('World opens the atlas: the areas by tier, the open ones bright, you are here', atlas.active && atlas.rows.length === 3 && atlas.rows[0] === 'Cloverfield Meadows · tier 1 · you are here' && atlas.rows[1] === 'Wobblewood Forest · tier 2' && atlas.rows[2] === 'Honeyhill Fields · tier 3', JSON.stringify(atlas));
+await tapAt(364, 176 + 74 + 12); // Go, Wobblewood Forest
 await sleep(500);
 await settle();
 const framed = await ev(() => { const s = boardWorld.phaser.scene.getScene('board'); const b = boardWorld.game.state.board.areas.thornwood.bounds; const v = s.cameras.main.worldView; const cx = b.x + b.width / 2; const cy = b.y + b.height / 2; return { atlas: boardWorld.phaser.scene.isActive('atlas'), following: s.following, inside: v.x <= cx && cx <= v.x + v.width && v.y <= cy && cy <= v.y + v.height, view: { x: Math.round(v.x), y: Math.round(v.y), w: Math.round(v.width), h: Math.round(v.height) }, bounds: b }; });

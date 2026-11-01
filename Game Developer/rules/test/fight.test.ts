@@ -56,7 +56,7 @@ describe('a fight', () => {
   it('begins on a wild spot against the area\'s creature drawn from the seed: a Slime for the seed ashford, on s1', () => {
     const { state } = begin('warrior');
     expect(me(state).fight).toEqual({
-      enemy: { id: 'slime', name: 'Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 6, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null, next: { name: 'Splat', power: 1, weight: 1 }, armoured: null, evade: 0, phase: 1, phase2: null },
+      enemy: { id: 'slime', name: 'Jelly Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 6, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null, next: { name: 'Splat', power: 1, weight: 1 }, armoured: null, evade: 0, phase: 1, phase2: null },
       round: 1,
       charged: false,
       attackUp: null,
@@ -324,10 +324,10 @@ describe('a fight', () => {
       const rng = makeRng(`alpha-${i}`);
       const first = apply(alpha, turn(attack, 'none'), rng, NOW);
       if (!first.events.some((e) => e.type === 'charged' && e.by === 'enemy')) continue;
-      expect(me(first.state).fight!.enemy.charged).toBe('Howl');
+      expect(me(first.state).fight!.enemy.charged).toBe('Spore Puff');
       const second = apply(first.state, turn(attack, 'none', 'f2'), rng, NOW);
       const blow = second.events.find((e) => e.type === 'hit' && e.by === 'enemy');
-      expect(blow).toMatchObject({ move: 'Howl' });
+      expect(blow).toMatchObject({ move: 'Spore Puff' });
       if (blow?.type === 'hit') expect(blow.damage).toBeGreaterThanOrEqual(16);
       expect(me(second.state).fight!.enemy.charged).toBeNull();
       seen++;

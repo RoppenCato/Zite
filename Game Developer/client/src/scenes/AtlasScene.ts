@@ -161,7 +161,7 @@ export class AtlasScene extends Phaser.Scene {
       return `Closed.${by ? ` Beat the ${by} at ${opener!.name} to open it.` : ''}`;
     }
     const errand = me.quests.find((q) => q.area === area.id);
-    const parts = [`Levels ${area.levels[0]} to ${area.levels[1]}.`];
+    const parts = [`${area.kingdom ? `${area.kingdom}. ` : ''}Levels ${area.levels[0]} to ${area.levels[1]}.`];
     if (boss) parts.push(`${boss.name} at ${gate!.name}${kills ? `, beaten ${kills}×` : ''}.`);
     if (errand) parts.push(`Errand: ${questLine(errand)}`);
     return parts.join(' ');

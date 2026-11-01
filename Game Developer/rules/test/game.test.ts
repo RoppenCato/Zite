@@ -26,7 +26,7 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('a new game', () => {
   it('plays on the world unless given a board: Zite, starting in the town Ashford in the meadows, the first area open', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(s.version).toBe(10);
+    expect(s.version).toBe(11);
     expect(s.board).toEqual(makeBoard());
     expect(s.board.start).toBe('ashford');
     expect(me(s)).toMatchObject({ space: 'ashford', steps: 0, opened: ['meadows'] });
@@ -36,7 +36,7 @@ describe('a new game', () => {
 
   it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
     const s = fresh();
-    expect(s.version).toBe(10);
+    expect(s.version).toBe(11);
     expect(s.seed).toBe('ashford');
     expect(Object.keys(s.board.spaces)).toHaveLength(12);
     expect(me(s)).toEqual({
@@ -408,7 +408,7 @@ describe('a stored state', () => {
   it.each([1, 2, 3, 4] as const)('brings a version-%i state up to date: the world, every character kept by name, class, level, xp, gold and bag, stood on Ashford rested, the first area open', (version) => {
     const s = migrate(structuredClone(older(version)));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(10);
+    expect(s!.version).toBe(11);
     expect(s!.seed).toBe('old-seed');
     expect(s!.board).toEqual(makeBoard());
     expect(s!.die).toEqual({ sides: 6, last: null });
@@ -455,7 +455,7 @@ describe('a stored state', () => {
     const v5 = { version: 5, seed: 'old-seed', board: oldBoard, characters: { p1, p2, p3 }, die: { sides: 6, last: 4 }, spawns: { 'briar-pass-1': { kind: 'merchant', enemy: null, until: NOW }, nowhere: { kind: 'merchant', enemy: null, until: NOW } }, nextItem: 9 };
     const s = migrate(structuredClone(v5));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(10);
+    expect(s!.version).toBe(11);
     expect(s!.board).toEqual(makeBoard());
     expect(s!.characters.p1).toEqual(p1);
     expect(s!.characters.p2).toEqual({ ...p2, space: 'ashford', steps: 0 });
@@ -485,5 +485,28 @@ describe('the enemies', () => {
       for (const m of e.moves) expect(m.weight, `${id} ${m.name}`).toBeGreaterThan(0);
       if (e.role !== 'mob') expect(e.moves.some((m) => m.charge), `${id} winds up`).toBe(true);
     }
+  });
+});
+
+describe('a version-10 state (the names before the Enchanted Kingdoms)', () => {
+  it('comes up to 11 with the board laid again under the new names, the character kept where it stood', () => {
+    const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
+    const moved = { ...s, characters: { [P]: { ...s.characters[P]!, space: 'millford', gold: 77 } } };
+    const old = structuredClone({ ...moved, version: 10 }) as unknown as { board: { spaces: Record<string, { name: string }> } };
+    old.board.spaces.ashford!.name = 'Ashford';
+    old.board.spaces.millford!.name = 'Millford';
+    const up = migrate(old)!;
+    expect(up.version).toBe(11);
+    expect(up.board.spaces.ashford?.name).toBe('Puddlewick Village');
+    expect(up.board.spaces.millford?.name).toBe('Old Mill');
+    expect(up.board.areas.meadows?.name).toBe('Cloverfield Meadows');
+    expect(up.characters[P]).toMatchObject({ space: 'millford', gold: 77 });
+  });
+
+  it('leaves a board that is not the world (a test ring) as it is', () => {
+    const ring = structuredClone({ ...fresh(), version: 10 });
+    const up = migrate(ring)!;
+    expect(up.version).toBe(11);
+    expect(up.board.spaces.s0?.name).toBe(fresh().board.spaces.s0?.name);
   });
 });

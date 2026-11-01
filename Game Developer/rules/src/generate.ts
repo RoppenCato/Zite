@@ -295,7 +295,7 @@ export function generateArea(seed: string, n: number): GrownArea {
     ...(rage ? { phase2: { at: 0.5, text: rage.text.replace('{boss}', theme.boss), moves: [...bossMoves.map((m) => ({ ...m })), { ...rage.move }] } } : {}),
   };
 
-  const area: WorldArea = { id: peek.id, name: peek.name, theme: peek.theme, tier: peek.tier, levels: peek.levels, mobs, miniBosses: [miniId], hubs, roads };
+  const area: WorldArea = { id: peek.id, name: peek.name, theme: peek.theme, ...(theme.kingdom ? { kingdom: theme.kingdom } : {}), tier: peek.tier, levels: peek.levels, mobs, miniBosses: [miniId], hubs, roads };
   return { area, entry: `${tag}-${entry.id}`, bestiary };
 }
 

@@ -42,6 +42,8 @@ export interface WorldArea {
   levels: [number, number];
   mobs: string[];
   miniBosses: string[];
+  /** The kingdom or territory the area belongs to: a label for the atlas and the hints. */
+  kingdom?: string;
   hubs: WorldHub[];
   roads: WorldRoad[];
 }
@@ -97,7 +99,7 @@ export function buildBoard(world: World): Board {
 /** Lay an area's hubs and roads into the board (the board is changed in place; pass a copy to keep the old one). */
 export function addArea(board: Board, area: WorldArea, worldName = 'world'): void {
   if (board.areas[area.id]) throw new Error(`world ${worldName}: duplicate area id "${area.id}"`);
-  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
+  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, ...(area.kingdom ? { kingdom: area.kingdom } : {}), tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
   for (const hub of area.hubs) {
     if (!KNOWN_KINDS.has(hub.kind)) throw new Error(`world ${worldName}: hub "${hub.id}" has unknown kind "${hub.kind}"`);
     if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${worldName}: boss spot "${hub.id}" names no boss`);

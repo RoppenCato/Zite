@@ -1,40 +1,470 @@
 {
-  "order": ["fire", "water", "swamp", "desert", "crystal", "shadow", "sky", "jungle"],
+  "order": [
+    "glimmerlake",
+    "moonwhisper",
+    "thunderstone",
+    "sunfall",
+    "frostveil",
+    "thornhollow",
+    "starfall",
+    "embercrown",
+    "shattered"
+  ],
   "themes": {
-    "fire":    { "areas": ["Emberfall", "Ashen Reach", "Cinder Wastes", "Magma Fields"],  "adjectives": ["Ember", "Ash", "Cinder", "Magma", "Smoulder"], "mobs": ["Cinder Hound", "Magma Crawler", "Ash Wraith", "Flame Imp"], "mini": "Ember Drake", "boss": "Molten Tyrant" },
-    "water":   { "areas": ["Mistwater", "Tidehollow", "Drowned Coast", "Saltreach"],      "adjectives": ["Tide", "Mist", "Brine", "Reef", "Foam"],        "mobs": ["Tide Crab", "Drowned Sailor", "Reef Serpent", "Mist Siren"], "mini": "Kraken Spawn", "boss": "Abyssal Leviathan" },
-    "swamp":   { "areas": ["Murkfen", "Rotmire", "Bogwater", "Sunken Marsh"],             "adjectives": ["Bog", "Mire", "Rot", "Fen", "Murk"],           "mobs": ["Bog Leech", "Mire Troll", "Marsh Hag", "Rot Stalker"], "mini": "Fen Hydra", "boss": "Bog King" },
-    "desert":  { "areas": ["Sunscar", "Dune Sea", "Glassfields", "Scorchland"],           "adjectives": ["Sand", "Dune", "Sun", "Dust", "Scorch"],       "mobs": ["Sand Scarab", "Dune Raider", "Sun Scorpion", "Dust Djinn"], "mini": "Sand Wyrm", "boss": "Sun Pharaoh" },
-    "crystal": { "areas": ["Glimmerdeep", "Shardfall", "Prism Vale", "Geode Hollows"],    "adjectives": ["Shard", "Prism", "Glass", "Geode", "Glimmer"], "mobs": ["Shard Beetle", "Prism Golem", "Glass Wisp", "Geode Lurker"], "mini": "Crystal Colossus", "boss": "Prismatic Queen" },
-    "shadow":  { "areas": ["Duskmoor", "Nightveil", "Gloomhallow", "Umbral Reach"],       "adjectives": ["Dusk", "Night", "Gloom", "Umbral", "Dread"],   "mobs": ["Night Stalker", "Umbral Wolf", "Dread Shade", "Void Imp"], "mini": "Shadow Fiend", "boss": "Dusk Lord" },
-    "sky":     { "areas": ["Skyreach", "Cloudrest", "Stormcrown", "Windward Heights"],    "adjectives": ["Storm", "Cloud", "Gale", "Thunder", "Sky"],    "mobs": ["Storm Hawk", "Cloud Ray", "Gale Sprite", "Thunder Ram"], "mini": "Roc", "boss": "Storm Titan" },
-    "jungle":  { "areas": ["Verdant Tangle", "Vinewood", "Canopy Deep", "Greenmaw"],      "adjectives": ["Vine", "Fern", "Canopy", "Moss", "Thorn"],     "mobs": ["Vine Viper", "Shadow Jaguar", "Poison Frog", "Ape Brute"], "mini": "Elder Ape", "boss": "Jungle Idol" }
+    "glimmerlake": {
+      "areas": [
+        "Glimmerlake Shores",
+        "Pearl Shallows",
+        "Reedwater Marches",
+        "Bellwater Coast"
+      ],
+      "adjectives": [
+        "Glimmer",
+        "Reed",
+        "Pearl",
+        "Ripple",
+        "Coral"
+      ],
+      "mobs": [
+        "Bubble Imp",
+        "Shellback",
+        "River Sprite",
+        "Marsh Goblin"
+      ],
+      "mini": "Crystal Crab",
+      "boss": "Lord Ripplefin",
+      "kingdom": "Glimmerlake Marches"
+    },
+    "moonwhisper": {
+      "areas": [
+        "Moonwhisper Woods",
+        "Violet Hollow",
+        "Witchlight Glades",
+        "Silvermoss Vale"
+      ],
+      "adjectives": [
+        "Moon",
+        "Violet",
+        "Lantern",
+        "Dream",
+        "Silver"
+      ],
+      "mobs": [
+        "Moon Moth",
+        "Lantern Wisp",
+        "Dream Fox",
+        "Hexcap"
+      ],
+      "mini": "Spellbound Doll",
+      "boss": "Lady Nightbloom",
+      "kingdom": "Moonspire Kingdom"
+    },
+    "thunderstone": {
+      "areas": [
+        "Thunderstone Highlands",
+        "Cracklepeak",
+        "Stormcairn Moors",
+        "Copperfell"
+      ],
+      "adjectives": [
+        "Thunder",
+        "Slate",
+        "Copper",
+        "Storm",
+        "Boulder"
+      ],
+      "mobs": [
+        "Pebble Golem",
+        "Storm Bat",
+        "Rock Hopper",
+        "Spark Imp"
+      ],
+      "mini": "Iron Goblin",
+      "boss": "Boulderbelly",
+      "kingdom": "Stormward Highlands"
+    },
+    "sunfall": {
+      "areas": [
+        "Sunfall Expanse",
+        "Sevensun Sands",
+        "Obelisk Reach",
+        "Goldarch Wastes"
+      ],
+      "adjectives": [
+        "Sun",
+        "Dune",
+        "Obelisk",
+        "Gilded",
+        "Mirage"
+      ],
+      "mobs": [
+        "Sand Skitter",
+        "Scarab Guard",
+        "Dust Wraith",
+        "Relic Mimic"
+      ],
+      "mini": "Sunstone Sentinel",
+      "boss": "Pharaoh Solmar",
+      "kingdom": "Suncrest Kingdom"
+    },
+    "frostveil": {
+      "areas": [
+        "Frostveil Peaks",
+        "Glacier Hall",
+        "Icewind Shelf",
+        "Palewhite Crags"
+      ],
+      "adjectives": [
+        "Frost",
+        "Icicle",
+        "Snowdrift",
+        "Pine",
+        "Glacier"
+      ],
+      "mobs": [
+        "Snow Puff",
+        "Icefang Wolf",
+        "Frost Spirit",
+        "Crystal Yeti"
+      ],
+      "mini": "Frozen Knight",
+      "boss": "Glaciorn",
+      "kingdom": "Frostveil Kingdom"
+    },
+    "thornhollow": {
+      "areas": [
+        "Thornhollow Wilds",
+        "Rotwood Deep",
+        "Weeping Thickets",
+        "Heartroot Tangle"
+      ],
+      "adjectives": [
+        "Thorn",
+        "Briar",
+        "Rotcap",
+        "Hollow",
+        "Weeping"
+      ],
+      "mobs": [
+        "Thornling",
+        "Briar Wolf",
+        "Rotcap",
+        "Shadow Wisp"
+      ],
+      "mini": "Cursed Stag",
+      "boss": "The Briar Queen",
+      "kingdom": "Thornhollow Wilds"
+    },
+    "starfall": {
+      "areas": [
+        "Starfall Dominion",
+        "Shardfall Crater",
+        "Astral Terraces",
+        "Lost Star Reach"
+      ],
+      "adjectives": [
+        "Astral",
+        "Rune",
+        "Star",
+        "Void",
+        "Prism"
+      ],
+      "mobs": [
+        "Astral Wisp",
+        "Spell Eater",
+        "Rune Knight",
+        "Voidling"
+      ],
+      "mini": "Arcane Construct",
+      "boss": "Archmage Veyra",
+      "kingdom": "Moonspire Kingdom"
+    },
+    "embercrown": {
+      "areas": [
+        "Embercrown Mountains",
+        "Ashen Nest",
+        "Blackglass Heights",
+        "Forgefire Ridge"
+      ],
+      "adjectives": [
+        "Ember",
+        "Obsidian",
+        "Molten",
+        "Ashen",
+        "Basalt"
+      ],
+      "mobs": [
+        "Emberling",
+        "Ash Drake",
+        "Magma Golem",
+        "Flamefang"
+      ],
+      "mini": "Obsidian Guardian",
+      "boss": "Ignarox, the Crownfire Dragon",
+      "kingdom": "Embercrown Range"
+    },
+    "shattered": {
+      "areas": [
+        "The Shattered Crown",
+        "Hall of Mirrors",
+        "Rift Crossing",
+        "The Broken Coronation"
+      ],
+      "adjectives": [
+        "Crownless",
+        "Rift",
+        "Mirror",
+        "Ivory",
+        "Hollow"
+      ],
+      "mobs": [
+        "Crownless Knight",
+        "Royal Phantom",
+        "Mirror Beast",
+        "Celestial Sentinel"
+      ],
+      "mini": "Rift Dragon",
+      "boss": "The Hollow King",
+      "kingdom": "The Shattered Crown"
+    }
   },
   "rage": {
-    "fire":    { "text": "The {boss} burns brighter!",        "move": { "name": "Immolate", "power": 1.2, "weight": 1, "effect": "poison" } },
-    "water":   { "text": "The {boss} drags you under!",       "move": { "name": "Undertow", "power": 1.1, "weight": 1, "effect": "weaken" } },
-    "swamp":   { "text": "The {boss} seeps rot into you!",    "move": { "name": "Rot", "power": 0.9, "weight": 1, "effect": "poison" } },
-    "desert":  { "text": "The {boss} calls a sandstorm!",     "move": { "name": "Sandstorm", "power": 0, "weight": 1, "effect": "evade" } },
-    "crystal": { "text": "The {boss} hardens to glass!",      "move": { "name": "Crystallize", "power": 0, "weight": 1, "effect": "armour" } },
-    "shadow":  { "text": "The {boss} drinks the light!",      "move": { "name": "Drain", "power": 0.8, "weight": 1, "effect": "drain" } },
-    "sky":     { "text": "The {boss} rides the storm!",       "move": { "name": "Lightning", "power": 1.5, "weight": 1 } },
-    "jungle":  { "text": "The {boss} grows back its wounds!", "move": { "name": "Regrow", "power": 0, "weight": 1, "effect": "heal" } }
+    "glimmerlake": {
+      "text": "{boss} calls the lake to rise!",
+      "move": {
+        "name": "Undertow",
+        "power": 1.1,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    },
+    "moonwhisper": {
+      "text": "{boss} weaves a dream round you!",
+      "move": {
+        "name": "Hex",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "drain"
+      }
+    },
+    "thunderstone": {
+      "text": "{boss}'s thunder crystal blazes!",
+      "move": {
+        "name": "Lightning",
+        "power": 1.5,
+        "weight": 1
+      }
+    },
+    "sunfall": {
+      "text": "{boss} calls a sandstorm!",
+      "move": {
+        "name": "Sandstorm",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      }
+    },
+    "frostveil": {
+      "text": "{boss} breathes a blizzard!",
+      "move": {
+        "name": "Blizzard",
+        "power": 1.2,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    },
+    "thornhollow": {
+      "text": "{boss} grows back her wounds!",
+      "move": {
+        "name": "Regrow",
+        "power": 0,
+        "weight": 1,
+        "effect": "heal"
+      }
+    },
+    "starfall": {
+      "text": "{boss} bends the stars!",
+      "move": {
+        "name": "Starfall",
+        "power": 1.5,
+        "weight": 1
+      }
+    },
+    "embercrown": {
+      "text": "{boss} burns brighter!",
+      "move": {
+        "name": "Immolate",
+        "power": 1.2,
+        "weight": 1,
+        "effect": "poison"
+      }
+    },
+    "shattered": {
+      "text": "{boss}'s crown shards whirl!",
+      "move": {
+        "name": "Crown Shards",
+        "power": 1.3,
+        "weight": 1
+      }
+    }
   },
   "places": {
-    "town":   ["Hold", "Haven", "Rest", "Crossing", "Landing"],
-    "shop":   ["Trader", "Market", "Cart", "Stall"],
-    "spell":  ["Shrine", "Stone", "Altar"],
-    "chest":  ["Hoard", "Cache", "Cairn"],
-    "potion": ["Spring", "Pool", "Well"],
-    "normal": ["Ridge", "Hollow", "Flats", "Reach", "Edge", "Hill", "Thicket", "Crag"]
+    "town": [
+      "Hold",
+      "Haven",
+      "Rest",
+      "Crossing",
+      "Landing"
+    ],
+    "shop": [
+      "Trader",
+      "Market",
+      "Cart",
+      "Stall"
+    ],
+    "spell": [
+      "Shrine",
+      "Stone",
+      "Altar"
+    ],
+    "chest": [
+      "Hoard",
+      "Cache",
+      "Cairn"
+    ],
+    "potion": [
+      "Spring",
+      "Pool",
+      "Well"
+    ],
+    "normal": [
+      "Ridge",
+      "Hollow",
+      "Flats",
+      "Reach",
+      "Edge",
+      "Hill",
+      "Thicket",
+      "Crag"
+    ]
   },
   "archetypes": [
-    { "hp": 1.0,  "attack": 1.0,  "defense": 1.0,  "moves": [ { "name": "Strike", "power": 1, "weight": 3 }, { "name": "Lunge", "power": 1.4, "weight": 1 }, { "name": "Venom", "power": 0.8, "weight": 1, "effect": "poison" } ] },
-    { "hp": 1.35, "attack": 1.05, "defense": 1.25, "moves": [ { "name": "Swipe", "power": 1, "weight": 2 }, { "name": "Crush", "power": 1.7, "weight": 1, "charge": true } ] },
-    { "hp": 0.9,  "attack": 1.2,  "defense": 0.7,  "moves": [ { "name": "Bolt", "power": 1, "weight": 2 }, { "name": "Siphon", "power": 0.7, "weight": 1, "effect": "drain" } ] },
-    { "hp": 1.6,  "attack": 1.0,  "defense": 1.6,  "moves": [ { "name": "Slam", "power": 1, "weight": 2 }, { "name": "Quake", "power": 1.8, "weight": 1, "charge": true }, { "name": "Harden", "power": 0, "weight": 1, "effect": "armour" } ] }
+    {
+      "hp": 1,
+      "attack": 1,
+      "defense": 1,
+      "moves": [
+        {
+          "name": "Strike",
+          "power": 1,
+          "weight": 3
+        },
+        {
+          "name": "Lunge",
+          "power": 1.4,
+          "weight": 1
+        },
+        {
+          "name": "Venom",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    },
+    {
+      "hp": 1.35,
+      "attack": 1.05,
+      "defense": 1.25,
+      "moves": [
+        {
+          "name": "Swipe",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Crush",
+          "power": 1.7,
+          "weight": 1,
+          "charge": true
+        }
+      ]
+    },
+    {
+      "hp": 0.9,
+      "attack": 1.2,
+      "defense": 0.7,
+      "moves": [
+        {
+          "name": "Bolt",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Siphon",
+          "power": 0.7,
+          "weight": 1,
+          "effect": "drain"
+        }
+      ]
+    },
+    {
+      "hp": 1.6,
+      "attack": 1,
+      "defense": 1.6,
+      "moves": [
+        {
+          "name": "Slam",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Quake",
+          "power": 1.8,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Harden",
+          "power": 0,
+          "weight": 1,
+          "effect": "armour"
+        }
+      ]
+    }
   ],
-  "base": { "mob": { "hp": 260, "attack": 38, "defense": 11, "xp": 42, "gold": 48 }, "mini": { "hp": 770, "attack": 48, "defense": 16, "xp": 170, "gold": 180 }, "boss": { "hp": 1320, "attack": 46, "defense": 15, "xp": 700, "gold": 600 } },
-  "perTier": { "hp": 1.25, "attack": 1.15, "defense": 1.12, "reward": 1.3 },
-  "cell": { "width": 1400, "height": 1900, "firstColumn": 2 }
+  "base": {
+    "mob": {
+      "hp": 260,
+      "attack": 38,
+      "defense": 11,
+      "xp": 42,
+      "gold": 48
+    },
+    "mini": {
+      "hp": 770,
+      "attack": 48,
+      "defense": 16,
+      "xp": 170,
+      "gold": 180
+    },
+    "boss": {
+      "hp": 1320,
+      "attack": 46,
+      "defense": 15,
+      "xp": 700,
+      "gold": 600
+    }
+  },
+  "perTier": {
+    "hp": 1.25,
+    "attack": 1.15,
+    "defense": 1.12,
+    "reward": 1.3
+  },
+  "cell": {
+    "width": 1400,
+    "height": 1900,
+    "firstColumn": 2
+  }
 }

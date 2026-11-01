@@ -35,8 +35,8 @@ stand-ins: the new art replaces the files, not the code, since the atlas form is
 Robin scrapped the whole art direction on 2026-11-01 and kept the shell: the board from a raised camera, side-view
 fights, areas as kits of data, these budgets and the atlas form. Everything drawn under the old direction is gone from the
 studio (the Turnip Grump and the meadow kits are not coming); the four pieces copied here stay as stand-ins. The new art
-session starts from `C:devZiteArt DirectorHANDOVER.md`, which has three example pictures of the look Robin wants
-(lush painted environments with depth, chunky friendly shapes, characters small against the scene). **The player's height
+session (Mitch, AD) starts from the Art Director's `CLAUDE.md` and `docs/direction.md`; no reference pictures carry over (Robin,
+2026-11-01): the look comes from Robin, asked with pictures. The theme is Enchanted Kingdoms (the brief, "The look"). **The player's height
 is to be reconfirmed with Robin**: 100 CSS px was Perry, AD's number with mine; Robin's own sheet stood 118 and he liked
 its presence. What the game needs, in order, is `docs/art-demands.md`.
 

@@ -1,8 +1,9 @@
 # The Enchanted Kingdoms catalogue, mapped onto the game as built
 
 Miles, GD, 2026-11-01. `docs/world-content.md` is the catalogue (a proposal, prepared for Robin's theme). This file says
-how it fits the game that exists, what would change where, and what Robin has to confirm before any name goes into the
-data. **Nothing in the data changes until he does** (Robin, 2026-11-01). The architecture does not change at all: the
+how it fits the game that exists, what would change where, and what Robin has to confirm before any name went into the
+data. **Applied on 2026-11-01** (Robin: "names yes, order A"): the data, the docs and the tests carry the names below; the
+ids (`meadows`, `slime`, `thornwood-warden`, …) are the first names and never show. The architecture does not change at all: the
 world stays a seeded graph of spots and links, one area per tier outward from the start, the boss at the passage as the
 gate (Robin, 2026-10-31).
 

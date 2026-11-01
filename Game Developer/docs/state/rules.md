@@ -24,7 +24,7 @@ here too, so the client and the server share them (`docs/state/protocol.md`).
 | `src/delta.ts` | `diffState(before, after)`: what changed, by reference, or null; `mergeDelta`, `mergeDeltas` |
 | `src/protocol.ts` | `PROTOCOL_VERSION` (1), `MAX_FRAME`, `RATE`, `BATCH_MS`, and the message types both sides import (`docs/state/protocol.md`) |
 | `src/save.ts` | `migrate(raw)`: a stored state up to the current version (1 to 4 through 5, then 6, 7, 8, 9, 10), or null |
-| `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; the Summit opens `gen-1` |
+| `data/world.json` | the world: three hand-laid areas by tier, their hubs, roads and mobs; the passages between them; Queen Bumble's Hive opens `gen-1` |
 | `data/themes.json` | the grown areas: the eight themes with their names, adjectives and creatures, the words for places, the four creature shapes, the base numbers and the growth a tier, the cell |
 | `data/spaces.json` | the kinds of spot: label, road letter, the hint, how long a used spot waits |
 | `data/enemies.json` | every creature: level, role (mob, mini, boss), numbers, xp and gold, its moves (with effects to read), a boss's second phase |
@@ -78,7 +78,7 @@ gear.
 **5 (2026-10-31) replaced the island with the world in areas** and brought bosses on the board, gear, mana and
 abilities. `migrate` takes any older state up: the board is rebuilt, every character keeps its name, class, level, xp,
 gold and consumables, stands on the start again with full HP and mana, nothing worn, its class's starting kit, and only
-the first area open. **6 (2026-10-31) made the world grow**: the board is rebuilt from today's data (the Summit now
+the first area open. **6 (2026-10-31) made the world grow**: the board is rebuilt from today's data (Queen Bumble's Hive now
 leads on) and the areas each character had opened are laid again; a character stays where it stood if that spot is
 still there and in an open area, else goes to the start; the rest is kept as it was. **7 (2026-11-01) brought the
 uniques, the meters and the intents**: a piece's one `affix` becomes its `affixes`, a fight in progress gains the
@@ -238,8 +238,8 @@ something (Robin, 2026-10-31: enemies that ask for the guard choice).
   ×1.5 for 2 rounds), **evade** (the player's next hit misses), **heal** (a tenth of its HP). A stunned enemy skips
   (`skipped { reason }`: stunned, warped by Time Warp, trapped); a weakened one hits for `mult` of its power.
   **Mini-bosses and bosses shrug off stuns** (`resisted`): the simulation found a Shield Bash every other round robbed
-  the Warden of the fight. **A boss under half its HP enters its second phase** (`phase { text }`): new moves with the
-  theme's twist (the Warden's thorns burst, the Briar King regrows, the Matriarch's heart freezes over; a grown boss
+  King Goo of the fight. **A boss under half its HP enters its second phase** (`phase { text }`): new moves with the
+  theme's twist (King Goo's thorns burst, the Grumblebark regrows, Queen Bumble's heart freezes over; a grown boss
   takes its theme's rage move), once a fight.
 - **The meter** (`fight.meter`, `meter { name, value, max }`): the class's resource, filled by its rule (the classes
   table), spent by the abilities marked `meter` or `meterAll` (`not enough meter`); a Wolf Totem adds a point now and
@@ -266,7 +266,7 @@ something (Robin, 2026-10-31: enemies that ask for the guard choice).
   { space, until }` (5 minutes, per character), `bossKills` counted, and the area it opens added to `opened` with
   `opened { area }` the first time. A **spawned** mini-boss leaves the board (`despawned`).
 - **Being beaten**: `died { town, lostGold }`: back on your feet in the nearest town by steps **through open areas**
-  (the simulation found a character waking behind the Briar Gate), HP and mana full, a fifth of the gold gone
+  (the simulation found a character waking behind the Grumblebark's Glade), HP and mana full, a fifth of the gold gone
   (`deathGoldLoss`), gear kept (the brief's rule).
 
 ## The world's tick (Robin, 2026-10-31: random mini-bosses and events spawn from time to time)
@@ -324,44 +324,44 @@ characters of a class grow apart. Levels: 2 at 30 xp, 3 at 80, 4 at 160, 5 at 28
 
 ## Balance (mine, 2026-10-31, from `tools/simulate.ts`)
 
-`node tools/simulate.ts [turns] [seeds]` plays a bot of each class from Ashford under a plain policy (fight, rest when
+`node tools/simulate.ts [turns] [seeds]` plays a bot of each class from Puddlewick Village under a plain policy (fight, rest when
 worn, buy the plain gear of the area, learn at shrines) and then throws each class at each boss, the three hand-laid
 and the first three grown, level by level, in the plain gear of the rank with two potions. It found the first numbers
-far too easy (no deaths, the level cap in a hundred turns, a level-one character beating the Warden) and a stun-lock;
+far too easy (no deaths, the level cap in a hundred turns, a level-one character beating King Goo) and a stun-lock;
 the numbers above are the retune. Where it stands:
 
 - A bot reaches level 5 around turn 55 and level 8 around turn 160; a careful bot rarely dies in the wilds of its own
   level and leaves a level-appropriate fight with nine tenths of its HP.
-- **The Thornwood Warden** (level 6): nobody wins at level 1 or 2; at level 4 in copper the Warrior and the Mage win
+- **The King Goo** (level 6): nobody wins at level 1 or 2; at level 4 in copper the Warrior and the Mage win
   nine times in ten, the Ranger four, the Rogue three; at level 5 everyone but the Rogue wins nine in ten, the Rogue eight.
   Without gear at level 6 the Warrior and the Mage still win; the Rogue and the Ranger win three in ten.
-- **The Briar King** (level 10): at level 9 in iron the Warrior, the Mage and the Ranger win six to nine in ten, the
+- **The Grumblebark** (level 10): at level 9 in iron the Warrior, the Mage and the Ranger win six to nine in ten, the
   Rogue two; the Rogue catches up at 11.
-- **The Frost Matriarch** (level 14): at level 14 in steel the Warrior, the Mage and the Ranger win eight to nine in
+- **The Queen Bumble** (level 14): at level 14 in steel the Warrior, the Mage and the Ranger win eight to nine in
   ten, the Rogue four. The Rogue is the weakest against bosses and the safest in the wilds; a thing to feel, not to fix
   from a table.
-- **The grown bosses** (the Molten Tyrant at 18, the Abyssal Leviathan at 22, the Bog King at 26, from the seed `sim`):
+- **The grown bosses** (the Lord Ripplefin at 18, the Abyssal Leviathan at 22, the Bog King at 26, from the seed `sim`):
   at the boss's own level in the rank's plain gear (mithril, adamant, runed) the Warrior, the Mage and the Ranger win
   nine in ten, the Rogue about half; two levels under, half to eight in ten. **The growth a tier** in `themes.json`
   (HP ×1.25, attack ×1.15, defense ×1.12) was set by this wall: at ×1.3 / ×1.18 / ×1.15 the same fight fell from nine in
   ten at tier 4 to four in ten at tier 6 and one in ten at tier 8; at the numbers kept it stays level through tier 9
   and then eases, because gear past the tables grows ×1.35 a rank (`docs/idea-bank.md`, 16).
 - **The pace**: a bot reaches level 8 around turn 160, level 10 around 260 and level 14 around 300 to 400; in 500
-  turns a few bots in thirty-two beat the Matriarch and walk into Emberfall. A bot in a grown area at its level dies
-  about as rarely as in Frostpeak and leaves a fight with six tenths of its HP.
+  turns a few bots in thirty-two beat Queen Bumble and walk into Glimmerlake Shores. A bot in a grown area at its level dies
+  about as rarely as in Honeyhill Fields and leaves a fight with six tenths of its HP.
 - **With the kits, the uniques and the readable enemies (2026-11-01)** the wall was run again with what a character of
   the level would have: every ability of its class, at rank 2 from level 8 and rank 3 from 16 (picks and shrines). The
   first kits were far too strong (a Rally every two Rage healed a warrior through anything: nine in ten at the
-  Matriarch five levels under); the kits were reined in (Rally and Execute cost 3 Rage, Time Warp 4 Flow, Trap and
+  Queen Bumble five levels under); the kits were reined in (Rally and Execute cost 3 Rage, Time Warp 4 Flow, Trap and
   Shield Wall more mana, Mark and the Hawk softer) and **the bosses grew a tenth in HP** (`enemies.json`, `themes.json`:
-  Warden 550, Briar King 935, Matriarch 1320, grown base 1320; minis a tenth too). Where it stands at the boss's own
-  level in the rank's plain gear: the Warden 100 / 93 / 97 / 80 (Warrior / Rogue / Mage / Ranger), the Briar King
-  97 / 90 / 78 / 65, the Matriarch 98 / 90 / 95 / 95, the Tyrant 98 / 88 / 75 / 100, the Leviathan 98 / 98 / 92 / 100,
+  King Goo 550, Grumblebark 935, Queen Bumble 1320, grown base 1320; minis a tenth too). Where it stands at the boss's own
+  level in the rank's plain gear: King Goo 100 / 93 / 97 / 80 (Warrior / Rogue / Mage / Ranger), the Grumblebark
+  97 / 90 / 78 / 65, Queen Bumble 98 / 90 / 95 / 95, the Tyrant 98 / 88 / 75 / 100, the Leviathan 98 / 98 / 92 / 100,
   the Bog King 98 / 100 / 85 / 100; two levels under, half to eight in ten; four under, only the Warrior. The Ranger's
   rank-3 kit (a Mark on a four-arrow Volley, a Trap for every wind-up) makes it the strongest past tier 4 and the Mage
   the softest: a thing to feel before it is tuned from a table.
 - **With the errands and the trainer (2026-11-01)** the bots take every errand and sell what the bag cannot hold; the
-  errands' xp brings level 8 around turn 140 and level 14 around 300, and three bots in thirty-two beat the Matriarch
+  errands' xp brings level 8 around turn 140 and level 14 around 300, and three bots in thirty-two beat Queen Bumble
   in 500 turns. The bots do not train yet.
 
 Nothing here has been played; these are the first numbers to be felt and changed in `rules/data`.

@@ -56,7 +56,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       const mobs = (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
       const prowl =
         spawn?.kind === 'worldboss' && spawn.enemy
-          ? ` A world boss, the ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
+          ? ` A world boss, ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
           : spawn?.kind === 'miniboss' && spawn.enemy
             ? ` A ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here!`
             : spawn?.kind === 'merchant'

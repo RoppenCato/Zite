@@ -16,14 +16,14 @@ const CELL = THEMES.cell;
 
 describe('peeking at a grown area', () => {
   it('numbers them from 1, a tier each above Frostpeak, four levels a tier', () => {
-    expect(peekArea('ashford', 1)).toEqual({ id: 'gen-1', name: 'Emberfall', theme: 'fire', tier: 4, levels: [12, 16] });
-    expect(peekArea('ashford', 2)).toMatchObject({ id: 'gen-2', theme: 'water', tier: 5, levels: [16, 20] });
-    expect(peekArea('ashford', 8)).toMatchObject({ theme: 'jungle', tier: 11, levels: [40, 44] });
+    expect(peekArea('ashford', 1)).toEqual({ id: 'gen-1', name: 'Glimmerlake Shores', theme: 'glimmerlake', tier: 4, levels: [12, 16] });
+    expect(peekArea('ashford', 2)).toMatchObject({ id: 'gen-2', theme: 'moonwhisper', tier: 5, levels: [16, 20] });
+    expect(peekArea('ashford', 8)).toMatchObject({ theme: 'embercrown', tier: 11, levels: [40, 44] });
   });
 
   it('cycles the themes, taking a new name of the theme each round, the same for every seed', () => {
-    expect(peekArea('ashford', 9)).toMatchObject({ theme: 'fire', name: 'Ashen Reach', tier: 12 });
-    expect(peekArea('ashford', 17)).toMatchObject({ theme: 'fire', name: 'Cinder Wastes' });
+    expect(peekArea('ashford', 9)).toMatchObject({ theme: 'shattered', name: 'The Shattered Crown', tier: 12 });
+    expect(peekArea('ashford', 17)).toMatchObject({ theme: 'embercrown', name: 'Ashen Nest' });
     expect(peekArea('moon', 9)).toEqual(peekArea('ashford', 9));
   });
 
@@ -67,7 +67,7 @@ describe('a grown area', () => {
 
   it('is laid in its cell, the way in a wilds hub named "<Area> Pass" near the side it is entered from, the boss gate on the way out opening the next', () => {
     const { area, entry } = first;
-    expect(area).toMatchObject({ id: 'gen-1', name: 'Emberfall', theme: 'fire', tier: 4, levels: [12, 16] });
+    expect(area).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', theme: 'glimmerlake', tier: 4, levels: [12, 16] });
     for (const h of area.hubs) {
       expect(h.x, h.id).toBeGreaterThanOrEqual(2 * CELL.width);
       expect(h.x, h.id).toBeLessThan(3 * CELL.width);
@@ -75,7 +75,7 @@ describe('a grown area', () => {
       expect(h.y, h.id).toBeLessThan(CELL.height);
       expect(h.id.startsWith('g1-')).toBe(true);
     }
-    const pass = area.hubs.find((h) => h.name === 'Emberfall Pass')!;
+    const pass = area.hubs.find((h) => h.name === 'Glimmerlake Shores Pass')!;
     expect(pass).toMatchObject({ id: entry, kind: 'normal' });
     expect(pass.x - 2 * CELL.width).toBeLessThan(CELL.width / 2);
     expect(area.hubs.filter((h) => h.name.endsWith(' Pass'))).toHaveLength(1);
@@ -91,7 +91,7 @@ describe('a grown area', () => {
     const { area, bestiary } = first;
     expect(area.mobs).toEqual(['g1-mob-1', 'g1-mob-2', 'g1-mob-3', 'g1-mob-4']);
     expect(area.miniBosses).toEqual(['g1-mini']);
-    expect(area.mobs.map((id) => bestiary[id]!.name)).toEqual(['Cinder Hound', 'Magma Crawler', 'Ash Wraith', 'Flame Imp']);
+    expect(area.mobs.map((id) => bestiary[id]!.name)).toEqual(['Bubble Imp', 'Shellback', 'River Sprite', 'Marsh Goblin']);
     for (const id of area.mobs) {
       const m = bestiary[id]!;
       expect(m.role).toBe('mob');
@@ -99,8 +99,8 @@ describe('a grown area', () => {
       expect(m.level).toBeLessThanOrEqual(area.levels[1]);
       expect(m.moves.length).toBeGreaterThan(0);
     }
-    expect(bestiary['g1-mini']).toMatchObject({ name: 'Ember Drake', role: 'mini', level: 17 });
-    expect(bestiary['g1-boss']).toMatchObject({ name: 'Molten Tyrant', role: 'boss', level: 18 });
+    expect(bestiary['g1-mini']).toMatchObject({ name: 'Crystal Crab', role: 'mini', level: 17 });
+    expect(bestiary['g1-boss']).toMatchObject({ name: 'Lord Ripplefin', role: 'boss', level: 18 });
     // One tier above Frostpeak: the plain creature is the Frostpeak numbers grown by a tier.
     const plain = bestiary['g1-mob-1']!;
     expect(plain.hp).toBe(Math.round(THEMES.base.mob.hp * THEMES.perTier.hp));
@@ -149,7 +149,7 @@ describe('growing the board', () => {
     expect(before).toEqual(frozen);
     expect(after.width).toBe(3 * CELL.width);
     expect(after.height).toBe(2 * CELL.height);
-    expect(after.areas['gen-1']).toMatchObject({ id: 'gen-1', name: 'Emberfall', tier: 4 });
+    expect(after.areas['gen-1']).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', tier: 4 });
     expect(after.areas['gen-1']!.bounds.x).toBeGreaterThan(2 * CELL.width - 200);
     expect(after.areas['gen-1']!.bounds.x + after.areas['gen-1']!.bounds.width).toBeLessThanOrEqual(after.width);
     // The Summit now leads on: its last link is the first spot of the passage, wilds in the new area a step apart up to the pass.
@@ -162,7 +162,7 @@ describe('growing the board', () => {
       count++;
       step = after.spaces[step.links[1]!]!;
     }
-    expect(step.name).toBe('Emberfall Pass');
+    expect(step.name).toBe('Glimmerlake Shores Pass');
     expect(count).toBeGreaterThanOrEqual(1);
     expect(count).toBeLessThanOrEqual(6);
     expect(Object.keys(after.bestiary)).toEqual(['g1-mob-1', 'g1-mob-2', 'g1-mob-3', 'g1-mob-4', 'g1-mini', 'g1-boss']);
@@ -209,20 +209,20 @@ describe('in play', () => {
 
   it('hints at what lies beyond the Summit before it is laid, and names the area once it is', () => {
     const s = atTheSummit();
-    expect(hintFor(s, 'summit', P, NOW)).toContain('Beat it to open Emberfall (tier 4).');
+    expect(hintFor(s, 'summit', P, NOW)).toContain('Beat it to open Glimmerlake Shores (tier 4).');
     const grown = { ...s, board: growBoard(s.board, s.seed, 'gen-1') };
-    expect(hintFor(grown, 'summit', P, NOW)).toContain('Beat it to open Emberfall.');
-    const pass = Object.values(grown.board.spaces).find((x) => x.name === 'Emberfall Pass')!;
-    expect(hintFor(grown, pass.id, P, NOW)).toBe('Emberfall (tier 4, levels 12 to 16): closed. Beat Frost Matriarch at The Summit to open it.');
+    expect(hintFor(grown, 'summit', P, NOW)).toContain('Beat it to open Glimmerlake Shores.');
+    const pass = Object.values(grown.board.spaces).find((x) => x.name === 'Glimmerlake Shores Pass')!;
+    expect(hintFor(grown, pass.id, P, NOW)).toBe(`Glimmerlake Shores (tier 4, levels 12 to 16): closed. Beat Queen Bumble at Queen Bumble's Hive to open it.`);
   });
 
   it('lays the first grown area when the Frost Matriarch falls, opens it, and the next when its boss falls', () => {
     const { state, events } = apply(atTheSummit(), { type: 'fight', id: 'f1', player: P, move: { kind: 'attack' }, guard: 'none' }, makeRng('w'), NOW);
     expect(events.find((e) => e.type === 'opened')).toEqual({ type: 'opened', action: 'f1', player: P, area: 'gen-1' });
     expect(me(state).opened).toEqual(['meadows', 'thornwood', 'frostpeak', 'gen-1']);
-    expect(state.board.areas['gen-1']).toMatchObject({ name: 'Emberfall', tier: 4 });
+    expect(state.board.areas['gen-1']).toMatchObject({ name: 'Glimmerlake Shores', tier: 4 });
     expect(state.board.width).toBe(3 * CELL.width);
-    expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Molten Tyrant' });
+    expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Lord Ripplefin' });
     // The levels gained offer a pick of abilities, answered first; then it plays on from the Summit into the pass.
     expect(me(state).picks.length).toBeGreaterThan(0);
     let picked = { state, events: [] as GameEvent[] };
@@ -238,11 +238,11 @@ describe('in play', () => {
     // The Molten Tyrant, from the board's bestiary, lays the second.
     const gate = Object.values(state.board.spaces).find((x) => x.opens === 'gen-2')!;
     const c = startFight({ ...me(state), space: gate.id, fight: null }, gate.boss!, gate.id, false, state.board.bestiary);
-    expect(c.fight!.enemy).toMatchObject({ id: 'g1-boss', name: 'Molten Tyrant', role: 'boss' });
+    expect(c.fight!.enemy).toMatchObject({ id: 'g1-boss', name: 'Lord Ripplefin', role: 'boss' });
     c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
     const second = apply({ ...state, characters: { [P]: c } }, { type: 'fight', id: 'f2', player: P, move: { kind: 'attack' }, guard: 'none' }, makeRng('w'), NOW);
     expect(second.events.find((e) => e.type === 'opened')).toMatchObject({ area: 'gen-2' });
-    expect(second.state.board.areas['gen-2']).toMatchObject({ name: 'Mistwater', tier: 5 });
+    expect(second.state.board.areas['gen-2']).toMatchObject({ name: 'Moonwhisper Woods', tier: 5 });
     expect(second.state.board.height).toBe(2 * CELL.height);
     expect(me(second.state).bossKills[gate.id]).toBe(1);
   });

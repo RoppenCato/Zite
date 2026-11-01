@@ -120,7 +120,7 @@ opaque panel that takes every touch, and call the board back when they close (`f
 - **The tap** calls `game.act({ type: 'move', path })` at once, clears the rings, and only then walks the token: a tween
   chain, 260 ms per step, the camera following. The state is ahead of the picture during the walk, as it will be with a
   server: the picture is playback. Then what the landing brought: the message says it ("Rolled 4. Landed in the wilds."
-  / "Landed on Old Cairn (chest). A chest! +23 gold. Found Quietfall, copper boots · epic · +4 defense …" / "Rested: HP
+  / "Landed on Slime Cave (chest). A chest! +23 gold. Found Quietfall, copper boots · epic · +4 defense …" / "Rested: HP
   and mana full." / "Empty for now; again in 4:59." / "Learned war cry, rank 1."); a fight opens the fight scene; a shop,
   a town or a merchant opens the shop scene; the gambler's offer puts **High, Low, Walk on** in the chip row with the
   question in the message line, and the answer's result finishes the turn. While choosing, walking, fighting or shopping
