@@ -15,6 +15,8 @@
 const P = require('./paint.js'); const B = require('./brush.js'); const fs = require('fs'); const path = require('path');
 const { alpha, mix } = P; const a = process.argv.slice(2); const OUT = a[0] || 'work/doll/paint'; const opt = k => a.includes('--' + k) ? a[a.indexOf('--' + k) + 1] : null;
 const S = 200 / 65, W = 560, H = 340, OX = 300, OY = 310, INK = '#2b2320', LINE = 2.2;
+const K = 1.12, HS = 0.78;   // Robin, 2026-11-01: "make his body more proportionate, now he looks a bit like a midget": the body's points stretched taller by K (the feet stay), the head drawn at HS of its reference size; the head is then about 42 percent of the height instead of 54
+const pxB = p => px([p[0], p[1] * K]);   // a body point (neck, hips, head, hands) in frame pixels
 const px = p => [OX + p[0] * S, OY + p[1] * S];
 const v = (p, q) => [q[0] - p[0], q[1] - p[1]], len = d => Math.hypot(d[0], d[1]), unit = d => { const L = len(d) || 1; return [d[0] / L, d[1] / L]; }, ang = d => Math.atan2(d[1], d[0]);
 const add = (p, d, k = 1) => [p[0] + d[0] * k, p[1] + d[1] * k], rad = deg => deg * Math.PI / 180;
@@ -50,7 +52,7 @@ function bendPoint(A, B2, L, k) {   // the joint between A and B for two segment
 // painted inside it as colour zones, and the one line stroked round the whole. The legs are short straight stubs from the
 // hips to the boots, as the reference's are; the knee is a bend in the contour, never a joint.
 function body(g, F) {
-  const N = px(F.neck), Hp = px(F.hips), up = unit(v(Hp, N)), side = [-up[1], up[0]], h = len(v(Hp, N)) / S;   // side = screen right = the back; h the torso's height in reference px
+  const N = pxB(F.neck), Hp = pxB(F.hips), up = unit(v(Hp, N)), side = [-up[1], up[0]], h = len(v(Hp, N)) / S;   // side = screen right = the back; h the torso's height in reference px
   const T = (x, y) => add(add(Hp, side, x * S), up, -y * S);                                                   // torso-local: x back-positive, y down-positive, in reference px
   const legOf = (ankle, foot, xTop, near) => {                                                                 // a leg's points from its top at the hips to its boot
     const t = T(xTop, 3), d = unit(v(t, ankle)), n = [-d[1], d[0]], f = unit(foot || [-1, 0]), u = [-f[1], f[0]];   // n points forward of the leg, u up from the sole
@@ -62,7 +64,7 @@ function body(g, F) {
   const nearLeg = legOf(px(F.ankleN), F.footN, -3, true), farLeg = legOf(px(F.ankleF), F.footF, 3, false);
   const [front, back] = nearLeg.ankle[0] <= farLeg.ankle[0] ? [nearLeg, farLeg] : [farLeg, nearLeg];           // the leg further forward leads the contour
   const round = L => [L.frontTop, L.frontMid, L.frontAnkle, L.toeTop, L.toe, L.toe, L.soleFront, L.soleBack, L.heel, L.heel, L.heelTop, L.backMid, L.backTop];   // doubled corners stay crisp
-  const contour = () => smoothClosed(g, [T(-5, -h - 1), T(-10.5, -h + 2.5), T(-11.5, -h * 0.55), T(-11, -h * 0.2), T(-12, 1.5), ...round(front), T(0, 6.5), ...round(back), T(12, 1.5), T(11, -h * 0.2), T(11.5, -h * 0.55), T(10.5, -h + 2.5), T(5, -h - 1)]);
+  const contour = () => smoothClosed(g, [T(-5, -h - 1), T(-10, -h + 2.5), T(-11, -h * 0.55), T(-10.5, -h * 0.2), T(-11.5, 1.5), ...round(front), T(0, 6.5), ...round(back), T(11.5, 1.5), T(10.5, -h * 0.2), T(11, -h * 0.55), T(10, -h + 2.5), T(5, -h - 1)]);
   const stripe = L => { g.beginPath(); [L.frontTop, L.frontMid, L.frontAnkle, L.backAnkle, L.backMid, L.backTop].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
   const boot = L => { g.beginPath(); [L.frontAnkle, L.toeTop, L.toe, L.soleFront, L.soleBack, L.heel, L.heelTop, L.backAnkle].forEach((q, i) => i ? g.lineTo(...q) : g.moveTo(...q)); g.closePath(); };
   const across = (L, t) => P.lin(g, L.frontMid[0], L.frontMid[1], L.backMid[0], L.backMid[1], [[0, t.light], [0.5, t.mid], [1, t.dark]]);
@@ -91,8 +93,8 @@ function body(g, F) {
 }
 // ---- an arm: ONE tapered form from the shoulder to the hand, the hand its rounded end (no separate fist), the sleeve a colour zone ----
 function arm(g, shoulder, hand, near, o = {}) {
-  const elbow = bendPoint(shoulder, hand, 25.5, o.bend === undefined ? -1 : o.bend), d = unit(v(elbow, hand));
-  const wrist = add(hand, d, -7), tip = add(hand, d, 7), pts = [shoulder, elbow, wrist, tip], ws = [26, 21, 17, 23];
+  const elbow = bendPoint(shoulder, hand, 29, o.bend === undefined ? -1 : o.bend), d = unit(v(elbow, hand));
+  const wrist = add(hand, d, -7), tip = add(hand, d, 7), pts = [shoulder, elbow, wrist, tip], ws = [24, 20, 16, 22];
   const ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }, tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep };
   const n = pts.length, L = [], R = [];
   for (let i = 0; i < n; i++) { const dd = unit(v(pts[Math.max(0, i - 1)], pts[Math.min(n - 1, i + 1)])), nn = [-dd[1], dd[0]]; L.push(add(pts[i], nn, -ws[i] / 2)); R.push(add(pts[i], nn, ws[i] / 2)); }
@@ -119,7 +121,7 @@ function sword(g, grip, deg) {   // from the grip point along the angle (0 forwa
   g.restore();
 }
 function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out as the reference lays it, the hair as a cap with a swept fringe down to the eyes
-  const tilt = rad(tiltDeg); g.save(); g.translate(c[0], c[1]); g.rotate(tilt);   // positive leans the head back (its top toward screen right)
+  const tilt = rad(tiltDeg); g.save(); g.translate(c[0], c[1]); g.rotate(tilt); g.scale(HS, HS);   // positive leans the head back (its top toward screen right); HS draws the head smaller
   const skull = () => smoothClosed(g, [[0, -54], [-40, -47], [-58, -6], [-50, 34], [-22, 54], [16, 54], [50, 28], [56, -16], [40, -44]]);
   skull(); g.fillStyle = P.rad(g, -24, -28, -10, -6, 92, [[0, SKIN.light], [0.55, SKIN.mid], [1, SKIN.dark]]); g.fill();
   g.beginPath(); g.ellipse(54, 8, 8, 11, 0, 0, 7); g.fillStyle = SKIN.mid; g.fill(); inner(g); g.beginPath(); g.ellipse(54, 9, 4, 6, 0, 0, 7); ink(g, 1.5, 0.6);   // the ear
@@ -194,17 +196,17 @@ const ACTIONS = {
 };
 // ---- a frame: back to front, the sword behind if the pose says, the far arm, the ONE body, the head, the sword, the near arm ----
 function drawFrame(g, F) {
-  const neck = px(F.neck), hips = px(F.hips), headC = px(F.head), handN = px(F.handN);
+  const neck = pxB(F.neck), hips = pxB(F.hips), headC = pxB(F.head), handN = pxB(F.handN);
   const up = unit(v(hips, neck)), side = [-up[1], up[0]];                                   // 'side' points to screen right (the back) when the body is upright; forward is -side
   const shoulderN = add(add(neck, up, -8), side, 14), shoulderF = add(add(neck, up, -8), side, 6), hasSword = F.sword !== null && F.sword !== undefined;   // the shoulders in the torso's back half, where the reference hangs its arm
   if (F.swordFree) { const q = px(F.swordFree); sword(g, q, F.swordFree[2]); }                      // a dropped sword lies on the ground, behind everything
   if (hasSword && F.swordZ === 'back') sword(g, handN, F.sword);
-  if (F.handF) arm(g, shoulderF, px(F.handF), false, { bend: 1 });
+  if (F.handF) arm(g, shoulderF, pxB(F.handF), false, { bend: 1 });
   body(g, F);
   stamp(g, h => head(h, headC, F.tilt, F.face));
   if (hasSword && F.swordZ !== 'back') sword(g, handN, F.sword);
   arm(g, shoulderN, handN, true, { bend: F.bendN });
-  return { headTop: add(headC, [Math.sin(rad(F.tilt)) * 70, -Math.cos(rad(F.tilt)) * 70]), tip: hasSword ? add(handN, [-Math.cos(rad(F.sword)) * 128, -Math.sin(rad(F.sword)) * 128]) : null, shoulder: shoulderN };
+  return { headTop: add(headC, [Math.sin(rad(F.tilt)) * 70 * HS, -Math.cos(rad(F.tilt)) * 70 * HS]), tip: hasSword ? add(handN, [-Math.cos(rad(F.sword)) * 128, -Math.sin(rad(F.sword)) * 128]) : null, shoulder: shoulderN };
 }
 (async () => {
   fs.mkdirSync(OUT, { recursive: true }); const only = opt('only') ? opt('only').split(',') : Object.keys(ACTIONS);

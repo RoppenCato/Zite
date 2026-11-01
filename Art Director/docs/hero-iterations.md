@@ -300,3 +300,9 @@ The arm is one tapered form from the shoulder to a rounded end that is the hand 
 with a thin cuff line, the fingers a thin curl. The stand plants the feet as the reference does (the front toe 15 ahead,
 the back toe 6). Checked beside the reference at the same height: the head, the short belted body, the stubby legs, the
 boots and the sword's length now sit the same.
+
+Robin, 2026-11-01, next: "looking better; maybe if you make his body more proportionate it will be even better, now he
+looks a bit like a midget." So our Warrior leaves the reference's head-half-the-height: the body's points (neck, hips,
+head, hands) are stretched taller by 1.12 with the feet where they were, and the head is drawn at 0.78 of its reference
+size (its face and eyes with it), which puts the head at about 42 percent of the height; the arm is longer and a touch
+slimmer, the torso a touch slimmer. The player stays 100 CSS px tall. (`K` and `HS` in `tools/doll.js`.)
