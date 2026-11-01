@@ -76,8 +76,8 @@ export class BagScene extends Phaser.Scene {
     this.detailName = this.add.text(32, detailY - 12, '', { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: ink }).setOrigin(0, 0.5);
     this.detailLine = this.add.text(32, detailY + 9, '', { fontFamily: FONT, fontSize: '11px', color: dim, wordWrap: { width: DESIGN_WIDTH - 80 } }).setOrigin(0, 0.5);
 
-    this.carriedLabel = this.add.text(24, carriedY - 30, '', { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: dim });
-    this.add.text(24, BAG_LAYOUT.flasksY - 26, 'Flasks and cards', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: dim });
+    this.carriedLabel = this.add.text(24, carriedY - 42, '', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: dim });
+    this.add.text(24, BAG_LAYOUT.flasksY - 38, 'Flasks and cards', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: dim });
 
     this.dropButton = makeButton(this, drop.x, drop.y, drop.w, drop.h, 'Drop', 0xd9534f, '15px', () => this.dropPicked());
     this.actButton = makeButton(this, act.x, act.y, act.w, act.h, 'Wear', COLORS.button, '15px', () => this.actOnPicked());
