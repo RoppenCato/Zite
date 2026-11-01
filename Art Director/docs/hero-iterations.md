@@ -366,3 +366,19 @@ to use it for your model." So the doll takes his construction: the head a third 
 centre 33 px up the neck's line), a narrower torso, slimmer legs and lighter boots, a slimmer arm that reaches the hip, a
 shorter sword, both arms in every frame, his stance, stride and attack. The sword's angles are kept so the tip clears the
 ground with the hand at the hip (32 degrees down standing, 21 to 33 walking). Both play on the page with a switch.
+
+## Back to the earlier doll, with six corrections (2026-11-01)
+
+Robin: "Go back to this one you were at earlier" (the second anatomy pass, commit 26d79d5, the head near 40 percent of
+the height) "and make these improvements": a masculine torso, both arms visible and correct, a confident expression, the
+sword diagonally down in the walk, frame consistency, and the fall aligned to the ground without drift. The rebuild to
+his own sheet (3dcf412) stays in the record but not in the doll. Done on the restored file:
+
+- The chest is flat with a slight taper: the contour's chest bulge is gone, the tunic is lit flat front to back with two
+  soft folds, and the round highlight that read as a breast is gone.
+- Every frame has both arms; the sword is in the near hand throughout, the far arm hangs or swings against the legs.
+- The face is calm: straight, level brows a touch lower at the inner ends, a less slanted lid, the iris a touch higher,
+  a subtle smile. The blink, the hurt face and the dead face stay.
+- The sword hangs diagonally down from the hand at the hip: 26 degrees standing, 20 to 28 walking, the first two walk
+  frames included; the same blade and hand everywhere.
+- The hit keeps its feet planted. Once he lands in the fall, the body stays where it landed; only the legs settle.
