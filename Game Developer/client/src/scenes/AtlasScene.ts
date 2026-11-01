@@ -5,10 +5,11 @@
 import Phaser from 'phaser';
 import { creature, questLine, type Area } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { RECOVER_KEY, SERVER_KEY } from '../remote-game.ts';
 import { settings } from '../settings.ts';
+import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -29,6 +30,9 @@ export const ATLAS_LAYOUT = {
 } as const;
 
 export class AtlasScene extends Phaser.Scene {
+  /** The text colours: ink on the kit's parchment. */
+  private ink: { text: string; dim: string; gold: string } = { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold };
+  private rarity: Record<string, string> = RARITY_COLORS;
   private readonly game_: GameHolder;
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
@@ -45,8 +49,10 @@ export class AtlasScene extends Phaser.Scene {
   create(): void {
     this.page = 0;
     this.mode = 'areas';
-    this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
-    this.add.text(24, 114, 'The world', { fontFamily: FONT, fontSize: '24px', fontStyle: 'bold', color: COLORS.text });
+    this.ink = sheetInk(this, { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold });
+    this.rarity = kitReady(this) ? RARITY_INK : RARITY_COLORS;
+    sheet(this);
+    this.add.text(24, 112, 'The world', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text });
     const { close, settings: settingsButton } = ATLAS_LAYOUT;
     makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).atlasClosed());
     this.settingsLabel = makeButton(this, settingsButton.x, settingsButton.y, settingsButton.w, settingsButton.h, 'Settings', COLORS.log, '14px', () => {
@@ -79,13 +85,14 @@ export class AtlasScene extends Phaser.Scene {
       const swatch = this.add.rectangle(34, y + 14, 20, 40, THEME_COLORS[area.theme] ?? COLORS.ground, 1).setStrokeStyle(2, 0x101318, 1);
       this.rows.push(swatch);
       const name = `${area.name} · tier ${area.tier}${area.id === here ? ' · you are here' : ''}`;
-      this.rows.push(this.add.text(54, y - 6, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: open ? COLORS.text : COLORS.dim }));
-      this.rows.push(this.add.text(54, y + 14, this.detail(area, open), { fontFamily: FONT, fontSize: '11px', color: COLORS.dim, wordWrap: { width: 258 } }));
+      if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, rowStep - 6));
+      this.rows.push(this.add.text(54, y - 6, name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', wordWrap: { width: 250 }, color: open ? this.ink.text : this.ink.dim }));
+      this.rows.push(this.add.text(54, y + 14, this.detail(area, open), { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
       if (open) this.rows.push(makeButton(this, go.x, y + 12, go.w, go.h, 'Go', COLORS.button, '14px', () => (this.scene.get('board') as BoardScene).atlasFrame(area.id)).button);
     });
     if (pages > 1) {
       const y = firstRowY + rows * rowStep - 10;
-      this.rows.push(this.add.text(CENTRE, y, `${this.page + 1} of ${pages}`, { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5));
+      this.rows.push(this.add.text(CENTRE, y, `${this.page + 1} of ${pages}`, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim }).setOrigin(0.5));
       if (this.page > 0) this.rows.push(makeButton(this, 110, y, 100, 30, 'Earlier', COLORS.log, '14px', () => { this.page--; this.refresh(); }).button);
       if (this.page < pages - 1) this.rows.push(makeButton(this, 302, y, 100, 30, 'Further', COLORS.log, '14px', () => { this.page++; this.refresh(); }).button);
     }
@@ -104,8 +111,9 @@ export class AtlasScene extends Phaser.Scene {
     ];
     rows.forEach((row, i) => {
       const y = firstRowY + i * rowStep;
-      this.rows.push(this.add.text(24, y - 6, row.name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: COLORS.text }));
-      this.rows.push(this.add.text(24, y + 14, row.text, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim, wordWrap: { width: 280 } }));
+      if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, rowStep - 6));
+      this.rows.push(this.add.text(24, y - 6, row.name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.text }));
+      this.rows.push(this.add.text(24, y + 14, row.text, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 280 } }));
       this.rows.push(makeButton(this, go.x, y + 12, go.w + 8, go.h, row.value ? row.on : row.off, row.value ? COLORS.button : COLORS.log, '14px', () => { row.set(!row.value); this.log.note(`setting ${row.name}: ${!row.value ? row.on : row.off}`); this.refresh(); }).button);
     });
     const link = this.game_.link();
@@ -144,8 +152,9 @@ export class AtlasScene extends Phaser.Scene {
   private settingRow(i: number, name: string, text: string, button: string, onTap: () => void): void {
     const { firstRowY, rowStep, go } = ATLAS_LAYOUT;
     const y = firstRowY + i * rowStep;
-    this.rows.push(this.add.text(24, y - 6, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: COLORS.text }));
-    this.rows.push(this.add.text(24, y + 14, text, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim, wordWrap: { width: 258 } }));
+    if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, ATLAS_LAYOUT.rowStep - 6));
+    this.rows.push(this.add.text(24, y - 6, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.text }));
+    this.rows.push(this.add.text(24, y + 14, text, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
     this.rows.push(makeButton(this, go.x - 10, y + 12, go.w + 28, go.h, button, COLORS.log, '13px', onTap).button);
   }
 

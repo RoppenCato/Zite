@@ -190,19 +190,154 @@
       "end": 16.091,
       "loop": false
     },
-    "ui/level-up": {
+    "ui/gold-gain": {
       "start": 16.141,
-      "end": 17.641,
+      "end": 16.697,
+      "loop": false
+    },
+    "ui/gold-small": {
+      "start": 16.747,
+      "end": 16.8796,
+      "loop": false
+    },
+    "ui/gold-lost": {
+      "start": 16.9296,
+      "end": 17.4515,
+      "loop": false
+    },
+    "ui/pick-appear": {
+      "start": 17.5015,
+      "end": 17.7038,
+      "loop": false
+    },
+    "ui/chip": {
+      "start": 17.7538,
+      "end": 17.8993,
+      "loop": false
+    },
+    "ui/errand-take": {
+      "start": 17.9493,
+      "end": 18.1814,
+      "loop": false
+    },
+    "ui/errand-done": {
+      "start": 18.2314,
+      "end": 18.8076,
+      "loop": false
+    },
+    "ui/trainer": {
+      "start": 18.8576,
+      "end": 19.4554,
+      "loop": false
+    },
+    "ui/buy": {
+      "start": 19.5054,
+      "end": 19.927,
+      "loop": false
+    },
+    "ui/sell": {
+      "start": 19.977,
+      "end": 20.2064,
+      "loop": false
+    },
+    "ui/wear": {
+      "start": 20.2564,
+      "end": 20.4108,
+      "loop": false
+    },
+    "ui/take-off": {
+      "start": 20.4608,
+      "end": 20.6171,
+      "loop": false
+    },
+    "ui/drop-item": {
+      "start": 20.6671,
+      "end": 20.7844,
+      "loop": false
+    },
+    "ui/online-join": {
+      "start": 20.8344,
+      "end": 21.2849,
+      "loop": false
+    },
+    "ui/online-leave": {
+      "start": 21.3349,
+      "end": 21.7654,
+      "loop": false
+    },
+    "ui/online-reconnect": {
+      "start": 21.8154,
+      "end": 22.2749,
+      "loop": false
+    },
+    "ui/online-note": {
+      "start": 22.3249,
+      "end": 22.693,
+      "loop": false
+    },
+    "ui/card": {
+      "start": 22.743,
+      "end": 22.942,
+      "loop": false
+    },
+    "ui/card-knight": {
+      "start": 22.992,
+      "end": 23.2096,
+      "loop": false
+    },
+    "ui/card-trickster": {
+      "start": 23.2596,
+      "end": 23.3321,
+      "loop": false
+    },
+    "ui/card-wizard": {
+      "start": 23.3821,
+      "end": 23.7412,
+      "loop": false
+    },
+    "ui/card-archer": {
+      "start": 23.7912,
+      "end": 23.8627,
+      "loop": false
+    },
+    "ui/begin": {
+      "start": 23.9127,
+      "end": 25.9127,
+      "loop": false
+    },
+    "ui/hint": {
+      "start": 25.9627,
+      "end": 26.2899,
+      "loop": false
+    },
+    "ui/message-tick": {
+      "start": 26.3399,
+      "end": 26.439,
+      "loop": false
+    },
+    "ui/sheet-open": {
+      "start": 26.489,
+      "end": 26.6367,
+      "loop": false
+    },
+    "ui/sheet-close": {
+      "start": 26.6867,
+      "end": 26.8577,
+      "loop": false
+    },
+    "ui/level-up": {
+      "start": 26.9077,
+      "end": 28.4077,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 17.691,
-      "end": 19.6187,
+      "start": 28.4577,
+      "end": 30.3854,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 19.6687,
-      "end": 21.5832,
+      "start": 30.4354,
+      "end": 32.3499,
       "loop": false
     }
   }

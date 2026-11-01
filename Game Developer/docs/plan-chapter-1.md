@@ -14,7 +14,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 | | From Mitch, AD | From Nigel, SD |
 | --- | --- | --- |
 | First | **the chest and the loot reveal** pieces (the chest, the six glows, the opening clip, the card, the particle sheets): small, and they land in step 2 (landed 2026-11-01) | **the UI sprite's first half**: the tap, the tap denied, the die's shake, tumble and landing, the steps, the chest's shimmer, bursts and ding, the level up (step 1, step 2, step 7) |
-| Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6) | **the fight sprite** (step 4, step 7) |
+| Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6; landed 2026-11-01) | **the fight sprite** (step 4, step 7) |
 | Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4; landed 2026-11-01) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
 | Fourth | **the meadows' board kit** with its props (step 5; landed 2026-11-01) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
 | Fifth | **the Knight's parts**: the body and the Tin and Copper pieces for the eight slots, the four weapon types, as per-part atlases once the alignment test passes (step 9) | **the meadows' creature voices** (six creatures, three each) |
@@ -56,10 +56,12 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    data file per area says which tile and which props go where. Shapes stay wherever the kit has no piece yet. *Needs*:
    the meadows' board kit. *Done*: Cloverfield Meadows seen whole at the overview and walked at follow zoom with no shape
    left, at 60 fps with a few hundred spots culled.
-6. **The UI from the kit.** Panels, cards, buttons, the die, bars, chips, icons and the small marks drawn from the UI
-   atlas with nine-slices; the two fonts; the HUD, the character screen, the shop, the bag, the atlas and the settings
-   restyled on it; the message line that clips three lines fixed on the way. *Needs*: the UI kit and the fonts. *Done*:
-   every screen in the game is the kit, nothing is a flat rectangle, and Robin says it is pleasant to look at.
+6. **The UI from the kit** (done 2026-11-01 on Mitch, AD's kit, `client/src/kit.ts`, `ui.ts`; left for a later pass: the
+   gear icons in the bag and the loot card, the wordmark, the app icon and the character-screen backdrop, which are not
+   drawn yet). Panels, cards, buttons, the die, bars, chips, icons and the small marks drawn from the UI atlas with
+   nine-slices; the two fonts; the HUD, the character screen, the shop, the bag, the atlas and the settings restyled on it;
+   the message box grows for a long line instead of clipping. *Needs*: the UI kit and the fonts. *Done*: every screen in
+   the game is the kit, nothing is a flat rectangle, and Robin says it is pleasant to look at (his verdict pending).
 7. **The audio layer.** The sprites loaded with their scenes and played on the events; music per area streamed with a
    crossfade on an area change and on a fight's start and end; the beds under it; mute and two volumes in the settings;
    `?mute=1`; the audio unlocked on the first tap. *Needs*: the UI sprite, then the fight sprite, then the meadows' music

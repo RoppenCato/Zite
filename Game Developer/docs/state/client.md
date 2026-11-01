@@ -16,8 +16,9 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/main.ts` | makes the log; reads the server address (`?server=`, remembered) and the device's account; starts Phaser on the board (a local save), the connect screen (an account on the server), or the character screen; ticks the world; exposes `window.boardWorld` |
 | `src/game-holder.ts` | `GameHolder`: what the scenes need from whatever holds the state (`state`, `me`, `act`, `tick`, `reset`, `now`, `link`, `recovery`, `onlinePlayers`, `onSpawns`, `onChange`) |
 | `src/remote-game.ts` | co-op: the socket, join with the token (or a new character, or a code), the snapshot, intents one at a time with the pending one resent after a reconnect, deltas folded in, pings and reconnects, the server's clock; `serverUrl`, `storedAccount` |
-| `src/layout.ts` | the design size (412 by 915), the HUD's height (100) and the world band's (640), the colours (the themes', the rarities'), the font |
-| `src/ui.ts` | `makeButton` and the `Bar` (HP, mana), shared by the scenes |
+| `src/layout.ts` | the design size (412 by 915), the HUD's height (100) and the world band's (640), the colours (the themes', the rarities', the rarities' ink and tints), the two faces (`FONT` Nunito for lines, `FONT_DISPLAY` Fredoka for titles, numbers and buttons) |
+| `src/ui.ts` | `makeButton` (the kit's nine-slice in its kind, the pressed face on touch, `setEnabled` for the dim face, the tap ring at the finger) and the `Bar` (the kit's frame and fills, the part just lost draining behind), shared by the scenes; shapes before the kit is loaded |
+| `src/kit.ts` | the UI kit: `preloadKit`, `plate` (a nine-slice at a design size, the corner from the json), `icon`, `fx` (the tap ring, the spark, the ripple, the tick), `sheet` (a parchment sheet over the dimmed world), `sheetInk`; the text colours cream and ink |
 | `src/local-game.ts` | solo play: holds the state and the random stream, applies actions through the rules with the browser's clock, ticks, saves; `actNow` for scripts |
 | `src/game-log.ts` | the frame log and error log, downloadable |
 | `src/scenes/CreateScene.ts` | the character screen: the name field, the class cards (`OFFERED`: the Knight alone in chapter 1, Robin, 2026-11-01, with a line that the other three come in chapter 2; the rules keep all four), Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
@@ -281,6 +282,29 @@ animation when opening. The aim is dopamine hits." Built on Mitch, AD's pieces (
   rarities in a row) on a page with a save; or in the pane, `boardWorld.phaser.scene.getScene('board').showcase('epic')`.
 - **Tests**: `client/test/loot.test.ts` covers the pure parts (Vitest now includes `client/test/`); the scene is judged in
   the pane.
+
+## The UI kit (chapter 1 step 6, 2026-11-01)
+
+Mitch, AD's kit (`assets/ui/`, his NOTES.md) drawn through `kit.ts`, every piece a nine-slice or an icon at 0.5:
+- **Buttons** (`makeButton`): the kind from the colour the scene asks for (the green is the action button, the reds the
+  danger button, the dark plain, any other colour the plain button tinted), big from 50 px high; the label in Fredoka,
+  cream with a thin ink stroke, 3 px above centre, 3 px below while pressed; the pressed face on touch, the dim face from
+  `setEnabled(false)`; the kit's tap ring at the finger, tinted to the button; a label too wide shrinks.
+- **Bars** (`Bar`): the frame, the HP or MP fill, and the part just lost lingering a beat and draining behind.
+- **The HUD**: the wood panel, the name and level in Fredoka, the heart and drop marks with the two bars, the coin and the
+  gold, the place line, the die as the kit's faces (dim before the first roll, a turning blur in the tumble, the soft glow
+  on the landing); the bottom band; the message box in ink on parchment, two lines at 14 px, 12 px for more, and the box
+  grows upward for the rest (the three-line clip is gone); the chips as the kit's chips.
+- **The sheets** (shop, bag, atlas and settings): the world dimmed, the parchment sheet in its wood frame (`sheet`), ink
+  text (`sheetInk`; the rarities in their ink colours), a row plate under every row, Fredoka titles.
+- **The character screen**: the kit's class card, chosen or idle; the fight's strip: the band and the message box; the
+  banners of the moments from the kit (level up on parchment with the soft burst behind it, boss and area in cream);
+  the mini-boss and merchant badges and the note mark on the board; the ripple on a lit spot.
+- **Fonts**: Fredoka (titles, numbers, buttons) and Nunito (lines), both SIL Open Font License, linked from Google Fonts
+  in `index.html` and awaited in `main.ts` for up to 1.5 s before Phaser boots, the system face after that (offline).
+  Self-hosting the files is Robin's call (a download).
+- **Not yet drawn**: the gear icons (the bag's slot icons and the loot card's square wait for them), the item icons in the
+  bag and shop rows, the wordmark, the app icon, the character-screen backdrop.
 
 ## The moments (chapter 1 step 3, 2026-11-01)
 

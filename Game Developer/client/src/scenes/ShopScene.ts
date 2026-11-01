@@ -6,8 +6,10 @@
 import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEM_IDS, ITEMS, plainGear, PROGRESSION, sellPrice, SLOTS, SPACE_KIND_DATA, type GearItem } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_COLORS, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { sfx } from '../feel.ts';
+import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -31,6 +33,9 @@ export const SHOP_LAYOUT = {
 } as const;
 
 export class ShopScene extends Phaser.Scene {
+  /** The text colours: ink on the kit's parchment. */
+  private ink: { text: string; dim: string; gold: string } = { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold };
+  private rarity: Record<string, string> = RARITY_COLORS;
   private readonly game_: GameHolder;
   /** True while an action is on its way to the world (mine, 2026-11-01): one at a time. */
   private inFlight = false;
@@ -55,9 +60,11 @@ export class ShopScene extends Phaser.Scene {
     const space = this.game_.state.board.spaces[me.space];
     this.town = !this.merchant && space?.kind === 'town';
     const title = this.merchant ? 'Wandering Merchant' : space?.name || SPACE_KIND_DATA.shop.label;
-    this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
-    this.add.text(CENTRE, 124, title, { fontFamily: FONT, fontSize: '24px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.gold = this.add.text(CENTRE, 152, '', { fontFamily: FONT, fontSize: '15px', color: COLORS.gold }).setOrigin(0.5);
+    this.ink = sheetInk(this, { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold });
+    this.rarity = kitReady(this) ? RARITY_INK : RARITY_COLORS;
+    sheet(this);
+    this.add.text(CENTRE, 124, title, { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text }).setOrigin(0.5);
+    this.gold = this.add.text(CENTRE, 152, '', { fontFamily: FONT, fontSize: '15px', color: this.ink.gold }).setOrigin(0.5);
     const { tabBuy, tabSell, townTabs, leave } = SHOP_LAYOUT;
     const buyTab = this.town ? townTabs.buy : tabBuy;
     const sellTab = this.town ? townTabs.sell : tabSell;
@@ -65,7 +72,7 @@ export class ShopScene extends Phaser.Scene {
     makeButton(this, sellTab.x, sellTab.y, sellTab.w, sellTab.h, 'Sell', COLORS.log, '15px', () => this.show('sell'));
     if (this.town) makeButton(this, townTabs.train.x, townTabs.train.y, townTabs.train.w, townTabs.train.h, 'Train', COLORS.log, '15px', () => this.show('train'));
     this.message = this.add
-      .text(CENTRE, 668, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
+      .text(CENTRE, 668, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);
     makeButton(this, leave.x, leave.y, leave.w, leave.h, 'Leave', COLORS.log, '20px', () => (this.scene.get('board') as BoardScene).shopLeft());
     this.show('buy');
@@ -82,9 +89,10 @@ export class ShopScene extends Phaser.Scene {
     const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
     const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void): void => {
       const y = firstRowY + i * rowStep;
+      if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 3));
       this.rows.push(this.add.text(24, y - 15, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: nameColor }));
-      this.rows.push(this.add.text(24, y + 4, detail, { fontFamily: FONT, fontSize: '11px', color: COLORS.dim }));
-      this.rows.push(this.add.text(306, y, price, { fontFamily: FONT, fontSize: '14px', color: COLORS.gold }).setOrigin(1, 0.5));
+      this.rows.push(this.add.text(24, y + 4, detail, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim }));
+      this.rows.push(this.add.text(306, y, price, { fontFamily: FONT, fontSize: '14px', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '14px', onTap).button);
     };
     if (tab === 'train') {
@@ -97,7 +105,7 @@ export class ShopScene extends Phaser.Scene {
         const top = rank >= a.ranks.length;
         const price = rank === 0 ? PROGRESSION.training.learn * tier : PROGRESSION.training.rank * tier * rank;
         const cost = `${a.mana} MP${a.meterAll ? `, all ${meterName}` : a.meter ? `, ${a.meter} ${meterName}` : ''}`;
-        row(i, `${a.name}${rank ? ` · rank ${rank}` : ''}`, rank ? COLORS.text : COLORS.dim, `${a.text} ${cost}.`, top ? 'top' : `${price} g`, top ? '—' : rank ? 'Rank up' : 'Learn', () => {
+        row(i, `${a.name}${rank ? ` · rank ${rank}` : ''}`, rank ? this.ink.text : this.ink.dim, `${a.text} ${cost}.`, top ? 'top' : `${price} g`, top ? '—' : rank ? 'Rank up' : 'Learn', () => {
           if (!top) this.buy({ ability: id });
         });
       });
@@ -113,10 +121,10 @@ export class ShopScene extends Phaser.Scene {
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);
-      if (!bag.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'Nothing to sell: your bag holds no gear.', { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5));
-      bag.forEach((g, i) => row(i, g.name, RARITY_COLORS[g.rarity] ?? COLORS.text, describeGear(g).split(' · ').slice(1).join(' · '), `${sellPrice(g)} g`, 'Sell', () => this.sell(g)));
-      this.rows.push(this.add.text(24, firstRowY - 34, `Bag: ${me.bag.length} of ${GEAR.bagLimit}`, { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }));
-      if (me.bag.length > bag.length) this.rows.push(this.add.text(CENTRE, firstRowY + bag.length * rowStep, `and ${me.bag.length - bag.length} more`, { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }).setOrigin(0.5));
+      if (!bag.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'Nothing to sell: your bag holds no gear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
+      bag.forEach((g, i) => row(i, g.name, this.rarity[g.rarity] ?? COLORS.text, describeGear(g).split(' · ').slice(1).join(' · '), `${sellPrice(g)} g`, 'Sell', () => this.sell(g)));
+      this.rows.push(this.add.text(24, firstRowY - 34, `Bag: ${me.bag.length} of ${GEAR.bagLimit}`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
+      if (me.bag.length > bag.length) this.rows.push(this.add.text(CENTRE, firstRowY + bag.length * rowStep, `and ${me.bag.length - bag.length} more`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }).setOrigin(0.5));
     }
   }
 

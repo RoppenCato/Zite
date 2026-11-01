@@ -10,8 +10,9 @@ alias goes. The scenes call these names (`sfx.play` in `client/src/feel.ts` goes
 `ui/die-shake`, `ui/die-tumble` (looped), `ui/die-land` (rate by face), `ui/step-grass` (each step of a walk), `ui/tap-denied`
 (a dimmed button, Roll while busy), `ui/level-up`, `ui/boss-down`, `ui/area-opened`, `ui/tap` on every button, `ui/choice`
 on a lit spot, `ui/card` on a class card, and in the loot reveal `ui/chest-shimmer`, `ui/chest-burst-<rarity>` (common,
-uncommon, rare, epic, legendary, unique), `ui/chest-card`, `ui/chest-ding`. A new cut of `ui.ogg` and `ui.json` drops in by
-copying the two files again. ffmpeg is on the PC (Robin's yes, 2026-11-01:
+uncommon, rare, epic, legendary, unique), `ui/chest-card`, `ui/chest-ding`. Wave 1 is complete (2026-11-01 evening): `ui.ogg` holds 68 sounds (the die, taps, choice, steps, the chest, the banners, gold,
+the shop and bag, errands, the chrome, online, the character screen, Begin) and `assets/sound/ui-spots/` the arrivals and the
+spots (10); the fight sprite is `assets/sound/fight/`. A new cut drops in by copying the files again. ffmpeg is on the PC (Robin's yes, 2026-11-01:
 `C:\dev\ffmpeg\bin`, on the PATH). The Sound Director's studio (Nigel, SD, Sonic
 Pi 5, deliveries into `C:\dev\Zite\Sound Director\out/`) exists since 2026-10-31 and has not worked yet. **What the game
 needs heard, in order, is `docs/sound-demands.md`** (the UI first, the fight second, then Cloverfield Meadows' music,

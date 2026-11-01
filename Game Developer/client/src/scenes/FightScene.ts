@@ -13,6 +13,7 @@ import { creatureReady, Figure } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
+import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
@@ -36,8 +37,8 @@ export const FIGHT_LAYOUT = {
   enemyX: 300,
   titleY: 122,
   historyY: 148,
-  messageY: 738,
-  promptY: 772,
+  messageY: 736,
+  promptY: 770,
   barW: 150,
 } as const;
 
@@ -145,6 +146,11 @@ export class FightScene extends Phaser.Scene {
     const board = this.game_.state.board;
     const theme = board.areas[board.spaces[fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow';
     this.backdrop = new Backdrop(this, theme, L.groundY, L.stripY);
+    const kit = kitReady(this);
+    if (kit) {
+      plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, DESIGN_WIDTH, 915 - L.stripY);
+      plate(this, 'panel_message', CENTRE, L.messageY + 20, 380, 50);
+    }
     const feetY = this.backdrop.feetY;
 
     this.add.text(CENTRE, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4 }).setOrigin(0.5);
@@ -186,9 +192,9 @@ export class FightScene extends Phaser.Scene {
     this.heroStatus = this.add.text(L.heroX, heroTop - 56, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#7fe0e0', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     this.message = this.add
-      .text(CENTRE, L.messageY, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 32 } })
+      .text(CENTRE, L.messageY, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(14), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 350 } })
       .setOrigin(0.5, 0);
-    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5);
+    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '12px', color: kit ? INK_DIM : COLORS.dim }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);

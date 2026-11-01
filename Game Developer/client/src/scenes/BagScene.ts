@@ -4,8 +4,10 @@
 import Phaser from 'phaser';
 import { describeGear, GEAR, ITEMS, SLOTS, stats, type GearItem, type Slot } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_COLORS, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { sfx } from '../feel.ts';
+import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -29,6 +31,9 @@ export const BAG_LAYOUT = {
 } as const;
 
 export class BagScene extends Phaser.Scene {
+  /** The text colours: ink on the kit's parchment. */
+  private ink: { text: string; dim: string; gold: string } = { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold };
+  private rarity: Record<string, string> = RARITY_COLORS;
   private readonly game_: GameHolder;
   /** True while an action is on its way to the world: one at a time. */
   private inFlight = false;
@@ -45,14 +50,16 @@ export class BagScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
-    this.add.text(24, 114, 'Bag', { fontFamily: FONT, fontSize: '24px', fontStyle: 'bold', color: COLORS.text });
-    this.numbers = this.add.text(24, 146, '', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim, wordWrap: { width: 300 } });
+    this.ink = sheetInk(this, { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold });
+    this.rarity = kitReady(this) ? RARITY_INK : RARITY_COLORS;
+    sheet(this);
+    this.add.text(24, 112, 'Bag', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text });
+    this.numbers = this.add.text(24, 146, '', { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 300 } });
     const { close } = BAG_LAYOUT;
     makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());
-    this.add.text(24, BAG_LAYOUT.wornY - 30, 'Worn', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: COLORS.dim });
-    this.carried = this.add.text(24, BAG_LAYOUT.carriedY - 30, 'Carried', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: COLORS.dim });
-    this.message = this.add.text(CENTRE, 720, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5, 0);
+    this.add.text(24, BAG_LAYOUT.wornY - 30, 'Worn', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: this.ink.dim });
+    this.carried = this.add.text(24, BAG_LAYOUT.carriedY - 30, 'Carried', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: this.ink.dim });
+    this.message = this.add.text(CENTRE, 720, '', { fontFamily: FONT, fontSize: '12px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5, 0);
     this.refresh();
     this.log.note('bag open');
   }
@@ -69,23 +76,25 @@ export class BagScene extends Phaser.Scene {
     SLOTS.forEach((slot, i) => {
       const y = wornY + i * wornStep;
       const g = me.equipment[slot];
-      this.rows.push(this.add.text(24, y - 14, SLOT_NAMES[slot], { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }));
-      this.rows.push(this.add.text(24, y + 2, g ? describeGear(g) : 'nothing', { fontFamily: FONT, fontSize: '13px', fontStyle: g ? 'bold' : 'normal', color: g ? (RARITY_COLORS[g.rarity] ?? COLORS.text) : COLORS.dim }));
+      if (kitReady(this)) this.rows.push(plate(this, 'row_bag_idle', CENTRE, y + 1, DESIGN_WIDTH - 36, wornStep - 2));
+      this.rows.push(this.add.text(24, y - 14, SLOT_NAMES[slot], { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
+      this.rows.push(this.add.text(24, y + 2, g ? describeGear(g) : 'nothing', { fontFamily: FONT, fontSize: '13px', fontStyle: g ? 'bold' : 'normal', color: g ? (this.rarity[g.rarity] ?? COLORS.text) : COLORS.dim }));
       if (g) this.rows.push(makeButton(this, button.x, y, button.w, button.h, 'Take off', COLORS.log, '12px', () => this.send({ type: 'unequip', slot }, `Took off ${g.name}.`)).button);
     });
     const carried = me.bag.slice(0, carriedRows);
-    if (!carried.length) this.rows.push(this.add.text(24, carriedY - 6, 'No gear carried. Shops sell it; the wilds and chests drop it.', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }));
+    if (!carried.length) this.rows.push(this.add.text(24, carriedY - 6, 'No gear carried. Shops sell it; the wilds and chests drop it.', { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
     carried.forEach((g, i) => {
       const y = carriedY + i * carriedStep;
-      this.rows.push(this.add.text(24, y - 8, describeGear(g), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: RARITY_COLORS[g.rarity] ?? COLORS.text, wordWrap: { width: 230 } }));
+      if (kitReady(this)) this.rows.push(plate(this, 'row_bag_idle', CENTRE, y, DESIGN_WIDTH - 36, carriedStep - 4));
+      this.rows.push(this.add.text(24, y - 8, describeGear(g), { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: this.rarity[g.rarity] ?? COLORS.text, wordWrap: { width: 230 } }));
       this.rows.push(makeButton(this, dropX, y, 60, button.h, 'Drop', 0x8f2f3b, '12px', () => this.send({ type: 'drop', gear: g.id }, `Dropped ${g.name}.`)).button);
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, 'Wear', COLORS.button, '12px', () => this.send({ type: 'equip', gear: g.id }, `Now wearing ${g.name}.`)).button);
     });
-    if (me.bag.length > carried.length) this.rows.push(this.add.text(24, carriedY + carried.length * carriedStep - 8, `and ${me.bag.length - carried.length} more`, { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }));
+    if (me.bag.length > carried.length) this.rows.push(this.add.text(24, carriedY + carried.length * carriedStep - 8, `and ${me.bag.length - carried.length} more`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
     const flasks = Object.entries(me.items)
       .filter(([, n]) => n > 0)
       .map(([id, n]) => `${ITEMS[id]?.name ?? id} ×${n}`);
-    this.rows.push(this.add.text(24, 700, flasks.length ? `Flasks and cards: ${flasks.join(', ')}` : 'No flasks or cards.', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }));
+    this.rows.push(this.add.text(24, 700, flasks.length ? `Flasks and cards: ${flasks.join(', ')}` : 'No flasks or cards.', { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
   }
 
   private send(intent: { type: 'equip'; gear: string } | { type: 'unequip'; slot: Slot } | { type: 'drop'; gear: string }, done: string): void {
@@ -95,6 +104,7 @@ export class BagScene extends Phaser.Scene {
       (events) => {
         this.inFlight = false;
         const rejected = events.find((e) => e.type === 'rejected');
+        if (!rejected) sfx.play(intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
         this.message.setText(rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done);
         this.log.note(done);
         this.refresh();

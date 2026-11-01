@@ -9,6 +9,7 @@ import uiJson from '../../assets/ui/ui.json?url';
 import uiPng from '../../assets/ui/ui.png';
 import softJson from '../../assets/ui/ui_soft.json?url';
 import softPng from '../../assets/ui/ui_soft.png';
+import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT } from './layout.ts';
 
 export const KIT = 'ui';
 export const KIT_SOFT = 'ui_soft';
@@ -59,6 +60,23 @@ export function hasFrame(scene: Phaser.Scene, frame: string): boolean {
 /** The kit's item icon for an item id, if there is one. */
 export function itemFrame(item: string): string {
   return { potion: 'item_honey_tonic', 'mana-potion': 'item_moon_dew', reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', pick: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
+}
+
+/** A modal sheet over the world band (the shop, the bag, the atlas): the world dimmed, the kit's parchment in its wood frame. */
+export function sheet(scene: Phaser.Scene): void {
+  const x = DESIGN_WIDTH / 2;
+  const y = HUD_HEIGHT + VIEW_HEIGHT / 2;
+  if (!kitReady(scene)) {
+    scene.add.rectangle(x, y, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
+    return;
+  }
+  scene.add.rectangle(x, y, DESIGN_WIDTH, VIEW_HEIGHT, 0x0b0d14, 0.55).setInteractive();
+  plate(scene, 'panel_sheet', x, y, DESIGN_WIDTH - 20, VIEW_HEIGHT - 16);
+}
+
+/** The text colours of a sheet: ink on parchment with the kit, the old cream on dark without. */
+export function sheetInk(scene: Phaser.Scene, fallback: { text: string; dim: string; gold: string }): { text: string; dim: string; gold: string } {
+  return kitReady(scene) ? { text: INK, dim: INK_DIM, gold: '#9a6b12' } : fallback;
 }
 
 /** A short clip of the kit (fx_tap, fx_spark, fx_ripple, fx_tick) played once at a point, tinted, then gone. */

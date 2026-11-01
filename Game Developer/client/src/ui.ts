@@ -4,8 +4,9 @@
 
 import Phaser from 'phaser';
 import { feel, sfx } from './feel.ts';
-import { CREAM, INK, kitReady, plate, resizePlate } from './kit.ts';
+import { CREAM, fx, INK, kitReady, plate, resizePlate } from './kit.ts';
 import { COLORS, FONT, FONT_DISPLAY } from './layout.ts';
+import { settings } from './settings.ts';
 
 export interface Button {
   button: Phaser.GameObjects.Container;
@@ -54,11 +55,12 @@ export function makeButton(
     face.setFrame(frame(state));
     label.setY(state === 'pressed' ? 3 : -3);
   };
-  button.on('pointerdown', () => {
+  button.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
     if (enabled) show('pressed');
     feel.press(scene, button);
     feel.buzz();
     sfx.play('ui/tap');
+    if (!settings.get().fewerEffects) fx(scene, 'fx_tap', pointer.x, pointer.y, tint ?? (kind === 'action' ? 0xb8f09a : kind === 'danger' ? 0xffb0a0 : 0xe2d6ff), 500, 0.8);
     onTap();
   });
   const up = () => {

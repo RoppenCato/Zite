@@ -159,3 +159,26 @@ nothing made, a recording chosen. 65 to 123 ms; soft (centre 550 to 830 Hz, a th
 game's pace, a rare chest (the glow, the lid, the card, the ding). On the phone page: Chapter 1, the row "One whole turn".
 
 The sprite now: `game/ui.ogg` 21.6 s, 154 KB, 41 sounds, 21 names.
+
+# The rest of wave 1: arrivals, spots, gold, shop and bag, chrome, online, the character screen (2026-11-01, night)
+
+37 sounds, one variation each (Miles, GD: heard less than once a minute), written by `sfx/ui/_make2.py`. Wave 1 is now complete.
+
+**Listen:** `preview-spots.mp3` (11 s): town 0:00, shop 0:01, spring 0:02, shrine 0:03, chest found 0:04, wild 0:06, boss spot 0:06, flask filled 0:08, shrine teaches 0:08, an empty spot 0:10.
+`preview-rest.mp3` (20 s): coins gained and a few 0:00, purse lost 0:01, buy 0:02, sell 0:03, errand taken 0:03, errand done 0:04, trainer 0:05, wear 0:06, take off and drop 0:07, the pick chips and a chip 0:08, hint and message tick 0:09, sheet open 0:10, close 0:11, online join 0:11, leave 0:12, reconnect 0:13, note 0:14, the card and the Knight's 0:14 to 0:15, Trickster and Wizard 0:16, Archer 0:17, Begin 0:17.
+
+| Group | The game's names | Made from |
+| --- | --- | --- |
+| Arrivals and spots, in **`ui-spots.ogg`** | `ui/arrive-town`, `-shop`, `-spring`, `-shrine`, `-chest`, `-wild`, `-boss`, `ui/spring-fill`, `ui/shrine-teach`, `ui/spot-empty` | bells; the Survival splash and drops; **Robin's hull creak** for the chest found; Kenney's grass and the gust for the wild spot; a horn for the boss |
+| Gold | `ui/gold-gain`, `-small`, `-lost` | Kenney's light metal impacts, pitched up as coins (no coin recording on this PC) |
+| Shop and bag | `ui/buy`, `sell`, `wear`, `take-off`, `drop-item`, `errand-take`, `errand-done`, `trainer` | coins and wood; **Robin's leather straps** for wear and take off; the club's hit for the trainer |
+| Chrome | `ui/hint`, `message-tick`, `sheet-open`, `sheet-close` | **Robin's four picks as they are**: the page, the talk's next line, the book opening and closing |
+| Small | `ui/chip`, `ui/pick-appear` | wood knocks, a small bell |
+| Online | `ui/online-join`, `-leave`, `-reconnect`, `-note` | bells and knocks, all quiet |
+| Character screen | `ui/card`, `ui/card-knight`, `-trickster`, `-wizard`, `-archer`, `ui/begin` | a card on wood, with the parry's clink, a trap's snap, bells, **Robin's bow shot**; Begin a 2 s overture |
+
+**Sizes:** `ui.ogg` 32.4 s, 225 KB, 68 sounds; `ui-spots.ogg` 6.2 s, 43 KB, 10 sounds. All recordings CC0 (Kenney, rubberduck, BigSoundBank through the Survival studio's credits).
+
+**Mine, to revisit:** `ui/begin` is a stand-in phrase (C5 E5 G5, A5 G5, a held C6) until the title theme exists; the title will quote it or replace it. The coins are still bright (centre about 4.9 kHz, lowered from 7): that is where coins live, but they are the first thing to soften if they tire.
+
+**For Robin's ear:** the coins, since gold comes often; the boss spot's low note (66 % under 250 Hz, so a phone mostly hears its upper part); whether the card sounds are worth keeping while only the Knight can be chosen.

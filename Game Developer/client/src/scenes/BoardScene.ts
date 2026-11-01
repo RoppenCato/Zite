@@ -44,7 +44,7 @@ import { drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps,
 import { preloadCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
-import { preloadKit } from '../kit.ts';
+import { fx, hasFrame, icon, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
@@ -371,16 +371,19 @@ export class BoardScene extends Phaser.Scene {
   /** The bag: what you wear and carry. Not while a fight or a shop is up. */
   openBag(): void {
     if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('reveal')) return;
+    sfx.play('ui/sheet-open');
     this.scene.launch('bag');
   }
 
   /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
   openAtlas(): void {
     if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas') || this.scene.isActive('reveal')) return;
+    sfx.play('ui/sheet-open');
     this.scene.launch('atlas');
   }
 
   atlasClosed(): void {
+    sfx.play('ui/sheet-close');
     this.scene.stop('atlas');
     this.overlayClosedAt = this.time.now;
     this.overlayClosedFrame = this.game.loop.frame;
@@ -395,6 +398,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** The bag is closed: the numbers may have changed. */
   bagClosed(): void {
+    sfx.play('ui/sheet-close');
     this.scene.stop('bag');
     this.overlayClosedAt = this.time.now;
     this.overlayClosedFrame = this.game.loop.frame;
@@ -609,6 +613,7 @@ export class BoardScene extends Phaser.Scene {
         if (this.choices_?.has(space.id)) {
           // A lit spot chosen: a ripple of its light, a buzz, and the walk begins.
           feel.sparkle(this, space.x, space.y, LIT, 12, 9);
+          fx(this, 'fx_ripple', space.x, space.y, LIT, 4, 1.4);
           feel.buzz(12);
           sfx.play('ui/choice');
         }
@@ -706,9 +711,13 @@ export class BoardScene extends Phaser.Scene {
         continue;
       }
       const mini = spawn.kind === 'miniboss';
-      const badge = this.add.circle(0, 0, 14, mini ? 0xd9534f : 0xe8b84a, 1).setStrokeStyle(3, 0x101318, 1);
-      const text = this.add.text(0, 0, mini ? '!' : '$', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
-      const mark = this.add.container(space.x + 22, space.y - 24, [badge, text]).setDepth(9);
+      const parts: Phaser.GameObjects.GameObject[] = [];
+      if (hasFrame(this, mini ? 'mark_alert' : 'mark_dollar')) parts.push(icon(this, mini ? 'mark_alert' : 'mark_dollar', 0, 0));
+      else {
+        parts.push(this.add.circle(0, 0, 14, mini ? 0xd9534f : 0xe8b84a, 1).setStrokeStyle(3, 0x101318, 1));
+        parts.push(this.add.text(0, 0, mini ? '!' : '$', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5));
+      }
+      const mark = this.add.container(space.x + 22, space.y - 24, parts).setDepth(9);
       this.tweens.add({ targets: mark, y: mark.y - 6, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       this.spawnMarks.set(spaceId, mark);
     }
@@ -722,6 +731,10 @@ export class BoardScene extends Phaser.Scene {
     for (const [spaceId, notes] of Object.entries(traces ?? {})) {
       const space = board.spaces[spaceId];
       if (!space || !notes.length) continue;
+      if (hasFrame(this, 'mark_scroll')) {
+        this.traceMarks.set(spaceId, this.add.container(space.x - 22, space.y - 22, [icon(this, 'mark_scroll', 0, 0).setScale(0.4)]).setDepth(8));
+        continue;
+      }
       const badge = this.add.circle(0, 0, 10, 0xe8e4d8, 1).setStrokeStyle(2, 0x101318, 1);
       const text = this.add.text(0, 0, notes.length > 1 ? String(notes.length) : '"', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5);
       this.traceMarks.set(spaceId, this.add.container(space.x - 22, space.y - 22, [badge, text]).setDepth(8));
@@ -734,6 +747,7 @@ export class BoardScene extends Phaser.Scene {
       this.hud?.setChips([]);
       const traced = events.find((e) => e.type === 'traced');
       if (traced?.type === 'traced') {
+        sfx.play('ui/online-note');
         this.log.note(`note left: ${text}`);
         this.drawTraces();
         this.setMessage(`You leave a note here: "${text}". Others who tap this spot will read it.`);
@@ -1079,6 +1093,7 @@ export class BoardScene extends Phaser.Scene {
     const options = this.game_.me.picks[0];
     if (!options) return;
     this.setBusy(true);
+    sfx.play('ui/pick-appear');
     const name = (id: string) => ABILITIES[id]?.name ?? id;
     const known = (id: string) => this.game_.me.abilities[id] ?? 0;
     this.setMessage(`Level ${this.game_.me.level}: pick one. ${options.map((id) => `${name(id)}: ${ABILITIES[id]?.text ?? ''}`).join(' ')}`);
@@ -1102,6 +1117,7 @@ export class BoardScene extends Phaser.Scene {
     this.send({ type: 'quest', player: this.game_.player, accept }, (events) => {
       this.hud?.setChips([]);
       const taken = events.find((e) => e.type === 'questTaken');
+      if (taken) sfx.play('ui/errand-take');
       this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
       this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
     });
@@ -1232,6 +1248,14 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
+      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      for (const e of moved) {
+        if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
+        else if (e.type === 'rested') sfx.play('ui/spring-fill');
+        else if (e.type === 'learned') sfx.play('ui/shrine-teach');
+        else if (e.type === 'empty') sfx.play('ui/spot-empty');
+        else if (e.type === 'questDone') sfx.play('ui/errand-done');
+      }
       const after = () => {
         const me = this.game_.me;
         if (me.fight) {

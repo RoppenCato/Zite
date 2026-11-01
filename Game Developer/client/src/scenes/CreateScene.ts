@@ -7,9 +7,9 @@ import Phaser from 'phaser';
 import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, WORLD_DATA, type ClassId } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
 import { feel, sfx } from '../feel.ts';
-import { preloadKit } from '../kit.ts';
+import { CREAM, INK, kitReady, plate, preloadKit } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import { playScenes } from './play.ts';
 
@@ -54,7 +54,7 @@ const CARD_COLORS: Record<ClassId, number> = {
 
 export class CreateScene extends Phaser.Scene {
   private readonly deps: CreateSceneDeps;
-  private readonly cards = new Map<ClassId, Phaser.GameObjects.Graphics>();
+  private readonly cards = new Map<ClassId, Phaser.GameObjects.Graphics | Phaser.GameObjects.NineSlice>();
   private nameField!: HTMLInputElement;
   private status!: Phaser.GameObjects.Text;
   private chosen: ClassId = 'warrior';
@@ -70,7 +70,7 @@ export class CreateScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT, fontSize: '32px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
     this.add.text(CENTRE, 100, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
 
     const { input, begin, code } = CREATE_LAYOUT;
@@ -164,22 +164,26 @@ export class CreateScene extends Phaser.Scene {
 
   private drawCard(id: ClassId, y: number): void {
     const c = CLASS_DATA[id];
-    const g = this.add.graphics();
+    const kit = kitReady(this);
+    const g = kit ? plate(this, 'card_class_idle', CENTRE, y, CARD_W, CARD_H) : this.add.graphics();
     this.cards.set(id, g);
+    const ink = kit ? INK : COLORS.text;
+    const dim = kit ? '#6b5a60' : COLORS.dim;
     const zone = this.add.zone(CENTRE, y, CARD_W, CARD_H).setInteractive({ useHandCursor: true });
     zone.on('pointerdown', () => {
       feel.buzz();
-      sfx.play('ui/card');
+      sfx.play(`ui/card-${{ warrior: 'knight', rogue: 'trickster', mage: 'wizard', ranger: 'archer' }[id] ?? 'knight'}`);
       feel.sparkle(this, CENTRE - CARD_W / 2 + 28, y - CARD_H / 2 + 22, 0xfff27a);
       this.choose(id);
     });
     const left = CENTRE - CARD_W / 2 + 16;
-    this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: COLORS.text });
-    this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: COLORS.text });
+    this.add.text(left, y - CARD_H / 2 + 12, c.name, { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: ink });
+    this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: ink });
     this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}  ${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
       fontFamily: FONT,
-      fontSize: '13px',
-      color: COLORS.dim,
+      fontSize: '12px',
+      color: dim,
+      wordWrap: { width: CARD_W - 32 },
     });
   }
 
@@ -188,6 +192,10 @@ export class CreateScene extends Phaser.Scene {
     OFFERED.forEach((id, i) => {
       const g = this.cards.get(id)!;
       const y = CREATE_LAYOUT.cardY(i);
+      if (!(g instanceof Phaser.GameObjects.Graphics)) {
+        g.setFrame(id === classId ? 'card_class_chosen' : 'card_class_idle');
+        return;
+      }
       g.clear();
       g.fillStyle(CARD_COLORS[id], id === classId ? 1 : 0.55);
       g.fillRoundedRect(CENTRE - CARD_W / 2, y - CARD_H / 2, CARD_W, CARD_H, 16);

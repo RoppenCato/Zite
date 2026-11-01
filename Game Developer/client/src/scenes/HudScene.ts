@@ -207,6 +207,7 @@ export class HudScene extends Phaser.Scene {
 
   /** The message box: up to two lines at the usual size, smaller for a long one, and the box grows for the rest. */
   setMessage(text: string): void {
+    if (text && text !== this.message.text) audio.play('ui/message-tick', { volume: 0.6 });
     this.message.setFontSize(settings.font(14)).setText(text);
     if (this.message.height > 44) this.message.setFontSize(settings.font(12));
     const h = Math.max(44, Math.ceil(this.message.height) + 14);
@@ -254,6 +255,7 @@ export class HudScene extends Phaser.Scene {
           face.setFrame('chip_chosen');
           feel.press(this, button);
           feel.buzz();
+          audio.play('ui/chip');
           onTap();
         });
         this.chipRow.add(button);

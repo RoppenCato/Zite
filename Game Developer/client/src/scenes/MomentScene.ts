@@ -6,7 +6,8 @@
 import Phaser from 'phaser';
 import { audio } from '../audio.ts';
 import { feel } from '../feel.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
+import { INK, KIT_SOFT, kitReady, plate } from '../kit.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import { settings } from '../settings.ts';
 
 interface Moment {
@@ -20,12 +21,14 @@ interface Moment {
   /** A swell grows in from small; a burst pops in with sparkles and a ring. */
   kind: 'burst' | 'swell';
   shake?: boolean;
+  /** The kit's banner for it, and whether its words are ink (on parchment) or cream. */
+  banner: 'banner_level' | 'banner_boss' | 'banner_area';
 }
 
 const CENTRE = DESIGN_WIDTH / 2;
 /** Where a banner rests: a third down the world band, clear of the fight's figures and the reveal's card. */
 const BANNER_Y = HUD_HEIGHT + VIEW_HEIGHT * 0.3;
-const PLATE = { w: 340, h: 86, r: 18 } as const;
+const PLATE = { w: 360, h: 80, r: 18 } as const;
 const HOLD_MS = 1300;
 
 export class MomentScene extends Phaser.Scene {
@@ -42,17 +45,17 @@ export class MomentScene extends Phaser.Scene {
 
   /** A level crossed: the new level and the new numbers. */
   levelUp(level: number, line: string): void {
-    this.push({ title: `Level ${level}!`, line, color: 0xe8b84a, ink: '#ffe9a8', sound: 'ui/level-up', buzz: 30, kind: 'burst' });
+    this.push({ title: `Level ${level}!`, line, color: 0xe8b84a, ink: '#ffe9a8', sound: 'ui/level-up', buzz: 30, kind: 'burst', banner: 'banner_level' });
   }
 
   /** A boss beaten. */
   bossDown(name: string): void {
-    this.push({ title: `${name} is down!`, line: 'The way is clear.', color: 0xff7a5c, ink: '#ffd9cf', sound: 'ui/boss-down', buzz: 50, kind: 'burst', shake: true });
+    this.push({ title: `${name} is down!`, line: 'The way is clear.', color: 0xff7a5c, ink: '#ffd9cf', sound: 'ui/boss-down', buzz: 50, kind: 'burst', shake: true, banner: 'banner_boss' });
   }
 
   /** A new area opened. */
   opened(area: string): void {
-    this.push({ title: `${area} opens`, line: 'New ground to walk.', color: 0x6fcf7a, ink: '#d6f5da', sound: 'ui/area-opened', buzz: 20, kind: 'swell' });
+    this.push({ title: `${area} opens`, line: 'New ground to walk.', color: 0x6fcf7a, ink: '#d6f5da', sound: 'ui/area-opened', buzz: 20, kind: 'swell', banner: 'banner_area' });
   }
 
   private push(m: Moment): void {
@@ -75,15 +78,27 @@ export class MomentScene extends Phaser.Scene {
     audio.play(m.sound);
     feel.buzz(m.buzz);
 
-    const plate = this.add.graphics();
-    plate.fillStyle(COLORS.panel, 0.94);
-    plate.fillRoundedRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-    plate.lineStyle(3, m.color, 1);
-    plate.strokeRoundedRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-    const title = this.add.text(0, -12, m.title, { fontFamily: FONT, fontSize: '28px', fontStyle: 'bold', color: m.ink }).setOrigin(0.5);
-    for (let px = 28; px > 18 && title.width > PLATE.w - 40; px--) title.setFontSize(`${px}px`);
-    const line = this.add.text(0, 22, m.line, { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5);
-    const banner = this.add.container(CENTRE, BANNER_Y, [plate, title, line]);
+    const kit = kitReady(this);
+    let back: Phaser.GameObjects.GameObject;
+    if (kit) back = plate(this, m.banner, 0, 0, PLATE.w, PLATE.h);
+    else {
+      const g = this.add.graphics();
+      g.fillStyle(COLORS.panel, 0.94);
+      g.fillRoundedRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
+      g.lineStyle(3, m.color, 1);
+      g.strokeRoundedRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
+      back = g;
+    }
+    const inkTitle = kit ? (m.banner === 'banner_level' ? INK : '#f7efdc') : m.ink;
+    const inkLine = kit ? (m.banner === 'banner_level' ? '#6b5a60' : '#e9dcc4') : COLORS.dim;
+    const title = this.add.text(0, kit ? -8 : -12, m.title, { fontFamily: FONT_DISPLAY, fontSize: kit ? '26px' : '28px', fontStyle: 'bold', color: inkTitle }).setOrigin(0.5);
+    for (let px = 28; px > 18 && title.width > PLATE.w - 60; px--) title.setFontSize(`${px}px`);
+    const line = this.add.text(0, kit ? 14 : 20, m.line, { fontFamily: FONT, fontSize: kit ? '11px' : '13px', color: inkLine }).setOrigin(0.5);
+    const banner = this.add.container(CENTRE, BANNER_Y, [back, title, line]);
+    if (kit && m.banner === 'banner_level' && !quick) {
+      const burst = this.add.image(CENTRE, BANNER_Y, KIT_SOFT, 'burst_levelup').setScale(0.2).setTint(0xffd166).setBlendMode(Phaser.BlendModes.ADD).setDepth(-1);
+      this.tweens.add({ targets: burst, scale: 1.3, alpha: 0, duration: 700, ease: 'Quad.easeOut', onComplete: () => burst.destroy() });
+    }
 
     const leave = () => {
       if (quick) {
