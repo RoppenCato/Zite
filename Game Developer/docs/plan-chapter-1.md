@@ -13,7 +13,7 @@ Not the waves' order (`docs/art-demands.md`, `docs/sound-demands.md`), but the o
 
 | | From Mitch, AD | From Nigel, SD |
 | --- | --- | --- |
-| First | **the chest and the loot reveal** pieces (the chest, the six glows, the opening clip, the card, the particle sheets): small, and they land in step 2 | **the UI sprite's first half**: the tap, the tap denied, the die's shake, tumble and landing, the steps, the chest's shimmer, bursts and ding, the level up (step 1, step 2, step 7) |
+| First | **the chest and the loot reveal** pieces (the chest, the six glows, the opening clip, the card, the particle sheets): small, and they land in step 2 (landed 2026-11-01) | **the UI sprite's first half**: the tap, the tap denied, the die's shake, tumble and landing, the steps, the chest's shimmer, bursts and ding, the level up (step 1, step 2, step 7) |
 | Second | **the UI kit** (panels, cards, buttons with their pressed state, the die, bars, icons, the small marks, the press effects) and the **fonts** (step 6) | **the fight sprite** (step 4, step 7) |
 | Third | **the meadows' fight backdrop** and **one monster, the Jelly Slime**, to prove the side view (step 4) | **the rest of the UI sprite** (arrivals, shop, bag, online, the character screen) |
 | Fourth | **the meadows' board kit** with its props (step 5) | **Cloverfield Meadows' music**: the board theme first, then the fight and King Goo themes, the title, the beds |
@@ -30,11 +30,12 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
    nothing waits on a load to react. One place in the code (`client/src/ui.ts`) serves every screen. *Needs*: nothing to
    start; the tap and tick sounds from Nigel, SD when they come. *Done*: every tap in the game answers at once in the pane
    and on the phone.
-2. **The loot reveal.** A screen over the board for every chest, vault and boss drop: the chest glows in the rarity colour
-   (the glow builds for most of a second), opens with a burst of particles in that colour, the piece slides out on a card
-   with its name in its colour and its one-line power; a tap or two seconds closes it; several pieces queue. Placeholder
-   chest and particles drawn by code until the art lands. *Needs*: the chest pieces from Mitch, AD; the shimmer, bursts
-   and ding from Nigel, SD. *Done*: a chest opening makes Robin smile.
+2. **The loot reveal** (done 2026-11-01, `client/src/scenes/RevealScene.ts`, on Mitch, AD's pieces, which landed the same
+   morning). A screen over the board for every chest, vault and boss drop: the chest glows in the rarity colour (the glow
+   builds for most of a second), opens with a burst of particles in that colour, the piece slides out on a card with its
+   name in its colour and its one-line power; a tap or two seconds moves on; a chest's gold, gear and flask queue as cards.
+   *Needs*: the shimmer, bursts and ding from Nigel, SD when they come. *Done*: a chest opening makes Robin smile (his
+   verdict pending: `?reveal=all` shows it without finding a chest).
 3. **The moments.** The level up (a burst and the new level, the ability pick after it), the boss down banner, the area
    opened swell, the die landing (a bounce and a glow on the settled face). *Needs*: the banners and the die from the UI
    kit; the level-up, boss-down and die-landing sounds. *Done*: the four dopamine moments read as moments.
@@ -58,7 +59,7 @@ A drop that comes early is wired the day it lands; a drop that comes late leaves
 7. **The audio layer.** The sprites loaded with their scenes and played on the events; music per area streamed with a
    crossfade on an area change and on a fight's start and end; the beds under it; mute and two volumes in the settings;
    `?mute=1`; the audio unlocked on the first tap. *Needs*: the UI sprite, then the fight sprite, then the meadows' music
-   and voices; ffmpeg on the PC (Robin's yes). *Done*: the game is heard on the phone with the volumes and the mute
+   and voices; ffmpeg on the PC (installed 2026-11-01). *Done*: the game is heard on the phone with the volumes and the mute
    working, and silent in the pane with `?mute=1`.
 8. **The Knight alone.** The character screen offers the Knight and says the three others come in chapter 2; the rules
    keep all four, so nothing else changes. *Needs*: nothing. *Done*: a new player can only be a Knight.
@@ -83,4 +84,5 @@ step 9 when the parts land, 10 and 11 near the end, 12 last.
 ## What Robin does meanwhile
 
 Plays the build on his phone after every step and says what felt wrong; answers Mitch, AD's and Nigel, SD's questions as
-they come; says yes to ffmpeg; and when the chest opens for the first time, says whether it made him smile.
+they come; picks the die's sound from Nigel, SD's three candidates; and when the chest opens for the first time, says
+whether it made him smile.

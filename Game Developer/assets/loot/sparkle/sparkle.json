@@ -1,0 +1,300 @@
+{
+ "frames": {
+  "sparkle/play/0004": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 57,
+    "h": 58
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 57,
+    "h": 58
+   },
+   "sourceSize": {
+    "w": 57,
+    "h": 58
+   },
+   "pivot": {
+    "x": 0.4912,
+    "y": 0.5
+   }
+  },
+  "sparkle/play/0003": {
+   "frame": {
+    "x": 61,
+    "y": 2,
+    "w": 50,
+    "h": 51
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 50,
+    "h": 51
+   },
+   "sourceSize": {
+    "w": 50,
+    "h": 51
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5098
+   }
+  },
+  "sparkle/play/0005": {
+   "frame": {
+    "x": 113,
+    "y": 2,
+    "w": 48,
+    "h": 50
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 50
+   },
+   "sourceSize": {
+    "w": 48,
+    "h": 50
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "sparkle/play/0002": {
+   "frame": {
+    "x": 163,
+    "y": 2,
+    "w": 38,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 38,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 38,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "sparkle/play/0006": {
+   "frame": {
+    "x": 203,
+    "y": 2,
+    "w": 34,
+    "h": 34
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 34,
+    "h": 34
+   },
+   "sourceSize": {
+    "w": 34,
+    "h": 34
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "sparkle/play/0001": {
+   "frame": {
+    "x": 239,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "sparkle.png",
+  "size": {
+   "w": 1024,
+   "h": 64
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "play": {
+   "delay": 70,
+   "loop": false,
+   "frames": [
+    {
+     "name": "sparkle/play/0001",
+     "w": 8,
+     "h": 8,
+     "origin": {
+      "x": 4,
+      "y": 4
+     },
+     "delay": 70,
+     "lt": {
+      "x": -4,
+      "y": -4
+     },
+     "rb": {
+      "x": 4,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -4
+     }
+    },
+    {
+     "name": "sparkle/play/0002",
+     "w": 38,
+     "h": 38,
+     "origin": {
+      "x": 19,
+      "y": 19
+     },
+     "delay": 70,
+     "lt": {
+      "x": -19,
+      "y": -19
+     },
+     "rb": {
+      "x": 19,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -19
+     }
+    },
+    {
+     "name": "sparkle/play/0003",
+     "w": 50,
+     "h": 51,
+     "origin": {
+      "x": 25,
+      "y": 26
+     },
+     "delay": 70,
+     "lt": {
+      "x": -25,
+      "y": -26
+     },
+     "rb": {
+      "x": 25,
+      "y": 25
+     },
+     "head": {
+      "x": 0,
+      "y": -26
+     }
+    },
+    {
+     "name": "sparkle/play/0004",
+     "w": 57,
+     "h": 58,
+     "origin": {
+      "x": 28,
+      "y": 29
+     },
+     "delay": 70,
+     "lt": {
+      "x": -28,
+      "y": -29
+     },
+     "rb": {
+      "x": 29,
+      "y": 29
+     },
+     "head": {
+      "x": 0,
+      "y": -29
+     }
+    },
+    {
+     "name": "sparkle/play/0005",
+     "w": 48,
+     "h": 50,
+     "origin": {
+      "x": 24,
+      "y": 25
+     },
+     "delay": 70,
+     "lt": {
+      "x": -24,
+      "y": -25
+     },
+     "rb": {
+      "x": 24,
+      "y": 25
+     },
+     "head": {
+      "x": 0,
+      "y": -25
+     }
+    },
+    {
+     "name": "sparkle/play/0006",
+     "w": 34,
+     "h": 34,
+     "origin": {
+      "x": 17,
+      "y": 17
+     },
+     "delay": 70,
+     "lt": {
+      "x": -17,
+      "y": -17
+     },
+     "rb": {
+      "x": 17,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -17
+     }
+    }
+   ]
+  }
+ }
+}

@@ -9,6 +9,7 @@ import type { GameLog } from '../game-log.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady, heroSetFor } from '../hero.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
+import { gearIn, type Prize } from '../loot.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import { Bar, makeButton } from '../ui.ts';
@@ -50,7 +51,8 @@ const CLASS_COLORS: Record<string, number> = {
   ranger: 0xc8f0c8,
 };
 
-export type FightOutcome = { type: 'won' | 'died' | 'fled'; summary: string };
+/** How a fight ended, for the board: the words for the message line, the gear it dropped (shown by the loot reveal), who dropped it. */
+export type FightOutcome = { type: 'won' | 'died' | 'fled'; summary: string; loot: Prize[]; enemy: string };
 
 interface Option {
   text: string;
@@ -235,8 +237,8 @@ export class FightScene extends Phaser.Scene {
       if (this.outcome) return;
       const down = events.find((e) => e.type === 'worldBossDown');
       const share = down?.type === 'worldBossDown' ? down.shares.find((x) => x.player === this.game_.player) : undefined;
-      if (share) this.end({ type: 'won', summary: `The ${this.enemyName} fell to all of you. Your share: +${share.xp} xp, +${share.gold} gold.` }, `${this.enemyName} falls! Your share: +${share.xp} xp, +${share.gold} gold.`);
-      else this.end({ type: 'fled', summary: 'The fight is over.' }, events.some((e) => e.type === 'bossLeft') ? `${this.enemyName} is gone.` : 'The fight is over.');
+      if (share) this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `The ${this.enemyName} fell to all of you. Your share: +${share.xp} xp, +${share.gold} gold.` }, `${this.enemyName} falls! Your share: +${share.xp} xp, +${share.gold} gold.`);
+      else this.end({ type: 'fled', loot: [], enemy: this.enemyName, summary: 'The fight is over.' }, events.some((e) => e.type === 'bossLeft') ? `${this.enemyName} is gone.` : 'The fight is over.');
       if (!this.busy) this.play([], 0);
       return;
     }
@@ -255,7 +257,7 @@ export class FightScene extends Phaser.Scene {
       this.refreshStatus();
       (this.scene.get('board') as BoardScene).refreshHud();
       // A fight that ended without a win, a fall or an escape (a world boss gone): over all the same.
-      if (!this.outcome && !this.game_.me.fight) this.end({ type: 'fled', summary: 'The fight is over.' }, this.message.text || 'The fight is over.');
+      if (!this.outcome && !this.game_.me.fight) this.end({ type: 'fled', loot: [], enemy: this.enemyName, summary: 'The fight is over.' }, this.message.text || 'The fight is over.');
       if (this.outcome) {
         for (const b of this.buttons) b.setVisible(false);
         this.prompt.setText('');
@@ -362,18 +364,22 @@ export class FightScene extends Phaser.Scene {
         if (e.amount > 0) this.say(`You feel better: +${e.amount} HP.`);
         break;
       case 'fled':
-        if (e.ok) this.end({ type: 'fled', summary: 'You got away.' }, 'You got away!');
+        if (e.ok) this.end({ type: 'fled', loot: [], enemy: this.enemyName, summary: 'You got away.' }, 'You got away!');
         else this.say('No escape!');
         break;
       case 'won': {
         this.hero?.play('stand');
         const tip = tips.take('won');
-        this.end({ type: 'won', summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
+        this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
       }
       case 'loot':
+        // The drop is told here and shown by the loot reveal once the fight closes (chapter 1, step 2).
         this.say(`It drops ${e.gear.name} (${e.gear.rarity})!`);
-        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} ${e.gear.name} (${e.gear.rarity}).` };
+        if (this.outcome) this.outcome = { ...this.outcome, loot: [...this.outcome.loot, ...gearIn([e])] };
+        break;
+      case 'bagFull':
+        if (this.outcome) this.outcome = { ...this.outcome, loot: this.outcome.loot.map((p) => (p.kind === 'gear' && p.gear.id === e.gear.id ? { ...p, sold: e.sold } : p)) };
         break;
       case 'found':
         this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
@@ -404,7 +410,7 @@ export class FightScene extends Phaser.Scene {
         this.hero?.play('die1');
         const town = this.game_.state.board.spaces[e.town]?.name ?? e.town;
         this.heroBar.set(0, s.maxHp);
-        this.end({ type: 'died', summary: `You wake in ${town} with ${e.lostGold} gold less.` }, `You fall. You wake in ${town}, ${e.lostGold} gold lighter.`);
+        this.end({ type: 'died', loot: [], enemy: this.enemyName, summary: `You wake in ${town} with ${e.lostGold} gold less.` }, `You fall. You wake in ${town}, ${e.lostGold} gold lighter.`);
         break;
       }
       case 'rejected':

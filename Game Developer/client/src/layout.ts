@@ -48,4 +48,26 @@ export const RARITY_COLORS: Record<string, string> = {
   legendary: '#ffb347',
 };
 
+/** The same colours as ink on the loot card's cream face (mine, 2026-11-01): darker, so a common piece reads too; gold for coins. */
+export const RARITY_INK: Record<string, string> = {
+  unique: '#d9621a',
+  common: '#6b6252',
+  uncommon: '#3c9a4c',
+  rare: '#2d7fd6',
+  epic: '#9450e0',
+  legendary: '#dd8a12',
+  gold: '#c08a14',
+};
+
+/** The colour a reveal's glow, rim and particles take, as a number for a tint: the rarity's colour, a stone grey for common, gold for coins. */
+export const RARITY_TINT: Record<string, number> = {
+  unique: 0xff9f43,
+  common: 0xd6cfbd,
+  uncommon: 0x6fcf7a,
+  rare: 0x5aa9ff,
+  epic: 0xc084fc,
+  legendary: 0xffb347,
+  gold: 0xe8b84a,
+};
+
 export const FONT = 'system-ui, "Segoe UI", Roboto, sans-serif';

@@ -47,14 +47,14 @@ pieces stretch, so draw their corners and edges with care.
 | Gear slot icons for an empty slot: weapon, shield, helm, armour, gloves, boots, cape, trinket | 8 | 40 | |
 | Rarity frames round an icon: common, uncommon, rare, epic, legendary, and the orange unique frame | 6 | 48 | the same six colours are the glow colours below |
 | Small marks: lock, clock (a cooldown), star (xp), heart, mana drop, online dot, a note scroll, a "!" and a "$" badge, a tap ring | 10 | 24 to 40 | |
-| **The chest and the loot reveal** (Robin, 2026-11-01): a closed chest, a glowing chest in each rarity colour (the glow a separate layer so the code can tint it), an opening animation of 8 to 12 frames with the lid flying and a burst of light, a loot card the piece slides out on, sparkle and confetti particles in the rarity colours, a "ding" moment frame | 1 chest + 6 glows + 1 opening clip + 1 card + 2 particle sheets | chest 160, card 300 by 120, particles 16 to 32 | the dopamine hit: the glow builds before the open, the burst, then the card with the name in its rarity colour |
+| **The chest and the loot reveal** (Robin, 2026-11-01): a closed chest, a glowing chest in each rarity colour (the glow a separate layer so the code can tint it), an opening animation of 8 to 12 frames with the lid flying and a burst of light, a loot card the piece slides out on, sparkle and confetti particles in the rarity colours, a "ding" moment frame | 1 chest + 6 glows + 1 opening clip + 1 card + 2 particle sheets | chest 160, card 300 by 120, particles 16 to 32 | the dopamine hit: the glow builds before the open, the burst, then the card with the name in its rarity colour **Landed 2026-11-01** (`assets/loot/`) |
 | Level-up burst, a boss-defeated banner, an "area opened" banner | 3 | banner 360 by 80 | the other big moments |
 | The Zite wordmark; the app icon (512, and 192; the 512 also maskable: subject in the middle 80 %); a character-screen backdrop | 3 | backdrop 824 by 1830 at 2x | the placeholders are `client/public/pwa-*.png` |
 | A font pairing for the UI (a display face for titles and numbers, a text face for lines), chosen from Google Fonts | 2 | | the game draws text with it; licence noted in NOTES.md |
 
 What I do when it lands: a UI layer in the client that draws nine-slices and icons from the atlas instead of rectangles
 and letters, and a **loot reveal screen** that runs the chest's glow, open, burst and card for every chest, vault and
-boss drop (not built yet; the chest today is a line of text).
+boss drop (built 2026-11-01, `client/src/scenes/RevealScene.ts`, on the pieces, which landed the same day in `assets/loot/`).
 
 ## Wave 2 (chapter 1 for the Knight, chapter 2 for the other three): the hero and what he wears
 

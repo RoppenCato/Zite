@@ -7,6 +7,7 @@
 
 import Phaser from 'phaser';
 import type { Character } from '../../rules/src/index.ts';
+import { ensureClips, type ActionData } from './clips.ts';
 import plateData from '../../assets/hero/plate/hero_plate.json';
 import plateJson from '../../assets/hero/plate/hero_plate.json?url';
 import platePng from '../../assets/hero/plate/hero_plate.png';
@@ -17,18 +18,6 @@ import tunicPng from '../../assets/hero/tunic/hero_tunic.png';
 export type HeroSet = 'tunic' | 'plate';
 export type HeroAction = 'stand' | 'move' | 'attack1' | 'defend' | 'hit1' | 'die1';
 
-interface ActionFrame {
-  name: string;
-  delay: number;
-  /** The alpha this frame starts and ends with, 0 to 255; the die's last frames fade. */
-  a0?: number;
-  a1?: number;
-}
-interface ActionData {
-  delay: number;
-  loop: boolean;
-  frames: ActionFrame[];
-}
 interface SetFiles {
   key: string;
   png: string;
@@ -63,16 +52,7 @@ export function heroSetFor(c: Character): HeroSet {
 }
 
 function ensureAnims(scene: Phaser.Scene, set: HeroSet): void {
-  const s = SETS[set];
-  for (const [action, a] of Object.entries(s.actions)) {
-    const key = `${s.key}/${action}`;
-    if (scene.anims.exists(key)) continue;
-    scene.anims.create({
-      key,
-      frames: a.frames.map((f) => ({ key: s.key, frame: f.name, duration: f.delay })),
-      repeat: a.loop ? -1 : 0,
-    });
-  }
+  ensureClips(scene, SETS[set].key, SETS[set].actions);
 }
 
 /** A hero sprite that plays the set's clips. The sprite's x, y is where the feet stand. */

@@ -2,7 +2,8 @@
 // whatever has spawned), a camera that follows the character, and the touch input (tap a spot for a hint or a choice,
 // drag to pan, pinch to zoom). The fixed chrome is HudScene, launched from here; the fight, the shop and the bag are
 // scenes launched over both. No art yet: shapes and labels. Everything here is drawing and input; what happens is
-// decided by the rules through the holder (LocalGame alone, or RemoteGame with the server).
+// decided by the rules through the holder (LocalGame alone, or RemoteGame with the server). A chest, a vault or a boss's
+// drop opens the loot reveal (RevealScene) before the board goes on.
 // Other players stand on the board as small marks with their names; the HUD says whether the world is online.
 
 import Phaser from 'phaser';
@@ -15,8 +16,14 @@ import {
   powers,
   hintFor,
   ITEMS,
+  makeRng,
+  plainGear,
+  RARITIES,
   reachable,
+  rollGear,
+  rollUnique,
   sellPrice,
+  SLOTS,
   SPACE_KIND_DATA,
   stats,
   TRACES,
@@ -24,12 +31,15 @@ import {
   type Area,
   type Board,
   type GameEvent,
+  type GearItem,
+  type Rarity,
   type Space,
   type SpaceKind,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, heroSetFor, preloadHero } from '../hero.ts';
+import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
@@ -159,6 +169,30 @@ export class BoardScene extends Phaser.Scene {
     this.time.addEvent({ delay: 1000, loop: true, callback: () => this.refreshClocks() });
     this.log.note(`board scene ready: ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
     this.scene.launch('hud');
+    // For looking at the loot reveal without finding a chest: ?reveal=rare, ?reveal=all (the pane, Robin's phone).
+    const which = new URLSearchParams(window.location.search).get('reveal');
+    if (which) this.time.delayedCall(700, () => this.showcase(which));
+  }
+
+  /**
+   * The loot reveal on made-up prizes, for looking at it: one rarity, or 'all' (gold, a flask and the six rarities in a
+   * row). From the page's ?reveal= switch, or the pane: boardWorld.phaser.scene.getScene('board').showcase('epic').
+   */
+  showcase(which: string): void {
+    if (this.busy || this.game_.me.fight) return;
+    const rng = makeRng(Date.now());
+    const want = which === 'all' ? [...RARITIES] : RARITIES.includes(which as Rarity) ? [which as Rarity] : ['rare' as Rarity];
+    const prizes: Prize[] = which === 'all' ? [{ kind: 'gold', amount: 48 }, { kind: 'item', item: 'potion', count: 2 }] : [];
+    want.forEach((rarity, n) => {
+      let gear: GearItem | null = null;
+      for (let i = 0; i < 80 && !gear; i++) {
+        const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
+        const piece = rarity === 'unique' ? rollUnique(`look-${n}-${i}`, 1 + rng.int(3), 3, rng) : rollGear(`look-${n}-${i}`, slot, 3, rarity === 'legendary' || rarity === 'epic' ? 3 : 0, rng);
+        if (piece?.rarity === rarity) gear = piece;
+      }
+      prizes.push({ kind: 'gear', gear: gear ?? { ...plainGear(`look-${n}`, 'weapon', 3), rarity }, sold: null });
+    });
+    this.reveal(prizes, which === 'all' ? 'Every rarity, for looking' : 'For looking', () => this.finish('That was the loot reveal.'));
   }
 
   /** The HUD is drawn: show the first message, and take up again whatever the page was closed in the middle of. */
@@ -321,13 +355,13 @@ export class BoardScene extends Phaser.Scene {
 
   /** The bag: what you wear and carry. Not while a fight or a shop is up. */
   openBag(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('reveal')) return;
     this.scene.launch('bag');
   }
 
   /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
   openAtlas(): void {
-    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas')) return;
+    if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('bag') || this.scene.isActive('atlas') || this.scene.isActive('reveal')) return;
     this.scene.launch('atlas');
   }
 
@@ -418,9 +452,33 @@ export class BoardScene extends Phaser.Scene {
     this.drawSpawns();
     this.refreshClocks();
     this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
-    this.finish(outcome.summary);
-    // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
-    if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
+    this.reveal(outcome.loot, `Dropped by ${outcome.enemy}`, () => {
+      this.finish(outcome.summary);
+      // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
+      if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
+    });
+  }
+
+  /**
+   * The loot reveal over the board (chapter 1, step 2): the chest glows, opens and gives its prizes on cards, then `then`
+   * runs (the message, the shop, a question). Nothing to show, or the art not loaded: straight on.
+   */
+  private reveal(prizes: Prize[], title: string, then: () => void): void {
+    if (!prizes.length || !lootReady(this) || this.scene.isActive('reveal')) {
+      then();
+      return;
+    }
+    this.setBusy(true);
+    const request: RevealRequest = { title, prizes, onDone: then };
+    this.scene.launch('reveal', request);
+  }
+
+  /** The reveal is done: the scene goes, the tap that closed it is kept off the board, and what waited runs. */
+  revealClosed(then: () => void): void {
+    this.scene.stop('reveal');
+    this.overlayClosedAt = this.time.now;
+    this.overlayClosedFrame = this.game.loop.frame;
+    then();
   }
 
   // ---- drawing -----------------------------------------------------------------------------------------------------
@@ -644,6 +702,7 @@ export class BoardScene extends Phaser.Scene {
 
   preload(): void {
     preloadHero(this);
+    preloadLoot(this);
   }
 
   private drawToken(): void {
@@ -1111,22 +1170,27 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      const me = this.game_.me;
-      if (me.fight) {
-        this.openFight();
-        return;
-      }
-      if (me.offer || me.picks.length) {
-        this.offerChoice();
-        return;
-      }
-      if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
-        this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
-        this.refreshHud();
-        this.openShop(moved.some((e) => e.type === 'merchant'));
-        return;
-      }
-      this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+      const after = () => {
+        const me = this.game_.me;
+        if (me.fight) {
+          this.openFight();
+          return;
+        }
+        if (me.offer || me.picks.length) {
+          this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+          this.offerChoice();
+          return;
+        }
+        if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
+          this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+          this.refreshHud();
+          this.openShop(moved.some((e) => e.type === 'merchant'));
+          return;
+        }
+        this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+      };
+      const chest = moved.some((e) => e.type === 'chest');
+      this.reveal(prizesIn(moved), chest ? (space.kind === 'chest' ? 'A chest!' : 'A chest in the wilds!') : `Found ${space.name ? `at ${space.name}` : 'here'}`, after);
     });
   }
 

@@ -1,9 +1,9 @@
 # The client (`client/`)
 
-Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. Six scenes: the **character screen**
+Phaser 4.2.1 with TypeScript and Vite 8, built as a PWA with `vite-plugin-pwa` 2. The scenes: the **character screen**
 the first time (a name and a class), then the **board** (the world in areas, drawn in world pixels under a camera that
 follows the character), the **HUD** over it (the fixed chrome, which never scrolls or zooms), and the **fight**, the
-**shop** and the **bag**, each launched over both when it begins and stopped when it ends. Shapes and labels only; the Art
+**shop**, the **bag**, the **atlas** and the **loot reveal**, each launched over both when it begins and stopped when it ends. Shapes and labels only; the Art
 Director's sprites come later. The client never decides anything: it sends intents to the holder of the state and plays
 back the events. **Two holders** behind one interface (`GameHolder`, `src/game-holder.ts`): `LocalGame` (solo: the state
 and the dice in the browser, saved to storage) and `RemoteGame` (co-op: the server holds the state; the page was opened
@@ -22,7 +22,10 @@ both, and a scene waits the same way whether the die rolls here or on Robin's PC
 | `src/game-log.ts` | the frame log and error log, downloadable |
 | `src/scenes/CreateScene.ts` | the character screen: the name field, the four class cards, Begin (the local save, or an account on the server), "I have a code from another phone" in co-op; starts the board |
 | `src/scenes/ConnectScene.ts` | co-op, with an account on this phone: "connecting…", tries again on its own, Play offline for now, Start over when the account is gone |
-| `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop and bag scenes made together |
+| `src/scenes/play.ts` | `playScenes(game, log)`: the board, HUD, fight, shop, bag, atlas and reveal scenes made together |
+| `src/scenes/RevealScene.ts` | the loot reveal: the chest glows in the colour of its best prize, opens, bursts, and gives each prize on a card; a tap or a wait moves on; `REVEAL_LAYOUT` |
+| `src/loot.ts` | loads Mitch, AD's chest, glow, card and particle sheets; `prizesIn` and `gearIn` (what a landing's or a fight's events put on cards), `tierOf`, `cardWords` |
+| `src/clips.ts` | the studios' atlas form: `ensureClips` turns an atlas's `actions` block into animations keyed `<atlas>/<action>` with each frame's delay |
 | `src/scenes/BoardScene.ts` | the world, the token, the other players' marks, the camera, the touch input, hints, culling; `roll`, `toggleMap`, `openAtlas`, `openBag`, `downloadLog`, `useCard`, `answerGamble`; `send` (one intent at a time), `onWorldChange` |
 | `src/scenes/AtlasScene.ts` | the world as a list: the areas by tier, bosses, kills, errands, where you are; Go frames one; the settings behind a button |
 | `src/tips.ts` | the first minutes: a few lines said once (the start, the first choice, fight, win and boss), kept in storage |
@@ -72,7 +75,8 @@ the page was closed in the middle of: a fight, the gambler's question, a pending
 public methods (`roll`, `toggleMap`, `openBag`, `downloadLog`); the board tells the HUD what to show. Phaser dispatches
 input to the top scene first and stops there when it hit something, so a tap on a button never reaches the world; a
 touch on the HUD's panel or strip is ignored by the board. The fight, shop and bag scenes each cover the band with an
-opaque panel that takes every touch, and call the board back when they close (`fightOver`, `shopLeft`, `bagClosed`).
+opaque panel that takes every touch, the reveal with a dark veil, and they call the board back when they close (`fightOver`,
+`shopLeft`, `bagClosed`, `revealClosed`).
 
 ## The board scene
 
@@ -208,6 +212,37 @@ carries them), makes a Phaser animation per clip from the atlas's `actions` bloc
 `move` loop), and the class `Hero` plays them on a sprite whose x, y is the feet (the frames carry a pivot at the feet, which
 Phaser applies on every frame change). The files face left; `face(true)` flips. `heroSetFor(character)` picks the set: a
 coat worn shows `plate`, otherwise `tunic` (mine, for the test); `refreshHud` swaps the set when the wardrobe changes.
+
+## The loot reveal (`RevealScene.ts`, chapter 1 step 2, 2026-11-01)
+
+Robin, 2026-11-01: "a nice interface for when you find a chest. With it glowing in different rarity colors, and a nice
+animation when opening. The aim is dopamine hits." Built on Mitch, AD's pieces (`assets/loot/`, `docs/state/art.md`).
+
+- **When**: every chest (its gold, its gear, its flask or card, each on a card, in that order; `prizesIn`), gear found
+  without a chest (the wilds, an errand), and a fight's drop after Continue (`FightOutcome.loot`, collected from the
+  fight's `loot` and `bagFull` events). Gold and flasks from anything but a chest stay in the message line. The board's
+  `reveal(prizes, title, then)` launches the scene and runs `then` (the message, the shop, a question) when it closes;
+  nothing to show, or the art not loaded, runs `then` at once. The board is busy meanwhile; the Bag and World buttons wait.
+- **The moments** (timings mine): the veil (0.88) in 150 ms; the glow builds for 750 ms under the shut chest, which stirs
+  in the last 300; the lid goes up (Mitch, AD's clip, 60 ms a frame); on `chest/open/0008`, the frame it is fully open,
+  the glow swells to 1.5 and settles at 1.4 and 0.85, 6 to 16 sparkles (tinted light, additive) rise from the mouth and
+  4 to 10 petals (in the colour) tumble out and down, a legendary or a unique shakes the camera a touch, and the first
+  card slides up from behind the chest (380 ms, a little overshoot). At rest: a ding, a pulse on the name, "Tap to go on";
+  2.2 s or a tap brings the next card (the old one lifts away, a few sparkles) or the board. A tap during the build opens
+  the chest at once.
+- **The colour** is the best prize's rarity, gold for a chest of coins and flasks (`tierOf`; `RARITY_TINT` for the glow,
+  rim and particles, `RARITY_INK` for the name on the cream face, both in `layout.ts`).
+- **The card** is Mitch, AD's card.png twice: one copy tinted for the rim, one untinted under a geometry mask cut to the
+  cream face. The slot's word sits in the icon square until the gear icons come; the name shrinks from 19 px to fit; the
+  power line (`cardWords`: the rarity and base, the stats, the affixes, a unique's power, "no room: sold for n gold")
+  goes 12, 11, 10 px, then loses its last parts with an ellipsis.
+- **Fewer effects**: no veil fade, no build, no particles, the clip still plays, the card appears in place, 1.5 s or a tap.
+- **Sound hooks** (silent until step 7): `ui/chest-shimmer` at the build, `ui/chest-burst-<rarity>` on the open frame
+  (gold-only chests use common), `ui/chest-card` per card, `ui/chest-ding` at rest; the buzz grows with the tier.
+- **For looking** without finding a chest: `?reveal=rare` (any rarity) or `?reveal=all` (gold, a flask and the six
+  rarities in a row) on a page with a save; or in the pane, `boardWorld.phaser.scene.getScene('board').showcase('epic')`.
+- **Tests**: `client/test/loot.test.ts` covers the pure parts (Vitest now includes `client/test/`); the scene is judged in
+  the pane.
 
 - **On the board** the token is the hero at 0.15 of the file (about 45 CSS px), feet on the spot, facing right; a walk
   plays `move` and turns him the way each step goes, then `stand`.

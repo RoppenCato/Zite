@@ -188,12 +188,17 @@ export function rollUnique(id: string, tier: number, rank: number, rng: Rng): Ge
 
 /** One line on a piece: "Stormborn, iron sword · epic · +14 attack · +12% crit chance"; a unique adds what its power does. */
 export function describeGear(g: GearItem): string {
-  const parts = [g.name === capitalise(g.base) ? g.name : `${g.name}, ${g.base}`, g.rarity];
+  return [g.name === capitalise(g.base) ? g.name : `${g.name}, ${g.base}`, g.rarity, ...gearPowers(g)].join(' · ');
+}
+
+/** What a piece does, as short parts: "+3 attack", "+12% crits bleed", a unique's power. The loot card shows these under the name. */
+export function gearPowers(g: GearItem): string[] {
+  const parts: string[] = [];
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
   for (const affix of g.affixes ?? []) parts.push(`+${Math.round(affix.value * 100)}% ${GEAR.affixes[affix.kind].text}`);
   const u = g.unique ? UNIQUES[g.unique] : undefined;
   if (u) parts.push(u.text);
-  return parts.join(' · ');
+  return parts;
 }
 
 const STAT_WORDS: Record<string, string> = { attack: 'attack', defense: 'defense', maxHp: 'HP', maxMana: 'mana' };
