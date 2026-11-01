@@ -10,7 +10,7 @@ his verdict on King Goo's HP is pending.
 
 ## The steps
 
-1. **Loading by area and by class** (area done 2026-11-01; class waits for the classes). A new area's art and sound is added by listing it once, and loads when it is
+1. **Loading by area and by class** (done 2026-11-02). A new area's art and sound is added by listing it once, and loads when it is
    needed: only your class's hero, only the area's board, backdrop, creatures and music. *Done*: the meadows cost no more
    than today, and a forest drop needs one line each.
 2. **Into the forest** (done 2026-11-01 on Mitch, AD's kit and backdrop). Past King Goo, the opened-area moment, the banner, the
@@ -19,17 +19,23 @@ his verdict on King Goo's HP is pending.
    Cub, Grumblebark with his second phase. *Done*: each fights with its five clips and its voice.
 4. **Copper in the forest** (done 2026-11-01). The rank follows the tier, so the forest sells Copper, already drawn; Iron is chapter 3's. A
    higher plain piece goes on when bought, and the shop compares it with what you have. Open: a reason to spend gold, Robin's to decide.
-5. **The three classes** (mine; Mitch, AD; Nigel, SD). Trickster, Wizard and Archer drawn with their sets and weapons, their
+5. **The three classes** (done 2026-11-02 on Mitch, AD's art; Nigel, SD's abilities and pips to come; all four offered). Trickster, Wizard and Archer drawn with their sets and weapons, their
    abilities and meters heard and read clearly; the character screen offers all four last. *Done*: each plays differently.
-6. **Ability icons and fight effects** (Mitch, AD). 24 icons, about 14 effects, wired on the events.
-7. **The second town** (mine). Tumbletree's errands, trainer, shop and a church work and read right, with no Puddlewick-only
+6. **Ability icons and fight effects** (done 2026-11-02). 24 icons, about 14 effects, wired on the events.
+7. **The second town** (played 2026-11-02, no faults; a person's eye to come). Tumbletree's errands, trainer, shop and a church work and read right, with no Puddlewick-only
    words left. *Done*: a level 5 Knight lives a loop there.
 8. **The other players** (figures done 2026-11-01). Figures, marks and notes drawn with the kit instead of circles. *Done*: two windows see each
    other in their worn gear.
 9. **The forest's sound** (Nigel, SD). Board, fight, Grumblebark and Tumbletree themes, the bed, steps on roots and moss.
 10. **Balance** (first pass 2026-11-01: the Archer's attack raised). The bots for all four classes to Grumblebark, the walls retuned. *Done*: numbers in
     `docs/state/rules.md`.
-11. **The playtest** (mine). Each class through the forest, trying to break it, as with King Goo.
+11. **The playtest** (the Knight and the Trickster on screen 2026-11-02, no errors; bots for all four; the Wizard and Archer only in set fights). Each class through the forest, trying to break it, as with King Goo.
 12. **Alpha 2** (Robin and friends). Four phones clear Grumblebark over a weekend; `alpha-2` on main.
 
 Every step runs on what exists until its drop lands, and a drop that comes early is wired the day it lands.
+
+## Open, 2026-11-02
+
+- A weapon's name says sword for every class, while a Trickster draws a dagger, a Wizard a staff and an Archer a bow. The rules name gear without knowing the wearer: mine to fix next, a name by class.
+- Nigel, SD's chapter 2 sound waits on Robin's PC audio output. The forest's music waits on Robin's ear for the meadows' theme.
+- Memory on a real phone is unmeasured, with the effects atlas on top of a fight.
