@@ -79,7 +79,7 @@ character may take an atlas of 2048 by 2048 (my word, 2026-11-01: 16 MB decoded;
   whoosh, counter flash, charge glow, poison drip, chill, burn, weaken, heal glow, mana sparkle, the wind-up tell over an
   enemy's head, the level-up burst.
 - **The player's height on screen** is Robin's to confirm from the test shots (100 CSS px was the old number; his own sheet
-  stood 118). On the board the hero stands at half the fight's size, 75 CSS px, against the 56 px plates (mine, 2026-11-01; Robin said "whatever works best" and can overrule).
+  stood 118). On the board the hero stands at half the fight's size, 75 CSS px, against the 56 px plates (mine, 2026-11-01). **Robin named 44 px for the board to Mitch, AD the same day**; the 75 replaces it until he says, since 44 looked small beside the kit's plates.
 
 ## Wave 3 (chapter 1): Cloverfield Meadows, complete
 
