@@ -28,10 +28,10 @@ export const BAG_LAYOUT = {
   /** The worn grid: four tiles a row, two rows, in slot order. */
   tile: (i: number) => ({ x: 58 + (i % 4) * 99, y: 216 + Math.floor(i / 4) * 70 }),
   detailY: 354,
-  carriedY: 426,
+  carriedY: 436,
   carriedStep: 50,
   carriedRows: 4,
-  flasksY: 650,
+  flasksY: 652,
   drop: { x: 100, y: 708, w: 120, h: 48 },
   act: { x: 268, y: 708, w: 170, h: 48 },
 } as const;
@@ -71,14 +71,14 @@ export class BagScene extends Phaser.Scene {
     const ink = kit ? INK : COLORS.text;
     const dim = kit ? INK_DIM : COLORS.dim;
     this.add.text(24, 112, 'Bag', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: ink });
-    this.numbers = this.add.text(24, 148, '', { fontFamily: FONT, fontSize: '12px', color: dim, wordWrap: { width: 300 } });
+    this.numbers = this.add.text(24, 146, '', { fontFamily: FONT, fontSize: '13px', color: dim, wordWrap: { width: 284 } });
     const { close, detailY, carriedY, drop, act } = BAG_LAYOUT;
     makeButton(this, close.x, close.y, close.w, close.h, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());
 
     // The detail plate: the piece tapped, or what just happened.
-    if (kit) plate(this, 'panel_message', CENTRE, detailY, DESIGN_WIDTH - 36, 54);
-    this.detailName = this.add.text(32, detailY - 12, '', { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: ink }).setOrigin(0, 0.5);
-    this.detailLine = this.add.text(32, detailY + 9, '', { fontFamily: FONT, fontSize: '11px', color: dim, wordWrap: { width: DESIGN_WIDTH - 80 } }).setOrigin(0, 0.5);
+    if (kit) plate(this, 'panel_message', CENTRE, detailY, DESIGN_WIDTH - 36, 68);
+    this.detailName = this.add.text(32, detailY - 18, '', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: ink }).setOrigin(0, 0.5);
+    this.detailLine = this.add.text(32, detailY + 10, '', { fontFamily: FONT, fontSize: '13px', color: dim, wordWrap: { width: DESIGN_WIDTH - 72 }, maxLines: 2 }).setOrigin(0, 0.5);
 
     this.carriedLabel = this.add.text(24, carriedY - 42, '', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: dim });
     this.add.text(24, BAG_LAYOUT.flasksY - 38, 'Flasks and cards', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: dim });
@@ -117,7 +117,7 @@ export class BagScene extends Phaser.Scene {
       } else {
         this.rows.push(this.add.rectangle(x, y - 4, 44, 44, chosen ? 0x3a4256 : 0x2b3245, 1).setStrokeStyle(2, g ? parseInt((RARITY_INK[g.rarity] ?? '#888').slice(1), 16) : 0x4a5470, 1));
       }
-      this.rows.push(this.add.text(x, y + 24, g ? SLOT_NAMES[slot] : SLOT_NAMES[slot], { fontFamily: FONT, fontSize: '10px', color: g ? ink : dim }).setOrigin(0.5));
+      this.rows.push(this.add.text(x, y + 25, SLOT_NAMES[slot], { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: g ? ink : dim }).setOrigin(0.5));
       const zone = this.add.zone(x, y, 92, 68).setInteractive({ useHandCursor: true });
       zone.on('pointerdown', () => this.pick({ kind: 'worn', slot }, x, y - 4));
       this.rows.push(zone);
@@ -146,8 +146,8 @@ export class BagScene extends Phaser.Scene {
         if (art) this.rows.push(this.add.image(48, y, art.texture, art.frame).setScale(0.42));
         else this.rows.push(icon(this, `slot_${g.slot}`, 48, y).setScale(0.42));
       }
-      this.rows.push(this.add.text(76, y - 11, g.name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: RARITY_INK[g.rarity] ?? ink }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(76, y + 9, this.powerLine(g), { fontFamily: FONT, fontSize: '10px', color: dim, wordWrap: { width: 300 } }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(76, y - 10, g.name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: RARITY_INK[g.rarity] ?? ink }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(76, y + 10, this.powerLine(g), { fontFamily: FONT, fontSize: '13px', color: dim, wordWrap: { width: 312 }, maxLines: 1 }).setOrigin(0, 0.5));
       const zone = this.add.zone(CENTRE, y, DESIGN_WIDTH - 36, carriedStep - 4).setInteractive({ useHandCursor: true });
       zone.on('pointerdown', () => this.pick({ kind: 'carried', gear: g }, 48, y));
       this.rows.push(zone);

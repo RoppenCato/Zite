@@ -208,8 +208,8 @@ export class HudScene extends Phaser.Scene {
   /** The message box: up to two lines at the usual size, smaller for a long one, and the box grows for the rest. */
   setMessage(text: string): void {
     if (text && text !== this.message.text) audio.play('ui/message-tick', { volume: 0.6 });
-    this.message.setFontSize(settings.font(14)).setText(text);
-    if (this.message.height > 44) this.message.setFontSize(settings.font(12));
+    this.message.setFontSize(settings.font(15)).setText(text);
+    if (this.message.height > 44) this.message.setFontSize(settings.font(13));
     const h = Math.max(44, Math.ceil(this.message.height) + 14);
     const y = MESSAGE_BOTTOM - h / 2;
     this.message.setY(y);
@@ -221,7 +221,7 @@ export class HudScene extends Phaser.Scene {
 
   /** While the player is choosing, walking, fighting or shopping, the Roll button is dimmed. */
   setBusy(busy: boolean): void {
-    this.rollButton.setEnabled(!busy);
+    this.rollButton.setEnabled(!busy, true);
   }
 
   /** The Map button reads "Map" while the camera follows the character and "Back" when it has been moved away. */
@@ -270,11 +270,11 @@ export class HudScene extends Phaser.Scene {
 
   private drawPanel(): void {
     const cream = this.kit ? CREAM : COLORS.text;
-    const dim = this.kit ? '#e3d6bd' : COLORS.dim;
+    const dim = this.kit ? '#fff8e8' : COLORS.dim;
     if (this.kit) plate(this, 'panel_hud', DESIGN_WIDTH / 2, HUD_HEIGHT / 2, DESIGN_WIDTH, HUD_HEIGHT);
     else this.add.rectangle(DESIGN_WIDTH / 2, HUD_HEIGHT / 2, DESIGN_WIDTH, HUD_HEIGHT, COLORS.panel, 1);
-    this.name = this.add.text(16, 10, '', { fontFamily: FONT_DISPLAY, fontSize: '19px', fontStyle: 'bold', color: cream });
-    this.levelText = this.add.text(DESIGN_WIDTH - 92, 14, '', { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: cream }).setOrigin(1, 0);
+    this.name = this.add.text(16, 10, '', { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 });
+    this.levelText = this.add.text(DESIGN_WIDTH - 92, 14, '', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(1, 0);
 
     // The bars with their marks, the gold with its coin.
     if (this.kit) {
@@ -288,8 +288,8 @@ export class HudScene extends Phaser.Scene {
     }
     this.hpBar = new Bar(this, 128, 48, 160, 14, COLORS.button, 0, 'HP');
     this.mpBar = new Bar(this, 128, 70, 160, 14, COLORS.mana, 0, 'MP');
-    this.goldText = this.add.text(254, 48, '', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: cream }).setOrigin(0, 0.5);
-    this.place = this.add.text(16, HUD_HEIGHT - 6, '', { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(0, 1);
+    this.goldText = this.add.text(254, 48, '', { fontFamily: FONT_DISPLAY, fontSize: '18px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
+    this.place = this.add.text(16, HUD_HEIGHT - 5, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 1);
 
     // The die.
     if (this.kit) {
@@ -302,7 +302,7 @@ export class HudScene extends Phaser.Scene {
       this.dieText = this.add.text(0, 0, '–', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       this.dieBox = this.add.container(DIE.x, DIE.y, [box, this.dieText]);
     }
-    this.linkText = this.add.text(DESIGN_WIDTH - 86, HUD_HEIGHT - 6, '', { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(1, 1);
+    this.linkText = this.add.text(DESIGN_WIDTH - 14, HUD_HEIGHT - 5, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(1, 1);
   }
 
   private drawControls(): void {
@@ -316,7 +316,7 @@ export class HudScene extends Phaser.Scene {
     this.message = this.add
       .text(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, '', {
         fontFamily: FONT,
-        fontSize: settings.font(14),
+        fontSize: settings.font(15),
         color: this.kit ? INK : COLORS.text,
         align: 'center',
         wordWrap: { width: MESSAGE_W - 28 },

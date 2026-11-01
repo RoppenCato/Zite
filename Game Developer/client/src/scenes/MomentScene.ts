@@ -75,16 +75,16 @@ export class MomentScene extends Phaser.Scene {
       const rays = this.add.image(0, -44, KIT_SOFT, 'burst_levelup').setScale(0.55).setTint(m.color).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.8);
       if (!quick) this.tweens.add({ targets: rays, angle: 40, scale: 0.7, alpha: 0.35, duration: 1200, ease: 'Sine.easeOut' });
       parts.push(rays);
-      parts.push(plate(this, 'panel_message', 0, 28, 300, 76));
+      parts.push(plate(this, 'panel_message', 0, 30, 320, 88));
     } else {
       parts.push(this.add.rectangle(0, 28, 300, 76, COLORS.panel, 0.95).setStrokeStyle(2, m.color));
     }
     const pic = m.icon && hasFrame(this, m.icon) ? icon(this, m.icon, 0, -44).setScale(1.25) : null;
     if (pic) parts.push(pic);
-    const title = this.add.text(0, 12, m.title, { fontFamily: FONT_DISPLAY, fontSize: '19px', fontStyle: 'bold', color: kit ? INK : COLORS.text }).setOrigin(0.5);
-    for (let px = 19; px > 13 && title.width > 276; px--) title.setFontSize(`${px}px`);
-    const words = this.add.text(0, 38, m.line, { fontFamily: FONT, fontSize: '12px', color: kit ? INK_DIM : COLORS.dim, align: 'center', wordWrap: { width: 276 } }).setOrigin(0.5);
-    if (words.height > 30) words.setFontSize('11px');
+    const title = this.add.text(0, 8, m.title, { fontFamily: FONT_DISPLAY, fontSize: '21px', fontStyle: 'bold', color: kit ? INK : COLORS.text }).setOrigin(0.5);
+    for (let px = 21; px > 15 && title.width > 296; px--) title.setFontSize(`${px}px`);
+    const words = this.add.text(0, 40, m.line, { fontFamily: FONT, fontSize: '15px', color: kit ? INK_DIM : COLORS.dim, align: 'center', wordWrap: { width: 296 } }).setOrigin(0.5);
+    if (words.height > 40) words.setFontSize('13px');
     parts.push(title, words);
     const card = this.add.container(CENTRE, y, parts);
     const leave = () => {
@@ -142,10 +142,10 @@ export class MomentScene extends Phaser.Scene {
       back = g;
     }
     const inkTitle = kit ? (m.banner === 'banner_level' ? INK : '#f7efdc') : m.ink;
-    const inkLine = kit ? (m.banner === 'banner_level' ? '#6b5a60' : '#e9dcc4') : COLORS.dim;
+    const inkLine = kit ? (m.banner === 'banner_level' ? '#46393f' : '#fff8e8') : COLORS.dim;
     const title = this.add.text(0, kit ? -12 : -12, m.title, { fontFamily: FONT_DISPLAY, fontSize: kit ? '26px' : '28px', fontStyle: 'bold', color: inkTitle }).setOrigin(0.5);
     for (let px = 28; px > 18 && title.width > PLATE.w - 60; px--) title.setFontSize(`${px}px`);
-    const line = this.add.text(0, kit ? 10 : 20, m.line, { fontFamily: FONT, fontSize: kit ? '11px' : '13px', color: inkLine }).setOrigin(0.5);
+    const line = this.add.text(0, kit ? 12 : 20, m.line, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: inkLine }).setOrigin(0.5);
     const banner = this.add.container(CENTRE, BANNER_Y, [back, title, line]);
     if (kit && m.banner === 'banner_level' && !quick) {
       const burst = this.add.image(CENTRE, BANNER_Y, KIT_SOFT, 'burst_levelup').setScale(0.2).setTint(0xffd166).setBlendMode(Phaser.BlendModes.ADD).setDepth(-1);

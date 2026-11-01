@@ -11,8 +11,8 @@ import { settings } from './settings.ts';
 export interface Button {
   button: Phaser.GameObjects.Container;
   label: Phaser.GameObjects.Text;
-  /** Dim or wake the button (the kit's dim face; the shapes fade). */
-  setEnabled(on: boolean): void;
+  /** Dim or wake the button (the kit's dim face; the shapes fade). A dim button does nothing but say no, unless `live`: Roll still answers "tap a lit spot". */
+  setEnabled(on: boolean, live?: boolean): void;
 }
 
 type ButtonKind = 'action' | 'plain' | 'danger';
@@ -46,11 +46,12 @@ export function makeButton(
   const frame = (state: 'idle' | 'pressed' | 'dim') => `btn_${kind}_${big ? 'big' : 'small'}_${state}`;
   const face = plate(scene, frame('idle'), 0, 0, width, height);
   if (tint !== null) face.setTint(tint);
-  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 2 }).setOrigin(0.5);
-  for (let px = parseInt(fontSize, 10); px > 11 && label.width > width - 16; px--) label.setFontSize(`${px}px`);
+  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3 }).setOrigin(0.5);
+  for (let px = parseInt(fontSize, 10); px > 13 && label.width > width - 14; px--) label.setFontSize(`${px}px`);
   const button = scene.add.container(x, y, [face, label]).setSize(width, height);
   button.setInteractive({ useHandCursor: true });
   let enabled = true;
+  let live = false;
   const show = (state: 'idle' | 'pressed' | 'dim') => {
     face.setFrame(frame(state));
     label.setY(state === 'pressed' ? 3 : -3);
@@ -59,6 +60,10 @@ export function makeButton(
     if (enabled) show('pressed');
     feel.press(scene, button);
     feel.buzz();
+    if (!enabled && !live) {
+      sfx.play('ui/tap-denied');
+      return;
+    }
     sfx.play('ui/tap');
     if (!settings.get().fewerEffects) fx(scene, 'fx_tap', pointer.worldX, pointer.worldY, tint ?? (kind === 'action' ? 0xb8f09a : kind === 'danger' ? 0xffb0a0 : 0xe2d6ff), 500, 0.8);
     onTap();
@@ -72,8 +77,9 @@ export function makeButton(
   return {
     button,
     label,
-    setEnabled: (on: boolean) => {
+    setEnabled: (on: boolean, stays = false) => {
       enabled = on;
+      live = stays;
       show(on ? 'idle' : 'dim');
     },
   };
@@ -126,7 +132,7 @@ export class Bar {
       this.lost = plate(scene, 'bar_lost', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 1);
       this.fill = plate(scene, mp ? 'bar_mp' : 'bar_hp', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 2);
       this.text = scene.add
-        .text(x, y, '', { fontFamily: FONT_DISPLAY, fontSize: '11px', fontStyle: 'bold', color: CREAM, stroke: INK, strokeThickness: 3 })
+        .text(x, y, '', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: '#ffffff', stroke: INK, strokeThickness: 4 })
         .setOrigin(0.5)
         .setDepth(depth + 3);
       return;

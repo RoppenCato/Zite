@@ -18,7 +18,7 @@ const SCALE = 0.5;
 /** Text colours of the kit (Mitch, AD): cream on wood and the coloured buttons, ink on parchment and cards. */
 export const CREAM = '#f7efdc';
 export const INK = '#2a2030';
-export const INK_DIM = '#6b5a60';
+export const INK_DIM = '#46393f';
 
 type Frames = Record<string, { nine?: number }>;
 const NINE: Record<string, number> = Object.fromEntries(
@@ -76,7 +76,7 @@ export function sheet(scene: Phaser.Scene): void {
 
 /** The text colours of a sheet: ink on parchment with the kit, the old cream on dark without. */
 export function sheetInk(scene: Phaser.Scene, fallback: { text: string; dim: string; gold: string }): { text: string; dim: string; gold: string } {
-  return kitReady(scene) ? { text: INK, dim: INK_DIM, gold: '#9a6b12' } : fallback;
+  return kitReady(scene) ? { text: INK, dim: INK_DIM, gold: '#7a5206' } : fallback;
 }
 
 /** A short clip of the kit (fx_tap, fx_spark, fx_ripple, fx_tick) played once at a point, tinted, then gone. */

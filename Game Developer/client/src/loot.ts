@@ -29,7 +29,7 @@ export const LOOT_ACTIONS = {
 /** The files are 2x: the chest is 160 CSS px wide at this scale. */
 export const LOOT_SCALE = 0.5;
 /** The card's design size and where its parts sit (Mitch, AD): a 16 px corner for the nine-slice, the icon square, the text. */
-export const CARD = { w: 300, h: 120, corner: 16, rim: 11, square: { x: 20, y: 32, size: 56 }, textX: 92, nameY: 46, powerY: 64 } as const;
+export const CARD = { w: 300, h: 120, corner: 16, rim: 11, square: { x: 20, y: 32, size: 56 }, textX: 92, nameY: 30, powerY: 48 } as const;
 
 /** Queue the pieces; call from a scene's preload. */
 export function preloadLoot(scene: Phaser.Scene): void {

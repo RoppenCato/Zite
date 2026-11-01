@@ -87,9 +87,9 @@ export class ShopScene extends Phaser.Scene {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
       // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
-      this.rows.push(this.add.text(26, y - 7, name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(26, y + 7, detail, { fontFamily: FONT, fontSize: '10px', color: this.ink.dim, wordWrap: { width: 248 }, maxLines: 1 }).setOrigin(0, 0.5));
-      this.rows.push(this.add.text(306, y, price, { fontFamily: FONT, fontSize: '14px', color: this.ink.gold }).setOrigin(1, 0.5));
+      this.rows.push(this.add.text(26, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(26, y + 10, detail, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 248 }, maxLines: 1 }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(304, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
     if (tab === 'train') {

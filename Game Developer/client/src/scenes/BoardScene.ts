@@ -151,6 +151,8 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** True while the token is on the road. */
+  private walking = false;
   /** True while the camera follows the token; false after a drag, in the overview, or while a roll is framed. */
   private following = false;
   private minZoom = FOLLOW_ZOOM;
@@ -345,6 +347,9 @@ export class BoardScene extends Phaser.Scene {
 
   /** Roll the die; then walk, or light up the places the roll can end and wait for a tap. */
   roll(): void {
+    // Roll with a sheet open: the sheet goes, or the die would roll and the spots light behind it.
+    if (this.scene.isActive('bag')) this.bagClosed();
+    if (this.scene.isActive('atlas')) this.atlasClosed();
     if (this.busy) {
       sfx.play('ui/tap-denied');
       if (this.choices_) this.setMessage('Tap a lit spot first.');
@@ -381,6 +386,10 @@ export class BoardScene extends Phaser.Scene {
   /** The bag: what you wear and carry. Not while a fight or a shop is up. */
   openBag(): void {
     if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    if (this.walking) {
+      sfx.play('ui/tap-denied');
+      return;
+    }
     // Bag again closes it; Bag over the atlas switches (Robin, 2026-11-01: pressing a button again should close its menu).
     if (this.scene.isActive('bag')) {
       this.bagClosed();
@@ -394,6 +403,10 @@ export class BoardScene extends Phaser.Scene {
   /** The world as a list: the areas by tier. Not while a fight, a shop or the bag is up. */
   openAtlas(): void {
     if (this.game_.me.fight || this.scene.isActive('shop') || this.scene.isActive('reveal')) return;
+    if (this.walking) {
+      sfx.play('ui/tap-denied');
+      return;
+    }
     if (this.scene.isActive('atlas')) {
       this.atlasClosed();
       return;
@@ -721,14 +734,14 @@ export class BoardScene extends Phaser.Scene {
     if (space.name) {
       // Only hubs have names; the wilds of the road show their circle and nothing more.
       const name = this.add
-        .text(space.x, space.y + under, space.name, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: COLORS.text, align: 'center', resolution: 2, ...(kit ? { stroke: '#2a3320', strokeThickness: 3 } : {}) })
+        .text(space.x, space.y + under, space.name, { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 5 })
         .setOrigin(0.5, 0)
         .setDepth(KIT_DEPTH.names);
       this.names.push(name);
       spotNames.push(name);
       if (space.kind === 'boss') {
         const label = this.add
-          .text(space.x, space.y + under + 16, '', { fontFamily: FONT, fontSize: '12px', color: kit ? '#f4f0e4' : COLORS.dim, align: 'center', resolution: 2, ...(kit ? { stroke: '#2a3320', strokeThickness: 3 } : {}) })
+          .text(space.x, space.y + under + 22, '', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#fff4d6', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 4 })
           .setOrigin(0.5, 0)
           .setDepth(6);
         this.bossLabels.set(space.id, label);
@@ -860,6 +873,16 @@ export class BoardScene extends Phaser.Scene {
   }
 
   preload(): void {
+    // Something to look at while it loads: the art takes a moment on a phone.
+    const words = this.add.text(DESIGN_WIDTH / 2, 430, 'Walking to the meadow…', { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
+    this.add.rectangle(DESIGN_WIDTH / 2, 470, 264, 18, 0x3a4256).setName('bar-back');
+    const fill = this.add.rectangle(DESIGN_WIDTH / 2 - 130, 470, 260, 14, 0x6fcf7a).setOrigin(0, 0.5).setScale(0, 1);
+    this.load.on(Phaser.Loader.Events.PROGRESS, (share: number) => fill.setScale(share, 1));
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      words.destroy();
+      fill.destroy();
+      this.children.getByName('bar-back')?.destroy();
+    });
     preloadHero(this);
     preloadLoot(this);
     preloadCreatures(this);
@@ -1267,8 +1290,9 @@ export class BoardScene extends Phaser.Scene {
       const space = this.game_.state.board.spaces[id];
       if (!space) return;
       // Standing on a shop or a town with nothing pending: a tap on it goes back in. Any other spot tells about itself.
-      if (!this.busy && id === me.space && (space.kind === 'shop' || space.kind === 'town')) {
-        this.openShop(false);
+      const camped = this.game_.state.spawns[id]?.kind === 'merchant';
+      if (!this.busy && id === me.space && (space.kind === 'shop' || space.kind === 'town' || camped)) {
+        this.openShop(camped && space.kind !== 'town' && space.kind !== 'shop');
         return;
       }
       // Your own spot, free: the hint, and the notes you could leave as chips.
@@ -1374,6 +1398,8 @@ export class BoardScene extends Phaser.Scene {
 
   private walk(path: string[], done: () => void): void {
     const spaces = this.game_.state.board.spaces;
+    this.walking = true;
+    this.setMessage('On the road…');
     this.hero?.play('move');
     let from = { x: this.token.x, y: this.token.y };
     this.tweens.chain({
@@ -1395,6 +1421,7 @@ export class BoardScene extends Phaser.Scene {
         };
       }),
       onComplete: () => {
+        this.walking = false;
         this.hero?.play('stand');
         done();
       },
@@ -1439,7 +1466,7 @@ export class BoardScene extends Phaser.Scene {
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
     if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
     const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : ''].filter(Boolean).join(', ');
-    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried ? `${carried} · ` : ''}${area?.name ?? ''} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
+    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried || (area?.name ?? '')} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
   private setMessage(text: string): void {

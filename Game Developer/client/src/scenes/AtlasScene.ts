@@ -27,8 +27,8 @@ export const ATLAS_LAYOUT = {
   settings: { x: 284, y: 128, w: 84, h: 44 },
   guide: { x: 204, y: 128, w: 72, h: 44 },
   firstRowY: 184,
-  rowStep: 74,
-  rows: 7,
+  rowStep: 88,
+  rows: 6,
   go: { x: 356, w: 76, h: 42 },
 } as const;
 
@@ -94,10 +94,10 @@ export class AtlasScene extends Phaser.Scene {
       if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, rowStep - 6));
       const swatch = this.add.rectangle(36, y + 12, 16, 40, THEME_COLORS[area.theme] ?? COLORS.ground, 1).setStrokeStyle(2, 0x2a2030, 1);
       this.rows.push(swatch);
-      const title = this.add.text(54, y - 8, name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: open ? this.ink.text : this.ink.dim });
-      for (let px = 15; px > 11 && title.width > 250; px--) title.setFontSize(`${px}px`);
+      const title = this.add.text(54, y - 14, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: open ? this.ink.text : this.ink.dim });
+      for (let px = 16; px > 13 && title.width > 250; px--) title.setFontSize(`${px}px`);
       this.rows.push(title);
-      this.rows.push(this.add.text(54, y + 12, `Tier ${area.tier}. ${this.detail(area, open)}`, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
+      this.rows.push(this.add.text(54, y + 8, `Tier ${area.tier}. ${this.detail(area, open)}`, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 258 }, maxLines: 3 }));
       if (open) this.rows.push(makeButton(this, go.x, y + 12, go.w, go.h, 'Go', COLORS.button, '14px', () => (this.scene.get('board') as BoardScene).atlasFrame(area.id)).button);
     });
     if (pages > 1) {
@@ -125,8 +125,8 @@ export class AtlasScene extends Phaser.Scene {
     rows.forEach((row, i) => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, rowStep - 6));
-      this.rows.push(this.add.text(24, y - 6, row.name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.text }));
-      this.rows.push(this.add.text(24, y + 14, row.text, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 280 } }));
+      this.rows.push(this.add.text(24, y - 14, row.name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: this.ink.text }));
+      this.rows.push(this.add.text(24, y + 8, row.text, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 280 }, maxLines: 3 }));
       this.rows.push(makeButton(this, go.x, y + 12, go.w + 8, go.h, row.value ? row.on : row.off, row.value ? COLORS.button : COLORS.log, '14px', () => { row.set(!row.value); this.log.note(`setting ${row.name}: ${!row.value ? row.on : row.off}`); this.refresh(); }).button);
     });
     const link = this.game_.link();
@@ -166,8 +166,8 @@ export class AtlasScene extends Phaser.Scene {
     const { firstRowY, rowStep, go } = ATLAS_LAYOUT;
     const y = firstRowY + i * rowStep;
     if (kitReady(this)) this.rows.push(plate(this, 'row_atlas_idle', CENTRE, y + 10, DESIGN_WIDTH - 36, ATLAS_LAYOUT.rowStep - 6));
-    this.rows.push(this.add.text(24, y - 6, name, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.text }));
-    this.rows.push(this.add.text(24, y + 14, text, { fontFamily: FONT, fontSize: '11px', color: this.ink.dim, wordWrap: { width: 258 } }));
+    this.rows.push(this.add.text(24, y - 14, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: this.ink.text }));
+    this.rows.push(this.add.text(24, y + 8, text, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim, wordWrap: { width: 258 }, maxLines: 3 }));
     this.rows.push(makeButton(this, go.x - 10, y + 12, go.w + 28, go.h, button, COLORS.log, '13px', onTap).button);
   }
 
@@ -181,7 +181,7 @@ export class AtlasScene extends Phaser.Scene {
     if (!open) {
       const opener = Object.values(board.spaces).find((s) => s.opens === area.id);
       const by = opener?.boss ? creature(opener.boss, board.bestiary)?.name : undefined;
-      return `Closed.${by ? ` Beat the ${by} at ${opener!.name} to open it.` : ''}`;
+      return `Closed.${by ? ` Beat ${opener?.boss ? '' : 'the '}${by} at ${opener!.name} to open it.` : ''}`;
     }
     const errand = me.quests.find((q) => q.area === area.id);
     const parts = [`${area.kingdom ? `${area.kingdom}. ` : ''}Levels ${area.levels[0]} to ${area.levels[1]}.`];

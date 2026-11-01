@@ -159,7 +159,9 @@ export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all
 export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phaser.GameObjects.Image {
   const frame = PLATES[space.kind];
   const plate = scene.add.image(space.x, space.y, kit.props, frame).setScale(SCALE).setDepth(KIT_DEPTH.plates);
-  plate.setInteractive();
+  // A thumb is wider than a plate: the tap area reaches well past it, as it did round the old circles.
+  const { width, height } = plate;
+  plate.setInteractive(new Phaser.Geom.Rectangle(-30, -50, width + 60, height + 100), Phaser.Geom.Rectangle.Contains);
   return plate;
 }
 

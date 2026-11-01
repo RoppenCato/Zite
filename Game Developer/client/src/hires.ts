@@ -7,6 +7,9 @@
 import Phaser from 'phaser';
 import { DESIGN_HEIGHT, DESIGN_WIDTH, DPR } from './layout.ts';
 
+/** The smallest text in the game, in design pixels (about CSS pixels on a phone). */
+const MIN_TEXT = 13;
+
 export class HiResPlugin extends Phaser.Plugins.ScenePlugin {
   constructor(scene: Phaser.Scene, pluginManager: Phaser.Plugins.PluginManager, pluginKey: string) {
     super(scene, pluginManager, pluginKey);
@@ -24,7 +27,11 @@ export class HiResPlugin extends Phaser.Plugins.ScenePlugin {
     // Every text of this scene renders at the density, unless its style says otherwise.
     const add = scene.add;
     const text = add.text.bind(add);
-    add.text = ((x: number, y: number, content: string | string[], style?: Phaser.Types.GameObjects.Text.TextStyle) => text(x, y, content, { resolution: DPR, ...style })) as typeof add.text;
+    add.text = ((x: number, y: number, content: string | string[], style?: Phaser.Types.GameObjects.Text.TextStyle) => {
+      // Robin, 2026-11-01: "a lot of the text feel very small to read on a phone". Nothing is drawn under the floor.
+      const px = parseInt(String(style?.fontSize ?? MIN_TEXT), 10);
+      return text(x, y, content, { resolution: DPR, ...style, fontSize: `${Math.max(MIN_TEXT, px)}px` });
+    }) as typeof add.text;
   }
 }
 

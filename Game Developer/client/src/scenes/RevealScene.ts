@@ -9,7 +9,7 @@
 import Phaser from 'phaser';
 import type { GameLog } from '../game-log.ts';
 import { feel, sfx } from '../feel.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT } from '../layout.ts';
 import { CARD, cardWords, ensureLootClips, LOOT_KEYS, LOOT_SCALE, tierOf, type RevealRequest, type Tier } from '../loot.ts';
 import { gearIcon } from '../hero.ts';
 import { settings } from '../settings.ts';
@@ -39,7 +39,7 @@ const BURST: Record<Tier, { sparkles: number; petals: number; buzz: number }> = 
   legendary: { sparkles: 16, petals: 10, buzz: 50 },
   unique: { sparkles: 16, petals: 10, buzz: 50 },
 };
-const FACE_INK = '#55493d';
+const FACE_INK = '#35292b';
 
 type Phase = 'build' | 'opening' | 'card' | 'resting' | 'leaving';
 type Movable = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform & Phaser.GameObjects.Components.AlphaSingle;
@@ -106,15 +106,15 @@ export class RevealScene extends Phaser.Scene {
     this.veil.on('pointerdown', () => this.tap());
     if (!this.quick) this.tweens.add({ targets: this.veil, fillAlpha: 0.88, duration: 150 });
 
-    this.add.text(CENTRE, titleY, this.request.title, { fontFamily: FONT, fontSize: settings.font(17), fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5).setDepth(5);
-    this.count = this.add.text(CENTRE, titleY + 24, '', { fontFamily: FONT, fontSize: '12px', color: COLORS.dim }).setOrigin(0.5).setDepth(5);
+    this.add.text(CENTRE, titleY, this.request.title, { fontFamily: FONT, fontSize: settings.font(19), fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4 }).setOrigin(0.5).setDepth(5);
+    this.count = this.add.text(CENTRE, titleY + 26, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(5);
 
     this.glow = this.add.image(CENTRE, mouthY, LOOT_KEYS.glow).setTint(this.tint).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0).setScale(LOOT_SCALE * 0.3).setDepth(1);
     this.chest = this.add.sprite(CENTRE, chestY, LOOT_KEYS.chest, 'chest/closed/0001').setScale(LOOT_SCALE).setDepth(3);
     // The lid, hidden until it blows off; it spins about its own centre.
     this.lid = this.add.sprite(CENTRE + LID_FROM.x, chestY + LID_FROM.y, LOOT_KEYS.chest, 'chest/lid').setScale(LOOT_SCALE).setDepth(4).setVisible(false);
     this.shaker = null;
-    this.hint = this.add.text(CENTRE, hintY, 'Tap to go on', { fontFamily: FONT, fontSize: '13px', color: COLORS.dim }).setOrigin(0.5).setAlpha(0).setDepth(5);
+    this.hint = this.add.text(CENTRE, hintY, 'Tap to go on', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setAlpha(0).setDepth(5);
 
     this.makeCard(cardY);
     this.events.once('shutdown', () => {
@@ -222,8 +222,8 @@ export class RevealScene extends Phaser.Scene {
       this.cardParts = [this.rim, this.face, this.faceMask, this.square, this.name_, this.power];
       this.square.setText(words.square.toUpperCase()).setColor(ink);
     }
-    this.name_.setText(words.name).setColor(ink);
-    for (let px = 19; px > 13 && this.name_.width > CARD.w - CARD.textX - 14; px--) this.name_.setFontSize(`${px}px`);
+    this.name_.setFontSize('20px').setText(words.name).setColor(ink);
+    for (let px = 20; px > 14 && this.name_.width > CARD.w - CARD.textX - 14; px--) this.name_.setFontSize(`${px}px`);
     this.fitPower(words.power);
     const n = this.request.prizes.length;
     this.count.setText(n > 1 ? `${this.index + 1} of ${n}` : '');
@@ -317,9 +317,9 @@ export class RevealScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setAlpha(0.55)
       .setDepth(2);
-    this.name_ = this.add.text(left + CARD.textX, top + CARD.nameY, '', { fontFamily: FONT, fontSize: '19px', fontStyle: 'bold', color: FACE_INK }).setOrigin(0, 0.5).setDepth(2);
+    this.name_ = this.add.text(left + CARD.textX, top + CARD.nameY, '', { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: FACE_INK }).setOrigin(0, 0.5).setDepth(2);
     this.power = this.add
-      .text(left + CARD.textX, top + CARD.powerY, '', { fontFamily: FONT, fontSize: '12px', color: FACE_INK, wordWrap: { width: CARD.w - CARD.textX - 14 }, lineSpacing: 1 })
+      .text(left + CARD.textX, top + CARD.powerY, '', { fontFamily: FONT, fontSize: '13px', color: FACE_INK, wordWrap: { width: CARD.w - CARD.textX - 14 }, lineSpacing: 1 })
       .setDepth(2);
     this.cardParts = [this.rim, this.face, this.faceMask, this.square, this.name_, this.power];
     this.placeCard(y, 0);
@@ -328,7 +328,7 @@ export class RevealScene extends Phaser.Scene {
   /** The power line in the room under the name: 12 px, then 11, then 10, then the last parts cut with an ellipsis. */
   private fitPower(text: string): void {
     const room = CARD.h - CARD.powerY - CARD.rim - 2;
-    for (const px of [12, 11, 10]) {
+    for (const px of [14, 13]) {
       this.power.setFontSize(`${px}px`).setText(text);
       if (this.power.height <= room) return;
     }

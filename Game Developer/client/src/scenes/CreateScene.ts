@@ -78,10 +78,10 @@ export class CreateScene extends Phaser.Scene {
     if (this.textures.exists('character-backdrop')) this.add.image(CENTRE, DESIGN_HEIGHT / 2, 'character-backdrop').setScale(0.5);
     if (this.textures.exists('wordmark')) this.add.image(CENTRE, 62, 'wordmark').setScale(210 / 627);
     else this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
-    this.add.text(CENTRE, 124, this.deps.where, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim }).setOrigin(0.5);
+    this.add.text(CENTRE, 118, this.deps.where, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
 
     const { input, begin, code } = CREATE_LAYOUT;
-    this.add.text(input.x - input.w / 2, 140, 'Your name', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim });
+    this.add.text(input.x - input.w / 2, 134, 'Your name', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 });
     this.nameField = document.createElement('input');
     this.nameField.type = 'text';
     this.nameField.maxLength = MAX_NAME;
@@ -128,13 +128,13 @@ export class CreateScene extends Phaser.Scene {
       this.nameField.remove();
     });
 
-    this.add.text(CENTRE, 234, OFFERED.length > 1 ? 'Pick a class. Each one fights its own way.' : 'Your class, for now.', { fontFamily: FONT, fontSize: '15px', color: COLORS.dim }).setOrigin(0.5);
+    this.add.text(CENTRE, 234, OFFERED.length > 1 ? 'Pick a class. Each one fights its own way.' : 'Your class, for now.', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
     OFFERED.forEach((id, i) => this.drawCard(id, CREATE_LAYOUT.cardY(i)));
     if (LATER.length) {
       const names = LATER.map((id) => `the ${CLASS_DATA[id].name}`);
       const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0]!;
       this.add
-        .text(CENTRE, CREATE_LAYOUT.cardY(OFFERED.length) - CARD_H / 2 + 8, `${list.charAt(0).toUpperCase()}${list.slice(1)} come in chapter 2.`, { fontFamily: FONT, fontSize: '14px', color: COLORS.dim, align: 'center', wordWrap: { width: CARD_W } })
+        .text(CENTRE, CREATE_LAYOUT.cardY(OFFERED.length) - CARD_H / 2 + 8, `${list.charAt(0).toUpperCase()}${list.slice(1)} come in chapter 2.`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4, align: 'center', wordWrap: { width: CARD_W } })
         .setOrigin(0.5, 0);
     }
     this.select(this.chosen);
@@ -200,7 +200,7 @@ export class CreateScene extends Phaser.Scene {
     const g = kit ? plate(this, 'card_class_idle', CENTRE, y, CARD_W, CARD_H) : this.add.graphics();
     this.cards.set(id, g);
     const ink = kit ? INK : COLORS.text;
-    const dim = kit ? '#6b5a60' : COLORS.dim;
+    const dim = kit ? '#46393f' : COLORS.dim;
     const zone = this.add.zone(CENTRE, y, CARD_W, CARD_H).setInteractive({ useHandCursor: true });
     zone.on('pointerdown', () => {
       feel.buzz();
@@ -213,7 +213,7 @@ export class CreateScene extends Phaser.Scene {
     this.add.text(left, y - CARD_H / 2 + 40, c.style, { fontFamily: FONT, fontSize: '14px', color: ink });
     this.add.text(left, y - CARD_H / 2 + 64, `HP ${c.hp}  Mana ${c.mana}  Atk ${c.attack}  Def ${c.defense}  ${c.kit.map((a) => ABILITIES[a]?.name ?? a).join(', ')}`, {
       fontFamily: FONT,
-      fontSize: '12px',
+      fontSize: '13px',
       color: dim,
       wordWrap: { width: CARD_W - 32 },
     });

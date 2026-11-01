@@ -59,7 +59,7 @@ export class GuideScene extends Phaser.Scene {
     const w = (DESIGN_WIDTH - 44) / pages.length;
     this.tabs = [];
     pages.forEach((p, i) => {
-      const { label } = makeButton(this, 22 + w * (i + 0.5), top + 82, w - 4, 44, p.name, COLORS.log, '12px', () => {
+      const { label } = makeButton(this, 22 + w * (i + 0.5), top + 82, w - 4, 44, p.name, COLORS.log, '13px', () => {
         this.page = i;
         this.showPage();
       });
@@ -82,8 +82,8 @@ export class GuideScene extends Phaser.Scene {
     for (const t of this.tabs) t.label.setColor(t.index === this.page ? '#ffe9a8' : '#f7efdc');
     let y = HUD_HEIGHT + 118;
     for (const e of this.pages()[this.page]!.entries) {
-      const title = this.add.text(28, y, e.title, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: e.dim ? dim : ink });
-      const text = this.add.text(28, y + 20, e.text, { fontFamily: FONT, fontSize: '13px', color: dim, wordWrap: { width: DESIGN_WIDTH - 56 }, lineSpacing: 1 });
+      const title = this.add.text(28, y, e.title, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: e.dim ? dim : ink });
+      const text = this.add.text(28, y + 20, e.text, { fontFamily: FONT, fontSize: '14px', color: dim, wordWrap: { width: DESIGN_WIDTH - 56 }, lineSpacing: 1 });
       this.rows.push(title, text);
       y += 20 + text.height + 10;
     }

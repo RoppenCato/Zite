@@ -116,6 +116,7 @@ export class FightScene extends Phaser.Scene {
   private pendingMove: FightMove | null = null;
   private enemyName = '';
   private enemyId = '';
+  private enemyRole = 'mob';
   private enemyMaxHp = 1;
 
   constructor(deps: FightSceneDeps) {
@@ -142,6 +143,7 @@ export class FightScene extends Phaser.Scene {
     this.hero = null;
     this.enemyName = enemy.name;
     this.enemyId = enemy.id;
+    this.enemyRole = enemy.role;
     this.enemyMaxHp = enemy.maxHp;
 
     // The screen covers the band and the HUD's strip and takes every touch, so nothing reaches the board under it.
@@ -156,9 +158,10 @@ export class FightScene extends Phaser.Scene {
     }
     const feetY = this.backdrop.feetY;
 
-    this.add.text(CENTRE, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4 }).setOrigin(0.5);
+    this.add.text(CENTRE, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 5 }).setOrigin(0.5);
     this.lines = [];
-    this.history = this.add.text(CENTRE, L.historyY, '', { fontFamily: FONT, fontSize: '12px', color: '#e8eef6', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 360 } }).setOrigin(0.5, 0);
+    // One line of what just happened, so it never runs into the enemy's tell.
+    this.history = this.add.text(22, L.historyY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4, wordWrap: { width: 368 }, maxLines: 1 }).setOrigin(0, 0);
 
     // The contact shadows, then the figures, so they stand on the ground.
     this.add.ellipse(L.heroX, feetY, 64, 16, 0x000000, 0.22);
@@ -180,7 +183,7 @@ export class FightScene extends Phaser.Scene {
     }
     const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
     this.enemyBar = new Bar(this, enemyBarX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
-    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#ffb347', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    this.enemyStatus = this.add.text(enemyBarX, enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     let heroTop: number;
     if (heroReady(this)) {
@@ -195,12 +198,12 @@ export class FightScene extends Phaser.Scene {
     }
     this.heroBar = new Bar(this, L.heroBarX, heroTop - 26, L.barW, BAR_H, COLORS.button);
     this.manaBar = new Bar(this, L.heroBarX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#7fe0e0', stroke: '#1a2030', strokeThickness: 3, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
+    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 200 } }).setOrigin(0.5, 1);
 
     this.message = this.add
-      .text(CENTRE, L.messageY, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(14), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 350 } })
-      .setOrigin(0.5, 0);
-    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: kit ? '#f7efdc' : COLORS.dim }).setOrigin(0.5);
+      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
+      .setOrigin(0.5);
+    this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
     this.continueButton.setVisible(false);
@@ -490,7 +493,7 @@ export class FightScene extends Phaser.Scene {
         sfx.play(`creature/${this.enemyId}/die`);
         sfx.play('fight/victory');
         const tip = tips.take('won');
-        this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat the ${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
+        this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat ${this.enemyRole === 'boss' ? '' : 'the '}${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
       }
       case 'loot':
@@ -555,8 +558,7 @@ export class FightScene extends Phaser.Scene {
   /** A figure steps toward the other for its blow and back. */
   private step(body: Body, dx: number): void {
     if (!settings.ms(1) || !body) return;
-    const home = body.x;
-    this.tweens.killTweensOf(body);
+    const home = body === this.heroBody ? FIGHT_LAYOUT.heroX : body === this.enemyBody ? FIGHT_LAYOUT.enemyX : body.x;
     body.x = home;
     this.tweens.add({ targets: body, x: home + dx, duration: 160, ease: 'Quad.easeOut', yoyo: true, hold: 120, onComplete: () => (body.x = home) });
   }
@@ -697,10 +699,11 @@ export class FightScene extends Phaser.Scene {
     if (!text) return;
     const last = this.message.text;
     if (last && last !== text) {
-      this.lines = [...this.lines, last].slice(-2);
-      this.history.setText(this.lines.join('\n'));
+      this.lines = [last];
+      this.history.setText(last);
     }
-    this.message.setText(text);
+    this.message.setFontSize(settings.font(15)).setText(text);
+    if (this.message.height > 44) this.message.setFontSize(settings.font(13));
   }
 
   private setBusy(busy: boolean): void {
