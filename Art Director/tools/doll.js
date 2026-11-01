@@ -15,7 +15,7 @@
 const P = require('./paint.js'); const B = require('./brush.js'); const fs = require('fs'); const path = require('path');
 const { alpha, mix } = P; const a = process.argv.slice(2); const OUT = a[0] || 'work/doll/paint'; const opt = k => a.includes('--' + k) ? a[a.indexOf('--' + k) + 1] : null;
 const S = 200 / 65, W = 560, H = 340, OX = 300, OY = 310, INK = '#2b2320', LINE = 2.2;
-const K = 1.16, HS = 0.73, ARM = 29, LEG = 32;   // ARM and LEG: each limb's two segments, fixed, so limbs never stretch or shrink between poses (Robin's anatomy notes, 2026-11-01)   // Robin, 2026-11-01: "make his body more proportionate, now he looks a bit like a midget": the body's points stretched taller by K (the feet stay), the head drawn at HS of its reference size; the head is then about 42 percent of the height instead of 54
+const K = 1.16, HS = 0.73, ARM = 27, LEG = 32;   // ARM and LEG: each limb's two segments, fixed, so limbs never stretch or shrink between poses (Robin's anatomy notes, 2026-11-01)   // Robin, 2026-11-01: "make his body more proportionate, now he looks a bit like a midget": the body's points stretched taller by K (the feet stay), the head drawn at HS of its reference size; the head is then about 42 percent of the height instead of 54
 const pxB = p => px([p[0], p[1] * K]);   // a body point (neck, hips, head, hands) in frame pixels
 const px = p => [OX + p[0] * S, OY + p[1] * S];
 const v = (p, q) => [q[0] - p[0], q[1] - p[1]], len = d => Math.hypot(d[0], d[1]), unit = d => { const L = len(d) || 1; return [d[0] / L, d[1] / L]; }, ang = d => Math.atan2(d[1], d[0]);
@@ -101,7 +101,7 @@ function body(g, F) {
 function reach(shoulder, hand) { const d = v(shoulder, hand), D = len(d); return D > 2 * ARM - 1 ? add(shoulder, unit(d), 2 * ARM - 1) : hand; }   // the hand, pulled within the arm's reach
 function arm(g, shoulder, hand0, near, o = {}) {
   const hand = reach(shoulder, hand0), elbow = bendPoint(shoulder, hand, ARM, o.bend === undefined ? -1 : o.bend), d = unit(v(elbow, hand)), nd = [-d[1], d[0]];
-  const wrist = add(hand, d, -8), tip = add(hand, d, 6), pts = [shoulder, elbow, wrist, tip], ws = [27, 19, 14, 20];
+  const wrist = add(hand, d, -8), tip = add(hand, d, 6), pts = [shoulder, elbow, wrist, tip], ws = [21, 17, 13, 19];
   const ts = near ? SKIN : { light: SKIN.mid, mid: SKIN.dark, dark: SKIN.deep }, tt = near ? TUNIC : { light: TUNIC.mid, mid: TUNIC.dark, dark: TUNIC.deep };
   const n = pts.length, L = [], R = [];
   for (let i = 0; i < n; i++) { const dd = unit(v(pts[Math.max(0, i - 1)], pts[Math.min(n - 1, i + 1)])), nn = [-dd[1], dd[0]]; L.push(add(pts[i], nn, -ws[i] / 2)); R.push(add(pts[i], nn, ws[i] / 2)); }
@@ -109,7 +109,7 @@ function arm(g, shoulder, hand0, near, o = {}) {
   const dd = unit(v(shoulder, hand)), nn = [-dd[1], dd[0]], lightSide = (nn[0] + nn[1] * 0.5) < 0 ? -1 : 1, c = elbow;
   g.save(); path(); g.clip();
   g.fillStyle = P.lin(g, c[0] - nn[0] * 13 * lightSide, c[1] - nn[1] * 13 * lightSide, c[0] + nn[0] * 13 * lightSide, c[1] + nn[1] * 13 * lightSide, [[0, ts.light], [0.45, ts.mid], [1, ts.dark]]); g.fillRect(0, 0, W, H);
-  const cuff = add(shoulder, v(shoulder, elbow), 0.7), du = unit(v(shoulder, elbow)), nu = [-du[1], du[0]];                                             // the sleeve: the upper arm to above the elbow
+  const cuff = add(shoulder, v(shoulder, elbow), 0.55), du = unit(v(shoulder, elbow)), nu = [-du[1], du[0]];                                             // the sleeve: the upper arm to above the elbow
   g.beginPath(); g.moveTo(...add(add(shoulder, du, -30), nu, -30)); g.lineTo(...add(cuff, nu, -30)); g.quadraticCurveTo(...add(cuff, du, 5), ...add(cuff, nu, 30)); g.lineTo(...add(add(shoulder, du, -30), nu, 30)); g.closePath();
   g.fillStyle = P.lin(g, c[0] - nn[0] * 13 * lightSide, c[1] - nn[1] * 13 * lightSide, c[0] + nn[0] * 13 * lightSide, c[1] + nn[1] * 13 * lightSide, [[0, tt.light], [0.45, tt.mid], [1, tt.dark]]); g.fill();
   g.beginPath(); g.moveTo(...add(cuff, nu, -14)); g.quadraticCurveTo(...add(cuff, du, 5), ...add(cuff, nu, 14)); inner(g);                             // the cuff's edge
@@ -184,7 +184,7 @@ function head(g, c, tiltDeg, mood) {   // the skull, the ear, the face laid out 
 // action its own timing. The feet are the origin in every frame, so nothing drifts.)
 const stand = (i) => {   // a visible breath: the chest rises, the shoulders with it, the sword's tip dips; a blink at the top
   const r = [0, 0.9, 1.5, 0.9][i];
-  return { neck: [-4, -32 - r], hips: [-5, -21 - r * 0.5], head: [-6, -47 - r], tilt: -r, handN: [2, -14 - r * 0.6], bendN: -1, handF: [7, -13 - r * 0.6], ankleN: [-7, -2], ankleF: [2, -2], sword: -26 + r * 2, swordZ: 'front', face: i === 2 ? 'blink' : 'open', delay: 300 };
+  return { neck: [-4, -32 - r], hips: [-5, -21 - r * 0.5], head: [-6, -47 - r], tilt: -r, handN: [-2.5, -12.5 - r * 0.6], bendN: -1, handF: [12.5, -11.5 - r * 0.6], ankleN: [-7, -2], ankleF: [2, -2], sword: -30 + r * 2, swordZ: 'front', face: i === 2 ? 'blink' : 'open', delay: 300 };
 };
 function walk(i, n) {   // a stride: the near leg forward at 0, the far leg half a cycle on; the body drops at contact and rises at the passing, leans forward, the sword arm swings
   const t = i / n, c = Math.cos(2 * Math.PI * t), s = Math.sin(2 * Math.PI * t), c2 = -c, s2 = -s;
@@ -224,7 +224,7 @@ const ACTIONS = {
 function drawFrame(g, F) {
   const neck = pxB(F.neck), hips = pxB(F.hips), up = unit(v(hips, neck)), side = [-up[1], up[0]], h = len(v(hips, neck)) / S, headC = add(pxB(F.head), up, -5);   // the head sits down on the neck   // 'side' points to screen right (the back); forward is -side
   const T = (x, y) => add(add(hips, side, x * S), up, -y * S);
-  const shoulderN = T(7.5, -h + 4), shoulderF = T(2.5, -h + 4), hasSword = F.sword !== null && F.sword !== undefined;   // the shoulder joints inside the torso's upper corners, the same place in every frame
+  const shoulderN = T(-1.5, -h + 3.5), shoulderF = T(11, -h + 2.5), hasSword = F.sword !== null && F.sword !== undefined;   // the shoulder joints inside the torso's upper corners, the same place in every frame
   const handN = reach(shoulderN, pxB(F.handN));
   if (F.swordFree) { const q = px(F.swordFree); sword(g, q, F.swordFree[2]); }                      // a dropped sword lies on the ground, behind everything
   if (hasSword && F.swordZ === 'back') sword(g, handN, F.sword);
