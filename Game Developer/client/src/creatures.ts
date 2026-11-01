@@ -52,9 +52,9 @@ const actionsOf = (data: unknown): Record<string, ActionData> => (data as { acti
 const CREATURES: Record<string, CreatureFiles> = {
   slime: { key: 'slime', png: slimePng, json: slimeJson, actions: actionsOf(slimeData), scale: 0.5, blowFrame: 7 },
   wolf: { key: 'sprout', png: sproutPng, json: sproutJson, actions: actionsOf(sproutData), scale: 0.5, blowFrame: 7 },
-  bandit: { key: 'bandit', png: banditPng, json: banditJson, actions: actionsOf(banditData), scale: 0.5, blowFrame: 7 },
-  wisp: { key: 'bee', png: beePng, json: beeJson, actions: actionsOf(beeData), scale: 0.5, blowFrame: 7, hovers: true },
-  'wolf-alpha': { key: 'muncher', png: muncherPng, json: muncherJson, actions: actionsOf(muncherData), scale: 0.8, blowFrame: 5 },
+  bandit: { key: 'bandit', png: banditPng, json: banditJson, actions: actionsOf(banditData), scale: 0.5, blowFrame: 4 },
+  wisp: { key: 'bee', png: beePng, json: beeJson, actions: actionsOf(beeData), scale: 0.5333, blowFrame: 7, hovers: true },
+  'wolf-alpha': { key: 'muncher', png: muncherPng, json: muncherJson, actions: actionsOf(muncherData), scale: 0.7273, blowFrame: 5 },
   'thornwood-warden': {
     key: 'goo',
     png: gooPng,

@@ -1,37 +1,37 @@
-# The rest of the meadows' creatures
+# The meadows' creatures, rebuilt on the Knight's construction
 
-Mitch, AD, 2026-11-01. Five creatures and King Goo's second phase, all in the slime's form, facing left, the pivot at the feet. Copy
-each folder to `assets/<folder>/`. `fights.jpg` shows each one standing against the Knight at your layout, `preview.jpg` their poses at
-real size. Their designs are mine, under Robin's permission of 2026-11-01 for us to decide for now; Robin has not seen them yet.
+Mitch, AD, 2026-11-01. Robin, on seeing King Goo: "Seems AD is doing same mistake with eyes and proportions on the enemy models as he did with the hero." He was right, on all of them, the Jelly Slime too. `before_after.jpg` shows each one. Same folder names, the pivot still at the feet, so they drop in; **the table below has changed, so take the scale, blow frame and frames from it.**
+
+## What was wrong and what changed
+
+- **The eyes were the hero's first mistake:** large separate upright ovals stuck on, and the eye nearer the front was the bigger one, which is backwards. All now use the Knight's eye (`tools/monsters/face.js`): the near eye wide, the far eye narrow against the edge, an iris and a small pupil looking forward, an upper lid, a brow, with the face's centre line turned off-centre and the mouth on it.
+- **Meadow Bandit:** a separate doll with a head half his height. He is now the Knight's own skeleton and clips, in a hood, a mask, a tunic, a sack and a knife. So he has 24 frames and his blow is on frame 4.
+- **Mushroom Muncher:** its eyes were on the cap and its mouth on the stem. The stem is now its body and carries the whole face under the brim, with stub arms.
+- **Bumbling Bee:** one ball with a face. It is now a head, a fuzzy thorax, a striped abdomen and legs. It stings by curling the abdomen under, and its head stays up.
+- **Grumpy Sprout:** a potato. It is now a turnip, broad at the shoulders and narrowing down, on root legs with root arms.
+- **King Goo and the Jelly Slime:** the shade is now along the back and foot, not a stain on the belly, and the brown cheek is gone. King Goo's features are small and high, which is what makes him look huge; the Slime's are larger, which keeps it small and friendly.
 
 ## For `CREATURES`
 
-**The scale is not 0.5 on every creature.** Take it from this table, because the two largest are drawn at fewer pixels to stay in the budget.
-
 | Enemy id | Name | Folder | Scale | Blow frame | Height (CSS px) | Frames |
 | --- | --- | --- | --- | --- | --- | --- |
+| `slime` | Jelly Slime | `out/slime` | 0.5 | 7 | 120 | 33 |
 | `wolf` | Grumpy Sprout | `sprout` | 0.5 | 7 | 130 | 33 |
-| `bandit` | Meadow Bandit | `bandit` | 0.5 | 7 | 110 | 33 |
-| `wisp` | Bumbling Bee | `bee` | 0.5 | 7 | 120, and hovers about 55 above its ground point | 33 |
-| `wolf-alpha` | Mushroom Muncher | `muncher` | 0.8 | 5 | 190 | 23 |
+| `bandit` | Meadow Bandit | `bandit` | 0.5 | 4 | 110 | 24 |
+| `wisp` | Bumbling Bee | `bee` | 0.5333 | 7 | 120 | 33 |
+| `wolf-alpha` | Mushroom Muncher | `muncher` | 0.7273 | 5 | 190 | 23 |
 | `thornwood-warden` | King Goo | `goo` | 1 | 5 | 300 | 23 |
-| `thornwood-warden`, under half HP | King Goo, second phase | `goo2` | 1 | 5 | 300 and swollen a little | 12 |
+| `thornwood-warden`, under half HP | King Goo, second phase | `goo2` | 1 | 5 | 300 | 12 |
 
-Every atlas is a palette PNG of 1024 by 2048, so 8 MB decoded, and under 140 KB on disk. Frame names are `<folder>/<action>/<nnnn>`, as on the slime.
+The Bee hovers about 55 CSS px above its ground point. Every atlas is a palette PNG at most 1024 by 2048, so at most 8 MB decoded.
 
 ## The clips
 
-- **Sprout, Bandit, Bee:** stand 6, move 6, attack1 12, hit1 1, die1 8, as on the slime.
-- **Muncher and King Goo:** stand 4, move 4, attack1 8, hit1 1, die1 6. They are heavy and slow, and this is what keeps them in one atlas each.
-- **`goo2`** holds only `stand` and `attack1`. For the second phase, draw those from `goo2` and keep `move`, `hit1` and `die1` from `goo`. The crown has slipped and he is angry, so the change shows even without a tint.
-- **The Muncher's Spore Puff and Toxic Nibble, the Bandit's Dirty Trick and the Bee's Pollen Daze** use the same `attack1`. No puff, cloud or sparkle is drawn: tell me if you want those as effects.
-
-## Where they stand, and three things only you can decide
-
-- **King Goo's body is set forward of his pivot.** At `enemyX` 300 he spans about 165 to 408, so he clears the Knight's shield and stays on the screen. He is 300 tall, the low end of the 300 to 400 you listed, because any taller would be wider than the room between the Knight and the screen's edge.
-- **The shadow's width.** You draw it 96 wide at `enemyX`. It wants about 180 at x 293 for the Muncher and about 244 at x 286 for King Goo.
-- **The head-top for the bars.** The `head` in each frame is the painted top. On the Bee that includes the wings, so its bar sits above its hover.
+- **Sprout, Bee, Slime:** stand 6, move 6, attack1 12, hit1 1, die1 8.
+- **Bandit:** the Knight's clips without defend: stand 4, move 6, attack1 6, hit1 2, die1 6.
+- **Muncher and King Goo:** stand 4, move 4, attack1 8, hit1 1, die1 6.
+- **`goo2`** holds only `stand` and `attack1`. Keep `move`, `hit1` and `die1` from `goo`.
 
 ## Not tested
 
-Not yet seen in the game; `fights.jpg` is my own composite of your layout, with the backdrop's layers and the Knight in Copper. Hit boxes are the painted bounds. King Goo at 1x and the Muncher at 1.25x will look a little softer than the 2x figures on a sharp phone: at phone size on my pictures it did not show, but judge it there. Memory has not been measured on a phone.
+Judged on my own composite of your layout (`fights.jpg`) and the poses at real size (`preview.jpg`), not yet in the game. No effects are drawn for the status moves. Memory has not been measured on a phone.
