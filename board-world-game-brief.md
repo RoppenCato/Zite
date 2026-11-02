@@ -59,13 +59,13 @@ Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-
 - **Classes have basic abilities that fit their style**, different enough that the play differs; **more skills and higher ranks are bought, found or earned** as you go. The abilities should be fun and make the classes feel different and exciting, not only bigger numbers (Robin, 2026-10-31).
 - Must be playable with one thumb on a phone: the play is making choices (buttons, or gestures).
 
-### Classes – everyone is DPS, different playstyles
-| Class | Style |
-|---|---|
-| Knight (was Warrior) | Steady, high base damage, tough |
-| Trickster (was Rogue) | Low base damage, chains crits |
-| Wizard (was Mage) | Charges for a turn, then a huge hit |
-| Archer (was Ranger) | Strikes first, multiple small hits |
+### Classes and paths (Robin, 2026-11-02: "I think the identities (and classes and paths) should be"; "I was merely giving ideas": the numbers and the balance are the Game Developer's)
+| Class | Identity | Paths |
+|---|---|---|
+| Warrior | Builds Valor by blocking; Valor goes on hard hits or defensive buffs | Paladin: self healing and debuffs. Berserker: harder attacks, more damage taken. Knight: more defense, returns damage on hit |
+| Magician | Defend is a protective shield, taking half the damage as mana | Wizard: stronger fire spells that leave the target burning. Cleric: healing spells, holy attacks. Spellsword: ice or electric damage in melee attacks |
+| Rogue | Quick and mobile, higher dodge and crit, takes more damage. Attack strikes three times for a third of the damage; every hit raises the crit chance by 5%, resetting after the first crit | Ninja: can always flee with a skill. Shadow: a skill that takes full damage one turn, then 90% dodge for two. Alchemist: poison coating on the weapon |
+| Hunter | Ranged weapons only, a higher chance of counterattacking | Ranger: every counterattack is two attacks. Beastmaster and Trapper are the Game Developer's, for Robin to change |
 
 The class names, the meters, the abilities, the gear ranks and the items carry Enchanted Kingdoms names since 2026-11-01 (Robin asked; the names are the Game Developer's, listed in `Game Developer/docs/names.md`).
 

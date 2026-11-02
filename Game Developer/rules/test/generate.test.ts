@@ -223,13 +223,8 @@ describe('in play', () => {
     expect(state.board.areas['gen-1']).toMatchObject({ name: 'Glimmerlake Shores', tier: 4 });
     expect(state.board.width).toBe(9800);
     expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Lord Ripplefin' });
-    // The levels gained offer a pick of abilities, answered first; then it plays on from the Summit into the pass.
-    expect(me(state).picks.length).toBeGreaterThan(0);
-    let picked = { state, events: [] as GameEvent[] };
-    while (me(picked.state).picks.length) {
-      picked = apply(picked.state, { type: 'pick', id: `p${me(picked.state).picks.length}`, player: P, ability: me(picked.state).picks[0]![0]! }, makeRng('w'), NOW);
-      expect(picked.events[0]?.type).toBe('picked');
-    }
+    // It plays on from the Summit into the pass.
+    const picked = { state, events: [] as GameEvent[] };
     const rolled = apply({ ...picked.state, characters: { [P]: { ...me(picked.state), steps: 0 } } }, { type: 'roll', id: 'r1', player: P }, makeRng('w'), NOW).state;
     const open = new Set(me(rolled).opened);
     const paths = legalPaths(rolled.board, 'summit', rolled.die.last!, open);

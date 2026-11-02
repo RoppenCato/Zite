@@ -4,7 +4,7 @@
 // re-dressed: a theme, names, which hub is the way in and which the boss on the way out, creatures scaled to its tier,
 // gear of its rank in its shop. The cells go east in a snake two cells tall; the board widens as they come.
 
-import LAID_SHAPES from '../data/shapes-laid.json';
+import LAID_SHAPES from '../data/shapes-laid.json' with { type: 'json' };
 import { SHAPES, THEMES, WORLD_DATA } from './data.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import type { Board, EnemyData, Space, SpaceKind } from './types.ts';

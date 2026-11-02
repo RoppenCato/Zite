@@ -238,12 +238,6 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
       }
       continue;
     }
-    if (me.picks.length) {
-      // A level's pick takes an ability not yet known first.
-      const options = me.picks[0]!;
-      state = apply(state, act('pick', { ability: options.find((a) => !me.abilities[a]) ?? options[0]! }), rng, now).state;
-      continue;
-    }
     if (me.offer) {
       // The gambler is waved on, an errand taken, a piece with no room in the bag sold.
       const answer: Action = me.offer.kind === 'roll' ? act('try') : me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'board' ? act('quest', { accept: me.offer.quests.length > 0 }) : act('keep', { choice: 'sell' });

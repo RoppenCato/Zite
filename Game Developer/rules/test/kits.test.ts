@@ -1,10 +1,12 @@
-// The class kits (Robin, 2026-10-31: abilities that make the classes feel different and exciting): the meters, the
-// abilities that spend them, and the pick of one ability in two at a level.
+// The classes and their paths (Robin, 2026-11-02): the meters, what makes each class play differently, the paths' rules, and the skill
+// board's points. The balance is the simulator's, `tools/sim-classes.ts`; these say the rules do what the words say.
 import { describe, expect, it } from 'vitest';
-import { ABILITIES, PROGRESSION } from '../src/data.ts';
-import { pickOptions, startFight } from '../src/fight.ts';
+import { ABILITIES, CLASS_DATA, PROGRESSION } from '../src/data.ts';
+import { startFight } from '../src/fight.ts';
 import { apply, newGame } from '../src/game.ts';
+import { stats } from '../src/gear.ts';
 import { makeRng } from '../src/rng.ts';
+import { abilitiesFor, MAX_CARRIED, PATH_LEVEL, pointsForLevel, pointsFree } from '../src/skills.ts';
 import type { Action, Character, ClassId, Enemy, EnemyMove, FightMove, GameEvent, GameState, Guard } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
@@ -15,7 +17,6 @@ const attack: FightMove = { kind: 'attack' };
 const ability = (a: string): FightMove => ({ kind: 'ability', ability: a });
 const me = (s: GameState): Character => s.characters[P]!;
 const fight = (s: GameState) => me(s).fight!;
-const types = (events: GameEvent[]): string[] => events.map((e) => e.type);
 const hits = (events: GameEvent[], by: 'player' | 'enemy') => events.filter((e): e is Extract<GameEvent, { type: 'hit' }> => e.type === 'hit' && e.by === by);
 
 /** A character of the class squared up to the enemy on the ring's wilds, with the fight and the enemy patched by hand. */
@@ -26,161 +27,262 @@ function versus(classId: ClassId, enemy: string, patch: Partial<Character> = {},
   return { ...s, characters: { [P]: c } };
 }
 const bite: EnemyMove = { name: 'Bite', power: 1, weight: 1 };
+const tough = { hp: 5000, maxHp: 5000, next: bite };
 
 describe('the meters', () => {
-  it('Valor builds from blows taken, two from a wound-up one, up to the cap, and shows as a meter event', () => {
-    const w = versus('warrior', 'slime', {}, { hp: 1000, next: bite });
-    const r = apply(w, turn(attack), makeRng('a'), NOW);
-    expect(fight(r.state).meter).toBe(1);
-    expect(r.events.find((e) => e.type === 'meter')).toMatchObject({ name: 'Valor', value: 1, max: PROGRESSION.meterMax });
-    const heavy = apply(versus('warrior', 'slime', {}, { hp: 1000, charged: 'Howl', next: bite }), turn(attack), makeRng('a'), NOW);
-    expect(fight(heavy.state).meter).toBe(2);
-    const full = apply(versus('warrior', 'slime', {}, { hp: 1000, next: bite }, { meter: 5 }), turn(attack), makeRng('a'), NOW);
-    expect(fight(full.state).meter).toBe(5);
-    expect(full.events.some((e) => e.type === 'meter')).toBe(false);
+  it('Valor builds only by blocking, two from a wound-up blow, up to the cap', () => {
+    expect(fight(apply(versus('warrior', 'slime', {}, tough), turn(attack), makeRng('a'), NOW).state).meter).toBe(0);
+    const blocked = apply(versus('warrior', 'slime', {}, tough), turn(attack, 'block'), makeRng('a'), NOW);
+    expect(fight(blocked.state).meter).toBe(1);
+    expect(blocked.events.find((e) => e.type === 'meter')).toMatchObject({ name: 'Valor', value: 1, max: PROGRESSION.meterMax });
+    expect(fight(apply(versus('warrior', 'slime', {}, { ...tough, charged: 'Howl' }), turn(attack, 'block'), makeRng('a'), NOW).state).meter).toBe(2);
+    expect(fight(apply(versus('warrior', 'slime', {}, tough, { meter: 5 }), turn(attack, 'block'), makeRng('a'), NOW).state).meter).toBe(5);
   });
 
-  it('Mischief builds from hits landed; Arcana a point a round; Aim from blows that miss and crits', () => {
-    const rogue = apply(versus('rogue', 'slime', {}, { hp: 1000, next: bite }), turn(attack), makeRng('a'), NOW);
-    expect(rogue.events.find((e) => e.type === 'meter')).toMatchObject({ name: 'Mischief', value: 1 });
-    const mage = apply(versus('mage', 'slime', {}, { hp: 1000, next: bite }), turn(attack), makeRng('a'), NOW);
-    expect(mage.events.find((e) => e.type === 'meter')).toMatchObject({ name: 'Arcana', value: 1 });
-    const dodged = apply(versus('ranger', 'slime', {}, { hp: 1000, next: bite }, { evade: 1, round: 2 }), turn(attack), makeRng('a'), NOW);
-    expect(dodged.events.find((e) => e.type === 'missed' && e.by === 'enemy')).toBeDefined();
+  it('Mischief builds once an attack, not once a hit; Arcana a point a round; Aim from blows that miss and crits', () => {
+    const rogue = apply(versus('rogue', 'slime', {}, tough), turn(attack), makeRng('a'), NOW);
+    expect(hits(rogue.events, 'player')).toHaveLength(3);
+    expect(fight(rogue.state).meter).toBe(1);
+    expect(fight(apply(versus('mage', 'slime', {}, tough), turn(attack), makeRng('a'), NOW).state).meter).toBe(1);
+    const dodged = apply(versus('ranger', 'slime', {}, tough, { evade: 1, round: 2 }), turn(attack), makeRng('a'), NOW);
     expect(dodged.events.find((e) => e.type === 'meter')).toMatchObject({ name: 'Aim', value: 1 });
-    const crit = apply(versus('ranger', 'slime', {}, { hp: 1000, next: bite }, { sureCrit: 1, round: 2 }), turn(attack), makeRng('a'), NOW);
-    expect(hits(crit.events, 'player')[0]?.crit).toBe(true);
-    expect(crit.events.filter((e) => e.type === 'meter').length).toBeGreaterThanOrEqual(1);
   });
 });
 
-describe("the Knight's kit", () => {
-  it('Finishing Flourish spends 3 Valor for a hard hit, far harder on a foe under a third; short of Valor it is refused', () => {
-    const ready = versus('warrior', 'slime', { abilities: { execute: 1 } }, { hp: 1000, maxHp: 1000, next: bite }, { meter: 3 });
-    const r = apply(ready, turn(ability('execute')), makeRng('x'), NOW);
-    const hit = hits(r.events, 'player')[0]!;
-    expect(hit.move).toBe('Finishing Flourish');
-    expect(hit.damage).toBeGreaterThanOrEqual(14); // 12 × 1.4 less 1, swung
-    expect(hit.damage).toBeLessThanOrEqual(19);
-    expect(r.events[0]).toMatchObject({ type: 'meter', value: 0 });
-    expect(fight(r.state).meter).toBe(1); // spent to 0, then the enemy's blow landed: Valor 1
-    const low = versus('warrior', 'slime', { abilities: { execute: 1 } }, { hp: 200, maxHp: 1000, next: bite }, { meter: 3 });
-    const finisher = hits(apply(low, turn(ability('execute')), makeRng('x'), NOW).events, 'player')[0]!;
-    expect(finisher.damage).toBeGreaterThanOrEqual(31); // 12 × 2.8 less 1, swung
-    const short = versus('warrior', 'slime', { abilities: { execute: 1 } }, { hp: 1000 }, { meter: 2 });
-    expect(apply(short, turn(ability('execute')), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough meter' });
+describe('every class starts with a way to spend its meter', () => {
+  it.each(Object.keys(CLASS_DATA) as ClassId[])('%s', (classId) => {
+    const kit = CLASS_DATA[classId]!.kit.map((id) => ABILITIES[id]!);
+    expect(kit.some((a) => a.meter || a.meterAll)).toBe(true);
+    expect(kit.every((a) => a.level === 1)).toBe(true);
   });
 
-  it('Second Wind spends 3 Valor to heal an eighth and hit harder; Castle Stance raises a barrier worth a fifth of max HP', () => {
-    const hurt = versus('warrior', 'slime', { abilities: { rally: 1, 'shield-wall': 1 }, hp: 50 }, { hp: 1000, next: bite }, { meter: 3 });
-    const r = apply(hurt, turn(ability('rally')), makeRng('x'), NOW);
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'healed', amount: 14, hp: 64 }));
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'effect', kind: 'attackUp', rounds: 2 }));
-    expect(r.events[1]).toMatchObject({ type: 'meter', value: 0 }); // the mana first, then the Valor spent
-    const wall = apply(versus('warrior', 'slime', { abilities: { 'shield-wall': 1 } }, { hp: 1000, next: bite }), turn(ability('shield-wall')), makeRng('x'), NOW);
-    expect(wall.events).toContainEqual(expect.objectContaining({ type: 'effect', kind: 'barrier', rounds: 24 }));
-    expect(hits(wall.events, 'enemy')[0]?.absorbed).toBeGreaterThan(0);
-  });
-});
-
-describe("the Trickster's kit", () => {
-  it('Grand Finale spends all the Mischief and grows with it; Puff of Smoke makes the next blow miss and the next hit a sure crit', () => {
-    const r = apply(versus('rogue', 'slime', { abilities: { eviscerate: 1 } }, { hp: 1000, next: bite }, { meter: 3 }), turn(ability('eviscerate')), makeRng('x'), NOW);
-    const hit = hits(r.events, 'player')[0]!;
-    expect(hit.damage).toBeGreaterThanOrEqual(14); // 9 × (0.6 + 3 × 0.45) less 1, swung
-    expect(fight(r.state).meter).toBe(1); // spent to 0, then the hit landed: Mischief 1
-    expect(apply(versus('rogue', 'slime', { abilities: { eviscerate: 1 } }, { hp: 1000 }, { meter: 0 }), turn(ability('eviscerate')), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough meter' });
-    const smoke = apply(versus('rogue', 'slime', { abilities: { 'smoke-bomb': 1 } }, { hp: 1000, next: bite }, { meter: 3 }), turn(ability('smoke-bomb')), makeRng('x'), NOW);
-    expect(types(smoke.events)).toContain('missed');
-    expect(fight(smoke.state).sureCrit).toBe(1);
-    const next = apply(smoke.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);
-    expect(hits(next.events, 'player')[0]?.crit).toBe(true);
-    expect(fight(next.state).sureCrit).toBe(0);
-  });
-
-  it('Sticky Fingers lifts a share of the enemy\'s purse, once a fight', () => {
-    const r = apply(versus('rogue', 'slime', { abilities: { pickpocket: 1 }, gold: 10 }, { hp: 1000, next: bite }), turn(ability('pickpocket')), makeRng('x'), NOW);
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'stolen', gold: 3, total: 13 }));
-    expect(fight(r.state).used).toContain('pickpocket');
-    expect(apply(r.state, turn(ability('pickpocket'), 'none', 'f2'), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'already used' });
-  });
-});
-
-describe("the Wizard's kit", () => {
-  it('Pocket Watch spends 4 Arcana and the enemy loses its turn, boss or not; Falling Star lands two rounds later, whatever is done meanwhile', () => {
-    const warp = apply(versus('mage', 'thornwood-warden', { abilities: { 'time-warp': 1 } }, { hp: 5000, next: bite }, { meter: 4 }), turn(ability('time-warp')), makeRng('x'), NOW);
-    expect(warp.events).toContainEqual(expect.objectContaining({ type: 'effect', kind: 'skip', rounds: 1 }));
-    expect(warp.events).toContainEqual(expect.objectContaining({ type: 'skipped', reason: 'warped' }));
-    expect(hits(warp.events, 'enemy')).toHaveLength(0);
-    const called = apply(versus('mage', 'slime', { abilities: { meteor: 1 } }, { hp: 5000, next: bite }), turn(ability('meteor')), makeRng('x'), NOW);
-    expect(called.events).toContainEqual(expect.objectContaining({ type: 'effect', kind: 'windup', rounds: 2 }));
-    expect(hits(called.events, 'player')).toHaveLength(0);
-    expect(fight(called.state).windup).toMatchObject({ name: 'Falling Star', rounds: 2 });
-    const waiting = apply(called.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);
-    expect(hits(waiting.events, 'player').map((h) => h.move)).toEqual(['Attack']);
-    const landing = apply(waiting.state, turn(attack, 'none', 'f3'), makeRng('x'), NOW);
-    const moves = hits(landing.events, 'player').map((h) => h.move);
-    expect(moves).toEqual(['Falling Star', 'Attack']);
-    expect(hits(landing.events, 'player')[0]!.damage).toBeGreaterThanOrEqual(53); // 14 × 4 less 1, swung
-    expect(fight(landing.state).windup).toBeNull();
-  });
-
-  it('Moonlight Veil turns all the mana into a barrier', () => {
-    const r = apply(versus('mage', 'slime', { abilities: { 'mana-shield': 1 } }, { hp: 1000, next: bite }), turn(ability('mana-shield')), makeRng('x'), NOW);
-    expect(r.events[0]).toMatchObject({ type: 'mana', delta: -40, mana: 0 });
-    expect(r.events[1]).toMatchObject({ type: 'effect', kind: 'barrier', rounds: 60 });
-  });
-});
-
-describe("the Archer's kit", () => {
-  it('Tripwire makes the next wind-up fail; Owl Friend strikes at the end of every round; Painted Target makes the next hits land harder', () => {
-    const trapped = apply(versus('ranger', 'wolf-alpha', { abilities: { trap: 1 } }, { hp: 5000, next: { name: 'Howl', power: 2, weight: 1, charge: true } }, { round: 2 }), turn(ability('trap')), makeRng('x'), NOW);
-    expect(trapped.events).toContainEqual(expect.objectContaining({ type: 'skipped', reason: 'trapped' }));
-    expect(fight(trapped.state).enemy.charged).toBeNull();
-    expect(fight(trapped.state).trap).toBe(0);
-    const hawk = apply(versus('ranger', 'slime', { abilities: { hawk: 1 } }, { hp: 5000, next: bite }, { meter: 2, round: 2 }), turn(ability('hawk')), makeRng('x'), NOW);
-    expect(hits(hawk.events, 'player').map((h) => h.move)).toEqual(['Owl Friend']);
-    expect(fight(hawk.state).companion).toMatchObject({ name: 'Owl Friend', rounds: 2 });
-    const marked = apply(versus('ranger', 'slime', { abilities: { mark: 1 } }, { hp: 5000, next: bite }, { round: 2 }), turn(ability('mark')), makeRng('x'), NOW);
-    expect(fight(marked.state).mark).toEqual({ hits: 3, mult: 1.3 });
-    const swing = apply(marked.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);
-    expect(hits(swing.events, 'player')[0]!.damage).toBeGreaterThanOrEqual(7); // 8 × 1.3 less 1, swung
-    expect(fight(swing.state).mark).toEqual({ hits: 2, mult: 1.3 });
-  });
-});
-
-describe('the pick of one ability in two', () => {
-  it('offers two unknown abilities of the class, then ones with a rank to gain, then nothing', () => {
-    const s = newGame({ seed: 'pick', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
-    const two = pickOptions(me(s), makeRng('p'));
-    expect(two).toHaveLength(2);
-    for (const a of two) {
-      expect(ABILITIES[a]!.classId).toBe('warrior');
-      expect(me(s).abilities[a]).toBeUndefined();
+  it('every ability belongs to its class, and every path has three abilities and a rule', () => {
+    for (const [classId, cls] of Object.entries(CLASS_DATA)) {
+      expect(Object.keys(cls.paths)).toHaveLength(3);
+      for (const id of cls.core) expect(ABILITIES[id]!.classId).toBe(classId);
+      for (const path of Object.values(cls.paths)) {
+        expect(path.abilities).toHaveLength(3);
+        expect(path.passiveText.length).toBeGreaterThan(5);
+        for (const id of path.abilities) {
+          expect(ABILITIES[id]!.classId).toBe(classId);
+          expect(ABILITIES[id]!.level).toBeGreaterThanOrEqual(PATH_LEVEL);
+        }
+      }
     }
-    const warrior = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === 'warrior');
-    const known = { ...me(s), abilities: Object.fromEntries(warrior.map((a) => [a, 1])) };
-    expect(pickOptions(known, makeRng('p'))).toHaveLength(2);
-    const master = { ...me(s), abilities: Object.fromEntries(warrior.map((a) => [a, 3])) };
-    expect(pickOptions(master, makeRng('p'))).toEqual([]);
+  });
+});
+
+describe('the Warrior', () => {
+  it('Finishing Flourish spends 3 Valor, far harder on a foe under a third; short of Valor it is refused', () => {
+    const short = versus('warrior', 'slime', {}, tough, { meter: 2 });
+    expect(apply(short, turn(ability('execute')), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough meter' });
+    const full = apply(versus('warrior', 'slime', {}, tough, { meter: 3 }), turn(ability('execute')), makeRng('x'), NOW);
+    const low = apply(versus('warrior', 'slime', {}, { ...tough, hp: 1000 }, { meter: 3 }), turn(ability('execute')), makeRng('x'), NOW);
+    expect(hits(low.events, 'player')[0]!.damage).toBeGreaterThan(hits(full.events, 'player')[0]!.damage);
+    expect(fight(full.state).meter).toBeLessThanOrEqual(1);
   });
 
-  it('is asked when a fight ends past a pick level, answered with pick, and takes no gamble answer', () => {
-    const xp = PROGRESSION.xpForLevel[3]! - 1; // one short of level 4
-    const s = versus('warrior', 'slime', { xp, level: 3 }, { hp: 1 });
-    const won = apply(s, turn(attack), makeRng('x'), NOW);
-    expect(won.events).toContainEqual(expect.objectContaining({ type: 'levelled', level: 4 }));
-    const options = me(won.state).picks[0]!;
-    expect(options).toHaveLength(2);
-    expect(won.events).toContainEqual(expect.objectContaining({ type: 'pickOwed', options, level: 4 }));
-    expect(apply(won.state, { type: 'roll', id: 'r', player: P }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'answer first' });
-    expect(apply(won.state, { type: 'gamble', id: 'g', player: P, choice: 'high' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
-    expect(apply(won.state, { type: 'pick', id: 'p', player: P, ability: 'fireball' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such ability' });
-    const chosen = options[1]!;
-    const picked = apply(won.state, { type: 'pick', id: 'p', player: P, ability: chosen }, makeRng('x'), NOW);
-    expect(picked.events[0]).toEqual({ type: 'picked', action: 'p', player: P, ability: chosen, rank: 1 });
-    expect(me(picked.state).abilities[chosen]).toBe(1);
-    expect(me(picked.state).picks).toEqual([]);
-    expect(apply(picked.state, { type: 'pick', id: 'p2', player: P, ability: chosen }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
+  it('Paladin: a Block heals; Berserker: more dealt and more taken; Knight: more defense and blows go back', () => {
+    const base = versus('warrior', 'slime', { hp: 50 }, tough);
+    const paladin = versus('warrior', 'slime', { hp: 50, path: 'paladin' }, tough);
+    expect(me(apply(paladin, turn(attack, 'block'), makeRng('a'), NOW).state).hp).toBeGreaterThan(me(apply(base, turn(attack, 'block'), makeRng('a'), NOW).state).hp);
+    const plain = apply(versus('warrior', 'slime', {}, tough), turn(attack), makeRng('a'), NOW);
+    const mad = apply(versus('warrior', 'slime', { path: 'berserker' }, tough), turn(attack), makeRng('a'), NOW);
+    expect(hits(mad.events, 'player')[0]!.damage).toBeGreaterThan(hits(plain.events, 'player')[0]!.damage);
+    expect(hits(mad.events, 'enemy')[0]!.damage).toBeGreaterThan(hits(plain.events, 'enemy')[0]!.damage);
+    const knight = versus('warrior', 'slime', { path: 'knight' }, tough);
+    expect(stats(me(knight)).defense).toBeGreaterThan(stats(me(base)).defense);
+    expect(apply(knight, turn(attack), makeRng('a'), NOW).events.some((e) => e.type === 'countered')).toBe(true);
+  });
+
+  it('Blood Price trades HP for Valor; Bulwark makes a Block stop more', () => {
+    const paid = apply(versus('warrior', 'slime', { path: 'berserker', abilities: { 'blood-price': 1 } }, { ...tough, stunned: 1 }), turn(ability('blood-price')), makeRng('a'), NOW);
+    expect(fight(paid.state).meter).toBe(3);
+    expect(me(paid.state).hp).toBeLessThan(120);
+    const walled = versus('warrior', 'bandit', { path: 'knight', abilities: { bulwark: 1 } }, { ...tough, attack: 60 });
+    const then = apply(walled, turn(ability('bulwark'), 'block'), makeRng('a'), NOW);
+    const open = apply(versus('warrior', 'bandit', { path: 'knight', mana: 0 }, { ...tough, attack: 60 }), turn(attack, 'block'), makeRng('a'), NOW);
+    expect(hits(then.events, 'enemy')[0]!.damage).toBeLessThan(hits(open.events, 'enemy')[0]!.damage);
+  });
+});
+
+describe('the Magician', () => {
+  it('Block is a Mana Shield: half the blow is paid in mana; without mana it all lands', () => {
+    const shield = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
+    const none = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack), makeRng('a'), NOW);
+    const taken = hits(shield.events, 'enemy')[0]!.damage;
+    const full = hits(none.events, 'enemy')[0]!.damage;
+    expect(taken).toBeLessThanOrEqual(Math.ceil(full / 2) + 3);
+    expect(shield.events.some((e) => e.type === 'mana' && e.delta < 0)).toBe(true);
+    const dry = apply(versus('mage', 'bandit', { mana: 0 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
+    expect(hits(dry.events, 'enemy')[0]!.damage).toBeGreaterThan(taken);
+  });
+
+  it('a staff is poor and a spell strong; Overflow turns Arcana into mana and the next spell harder', () => {
+    const plain = apply(versus('mage', 'slime', {}, tough), turn(attack), makeRng('b'), NOW);
+    const bolt = apply(versus('mage', 'slime', {}, tough), turn(ability('arcane-bolt')), makeRng('b'), NOW);
+    expect(hits(bolt.events, 'player')[0]!.damage).toBeGreaterThan(hits(plain.events, 'player')[0]!.damage * 1.5);
+    const flowed = apply(versus('mage', 'slime', { mana: 10 }, { ...tough, stunned: 1 }, { meter: 3 }), turn(ability('overflow')), makeRng('b'), NOW);
+    expect(me(flowed.state).mana).toBeGreaterThan(20);
+    expect(fight(flowed.state).nextSpell).toBeGreaterThan(1);
+  });
+
+  it('Wizard: Firework leaves it burning; Spellsword: Frost Blade weakens and its plain attacks use magic; Cleric: Mend heals more', () => {
+    const fire = apply(versus('mage', 'slime', { path: 'wizard', abilities: { fireball: 1 } }, tough), turn(ability('fireball')), makeRng('a'), NOW);
+    expect(fight(fire.state).enemy.burn).toBeTruthy();
+    expect(fire.events.some((e) => e.type === 'poisoned' && e.burn)).toBe(true);
+    const sword = versus('mage', 'slime', { path: 'spellsword', abilities: { 'frost-blade': 1 } }, tough);
+    const infused = apply(sword, turn(ability('frost-blade')), makeRng('a'), NOW);
+    const cut = apply(infused.state, turn(attack, 'none', 'f2'), makeRng('a'), NOW);
+    expect(fight(cut.state).enemy.weakened).toBeTruthy();
+    const staff = apply(versus('mage', 'slime', {}, tough), turn(attack), makeRng('a'), NOW);
+    expect(hits(cut.events, 'player')[0]!.damage).toBeGreaterThan(hits(staff.events, 'player')[0]!.damage);
+    const cleric = apply(versus('mage', 'slime', { path: 'cleric', hp: 10, abilities: { mend: 1 } }, { ...tough, stunned: 1 }), turn(ability('mend')), makeRng('a'), NOW);
+    expect(me(cleric.state).hp).toBeGreaterThan(30);
+  });
+});
+
+describe('the Rogue', () => {
+  it('Attack strikes three times, sharing the damage; every hit raises the crit chance until a crit', () => {
+    const r = apply(versus('rogue', 'slime', {}, tough), turn(attack), makeRng('a'), NOW);
+    const three = hits(r.events, 'player');
+    expect(three).toHaveLength(3);
+    const crits = three.filter((h) => h.crit).length;
+    if (!crits) expect(fight(r.state).streak).toBe(3);
+    const sure = apply(versus('rogue', 'slime', {}, tough, { streak: 100 }), turn(attack), makeRng('a'), NOW);
+    expect(hits(sure.events, 'player')[0]!.crit).toBe(true);
+    expect(fight(sure.state).streak).toBeLessThan(100);
+  });
+
+  it('takes more damage than a Hunter of the same defense would', () => {
+    const rogue = hits(apply(versus('rogue', 'bandit', { defense: 6 }, { ...tough }, { round: 2 }), turn(attack), makeRng('c'), NOW).events, 'enemy')[0]!;
+    const hunter = hits(apply(versus('ranger', 'bandit', { defense: 6 }, { ...tough }, { round: 2 }), turn(attack), makeRng('c'), NOW).events, 'enemy')[0];
+    if (hunter) expect(rogue.damage).toBeGreaterThanOrEqual(hunter.damage);
+  });
+
+  it('Ninja: Smoke Escape always gets away, even from a boss, and strikes first', () => {
+    const away = apply(versus('rogue', 'thornwood-warden', { path: 'ninja', abilities: { 'smoke-escape': 1 } }), turn(ability('smoke-escape')), makeRng('a'), NOW);
+    expect(me(away.state).fight).toBeNull();
+    expect(away.events).toContainEqual(expect.objectContaining({ type: 'fled', ok: true }));
+    const first = apply(versus('rogue', 'slime', { path: 'ninja' }, tough), turn(attack), makeRng('a'), NOW);
+    expect(hits(first.events, 'enemy')).toHaveLength(0);
+  });
+
+  it('Shadow Dance: this round the blow lands in full whatever the guard, then it almost never lands for two rounds', () => {
+    let s = versus('rogue', 'bandit', { path: 'shadow', abilities: { 'shadow-dance': 1 } }, tough);
+    const open = apply(s, turn(ability('shadow-dance'), 'block'), makeRng('a'), NOW);
+    expect(hits(open.events, 'enemy')).toHaveLength(1);
+    expect(open.events.some((e) => e.type === 'guarded')).toBe(true);
+    s = open.state;
+    let missed = 0;
+    for (let i = 0; i < 2; i++) {
+      const r = apply(s, turn(attack, 'none', `f${i + 2}`), makeRng('dance'), NOW);
+      if (r.events.some((e) => e.type === 'missed' && e.by === 'enemy')) missed += 1;
+      s = r.state;
+    }
+    expect(missed).toBeGreaterThanOrEqual(1);
+    expect(fight(s).dance).toBeNull();
+  });
+
+  it('Alchemist: a coating poisons on each hit, and the poison grows', () => {
+    const coated = apply(versus('rogue', 'slime', { path: 'alchemist', abilities: { 'poison-coat': 1 } }, tough), turn(ability('poison-coat')), makeRng('a'), NOW);
+    const r = apply(coated.state, turn(attack, 'none', 'f2'), makeRng('a'), NOW);
+    expect(fight(r.state).enemy.poison!.damage).toBeGreaterThanOrEqual(3);
+    expect(fight(r.state).coat!.hits).toBe(3);
+  });
+});
+
+describe('the Hunter', () => {
+  it('often shoots back when struck, and strikes first', () => {
+    let countered = 0;
+    for (let i = 0; i < 60; i++) {
+      const r = apply(versus('ranger', 'slime', {}, tough, { round: 2 }), turn(attack), makeRng(`h${i}`), NOW);
+      if (r.events.some((e) => e.type === 'countered')) countered += 1;
+    }
+    expect(countered).toBeGreaterThan(5);
+    expect(countered).toBeLessThan(35);
+    expect(hits(apply(versus('ranger', 'slime', {}, tough), turn(attack), makeRng('a'), NOW).events, 'enemy')).toHaveLength(0);
+  });
+
+  it('Ranger: every counter is two arrows; a Counter guard always shoots back', () => {
+    const r = apply(versus('ranger', 'slime', { path: 'ranger' }, tough, { round: 2 }), turn(attack, 'counter'), makeRng('a'), NOW);
+    expect(r.events.filter((e) => e.type === 'countered')).toHaveLength(2);
+  });
+
+  it('Beastmaster: the owl strikes every round; Trapper: a tripped wind-up hurts it', () => {
+    const owl = apply(versus('ranger', 'slime', { path: 'beastmaster', abilities: { hawk: 1 } }, tough, { meter: 2 }), turn(ability('hawk')), makeRng('a'), NOW);
+    expect(hits(owl.events, 'player').some((h) => h.move === 'Owl Friend')).toBe(true);
+    const trap = versus('ranger', 'bandit', { path: 'trapper', abilities: { trap: 1 } }, { ...tough, next: { name: 'Lunge', power: 2, weight: 1, charge: true } }, { round: 2 });
+    const r = apply(trap, turn(ability('trap')), makeRng('a'), NOW);
+    expect(r.events).toContainEqual(expect.objectContaining({ type: 'skipped', reason: 'trapped' }));
+    expect(r.events.some((e) => e.type === 'countered')).toBe(true);
+  });
+
+  it('wears bows only', () => {
+    const s = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'ranger', board: ringBoard() });
+    const sword = { id: 'x', slot: 'weapon', rank: 1, rarity: 'common', name: 'Old Sword', base: 'old sword', stats: { attack: 3 }, price: 5 };
+    const bow = { ...sword, id: 'y', name: 'Tin Bow', base: 'tin bow' };
+    const held = { ...s, characters: { [P]: { ...me(s), bag: [sword, bow] } } } as unknown as GameState;
+    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'y' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
+  });
+});
+
+describe('the skill board', () => {
+  const skill = (op: Record<string, string>): Action => ({ type: 'skill', id: 's', player: P, ...op }) as Action;
+  const at = (patch: Partial<Character>, classId: ClassId = 'warrior'): GameState => {
+    const s = newGame({ seed: 'kit', player: P, name: 'Robin', classId, board: ringBoard() });
+    return { ...s, characters: { [P]: { ...me(s), ...patch } } };
+  };
+
+  it('a point every level to ten, then every second level', () => {
+    expect([1, 2, 5, 10, 11, 12, 30].map(pointsForLevel)).toEqual([0, 1, 4, 9, 9, 10, 19]);
+  });
+
+  it('a point learns an ability from its level, or raises a rank, and none are left at the end', () => {
+    const none = at({ level: 1 });
+    expect(apply(none, skill({ op: 'learn', ability: 'heavy-blow' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const two = at({ level: 2 });
+    expect(pointsFree(me(two))).toBe(1);
+    expect(apply(two, skill({ op: 'learn', ability: 'shield-wall' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' }); // from level 3
+    const learned = apply(two, skill({ op: 'learn', ability: 'shield-bash' }), makeRng('a'), NOW);
+    expect(me(learned.state).abilities['shield-bash']).toBe(1);
+    expect(me(learned.state).carried).toContain('shield-bash');
+    expect(pointsFree(me(learned.state))).toBe(0);
+    const raised = apply(at({ level: 2 }), skill({ op: 'learn', ability: 'heavy-blow' }), makeRng('a'), NOW);
+    expect(me(raised.state).abilities['heavy-blow']).toBe(2);
+  });
+
+  it('a path is taken once, from its level, and opens its abilities', () => {
+    expect(apply(at({ level: 4 }), skill({ op: 'path', path: 'knight' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    expect(apply(at({ level: 5 }), skill({ op: 'path', path: 'wizard' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    expect(apply(at({ level: 5 }), skill({ op: 'learn', ability: 'shield-slam' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const taken = apply(at({ level: 5 }), skill({ op: 'path', path: 'knight' }), makeRng('a'), NOW);
+    expect(me(taken.state).path).toBe('knight');
+    expect(abilitiesFor(me(taken.state))).toContain('shield-slam');
+    expect(apply(taken.state, skill({ op: 'learn', ability: 'shield-slam' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'learned' });
+    expect(apply(taken.state, skill({ op: 'path', path: 'paladin' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+  });
+
+  it('four are carried; what is not carried cannot be used in a fight once four are', () => {
+    const abilities = { 'heavy-blow': 1, execute: 1, 'shield-bash': 1, 'shield-wall': 1, reckless: 1 };
+    const full = at({ level: 10, path: 'berserker', abilities, carried: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'] });
+    expect(me(full).carried).toHaveLength(MAX_CARRIED);
+    expect(apply(full, skill({ op: 'carry', ability: 'reckless' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const left = apply(full, skill({ op: 'carry', ability: 'heavy-blow' }), makeRng('a'), NOW);
+    expect(me(left.state).carried).not.toContain('heavy-blow');
+    const back = apply(left.state, skill({ op: 'carry', ability: 'reckless' }), makeRng('a'), NOW);
+    expect(me(back.state).carried).toContain('reckless');
+    const inFight = versus('warrior', 'slime', { abilities, carried: ['execute', 'shield-bash', 'shield-wall', 'reckless'] }, tough);
+    expect(apply(inFight, turn(ability('heavy-blow')), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+  });
+
+  it('a reset gives every point back, only in a town or a church', () => {
+    const spent = at({ level: 8, path: 'paladin', abilities: { 'heavy-blow': 3, execute: 1, 'holy-strike': 2 }, carried: ['heavy-blow', 'execute', 'holy-strike'] });
+    const start = me(spent).space;
+    expect(apply({ ...spent, characters: { [P]: { ...me(spent), space: 's1' } } }, skill({ op: 'reset' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const reset = apply({ ...spent, characters: { [P]: { ...me(spent), space: start } } }, skill({ op: 'reset' }), makeRng('a'), NOW);
+    expect(me(reset.state)).toMatchObject({ path: null, abilities: { 'heavy-blow': 1, execute: 1 }, carried: ['heavy-blow', 'execute'] });
+    expect(pointsFree(me(reset.state))).toBe(pointsForLevel(8));
   });
 });

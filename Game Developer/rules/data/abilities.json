@@ -4,6 +4,7 @@
     "classId": "warrior",
     "text": "One crushing hit.",
     "mana": 4,
+    "level": 1,
     "ranks": [
       {
         "power": 1.6
@@ -16,11 +17,37 @@
       }
     ]
   },
+  "execute": {
+    "name": "Finishing Flourish",
+    "classId": "warrior",
+    "text": "Spend 3 Valor: a big hit, far harder on a foe under a third of its HP.",
+    "mana": 0,
+    "meter": 3,
+    "level": 1,
+    "ranks": [
+      {
+        "power": 2,
+        "executeBelow": 0.34,
+        "executePower": 3.2
+      },
+      {
+        "power": 2.3,
+        "executeBelow": 0.34,
+        "executePower": 3.6
+      },
+      {
+        "power": 2.6,
+        "executeBelow": 0.34,
+        "executePower": 4
+      }
+    ]
+  },
   "shield-bash": {
     "name": "Shield Bonk",
     "classId": "warrior",
-    "text": "A hit that stuns: the enemy loses its next turn.",
+    "text": "A hit that stuns: the enemy loses its next turn. Bosses shrug it off.",
     "mana": 6,
+    "level": 2,
     "ranks": [
       {
         "power": 0.8,
@@ -36,11 +63,137 @@
       }
     ]
   },
-  "war-cry": {
-    "name": "Battle Hymn",
+  "shield-wall": {
+    "name": "Castle Stance",
     "classId": "warrior",
-    "text": "Your hits land harder for a few rounds.",
+    "text": "Spend 2 Valor: a barrier worth a share of your HP.",
+    "mana": 2,
+    "meter": 2,
+    "level": 3,
+    "ranks": [
+      {
+        "barrierShare": 0.2
+      },
+      {
+        "barrierShare": 0.26
+      },
+      {
+        "barrierShare": 0.32
+      }
+    ]
+  },
+  "holy-strike": {
+    "name": "Holy Strike",
+    "classId": "warrior",
+    "text": "A hit that heals you for part of the damage.",
     "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 1.25,
+        "healDealt": 0.35
+      },
+      {
+        "power": 1.4,
+        "healDealt": 0.42
+      },
+      {
+        "power": 1.55,
+        "healDealt": 0.5
+      }
+    ]
+  },
+  "judgement": {
+    "name": "Judgement",
+    "classId": "warrior",
+    "text": "A hit that weakens its blows and makes it take more damage.",
+    "mana": 7,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 1,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        },
+        "sunder": {
+          "rounds": 3,
+          "mult": 1.15
+        }
+      },
+      {
+        "power": 1.15,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        },
+        "sunder": {
+          "rounds": 3,
+          "mult": 1.2
+        }
+      },
+      {
+        "power": 1.3,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.65
+        },
+        "sunder": {
+          "rounds": 4,
+          "mult": 1.25
+        }
+      }
+    ]
+  },
+  "rally": {
+    "name": "Lay on Hands",
+    "classId": "warrior",
+    "text": "Spend 3 Valor: heal a large share of your HP and clear poison and weakness.",
+    "mana": 4,
+    "meter": 3,
+    "level": 12,
+    "ranks": [
+      {
+        "healShare": 0.3,
+        "cure": true
+      },
+      {
+        "healShare": 0.38,
+        "cure": true
+      },
+      {
+        "healShare": 0.46,
+        "cure": true
+      }
+    ]
+  },
+  "reckless": {
+    "name": "Reckless Swing",
+    "classId": "warrior",
+    "text": "A huge hit that costs you some of your own HP.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 2,
+        "selfHurt": 0.08
+      },
+      {
+        "power": 2.25,
+        "selfHurt": 0.08
+      },
+      {
+        "power": 2.5,
+        "selfHurt": 0.08
+      }
+    ]
+  },
+  "war-cry": {
+    "name": "Battle Cry",
+    "classId": "warrior",
+    "text": "Your hits land much harder for a few rounds.",
+    "mana": 5,
+    "level": 8,
     "ranks": [
       {
         "attackUp": {
@@ -57,8 +210,430 @@
       {
         "attackUp": {
           "rounds": 4,
-          "mult": 1.6
+          "mult": 1.55
         }
+      }
+    ]
+  },
+  "blood-price": {
+    "name": "Blood Price",
+    "classId": "warrior",
+    "text": "Lose a share of your HP: gain 3 Valor at once.",
+    "mana": 0,
+    "level": 12,
+    "ranks": [
+      {
+        "selfHurt": 0.14,
+        "meterGain": 3
+      },
+      {
+        "selfHurt": 0.11,
+        "meterGain": 3
+      },
+      {
+        "selfHurt": 0.08,
+        "meterGain": 3
+      }
+    ]
+  },
+  "shield-slam": {
+    "name": "Shield Slam",
+    "classId": "warrior",
+    "text": "A hit that grows with your defense.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 1.1,
+        "defensePower": 1.4
+      },
+      {
+        "power": 1.1,
+        "defensePower": 1.7
+      },
+      {
+        "power": 1.1,
+        "defensePower": 2
+      }
+    ]
+  },
+  "iron-retort": {
+    "name": "Iron Retort",
+    "classId": "warrior",
+    "text": "Spend 2 Valor: for a few rounds, far more of each blow goes back to whoever struck.",
+    "mana": 3,
+    "meter": 2,
+    "level": 8,
+    "ranks": [
+      {
+        "thornsUp": {
+          "rounds": 3,
+          "share": 0.6
+        }
+      },
+      {
+        "thornsUp": {
+          "rounds": 3,
+          "share": 0.8
+        }
+      },
+      {
+        "thornsUp": {
+          "rounds": 4,
+          "share": 1
+        }
+      }
+    ]
+  },
+  "bulwark": {
+    "name": "Bulwark",
+    "classId": "warrior",
+    "text": "For a few rounds your Block stops far more.",
+    "mana": 5,
+    "level": 12,
+    "ranks": [
+      {
+        "blockUp": {
+          "rounds": 3,
+          "mult": 0.3
+        }
+      },
+      {
+        "blockUp": {
+          "rounds": 3,
+          "mult": 0.22
+        }
+      },
+      {
+        "blockUp": {
+          "rounds": 4,
+          "mult": 0.15
+        }
+      }
+    ]
+  },
+  "arcane-bolt": {
+    "name": "Arcane Bolt",
+    "classId": "mage",
+    "text": "A bolt of plain magic.",
+    "mana": 5,
+    "level": 1,
+    "ranks": [
+      {
+        "power": 1.5
+      },
+      {
+        "power": 1.7
+      },
+      {
+        "power": 1.9
+      }
+    ]
+  },
+  "overflow": {
+    "name": "Overflow",
+    "classId": "mage",
+    "text": "Spend all your Arcana: mana back for each point, and your next spell hits harder.",
+    "mana": 0,
+    "meterAll": true,
+    "level": 1,
+    "ranks": [
+      {
+        "manaPerMeter": 5,
+        "nextSpell": 1.3
+      },
+      {
+        "manaPerMeter": 6,
+        "nextSpell": 1.4
+      },
+      {
+        "manaPerMeter": 7,
+        "nextSpell": 1.5
+      }
+    ]
+  },
+  "arcane-shield": {
+    "name": "Bubble Shield",
+    "classId": "mage",
+    "text": "A shimmering bubble worth a share of your HP that soaks the next damage.",
+    "mana": 7,
+    "level": 2,
+    "ranks": [
+      {
+        "barrierShare": 0.3
+      },
+      {
+        "barrierShare": 0.4
+      },
+      {
+        "barrierShare": 0.5
+      }
+    ]
+  },
+  "time-warp": {
+    "name": "Pocket Watch",
+    "classId": "mage",
+    "text": "Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.",
+    "mana": 6,
+    "meter": 4,
+    "level": 3,
+    "ranks": [
+      {
+        "skip": 1
+      },
+      {
+        "skip": 1,
+        "power": 0.8
+      },
+      {
+        "skip": 2,
+        "power": 0.8
+      }
+    ]
+  },
+  "fireball": {
+    "name": "Firework",
+    "classId": "mage",
+    "text": "A burst of flame: a huge hit that leaves it burning.",
+    "mana": 8,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 1.6,
+        "burn": {
+          "rounds": 3,
+          "power": 0.18
+        }
+      },
+      {
+        "power": 1.85,
+        "burn": {
+          "rounds": 3,
+          "power": 0.18
+        }
+      },
+      {
+        "power": 2.1,
+        "burn": {
+          "rounds": 3,
+          "power": 0.22
+        }
+      }
+    ]
+  },
+  "ember": {
+    "name": "Ember",
+    "classId": "mage",
+    "text": "Cheap: it burns for longer, and hits a burning foe harder.",
+    "mana": 5,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 0.8,
+        "burnBonus": 1.35,
+        "burn": {
+          "rounds": 4,
+          "power": 0.18
+        }
+      },
+      {
+        "power": 0.9,
+        "burnBonus": 1.35,
+        "burn": {
+          "rounds": 4,
+          "power": 0.18
+        }
+      },
+      {
+        "power": 1,
+        "burnBonus": 1.5,
+        "burn": {
+          "rounds": 4,
+          "power": 0.18
+        }
+      }
+    ]
+  },
+  "meteor": {
+    "name": "Falling Star",
+    "classId": "mage",
+    "text": "Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.",
+    "mana": 10,
+    "level": 12,
+    "ranks": [
+      {
+        "windup": 2,
+        "power": 3
+      },
+      {
+        "windup": 2,
+        "power": 3.4
+      },
+      {
+        "windup": 2,
+        "power": 3.8
+      }
+    ]
+  },
+  "mend": {
+    "name": "Mend",
+    "classId": "mage",
+    "text": "Heal a share of your HP.",
+    "mana": 7,
+    "level": 8,
+    "ranks": [
+      {
+        "healShare": 0.28
+      },
+      {
+        "healShare": 0.35
+      },
+      {
+        "healShare": 0.42
+      }
+    ]
+  },
+  "smite": {
+    "name": "Smite",
+    "classId": "mage",
+    "text": "Holy light: a strong hit that heals you a little.",
+    "mana": 6,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 1.6,
+        "healDealt": 0.25
+      },
+      {
+        "power": 1.85,
+        "healDealt": 0.25
+      },
+      {
+        "power": 2.1,
+        "healDealt": 0.35
+      }
+    ]
+  },
+  "renew": {
+    "name": "Renewal",
+    "classId": "mage",
+    "text": "For a few rounds you heal at the end of each one, and poison and weakness clear.",
+    "mana": 8,
+    "level": 12,
+    "ranks": [
+      {
+        "regen": {
+          "rounds": 4,
+          "share": 0.08
+        },
+        "cure": true
+      },
+      {
+        "regen": {
+          "rounds": 4,
+          "share": 0.1
+        },
+        "cure": true
+      },
+      {
+        "regen": {
+          "rounds": 5,
+          "share": 0.12
+        },
+        "cure": true
+      }
+    ]
+  },
+  "frost-blade": {
+    "name": "Frost Blade",
+    "classId": "mage",
+    "text": "For a few rounds your attacks chill: its blows weaken.",
+    "mana": 6,
+    "level": 5,
+    "ranks": [
+      {
+        "infuse": {
+          "kind": "ice",
+          "rounds": 4,
+          "power": 0.45,
+          "mult": 0.8
+        }
+      },
+      {
+        "infuse": {
+          "kind": "ice",
+          "rounds": 5,
+          "power": 0.5,
+          "mult": 0.75
+        }
+      },
+      {
+        "infuse": {
+          "kind": "ice",
+          "rounds": 6,
+          "power": 0.55,
+          "mult": 0.7
+        }
+      }
+    ]
+  },
+  "storm-blade": {
+    "name": "Storm Blade",
+    "classId": "mage",
+    "text": "For a few rounds lightning jumps from your attacks: more damage, and a chance of a second strike.",
+    "mana": 6,
+    "level": 8,
+    "ranks": [
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 4,
+          "power": 0.6,
+          "chance": 0.3
+        }
+      },
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 5,
+          "power": 0.65,
+          "chance": 0.35
+        }
+      },
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 6,
+          "power": 0.7,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  "arc-slash": {
+    "name": "Arc Slash",
+    "classId": "mage",
+    "text": "Three quick magic cuts.",
+    "mana": 7,
+    "level": 12,
+    "ranks": [
+      {
+        "power": 1.3,
+        "hits": 3,
+        "split": true,
+        "melee": true
+      },
+      {
+        "power": 1.45,
+        "hits": 3,
+        "split": true,
+        "melee": true
+      },
+      {
+        "power": 1.6,
+        "hits": 3,
+        "split": true,
+        "melee": true
       }
     ]
   },
@@ -67,26 +642,255 @@
     "classId": "rogue",
     "text": "A hit that crits half the time.",
     "mana": 4,
+    "level": 1,
     "ranks": [
       {
         "power": 1.2,
-        "crit": 0.6
+        "crit": 0.55
       },
       {
         "power": 1.3,
-        "crit": 0.7
+        "crit": 0.65
       },
       {
         "power": 1.4,
-        "crit": 0.8
+        "crit": 0.75
+      }
+    ]
+  },
+  "eviscerate": {
+    "name": "Grand Finale",
+    "classId": "rogue",
+    "text": "Spend all your Mischief: a hit that grows with every point.",
+    "mana": 2,
+    "meterAll": true,
+    "level": 1,
+    "ranks": [
+      {
+        "power": 0.8,
+        "perMeter": 0.4
+      },
+      {
+        "power": 0.9,
+        "perMeter": 0.45
+      },
+      {
+        "power": 1,
+        "perMeter": 0.5
+      }
+    ]
+  },
+  "shadowstep": {
+    "name": "Vanishing Act",
+    "classId": "rogue",
+    "text": "Slip away: the enemy's next blows miss.",
+    "mana": 6,
+    "level": 2,
+    "ranks": [
+      {
+        "evade": 2
+      },
+      {
+        "evade": 2,
+        "power": 0.6
+      },
+      {
+        "evade": 3,
+        "power": 0.8
+      }
+    ]
+  },
+  "pickpocket": {
+    "name": "Sticky Fingers",
+    "classId": "rogue",
+    "text": "A quick cut and a quicker hand: gold from the enemy's purse, once a fight.",
+    "mana": 3,
+    "oncePerFight": true,
+    "level": 3,
+    "ranks": [
+      {
+        "power": 0.5,
+        "steal": 0.5
+      },
+      {
+        "power": 0.6,
+        "steal": 0.75
+      },
+      {
+        "power": 0.7,
+        "steal": 1
+      }
+    ]
+  },
+  "smoke-escape": {
+    "name": "Smoke Escape",
+    "classId": "rogue",
+    "text": "Gone in a puff: you always get away, even from a boss.",
+    "mana": 4,
+    "level": 8,
+    "ranks": [
+      {
+        "flee": true
+      },
+      {
+        "flee": true
+      },
+      {
+        "flee": true
+      }
+    ]
+  },
+  "shuriken": {
+    "name": "Shuriken",
+    "classId": "rogue",
+    "text": "Four quick stars, each one a chance to crit.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "power": 1.5,
+        "hits": 4,
+        "split": true
+      },
+      {
+        "power": 1.7,
+        "hits": 4,
+        "split": true
+      },
+      {
+        "power": 1.9,
+        "hits": 4,
+        "split": true
+      }
+    ]
+  },
+  "smoke-bomb": {
+    "name": "Puff of Smoke",
+    "classId": "rogue",
+    "text": "Spend 3 Mischief: the next blow misses and your next hit is a sure crit.",
+    "mana": 3,
+    "meter": 3,
+    "level": 12,
+    "ranks": [
+      {
+        "evade": 1,
+        "sureCrit": 1
+      },
+      {
+        "evade": 1,
+        "sureCrit": 2
+      },
+      {
+        "evade": 2,
+        "sureCrit": 2
+      }
+    ]
+  },
+  "shadow-dance": {
+    "name": "Shadow Dance",
+    "classId": "rogue",
+    "text": "Drop your guard: take this round's blow in full, then almost nothing can touch you for two rounds.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "dance": {
+          "rounds": 2,
+          "chance": 0.9
+        }
+      },
+      {
+        "dance": {
+          "rounds": 2,
+          "chance": 0.95
+        }
+      },
+      {
+        "dance": {
+          "rounds": 3,
+          "chance": 0.95
+        }
+      }
+    ]
+  },
+  "ambush": {
+    "name": "Ambush",
+    "classId": "rogue",
+    "text": "A hard hit from the dark; far harder while you dance in shadow.",
+    "mana": 5,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 1.2,
+        "danceBonus": 1.5
+      },
+      {
+        "power": 1.35,
+        "danceBonus": 1.5
+      },
+      {
+        "power": 1.5,
+        "danceBonus": 1.7
+      }
+    ]
+  },
+  "night-veil": {
+    "name": "Night Veil",
+    "classId": "rogue",
+    "text": "A barrier of shadow, and a sure crit on your next hit.",
+    "mana": 6,
+    "level": 12,
+    "ranks": [
+      {
+        "barrierShare": 0.15,
+        "sureCrit": 1
+      },
+      {
+        "barrierShare": 0.2,
+        "sureCrit": 1
+      },
+      {
+        "barrierShare": 0.25,
+        "sureCrit": 2
+      }
+    ]
+  },
+  "poison-coat": {
+    "name": "Poison Coating",
+    "classId": "rogue",
+    "text": "Coat your blade: your next hits poison, and each one makes it worse.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "coat": {
+          "hits": 6,
+          "power": 0.11,
+          "rounds": 3
+        }
+      },
+      {
+        "coat": {
+          "hits": 8,
+          "power": 0.13,
+          "rounds": 3
+        }
+      },
+      {
+        "coat": {
+          "hits": 9,
+          "power": 0.15,
+          "rounds": 4
+        }
       }
     ]
   },
   "poison-blade": {
     "name": "Nettle Knife",
     "classId": "rogue",
-    "text": "A cut that stings like nettles: poison for three rounds.",
+    "text": "A cut that stings like nettles: strong poison for three rounds.",
     "mana": 5,
+    "level": 8,
     "ranks": [
       {
         "power": 0.8,
@@ -111,85 +915,33 @@
       }
     ]
   },
-  "shadowstep": {
-    "name": "Vanishing Act",
+  "caustic-flask": {
+    "name": "Caustic Flask",
     "classId": "rogue",
-    "text": "Slip away: the enemy's next blows miss.",
+    "text": "A thrown flask: it takes more damage for a few rounds.",
     "mana": 6,
+    "level": 12,
     "ranks": [
       {
-        "evade": 2
-      },
-      {
-        "evade": 2,
-        "power": 0.6
-      },
-      {
-        "evade": 3,
-        "power": 0.8
-      }
-    ]
-  },
-  "fireball": {
-    "name": "Firework",
-    "classId": "mage",
-    "text": "A burst of flame and sparks: a huge hit.",
-    "mana": 8,
-    "ranks": [
-      {
-        "power": 2
-      },
-      {
-        "power": 2.3
-      },
-      {
-        "power": 2.6
-      }
-    ]
-  },
-  "frost-bolt": {
-    "name": "Snowball Hex",
-    "classId": "mage",
-    "text": "A chill that weakens the enemy's blows.",
-    "mana": 6,
-    "ranks": [
-      {
-        "power": 1.1,
-        "weaken": {
-          "rounds": 2,
-          "mult": 0.7
-        }
-      },
-      {
-        "power": 1.2,
-        "weaken": {
+        "power": 0.7,
+        "sunder": {
           "rounds": 3,
-          "mult": 0.65
+          "mult": 1.25
         }
       },
       {
-        "power": 1.3,
-        "weaken": {
+        "power": 0.7,
+        "sunder": {
           "rounds": 3,
-          "mult": 0.55
+          "mult": 1.32
         }
-      }
-    ]
-  },
-  "arcane-shield": {
-    "name": "Bubble Shield",
-    "classId": "mage",
-    "text": "A shimmering bubble worth a share of your HP that soaks the next damage.",
-    "mana": 7,
-    "ranks": [
-      {
-        "barrierShare": 0.3
       },
       {
-        "barrierShare": 0.4
-      },
-      {
-        "barrierShare": 0.5
+        "power": 0.7,
+        "sunder": {
+          "rounds": 4,
+          "mult": 1.4
+        }
       }
     ]
   },
@@ -198,18 +950,47 @@
     "classId": "ranger",
     "text": "Three quick arrows.",
     "mana": 5,
+    "level": 1,
     "ranks": [
       {
-        "power": 0.7,
-        "hits": 3
+        "power": 2,
+        "hits": 3,
+        "split": true
       },
       {
-        "power": 0.8,
-        "hits": 3
+        "power": 2.25,
+        "hits": 3,
+        "split": true
       },
       {
-        "power": 0.85,
-        "hits": 4
+        "power": 2.5,
+        "hits": 3,
+        "split": true
+      }
+    ]
+  },
+  "sure-shot": {
+    "name": "Sure Shot",
+    "classId": "ranger",
+    "text": "Spend 2 Aim: an arrow that surely crits.",
+    "mana": 0,
+    "meter": 2,
+    "level": 1,
+    "ranks": [
+      {
+        "power": 1,
+        "sureCrit": 1,
+        "sureFirst": true
+      },
+      {
+        "power": 1.15,
+        "sureCrit": 1,
+        "sureFirst": true
+      },
+      {
+        "power": 1.3,
+        "sureCrit": 1,
+        "sureFirst": true
       }
     ]
   },
@@ -218,6 +999,7 @@
     "classId": "ranger",
     "text": "One careful arrow, often a crit.",
     "mana": 5,
+    "level": 2,
     "ranks": [
       {
         "power": 1.5,
@@ -233,266 +1015,12 @@
       }
     ]
   },
-  "snare": {
-    "name": "Net Toss",
-    "classId": "ranger",
-    "text": "A net: the enemy loses its next turn.",
-    "mana": 6,
-    "ranks": [
-      {
-        "stun": 1
-      },
-      {
-        "stun": 1,
-        "power": 0.6
-      },
-      {
-        "stun": 2,
-        "power": 0.8
-      }
-    ]
-  },
-  "execute": {
-    "name": "Finishing Flourish",
-    "classId": "warrior",
-    "text": "Spend 3 Valor: a flourish of a hit, far harder on a foe under a third of its HP.",
-    "mana": 0,
-    "meter": 3,
-    "ranks": [
-      {
-        "power": 1.4,
-        "executeBelow": 0.3,
-        "executePower": 2.8
-      },
-      {
-        "power": 1.6,
-        "executeBelow": 0.3,
-        "executePower": 3.1
-      },
-      {
-        "power": 1.8,
-        "executeBelow": 0.35,
-        "executePower": 3.4
-      }
-    ]
-  },
-  "rally": {
-    "name": "Second Wind",
-    "classId": "warrior",
-    "text": "Spend 3 Valor: heal a share of your HP and hit harder for two rounds.",
-    "mana": 6,
-    "meter": 3,
-    "ranks": [
-      {
-        "healShare": 0.12,
-        "attackUp": {
-          "rounds": 2,
-          "mult": 1.2
-        }
-      },
-      {
-        "healShare": 0.15,
-        "attackUp": {
-          "rounds": 2,
-          "mult": 1.25
-        }
-      },
-      {
-        "healShare": 0.18,
-        "attackUp": {
-          "rounds": 3,
-          "mult": 1.3
-        }
-      }
-    ]
-  },
-  "shield-wall": {
-    "name": "Castle Stance",
-    "classId": "warrior",
-    "text": "Stand like a castle wall: a barrier worth a share of your HP.",
-    "mana": 8,
-    "ranks": [
-      {
-        "barrierShare": 0.2
-      },
-      {
-        "barrierShare": 0.25
-      },
-      {
-        "barrierShare": 0.3
-      }
-    ]
-  },
-  "smoke-bomb": {
-    "name": "Puff of Smoke",
-    "classId": "rogue",
-    "text": "Spend 3 Mischief: vanish, the next blow misses and your next hit is a sure crit.",
-    "mana": 3,
-    "meter": 3,
-    "ranks": [
-      {
-        "evade": 1,
-        "sureCrit": 1
-      },
-      {
-        "evade": 1,
-        "sureCrit": 2
-      },
-      {
-        "evade": 2,
-        "sureCrit": 2
-      }
-    ]
-  },
-  "pickpocket": {
-    "name": "Sticky Fingers",
-    "classId": "rogue",
-    "text": "A quick cut and a quicker hand: gold from the enemy's purse, once a fight.",
-    "mana": 3,
-    "oncePerFight": true,
-    "ranks": [
-      {
-        "power": 0.5,
-        "steal": 0.5
-      },
-      {
-        "power": 0.6,
-        "steal": 0.75
-      },
-      {
-        "power": 0.7,
-        "steal": 1
-      }
-    ]
-  },
-  "eviscerate": {
-    "name": "Grand Finale",
-    "classId": "rogue",
-    "text": "Spend all your Mischief: a hit that grows with every point.",
-    "mana": 2,
-    "meterAll": true,
-    "ranks": [
-      {
-        "power": 0.6,
-        "perMeter": 0.35
-      },
-      {
-        "power": 0.7,
-        "perMeter": 0.4
-      },
-      {
-        "power": 0.8,
-        "perMeter": 0.45
-      }
-    ]
-  },
-  "time-warp": {
-    "name": "Pocket Watch",
-    "classId": "mage",
-    "text": "Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.",
-    "mana": 6,
-    "meter": 4,
-    "ranks": [
-      {
-        "skip": 1
-      },
-      {
-        "skip": 1,
-        "power": 0.8
-      },
-      {
-        "skip": 2
-      }
-    ]
-  },
-  "meteor": {
-    "name": "Falling Star",
-    "classId": "mage",
-    "text": "Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.",
-    "mana": 10,
-    "ranks": [
-      {
-        "windup": 2,
-        "power": 4
-      },
-      {
-        "windup": 2,
-        "power": 4.6
-      },
-      {
-        "windup": 2,
-        "power": 5.2
-      }
-    ]
-  },
-  "mana-shield": {
-    "name": "Moonlight Veil",
-    "classId": "mage",
-    "text": "Turn all your mana into a veil of moonlight.",
-    "mana": 0,
-    "ranks": [
-      {
-        "barrierPerMana": 1.5
-      },
-      {
-        "barrierPerMana": 2
-      },
-      {
-        "barrierPerMana": 2.5
-      }
-    ]
-  },
-  "trap": {
-    "name": "Tripwire",
-    "classId": "ranger",
-    "text": "Lay a tripwire: the enemy's next wind-up fails.",
-    "mana": 8,
-    "ranks": [
-      {
-        "trap": 1
-      },
-      {
-        "trap": 1,
-        "power": 0.6
-      },
-      {
-        "trap": 2,
-        "power": 0.8
-      }
-    ]
-  },
-  "hawk": {
-    "name": "Owl Friend",
-    "classId": "ranger",
-    "text": "Spend 2 Aim: your owl strikes on its own at the end of every round for a while.",
-    "mana": 6,
-    "meter": 2,
-    "ranks": [
-      {
-        "companion": {
-          "rounds": 3,
-          "power": 0.35
-        }
-      },
-      {
-        "companion": {
-          "rounds": 4,
-          "power": 0.4
-        }
-      },
-      {
-        "companion": {
-          "rounds": 5,
-          "power": 0.45
-        }
-      }
-    ]
-  },
   "mark": {
     "name": "Painted Target",
     "classId": "ranger",
     "text": "Paint a target on the enemy: your next hits land harder.",
     "mana": 4,
+    "level": 3,
     "ranks": [
       {
         "mark": {
@@ -510,6 +1038,236 @@
         "mark": {
           "hits": 4,
           "mult": 1.5
+        }
+      }
+    ]
+  },
+  "quick-reflex": {
+    "name": "Quick Reflexes",
+    "classId": "ranger",
+    "text": "For a few rounds you shoot back far more often.",
+    "mana": 5,
+    "level": 5,
+    "ranks": [
+      {
+        "counterUp": {
+          "rounds": 3,
+          "chance": 0.4
+        }
+      },
+      {
+        "counterUp": {
+          "rounds": 3,
+          "chance": 0.55
+        }
+      },
+      {
+        "counterUp": {
+          "rounds": 4,
+          "chance": 0.7
+        }
+      }
+    ]
+  },
+  "rain-arrows": {
+    "name": "Rain of Arrows",
+    "classId": "ranger",
+    "text": "Five arrows from above.",
+    "mana": 8,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 2.8,
+        "hits": 5,
+        "split": true
+      },
+      {
+        "power": 3.1,
+        "hits": 5,
+        "split": true
+      },
+      {
+        "power": 3.4,
+        "hits": 5,
+        "split": true
+      }
+    ]
+  },
+  "return-fire": {
+    "name": "Return Fire",
+    "classId": "ranger",
+    "text": "Spend 2 Aim: a shot, and the next time it strikes you shoot back for sure.",
+    "mana": 3,
+    "meter": 2,
+    "level": 12,
+    "ranks": [
+      {
+        "power": 1.2,
+        "counterUp": {
+          "rounds": 1,
+          "chance": 1
+        }
+      },
+      {
+        "power": 1.4,
+        "counterUp": {
+          "rounds": 1,
+          "chance": 1
+        }
+      },
+      {
+        "power": 1.6,
+        "counterUp": {
+          "rounds": 2,
+          "chance": 1
+        }
+      }
+    ]
+  },
+  "hawk": {
+    "name": "Owl Friend",
+    "classId": "ranger",
+    "text": "Spend 2 Aim: your owl strikes on its own at the end of every round for a while.",
+    "mana": 4,
+    "meter": 2,
+    "level": 5,
+    "ranks": [
+      {
+        "companion": {
+          "rounds": 4,
+          "power": 0.5
+        }
+      },
+      {
+        "companion": {
+          "rounds": 5,
+          "power": 0.55
+        }
+      },
+      {
+        "companion": {
+          "rounds": 6,
+          "power": 0.6
+        }
+      }
+    ]
+  },
+  "owl-swoop": {
+    "name": "Owl Swoop",
+    "classId": "ranger",
+    "text": "Spend 3 Aim: the owl dives, a big hit that ignores its defense.",
+    "mana": 3,
+    "meter": 3,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 2.2,
+        "ignoreDefense": true
+      },
+      {
+        "power": 2.5,
+        "ignoreDefense": true
+      },
+      {
+        "power": 2.8,
+        "ignoreDefense": true
+      }
+    ]
+  },
+  "owl-watch": {
+    "name": "Feather Shield",
+    "classId": "ranger",
+    "text": "The owl spreads its wings: the next blow misses and it stays longer.",
+    "mana": 6,
+    "level": 12,
+    "ranks": [
+      {
+        "evade": 1,
+        "companionMore": 2
+      },
+      {
+        "evade": 1,
+        "companionMore": 3
+      },
+      {
+        "evade": 2,
+        "companionMore": 3
+      }
+    ]
+  },
+  "trap": {
+    "name": "Tripwire",
+    "classId": "ranger",
+    "text": "Lay a tripwire: the enemy's next wind-up fails, and hurts it.",
+    "mana": 6,
+    "level": 5,
+    "ranks": [
+      {
+        "trap": 1
+      },
+      {
+        "trap": 1,
+        "power": 0.6
+      },
+      {
+        "trap": 2,
+        "power": 0.8
+      }
+    ]
+  },
+  "snare": {
+    "name": "Pinning Shot",
+    "classId": "ranger",
+    "text": "A hit, and its next blows are much weaker.",
+    "mana": 5,
+    "level": 8,
+    "ranks": [
+      {
+        "power": 1,
+        "weaken": {
+          "rounds": 1,
+          "mult": 0.5
+        }
+      },
+      {
+        "power": 1.15,
+        "weaken": {
+          "rounds": 2,
+          "mult": 0.5
+        }
+      },
+      {
+        "power": 1.3,
+        "weaken": {
+          "rounds": 2,
+          "mult": 0.4
+        }
+      }
+    ]
+  },
+  "spike-trap": {
+    "name": "Spike Trap",
+    "classId": "ranger",
+    "text": "For a few rounds, each time it strikes it steps on spikes.",
+    "mana": 6,
+    "level": 12,
+    "ranks": [
+      {
+        "spike": {
+          "rounds": 3,
+          "power": 1
+        }
+      },
+      {
+        "spike": {
+          "rounds": 4,
+          "power": 1.2
+        }
+      },
+      {
+        "spike": {
+          "rounds": 5,
+          "power": 1.4
         }
       }
     ]

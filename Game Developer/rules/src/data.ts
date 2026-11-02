@@ -23,6 +23,8 @@ export interface ClassData {
   name: string;
   /** One line on how it plays, shown when choosing. */
   style: string;
+  /** A longer line on it, for the skill board. */
+  about: string;
   hp: number;
   mana: number;
   attack: number;
@@ -32,14 +34,71 @@ export interface ClassData {
   crit?: number;
   dodge?: number;
   /** What a level brings. */
-  growth: { hp: number; mana: number; attack: number; defense: number };
+  growth: { hp: number; mana: number; attack: number; defense: number; magic?: number };
+  /** Magic from the start (the Magician). */
+  magic?: number;
+  /** Always-on rules of the class. */
+  traits?: ClassTraits;
+  /** The abilities of the class, whatever its path. */
+  core: string[];
+  /** Its three paths, taken at PATH_LEVEL. */
+  paths: Record<string, ClassPath>;
   /** The abilities known from the start, at rank 1. */
   kit: string[];
   /** The enemy does not strike back in the first round (the Archer). */
   firstStrike?: boolean;
   /** The class's meter: its name, what fills it (hurt: blows taken; hit: hits landed; round: every round; miss: blows
    * that miss you and crits), and a line on it. */
-  meter?: { name: string; gain: 'hurt' | 'hit' | 'round' | 'miss'; text: string };
+  meter?: { name: string; gain: 'block' | 'hit' | 'round' | 'miss'; text: string };
+}
+
+/** A way to play a class (Robin, 2026-11-02): an always-on rule and three abilities. */
+export interface ClassPath {
+  name: string;
+  text: string;
+  passive: ClassTraits;
+  passiveText: string;
+  abilities: string[];
+}
+
+/** The always-on rules a class or a path can have; left out, none. */
+export interface ClassTraits {
+  /** Damage dealt and taken, times this. */
+  damageDealt?: number;
+  damageTaken?: number;
+  defenseMult?: number;
+  hpMult?: number;
+  /** Shares of damage sent back, and added chances. */
+  thorns?: number;
+  dodge?: number;
+  crit?: number;
+  firstStrike?: boolean;
+  /** Attack strikes this many times, for its share of the damage each. */
+  attackHits?: number;
+  /** Each hit adds this to the crit chance, until a crit. */
+  critStreak?: number;
+  /** Block pays this share of a blow in mana instead of halving it. */
+  shieldMana?: number;
+  /** A Block heals this share of max HP. */
+  blockHeal?: number;
+  /** Plain attacks use magic too. */
+  plainMagic?: boolean;
+  spellPower?: number;
+  healPower?: number;
+  poisonPower?: number;
+  potionPower?: number;
+  /** A chance to shoot back when struck or missed, under any guard, and how many arrows a counter is. */
+  counterChance?: number;
+  counterHits?: number;
+  /** A counter's power, instead of the guard's. */
+  counterPower?: number;
+  companionPower?: number;
+  /** After a dodge, the next hit is a sure crit. */
+  dodgeCrit?: boolean;
+  /** An enemy caught in a tripwire takes this times your attack. */
+  trapHit?: number;
+  /** Only bows may be worn. */
+  rangedOnly?: boolean;
 }
 
 /** One rank of an ability: what it does. Fields left out do nothing. */
@@ -75,6 +134,39 @@ export interface AbilityRank {
   trap?: number;
   companion?: { rounds: number; power: number };
   mark?: { hits: number; mult: number };
+  /** Heal a share of the damage this hit dealt. */
+  healDealt?: number;
+  /** Lose a share of max HP, never the last point. */
+  selfHurt?: number;
+  meterGain?: number;
+  /** Mana back for each meter point spent, and the next spell this much harder. */
+  manaPerMeter?: number;
+  nextSpell?: number;
+  cure?: boolean;
+  /** The enemy takes this much more for a while. */
+  sunder?: { rounds: number; mult: number };
+  burn?: { rounds: number; power: number };
+  /** This much harder on a burning foe, or while dancing in shadow. */
+  burnBonus?: number;
+  danceBonus?: number;
+  regen?: { rounds: number; share: number };
+  infuse?: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number };
+  /** Hits share out the power, and count as melee for an infusion. */
+  split?: boolean;
+  melee?: boolean;
+  ignoreDefense?: boolean;
+  /** Attack added as a share of defense, as power. */
+  defensePower?: number;
+  flee?: boolean;
+  dance?: { rounds: number; chance: number };
+  coat?: { hits: number; power: number; rounds: number };
+  blockUp?: { rounds: number; mult: number };
+  thornsUp?: { rounds: number; share: number };
+  counterUp?: { rounds: number; chance: number };
+  spike?: { rounds: number; power: number };
+  /** Rounds added to a companion already out. */
+  companionMore?: number;
+  sureFirst?: boolean;
 }
 
 export interface AbilityData {
@@ -82,6 +174,8 @@ export interface AbilityData {
   classId: ClassId;
   text: string;
   mana: number;
+  /** The level it can be learned from. */
+  level: number;
   /** Meter needed and spent; or all of it, with `perMeter` on the rank. */
   meter?: number;
   meterAll?: boolean;
@@ -211,9 +305,7 @@ export interface ProgressionData {
   /** The class meters' cap. */
   meterMax: number;
   /** The levels at which a character picks one ability in two. */
-  pickLevels: number[];
   /** The trainers' prices a tier: to learn an ability, and a rank (times the rank). */
-  training: { learn: number; rank: number };
 }
 
 /** The world the game plays on: areas, hubs and roads; `buildBoard` lays the spots. */

@@ -8,7 +8,7 @@ export const TIPS = {
   start: 'Welcome to Zite. Tap Roll to move; tap any spot to hear about it. Towns rest you. A quest board on the map has work for you.',
   choice: 'More than one place to go: the lit spots are where this roll can end. Tap one.',
   fight: 'A fight: pick a move, then how you take the blow. The orange line under the enemy says what it does next: Block a wind-up, Dodge a poison.',
-  won: 'Won: the gold and xp are yours. A Health Potion heals 50 HP; Hero shows what you carry; level 4 offers a pick of abilities.',
+  won: 'Won: the gold and xp are yours. A Health Potion heals 50 HP; Hero shows what you carry; each level brings a skill point for abilities.',
   boss: 'A boss stands on the big dark red spot: land exactly on it to fight it. Too hard now? Level up in the wilds and buy the area\'s gear first.',
 } as const;
 

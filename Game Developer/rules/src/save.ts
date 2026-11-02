@@ -1,3 +1,4 @@
+import { resetSkills } from './skills.ts';
 import { emptyEquipment } from './gear.ts';
 import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
@@ -113,10 +114,35 @@ interface OldCharacter {
  * 8 → 9 (2026-11-01): locked vaults. A character gains `keys`.
  */
 export function migrate(raw: unknown): GameState | null {
+  const up = migrateOlder(raw);
+  if (!up || (raw as { version?: unknown }).version === STATE_VERSION) return up;
+  return toPaths(up);
+}
+
+/**
+ * 20 → 21 (Robin, 2026-11-02): the classes and paths. Everyone goes back to what their class starts with, with their numbers as
+ * the class grows them now and every point theirs to spend on the skill board; nothing is lost but the old picks.
+ */
+function toPaths(state: GameState): GameState {
+  const characters: Record<string, Character> = {};
+  for (const [id, c] of Object.entries(state.characters)) {
+    const cls = CLASS_DATA[c.classId];
+    if (!cls) continue;
+    const grown = c.level - 1;
+    const maxHp = cls.hp + cls.growth.hp * grown;
+    const maxMana = cls.mana + cls.growth.mana * grown;
+    const reset = resetSkills({ ...c, bonusPoints: Math.max(0, (c.opened?.length ?? 1) - 1), maxHp, maxMana, attack: cls.attack + cls.growth.attack * grown, defense: cls.defense + cls.growth.defense * grown });
+    const { picks: _old, ...kept } = reset as Character & { picks?: unknown };
+    characters[id] = { ...kept, hp: Math.min(kept.hp, maxHp), mana: Math.min(kept.mana, maxMana) };
+  }
+  return { ...state, version: STATE_VERSION, characters };
+}
+
+function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -251,7 +277,8 @@ function fromVersion7(old: StateV7): GameState | null {
     if (typeof c !== 'object' || c === null || !Object.hasOwn(CLASS_DATA, c.classId)) return null;
     const offer = c.offer as (Offer | { kind: 'ability'; options: string[] }) | null;
     const owed = offer && offer.kind === 'ability' ? [offer.options] : [];
-    characters[id] = { ...c, offer: offer && offer.kind === 'ability' ? null : offer, quests: c.quests ?? [], picks: [...(c.picks ?? []), ...owed] };
+    characters[id] = { ...c, offer: offer && offer.kind === 'ability' ? null : offer, quests: c.quests ?? [] };
+    void owed;
   }
   return { version: STATE_VERSION, seed: old.seed, board: old.board, characters, die: old.die ?? { sides: DICE_DATA.sides, last: null }, spawns: old.spawns ?? {}, nextItem: typeof old.nextItem === 'number' ? old.nextItem : 1, traces: {} };
 }

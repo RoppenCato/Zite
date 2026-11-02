@@ -72,10 +72,10 @@ async function tick() {
     b.shopLeft();
     return 'leftshop';
   }
-  if ((me.offer || me.picks.length) && !sm.isActive('ask')) return 'waiting-ask';
+  if (me.offer && !sm.isActive('ask')) return 'waiting-ask';
   if (sm.isActive('ask') && !b.inFlight) {
     P.asks++;
-    if (me.picks.length) b.answerPick(me.picks[0][0]);
+    if (!me.offer) b.answerPath(null);
     else if (me.offer?.kind === 'roll') b.answerRoll();
     else if (me.offer?.kind === 'gamble') b.answerGamble('pass');
     else if (me.offer?.kind === 'board') (me.offer.quests.length ? b.answerQuest(true, 0) : b.answerQuest(false));

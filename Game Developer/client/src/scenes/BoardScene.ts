@@ -40,6 +40,7 @@ import {
   groundsOf,
   questLine,
   placeName,
+  PATH_LEVEL,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
@@ -191,6 +192,8 @@ export class BoardScene extends Phaser.Scene {
   private busy = false;
   /** The painted ground: what is near the camera, in memory. */
   private painted: PaintedGround | null = null;
+  /** The choice of a path was put off, for this sitting. */
+  private pathPutOff = false;
   /** The bridge and the pass, barred or open. */
   private readonly gates = new Map<WorldGate, Phaser.GameObjects.Image>();
   /** Roads of a land not open yet: where they run over painted ground no cover hides them. */
@@ -282,7 +285,7 @@ export class BoardScene extends Phaser.Scene {
     this.clearChoices();
     if (me.fight) {
       this.openFight();
-    } else if (me.offer || me.picks.length) {
+    } else if (me.offer || this.pathDue()) {
       this.offerChoice();
     } else if (me.steps > 0) {
       this.setBusy(true);
@@ -560,8 +563,8 @@ export class BoardScene extends Phaser.Scene {
     this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
     this.reveal(outcome.loot, `Dropped by ${outcome.enemy}`, () => {
       this.finish(outcome.summary);
-      // A level crossed in the fight may ask for a pick of abilities now; a full bag asks about the loot.
-      if (this.game_.me.offer || this.game_.me.picks.length) this.offerChoice();
+      // A level crossed in the fight may bring the choice of a path; a full bag asks about the loot.
+      if (this.game_.me.offer || this.pathDue()) this.offerChoice();
     });
   }
 
@@ -605,7 +608,6 @@ export class BoardScene extends Phaser.Scene {
           if (e.amount > 0) m.find('mark_heart', `+${e.amount} HP`, 'You feel better.', 0x6fcf7a);
           break;
         case 'learned':
-        case 'picked':
           m.find('mark_star', ABILITIES[e.ability]?.name ?? e.ability, `Learned, rank ${e.rank}. ${ABILITIES[e.ability]?.text ?? ''}`, 0xc084fc);
           break;
         case 'keyFound':
@@ -1447,7 +1449,7 @@ export class BoardScene extends Phaser.Scene {
     else if (offer?.kind === 'board') this.offerBoard();
     else if (offer?.kind === 'roll') this.offerRoll();
     else if (offer?.kind === 'loot') this.offerKeep();
-    else if (me.picks.length) this.offerPick();
+    else if (this.pathDue()) this.offerPath();
   }
 
   /** A question in its window (`AskScene`), once any card on show has gone. */
@@ -1473,19 +1475,40 @@ export class BoardScene extends Phaser.Scene {
     this.overlayClosedFrame = this.game.loop.frame;
   }
 
-  /** A level's pick: the two abilities in a window; the one tapped is learned (mine, 2026-11-01). */
-  private offerPick(): void {
-    const options = this.game_.me.picks[0];
-    if (!options) return;
-    const name = (id: string) => ABILITIES[id]?.name ?? id;
-    const known = (id: string) => this.game_.me.abilities[id] ?? 0;
-    this.setMessage(`Level ${this.game_.me.level}: pick one.`);
+  /** The level for a path reached, none taken and not put off this sitting: the moment it asks. */
+  private pathDue(): boolean {
+    const me = this.game_.me;
+    return !me.path && me.level >= PATH_LEVEL && !this.pathPutOff && !me.fight;
+  }
+
+  /** Choosing a path (Robin, 2026-11-02): the three in a window; it can wait, and Hero's Skills holds it. */
+  private offerPath(): void {
+    const me = this.game_.me;
+    const cls = CLASS_DATA[me.classId]!;
+    this.setMessage(`Level ${me.level}: choose your path.`);
     this.ask({
       icon: 'mark_star',
       color: 0xc084fc,
-      title: `Level ${this.game_.me.level}: learn one`,
-      text: 'You can only take one of these now.',
-      options: options.map((id) => ({ label: known(id) ? `${name(id)}, rank ${known(id) + 1}` : name(id), color: 0x8e6ad9, note: ABILITIES[id]?.text, onTap: () => this.answerPick(id) })),
+      title: `Choose your path, ${cls.name}`,
+      text: 'A reset in any town lets you choose again.',
+      options: [
+        ...Object.entries(cls.paths).map(([id, p]) => ({ label: p.name, color: 0x8e6ad9, note: `${p.text} ${p.passiveText}`, onTap: () => this.answerPath(id) })),
+        { label: 'Later', color: COLORS.log, onTap: () => this.answerPath(null) },
+      ],
+    });
+  }
+
+  private answerPath(path: string | null): void {
+    this.closeAsk();
+    if (!path) {
+      this.pathPutOff = true;
+      this.finish('Your path can wait: Hero, then Skills.');
+      return;
+    }
+    this.send({ type: 'skill', op: 'path', player: this.game_.player, path } as never, () => {
+      const p = CLASS_DATA[this.game_.me.classId]!.paths[path]!;
+      moments(this)?.find('mark_star', p.name, p.passiveText, 0xc084fc);
+      this.finish(`You walk the ${p.name}'s path. Spend your points: Hero, then Skills.`);
     });
   }
 
@@ -1625,21 +1648,6 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
-  answerPick(ability: string): void {
-    this.closeAsk();
-    this.send({ type: 'pick', player: this.game_.player, ability }, (events) => {
-      this.hud?.setChips([]);
-      const picked = events.find((e) => e.type === 'picked');
-      if (picked?.type === 'picked') {
-        moments(this)?.find('mark_star', ABILITIES[picked.ability]?.name ?? picked.ability, `Learned, rank ${picked.rank}. ${ABILITIES[picked.ability]?.text ?? ''}`, 0xc084fc);
-        this.log.note(`picked ${picked.ability} rank ${picked.rank}`);
-        this.finish(`Learned ${ABILITIES[picked.ability]?.name ?? picked.ability}${picked.rank > 1 ? `, rank ${picked.rank}` : ''}. ${ABILITIES[picked.ability]?.text ?? ''}`.trim());
-      } else {
-        this.finish(this.describe(events));
-      }
-    });
-  }
-
   /** The gambler's question in the HUD's row. */
   private offerGamble(): void {
     const offer = this.game_.me.offer;
@@ -1753,7 +1761,7 @@ export class BoardScene extends Phaser.Scene {
           this.openFight();
           return;
         }
-        if (me.offer || me.picks.length) {
+        if (me.offer || this.pathDue()) {
           this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
           this.offerChoice();
           return;
@@ -1827,7 +1835,7 @@ export class BoardScene extends Phaser.Scene {
     this.setBusy(false);
     // Another question still owed (a second pick, an offer behind it) asks now; left alone, Roll would only be refused.
     const me = this.game_.me;
-    if (!me.fight && (me.offer || me.picks.length)) this.offerChoice();
+    if (!me.fight && (me.offer || this.pathDue())) this.offerChoice();
   }
 
   private setBusy(busy: boolean): void {
@@ -1889,8 +1897,8 @@ export class BoardScene extends Phaser.Scene {
         case 'learned':
           parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
           break;
-        case 'picked':
-          parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
+        case 'skillPoints':
+          parts.push(e.gained === 1 ? 'A skill point: Hero, then Skills.' : `${e.gained} skill points: Hero, then Skills.`);
           break;
         case 'questProgress':
           parts.push(`Quest: ${e.quest.done} of ${e.quest.count}.`);

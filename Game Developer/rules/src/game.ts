@@ -2,9 +2,10 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
+import { canLearn, MAX_CARRIED, PATH_LEVEL, resetSkills, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
-import { fightRound, intentEvent, makeEnemy, offerPicks, startFight } from './fight.ts';
+import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
@@ -46,7 +47,7 @@ type UnequipAction = Extract<Action, { type: 'unequip' }>;
 type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
-type PickAction = Extract<Action, { type: 'pick' }>;
+type SkillAction = Extract<Action, { type: 'skill' }>;
 type QuestAction = Extract<Action, { type: 'quest' }>;
 type KeepAction = Extract<Action, { type: 'keep' }>;
 type JoinAction = Extract<Action, { type: 'join' }>;
@@ -91,7 +92,9 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     offer: null,
     quests: [],
     questsDone: [],
-    picks: [],
+    path: null,
+    carried: [...c.kit],
+    bonusPoints: 0,
     keys: {},
     ailments: {},
   };
@@ -143,8 +146,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return useCard(state, action, character, rng, now);
     case 'gamble':
       return gamble(state, action, character, rng);
-    case 'pick':
-      return pick(state, action, character);
+    case 'skill':
+      return skill(state, action, character);
     case 'quest':
       return answerQuest(state, action, character, rng, now);
     case 'try':
@@ -180,7 +183,7 @@ function join(state: GameState, action: JoinAction): ApplyResult {
 /** Why the board will not take a turn right now, or null. */
 function boardBusy(c: Character): 'finish the fight first' | 'answer first' | null {
   if (c.fight) return 'finish the fight first';
-  if (c.offer || c.picks.length) return 'answer first';
+  if (c.offer) return 'answer first';
   return null;
 }
 
@@ -294,7 +297,10 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'spell': {
       if (onCooldown) return empty();
-      return { state: withCharacter(state, learn(cooled(c), action, rng, events)), events };
+      // A shrine restores (mine: abilities come from the skill board now).
+      const s = stats(c);
+      events.push({ type: 'themeEvent', action: id, player, text: 'The shrine fills you with quiet strength.', kind: 'mana', amount: s.maxMana });
+      return { state: withCharacter(state, restoreMana(heal(cooled(c), Math.round(s.maxHp * 0.15), action, events), s.maxMana, action, events)), events };
     }
     case 'church': {
       // Robin, 2026-11-01: a church on every map, to heal and be rid of poison and the like. Always open, and free.
@@ -324,7 +330,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       const quest = c.quests[0];
       if (quest?.kind === 'find' && quest.ground === groundAt(state.board, space)?.id && rng.next() < QUESTS.kinds.find.foundChance!) {
         const met = finishQuests(state, questFound(c, quest, action, events), action, rng, events);
-        return { state: withCharacter(met.state, offerPicks(met.c, rng, c.level, action, events)), events };
+        return { state: withCharacter(met.state, noteLevels(met.c, c.level, action, events)), events };
       }
       if (quest?.kind === 'mini' && quest.area === space.area && quest.target && rng.next() < QUESTS.kinds.mini.spawnChance!) {
         return begin(state, c, quest.target, space.id, false, action, rng, events);
@@ -533,26 +539,6 @@ function themeEvent(state: GameState, c: Character, theme: string, tier: number,
   return { state: withCharacter(state, next), events };
 }
 
-/** A shrine: a new ability of the class if one is left, else a rank for one known, else nothing. */
-function learn(c: Character, action: Action, rng: Rng, events: GameEvent[]): Character {
-  const mine = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === c.classId);
-  const unknown = mine.filter((a) => !c.abilities[a]);
-  if (unknown.length) {
-    const ability = unknown[rng.int(unknown.length) - 1]!;
-    events.push({ type: 'learned', action: action.id, player: action.player, ability, rank: 1 });
-    return { ...c, abilities: { ...c.abilities, [ability]: 1 } };
-  }
-  const improvable = mine.filter((a) => (c.abilities[a] ?? 0) < ABILITIES[a]!.ranks.length);
-  if (improvable.length) {
-    const ability = improvable[rng.int(improvable.length) - 1]!;
-    const rank = (c.abilities[ability] ?? 0) + 1;
-    events.push({ type: 'learned', action: action.id, player: action.player, ability, rank });
-    return { ...c, abilities: { ...c.abilities, [ability]: rank } };
-  }
-  events.push({ type: 'nothing', action: action.id, player: action.player, text: 'The shrine has nothing more to teach you.' });
-  return c;
-}
-
 // ---- the shop and the bag ---------------------------------------------------------------------------------------------
 
 /** What can be bought where the character stands, or null away from any shop. A merchant has everything. */
@@ -573,7 +559,6 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
 
 function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
-  if (action.ability !== undefined) return train(state, action, character, action.ability);
   const offer = shopOffer(state, character);
   if (!offer) return reject(state, action, 'not at a shop');
   if (action.item !== undefined) {
@@ -611,24 +596,6 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
   return reject(state, action, 'no such item');
 }
 
-/**
- * The trainer, in a town (Robin, 2026-10-31: skills are bought, found or earned): an ability of the class not yet known
- * for `training.learn` times the tier, a rank for one known for `training.rank` times the tier times the rank it has.
- */
-function train(state: GameState, action: BuyAction, character: Character, abilityId: string): ApplyResult {
-  const here = state.board.spaces[character.space];
-  if (here?.kind !== 'town') return reject(state, action, 'not in a town');
-  const ability = ABILITIES[abilityId];
-  if (!ability || ability.classId !== character.classId) return reject(state, action, 'no such ability');
-  const rank = character.abilities[abilityId] ?? 0;
-  if (rank >= ability.ranks.length) return reject(state, action, 'not now');
-  const tier = state.board.areas[here.area]?.tier ?? 1;
-  const price = rank === 0 ? PROGRESSION.training.learn * tier : PROGRESSION.training.rank * tier * rank;
-  if (character.gold < price) return reject(state, action, 'not enough gold');
-  const gold = character.gold - price;
-  const next = { ...character, gold, abilities: { ...character.abilities, [abilityId]: rank + 1 } };
-  return { state: withCharacter(state, next), events: [{ type: 'trained', action: action.id, player: action.player, ability: abilityId, rank: rank + 1, price, gold }] };
-}
 
 function sell(state: GameState, action: SellAction, character: Character): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
@@ -650,6 +617,8 @@ function equip(state: GameState, action: EquipAction, character: Character): App
   if (character.fight) return reject(state, action, 'finish the fight first');
   const gear = character.bag.find((g) => g.id === action.gear);
   if (!gear) return reject(state, action, 'no such gear');
+  // A Hunter uses bows only (Robin, 2026-11-02).
+  if (gear.slot === 'weapon' && traitsOf(character).rangedOnly && !/bow\b/i.test(gear.name)) return reject(state, action, 'not now');
   const replaced = character.equipment[gear.slot];
   const bag = character.bag.filter((g) => g.id !== gear.id);
   if (replaced) bag.push(replaced);
@@ -759,14 +728,29 @@ function gamble(state: GameState, action: GambleAction, character: Character, rn
   return { state: withCharacter(state, { ...character, gold, offer: null }), events: [{ type: 'gambled', action: action.id, player: action.player, choice: action.choice, roll, won, delta, gold }] };
 }
 
-/** The pick of one ability in two that a level owed, the first of the list: the one chosen is learned, or gains a rank; the other waits for a shrine. */
-function pick(state: GameState, action: PickAction, character: Character): ApplyResult {
-  const options = character.picks[0];
-  if (!options) return reject(state, action, 'nothing to answer');
-  if (!options.includes(action.ability) || !ABILITIES[action.ability]) return reject(state, action, 'no such ability');
-  const rank = Math.min((character.abilities[action.ability] ?? 0) + 1, ABILITIES[action.ability]!.ranks.length);
-  const next = { ...character, picks: character.picks.slice(1), abilities: { ...character.abilities, [action.ability]: rank } };
-  return { state: withCharacter(state, next), events: [{ type: 'picked', action: action.id, player: action.player, ability: action.ability, rank }] };
+/** The skill board: learn or raise, take a path, choose what is carried, or reset, which only a town or a church allows. */
+function skill(state: GameState, action: SkillAction, c: Character): ApplyResult {
+  if (c.fight) return reject(state, action, 'finish the fight first');
+  const done = (next: Character, events: GameEvent[] = []): ApplyResult => ({ state: withCharacter(state, next), events });
+  if (action.op === 'learn') {
+    if (!canLearn(c, action.ability)) return reject(state, action, 'not now');
+    const rank = (c.abilities[action.ability] ?? 0) + 1;
+    const carried = c.carried.includes(action.ability) || c.carried.length >= MAX_CARRIED ? c.carried : [...c.carried, action.ability];
+    return done({ ...c, carried, abilities: { ...c.abilities, [action.ability]: rank } }, [{ type: 'learned', action: action.id, player: action.player, ability: action.ability, rank }]);
+  }
+  if (action.op === 'path') {
+    if (c.path || c.level < PATH_LEVEL || !CLASS_DATA[c.classId]?.paths[action.path]) return reject(state, action, 'not now');
+    return done({ ...c, path: action.path }, [{ type: 'pathTaken', action: action.id, player: action.player, path: action.path }]);
+  }
+  if (action.op === 'carry') {
+    if (!c.abilities[action.ability]) return reject(state, action, 'no such ability');
+    if (c.carried.includes(action.ability)) return done({ ...c, carried: c.carried.filter((a) => a !== action.ability) });
+    if (c.carried.length >= MAX_CARRIED) return reject(state, action, 'not now');
+    return done({ ...c, carried: [...c.carried, action.ability] });
+  }
+  const kind = state.board.spaces[c.space]?.kind;
+  if (kind !== 'town' && kind !== 'church') return reject(state, action, 'not now');
+  return done(resetSkills(c), [{ type: 'skillReset', action: action.id, player: action.player }]);
 }
 
 /** A quest chosen at the board, the board left, or the quest under way dropped. */

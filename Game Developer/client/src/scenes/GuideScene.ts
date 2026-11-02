@@ -4,7 +4,7 @@
 // shows here by itself.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS, abilitiesFor } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
@@ -103,7 +103,7 @@ export class GuideScene extends Phaser.Scene {
     const cls = CLASS_DATA[me.classId];
     const g = PROGRESSION.guards;
     const meter = cls.meter;
-    const mine = Object.entries(ABILITIES).filter(([, a]) => a.classId === me.classId);
+    const mine = abilitiesFor(me).map((id): [string, (typeof ABILITIES)[string]] => [id, ABILITIES[id]!]);
     const known = mine.filter(([id]) => me.abilities[id]);
     const others = mine.filter(([id]) => !me.abilities[id]);
     const line = (id: string): Entry => {
@@ -128,7 +128,7 @@ export class GuideScene extends Phaser.Scene {
       {
         name: 'Guards',
         entries: [
-          { title: 'Block', text: `Takes ${pct(g.block)} of the blow. The safe choice.` },
+          { title: 'Block', text: `Takes ${pct(g.block)} of the blow. The safe choice. A Magician's Block is a Mana Shield: half of it is paid in mana while there is any.` },
           { title: 'Dodge', text: `A ${pct(g.dodge)} chance that it misses altogether; if not, you take it all.` },
           { title: 'Brace', text: `Takes ${pct(g.brace)} of the blow and gives you ${pct(g.braceManaShare)} of your mana, at least ${g.braceMana}.` },
           { title: 'Counter', text: `Hit back for ${pct(g.counter)} of a plain hit, and take the blow in full.` },

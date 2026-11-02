@@ -96,7 +96,7 @@ export function questFound(c: Character, q: Quest, action: Action, events: GameE
 
 /**
  * A quest finished pays at once, wherever you stand: its xp, its gold and a chest, which always holds a piece better than
- * common, maybe a unique. The caller offers any level's pick afterwards.
+ * common, maybe a unique. The caller tells of any level's points afterwards.
  */
 export function finishQuests(state: GameState, c: Character, action: Action, rng: Rng, events: GameEvent[]): { state: GameState; c: Character } {
   let s = state;

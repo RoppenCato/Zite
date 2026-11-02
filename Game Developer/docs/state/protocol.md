@@ -121,3 +121,5 @@ The `quest` intent gained `index` (which of the board's quests) and `drop` (drop
 The `try` intent answers the offer `roll`; it gives the event `tried`.
 
 The `travel` intent (`to`) gives the event `traveled`.
+
+The `pick` intent is gone (2026-11-02); `skill`, with `op` learn, carry, path or reset, is new. Nothing else about the wire changed.

@@ -497,3 +497,7 @@ The words are no longer a tap target. `logButtons` puts a small scroll button on
 ## Honeyhill painted (2026-11-02)
 
 All three first regions are painted. `world.json` gains `exit`, a third gate, and the generator's first road follows its path. Kits load two tiers ahead of what is open, so a kit is here before its area opens in one sitting. Queen Bumble is Mitch, AD's largest figure.
+
+## Skills (2026-11-02)
+
+`SkillsScene`, from Hero: the class's four and the path's three, points, carry, learn, reset. A first look with letters for the abilities with no icon. The fight's abilities page shows what is carried. Choosing a path also asks in a window when the level is reached.

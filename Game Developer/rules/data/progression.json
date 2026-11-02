@@ -74,19 +74,6 @@
     "lifeMs": 86400000
   },
   "meterMax": 5,
-  "pickLevels": [
-    4,
-    8,
-    12,
-    16,
-    20,
-    24,
-    28
-  ],
-  "training": {
-    "learn": 60,
-    "rank": 80
-  },
   "lootRoll": {
     "need": 4
   },

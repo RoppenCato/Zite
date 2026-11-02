@@ -1,0 +1,137 @@
+// The classes, their paths and abilities, written out to rules/data as plain data. Balance by changing a number here and running
+// this, then `node tools/sim-classes.ts`. Robin, 2026-11-02 gave the identities and paths ("I was merely giving ideas"); the numbers,
+// the two Hunter paths and the abilities beyond his are mine (Miles, GD), tuned against the simulator.
+//   node tools/class-data.mjs
+
+import { readFileSync, writeFileSync } from 'node:fs';
+
+/** Three ranks from a first rank and what each later rank adds to numbers. */
+const up = (first, second, third) => [first, { ...first, ...second }, { ...first, ...second, ...third }];
+
+const A = {
+  // ---- Warrior --------------------------------------------------------------------------------------------------------
+  'heavy-blow': { name: 'Mighty Swing', classId: 'warrior', text: 'One crushing hit.', mana: 4, level: 1, ranks: up({ power: 1.6 }, { power: 1.85 }, { power: 2.1 }) },
+  execute: { name: 'Finishing Flourish', classId: 'warrior', text: 'Spend 3 Valor: a big hit, far harder on a foe under a third of its HP.', mana: 0, meter: 3, level: 1, ranks: up({ power: 2, executeBelow: 0.34, executePower: 3.2 }, { power: 2.3, executePower: 3.6 }, { power: 2.6, executePower: 4 }) },
+  'shield-bash': { name: 'Shield Bonk', classId: 'warrior', text: 'A hit that stuns: the enemy loses its next turn. Bosses shrug it off.', mana: 6, level: 2, ranks: up({ power: 0.8, stun: 1 }, { power: 1 }, { power: 1.2, stun: 2 }) },
+  'shield-wall': { name: 'Castle Stance', classId: 'warrior', text: 'Spend 2 Valor: a barrier worth a share of your HP.', mana: 2, meter: 2, level: 3, ranks: up({ barrierShare: 0.2 }, { barrierShare: 0.26 }, { barrierShare: 0.32 }) },
+  // Paladin
+  'holy-strike': { name: 'Holy Strike', classId: 'warrior', text: 'A hit that heals you for part of the damage.', mana: 5, level: 5, ranks: up({ power: 1.25, healDealt: 0.35 }, { power: 1.4, healDealt: 0.42 }, { power: 1.55, healDealt: 0.5 }) },
+  judgement: { name: 'Judgement', classId: 'warrior', text: 'A hit that weakens its blows and makes it take more damage.', mana: 7, level: 8, ranks: up({ power: 1, weaken: { rounds: 3, mult: 0.75 }, sunder: { rounds: 3, mult: 1.15 } }, { power: 1.15, sunder: { rounds: 3, mult: 1.2 } }, { power: 1.3, weaken: { rounds: 3, mult: 0.65 }, sunder: { rounds: 4, mult: 1.25 } }) },
+  rally: { name: 'Lay on Hands', classId: 'warrior', text: 'Spend 3 Valor: heal a large share of your HP and clear poison and weakness.', mana: 4, meter: 3, level: 12, ranks: up({ healShare: 0.3, cure: true }, { healShare: 0.38 }, { healShare: 0.46 }) },
+  // Berserker
+  reckless: { name: 'Reckless Swing', classId: 'warrior', text: 'A huge hit that costs you some of your own HP.', mana: 5, level: 5, ranks: up({ power: 2, selfHurt: 0.08 }, { power: 2.25 }, { power: 2.5 }) },
+  'war-cry': { name: 'Battle Cry', classId: 'warrior', text: 'Your hits land much harder for a few rounds.', mana: 5, level: 8, ranks: up({ attackUp: { rounds: 3, mult: 1.3 } }, { attackUp: { rounds: 3, mult: 1.45 } }, { attackUp: { rounds: 4, mult: 1.55 } }) },
+  'blood-price': { name: 'Blood Price', classId: 'warrior', text: 'Lose a share of your HP: gain 3 Valor at once.', mana: 0, level: 12, ranks: up({ selfHurt: 0.14, meterGain: 3 }, { selfHurt: 0.11 }, { selfHurt: 0.08 }) },
+  // Knight
+  'shield-slam': { name: 'Shield Slam', classId: 'warrior', text: 'A hit that grows with your defense.', mana: 5, level: 5, ranks: up({ power: 1.1, defensePower: 1.4 }, { defensePower: 1.7 }, { defensePower: 2 }) },
+  'iron-retort': { name: 'Iron Retort', classId: 'warrior', text: 'Spend 2 Valor: for a few rounds, far more of each blow goes back to whoever struck.', mana: 3, meter: 2, level: 8, ranks: up({ thornsUp: { rounds: 3, share: 0.6 } }, { thornsUp: { rounds: 3, share: 0.8 } }, { thornsUp: { rounds: 4, share: 1 } }) },
+  bulwark: { name: 'Bulwark', classId: 'warrior', text: 'For a few rounds your Block stops far more.', mana: 5, level: 12, ranks: up({ blockUp: { rounds: 3, mult: 0.3 } }, { blockUp: { rounds: 3, mult: 0.22 } }, { blockUp: { rounds: 4, mult: 0.15 } }) },
+  // ---- Magician -------------------------------------------------------------------------------------------------------
+  'arcane-bolt': { name: 'Arcane Bolt', classId: 'mage', text: 'A bolt of plain magic.', mana: 5, level: 1, ranks: up({ power: 1.5 }, { power: 1.7 }, { power: 1.9 }) },
+  overflow: { name: 'Overflow', classId: 'mage', text: 'Spend all your Arcana: mana back for each point, and your next spell hits harder.', mana: 0, meterAll: true, level: 1, ranks: up({ manaPerMeter: 5, sureCrit: 0, nextSpell: 1.3 }, { manaPerMeter: 6, nextSpell: 1.4 }, { manaPerMeter: 7, nextSpell: 1.5 }) },
+  'arcane-shield': { name: 'Bubble Shield', classId: 'mage', text: 'A shimmering bubble worth a share of your HP that soaks the next damage.', mana: 7, level: 2, ranks: up({ barrierShare: 0.3 }, { barrierShare: 0.4 }, { barrierShare: 0.5 }) },
+  'time-warp': { name: 'Pocket Watch', classId: 'mage', text: 'Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.', mana: 6, meter: 4, level: 3, ranks: up({ skip: 1 }, { power: 0.8 }, { skip: 2 }) },
+  // Wizard
+  fireball: { name: 'Firework', classId: 'mage', text: 'A burst of flame: a huge hit that leaves it burning.', mana: 8, level: 5, ranks: up({ power: 1.6, burn: { rounds: 3, power: 0.18 } }, { power: 1.85 }, { power: 2.1, burn: { rounds: 3, power: 0.22 } }) },
+  ember: { name: 'Ember', classId: 'mage', text: 'Cheap: it burns for longer, and hits a burning foe harder.', mana: 5, level: 8, ranks: up({ power: 0.8, burnBonus: 1.35, burn: { rounds: 4, power: 0.18 } }, { power: 0.9 }, { power: 1, burnBonus: 1.5 }) },
+  meteor: { name: 'Falling Star', classId: 'mage', text: 'Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.', mana: 10, level: 12, ranks: up({ windup: 2, power: 3 }, { power: 3.4 }, { power: 3.8 }) },
+  // Cleric
+  mend: { name: 'Mend', classId: 'mage', text: 'Heal a share of your HP.', mana: 7, level: 8, ranks: up({ healShare: 0.28 }, { healShare: 0.35 }, { healShare: 0.42 }) },
+  smite: { name: 'Smite', classId: 'mage', text: 'Holy light: a strong hit that heals you a little.', mana: 6, level: 5, ranks: up({ power: 1.6, healDealt: 0.25 }, { power: 1.85 }, { power: 2.1, healDealt: 0.35 }) },
+  renew: { name: 'Renewal', classId: 'mage', text: 'For a few rounds you heal at the end of each one, and poison and weakness clear.', mana: 8, level: 12, ranks: up({ regen: { rounds: 4, share: 0.08 }, cure: true }, { regen: { rounds: 4, share: 0.1 } }, { regen: { rounds: 5, share: 0.12 } }) },
+  // Spellsword
+  'frost-blade': { name: 'Frost Blade', classId: 'mage', text: 'For a few rounds your attacks chill: its blows weaken.', mana: 6, level: 5, ranks: up({ infuse: { kind: 'ice', rounds: 4, power: 0.45, mult: 0.8 } }, { infuse: { kind: 'ice', rounds: 5, power: 0.5, mult: 0.75 } }, { infuse: { kind: 'ice', rounds: 6, power: 0.55, mult: 0.7 } }) },
+  'storm-blade': { name: 'Storm Blade', classId: 'mage', text: 'For a few rounds lightning jumps from your attacks: more damage, and a chance of a second strike.', mana: 6, level: 8, ranks: up({ infuse: { kind: 'storm', rounds: 4, power: 0.6, chance: 0.3 } }, { infuse: { kind: 'storm', rounds: 5, power: 0.65, chance: 0.35 } }, { infuse: { kind: 'storm', rounds: 6, power: 0.7, chance: 0.4 } }) },
+  'arc-slash': { name: 'Arc Slash', classId: 'mage', text: 'Three quick magic cuts.', mana: 7, level: 12, ranks: up({ power: 1.3, hits: 3, split: true, melee: true }, { power: 1.45 }, { power: 1.6 }) },
+  // ---- Rogue ----------------------------------------------------------------------------------------------------------
+  backstab: { name: 'Sneak Jab', classId: 'rogue', text: 'A hit that crits half the time.', mana: 4, level: 1, ranks: up({ power: 1.2, crit: 0.55 }, { power: 1.3, crit: 0.65 }, { power: 1.4, crit: 0.75 }) },
+  eviscerate: { name: 'Grand Finale', classId: 'rogue', text: 'Spend all your Mischief: a hit that grows with every point.', mana: 2, meterAll: true, level: 1, ranks: up({ power: 0.8, perMeter: 0.4 }, { power: 0.9, perMeter: 0.45 }, { power: 1, perMeter: 0.5 }) },
+  shadowstep: { name: 'Vanishing Act', classId: 'rogue', text: "Slip away: the enemy's next blows miss.", mana: 6, level: 2, ranks: up({ evade: 2 }, { power: 0.6 }, { evade: 3, power: 0.8 }) },
+  pickpocket: { name: 'Sticky Fingers', classId: 'rogue', text: "A quick cut and a quicker hand: gold from the enemy's purse, once a fight.", mana: 3, oncePerFight: true, level: 3, ranks: up({ power: 0.5, steal: 0.5 }, { power: 0.6, steal: 0.75 }, { power: 0.7, steal: 1 }) },
+  // Ninja
+  'smoke-escape': { name: 'Smoke Escape', classId: 'rogue', text: 'Gone in a puff: you always get away, even from a boss.', mana: 4, level: 8, ranks: up({ flee: true }, { }, { }) },
+  shuriken: { name: 'Shuriken', classId: 'rogue', text: 'Four quick stars, each one a chance to crit.', mana: 5, level: 5, ranks: up({ power: 1.5, hits: 4, split: true }, { power: 1.7 }, { power: 1.9 }) },
+  'smoke-bomb': { name: 'Puff of Smoke', classId: 'rogue', text: 'Spend 3 Mischief: the next blow misses and your next hit is a sure crit.', mana: 3, meter: 3, level: 12, ranks: up({ evade: 1, sureCrit: 1 }, { sureCrit: 2 }, { evade: 2 }) },
+  // Shadow
+  'shadow-dance': { name: 'Shadow Dance', classId: 'rogue', text: 'Drop your guard: take this round\'s blow in full, then almost nothing can touch you for two rounds.', mana: 5, level: 5, ranks: up({ dance: { rounds: 2, chance: 0.9 } }, { dance: { rounds: 2, chance: 0.95 } }, { dance: { rounds: 3, chance: 0.95 } }) },
+  ambush: { name: 'Ambush', classId: 'rogue', text: 'A hard hit from the dark; far harder while you dance in shadow.', mana: 5, level: 8, ranks: up({ power: 1.2, danceBonus: 1.5 }, { power: 1.35 }, { power: 1.5, danceBonus: 1.7 }) },
+  'night-veil': { name: 'Night Veil', classId: 'rogue', text: 'A barrier of shadow, and a sure crit on your next hit.', mana: 6, level: 12, ranks: up({ barrierShare: 0.15, sureCrit: 1 }, { barrierShare: 0.2 }, { barrierShare: 0.25, sureCrit: 2 }) },
+  // Alchemist
+  'poison-coat': { name: 'Poison Coating', classId: 'rogue', text: 'Coat your blade: your next hits poison, and each one makes it worse.', mana: 5, level: 5, ranks: up({ coat: { hits: 6, power: 0.11, rounds: 3 } }, { coat: { hits: 8, power: 0.13, rounds: 3 } }, { coat: { hits: 9, power: 0.15, rounds: 4 } }) },
+  'poison-blade': { name: 'Nettle Knife', classId: 'rogue', text: 'A cut that stings like nettles: strong poison for three rounds.', mana: 5, level: 8, ranks: up({ power: 0.8, poison: { rounds: 3, power: 0.5 } }, { power: 0.9, poison: { rounds: 3, power: 0.65 } }, { power: 1, poison: { rounds: 4, power: 0.8 } }) },
+  'caustic-flask': { name: 'Caustic Flask', classId: 'rogue', text: 'A thrown flask: it takes more damage for a few rounds.', mana: 6, level: 12, ranks: up({ power: 0.7, sunder: { rounds: 3, mult: 1.25 } }, { sunder: { rounds: 3, mult: 1.32 } }, { sunder: { rounds: 4, mult: 1.4 } }) },
+  // ---- Hunter ---------------------------------------------------------------------------------------------------------
+  volley: { name: 'Triple Shot', classId: 'ranger', text: 'Three quick arrows.', mana: 5, level: 1, ranks: up({ power: 2, hits: 3, split: true }, { power: 2.25 }, { power: 2.5 }) },
+  'sure-shot': { name: 'Sure Shot', classId: 'ranger', text: 'Spend 2 Aim: an arrow that surely crits.', mana: 0, meter: 2, level: 1, ranks: up({ power: 1, sureCrit: 1, sureFirst: true }, { power: 1.15 }, { power: 1.3 }) },
+  'aimed-shot': { name: 'Bullseye', classId: 'ranger', text: 'One careful arrow, often a crit.', mana: 5, level: 2, ranks: up({ power: 1.5, crit: 0.35 }, { power: 1.7, crit: 0.45 }, { power: 1.9, crit: 0.55 }) },
+  mark: { name: 'Painted Target', classId: 'ranger', text: 'Paint a target on the enemy: your next hits land harder.', mana: 4, level: 3, ranks: up({ mark: { hits: 3, mult: 1.3 } }, { mark: { hits: 3, mult: 1.4 } }, { mark: { hits: 4, mult: 1.5 } }) },
+  // Ranger
+  'quick-reflex': { name: 'Quick Reflexes', classId: 'ranger', text: 'For a few rounds you shoot back far more often.', mana: 5, level: 5, ranks: up({ counterUp: { rounds: 3, chance: 0.4 } }, { counterUp: { rounds: 3, chance: 0.55 } }, { counterUp: { rounds: 4, chance: 0.7 } }) },
+  'rain-arrows': { name: 'Rain of Arrows', classId: 'ranger', text: 'Five arrows from above.', mana: 8, level: 8, ranks: up({ power: 2.8, hits: 5, split: true }, { power: 3.1 }, { power: 3.4 }) },
+  'return-fire': { name: 'Return Fire', classId: 'ranger', text: 'Spend 2 Aim: a shot, and the next time it strikes you shoot back for sure.', mana: 3, meter: 2, level: 12, ranks: up({ power: 1.2, counterUp: { rounds: 1, chance: 1 } }, { power: 1.4 }, { power: 1.6, counterUp: { rounds: 2, chance: 1 } }) },
+  // Beastmaster
+  hawk: { name: 'Owl Friend', classId: 'ranger', text: 'Spend 2 Aim: your owl strikes on its own at the end of every round for a while.', mana: 4, meter: 2, level: 5, ranks: up({ companion: { rounds: 4, power: 0.5 } }, { companion: { rounds: 5, power: 0.55 } }, { companion: { rounds: 6, power: 0.6 } }) },
+  'owl-swoop': { name: 'Owl Swoop', classId: 'ranger', text: 'Spend 3 Aim: the owl dives, a big hit that ignores its defense.', mana: 3, meter: 3, level: 8, ranks: up({ power: 2.2, ignoreDefense: true }, { power: 2.5 }, { power: 2.8 }) },
+  'owl-watch': { name: 'Feather Shield', classId: 'ranger', text: "The owl spreads its wings: the next blow misses and it stays longer.", mana: 6, level: 12, ranks: up({ evade: 1, companionMore: 2 }, { companionMore: 3 }, { evade: 2 }) },
+  // Trapper
+  trap: { name: 'Tripwire', classId: 'ranger', text: "Lay a tripwire: the enemy's next wind-up fails, and hurts it.", mana: 6, level: 5, ranks: up({ trap: 1 }, { trap: 1, power: 0.6 }, { trap: 2, power: 0.8 }) },
+  snare: { name: 'Pinning Shot', classId: 'ranger', text: 'A hit, and its next blows are much weaker.', mana: 5, level: 8, ranks: up({ power: 1, weaken: { rounds: 1, mult: 0.5 } }, { power: 1.15, weaken: { rounds: 2, mult: 0.5 } }, { power: 1.3, weaken: { rounds: 2, mult: 0.4 } }) },
+  'spike-trap': { name: 'Spike Trap', classId: 'ranger', text: 'For a few rounds, each time it strikes it steps on spikes.', mana: 6, level: 12, ranks: up({ spike: { rounds: 3, power: 1 } }, { spike: { rounds: 4, power: 1.2 } }, { spike: { rounds: 5, power: 1.4 } }) },
+};
+for (const a of Object.values(A)) for (const r of a.ranks) for (const k of Object.keys(r)) if (r[k] === 0) delete r[k];
+
+const C = {
+  warrior: {
+    name: 'Warrior', style: 'Blocks to build Valor, then hits hard.', about: 'Blocks to build Valor, then spends it on hard hits and walls of steel.',
+    hp: 120, mana: 20, attack: 12, defense: 8, gold: 50, growth: { hp: 12, mana: 2, attack: 2, defense: 1 },
+    kit: ['heavy-blow', 'execute'], core: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'],
+    meter: { name: 'Valor', gain: 'block', text: 'Valor builds when you Block a blow, more from a wound-up one.' },
+    paths: {
+      paladin: { name: 'Paladin', text: 'Heals as it fights and wears the enemy down.', passive: { blockHeal: 0.02 }, passiveText: 'Each blow you Block heals you a little.', abilities: ['holy-strike', 'judgement', 'rally'] },
+      berserker: { name: 'Berserker', text: 'Hits harder and takes more for it.', passive: { damageDealt: 1.15, damageTaken: 1.15 }, passiveText: 'You deal more damage, and take more.', abilities: ['reckless', 'war-cry', 'blood-price'] },
+      knight: { name: 'Knight', text: 'More defense, and what hits it gets hurt.', passive: { defenseMult: 1.2, thorns: 0.15 }, passiveText: 'A fifth more defense, and part of each blow goes back.', abilities: ['shield-slam', 'iron-retort', 'bulwark'] },
+    },
+  },
+  mage: {
+    name: 'Magician', style: 'Mana Shield, weak staff, strong spells.', about: 'Block is a Mana Shield: half of each blow is paid in mana. Weak staff, strong magic.',
+    hp: 90, mana: 40, attack: 7, magic: 6, defense: 4, gold: 50, growth: { hp: 9, mana: 4, attack: 1, magic: 1, defense: 1 },
+    traits: { shieldMana: 0.5 },
+    kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'time-warp'],
+    meter: { name: 'Arcana', gain: 'round', text: 'Arcana builds a point every round.' },
+    paths: {
+      wizard: { name: 'Wizard', text: 'Fire: huge hits that leave the target burning.', passive: { spellPower: 1.1 }, passiveText: 'Your spells hit harder.', abilities: ['fireball', 'ember', 'meteor'] },
+      cleric: { name: 'Cleric', text: 'Heals itself and strikes with holy light.', passive: { healPower: 1.25, defenseMult: 1.15 }, passiveText: 'Your healing is stronger, and so is your defense.', abilities: ['smite', 'mend', 'renew'] },
+      spellsword: { name: 'Spellsword', text: 'Ice or lightning in every melee hit.', passive: { plainMagic: true, hpMult: 1.25, defenseMult: 1.3, damageDealt: 1.4 }, passiveText: 'Your plain attacks use your magic too, and you are as sturdy as a fighter.', abilities: ['frost-blade', 'storm-blade', 'arc-slash'] },
+    },
+  },
+  rogue: {
+    name: 'Rogue', style: 'Three quick hits, and crits that build.', about: 'Quick and fragile. Attack strikes three times, and every hit raises the crit chance until it crits.',
+    hp: 95, mana: 25, attack: 10, defense: 5, gold: 60, crit: 0.15, dodge: 0.25, growth: { hp: 10, mana: 3, attack: 2, defense: 1 },
+    traits: { attackHits: 3, critStreak: 0.05, damageTaken: 1.1 },
+    kit: ['backstab', 'eviscerate'], core: ['backstab', 'eviscerate', 'shadowstep', 'pickpocket'],
+    meter: { name: 'Mischief', gain: 'hit', text: 'Mischief builds each time you attack.' },
+    paths: {
+      ninja: { name: 'Ninja', text: 'Strikes first and can always get away.', passive: { firstStrike: true, dodge: 0.1 }, passiveText: 'You strike first in every fight, and dodge more.', abilities: ['shuriken', 'smoke-escape', 'smoke-bomb'] },
+      shadow: { name: 'Shadow', text: 'Takes one blow in full, then almost nothing can touch it.', passive: { dodgeCrit: true }, passiveText: 'After you dodge a blow, your next hit is a sure crit.', abilities: ['shadow-dance', 'ambush', 'night-veil'] },
+      alchemist: { name: 'Alchemist', text: 'Poison on the blade, and better potions.', passive: { poisonPower: 1.5, potionPower: 1.5 }, passiveText: 'Poison hurts half as much again, and potions do too.', abilities: ['poison-coat', 'poison-blade', 'caustic-flask'] },
+    },
+  },
+  ranger: {
+    name: 'Hunter', style: 'Bows only, strikes first, shoots back.', about: 'Bows only. Often shoots back when struck, and strikes first.',
+    hp: 100, mana: 25, attack: 10, defense: 6, gold: 50, crit: 0.15, dodge: 0.05, firstStrike: true, growth: { hp: 10, mana: 3, attack: 2, defense: 1 },
+    traits: { counterChance: 0.25, counterPower: 0.8, rangedOnly: true },
+    kit: ['volley', 'sure-shot'], core: ['volley', 'sure-shot', 'aimed-shot', 'mark'],
+    meter: { name: 'Aim', gain: 'miss', text: 'Aim builds when a blow misses you and when you crit.' },
+    paths: {
+      ranger: { name: 'Ranger', text: 'Every counterattack is two arrows.', passive: { counterHits: 2 }, passiveText: 'Whenever you shoot back, you shoot twice.', abilities: ['quick-reflex', 'rain-arrows', 'return-fire'] },
+      beastmaster: { name: 'Beastmaster', text: 'Fights beside its owl.', passive: { companionPower: 1.3 }, passiveText: 'Your owl strikes harder.', abilities: ['hawk', 'owl-swoop', 'owl-watch'] },
+      trapper: { name: 'Trapper', text: 'Reads what comes next and has a trap waiting.', passive: { trapHit: 1.5 }, passiveText: 'An enemy caught in your tripwire takes a hard hit.', abilities: ['trap', 'snare', 'spike-trap'] },
+    },
+  },
+};
+
+const json = (x) => `${JSON.stringify(x, null, 2)}\n`;
+writeFileSync('rules/data/abilities.json', json(A));
+const old = JSON.parse(readFileSync('rules/data/classes.json', 'utf8'));
+writeFileSync('rules/data/classes.json', json(old.classes ? { ...old, classes: C } : C));
+console.log(`${Object.keys(A).length} abilities, ${Object.keys(C).length} classes`);

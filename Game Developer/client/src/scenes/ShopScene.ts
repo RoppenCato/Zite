@@ -50,7 +50,7 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'train' | 'coach';
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -92,7 +92,7 @@ export class ShopScene extends Phaser.Scene {
     const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
-    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['train', 'Train'], ['coach', 'Coach']] as [Tab, string][]) : [])];
+    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : [])];
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
     this.message = this.add
@@ -131,21 +131,7 @@ export class ShopScene extends Phaser.Scene {
       this.rows.push(this.add.text(292, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
-    if (tab === 'train') {
-      // The trainer: the class's abilities, each learned for the tier's price or raised a rank for more.
-      const mine = Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === me.classId);
-      const meterName = CLASS_DATA[me.classId].meter?.name ?? 'meter';
-      mine.forEach((id, i) => {
-        const a = ABILITIES[id]!;
-        const rank = me.abilities[id] ?? 0;
-        const top = rank >= a.ranks.length;
-        const price = rank === 0 ? PROGRESSION.training.learn * tier : PROGRESSION.training.rank * tier * rank;
-        const cost = `${a.mana} MP${a.meterAll ? `, all ${meterName}` : a.meter ? `, ${a.meter} ${meterName}` : ''}`;
-        row(i, `${a.name}${rank ? ` · rank ${rank}` : ''}`, rank ? this.ink.text : this.ink.dim, `${a.text} ${cost}.`, top ? 'top' : `${price} g`, top ? '—' : rank ? 'Rank up' : 'Learn', () => {
-          if (!top) this.buy({ ability: id });
-        }, '', id);
-      });
-    } else if (tab === 'coach') {
+    if (tab === 'coach') {
       // The coach to a town you have stood in (mine, 2026-11-02: a bigger world needs a way back).
       const options = travelOptions(this.game_.state, me);
       if (!options.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'The coach goes to towns you have been to.\nNo other yet.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim, align: 'center' }).setOrigin(0.5, 0));
@@ -180,11 +166,7 @@ export class ShopScene extends Phaser.Scene {
   private bought(events: GameEvent[]): void {
     this.inFlight = false;
     const bought = events.find((e) => e.type === 'bought');
-    const trained = events.find((e) => e.type === 'trained');
-    if (trained?.type === 'trained') {
-      this.message.setText(`${trained.rank === 1 ? 'Learned' : 'Raised'} ${ABILITIES[trained.ability]?.name ?? trained.ability}${trained.rank > 1 ? ` to rank ${trained.rank}` : ''} for ${trained.price} gold.`);
-      this.log.note(`trained ${trained.ability} rank ${trained.rank} for ${trained.price}`);
-    } else if (bought && bought.type === 'bought') {
+    if (bought && bought.type === 'bought') {
       const name = bought.gear ? bought.gear.name : (ITEMS[bought.item ?? '']?.name ?? bought.item);
       this.message.setText(`Bought ${name} for ${bought.price} gold.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
       this.log.note(`bought ${name} for ${bought.price}`);

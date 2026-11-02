@@ -2,6 +2,7 @@
 // numbers, named pieces with special effects, and uniques whose powers change how you play (Robin, 2026-10-31, the
 // evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
+import { traitsOf } from './skills.ts';
 import { CLASS_DATA, GEAR, PROGRESSION, UNIQUE_IDS, UNIQUES } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
@@ -75,6 +76,13 @@ export function stats(c: Character): Stats {
   maxHp += c.elixirs?.vigor?.value ?? 0;
   magic += c.elixirs?.arcana?.value ?? 0;
   maxHp = Math.round(maxHp * (1 + vigor));
+  const traits = traitsOf(c);
+  magic += (cls?.magic ?? 0) + (cls?.growth.magic ?? 0) * (c.level - 1);
+  crit += traits.crit ?? 0;
+  dodge += traits.dodge ?? 0;
+  thorns += traits.thorns ?? 0;
+  if (traits.defenseMult) defense = Math.round(defense * traits.defenseMult);
+  if (traits.hpMult) maxHp = Math.round(maxHp * traits.hpMult);
   const p = powers(c);
   if (p.bloodthirst) {
     // Gorefang: harder the more HP is missing, up to the value more.
@@ -124,6 +132,8 @@ function lineWord(line: GearLine, rank: number): string {
 /** A piece's plain name: the weapon follows the class in heavy gear; the first light and magic weapons are wood. */
 function pieceName(slot: Slot, rank: number, line: GearLine, classId: ClassId): string {
   const data = GEAR.lines[line];
+  // A Hunter's weapon is a bow on every line (Robin, 2026-11-02).
+  if (slot === 'weapon' && classId === 'ranger') return rank === 1 && data.firstWeapon ? 'Wooden Bow' : line === 'heavy' ? `${lineWord(line, rank)} Bow` : `${lineWord(line, rank)} Shortbow`;
   if (slot === 'weapon' && rank === 1 && data.firstWeapon) return data.firstWeapon;
   if (slot === 'weapon' && data.weaponByClass) return `${lineWord(line, rank)} ${data.weaponByClass[classId]}`;
   return `${lineWord(line, rank)} ${data.slots?.[slot].base ?? GEAR.slots[slot].base}`;

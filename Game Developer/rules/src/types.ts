@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 20;
+export const STATE_VERSION = 21;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
@@ -242,8 +242,12 @@ export interface Character {
   walking?: string[];
   /** Elixirs drunk: what they add and for how many more fights. */
   elixirs?: Partial<Record<'vigor' | 'arcana', { value: number; fights: number }>>;
-  /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */
-  picks: string[][];
+  /** The path taken at PATH_LEVEL, or none yet. */
+  path: string | null;
+  /** The abilities brought into a fight, up to four. */
+  carried: string[];
+  /** Points from a first win over a region's boss, on top of the levels'. */
+  bonusPoints: number;
   /** Keys to the locked chests, by area: a mini-boss of the area drops one. */
   keys: Record<string, number>;
   /** What a fight left on you (Robin, 2026-11-01): it stays until it wears off or a church cures it. */
@@ -298,6 +302,9 @@ export interface Enemy {
   armoured: { rounds: number; mult: number } | null;
   /** Player hits that will miss it. */
   evade: number;
+  /** Burning, as poison but from fire; taking more damage. */
+  burn?: { rounds: number; damage: number } | null;
+  sunder?: { rounds: number; mult: number } | null;
   /** 1 until a boss's second phase begins, then 2. */
   phase: number;
   phase2: EnemyPhase | null;
@@ -341,6 +348,19 @@ export interface Fight {
   weak: { rounds: number; mult: number } | null;
   /** Once-a-fight things already used: ability ids, and powers such as ward, secondWind, quickdraw. */
   used: string[];
+  /** Hits since the last crit (the Rogue). */
+  streak: number;
+  /** The next spell lands this much harder (Overflow). */
+  nextSpell: number;
+  regen: { rounds: number; share: number } | null;
+  infuse: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number } | null;
+  /** Shadow Dance: this round's blow in full, then `rounds` rounds at this dodge. */
+  dance: { exposed: boolean; rounds: number; chance: number } | null;
+  coat: { hits: number; power: number; rounds: number } | null;
+  blockUp: { rounds: number; mult: number } | null;
+  thornsUp: { rounds: number; share: number } | null;
+  counterUp: { rounds: number; chance: number } | null;
+  spike: { rounds: number; power: number } | null;
 }
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
@@ -395,8 +415,8 @@ export type Action =
   | { type: 'move'; id: string; player: string; path: string[] }
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
-  /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot; in a town, an ability from the trainer. */
-  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; ability?: string }
+  /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }
@@ -404,8 +424,10 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
-  /** The answer to a pick of one ability in two. */
-  | { type: 'pick'; id: string; player: string; ability: string }
+  /** The skill board: learn or raise an ability, take a path, carry or put down an ability, or reset in a town. */
+  | { type: 'skill'; id: string; player: string; op: 'learn' | 'carry'; ability: string }
+  | { type: 'skill'; id: string; player: string; op: 'path'; path: string }
+  | { type: 'skill'; id: string; player: string; op: 'reset' }
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
   | { type: 'try'; id: string; player: string }
@@ -474,10 +496,12 @@ export type GameEvent =
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
-  /** A level crossed owes a pick of one ability in two, answered on the board. */
-  | { type: 'pickOwed'; action: string; player: string; options: string[]; level: number }
-  /** One of two abilities taken at a level (the other stays for a shrine to teach). */
-  | { type: 'picked'; action: string; player: string; ability: string; rank: number }
+  /** Levels crossed or a boss beaten brought skill points. */
+  | { type: 'skillPoints'; action: string; player: string; gained: number; free: number; pathReady: boolean }
+  /** Blood Price, Reckless Swing: HP spent. */
+  | { type: 'selfHurt'; action: string; player: string; amount: number; hp: number }
+  | { type: 'pathTaken'; action: string; player: string; path: string }
+  | { type: 'skillReset'; action: string; player: string }
   /** A town's errand taken or declined. */
   | { type: 'questTaken'; action: string; player: string; quest: Quest }
   | { type: 'questDeclined'; action: string; player: string; quest: Quest }
@@ -490,8 +514,6 @@ export type GameEvent =
   | { type: 'questDone'; action: string; player: string; quest: Quest }
   /** A piece that found no room in the bag: it waits in `offer` for keep, or was sold at once for `sold` when something else was pending. */
   | { type: 'bagFull'; action: string; player: string; gear: GearItem; sold: number | null }
-  /** An ability bought from a town's trainer: learned, or a rank gained. */
-  | { type: 'trained'; action: string; player: string; ability: string; rank: number; price: number; gold: number }
   /** A locked chest with no key for it: `mini` names what carries the key. */
   | { type: 'locked'; action: string; player: string; space: string; area: string; mini: string | null }
   /** The key to an area's locked chest, from its mini-boss. */
@@ -511,9 +533,9 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'sunder' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
   /** A poison bit; `hp` is what it left. */
-  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number }
+  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean }
   /** What the enemy will do next round. */
   | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
   /** A boss's second phase began. */

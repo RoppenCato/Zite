@@ -192,7 +192,7 @@ function artWords(g: GearItem): string[] {
 }
 
 /** Wooden weapons are named by the item, one drawing for every class. */
-const woodenPiece = (g: GearItem): string | null => (g.slot === 'weapon' && g.base.startsWith('wooden ') ? g.base.replace(' ', '_') : null);
+const woodenPiece = (g: GearItem): string | null => (g.slot === 'weapon' && g.base === 'wooden stick' ? 'wooden_stick' : null);
 
 /** The art of a piece worn: its atlas and name; null when the slot has no art at all. */
 function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): Layer | null {

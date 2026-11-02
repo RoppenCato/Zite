@@ -7,7 +7,7 @@
 // layout and the pacing are mine; the backdrop's measures are Mitch, AD's (assets/meadow_fight/NOTES.md).
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -268,7 +268,7 @@ export class FightScene extends Phaser.Scene {
     this.prompt.setText(`Round ${me.fight?.round ?? 1} · your move`);
     this.setOptions([
       { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
-      { text: 'Abilities', color: 0x8e6ad9, enabled: Object.keys(me.abilities).length > 0, onTap: () => this.showAbilities() },
+      { text: 'Abilities', color: 0x8e6ad9, enabled: me.carried.length > 0, onTap: () => this.showAbilities() },
       { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
       { text: potions > 1 ? `${ITEMS[health]!.name} ×${potions}` : ITEMS[health]!.name, color: 0xc84b4b, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: health }) },
       { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
@@ -284,7 +284,10 @@ export class FightScene extends Phaser.Scene {
     const f = me.fight;
     const meterName = CLASS_DATA[me.classId].meter?.name ?? 'meter';
     const arcane = powers(me).arcane;
-    const options: Option[] = Object.entries(me.abilities).map(([id, rank]) => {
+    // What is carried into the fight: four at most (mine, 2026-11-02).
+    const known = me.carried.length ? me.carried : Object.keys(me.abilities);
+    const options: Option[] = known.map((id) => {
+      const rank = me.abilities[id] ?? 1;
       const a = ABILITIES[id];
       const mana = a ? (arcane ? Math.ceil(a.mana * arcane) : a.mana) : 0;
       const cost = a?.meterAll ? `all ${meterName}` : a?.meter ? `${a.meter} ${meterName}` : '';
@@ -321,7 +324,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     }
     this.prompt.setText('And when it strikes back?');
     this.setOptions([
-      { text: 'Block (half)', color: COLORS.log, enabled: true, onTap: () => this.act('block') },
+      { text: traitsOf(this.game_.me).shieldMana ? 'Mana Shield (half in mana)' : 'Block (half)', size: traitsOf(this.game_.me).shieldMana ? '14px' : undefined, color: COLORS.log, enabled: true, onTap: () => this.act('block') },
       { text: 'Dodge (luck)', color: COLORS.log, enabled: true, onTap: () => this.act('dodge') },
       { text: 'Brace (+mana)', color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
       { text: 'Counter (hit back)', color: COLORS.log, enabled: true, onTap: () => this.act('counter') },
@@ -476,12 +479,16 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         this.say(this.effectText(e.target, e.kind, e.rounds));
         this.refreshStatus();
         break;
+      case 'selfHurt':
+        this.flash(this.heroBody, e.amount, false);
+        this.heroBar.set(e.hp, s.maxHp);
+        break;
       case 'poisoned':
         sfx.play('fight/effect-poison-tick');
         if (e.target === 'enemy') {
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
-          this.say(`The poison bites ${this.enemyName} for ${e.damage}.`);
+          this.say(e.burn ? `${this.enemyName} burns for ${e.damage}.` : `The poison bites ${this.enemyName} for ${e.damage}.`);
         } else {
           this.flash(this.heroBody, e.damage, false);
           this.heroBar.set(e.hp, s.maxHp);
@@ -729,6 +736,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       this.intentText(e),
       e.stunned ? `stunned ${e.stunned}` : '',
       e.poison ? `poisoned ${e.poison.rounds}` : '',
+      e.burn ? `burning ${e.burn.rounds}` : '',
+      e.sunder ? `exposed ${e.sunder.rounds}` : '',
       e.weakened ? `weakened ${e.weakened.rounds}` : '',
       e.armoured ? `hardened ${e.armoured.rounds}` : '',
       e.evade ? 'fading' : '',
@@ -757,6 +766,15 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       f.trap ? 'trap set' : '',
       f.skip ? `time bent ${f.skip}` : '',
       f.poisoned ? `poisoned ${f.poisoned.rounds}` : '',
+      f.streak && traitsOf(this.game_.me).critStreak ? `crit +${Math.round(f.streak * (traitsOf(this.game_.me).critStreak ?? 0) * 100)}%` : '',
+      f.infuse ? `${f.infuse.kind === 'ice' ? 'frost' : 'storm'} ${f.infuse.rounds}` : '',
+      f.dance ? (f.dance.exposed ? 'open' : `shadow ${f.dance.rounds}`) : '',
+      f.coat ? `coated ${f.coat.hits}` : '',
+      f.regen ? `healing ${f.regen.rounds}` : '',
+      f.blockUp ? `bulwark ${f.blockUp.rounds}` : '',
+      f.thornsUp ? `retort ${f.thornsUp.rounds}` : '',
+      f.counterUp ? `reflexes ${f.counterUp.rounds}` : '',
+      f.spike ? `spikes ${f.spike.rounds}` : '',
       f.weak ? `weakened ${f.weak.rounds}` : '',
       this.game_.me.elixirs?.vigor ? 'vigor' : '',
       this.game_.me.elixirs?.arcana ? 'arcana' : '',
@@ -799,6 +817,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         case 'stunned': return `${n} is stunned for ${rounds}.`;
         case 'weakened': return `${n} is weakened for ${rounds} ${rounds === 1 ? 'round' : 'rounds'}.`;
         case 'poison': return `${n} is poisoned for ${rounds} rounds.`;
+        case 'burn': return `${n} is burning for ${rounds} rounds.`;
+        case 'sunder': return `${n} takes more damage for ${rounds} rounds.`;
         case 'armoured': return `${n} hardens: its hide is thicker for ${rounds} rounds.`;
         case 'evade': return `${n} fades: your next hit will miss.`;
         case 'mark': return `${n} is marked: your next ${rounds} hits land harder.`;
@@ -813,7 +833,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
       case 'companion': return `Your owl takes wing: it strikes at the end of every round for ${rounds} rounds.`;
-      case 'windup': return `A meteor is called: it lands in ${rounds} rounds, whatever you do.`;
+      case 'windup': return `A star is called: it lands in ${rounds} rounds, whatever you do.`;
       case 'poison': return `You are poisoned for ${rounds} rounds.`;
       case 'weakened': return `You are weakened for ${rounds} rounds: your hits land softer.`;
       default: return '';
