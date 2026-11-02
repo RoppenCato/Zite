@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -988,7 +988,7 @@ export class BoardScene extends Phaser.Scene {
     const zoomedOut = cam.zoom < CHUNK_ZOOM;
     const standing = this.game_.state.board.spaces[this.game_.me.space]?.area;
     const inDungeon = !!this.dungeonHere();
-    for (const [areaId, words] of this.closedLabels) words.setVisible(zoomedOut && !inDungeon && areaId !== standing);
+    for (const [areaId, words] of this.closedLabels) words.setVisible(zoomedOut && !inDungeon && areaId !== standing && !(this.game_.state.board.areas[areaId]?.city && !this.game_.me.opened.includes(areaId)));
     const openLand = [...open].flatMap((id) => (PAINTED[id] ? [PAINTED[id]!] : []));
     this.fitArena();
     for (const p of allProps) {
@@ -1322,7 +1322,7 @@ export class BoardScene extends Phaser.Scene {
   /** On the world map, a land you are not in says its name and its level (Robin, 2026-11-02), and what opens it while it is shut. */
   private landWords(area: Area): string {
     const board = this.game_.state.board;
-    const gate = Object.values(board.spaces).find((s) => s.opens === area.id);
+    const gate = Object.values(board.spaces).find((s) => s.opens === (area.openWith ?? area.id));
     const keeper = gate?.boss && !this.game_.me.opened.includes(area.id) ? (creature(gate.boss, board.bestiary)?.name ?? '') : '';
     return `${area.name}${area.city ? '' : `\nLevel ${area.levels[0]} to ${area.levels[1]}`}${keeper ? `\nBeat ${keeper}` : ''}`;
   }
@@ -1353,13 +1353,13 @@ export class BoardScene extends Phaser.Scene {
     words.setOrigin(hang, words.originY);
     this.closedLabels.set(area.id, words);
     // What waits there: the boss's silhouette, and a "?" at each ground (Mitch, AD).
-    if (!this.textures.exists(FOG_PIECES) || !gate?.boss || !(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id)) return;
+    if (!this.textures.exists(FOG_PIECES) || !(gate?.boss || area.openWith) || (!area.openWith && !(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id))) return;
     const marks: Phaser.GameObjects.Image[] = [];
-    const boss = Object.values(board.spaces).find((s) => s.area === area.id && s.kind === 'boss');
+    const boss = Object.values(board.spaces).find((s) => s.area === area.id && sealAt(board, s.id));
     const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : boss?.boss === 'mother-murk' ? 'silhouette_murk' : boss?.boss === 'frostbeard' ? 'silhouette_frostbeard' : null;
     const eastShape = shape === 'silhouette_murk' || shape === 'silhouette_frostbeard';
     if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' || eastShape ? 40 : 0), eastShape ? FOG_EAST_PIECES : FOG_PIECES, shape));
-    for (const g of groundsOf(board, area.id)) {
+    for (const g of area.openWith ? [] : groundsOf(board, area.id)) {
       const hub = board.spaces[g.hub];
       if (hub) marks.push(this.add.image(hub.x, hub.y, FOG_PIECES, 'mark_unknown'));
     }
