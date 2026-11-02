@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "queen_bumble2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 278,
+    "h": 355
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 278,
+    "h": 355
+   },
+   "sourceSize": {
+    "w": 278,
+    "h": 355
+   },
+   "pivot": {
+    "x": 0.7446,
+    "y": 0.9887
+   }
+  },
+  "queen_bumble2/attack1/0004": {
+   "frame": {
+    "x": 282,
+    "y": 2,
+    "w": 295,
+    "h": 351
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 295,
+    "h": 351
+   },
+   "sourceSize": {
+    "w": 295,
+    "h": 351
+   },
+   "pivot": {
+    "x": 0.661,
+    "y": 1.0513
+   }
+  },
+  "queen_bumble2/attack1/0006": {
+   "frame": {
+    "x": 579,
+    "y": 2,
+    "w": 322,
+    "h": 335
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 322,
+    "h": 335
+   },
+   "sourceSize": {
+    "w": 322,
+    "h": 335
+   },
+   "pivot": {
+    "x": 0.6491,
+    "y": 1.009
+   }
+  },
+  "queen_bumble2/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 359,
+    "w": 310,
+    "h": 316
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 310,
+    "h": 316
+   },
+   "sourceSize": {
+    "w": 310,
+    "h": 316
+   },
+   "pivot": {
+    "x": 0.5548,
+    "y": 1.0601
+   }
+  },
+  "queen_bumble2/attack1/0008": {
+   "frame": {
+    "x": 314,
+    "y": 359,
+    "w": 307,
+    "h": 303
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 307,
+    "h": 303
+   },
+   "sourceSize": {
+    "w": 307,
+    "h": 303
+   },
+   "pivot": {
+    "x": 0.6221,
+    "y": 1.1221
+   }
+  },
+  "queen_bumble2/stand/0002": {
+   "frame": {
+    "x": 623,
+    "y": 359,
+    "w": 322,
+    "h": 298
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 322,
+    "h": 298
+   },
+   "sourceSize": {
+    "w": 322,
+    "h": 298
+   },
+   "pivot": {
+    "x": 0.6708,
+    "y": 1.1376
+   }
+  },
+  "queen_bumble2/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 677,
+    "w": 335,
+    "h": 296
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 335,
+    "h": 296
+   },
+   "sourceSize": {
+    "w": 335,
+    "h": 296
+   },
+   "pivot": {
+    "x": 0.6149,
+    "y": 1.1149
+   }
+  },
+  "queen_bumble2/attack1/0003": {
+   "frame": {
+    "x": 339,
+    "y": 677,
+    "w": 341,
+    "h": 286
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 341,
+    "h": 286
+   },
+   "sourceSize": {
+    "w": 341,
+    "h": 286
+   },
+   "pivot": {
+    "x": 0.6716,
+    "y": 1.1399
+   }
+  },
+  "queen_bumble2/stand/0001": {
+   "frame": {
+    "x": 682,
+    "y": 677,
+    "w": 260,
+    "h": 282
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 260,
+    "h": 282
+   },
+   "sourceSize": {
+    "w": 260,
+    "h": 282
+   },
+   "pivot": {
+    "x": 0.6692,
+    "y": 1.1312
+   }
+  },
+  "queen_bumble2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 975,
+    "w": 290,
+    "h": 271
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 290,
+    "h": 271
+   },
+   "sourceSize": {
+    "w": 290,
+    "h": 271
+   },
+   "pivot": {
+    "x": 0.6552,
+    "y": 1.1107
+   }
+  },
+  "queen_bumble2/attack1/0002": {
+   "frame": {
+    "x": 294,
+    "y": 975,
+    "w": 379,
+    "h": 259
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 379,
+    "h": 259
+   },
+   "sourceSize": {
+    "w": 379,
+    "h": 259
+   },
+   "pivot": {
+    "x": 0.5963,
+    "y": 1.1351
+   }
+  }
+ },
+ "meta": {
+  "image": "queen_bumble2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "queen_bumble2/stand/0001",
+     "w": 260,
+     "h": 282,
+     "origin": {
+      "x": 174,
+      "y": 319
+     },
+     "delay": 120,
+     "lt": {
+      "x": -174,
+      "y": -319
+     },
+     "rb": {
+      "x": 86,
+      "y": -37
+     },
+     "head": {
+      "x": 0,
+      "y": -319
+     }
+    },
+    {
+     "name": "queen_bumble2/stand/0002",
+     "w": 322,
+     "h": 298,
+     "origin": {
+      "x": 216,
+      "y": 339
+     },
+     "delay": 120,
+     "lt": {
+      "x": -216,
+      "y": -339
+     },
+     "rb": {
+      "x": 106,
+      "y": -41
+     },
+     "head": {
+      "x": 0,
+      "y": -339
+     }
+    },
+    {
+     "name": "queen_bumble2/stand/0003",
+     "w": 335,
+     "h": 296,
+     "origin": {
+      "x": 206,
+      "y": 330
+     },
+     "delay": 120,
+     "lt": {
+      "x": -206,
+      "y": -330
+     },
+     "rb": {
+      "x": 129,
+      "y": -34
+     },
+     "head": {
+      "x": 0,
+      "y": -330
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "queen_bumble2/attack1/0001",
+     "w": 290,
+     "h": 271,
+     "origin": {
+      "x": 190,
+      "y": 301
+     },
+     "delay": 90,
+     "lt": {
+      "x": -190,
+      "y": -301
+     },
+     "rb": {
+      "x": 100,
+      "y": -30
+     },
+     "head": {
+      "x": 0,
+      "y": -301
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0002",
+     "w": 379,
+     "h": 259,
+     "origin": {
+      "x": 226,
+      "y": 294
+     },
+     "delay": 110,
+     "lt": {
+      "x": -226,
+      "y": -294
+     },
+     "rb": {
+      "x": 153,
+      "y": -35
+     },
+     "head": {
+      "x": 0,
+      "y": -294
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0003",
+     "w": 341,
+     "h": 286,
+     "origin": {
+      "x": 229,
+      "y": 326
+     },
+     "delay": 110,
+     "lt": {
+      "x": -229,
+      "y": -326
+     },
+     "rb": {
+      "x": 112,
+      "y": -40
+     },
+     "head": {
+      "x": 0,
+      "y": -326
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0004",
+     "w": 295,
+     "h": 351,
+     "origin": {
+      "x": 195,
+      "y": 369
+     },
+     "delay": 60,
+     "lt": {
+      "x": -195,
+      "y": -369
+     },
+     "rb": {
+      "x": 100,
+      "y": -18
+     },
+     "head": {
+      "x": 0,
+      "y": -369
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0005",
+     "w": 278,
+     "h": 355,
+     "origin": {
+      "x": 207,
+      "y": 351
+     },
+     "delay": 190,
+     "lt": {
+      "x": -207,
+      "y": -351
+     },
+     "rb": {
+      "x": 71,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -351
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0006",
+     "w": 322,
+     "h": 335,
+     "origin": {
+      "x": 209,
+      "y": 338
+     },
+     "delay": 80,
+     "lt": {
+      "x": -209,
+      "y": -338
+     },
+     "rb": {
+      "x": 113,
+      "y": -3
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0007",
+     "w": 310,
+     "h": 316,
+     "origin": {
+      "x": 172,
+      "y": 335
+     },
+     "delay": 80,
+     "lt": {
+      "x": -172,
+      "y": -335
+     },
+     "rb": {
+      "x": 138,
+      "y": -19
+     },
+     "head": {
+      "x": 0,
+      "y": -335
+     }
+    },
+    {
+     "name": "queen_bumble2/attack1/0008",
+     "w": 307,
+     "h": 303,
+     "origin": {
+      "x": 191,
+      "y": 340
+     },
+     "delay": 80,
+     "lt": {
+      "x": -191,
+      "y": -340
+     },
+     "rb": {
+      "x": 116,
+      "y": -37
+     },
+     "head": {
+      "x": 0,
+      "y": -340
+     }
+    }
+   ]
+  }
+ }
+}

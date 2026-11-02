@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "apple_mimic/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 199,
+    "h": 262
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 262
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 262
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9962
+   }
+  },
+  "apple_mimic/attack1/0006": {
+   "frame": {
+    "x": 203,
+    "y": 2,
+    "w": 192,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.5573,
+    "y": 1.0038
+   }
+  },
+  "apple_mimic/stand/0005": {
+   "frame": {
+    "x": 397,
+    "y": 2,
+    "w": 209,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.5024,
+    "y": 0.9729
+   }
+  },
+  "apple_mimic/stand/0006": {
+   "frame": {
+    "x": 608,
+    "y": 2,
+    "w": 209,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.5024,
+    "y": 0.9729
+   }
+  },
+  "apple_mimic/attack1/0011": {
+   "frame": {
+    "x": 2,
+    "y": 266,
+    "w": 209,
+    "h": 257
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 257
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 257
+   },
+   "pivot": {
+    "x": 0.5024,
+    "y": 0.9728
+   }
+  },
+  "apple_mimic/stand/0001": {
+   "frame": {
+    "x": 213,
+    "y": 266,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9724
+   }
+  },
+  "apple_mimic/stand/0004": {
+   "frame": {
+    "x": 428,
+    "y": 266,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9724
+   }
+  },
+  "apple_mimic/move/0001": {
+   "frame": {
+    "x": 643,
+    "y": 266,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9961
+   }
+  },
+  "apple_mimic/move/0004": {
+   "frame": {
+    "x": 2,
+    "y": 525,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9961
+   }
+  },
+  "apple_mimic/attack1/0012": {
+   "frame": {
+    "x": 217,
+    "y": 525,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9724
+   }
+  },
+  "apple_mimic/die1/0001": {
+   "frame": {
+    "x": 432,
+    "y": 525,
+    "w": 213,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9724
+   }
+  },
+  "apple_mimic/attack1/0007": {
+   "frame": {
+    "x": 647,
+    "y": 525,
+    "w": 196,
+    "h": 252
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 252
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 252
+   },
+   "pivot": {
+    "x": 0.5612,
+    "y": 0.9841
+   }
+  },
+  "apple_mimic/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 781,
+    "w": 217,
+    "h": 249
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 217,
+    "h": 249
+   },
+   "sourceSize": {
+    "w": 217,
+    "h": 249
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9719
+   }
+  },
+  "apple_mimic/stand/0003": {
+   "frame": {
+    "x": 221,
+    "y": 781,
+    "w": 217,
+    "h": 249
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 217,
+    "h": 249
+   },
+   "sourceSize": {
+    "w": 217,
+    "h": 249
+   },
+   "pivot": {
+    "x": 0.5023,
+    "y": 0.9719
+   }
+  },
+  "apple_mimic/move/0005": {
+   "frame": {
+    "x": 440,
+    "y": 781,
+    "w": 218,
+    "h": 247
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 247
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 247
+   },
+   "pivot": {
+    "x": 0.5183,
+    "y": 0.9919
+   }
+  },
+  "apple_mimic/move/0006": {
+   "frame": {
+    "x": 660,
+    "y": 781,
+    "w": 218,
+    "h": 247
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 247
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 247
+   },
+   "pivot": {
+    "x": 0.5183,
+    "y": 0.9919
+   }
+  },
+  "apple_mimic/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1032,
+    "w": 219,
+    "h": 245
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 219,
+    "h": 245
+   },
+   "sourceSize": {
+    "w": 219,
+    "h": 245
+   },
+   "pivot": {
+    "x": 0.4886,
+    "y": 0.9878
+   }
+  },
+  "apple_mimic/move/0003": {
+   "frame": {
+    "x": 223,
+    "y": 1032,
+    "w": 219,
+    "h": 245
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 219,
+    "h": 245
+   },
+   "sourceSize": {
+    "w": 219,
+    "h": 245
+   },
+   "pivot": {
+    "x": 0.4886,
+    "y": 0.9878
+   }
+  },
+  "apple_mimic/attack1/0001": {
+   "frame": {
+    "x": 444,
+    "y": 1032,
+    "w": 221,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 221,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 221,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.4977,
+    "y": 0.9672
+   }
+  },
+  "apple_mimic/attack1/0008": {
+   "frame": {
+    "x": 667,
+    "y": 1032,
+    "w": 207,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.5362,
+    "y": 0.9754
+   }
+  },
+  "apple_mimic/attack1/0010": {
+   "frame": {
+    "x": 2,
+    "y": 1279,
+    "w": 224,
+    "h": 237
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 237
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 237
+   },
+   "pivot": {
+    "x": 0.5045,
+    "y": 0.9705
+   }
+  },
+  "apple_mimic/die1/0002": {
+   "frame": {
+    "x": 228,
+    "y": 1279,
+    "w": 227,
+    "h": 232
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 227,
+    "h": 232
+   },
+   "sourceSize": {
+    "w": 227,
+    "h": 232
+   },
+   "pivot": {
+    "x": 0.4758,
+    "y": 0.9526
+   }
+  },
+  "apple_mimic/attack1/0002": {
+   "frame": {
+    "x": 457,
+    "y": 1279,
+    "w": 234,
+    "h": 229
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 234,
+    "h": 229
+   },
+   "sourceSize": {
+    "w": 234,
+    "h": 229
+   },
+   "pivot": {
+    "x": 0.4872,
+    "y": 0.9607
+   }
+  },
+  "apple_mimic/attack1/0009": {
+   "frame": {
+    "x": 693,
+    "y": 1279,
+    "w": 232,
+    "h": 225
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 232,
+    "h": 225
+   },
+   "sourceSize": {
+    "w": 232,
+    "h": 225
+   },
+   "pivot": {
+    "x": 0.5172,
+    "y": 0.9644
+   }
+  },
+  "apple_mimic/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1518,
+    "w": 253,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.4387,
+    "y": 0.9095
+   }
+  },
+  "apple_mimic/attack1/0003": {
+   "frame": {
+    "x": 257,
+    "y": 1518,
+    "w": 243,
+    "h": 218
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 243,
+    "h": 218
+   },
+   "sourceSize": {
+    "w": 243,
+    "h": 218
+   },
+   "pivot": {
+    "x": 0.4815,
+    "y": 0.9495
+   }
+  },
+  "apple_mimic/attack1/0004": {
+   "frame": {
+    "x": 502,
+    "y": 1518,
+    "w": 246,
+    "h": 212
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 246,
+    "h": 212
+   },
+   "sourceSize": {
+    "w": 246,
+    "h": 212
+   },
+   "pivot": {
+    "x": 0.4797,
+    "y": 0.9481
+   }
+  },
+  "apple_mimic/die1/0003": {
+   "frame": {
+    "x": 750,
+    "y": 1518,
+    "w": 240,
+    "h": 209
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 209
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 209
+   },
+   "pivot": {
+    "x": 0.4542,
+    "y": 0.9234
+   }
+  },
+  "apple_mimic/die1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1741,
+    "w": 251,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 251,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 251,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.4701,
+    "y": 0.9063
+   }
+  },
+  "apple_mimic/die1/0005": {
+   "frame": {
+    "x": 255,
+    "y": 1741,
+    "w": 262,
+    "h": 118
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 262,
+    "h": 118
+   },
+   "sourceSize": {
+    "w": 262,
+    "h": 118
+   },
+   "pivot": {
+    "x": 0.4809,
+    "y": 0.8729
+   }
+  },
+  "apple_mimic/die1/0006": {
+   "frame": {
+    "x": 519,
+    "y": 1741,
+    "w": 273,
+    "h": 86
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 86
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 86
+   },
+   "pivot": {
+    "x": 0.4908,
+    "y": 0.8488
+   }
+  },
+  "apple_mimic/die1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 1903,
+    "w": 273,
+    "h": 71
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 71
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 71
+   },
+   "pivot": {
+    "x": 0.4945,
+    "y": 0.8028
+   }
+  },
+  "apple_mimic/die1/0008": {
+   "frame": {
+    "x": 277,
+    "y": 1903,
+    "w": 273,
+    "h": 58
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 58
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 58
+   },
+   "pivot": {
+    "x": 0.4982,
+    "y": 0.7241
+   }
+  }
+ },
+ "meta": {
+  "image": "apple_mimic.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 130,
+   "loop": true,
+   "frames": [
+    {
+     "name": "apple_mimic/stand/0001",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 247
+     },
+     "delay": 130,
+     "lt": {
+      "x": -107,
+      "y": -247
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -247
+     }
+    },
+    {
+     "name": "apple_mimic/stand/0002",
+     "w": 217,
+     "h": 249,
+     "origin": {
+      "x": 109,
+      "y": 242
+     },
+     "delay": 130,
+     "lt": {
+      "x": -109,
+      "y": -242
+     },
+     "rb": {
+      "x": 108,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "apple_mimic/stand/0003",
+     "w": 217,
+     "h": 249,
+     "origin": {
+      "x": 109,
+      "y": 242
+     },
+     "delay": 130,
+     "lt": {
+      "x": -109,
+      "y": -242
+     },
+     "rb": {
+      "x": 108,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "apple_mimic/stand/0004",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 247
+     },
+     "delay": 130,
+     "lt": {
+      "x": -107,
+      "y": -247
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -247
+     }
+    },
+    {
+     "name": "apple_mimic/stand/0005",
+     "w": 209,
+     "h": 258,
+     "origin": {
+      "x": 105,
+      "y": 251
+     },
+     "delay": 130,
+     "lt": {
+      "x": -105,
+      "y": -251
+     },
+     "rb": {
+      "x": 104,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -251
+     }
+    },
+    {
+     "name": "apple_mimic/stand/0006",
+     "w": 209,
+     "h": 258,
+     "origin": {
+      "x": 105,
+      "y": 251
+     },
+     "delay": 130,
+     "lt": {
+      "x": -105,
+      "y": -251
+     },
+     "rb": {
+      "x": 104,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -251
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "apple_mimic/move/0001",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -107,
+      "y": -253
+     },
+     "rb": {
+      "x": 106,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "apple_mimic/move/0002",
+     "w": 219,
+     "h": 245,
+     "origin": {
+      "x": 107,
+      "y": 242
+     },
+     "delay": 100,
+     "lt": {
+      "x": -107,
+      "y": -242
+     },
+     "rb": {
+      "x": 112,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "apple_mimic/move/0003",
+     "w": 219,
+     "h": 245,
+     "origin": {
+      "x": 107,
+      "y": 242
+     },
+     "delay": 100,
+     "lt": {
+      "x": -107,
+      "y": -242
+     },
+     "rb": {
+      "x": 112,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "apple_mimic/move/0004",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -107,
+      "y": -253
+     },
+     "rb": {
+      "x": 106,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "apple_mimic/move/0005",
+     "w": 218,
+     "h": 247,
+     "origin": {
+      "x": 113,
+      "y": 245
+     },
+     "delay": 100,
+     "lt": {
+      "x": -113,
+      "y": -245
+     },
+     "rb": {
+      "x": 105,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -245
+     }
+    },
+    {
+     "name": "apple_mimic/move/0006",
+     "w": 218,
+     "h": 247,
+     "origin": {
+      "x": 113,
+      "y": 245
+     },
+     "delay": 100,
+     "lt": {
+      "x": -113,
+      "y": -245
+     },
+     "rb": {
+      "x": 105,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -245
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "apple_mimic/attack1/0001",
+     "w": 221,
+     "h": 244,
+     "origin": {
+      "x": 110,
+      "y": 236
+     },
+     "delay": 67,
+     "lt": {
+      "x": -110,
+      "y": -236
+     },
+     "rb": {
+      "x": 111,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -236
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0002",
+     "w": 234,
+     "h": 229,
+     "origin": {
+      "x": 114,
+      "y": 220
+     },
+     "delay": 67,
+     "lt": {
+      "x": -114,
+      "y": -220
+     },
+     "rb": {
+      "x": 120,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -220
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0003",
+     "w": 243,
+     "h": 218,
+     "origin": {
+      "x": 117,
+      "y": 207
+     },
+     "delay": 67,
+     "lt": {
+      "x": -117,
+      "y": -207
+     },
+     "rb": {
+      "x": 126,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -207
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0004",
+     "w": 246,
+     "h": 212,
+     "origin": {
+      "x": 118,
+      "y": 201
+     },
+     "delay": 100,
+     "lt": {
+      "x": -118,
+      "y": -201
+     },
+     "rb": {
+      "x": 128,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -201
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0005",
+     "w": 199,
+     "h": 262,
+     "origin": {
+      "x": 106,
+      "y": 261
+     },
+     "delay": 67,
+     "lt": {
+      "x": -106,
+      "y": -261
+     },
+     "rb": {
+      "x": 93,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -261
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0006",
+     "w": 192,
+     "h": 260,
+     "origin": {
+      "x": 107,
+      "y": 261
+     },
+     "delay": 50,
+     "lt": {
+      "x": -107,
+      "y": -261
+     },
+     "rb": {
+      "x": 85,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -261
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0007",
+     "w": 196,
+     "h": 252,
+     "origin": {
+      "x": 110,
+      "y": 248
+     },
+     "delay": 134,
+     "lt": {
+      "x": -110,
+      "y": -248
+     },
+     "rb": {
+      "x": 86,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -248
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0008",
+     "w": 207,
+     "h": 244,
+     "origin": {
+      "x": 111,
+      "y": 238
+     },
+     "delay": 67,
+     "lt": {
+      "x": -111,
+      "y": -238
+     },
+     "rb": {
+      "x": 96,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -238
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0009",
+     "w": 232,
+     "h": 225,
+     "origin": {
+      "x": 120,
+      "y": 217
+     },
+     "delay": 67,
+     "lt": {
+      "x": -120,
+      "y": -217
+     },
+     "rb": {
+      "x": 112,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -217
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0010",
+     "w": 224,
+     "h": 237,
+     "origin": {
+      "x": 113,
+      "y": 230
+     },
+     "delay": 67,
+     "lt": {
+      "x": -113,
+      "y": -230
+     },
+     "rb": {
+      "x": 111,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -230
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0011",
+     "w": 209,
+     "h": 257,
+     "origin": {
+      "x": 105,
+      "y": 250
+     },
+     "delay": 67,
+     "lt": {
+      "x": -105,
+      "y": -250
+     },
+     "rb": {
+      "x": 104,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -250
+     }
+    },
+    {
+     "name": "apple_mimic/attack1/0012",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 247
+     },
+     "delay": 67,
+     "lt": {
+      "x": -107,
+      "y": -247
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -247
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "apple_mimic/hit1/0001",
+     "w": 253,
+     "h": 221,
+     "origin": {
+      "x": 111,
+      "y": 201
+     },
+     "delay": 600,
+     "lt": {
+      "x": -111,
+      "y": -201
+     },
+     "rb": {
+      "x": 142,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -201
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "apple_mimic/die1/0001",
+     "w": 213,
+     "h": 254,
+     "origin": {
+      "x": 107,
+      "y": 247
+     },
+     "delay": 83,
+     "lt": {
+      "x": -107,
+      "y": -247
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -247
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "apple_mimic/die1/0002",
+     "w": 227,
+     "h": 232,
+     "origin": {
+      "x": 108,
+      "y": 221
+     },
+     "delay": 83,
+     "lt": {
+      "x": -108,
+      "y": -221
+     },
+     "rb": {
+      "x": 119,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "apple_mimic/die1/0003",
+     "w": 240,
+     "h": 209,
+     "origin": {
+      "x": 109,
+      "y": 193
+     },
+     "delay": 83,
+     "lt": {
+      "x": -109,
+      "y": -193
+     },
+     "rb": {
+      "x": 131,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -193
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "apple_mimic/die1/0004",
+     "w": 251,
+     "h": 160,
+     "origin": {
+      "x": 118,
+      "y": 145
+     },
+     "delay": 83,
+     "lt": {
+      "x": -118,
+      "y": -145
+     },
+     "rb": {
+      "x": 133,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -145
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "apple_mimic/die1/0005",
+     "w": 262,
+     "h": 118,
+     "origin": {
+      "x": 126,
+      "y": 103
+     },
+     "delay": 83,
+     "lt": {
+      "x": -126,
+      "y": -103
+     },
+     "rb": {
+      "x": 136,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -103
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "apple_mimic/die1/0006",
+     "w": 273,
+     "h": 86,
+     "origin": {
+      "x": 134,
+      "y": 73
+     },
+     "delay": 83,
+     "lt": {
+      "x": -134,
+      "y": -73
+     },
+     "rb": {
+      "x": 139,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -73
+     },
+     "a0": 255,
+     "a1": 170
+    },
+    {
+     "name": "apple_mimic/die1/0007",
+     "w": 273,
+     "h": 71,
+     "origin": {
+      "x": 135,
+      "y": 57
+     },
+     "delay": 83,
+     "lt": {
+      "x": -135,
+      "y": -57
+     },
+     "rb": {
+      "x": 138,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -57
+     },
+     "a0": 170,
+     "a1": 80
+    },
+    {
+     "name": "apple_mimic/die1/0008",
+     "w": 273,
+     "h": 58,
+     "origin": {
+      "x": 136,
+      "y": 42
+     },
+     "delay": 83,
+     "lt": {
+      "x": -136,
+      "y": -42
+     },
+     "rb": {
+      "x": 137,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -42
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

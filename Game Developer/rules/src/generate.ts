@@ -311,12 +311,23 @@ export function generateArea(seed: string, n: number): GrownArea {
   return { area, entry: `${tag}-${entry.id}`, bestiary };
 }
 
+/** How far apart the spots stand on the long road along the north shore (mine). */
+const EXIT_STEP = 190;
+
 /**
  * The passage from a boss hub into the next area's entry hub: a road of wilds spots a step apart, in the next area, bowed
  * as little as it can be while every spot keeps clear of every other spot on the board (a straight line would cut through
  * the roads round the entry now and then). No luck in the search is decided here, so every board lays the same passage.
  */
 function layPassage(board: Board, from: Space, to: Space, areaId: string): void {
+  // Out of the painted world, along the shore Mitch, AD left for it.
+  const exit = (WORLD_DATA as unknown as { exit?: { hub: string; path: { x: number; y: number }[] } }).exit;
+  if (exit?.hub === from.id) {
+    const path = [from, ...exit.path, to];
+    const length = path.slice(1).reduce((sum, p, i) => sum + Math.hypot(p.x - path[i]!.x, p.y - path[i]!.y), 0);
+    addRoad(board, { from: from.id, to: to.id, kinds: 'n'.repeat(Math.ceil(length / EXIT_STEP)), bow: 0, area: areaId, via: exit.path }, areaId, 'grown');
+    return;
+  }
   const centre = areaCentre(board, areaId);
   const others = Object.values(board.spaces);
   let best: { bow: number; spots: number; clearance: number } | null = null;

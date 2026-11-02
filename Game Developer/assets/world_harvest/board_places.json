@@ -1,0 +1,327 @@
+{
+ "frames": {
+  "shore_barred": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 342,
+    "h": 295
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 342,
+    "h": 295
+   },
+   "sourceSize": {
+    "w": 342,
+    "h": 295
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.9593
+   }
+  },
+  "shore_open": {
+   "frame": {
+    "x": 348,
+    "y": 3,
+    "w": 342,
+    "h": 295
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 342,
+    "h": 295
+   },
+   "sourceSize": {
+    "w": 342,
+    "h": 295
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.9593
+   }
+  },
+  "mob_scarecrow": {
+   "frame": {
+    "x": 693,
+    "y": 3,
+    "w": 94,
+    "h": 197
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 94,
+    "h": 197
+   },
+   "sourceSize": {
+    "w": 94,
+    "h": 197
+   },
+   "pivot": {
+    "x": 0.5638,
+    "y": 0.9289
+   }
+  },
+  "coach_stop": {
+   "frame": {
+    "x": 3,
+    "y": 301,
+    "w": 330,
+    "h": 158
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 330,
+    "h": 158
+   },
+   "sourceSize": {
+    "w": 330,
+    "h": 158
+   },
+   "pivot": {
+    "x": 0.5182,
+    "y": 0.981
+   }
+  },
+  "arch_pools": {
+   "frame": {
+    "x": 336,
+    "y": 301,
+    "w": 174,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9925
+   }
+  },
+  "arch_corn": {
+   "frame": {
+    "x": 513,
+    "y": 301,
+    "w": 174,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9925
+   }
+  },
+  "arch_flowers": {
+   "frame": {
+    "x": 690,
+    "y": 301,
+    "w": 174,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9925
+   }
+  },
+  "arch_apples": {
+   "frame": {
+    "x": 3,
+    "y": 462,
+    "w": 174,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9925
+   }
+  },
+  "arch_straw": {
+   "frame": {
+    "x": 180,
+    "y": 462,
+    "w": 174,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9925
+   }
+  },
+  "mob_honey_blob": {
+   "frame": {
+    "x": 357,
+    "y": 462,
+    "w": 98,
+    "h": 130
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 98,
+    "h": 130
+   },
+   "sourceSize": {
+    "w": 98,
+    "h": 130
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9077
+   }
+  },
+  "mob_corn_goblin": {
+   "frame": {
+    "x": 458,
+    "y": 462,
+    "w": 83,
+    "h": 124
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 83,
+    "h": 124
+   },
+   "sourceSize": {
+    "w": 83,
+    "h": 124
+   },
+   "pivot": {
+    "x": 0.5542,
+    "y": 0.9839
+   }
+  },
+  "mob_apple_mimic": {
+   "frame": {
+    "x": 544,
+    "y": 462,
+    "w": 91,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 91,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 91,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.5055,
+    "y": 0.9633
+   }
+  },
+  "mob_buzzbug": {
+   "frame": {
+    "x": 638,
+    "y": 462,
+    "w": 93,
+    "h": 80
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 93,
+    "h": 80
+   },
+   "sourceSize": {
+    "w": 93,
+    "h": 80
+   },
+   "pivot": {
+    "x": 0.5914,
+    "y": 1.3875
+   }
+  }
+ },
+ "meta": {
+  "image": "board_places.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/harvest_build.js",
+  "filePx": 2
+ }
+}

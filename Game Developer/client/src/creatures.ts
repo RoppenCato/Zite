@@ -45,6 +45,27 @@ import grumblebarkPng from '../../assets/forest/grumblebark/grumblebark.png';
 import grumblebark2Data from '../../assets/forest/grumblebark2/grumblebark2.json';
 import grumblebark2Json from '../../assets/forest/grumblebark2/grumblebark2.json?url';
 import grumblebark2Png from '../../assets/forest/grumblebark2/grumblebark2.png';
+import honeyBlobData from '../../assets/harvest/honey_blob/honey_blob.json';
+import honeyBlobJson from '../../assets/harvest/honey_blob/honey_blob.json?url';
+import honeyBlobPng from '../../assets/harvest/honey_blob/honey_blob.png';
+import cornGoblinData from '../../assets/harvest/corn_goblin/corn_goblin.json';
+import cornGoblinJson from '../../assets/harvest/corn_goblin/corn_goblin.json?url';
+import cornGoblinPng from '../../assets/harvest/corn_goblin/corn_goblin.png';
+import buzzbugData from '../../assets/harvest/buzzbug/buzzbug.json';
+import buzzbugJson from '../../assets/harvest/buzzbug/buzzbug.json?url';
+import buzzbugPng from '../../assets/harvest/buzzbug/buzzbug.png';
+import appleMimicData from '../../assets/harvest/apple_mimic/apple_mimic.json';
+import appleMimicJson from '../../assets/harvest/apple_mimic/apple_mimic.json?url';
+import appleMimicPng from '../../assets/harvest/apple_mimic/apple_mimic.png';
+import scarecrowData from '../../assets/harvest/scarecrow/scarecrow.json';
+import scarecrowJson from '../../assets/harvest/scarecrow/scarecrow.json?url';
+import scarecrowPng from '../../assets/harvest/scarecrow/scarecrow.png';
+import queenBumbleData from '../../assets/harvest/queen_bumble/queen_bumble.json';
+import queenBumbleJson from '../../assets/harvest/queen_bumble/queen_bumble.json?url';
+import queenBumblePng from '../../assets/harvest/queen_bumble/queen_bumble.png';
+import queenBumble2Data from '../../assets/harvest/queen_bumble2/queen_bumble2.json';
+import queenBumble2Json from '../../assets/harvest/queen_bumble2/queen_bumble2.json?url';
+import queenBumble2Png from '../../assets/harvest/queen_bumble2/queen_bumble2.png';
 import { clipMs, ensureClips, msBefore, type ActionData } from './clips.ts';
 
 export type FigureAction = 'stand' | 'move' | 'attack1' | 'hit1' | 'die1' | 'defend';
@@ -101,6 +122,23 @@ const CREATURES: Record<string, CreatureFiles> = {
     scale: 0.92,
     blowFrame: 5,
     phase2: { key: 'grumblebark2', png: grumblebark2Png, json: grumblebark2Json, actions: actionsOf(grumblebark2Data) },
+  },
+  // Honeyhill Fields (Mitch, AD, 2026-11-02): the rules' ids are the first names.
+  'ice-wolf': { key: 'honey_blob', png: honeyBlobPng, json: honeyBlobJson, actions: actionsOf(honeyBlobData), scale: 0.6154, blowFrame: 7 },
+  'yeti': { key: 'corn_goblin', png: cornGoblinPng, json: cornGoblinJson, actions: actionsOf(cornGoblinData), scale: 0.5, blowFrame: 4 },
+  'frost-wisp': { key: 'buzzbug', png: buzzbugPng, json: buzzbugJson, actions: actionsOf(buzzbugData), scale: 0.5, blowFrame: 7, hovers: true },
+  'ice-golem': { key: 'apple_mimic', png: appleMimicPng, json: appleMimicJson, actions: actionsOf(appleMimicData), scale: 0.5, blowFrame: 7 },
+  'yeti-elder': { key: 'scarecrow', png: scarecrowPng, json: scarecrowJson, actions: actionsOf(scarecrowData), scale: 0.7273, blowFrame: 4 },
+  'frost-matriarch': {
+    key: 'queen_bumble',
+    png: queenBumblePng,
+    json: queenBumbleJson,
+    actions: actionsOf(queenBumbleData),
+    // Under the file's 1.3333, so she stays clear of the title and the column's edge, and sharper on a phone (mine).
+    scale: 1.05,
+    blowFrame: 5,
+    hovers: true,
+    phase2: { key: 'queen_bumble2', png: queenBumble2Png, json: queenBumble2Json, actions: actionsOf(queenBumble2Data) },
   },
 };
 

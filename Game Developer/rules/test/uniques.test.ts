@@ -249,7 +249,7 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(19);
+    expect(s!.version).toBe(20);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).picks).toEqual([]);
     expect(me(s!).keys).toEqual({});

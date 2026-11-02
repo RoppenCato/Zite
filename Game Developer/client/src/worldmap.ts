@@ -4,11 +4,12 @@
 
 import Phaser from 'phaser';
 import forestChunks from '../../assets/world_forest/chunks.json';
+import harvestChunks from '../../assets/world_harvest/chunks.json';
 import meadowChunks from '../../assets/world_meadows/chunks.json';
 import overviewData from '../../assets/world_meadows/overview.json';
 import overviewJpg from '../../assets/world_meadows/overview.jpg';
 
-const FILES = import.meta.glob('../../assets/world_{meadows,forest}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FILES = import.meta.glob('../../assets/world_{meadows,forest,harvest}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 interface Chunk {
   file: string;
@@ -22,11 +23,12 @@ interface Chunk {
 export const PAINTED: Record<string, { x: number; y: number; width: number; height: number }> = {
   meadows: { x: meadowChunks.x, y: meadowChunks.y, width: meadowChunks.width, height: meadowChunks.height },
   thornwood: { x: forestChunks.x, y: forestChunks.y, width: forestChunks.width, height: 5328 },
+  frostpeak: { x: harvestChunks.x, y: 0, width: harvestChunks.width, height: 3300 },
 };
 
 /** Every chunk once, with the areas that show it: column 3 holds both coasts, so it belongs to both. */
 const CHUNKS = new Map<string, Chunk & { areas: string[] }>();
-for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunks]] as const) {
+for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunks], ['frostpeak', harvestChunks]] as const) {
   for (const c of data.chunks as Chunk[]) {
     const key = `ground_${c.col}_${c.row}`;
     const known = CHUNKS.get(key);

@@ -493,3 +493,7 @@ The words are no longer a tap target. `logButtons` puts a small scroll button on
 ## The hero's sheet (Robin, 2026-11-02)
 
 `BagScene` rebuilt to Mitch, AD's option 2 with stats A: the hero over a window of the area's fight `background.jpg` (loaded for the current theme, plain sky for others), worn slots either side, all seven stats tappable, two tabs in cubbies, a card with only the buttons that apply. The comparison is real: `stats()` with the piece on against without. Past 12 kinds of flask and card, the last slot turns the page (mine). Stat words are from what `fight.ts` and `gear.ts` do.
+
+## Honeyhill painted (2026-11-02)
+
+All three first regions are painted. `world.json` gains `exit`, a third gate, and the generator's first road follows its path. Kits load two tiers ahead of what is open, so a kit is here before its area opens in one sitting. Queen Bumble is Mitch, AD's largest figure.

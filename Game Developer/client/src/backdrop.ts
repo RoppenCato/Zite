@@ -15,6 +15,11 @@ import forestGroundPng from '../../assets/forest_fight/ground.png';
 import forestMidPng from '../../assets/forest_fight/mid.png';
 import forestMotesPng from '../../assets/forest_fight/motes.png';
 import forestNearPng from '../../assets/forest_fight/near.png';
+import harvestCloudsPng from '../../assets/harvest_fight/clouds.png';
+import harvestFarPng from '../../assets/harvest_fight/far.png';
+import harvestGroundPng from '../../assets/harvest_fight/ground.png';
+import harvestMidPng from '../../assets/harvest_fight/mid.png';
+import harvestNearPng from '../../assets/harvest_fight/near.png';
 import { DESIGN_WIDTH, HUD_HEIGHT, SCREEN_WIDTH } from './layout.ts';
 
 interface Strip {
@@ -65,6 +70,18 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'forest-mid', png: forestMidPng, w: 512, h: 244, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'forest-near', png: forestNearPng, w: 512, h: 410, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'forest-ground', png: forestGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  harvest: {
+    sky: { top: 0x6fb8ec, bottom: 0xfbeec0 },
+    soil: 0xc8cc6a,
+    feet: 46,
+    strips: [
+      { key: 'harvest-clouds', png: harvestCloudsPng, w: 512, h: 157, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'harvest-far', png: harvestFarPng, w: 512, h: 254, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'harvest-mid', png: harvestMidPng, w: 512, h: 212, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'harvest-near', png: harvestNearPng, w: 512, h: 165, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'harvest-ground', png: harvestGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
 };

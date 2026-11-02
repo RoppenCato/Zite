@@ -84,10 +84,10 @@ interface WorldBridge {
 }
 const worldBridge = (): WorldBridge | undefined => (WORLD_DATA as unknown as { bridge?: WorldBridge }).bridge;
 type WorldGate = Pick<WorldBridge, 'foot' | 'barred' | 'open' | 'opens'>;
-/** What stands in the way between lands: the bridge, and the pass by Grumblebark's Glade. */
+/** What stands in the way between lands: the bridge, the pass by Grumblebark's Glade, and the gate on the north shore. */
 const worldGates = (): WorldGate[] => {
-  const { bridge, pass } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate };
-  return [bridge, pass].filter((g): g is WorldGate => !!g);
+  const { bridge, pass, exit } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate; exit?: WorldGate };
+  return [bridge, pass, exit].filter((g): g is WorldGate => !!g);
 };
 /** Whether a point lies within `margin` of a line segment. */
 function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }, margin: number): boolean {
@@ -781,6 +781,14 @@ export class BoardScene extends Phaser.Scene {
       this.crossed.add(road);
       this.closedRoads.set(`road:${road.area}`, this.strokePaths(kit, [[from, ...road.via, to]]));
     }
+    // The road out along the north shore: the grown area's, over Honeyhill's land.
+    const exit = (WORLD_DATA as unknown as { exit?: { hub: string; opens: string; path: { x: number; y: number }[] } }).exit;
+    const start = exit ? all[exit.hub] : undefined;
+    const kit = start ? kitFor(this, areas[start.area]?.theme ?? '') : null;
+    if (exit && start && kit && !this.crossed.has(exit)) {
+      this.crossed.add(exit);
+      this.closedRoads.set(`road:${exit.opens}`, this.strokePaths(kit, [[start, ...exit.path]]));
+    }
   }
 
   private strokePaths(kit: NonNullable<ReturnType<typeof kitFor>>, paths: { x: number; y: number }[][]): Phaser.GameObjects.Graphics {
@@ -1071,7 +1079,8 @@ export class BoardScene extends Phaser.Scene {
     preloadLoot(this);
     // Every open area's kit and the next one's, which waits under the cloud.
     const { areas } = this.game_.state.board;
-    const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 1;
+    // Two tiers ahead: an area's kit must be here before it opens, and a player can beat two bosses in one sitting (mine).
+    const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 2;
     preloadBoardKits(this, Object.values(areas).filter((a) => a.tier <= reach).map((a) => a.theme));
     preloadKit(this);
     preloadAbilityIcons(this);

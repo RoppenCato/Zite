@@ -6,6 +6,7 @@
 import Phaser from 'phaser';
 import { gearPowers, GEAR, ITEMS, SLOTS, stats, type Character, type GearItem, type Slot } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
+import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
@@ -25,7 +26,7 @@ const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', h
 const WOOD_INK = '#3a2410';
 const GOOD = '#2f7a35';
 const BAD = '#a23c2c';
-const BACKS: Record<string, string> = { meadow: meadowBackJpg, forest: forestBackJpg };
+const BACKS: Record<string, string> = { meadow: meadowBackJpg, forest: forestBackJpg, harvest: harvestBackJpg };
 const backKey = (theme: string): string => `bag_back_${theme}`;
 
 /** Where things sit, in design pixels (Mitch, AD's bag_options notes): left and top edges unless it says centre. */

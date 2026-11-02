@@ -1,0 +1,82 @@
+{
+ "spots": 158,
+ "hubs": 19,
+ "roads": 25,
+ "tooClose": [],
+ "crossings": [],
+ "grounds": {
+  "honey-rows": {
+   "spots": 35,
+   "insideShape": 10,
+   "levels": [
+    8,
+    9
+   ]
+  },
+  "corn-field": {
+   "spots": 41,
+   "insideShape": 10,
+   "levels": [
+    9,
+    10
+   ]
+  },
+  "buzz-meadow": {
+   "spots": 40,
+   "insideShape": 8,
+   "levels": [
+    10,
+    11
+   ]
+  },
+  "mimic-orchard": {
+   "spots": 42,
+   "insideShape": 10,
+   "levels": [
+    11,
+    12
+   ]
+  }
+ },
+ "spotInsideShapeOfAnotherGround": 0,
+ "kinds": {
+  "board": 1,
+  "town": 2,
+  "shop": 1,
+  "shop_magic": 1,
+  "wild": 133,
+  "spring": 6,
+  "chest": 3,
+  "shrine": 3,
+  "church": 1,
+  "gate": 1,
+  "gear": 6
+ },
+ "sprites": 525,
+ "baked": 1276,
+ "mostInAViewAt08": {
+  "max": 48,
+  "at": [
+   3904,
+   192
+  ]
+ },
+ "mostInAView600Wide": {
+  "max": 71,
+  "at": [
+   5696,
+   1088
+  ]
+ },
+ "spotsByPlace": {
+  "open road": 96,
+  "goldencomb": 10,
+  "hive": 5,
+  "honeybell": 3,
+  "honey-rows": 10,
+  "corn-field": 10,
+  "buzz-meadow": 8,
+  "mimic-orchard": 10,
+  "scarecrow-rows": 6
+ }
+}

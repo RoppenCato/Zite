@@ -19,6 +19,13 @@ import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
 import forestPropsPng from '../../assets/board_forest/board_props.png';
 import forestPlacementJson from '../../assets/world_forest/placement.json';
+import harvestGroundJson from '../../assets/board_harvest/board_ground.json?url';
+import harvestGroundPng from '../../assets/board_harvest/board_ground.png';
+import harvestPropsJson from '../../assets/board_harvest/board_props.json?url';
+import harvestPropsPng from '../../assets/board_harvest/board_props.png';
+import harvestPlacementJson from '../../assets/world_harvest/placement.json';
+import harvestPlacesJson from '../../assets/world_harvest/board_places.json?url';
+import harvestPlacesPng from '../../assets/world_harvest/board_places.png';
 import forestPlacesJson from '../../assets/world_forest/board_places.json?url';
 import forestPlacesPng from '../../assets/world_forest/board_places.png';
 
@@ -52,10 +59,12 @@ const SCALE = 0.5;
 /** The new pieces of the painted world. */
 export const PLACES = 'board_places';
 const FOREST_PLACES = 'forest_places';
+const HARVEST_PLACES = 'harvest_places';
 
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
-  const order = theme === 'forest' ? [FOREST_PLACES, PLACES] : [PLACES, FOREST_PLACES];
+  const own = theme === 'forest' ? FOREST_PLACES : theme === 'harvest' ? HARVEST_PLACES : PLACES;
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
@@ -106,6 +115,27 @@ const KITS: Record<string, Kit> = {
     placements: { thornwood: forestPlacementJson as Placement[] },
     files: { groundPng: forestGroundPng, groundJson: forestGroundJson, propsPng: forestPropsPng, propsJson: forestPropsJson },
   },
+  // Mitch, AD's Honeyhill Fields (2026-11-02): the cover and the banner are the meadows'.
+  harvest: {
+    ground: 'harvest_ground',
+    props: 'harvest_props',
+    cover: 'board_cover',
+    banner: 'board_banner',
+    tiles: [
+      { frame: 'ground_a', weight: 40 },
+      { frame: 'ground_b', weight: 40 },
+      { frame: 'ground_c', weight: 20 },
+    ],
+    tile: 128,
+    road: [
+      { width: 30, color: 0xb4935a, alpha: 1 },
+      { width: 25, color: 0xd9bb7e, alpha: 1 },
+      { width: 10, color: 0xecd49c, alpha: 0.8 },
+    ],
+    flat: new Set(['clover', 'worn']),
+    placements: { frostpeak: harvestPlacementJson as Placement[] },
+    files: { groundPng: harvestGroundPng, groundJson: harvestGroundJson, propsPng: harvestPropsPng, propsJson: harvestPropsJson },
+  },
 };
 
 const PLATES: Record<SpaceKind, string> = { board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
@@ -117,6 +147,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   if (themes.includes('forest') && !scene.textures.exists(FOREST_PLACES)) scene.load.atlas(FOREST_PLACES, forestPlacesPng, forestPlacesJson);
+  if (themes.includes('harvest') && !scene.textures.exists(HARVEST_PLACES)) scene.load.atlas(HARVEST_PLACES, harvestPlacesPng, harvestPlacesJson);
   for (const theme of new Set(['meadow', ...themes])) {
     const k = KITS[theme];
     if (!k) continue;

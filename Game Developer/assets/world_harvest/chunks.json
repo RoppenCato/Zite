@@ -1,0 +1,246 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "frostpeak",
+ "x": 1024,
+ "y": 0,
+ "width": 6376,
+ "height": 4096,
+ "world": {
+  "width": 7400,
+  "height": 9300
+ },
+ "chunks": [
+  {
+   "file": "ground_1_0.jpg",
+   "col": 1,
+   "row": 0,
+   "x": 1023,
+   "y": -1,
+   "kb": 75
+  },
+  {
+   "file": "ground_1_1.jpg",
+   "col": 1,
+   "row": 1,
+   "x": 1023,
+   "y": 1023,
+   "kb": 117
+  },
+  {
+   "file": "ground_1_2.jpg",
+   "col": 1,
+   "row": 2,
+   "x": 1023,
+   "y": 2047,
+   "kb": 92
+  },
+  {
+   "file": "ground_1_3.jpg",
+   "col": 1,
+   "row": 3,
+   "x": 1023,
+   "y": 3071,
+   "kb": 32
+  },
+  {
+   "file": "ground_2_0.jpg",
+   "col": 2,
+   "row": 0,
+   "x": 2047,
+   "y": -1,
+   "kb": 120
+  },
+  {
+   "file": "ground_2_1.jpg",
+   "col": 2,
+   "row": 1,
+   "x": 2047,
+   "y": 1023,
+   "kb": 111
+  },
+  {
+   "file": "ground_2_2.jpg",
+   "col": 2,
+   "row": 2,
+   "x": 2047,
+   "y": 2047,
+   "kb": 157
+  },
+  {
+   "file": "ground_2_3.jpg",
+   "col": 2,
+   "row": 3,
+   "x": 2047,
+   "y": 3071,
+   "kb": 48
+  },
+  {
+   "file": "ground_3_0.jpg",
+   "col": 3,
+   "row": 0,
+   "x": 3071,
+   "y": -1,
+   "kb": 127
+  },
+  {
+   "file": "ground_3_1.jpg",
+   "col": 3,
+   "row": 1,
+   "x": 3071,
+   "y": 1023,
+   "kb": 99
+  },
+  {
+   "file": "ground_3_2.jpg",
+   "col": 3,
+   "row": 2,
+   "x": 3071,
+   "y": 2047,
+   "kb": 151
+  },
+  {
+   "file": "ground_3_3.jpg",
+   "col": 3,
+   "row": 3,
+   "x": 3071,
+   "y": 3071,
+   "kb": 153,
+   "from": "world_forest"
+  },
+  {
+   "file": "ground_4_0.jpg",
+   "col": 4,
+   "row": 0,
+   "x": 4095,
+   "y": -1,
+   "kb": 79
+  },
+  {
+   "file": "ground_4_1.jpg",
+   "col": 4,
+   "row": 1,
+   "x": 4095,
+   "y": 1023,
+   "kb": 100
+  },
+  {
+   "file": "ground_4_2.jpg",
+   "col": 4,
+   "row": 2,
+   "x": 4095,
+   "y": 2047,
+   "kb": 94
+  },
+  {
+   "file": "ground_4_3.jpg",
+   "col": 4,
+   "row": 3,
+   "x": 4095,
+   "y": 3071,
+   "kb": 128,
+   "from": "world_forest"
+  },
+  {
+   "file": "ground_5_0.jpg",
+   "col": 5,
+   "row": 0,
+   "x": 5119,
+   "y": -1,
+   "kb": 85
+  },
+  {
+   "file": "ground_5_1.jpg",
+   "col": 5,
+   "row": 1,
+   "x": 5119,
+   "y": 1023,
+   "kb": 98
+  },
+  {
+   "file": "ground_5_2.jpg",
+   "col": 5,
+   "row": 2,
+   "x": 5119,
+   "y": 2047,
+   "kb": 150
+  },
+  {
+   "file": "ground_5_3.jpg",
+   "col": 5,
+   "row": 3,
+   "x": 5119,
+   "y": 3071,
+   "kb": 135,
+   "from": "world_forest"
+  },
+  {
+   "file": "ground_6_0.jpg",
+   "col": 6,
+   "row": 0,
+   "x": 6143,
+   "y": -1,
+   "kb": 88
+  },
+  {
+   "file": "ground_6_1.jpg",
+   "col": 6,
+   "row": 1,
+   "x": 6143,
+   "y": 1023,
+   "kb": 121
+  },
+  {
+   "file": "ground_6_2.jpg",
+   "col": 6,
+   "row": 2,
+   "x": 6143,
+   "y": 2047,
+   "kb": 136
+  },
+  {
+   "file": "ground_6_3.jpg",
+   "col": 6,
+   "row": 3,
+   "x": 6143,
+   "y": 3071,
+   "kb": 208,
+   "from": "world_forest"
+  },
+  {
+   "file": "ground_7_0.jpg",
+   "col": 7,
+   "row": 0,
+   "x": 7167,
+   "y": -1,
+   "kb": 13
+  },
+  {
+   "file": "ground_7_1.jpg",
+   "col": 7,
+   "row": 1,
+   "x": 7167,
+   "y": 1023,
+   "kb": 38
+  },
+  {
+   "file": "ground_7_2.jpg",
+   "col": 7,
+   "row": 2,
+   "x": 7167,
+   "y": 2047,
+   "kb": 29
+  },
+  {
+   "file": "ground_7_3.jpg",
+   "col": 7,
+   "row": 3,
+   "x": 7167,
+   "y": 3071,
+   "kb": 32,
+   "from": "world_forest"
+  }
+ ]
+}
