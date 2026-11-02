@@ -224,6 +224,8 @@ export interface Character {
   quests: Quest[];
   /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
   questsDone: Quest[];
+  /** The rest of a walk stopped at the quest board, walked once the board is answered. */
+  walking?: string[];
   /** Elixirs drunk: what they add and for how many more fights. */
   elixirs?: Partial<Record<'vigor' | 'arcana', { value: number; fights: number }>>;
   /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */

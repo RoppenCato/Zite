@@ -1373,6 +1373,11 @@ export class BoardScene extends Phaser.Scene {
         moments(this)?.find('mark_scroll', 'Quest taken', taken.quest.text, 0xe8b84a);
       }
       this.log.note(`quest ${accept ? 'taken' : drop ? 'dropped' : 'left'}`);
+      // Stopped on the way past: the walk goes on.
+      if (events.some((e) => e.type === 'landed')) {
+        this.went([], events);
+        return;
+      }
       this.finish(taken?.type === 'questTaken' ? `Quest: ${taken.quest.text}` : drop ? 'Quest dropped.' : 'Maybe later.');
     });
   }
@@ -1510,14 +1515,16 @@ export class BoardScene extends Phaser.Scene {
     }
     const value = this.game_.state.die.last;
     this.follow(false);
-    this.walk(path, () => {
+    // The rules may have stopped the walk at the quest board: walk what they walked.
+    const walked = moved.find((e) => e.type === 'moved');
+    this.walk(walked?.type === 'moved' ? walked.path : path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
       const where = space.name ? `on ${space.name} (${kind})` : space.kind === 'normal' ? 'in the wilds' : `on a ${kind}`;
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ board: 'ui/board-open', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'board', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');

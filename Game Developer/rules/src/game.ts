@@ -146,7 +146,7 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'pick':
       return pick(state, action, character);
     case 'quest':
-      return answerQuest(state, action, character);
+      return answerQuest(state, action, character, rng, now);
     case 'keep':
       return keep(state, action, character);
     case 'trace':
@@ -211,10 +211,20 @@ function move(state: GameState, action: MoveAction, character: Character, rng: R
   if (character.steps === 0) return reject(state, action, 'roll first');
   const problem = checkPath(state.board, character.space, character.steps, action.path, new Set(character.opened));
   if (problem) return reject(state, action, problem);
-  const landing = action.path[action.path.length - 1]!;
+  // Walking past the quest board with no quest stops there to choose; the walk goes on after the answer (Robin, 2026-11-02).
+  const stop = character.quests.length ? -1 : action.path.findIndex((id, i) => i < action.path.length - 1 && state.board.spaces[id]?.kind === 'board');
+  if (stop >= 0) {
+    return walkTo(state, { ...character, walking: action.path.slice(stop + 1) }, action.path.slice(0, stop + 1), action, rng, now);
+  }
+  return walkTo(state, character, action.path, action, rng, now);
+}
+
+/** Step along a path and land on its end. */
+function walkTo(state: GameState, character: Character, path: string[], action: Action, rng: Rng, now: number): ApplyResult {
+  const landing = path[path.length - 1]!;
   const space = state.board.spaces[landing]!;
   const events: GameEvent[] = [
-    { type: 'moved', action: action.id, player: action.player, from: character.space, path: [...action.path] },
+    { type: 'moved', action: action.id, player: action.player, from: character.space, path: [...path] },
     { type: 'landed', action: action.id, player: action.player, space: landing, kind: space.kind },
   ];
   return land(state, { ...character, space: landing, steps: 0 }, space, action, rng, now, events);
@@ -687,16 +697,27 @@ function pick(state: GameState, action: PickAction, character: Character): Apply
 }
 
 /** A quest chosen at the board, the board left, or the quest under way dropped. */
-function answerQuest(state: GameState, action: QuestAction, character: Character): ApplyResult {
+function answerQuest(state: GameState, action: QuestAction, character: Character, rng: Rng, now: number): ApplyResult {
   const offer = character.offer;
   if (!offer || offer.kind !== 'board') return reject(state, action, 'nothing to answer');
   const quest = action.accept ? offer.quests[action.index ?? 0] : undefined;
+  const events: GameEvent[] = [];
+  let next: Character;
   if (quest && !character.quests.length) {
-    return { state: withCharacter(state, { ...character, offer: null, quests: [quest] }), events: [{ type: 'questTaken', action: action.id, player: action.player, quest }] };
+    next = { ...character, offer: null, quests: [quest] };
+    events.push({ type: 'questTaken', action: action.id, player: action.player, quest });
+  } else {
+    const dropped = action.drop ? character.quests[0] : undefined;
+    next = { ...character, offer: null, quests: dropped ? [] : character.quests };
+    if (dropped) events.push({ type: 'questDeclined', action: action.id, player: action.player, quest: dropped });
   }
-  const dropped = action.drop ? character.quests[0] : undefined;
-  const next = { ...character, offer: null, quests: dropped ? [] : character.quests };
-  return { state: withCharacter(state, next), events: dropped ? [{ type: 'questDeclined', action: action.id, player: action.player, quest: dropped }] : [] };
+  // The walk the board interrupted goes on.
+  const { walking, ...still } = next;
+  if (walking?.length) {
+    const r = walkTo(state, still, walking, action, rng, now);
+    return { state: r.state, events: [...events, ...r.events] };
+  }
+  return { state: withCharacter(state, still), events };
 }
 
 /** The piece that found no room in the bag: sold for half its worth, or left where it lay. */

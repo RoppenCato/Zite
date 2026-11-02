@@ -88,6 +88,39 @@ describe('the quest board', () => {
   });
 });
 
+describe('walking past the board', () => {
+  /** A walk through the crossroads: two steps, the board first. */
+  const through = () => {
+    const s = world();
+    const board = s.board.spaces.crossroads!;
+    const before = board.links[0]!;
+    const after = board.links.find((id) => id !== before)!;
+    return { s: put(s, { space: before, steps: 2 }), path: ['crossroads', after], after };
+  };
+
+  it('stops there to choose, and the walk goes on after the answer, whichever it is', () => {
+    const { s, path, after } = through();
+    const stopped = apply(s, { type: 'move', id: 'm', player: P, path } as Action, makeRng('x'), NOW);
+    expect(me(stopped.state)).toMatchObject({ space: 'crossroads', steps: 0, walking: [after], offer: { kind: 'board' } });
+    const taken = apply(stopped.state, { type: 'quest', id: 'q', player: P, accept: true, index: 0 } as Action, makeRng('x'), NOW);
+    expect(me(taken.state).space).toBe(after);
+    expect(me(taken.state).quests).toHaveLength(1);
+    expect(me(taken.state).walking).toBeUndefined();
+    expect(has(taken.events, 'questTaken')).toBe(true);
+    expect(has(taken.events, 'landed')).toBe(true);
+    const left = apply(stopped.state, { type: 'quest', id: 'q', player: P, accept: false } as Action, makeRng('x'), NOW);
+    expect(me(left.state).space).toBe(after);
+    expect(me(left.state).quests).toHaveLength(0);
+  });
+
+  it('does not stop you with a quest under way', () => {
+    const { s, path, after } = through();
+    const r = apply(put(s, { quests: [quest({})] }), { type: 'move', id: 'm', player: P, path } as Action, makeRng('x'), NOW);
+    expect(me(r.state).space).toBe(after);
+    expect(me(r.state).offer?.kind).not.toBe('board');
+  });
+});
+
 describe('a quest finished', () => {
   const nearlyWon = (q: Quest, enemy: string) => {
     const s = put(world(), { quests: [q], gold: 0, xp: 0 });

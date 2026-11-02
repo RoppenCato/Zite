@@ -87,7 +87,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: rest, HP and mana to full. Flasks and cards for sale, a trainer.`;
     case 'board': {
       const mine = me?.quests[0];
-      return `${where}: pick a quest, one at a time. It pays the moment you finish it.${mine ? ` Yours: ${questLine(mine)}` : ''}`;
+      return `${where}: walk onto or past it to pick a quest, one at a time. It pays the moment you finish it.${mine ? ` Yours: ${questLine(mine)}` : ''}`;
     }
     case 'boss': {
       const boss = space.boss ? creature(space.boss, bestiary) : undefined;

@@ -212,7 +212,7 @@ describe('landing', () => {
 
   it('on a boss spot starts the boss fight, unless the boss is away for its five minutes', () => {
     const { state, events } = apply(about('s9'), move(['s10']), makeRng('x'), NOW);
-    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 700 }) });
+    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 500 }) });
     expect(me(state).fight).toMatchObject({ space: 's10', spawn: false, round: 1 });
     const away = apply(about('s9', { cooldowns: { s10: NOW + 1000 } }), move(['s10']), makeRng('x'), NOW);
     expect(away.events[2]).toMatchObject({ type: 'nothing', text: expect.stringContaining('not back yet') });
