@@ -270,34 +270,37 @@ export class SkillsScene extends Phaser.Scene {
     this.icon(id, 53, y + 28, 36, rank ? 1 : 0.62);
     this.wood(86, y + 7, a.name, 15);
     this.rows.push(this.add.text(86, y + 28, `${cost} · ${rank ? `rank ${rank} of ${a.ranks.length}` : `from level ${a.level}`}`, { fontFamily: FONT, fontSize: '11.5px', color: CREAM }));
-    slip(y + 52, 70);
+    const locked = !isOpen(me, id);
+    slip(y + 52, locked ? 106 : 80);
     const text = words(y + 56, a.text, 12);
     const now = rank && !a.rule ? rankLine(a.ranks[rank - 1]!) : '';
     const then = rank < a.ranks.length && !a.rule ? rankLine(a.ranks[rank]!) : '';
     let at = y + 56 + text.height + 2;
     const say = (label: string, line: string): void => {
-      this.rows.push(this.add.text(38, at, label, { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: RUST }));
-      this.rows.push(this.add.text(76, at, line, { fontFamily: FONT, fontSize: '11.5px', color: WOOD_INK, wordWrap: { width: 300 } }));
-      at += 15;
+      const word = this.add.text(38, at, label, { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: RUST });
+      this.rows.push(word);
+      const said = this.add.text(Math.max(76, 38 + word.width + 6), at, line, { fontFamily: FONT, fontSize: '11.5px', color: WOOD_INK, wordWrap: { width: 296 } });
+      this.rows.push(said);
+      at += Math.max(15, said.height);
     };
     if (this.note) say('', this.note);
     else {
       if (now) say('Now', now);
       if (then) say(rank ? 'Next' : 'First', then);
-      if (!isOpen(me, id)) {
+      if (locked) {
         const need = needsFor(me, id);
         say('Needs', [need.level > 0 ? `level ${a.level}` : '', need.points > 0 ? `${need.points} more in this tree` : ''].filter(Boolean).join(', '));
       }
     }
     const can = canLearn(me, id);
-    if (rank < a.ranks.length) {
-      const b = makeButton(this, a.rule ? 206 : 121, y + 143, a.rule ? 220 : 186, 34, rank ? 'Raise' : 'Learn', can ? COLORS.button : COLORS.log, '15px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
+    if (!locked && rank < a.ranks.length) {
+      const b = makeButton(this, a.rule ? 206 : 121, y + 149, a.rule ? 220 : 186, 30, rank ? 'Raise' : 'Learn', can ? COLORS.button : COLORS.log, '15px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
       b.setEnabled(can && !this.inFlight);
       this.rows.push(b.button);
     }
     if (rank && !a.rule) {
       const carried = me.carried.includes(id);
-      const b = makeButton(this, 303, y + 143, 162, 34, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
+      const b = makeButton(this, 303, y + 149, 162, 30, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
       b.setEnabled((carried || me.carried.length < carriedLimit(me.level)) && !this.inFlight);
       this.rows.push(b.button);
     }
