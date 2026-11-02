@@ -46,6 +46,15 @@ Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-
 - **One connected board with many paths**, forks every few spots, so the die gives a choice of where to go (Robin, 2026-10-31). Spaces and connections, never a grid.
 - Generated, and big enough never to run out. Each area of the map has its own look and its own fight background (Robin, 2026-10-31).
 
+### The hub world (Robin, 2026-11-02)
+A beginner area, the Meadows, in the south. Beating its first boss opens the way straight north to a huge walled city with woods around it: the hub, which you can always teleport back to, free, outside a fight, with a short wait between uses (his yes to the proposal). The other lands lie around the hub.
+- **Order:** "It should be easy south. But it shouldnt be all 'south to north' or 'round in a circle'. I think it should be different zones, so you'd go one way, then another way after a few levels."
+- **Gates:** "some parts could be gated by mini-bosses so that you cant enter some higher level zones without defeating the miniboss guarding the entrance point." Otherwise you can enter any land. On the world map, a land you are not in shows its recommended level.
+- **Bosses** no longer open lands. You kill them for loot and to enter deeper dungeons, which they guard, with even harder bosses.
+- **The goal:** "beat the biggest boss in each zone." Each counts towards it, in some form that is not called achievements. When all are dead, the final dungeon opens under the hub city.
+
+This replaces the line of lands opened by bosses above where the two differ.
+
 ### Open world (Robin, 2026-11-02)
 Yes to: rumours that send you somewhere; hidden places that show only when you stand close; small dungeons of their own; creatures far too strong for their land, visible and avoidable; towns that differ, and every town always heals. A bigger map with clear areas: "It makes it more interesting to 'enter the swamp' or 'go up in the mountains'."
 No to: a map misted in open land, a second way past bosses, tap-to-set a destination, things travelling the roads, timed local trouble. Day, night and weather: maybe later.
