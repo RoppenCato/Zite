@@ -8,7 +8,7 @@ import LAID_SHAPES from '../data/shapes-laid.json' with { type: 'json' };
 import { SHAPES, THEMES, WORLD_DATA } from './data.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import type { Board, EnemyData, Space, SpaceKind } from './types.ts';
-import { addArea, addRoad, areaCentre, roadPoints, setBounds, type WorldArea, type WorldHub, type WorldRoad } from './world.ts';
+import { addArea, addRoad, areaCentre, roadPoints, setBounds, type WorldArea, type WorldHub, type WorldRoad, withArenas } from './world.ts';
 
 export const GROWN_PREFIX = 'gen-';
 /** A passage spot every so many pixels, and how far every passage spot keeps from any other spot (the board tests' 55). */
@@ -356,6 +356,10 @@ function layPassage(board: Board, from: Space, to: Space, areaId: string): void 
  * an id that is not a grown one, gives the board back as it was. The passage from the boss that opens the area is laid
  * when that boss is on the board, and the passage on from the area's own boss when the area after it already is. */
 export function growBoard(board: Board, seed: string, areaId: string): Board {
+  return withArenas(growLand(board, seed, areaId));
+}
+
+function growLand(board: Board, seed: string, areaId: string): Board {
   const n = grownIndex(areaId);
   if (n === null || board.areas[areaId]) return board;
   const grown = generateArea(seed, n);

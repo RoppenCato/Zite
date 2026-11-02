@@ -4,6 +4,7 @@ import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
+import { withArenas } from './world.ts';
 import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
@@ -116,9 +117,17 @@ interface OldCharacter {
 export function migrate(raw: unknown): GameState | null {
   const up = migrateOlder(raw);
   if (!up || (raw as { version?: unknown }).version === STATE_VERSION) return up;
+  // 23 → 24: the Arena takes its spot in each land laid so far.
+  const version = (raw as { version?: unknown }).version;
+  if (version === 23) return withArena(up);
   // 22 → 23: the journal starts empty; nothing else moves.
-  if ((raw as { version?: unknown }).version === 22) return withJournal(up);
-  return withJournal(toPaths(up));
+  if (version === 22) return withArena(withJournal(up));
+  return withArena(withJournal(toPaths(up)));
+}
+
+/** To 24 (Robin, 2026-11-02): the Arena's spots; anyone standing on one just stands at the Arena. */
+function withArena(state: GameState): GameState {
+  return { ...state, version: STATE_VERSION, board: withArenas(state.board) };
 }
 
 /**
@@ -149,7 +158,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

@@ -1,12 +1,62 @@
 {
-  "town":   { "label": "Town",   "letter": "w", "hint": "Rest here: HP and mana back to full. A shop inside." },
-  "shop":   { "label": "Shop",   "letter": "s", "hint": "Sells plain gear of this area's rank and potions; it buys what you carry too." },
-  "normal": { "label": "Wilds",  "letter": "n", "hint": "This area's creatures roam here, and now and then something else turns up." },
-  "chest":  { "label": "Chest",  "letter": "t", "hint": "Gold, and maybe something to wear. Fills again after a while.", "cooldownMs": 600000 },
-  "potion": { "label": "Potion Spot", "letter": "p", "hint": "Roll a 4 or better for a free potion. Try again after five minutes.", "cooldownMs": 300000 },
-  "gear":   { "label": "Loot Spot", "letter": "a", "hint": "Roll a 4 or better for a piece of basic gear. Try again after five minutes.", "cooldownMs": 300000 },
-  "spell":  { "label": "Shrine", "letter": "h", "hint": "Restores your mana and some HP. Once in a while.", "cooldownMs": 600000 },
-  "boss":   { "label": "Boss",   "letter": "g", "hint": "Tap it to challenge it, whenever you choose. Beat it and the way beyond opens.", "cooldownMs": 300000 },
-  "board":  { "label": "Quest Board", "letter": "q", "hint": "Walk onto or past it to pick a quest, one at a time. It pays the moment you finish it: xp, gold and a chest." },
-  "church": { "label": "Church", "letter": "c", "hint": "Heals you fully and takes off poison and weakness. Always open, and free." }
+  "town": {
+    "label": "Town",
+    "letter": "w",
+    "hint": "Rest here: HP and mana back to full. A shop inside."
+  },
+  "shop": {
+    "label": "Shop",
+    "letter": "s",
+    "hint": "Sells plain gear of this area's rank and potions; it buys what you carry too."
+  },
+  "normal": {
+    "label": "Wilds",
+    "letter": "n",
+    "hint": "This area's creatures roam here, and now and then something else turns up."
+  },
+  "chest": {
+    "label": "Chest",
+    "letter": "t",
+    "hint": "Gold, and maybe something to wear. Fills again after a while.",
+    "cooldownMs": 600000
+  },
+  "potion": {
+    "label": "Potion Spot",
+    "letter": "p",
+    "hint": "Roll a 4 or better for a free potion. Try again after five minutes.",
+    "cooldownMs": 300000
+  },
+  "gear": {
+    "label": "Loot Spot",
+    "letter": "a",
+    "hint": "Roll a 4 or better for a piece of basic gear. Try again after five minutes.",
+    "cooldownMs": 300000
+  },
+  "spell": {
+    "label": "Shrine",
+    "letter": "h",
+    "hint": "Restores your mana and some HP. Once in a while.",
+    "cooldownMs": 600000
+  },
+  "boss": {
+    "label": "Boss",
+    "letter": "g",
+    "hint": "Tap it to challenge it, whenever you choose. Beat it and the way beyond opens.",
+    "cooldownMs": 300000
+  },
+  "board": {
+    "label": "Quest Board",
+    "letter": "q",
+    "hint": "Walk onto or past it to pick a quest, one at a time. It pays the moment you finish it: xp, gold and a chest."
+  },
+  "church": {
+    "label": "Church",
+    "letter": "c",
+    "hint": "Heals you fully and takes off poison and weakness. Always open, and free."
+  },
+  "arena": {
+    "label": "Arena",
+    "letter": "A",
+    "hint": "Fights in a row, on the days it is open."
+  }
 }

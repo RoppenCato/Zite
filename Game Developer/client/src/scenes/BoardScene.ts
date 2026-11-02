@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -134,8 +134,9 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   spell: 0x8e6ad9,
   church: 0xf4f0e4,
   boss: 0x8f2f3b,
+  arena: 0xa23c2c,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { arena: 'A', gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -202,6 +203,8 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
+  private arenaMarks: Phaser.GameObjects.Container[] = [];
+  private arenaWasOpen: boolean | null = null;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
   /** The other players' figures, by id: `others` holds their marks. */
@@ -1008,6 +1011,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
   private drawSpawns(): void {
+    this.drawArena();
     for (const mark of this.spawnMarks.values()) mark.destroy();
     this.spawnMarks.clear();
     const { board, spawns } = this.game_.state;
@@ -1087,6 +1091,7 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const now = this.game_.now();
     this.refreshLink();
+    this.checkArena();
     for (const [spaceId, label] of this.bossLabels) {
       const space = this.game_.state.board.spaces[spaceId]!;
       const boss = space.boss ? creature(space.boss, this.game_.state.board.bestiary) : undefined;
@@ -1508,7 +1513,8 @@ export class BoardScene extends Phaser.Scene {
   private offerChoice(): void {
     const me = this.game_.me;
     const offer = me.offer;
-    if (offer?.kind === 'gamble') this.offerGamble();
+    if (offer?.kind === 'arena') this.offerArena();
+    else if (offer?.kind === 'gamble') this.offerGamble();
     else if (offer?.kind === 'board') this.offerBoard();
     else if (offer?.kind === 'roll') this.offerRoll();
     else if (offer?.kind === 'loot') this.offerKeep();
@@ -1687,6 +1693,117 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
+  /** Between the Arena's waves: take the pot, or go on for more and risk it. */
+  private offerArena(): void {
+    const offer = this.game_.me.offer;
+    if (offer?.kind !== 'arena') return;
+    const me = this.game_.me;
+    const last = offer.wave >= offer.total;
+    const pot = `In the pot: ${offer.gold} gold, ${offer.xp} xp${offer.gear ? ' and a fine piece' : ''}`;
+    this.setMessage(last ? 'The Arena is yours.' : 'The crowd wants more.');
+    this.ask({
+      icon: 'mark_star',
+      color: 0xe8b84a,
+      title: last ? 'You beat them all!' : `Wave ${offer.wave} of ${offer.total} won`,
+      text: last ? 'Nobody is left to fight. The crowd is on its feet.' : `You have ${me.hp} of ${stats(me).maxHp} HP. Fall or flee, and the pot is lost.`,
+      pays: pot,
+      options: [
+        ...(last ? [] : [{ label: `Go on: wave ${offer.wave + 1}`, color: COLORS.button, onTap: () => this.answerArena('next') }]),
+        { label: 'Take it and leave', color: last ? COLORS.button : COLORS.log, onTap: () => this.answerArena('take') },
+      ],
+    });
+  }
+
+  private answerArena(op: 'next' | 'take'): void {
+    this.closeAsk();
+    this.send({ type: 'arena', player: this.game_.player, op }, (events) => {
+      if (this.game_.me.fight) {
+        this.openFight();
+        return;
+      }
+      const taken = events.find((e) => e.type === 'arenaTaken');
+      this.refreshHud();
+      this.reveal(prizesIn(events), 'From the Arena', () => {
+        this.finish(taken?.type === 'arenaTaken' ? `You leave the Arena with ${taken.gold} gold and ${taken.xp} xp.` : this.describe(events));
+        if (this.game_.me.offer) this.offerChoice();
+      });
+    });
+  }
+
+  /** At the Arena's gate: three ways in while it is open, each once a day; a word when it is closed. */
+  private offerGate(): void {
+    const me = this.game_.me;
+    const now = this.game_.now();
+    const { board } = this.game_.state;
+    const area = board.spaces[me.space]!.area;
+    if (!arenaOpen(me, now)) {
+      this.finish(`The Arena is closed. It opens on ${nextDay('arena', now)}.`);
+      return;
+    }
+    const modes = (Object.keys(ARENA.modes) as ArenaMode[]).filter((mode) => !arenaTried(me, mode, now));
+    if (!modes.length) {
+      this.finish('You have fought every way there is today. Come back next time it opens.');
+      return;
+    }
+    this.setMessage('The Arena is open.');
+    this.ask({
+      icon: 'mark_star',
+      color: 0xe8b84a,
+      title: 'The Arena',
+      text: `${ARENA.waves.length} fights in a row, HP and mana carried over, ${ARENA.flasks} flasks at most. After each win, take the pot or go on. Fall or flee, and it is lost. Each way once a day.`,
+      pays: `Win ${ARENA.gearFrom} and a fine piece comes with the pot`,
+      options: [
+        ...modes.map((mode) => {
+          const fee = arenaFee(board, area, mode);
+          return { label: `${ARENA.modes[mode].name} · ${fee} g`, note: ARENA.modes[mode].words, color: mode === 'nightmare' ? 0xd9534f : mode === 'hard' ? 0xe8a23c : COLORS.button, onTap: () => this.enterArena(mode) };
+        }),
+        { label: 'Not today', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish('You leave the crowd to it.'); } },
+      ],
+    });
+  }
+
+  private enterArena(mode: ArenaMode): void {
+    this.closeAsk();
+    this.send({ type: 'arena', player: this.game_.player, op: 'enter', mode }, (events) => {
+      if (!this.game_.me.fight) {
+        this.finish(this.describe(events));
+        return;
+      }
+      this.openFight();
+    });
+  }
+
+  /** The Arena's mark over its town while it is open, and the word when it opens or closes. */
+  private drawArena(): void {
+    for (const mark of this.arenaMarks) mark.destroy();
+    this.arenaMarks = [];
+    const me = this.game_.me;
+    const { board } = this.game_.state;
+    const open = arenaOpen(me, this.game_.now());
+    for (const area of me.opened) {
+      const space = board.spaces[arenaSpot(board, area) ?? ''];
+      if (!space) continue;
+      const parts: Phaser.GameObjects.GameObject[] = [];
+      if (open && hasFrame(this, 'mark_star')) parts.push(icon(this, 'mark_star', 0, 0).setDisplaySize(34, 34));
+      parts.push(this.add.text(0, -28, open ? 'Arena: open' : 'Arena: closed', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: open ? '#a23c2c' : '#6b6658', padding: { x: 6, y: 2 }, resolution: 2 }).setOrigin(0.5));
+      const mark = this.add.container(space.x, space.y - 70, parts).setDepth(9);
+      this.tweens.add({ targets: mark, y: mark.y - 6, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      this.arenaMarks.push(mark);
+    }
+  }
+
+  private checkArena(): void {
+    const me = this.game_.me;
+    const open = arenaOpen(me, this.game_.now());
+    if (open === this.arenaWasOpen || this.busy || this.choices_) return;
+    const first = this.arenaWasOpen === null;
+    this.arenaWasOpen = open;
+    this.drawArena();
+    if (first && !open) return;
+    if (open) moments(this)?.find('mark_star', 'The Arena is open', 'Fights in a row, at the end of the road. Dare you?', 0xe8b84a);
+    else this.setMessage('The Arena has closed for today.');
+  }
+
   /** The gambler's question in the HUD's row. */
   private offerGamble(): void {
     const offer = this.game_.me.offer;
@@ -1715,6 +1832,10 @@ export class BoardScene extends Phaser.Scene {
       const camped = this.game_.state.spawns[id]?.kind === 'merchant';
       if (!this.busy && id === me.space && (space.kind === 'shop' || space.kind === 'town' || camped)) {
         this.openShop(camped && space.kind !== 'town' && space.kind !== 'shop');
+        return;
+      }
+      if (!this.busy && id === me.space && space.kind === 'arena') {
+        this.offerGate();
         return;
       }
       // Your own spot, free: the hint, and the notes you could leave as chips.
@@ -1783,6 +1904,8 @@ export class BoardScene extends Phaser.Scene {
       case 'normal':
         if (inTownWalls(board, space)) return 'Street';
         return name(groundAt(board, space)?.mob) || 'Wilds';
+      case 'arena':
+        return arenaOpen(me, this.game_.now()) ? 'The Arena: open!' : 'The Arena: closed';
       case 'town':
         return `${space.name || 'Town'}: ${townKind(space.id).name}`;
       case 'boss':
@@ -1841,7 +1964,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', arena: 'town', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
@@ -1857,6 +1980,12 @@ export class BoardScene extends Phaser.Scene {
         if (me.offer) {
           this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
           this.offerChoice();
+          return;
+        }
+        if (space.kind === 'arena') {
+          this.setMessage(`Rolled ${value}. Landed ${where}.`);
+          this.refreshHud();
+          this.offerGate();
           return;
         }
         if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {

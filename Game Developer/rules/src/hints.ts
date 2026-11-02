@@ -2,6 +2,8 @@
 // not everything). Pure text from the state, so the server can send the same line later.
 
 import { GEAR, SPACE_KIND_DATA, townKind } from './data.ts';
+import { nextDay } from './calendar.ts';
+import { arenaOpen } from './game.ts';
 import { creature } from './fight.ts';
 import { rankName } from './gear.ts';
 import { grownIndex, peekArea } from './generate.ts';
@@ -91,6 +93,8 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: heals you fully and takes off poison and weakness. Always open, and free.`;
     case 'shop':
       return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
+    case 'arena':
+      return me && arenaOpen(me, now) ? `${where}: open today! Fights in a row, three ways to try them.` : `${where}: closed. Opens on ${nextDay('arena', now)}.`;
     case 'town':
       return `${where}: rest, HP and mana to full. ${townKind(space.id).line}`;
     case 'board': {

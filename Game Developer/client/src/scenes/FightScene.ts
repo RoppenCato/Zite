@@ -576,7 +576,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         sfx.play(`creature/${this.enemyId}/die`);
         sfx.play('fight/victory');
         const tip = tips.take('won');
-        this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: `Beat ${this.enemyRole === 'boss' ? '' : 'the '}${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
+        this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: this.game_.me.arena ? `Wave ${this.game_.me.arena.wave} won: +${e.xp} xp and +${e.gold} gold in the pot.` : `Beat ${this.enemyRole === 'boss' ? '' : 'the '}${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);
         break;
       }
       case 'loot':

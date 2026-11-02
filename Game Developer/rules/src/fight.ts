@@ -7,7 +7,7 @@
 
 import { noteBeaten } from './journal.ts';
 import { MAX_CARRIED, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
-import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
+import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
 import { growBoard } from './generate.ts';
@@ -257,7 +257,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       const powerMult = p.arcane ? 0.8 : 1;
       if (rk.flee) {
         events.push({ type: 'fled', action: id, player, ok: true });
-        return { state: withCharacter(state, { ...lingering(r.c, f), fight: null }), events };
+        return { state: withCharacter(state, outOfArena({ ...lingering(r.c, f), fight: null })), events };
       }
       if (rk.selfHurt) {
         const hp = Math.max(1, r.c.hp - Math.round(r.s.maxHp * rk.selfHurt));
@@ -405,7 +405,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (!item) return reject(state, action, 'no such item');
       if ((r.c.items[move.item] ?? 0) <= 0) return reject(state, action, 'none left');
       if (!item.heal && !item.mana) return reject(state, action, 'not now');
+      if (r.c.arena && r.c.arena.flasks >= ARENA.flasks) return reject(state, action, 'not now');
       r.c = spend(r.c, move.item);
+      if (r.c.arena) r.c = { ...r.c, arena: { ...r.c.arena, flasks: r.c.arena.flasks + 1 } };
       events.push({ type: 'used', action: id, player, item: move.item });
       const stronger = (traits.potionPower ?? 1) * (1 + (r.s.bonus.plenty ?? 0));
       if (item.heal) r.c = heal(r.c, Math.round(item.heal * stronger), action, events);
@@ -415,7 +417,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     case 'flee': {
       const ok = rng.next() < PROGRESSION.fleeChance;
       events.push({ type: 'fled', action: id, player, ok });
-      if (ok) return { state: withCharacter(state, { ...lingering(r.c, f), fight: null }), events };
+      if (ok) return { state: withCharacter(state, outOfArena({ ...lingering(r.c, f), fight: null })), events };
       break;
     }
   }
@@ -888,6 +890,7 @@ function win(r: Round): ApplyResult {
   xp = Math.round(xp * (1 + (r.s.bonus.wisdom ?? 0)));
   gold = Math.round(gold * (1 + (r.s.bonus.fortune ?? 0)));
   events.push({ type: 'won', action: id, player, xp, gold });
+  if (c.arena) return arenaWon(r, xp, gold);
   let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
@@ -1011,6 +1014,28 @@ function worldBossDown(r: Round): ApplyResult {
   return { state: { ...s, characters, spawns }, events };
 }
 
+/** A run ends with nothing paid: fled or fallen. */
+function outOfArena(c: Character): Character {
+  const { arena: _run, ...left } = c;
+  return left;
+}
+
+/** A wave of the Arena beaten: what it paid goes in the pot, and the player is asked to take it or go on. The wave counts for quests and the journal. */
+function arenaWon(r: Round, xp: number, gold: number): ApplyResult {
+  const { f, rng, events, action } = r;
+  const run = r.c.arena!;
+  const space = r.state.board.spaces[f.space];
+  const pot = { ...run, xp: run.xp + xp, gold: run.gold + gold };
+  let next: Character = { ...lingering(r.c, f), fight: null, arena: pot };
+  next = questProgress(next, { beat: f.enemy.id }, rng, action, events);
+  next = noteBeaten(next, f.enemy.id, r.state.board, space?.area, action, events);
+  const paid = finishQuests(r.state, next, action, rng, events);
+  const offer = { kind: 'arena' as const, mode: run.mode, wave: run.wave, total: ARENA.waves.length, gold: pot.gold, xp: pot.xp, gear: run.wave >= ARENA.gearFrom };
+  const asked: Character = { ...paid.c, offer };
+  events.push({ type: 'offer', action: action.id, player: action.player, offer });
+  return { state: withCharacter(paid.state, asked), events };
+}
+
 /** Tell of the points levels crossed since `from` brought (the skill board spends them). */
 export function noteLevels(c: Character, from: number, action: Action, events: GameEvent[]): Character {
   const gained = pointsForLevel(c.level) - pointsForLevel(from);
@@ -1020,10 +1045,11 @@ export function noteLevels(c: Character, from: number, action: Action, events: G
 
 /** Beaten: back on your feet in the nearest town, HP and mana full, a fifth of the gold gone, gear kept. */
 function die(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
-  const lostGold = Math.floor(c.gold * PROGRESSION.deathGoldLoss);
+  // In the Arena the pot is what you lose.
+  const lostGold = c.arena ? 0 : Math.floor(c.gold * PROGRESSION.deathGoldLoss);
   const town = nearestTown(state.board, c.space, new Set(c.opened));
   events.push({ type: 'died', action: action.id, player: action.player, town, lostGold });
-  const woke: Character = { ...c, gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null, ailments: {} };
+  const woke: Character = { ...outOfArena(c), gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null, ailments: {} };
   const s = stats(woke);
   return { state: withCharacter(state, { ...woke, hp: s.maxHp, mana: s.maxMana }), events };
 }

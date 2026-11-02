@@ -11,6 +11,7 @@ import abilitiesJson from '../data/abilities.json' with { type: 'json' };
 import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
 import townsJson from '../data/towns.json' with { type: 'json' };
+import arenaJson from '../data/arena.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
@@ -383,3 +384,21 @@ export function townKind(id: string): TownKind {
   const key = named ?? kinds[[...id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % kinds.length]!;
   return TOWNS.kinds[key]!;
 }
+
+/** The Arena's numbers (Robin, 2026-11-02). */
+export type ArenaMode = 'normal' | 'hard' | 'nightmare';
+export const ARENA = arenaJson as unknown as {
+  spots: Record<string, string>;
+  fee: number[];
+  waves: { rounds: number; hit: number; pay: number; mini?: boolean }[];
+  modes: Record<ArenaMode, { name: string; words: string; hp: number; hit: number; fee: number; gold: number; xpShare: number; midGear: 'mini' | 'boss'; clearGear: 'mini' | 'boss'; rankUp: number }>;
+  gearFrom: number;
+  wornShare: number;
+  /** Flasks a run may drink: what stops a bag of them buying the hard ways. */
+  flasks: number;
+  /** How much harder each level past 4 makes a wave: a fighter's abilities outgrow plain numbers. */
+  levelStep: number;
+  /** A class the sim finds well ahead here. */
+  classes: Record<string, { hp: number; hit: number }>;
+  outgrown: { levelsOver: number; xp: number };
+};

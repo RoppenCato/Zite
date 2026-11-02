@@ -1,0 +1,14 @@
+{
+  "_about": "The week (Robin, 2026-11-02: 'we should have a week system so we can have certain events happening on certain days/weeks'). Days count from Monday as 0. Real days, the same for everyone. Which days are mine.",
+  "offsetHours": 1,
+  "events": {
+    "arena": {
+      "name": "The Arena",
+      "days": [
+        0,
+        3,
+        5
+      ]
+    }
+  }
+}

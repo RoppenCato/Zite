@@ -86,7 +86,7 @@ export function veil(scene: Phaser.Scene, color: number, alpha: number): Phaser.
   const left = (DESIGN_WIDTH - SCREEN_WIDTH) / 2;
   const right = left + SCREEN_WIDTH;
   const piece = (x0: number, y0: number, x1: number, y1: number) => scene.add.rectangle((x0 + x1) / 2, (y0 + y1) / 2, x1 - x0, y1 - y0, color, alpha).setInteractive();
-  return [piece(left, HUD_PLANK, right, ROLL_TOP), piece(left, ROLL_TOP, ROLL_LEFT, PLANK_TOP), piece(ROLL_RIGHT, ROLL_TOP, right, PLANK_TOP)];
+  return [piece(left, HUD_PLANK, right, ROLL_TOP), piece(left, ROLL_TOP, ROLL_LEFT + 16, PLANK_TOP), piece(ROLL_RIGHT - 16, ROLL_TOP, right, PLANK_TOP)];
 }
 
 export function sheet(scene: Phaser.Scene): void {

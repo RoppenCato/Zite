@@ -4,7 +4,8 @@
 
 import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode } from './data.ts';
+import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
@@ -12,7 +13,7 @@ import { dropSlot, groundAt, inTownWalls, rollLine } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
-import { buildBoard } from './world.ts';
+import { buildBoard, withArenas } from './world.ts';
 import {
   SLOTS,
   STATE_VERSION,
@@ -48,6 +49,7 @@ type UnequipAction = Extract<Action, { type: 'unequip' }>;
 type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
+type ArenaAction = Extract<Action, { type: 'arena' }>;
 type SkillAction = Extract<Action, { type: 'skill' }>;
 type ChallengeAction = Extract<Action, { type: 'challenge' }> & { now?: number };
 type QuestAction = Extract<Action, { type: 'quest' }>;
@@ -60,7 +62,7 @@ export const MAX_NAME = 12;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
-  return buildBoard(WORLD_DATA);
+  return withArenas(buildBoard(WORLD_DATA));
 }
 
 export function makeCharacter(id: string, name: string, classId: ClassId, board: Board): Character {
@@ -152,6 +154,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return useCard(state, action, character, rng, now);
     case 'gamble':
       return gamble(state, action, character, rng);
+    case 'arena':
+      return arena(state, action, character, rng, now);
     case 'skill':
       return skill(state, action, character);
     case 'quest':
@@ -183,6 +187,108 @@ function challenge(state: GameState, action: ChallengeAction, c: Character, rng:
   const space = state.board.spaces[action.space];
   if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
   return begin(state, { ...c, space: space.id, steps: 0 }, space.boss, space.id, false, action, rng, []);
+}
+
+// ---- the Arena (Robin, 2026-11-02) ----------------------------------------------------------------------------------
+
+/** The spot that is an area's arena, if the area has one. */
+export function arenaSpot(board: Board, area: string): string | null {
+  const id = ARENA.spots[area];
+  return id && board.spaces[id]?.kind === 'arena' ? id : null;
+}
+
+export function arenaFee(board: Board, area: string, mode: ArenaMode = 'normal'): number {
+  const tier = board.areas[area]?.tier ?? 1;
+  return Math.round(ARENA.fee[Math.min(tier, ARENA.fee.length) - 1]! * ARENA.modes[mode].fee);
+}
+
+export function arenaOpen(c: Character, now: number): boolean {
+  return !!c.arenaTest || isOn('arena', now);
+}
+
+/** Whether this mode is still to be tried today: each once per open day, whatever came of it. */
+export function arenaTried(c: Character, mode: string, now: number): boolean {
+  return !c.arenaTest && c.arenaDone?.day === calendarDay(now) && c.arenaDone.modes.includes(mode);
+}
+
+/** A wave's numbers, from the fighter: mostly what is worn, some the class's bare numbers at this level, so good gear helps without making it easy. */
+function arenaNumbers(c: Character, wave: number, mode: ArenaMode): { hp: number; attack: number; defense: number } {
+  const bare = baseNumbers(c.classId, c.level);
+  const worn = stats(c);
+  const w = ARENA.waves[wave - 1]!;
+  const m = ARENA.modes[mode];
+  const share = ARENA.wornShare;
+  const blend = (b: number, n: number): number => b * (1 - share) + n * share;
+  const attack = blend(bare.attack, worn.attack);
+  const maxHp = blend(bare.maxHp, worn.maxHp);
+  const defense = blend(bare.defense, worn.defense);
+  const grown = 1 + Math.max(0, c.level - 4) * ARENA.levelStep;
+  const cls = ARENA.classes[c.classId];
+  return {
+    hp: Math.round(attack * w.rounds * m.hp * grown * (cls?.hp ?? 1)),
+    // Its plain blow takes this share of the fighter's HP through their armour (a blow is cut by half the defense).
+    attack: Math.round(maxHp * w.hit * m.hit * grown * (cls?.hit ?? 1) + defense / 2),
+    defense: 0,
+  };
+}
+
+/** The next wave's fight: a creature of the land, or at the last a mini-boss, at the fighter's measure. */
+function arenaWave(state: GameState, c: Character, wave: number, mode: ArenaMode, action: Action, rng: Rng): ApplyResult {
+  const space = state.board.spaces[c.space]!;
+  const area = state.board.areas[space.area]!;
+  const w = ARENA.waves[wave - 1]!;
+  const pool = w.mini && area.miniBosses.length ? area.miniBosses : area.mobs;
+  const met = begin(state, c, pool[rng.int(pool.length) - 1]!, space.id, false, action, rng, []);
+  const me = met.state.characters[c.id]!;
+  const e = me.fight!.enemy;
+  const n = arenaNumbers(c, wave, mode);
+  // What it pays: a share of the mode's whole, gold by the fee and xp by the level's bar, less for one who has outgrown this land.
+  const fee = arenaFee(state.board, space.area, mode);
+  const bar = (PROGRESSION.xpForLevel[c.level] ?? PROGRESSION.xpForLevel.at(-1)!) - (PROGRESSION.xpForLevel[c.level - 1] ?? 0);
+  const outgrown = c.level > area.levels[1] + ARENA.outgrown.levelsOver ? ARENA.outgrown.xp : 1;
+  const grown = { ...e, level: c.level, role: w.mini ? ('mini' as const) : e.role, hp: n.hp, maxHp: n.hp, attack: n.attack, defense: n.defense, xp: Math.round(bar * ARENA.modes[mode].xpShare * w.pay * outgrown), gold: Math.round(fee * ARENA.modes[mode].gold * w.pay) };
+  return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: grown } }), events: met.events.map((ev) => (ev.type === 'fight' ? { ...ev, enemy: { ...grown, moves: grown.moves.map((m) => ({ ...m })) } } : ev)) };
+}
+
+function arena(state: GameState, action: ArenaAction, c: Character, rng: Rng, now: number): ApplyResult {
+  if (action.op === 'test') return { state: withCharacter(state, { ...c, arenaTest: !c.arenaTest }), events: [] };
+  const space = state.board.spaces[c.space];
+  if (action.op === 'enter') {
+    const busy = boardBusy(c);
+    if (busy) return reject(state, action, busy);
+    const mode = action.mode as ArenaMode;
+    if (!ARENA.modes[mode]) return reject(state, action, 'bad value');
+    if (!space || c.steps > 0 || space.kind !== 'arena' || !arenaOpen(c, now) || arenaTried(c, mode, now)) return reject(state, action, 'not now');
+    const fee = arenaFee(state.board, space.area, mode);
+    if (c.gold < fee) return reject(state, action, 'not enough gold');
+    const day = calendarDay(now);
+    const done = { day, modes: [...(c.arenaDone?.day === day ? c.arenaDone.modes : []), mode] };
+    return arenaWave(state, { ...c, gold: c.gold - fee, arena: { mode, wave: 1, gold: 0, xp: 0, flasks: 0 }, arenaDone: done }, 1, mode, action, rng);
+  }
+  const offer = c.offer;
+  const run = c.arena;
+  if (offer?.kind !== 'arena' || !run) return reject(state, action, 'nothing to answer');
+  const mode = run.mode as ArenaMode;
+  if (action.op === 'next') {
+    if (run.wave >= ARENA.waves.length) return reject(state, action, 'not now');
+    const wave = run.wave + 1;
+    return arenaWave(state, { ...c, offer: null, arena: { ...run, wave } }, wave, mode, action, rng);
+  }
+  const { arena: _done, ...left } = c;
+  const events: GameEvent[] = [{ type: 'arenaTaken', action: action.id, player: action.player, waves: run.wave, gold: run.gold, xp: run.xp }];
+  const levelBefore = left.level;
+  let next: Character = gainXp({ ...left, offer: null, gold: left.gold + run.gold }, run.xp, action, events);
+  let s = state;
+  if (offer.gear) {
+    const got = nextGearId(s);
+    s = got.state;
+    const m = ARENA.modes[mode];
+    const tier = (state.board.areas[space?.area ?? '']?.tier ?? 1) + m.rankUp;
+    const boost = GEAR.rarityBoost[run.wave >= ARENA.waves.length ? m.clearGear : m.midGear];
+    next = addLoot(next, rollGear(got.id, dropSlot(null, rng), tier, boost, rng, rollLine(rng), c.classId), action, events);
+  }
+  next = noteLevels(next, levelBefore, action, events);
+  return { state: withCharacter(s, next), events };
 }
 
 /** A note on the spot you stand on (mine, 2026-11-01): one of the set lines, one a player a spot, newest first, a few a spot. */
@@ -287,6 +393,8 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   };
 
   switch (space.kind) {
+    case 'arena':
+      return { state: withCharacter(state, c), events };
     case 'town': {
       const s = stats(c);
       const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana, visited: [...new Set([...(c.visited ?? []), space.id])] };

@@ -2,6 +2,7 @@
 // completed"). The one quest under way, how far along and what it pays; what you finished. Opened from the HUD's Quests button.
 
 import Phaser from 'phaser';
+import { CALENDAR, DAY_NAMES, weekday } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { icon, kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
@@ -53,10 +54,24 @@ export class QuestScene extends Phaser.Scene {
     y += 28;
     if (!done.length) this.add.text(24, y, 'None so far.', { fontFamily: FONT, fontSize: '15px', color: ink.dim });
     for (const q of done) {
-      if (y > 700) break;
+      if (y > 620) break;
       if (kitReady(this)) icon(this, 'mark_star', 36, y + 10).setScale(0.32);
       this.add.text(52, y, q.text, { fontFamily: FONT, fontSize: '14px', color: ink.text, wordWrap: { width: DESIGN_WIDTH - 90 }, maxLines: 1 });
       y += 26;
     }
+
+    // The week (Robin, 2026-11-02): today, and the days something is on.
+    const today = weekday(this.game_.now());
+    const events = Object.values(CALENDAR.events);
+    this.add.text(24, 654, 'This week', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: ink.dim });
+    DAY_NAMES.forEach((day, i) => {
+      const x = 42 + i * 55;
+      const on = events.some((e) => e.days.includes(i));
+      const face = this.add.graphics();
+      face.fillStyle(i === today ? 0xf4c14a : on ? 0xe3c9a0 : 0xd9d0bc, 1).fillRoundedRect(x - 24, 678, 48, 30, 8);
+      if (on) face.lineStyle(2, 0xa23c2c, 1).strokeRoundedRect(x - 24, 678, 48, 30, 8);
+      this.add.text(x, 693, day.slice(0, 3), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
+    });
+    this.add.text(CENTRE, 716, events.map((e) => `${e.name}: ${e.days.map((d) => DAY_NAMES[d]!.slice(0, 3)).join(', ')}`).join(' · '), { fontFamily: FONT, fontSize: '12.5px', fontStyle: 'bold', color: ink.dim }).setOrigin(0.5);
   }
 }

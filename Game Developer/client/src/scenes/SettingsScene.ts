@@ -121,6 +121,9 @@ export class SettingsScene extends Phaser.Scene {
       if (this.game_.me.fight) return;
       void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
     });
+    this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
+      void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+    });
     this.settingRow(rows.length + (code ? 3 : 2), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
     this.settingRow(rows.length + (code ? 4 : 3), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
       if (!window.confirm('Start over with a new character?')) return;

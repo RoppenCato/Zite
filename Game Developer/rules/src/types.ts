@@ -1,9 +1,9 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 23;
+export const STATE_VERSION = 24;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -196,7 +196,7 @@ export interface Quest {
 }
 
 /** A pending question the character must answer before rolling again: the gambler's, a town's errand, or a piece that found no room in the bag. */
-export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[]; from?: string } | { kind: 'roll'; what: 'flask' | 'gear' | 'find'; need: number; slot?: Slot; text?: string } | { kind: 'loot'; gear: GearItem };
+export type Offer = { kind: 'arena'; mode: string; wave: number; total: number; gold: number; xp: number; gear: boolean } | { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[]; from?: string } | { kind: 'roll'; what: 'flask' | 'gear' | 'find'; need: number; slot?: Slot; text?: string } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
   id: string;
@@ -232,6 +232,12 @@ export interface Character {
   /** Times each boss space's boss was beaten. */
   bossKills: Record<string, number>;
   offer: Offer | null;
+  /** A run in the Arena: the wave under way and the pot so far, lost on a fall. */
+  arena?: { mode: string; wave: number; gold: number; xp: number; flasks: number };
+  /** The Arena's modes already tried on this day: once each, so it cannot be farmed. */
+  arenaDone?: { day: number; modes: string[] };
+  /** A test switch: the Arena is open for this character whatever the day (to go before Alpha). */
+  arenaTest?: boolean;
   /** The errands carried, one a town at most. */
   quests: Quest[];
   /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
@@ -435,6 +441,8 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
+  /** The Arena: go in, go on to the next wave, take the pot; `test` opens it for this character. */
+  | { type: 'arena'; id: string; player: string; op: 'enter' | 'next' | 'take' | 'test'; mode?: string }
   /** The skill board: learn or raise an ability, carry or put down an ability, or reset in a town. */
   | { type: 'skill'; id: string; player: string; op: 'learn' | 'carry'; ability: string }
   /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
@@ -508,6 +516,7 @@ export type GameEvent =
   | { type: 'learned'; action: string; player: string; ability: string; rank: number }
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
+  | { type: 'arenaTaken'; action: string; player: string; waves: number; gold: number; xp: number }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
   /** Levels crossed or a boss beaten brought skill points. */
   | { type: 'skillPoints'; action: string; player: string; gained: number; free: number }

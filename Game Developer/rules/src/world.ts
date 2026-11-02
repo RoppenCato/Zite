@@ -1,3 +1,4 @@
+import { ARENA } from './data.ts';
 // The world: areas by tier, each a set of hubs (named spots at fixed positions) joined by roads (a spot every step,
 // laid along a curve), and passage roads between areas that start at a boss. buildBoard turns the hand-laid description
 // into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
@@ -239,4 +240,16 @@ export function roadPoints(
     });
   }
   return points;
+}
+
+/** The spots that are arenas (Robin, 2026-11-02: a place of its own). A road's end, renamed; on a world not laid yet, nothing changes. */
+export function withArenas(board: Board): Board {
+  let spaces = board.spaces;
+  for (const id of Object.values(ARENA.spots)) {
+    const space = spaces[id];
+    if (!space || space.kind === 'arena') continue;
+    if (spaces === board.spaces) spaces = { ...spaces };
+    spaces[id] = { ...space, kind: 'arena', name: 'The Arena' };
+  }
+  return spaces === board.spaces ? board : { ...board, spaces };
 }

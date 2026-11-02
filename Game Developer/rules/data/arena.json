@@ -1,0 +1,97 @@
+{
+  "_about": "The Arena (Robin, 2026-11-02: a place of its own, open only sometimes, three difficulties with one super hard, not too easy and not to be exploited). You pay to go in. Each win adds to the pot; take it or go on; fall or flee and the pot is lost. Fights scale to the fighter, half to the class's bare numbers at that level and half to what you wear, so neither coming back strong nor gearing up makes it trivial. Each mode once per open day. Numbers mine, set with tools/sim-arena.ts.",
+  "spots": {
+    "meadows": "farrows",
+    "thornwood": "stumprise",
+    "frostpeak": "oldpress"
+  },
+  "fee": [
+    30,
+    90,
+    220
+  ],
+  "waves": [
+    {
+      "rounds": 4,
+      "hit": 0.15,
+      "pay": 0.08
+    },
+    {
+      "rounds": 4.5,
+      "hit": 0.16,
+      "pay": 0.12
+    },
+    {
+      "rounds": 5,
+      "hit": 0.17,
+      "pay": 0.18
+    },
+    {
+      "rounds": 5.5,
+      "hit": 0.18,
+      "pay": 0.26
+    },
+    {
+      "rounds": 7,
+      "hit": 0.2,
+      "pay": 0.36,
+      "mini": true
+    }
+  ],
+  "modes": {
+    "normal": {
+      "name": "Normal",
+      "words": "A fair fight for your level.",
+      "hp": 1,
+      "hit": 1,
+      "fee": 1,
+      "gold": 3,
+      "xpShare": 0.35,
+      "midGear": "mini",
+      "clearGear": "mini",
+      "rankUp": 0
+    },
+    "hard": {
+      "name": "Hard",
+      "words": "Tough. Bring flasks.",
+      "hp": 1.3,
+      "hit": 1.3,
+      "fee": 2.5,
+      "gold": 3,
+      "xpShare": 0.7,
+      "midGear": "mini",
+      "clearGear": "boss",
+      "rankUp": 0
+    },
+    "nightmare": {
+      "name": "Nightmare",
+      "words": "Almost nobody walks out.",
+      "hp": 1.7,
+      "hit": 1.75,
+      "fee": 6,
+      "gold": 3.5,
+      "xpShare": 1.5,
+      "midGear": "boss",
+      "clearGear": "boss",
+      "rankUp": 1
+    }
+  },
+  "gearFrom": 3,
+  "outgrown": {
+    "levelsOver": 4,
+    "xp": 0.25
+  },
+  "wornShare": 0.8,
+  "flasks": 3,
+  "levelStep": 0.035,
+  "classes": {
+    "ranger": {
+      "hp": 1.2,
+      "hit": 1.15
+    },
+    "warrior": {
+      "hp": 0.9,
+      "hit": 0.9
+    }
+  }
+}
