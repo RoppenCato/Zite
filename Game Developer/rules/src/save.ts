@@ -121,11 +121,13 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withEastOpen(before);
+  // 29 → 30: the talent trees: every point back to spend again.
+  if (version === 29) return withArena(withTalents(up));
   // 28 → 29: the level curve moved; everyone keeps their level and how far along it they were.
-  if (version === 28) return withArena(onNewCurve(up));
+  if (version === 28) return withArena(withTalents(onNewCurve(up)));
   // 27 → 28: the hidden trails are laid.
-  if (version === 27) return withArena(onNewCurve(up));
-  if (version === 26) return withArena(onNewCurve(up));
+  if (version === 27) return withArena(withTalents(onNewCurve(up)));
+  if (version === 26) return withArena(withTalents(onNewCurve(up)));
   if (version === 25) return withArena(up);
   // 24 → 25: the dungeons are laid.
   if (version === 24) return withArena(up);
@@ -134,6 +136,10 @@ export function migrate(raw: unknown): GameState | null {
   // 22 → 23: the journal starts empty; nothing else moves.
   if (version === 22) return withArena(withJournal(up));
   return withArena(withJournal(toPaths(up)));
+}
+
+function withTalents(state: GameState): GameState {
+  return { ...state, characters: Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, resetSkills(c)])) };
 }
 
 const CURVE_BEFORE_29 = [0, 30, 80, 160, 280, 440, 650, 920, 1250, 1650, 2100, 2650, 3300, 4050, 4900, 5850, 6900, 8050, 9300, 10650, 12100, 13650, 15300, 17050, 18900, 20850, 22900, 25050, 27300, 29650];
@@ -207,7 +213,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

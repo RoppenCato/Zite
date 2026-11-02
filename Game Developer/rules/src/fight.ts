@@ -6,7 +6,7 @@
 // the guards and all the numbers are mine, first settings.
 
 import { noteBeaten } from './journal.ts';
-import { MAX_CARRIED, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
+import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
@@ -86,6 +86,9 @@ export function freshFight(enemy: Enemy, space: string, spawn: boolean): Fight {
 export function startFight(c: Character, enemyId: string, space: string, spawn: boolean, bestiary: Record<string, EnemyData> = {}, rng?: Rng): Character {
   const fight = freshFight(makeEnemy(enemyId, bestiary), space, spawn);
   const p = powers(c);
+  const talents = traitsOf(c);
+  if (talents.barrierStart) fight.barrier += Math.round(stats(c).maxHp * talents.barrierStart);
+  if (talents.meterStart) fight.meter += talents.meterStart;
   if (p.windstep) fight.evade += p.windstep;
   if (rng) fight.enemy.next = pickMove(fight.enemy, rng);
   // Weakness carried from the last fight takes hold here, and is used up by it.
@@ -239,7 +242,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (!ability || rank <= 0) return reject(state, action, 'no such ability');
       if (ability.oncePerFight && f.used.includes(move.ability)) return reject(state, action, 'already used');
       // Four go into a fight; with fewer carried, nothing known is left behind.
-      if (r.c.carried.length >= MAX_CARRIED && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
+      if (r.c.carried.length >= carriedLimit(r.c.level) && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
       const meterCost = ability.meterAll ? f.meter : (ability.meter ?? 0);
       if ((ability.meter && f.meter < ability.meter) || (ability.meterAll && f.meter <= 0)) return reject(state, action, 'not enough meter');
       const manaCost = Math.ceil((p.arcane ? ability.mana * p.arcane : ability.mana) * (1 - (r.s.bonus.focus ?? 0)));
@@ -382,7 +385,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           }
         }
         if (rk.burn) {
-          f.enemy.burn = { rounds: rk.burn.rounds, damage: Math.max(1, Math.round((r.s.attack + r.s.magic) * rk.burn.power)) };
+          f.enemy.burn = { rounds: rk.burn.rounds, damage: Math.max(1, Math.round((r.s.attack + r.s.magic) * rk.burn.power * (traits.burnPower ?? 1))) };
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'burn', rounds: rk.burn.rounds });
         }
         if (rk.sunder) {
@@ -502,9 +505,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       } else if (f.dance && !exposed && rng.next() < f.dance.chance) {
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
         if (traits.dodgeCrit) f.sureCrit = Math.max(f.sureCrit, 1);
+        if (traits.dodgeHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.dodgeHeal)));
       } else if (held === 'dodge' && rng.next() < PROGRESSION.guards.dodge + r.s.dodge) {
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
         if (traits.dodgeCrit) f.sureCrit = Math.max(f.sureCrit, 1);
+        if (traits.dodgeHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.dodgeHeal)));
       } else {
         landed = true;
         let dealt = b.damage;
@@ -516,6 +521,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         }
         if (p.bulwark && r.c.hp < r.s.maxHp / 2) dealt = Math.ceil(dealt * (1 - p.bulwark));
         if (traits.damageTaken) dealt = Math.ceil(dealt * traits.damageTaken);
+        if (traits.lowHpTaken && r.c.hp < r.s.maxHp / 3) dealt = Math.ceil(dealt * traits.lowHpTaken);
         const beforeGuard = dealt;
         if (held === 'block' && traits.shieldMana) {
           // The Magician's Mana Shield (Robin, 2026-11-02): part of the blow is paid in mana while there is any.
@@ -525,7 +531,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
             events.push({ type: 'mana', action: id, player, delta: -paid, mana: r.c.mana });
             dealt -= paid;
           }
-        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? PROGRESSION.guards.block) - (r.s.bonus.wall ?? 0)));
+        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? PROGRESSION.guards.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
         if (held === 'brace') {
           dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
           r.c = restoreMana(r.c, Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
@@ -597,6 +603,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     f.attackUp.rounds -= 1;
     if (f.attackUp.rounds <= 0) f.attackUp = null;
   }
+  if (traits.hpRegen) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.hpRegen * (traits.healPower ?? 1))));
+  if (traits.manaRegen) r.c = restoreMana(r.c, Math.max(1, Math.round(r.s.maxMana * traits.manaRegen)), action, events);
   if (f.regen) {
     healing(r, Math.max(1, Math.round(r.s.maxHp * f.regen.share * (traits.healPower ?? 1))));
     f.regen = f.regen.rounds > 1 ? { ...f.regen, rounds: f.regen.rounds - 1 } : null;
@@ -665,6 +673,16 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
   const infused = how.melee ? f.infuse : null;
   if (traits.damageDealt) power *= traits.damageDealt;
   if (spell && traits.spellPower) power *= traits.spellPower;
+  // The talents: where you stand, and what state it is in.
+  const share = r.c.hp / Math.max(1, s.maxHp);
+  if (traits.lowHpDamage && share < 1 / 3) power *= traits.lowHpDamage;
+  if (traits.highHpDamage && share > 0.8) power *= traits.highHpDamage;
+  if (traits.executeDamage && f.enemy.hp < f.enemy.maxHp / 3) power *= traits.executeDamage;
+  if (traits.firstRoundDamage && f.round === 1) power *= traits.firstRoundDamage;
+  if (traits.burningDamage && f.enemy.burn) power *= traits.burningDamage;
+  if (traits.poisonedDamage && f.enemy.poison) power *= traits.poisonedDamage;
+  if (traits.weakenedDamage && f.enemy.weakened) power *= traits.weakenedDamage;
+  if (traits.stunnedDamage && f.enemy.stunned > 0) power *= traits.stunnedDamage;
   if (spell && f.nextSpell) {
     power *= f.nextSpell;
     f.nextSpell = 0;
@@ -704,12 +722,15 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     }
     const b = blow(s.attack + (spell ? s.magic : 0), hitPower, how.ignoreDefense ? 0 : Math.floor(enemyDefense(f.enemy) * (1 - (s.bonus.ruin ?? 0))), chance, rng);
     if (b.crit && s.bonus.cruelty) b.damage = Math.round(b.damage * (1 + s.bonus.cruelty));
+    if (b.crit && traits.critPower) b.damage = Math.round(b.damage * (1 + traits.critPower));
     // Split: the hits share one blow's power, so defense counts once, not on every small hit.
     if (how.split) b.damage = Math.max(1, Math.round(b.damage / hits));
     if (traits.critStreak) f.streak = b.crit ? 0 : f.streak + 1;
     f.enemy.hp = Math.max(0, f.enemy.hp - b.damage);
     events.push({ type: 'hit', action: id, player, by: 'player', move, damage: b.damage, crit: b.crit, hp: f.enemy.hp, absorbed: 0 });
     if (b.crit) gainMeter(r, 'miss', 1);
+    if (b.crit && traits.critHeal) healing(r, Math.max(1, Math.round(s.maxHp * traits.critHeal)));
+    if (b.crit && traits.critMana) r.c = restoreMana(r.c, Math.max(1, Math.round(s.maxMana * traits.critMana)), r.action, events);
     if (s.lifesteal > 0) {
       const back = Math.max(1, Math.round(b.damage * s.lifesteal));
       const hp = Math.min(s.maxHp, r.c.hp + back);
@@ -899,6 +920,9 @@ function win(r: Round): ApplyResult {
   events.push({ type: 'won', action: id, player, xp, gold });
   if (c.arena) return arenaWon(r, xp, gold);
   let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };
+  const talents = traitsOf(c);
+  if (talents.winHeal) next = { ...next, hp: Math.min(r.s.maxHp, next.hp + Math.round(r.s.maxHp * talents.winHeal)) };
+  if (talents.winMana) next = { ...next, mana: Math.min(r.s.maxMana, next.mana + Math.round(r.s.maxMana * talents.winMana)) };
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
   next = questProgress(next, { beat: e.id }, rng, action, events);

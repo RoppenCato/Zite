@@ -7,7 +7,7 @@ import { apply, newGame } from '../src/game.ts';
 import { stats } from '../src/gear.ts';
 import { groundAt, inTownWalls, placeAt } from '../src/grounds.ts';
 import { makeRng } from '../src/rng.ts';
-import { MAX_CARRIED, pointsForLevel, pointsFree, specialization } from '../src/skills.ts';
+import { carriedLimit, MAX_CARRIED, needsFor, pointsForLevel, pointsFree, specialization, traitsOf, withCore } from '../src/skills.ts';
 import type { Action, Character, ClassId, Enemy, EnemyMove, FightMove, GameEvent, GameState, Guard } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
@@ -57,17 +57,28 @@ describe('every class starts with a way to spend its meter', () => {
     expect(kit.every((a) => a.level === 1)).toBe(true);
   });
 
-  it('every ability belongs to its class; every tree goes ability, rule, ability, signature, by rising level', () => {
+  it('every ability belongs to its class; every tree has eight tiers by rising level, a signature at its foot, and more to learn than points to spend', () => {
     for (const [classId, cls] of Object.entries(CLASS_DATA)) {
       expect(Object.keys(cls.trees)).toHaveLength(3);
       for (const id of cls.core) expect(ABILITIES[id]!.classId).toBe(classId);
+      const ranks = Object.values(cls.trees).flatMap((t) => t.nodes).reduce((sum, id) => sum + ABILITIES[id]!.ranks.length, 0);
+      expect(ranks).toBeGreaterThan(pointsForLevel(30) * 2);
       for (const tree of Object.values(cls.trees)) {
-        expect(tree.nodes).toHaveLength(4);
-        expect(tree.nodes.map((id) => !!ABILITIES[id]!.rule)).toEqual([false, true, false, false]);
-        const levels = tree.nodes.map((id) => ABILITIES[id]!.level);
+        expect(tree.tiers).toHaveLength(8);
+        expect(tree.tiers[7]).toHaveLength(1);
+        expect(tree.nodes).toEqual(tree.tiers.flat());
+        const levels = tree.tiers.map((row) => ABILITIES[row[0]!]!.level);
         expect(levels).toEqual([...levels].sort((a, b) => a - b));
+        expect(levels[7]).toBe(30);
         for (const id of tree.nodes) expect(ABILITIES[id]!.classId).toBe(classId);
       }
+    }
+  });
+  it('every talent does something: an active a rank that moves, a passive a known rule', () => {
+    for (const a of Object.values(ABILITIES)) {
+      expect(a.ranks.length, a.name).toBeGreaterThan(0);
+      if (a.rule) expect(Object.keys(a.rule).length, a.name).toBeGreaterThan(0);
+      else expect(Object.keys(a.ranks[0]!).length, a.name).toBeGreaterThan(0);
     }
   });
 });
@@ -291,36 +302,51 @@ describe('the skill board', () => {
     return { ...s, characters: { [P]: { ...me(s), ...patch } } };
   };
 
-  it('a point every level to ten, then every second level', () => {
-    expect([1, 2, 5, 10, 11, 12, 30].map(pointsForLevel)).toEqual([0, 1, 4, 9, 9, 10, 19]);
+  it('a point every level', () => {
+    expect([1, 2, 5, 10, 11, 12, 30].map(pointsForLevel)).toEqual([0, 1, 4, 9, 10, 11, 29]);
   });
 
-  it('a point learns an ability from its level, or raises a rank, and none are left at the end', () => {
-    const none = at({ level: 1 });
-    expect(apply(none, skill({ op: 'learn', ability: 'heavy-blow' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
-    const two = at({ level: 2 });
-    expect(pointsFree(me(two))).toBe(1);
-    expect(apply(two, skill({ op: 'learn', ability: 'shield-wall' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' }); // from level 3
-    const learned = apply(two, skill({ op: 'learn', ability: 'shield-bash' }), makeRng('a'), NOW);
-    expect(me(learned.state).abilities['shield-bash']).toBe(1);
-    expect(me(learned.state).carried).toContain('shield-bash');
-    expect(pointsFree(me(learned.state))).toBe(0);
+  it('the class\'s own four come free with the level, and a point raises them', () => {
+    const two = at({ level: 1 });
+    expect(me(two).abilities).toEqual({ 'heavy-blow': 1, execute: 1 });
+    expect(apply(two, skill({ op: 'learn', ability: 'heavy-blow' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const grown = withCore(me(at({ level: 3 })));
+    expect(grown.abilities).toMatchObject({ 'shield-bash': 1, 'shield-wall': 1 });
+    expect(grown.carried).toHaveLength(4);
+    expect(pointsFree(grown)).toBe(2);
     const raised = apply(at({ level: 2 }), skill({ op: 'learn', ability: 'heavy-blow' }), makeRng('a'), NOW);
     expect(me(raised.state).abilities['heavy-blow']).toBe(2);
+    expect(pointsFree(me(raised.state))).toBe(0);
   });
 
-  it('a tree opens from the top: each node needs the one above and its level; several trees can be climbed', () => {
-    expect(apply(at({ level: 5 }), skill({ op: 'learn', ability: 'knight-oath' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
-    expect(apply(at({ level: 2 }), skill({ op: 'learn', ability: 'shield-slam' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
-    const first = apply(at({ level: 5 }), skill({ op: 'learn', ability: 'shield-slam' }), makeRng('a'), NOW);
-    expect(first.events[0]).toMatchObject({ type: 'learned' });
-    const oath = apply(first.state, skill({ op: 'learn', ability: 'knight-oath' }), makeRng('a'), NOW);
-    expect(oath.events[0]).toMatchObject({ type: 'learned' });
-    expect(me(oath.state).carried).not.toContain('knight-oath');
-    expect(apply(oath.state, skill({ op: 'carry', ability: 'knight-oath' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
-    expect(apply(oath.state, skill({ op: 'learn', ability: 'iron-retort' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' }); // from level 8
-    expect(apply(oath.state, skill({ op: 'learn', ability: 'holy-strike' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'learned' });
-    expect(specialization(me(oath.state))).toBe('Knight');
+  it('a tier asks for its level and for points already in that tree; several trees can be climbed; a passive has ranks', () => {
+    expect(apply(at({ level: 1 }), skill({ op: 'learn', ability: 'shield-slam' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    let s = at({ level: 9 });
+    const learn = (ability: string) => {
+      const r = apply(s, skill({ op: 'learn', ability }), makeRng('a'), NOW);
+      s = r.state;
+      return r.events[0];
+    };
+    expect(learn('knight-oath')).toMatchObject({ type: 'rejected' });
+    expect(learn('shield-slam')).toMatchObject({ type: 'learned' });
+    expect(learn('kni-plate')).toMatchObject({ type: 'learned' });
+    expect(learn('kni-plate')).toMatchObject({ type: 'learned' });
+    expect(needsFor(me(s), 'knight-oath')).toEqual({ level: 0, points: 0 });
+    expect(learn('knight-oath')).toMatchObject({ type: 'learned' });
+    expect(me(s).carried).not.toContain('knight-oath');
+    expect(apply(s, skill({ op: 'carry', ability: 'knight-oath' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    expect(needsFor(me(s), 'iron-retort')).toEqual({ level: 0, points: 2 });
+    expect(learn('iron-retort')).toMatchObject({ type: 'rejected' });
+    expect(learn('holy-strike')).toMatchObject({ type: 'learned' });
+    expect(specialization(me(s))).toBe('Knight');
+    expect(traitsOf(me(s)).defenseMult).toBeCloseTo(1.04 * 1.04 * 1.2);
+  });
+
+  it('a passive does what it says: a win heals, a low fighter hits harder, a fight starts with a barrier', () => {
+    const c = me(at({ level: 20, abilities: { 'kni-bastion': 2 } }));
+    const started = startFight(c, 'slime', c.space, false);
+    expect(started.fight!.barrier).toBe(Math.round(stats(c).maxHp * 0.12));
+    expect(traitsOf({ ...c, abilities: { 'ber-wounds': 2 } }).lowHpDamage).toBeCloseTo(1.06 * 1.06);
   });
 
   it('for testing, another class at the same level, or a level more', () => {
@@ -332,10 +358,11 @@ describe('the skill board', () => {
     expect(me(up.state).attack).toBe(24);
   });
 
-  it('four are carried; what is not carried cannot be used in a fight once four are', () => {
+  it('four are carried, five from level 15; what is not carried cannot be used in a fight once they are full', () => {
     const abilities = { 'heavy-blow': 1, execute: 1, 'shield-bash': 1, 'shield-wall': 1, reckless: 1 };
     const full = at({ level: 10, abilities, carried: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'] });
-    expect(me(full).carried).toHaveLength(MAX_CARRIED);
+    expect(me(full).carried).toHaveLength(carriedLimit(10));
+    expect(carriedLimit(15)).toBe(MAX_CARRIED);
     expect(apply(full, skill({ op: 'carry', ability: 'reckless' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
     const left = apply(full, skill({ op: 'carry', ability: 'heavy-blow' }), makeRng('a'), NOW);
     expect(me(left.state).carried).not.toContain('heavy-blow');
@@ -350,7 +377,7 @@ describe('the skill board', () => {
     const start = me(spent).space;
     expect(apply({ ...spent, characters: { [P]: { ...me(spent), space: 's1' } } }, skill({ op: 'reset' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
     const reset = apply({ ...spent, characters: { [P]: { ...me(spent), space: start } } }, skill({ op: 'reset' }), makeRng('a'), NOW);
-    expect(me(reset.state)).toMatchObject({ abilities: { 'heavy-blow': 1, execute: 1 }, carried: ['heavy-blow', 'execute'] });
+    expect(me(reset.state)).toMatchObject({ abilities: { 'heavy-blow': 1, execute: 1, 'shield-bash': 1, 'shield-wall': 1 }, carried: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'] });
     expect(pointsFree(me(reset.state))).toBe(pointsForLevel(8));
   });
 });

@@ -35,9 +35,53 @@
         "text": "Heals as it fights and wears the enemy down.",
         "nodes": [
           "holy-strike",
+          "pal-devotion",
           "paladin-oath",
+          "pal-steadfast",
           "judgement",
-          "last-light"
+          "pal-mercy",
+          "pal-consecrate",
+          "pal-wrath",
+          "last-light",
+          "pal-aura",
+          "pal-avenger",
+          "pal-faith",
+          "pal-exorcism",
+          "pal-zeal",
+          "pal-miracle"
+        ],
+        "tiers": [
+          [
+            "holy-strike",
+            "pal-devotion"
+          ],
+          [
+            "paladin-oath",
+            "pal-steadfast"
+          ],
+          [
+            "judgement",
+            "pal-mercy"
+          ],
+          [
+            "pal-consecrate",
+            "pal-wrath"
+          ],
+          [
+            "last-light",
+            "pal-aura"
+          ],
+          [
+            "pal-avenger",
+            "pal-faith"
+          ],
+          [
+            "pal-exorcism",
+            "pal-zeal"
+          ],
+          [
+            "pal-miracle"
+          ]
         ]
       },
       "berserker": {
@@ -45,9 +89,53 @@
         "text": "Hits harder and takes more for it.",
         "nodes": [
           "reckless",
+          "ber-fury",
           "berserker-rage",
+          "ber-thirst",
           "blood-price",
-          "bloodbath"
+          "ber-savage",
+          "ber-cleave",
+          "ber-wounds",
+          "bloodbath",
+          "ber-keen",
+          "ber-frenzy",
+          "ber-drink",
+          "ber-rampage",
+          "ber-iron",
+          "ber-deathwish"
+        ],
+        "tiers": [
+          [
+            "reckless",
+            "ber-fury"
+          ],
+          [
+            "berserker-rage",
+            "ber-thirst"
+          ],
+          [
+            "blood-price",
+            "ber-savage"
+          ],
+          [
+            "ber-cleave",
+            "ber-wounds"
+          ],
+          [
+            "bloodbath",
+            "ber-keen"
+          ],
+          [
+            "ber-frenzy",
+            "ber-drink"
+          ],
+          [
+            "ber-rampage",
+            "ber-iron"
+          ],
+          [
+            "ber-deathwish"
+          ]
         ]
       },
       "knight": {
@@ -55,9 +143,53 @@
         "text": "More defense, and what hits it gets hurt.",
         "nodes": [
           "shield-slam",
+          "kni-plate",
           "knight-oath",
+          "kni-guard",
           "iron-retort",
-          "bulwark"
+          "kni-spikes",
+          "kni-taunt",
+          "kni-resolve",
+          "bulwark",
+          "kni-bastion",
+          "kni-charge",
+          "kni-mail",
+          "kni-rampart",
+          "kni-riposte",
+          "kni-fortress"
+        ],
+        "tiers": [
+          [
+            "shield-slam",
+            "kni-plate"
+          ],
+          [
+            "knight-oath",
+            "kni-guard"
+          ],
+          [
+            "iron-retort",
+            "kni-spikes"
+          ],
+          [
+            "kni-taunt",
+            "kni-resolve"
+          ],
+          [
+            "bulwark",
+            "kni-bastion"
+          ],
+          [
+            "kni-charge",
+            "kni-mail"
+          ],
+          [
+            "kni-rampart",
+            "kni-riposte"
+          ],
+          [
+            "kni-fortress"
+          ]
         ]
       }
     }
@@ -103,9 +235,53 @@
         "text": "Fire: huge hits that leave the target burning.",
         "nodes": [
           "fireball",
+          "wiz-ember",
           "wizard-flame",
+          "wiz-focus",
           "detonate",
-          "meteor"
+          "wiz-well",
+          "wiz-scorch",
+          "wiz-kindling",
+          "meteor",
+          "wiz-clarity",
+          "wiz-pillar",
+          "wiz-sear",
+          "wiz-firestorm",
+          "wiz-heart",
+          "wiz-phoenix"
+        ],
+        "tiers": [
+          [
+            "fireball",
+            "wiz-ember"
+          ],
+          [
+            "wizard-flame",
+            "wiz-focus"
+          ],
+          [
+            "detonate",
+            "wiz-well"
+          ],
+          [
+            "wiz-scorch",
+            "wiz-kindling"
+          ],
+          [
+            "meteor",
+            "wiz-clarity"
+          ],
+          [
+            "wiz-pillar",
+            "wiz-sear"
+          ],
+          [
+            "wiz-firestorm",
+            "wiz-heart"
+          ],
+          [
+            "wiz-phoenix"
+          ]
         ]
       },
       "cleric": {
@@ -113,9 +289,53 @@
         "text": "Heals itself and strikes with holy light.",
         "nodes": [
           "smite",
+          "cle-prayer",
           "cleric-grace",
+          "cle-calm",
           "mend",
-          "judgement-day"
+          "cle-halo",
+          "cle-renew",
+          "cle-radiance",
+          "judgement-day",
+          "cle-ward",
+          "cle-lance",
+          "cle-rest",
+          "cle-sanctuary",
+          "cle-zeal",
+          "cle-ascend"
+        ],
+        "tiers": [
+          [
+            "smite",
+            "cle-prayer"
+          ],
+          [
+            "cleric-grace",
+            "cle-calm"
+          ],
+          [
+            "mend",
+            "cle-halo"
+          ],
+          [
+            "cle-renew",
+            "cle-radiance"
+          ],
+          [
+            "judgement-day",
+            "cle-ward"
+          ],
+          [
+            "cle-lance",
+            "cle-rest"
+          ],
+          [
+            "cle-sanctuary",
+            "cle-zeal"
+          ],
+          [
+            "cle-ascend"
+          ]
         ]
       },
       "spellsword": {
@@ -123,9 +343,53 @@
         "text": "Ice or lightning in every melee hit.",
         "nodes": [
           "frost-blade",
+          "spl-edge",
           "spellsword-bond",
+          "spl-plate",
           "storm-blade",
-          "arc-slash"
+          "spl-eye",
+          "spl-thrust",
+          "spl-flow",
+          "arc-slash",
+          "spl-parry",
+          "spl-whirl",
+          "spl-surge",
+          "spl-tempest",
+          "spl-hunger",
+          "spl-avatar"
+        ],
+        "tiers": [
+          [
+            "frost-blade",
+            "spl-edge"
+          ],
+          [
+            "spellsword-bond",
+            "spl-plate"
+          ],
+          [
+            "storm-blade",
+            "spl-eye"
+          ],
+          [
+            "spl-thrust",
+            "spl-flow"
+          ],
+          [
+            "arc-slash",
+            "spl-parry"
+          ],
+          [
+            "spl-whirl",
+            "spl-surge"
+          ],
+          [
+            "spl-tempest",
+            "spl-hunger"
+          ],
+          [
+            "spl-avatar"
+          ]
         ]
       }
     }
@@ -173,9 +437,53 @@
         "text": "Strikes first and can always get away.",
         "nodes": [
           "shuriken",
+          "nin-hands",
           "ninja-step",
+          "nin-fleet",
           "smoke-escape",
-          "clone"
+          "nin-first",
+          "nin-kunai",
+          "nin-calm",
+          "clone",
+          "nin-edge",
+          "nin-vanish",
+          "nin-grip",
+          "nin-lotus",
+          "nin-feint",
+          "nin-army"
+        ],
+        "tiers": [
+          [
+            "shuriken",
+            "nin-hands"
+          ],
+          [
+            "ninja-step",
+            "nin-fleet"
+          ],
+          [
+            "smoke-escape",
+            "nin-first"
+          ],
+          [
+            "nin-kunai",
+            "nin-calm"
+          ],
+          [
+            "clone",
+            "nin-edge"
+          ],
+          [
+            "nin-vanish",
+            "nin-grip"
+          ],
+          [
+            "nin-lotus",
+            "nin-feint"
+          ],
+          [
+            "nin-army"
+          ]
         ]
       },
       "shadow": {
@@ -183,9 +491,53 @@
         "text": "Takes one blow in full, then almost nothing can touch it.",
         "nodes": [
           "shadow-dance",
+          "sha-dark",
           "shadow-pact",
+          "sha-cover",
           "ambush",
-          "assassinate"
+          "sha-opening",
+          "sha-cut",
+          "sha-streak",
+          "assassinate",
+          "sha-finish",
+          "sha-blind",
+          "sha-sight",
+          "sha-gloom",
+          "sha-feed",
+          "sha-reaper"
+        ],
+        "tiers": [
+          [
+            "shadow-dance",
+            "sha-dark"
+          ],
+          [
+            "shadow-pact",
+            "sha-cover"
+          ],
+          [
+            "ambush",
+            "sha-opening"
+          ],
+          [
+            "sha-cut",
+            "sha-streak"
+          ],
+          [
+            "assassinate",
+            "sha-finish"
+          ],
+          [
+            "sha-blind",
+            "sha-sight"
+          ],
+          [
+            "sha-gloom",
+            "sha-feed"
+          ],
+          [
+            "sha-reaper"
+          ]
         ]
       },
       "alchemist": {
@@ -193,9 +545,53 @@
         "text": "Poison on the blade, and better potions.",
         "nodes": [
           "poison-coat",
+          "alc-toxin",
           "alchemist-brew",
+          "alc-flask",
           "caustic-flask",
-          "bitter-end"
+          "alc-fumes",
+          "alc-vitriol",
+          "alc-tough",
+          "bitter-end",
+          "alc-mend",
+          "alc-bomb",
+          "alc-salve",
+          "alc-plague",
+          "alc-tonic",
+          "alc-philosopher"
+        ],
+        "tiers": [
+          [
+            "poison-coat",
+            "alc-toxin"
+          ],
+          [
+            "alchemist-brew",
+            "alc-flask"
+          ],
+          [
+            "caustic-flask",
+            "alc-fumes"
+          ],
+          [
+            "alc-vitriol",
+            "alc-tough"
+          ],
+          [
+            "bitter-end",
+            "alc-mend"
+          ],
+          [
+            "alc-bomb",
+            "alc-salve"
+          ],
+          [
+            "alc-plague",
+            "alc-tonic"
+          ],
+          [
+            "alc-philosopher"
+          ]
         ]
       }
     }
@@ -244,9 +640,53 @@
         "text": "Every counterattack is two arrows.",
         "nodes": [
           "quick-reflex",
+          "ran-draw",
           "ranger-eye",
+          "ran-hawkeye",
           "rain-arrows",
-          "return-fire"
+          "ran-quick",
+          "ran-pin",
+          "ran-steady",
+          "return-fire",
+          "ran-lethal",
+          "ran-snipe",
+          "ran-reflex",
+          "ran-barrage",
+          "ran-opening",
+          "ran-master"
+        ],
+        "tiers": [
+          [
+            "quick-reflex",
+            "ran-draw"
+          ],
+          [
+            "ranger-eye",
+            "ran-hawkeye"
+          ],
+          [
+            "rain-arrows",
+            "ran-quick"
+          ],
+          [
+            "ran-pin",
+            "ran-steady"
+          ],
+          [
+            "return-fire",
+            "ran-lethal"
+          ],
+          [
+            "ran-snipe",
+            "ran-reflex"
+          ],
+          [
+            "ran-barrage",
+            "ran-opening"
+          ],
+          [
+            "ran-master"
+          ]
         ]
       },
       "beastmaster": {
@@ -254,9 +694,53 @@
         "text": "Fights beside its owl.",
         "nodes": [
           "hawk",
+          "bea-bond",
           "beast-bond",
+          "bea-feathers",
           "owl-swoop",
-          "great-owl"
+          "bea-keen",
+          "bea-call",
+          "bea-pack",
+          "great-owl",
+          "bea-mend",
+          "bea-stoop",
+          "bea-fierce",
+          "bea-flock",
+          "bea-care",
+          "bea-king"
+        ],
+        "tiers": [
+          [
+            "hawk",
+            "bea-bond"
+          ],
+          [
+            "beast-bond",
+            "bea-feathers"
+          ],
+          [
+            "owl-swoop",
+            "bea-keen"
+          ],
+          [
+            "bea-call",
+            "bea-pack"
+          ],
+          [
+            "great-owl",
+            "bea-mend"
+          ],
+          [
+            "bea-stoop",
+            "bea-fierce"
+          ],
+          [
+            "bea-flock",
+            "bea-care"
+          ],
+          [
+            "bea-king"
+          ]
         ]
       },
       "trapper": {
@@ -264,9 +748,53 @@
         "text": "Reads what comes next and has a trap waiting.",
         "nodes": [
           "trap",
+          "tra-wire",
           "trapper-craft",
+          "tra-read",
           "snare",
-          "spike-trap"
+          "tra-barb",
+          "tra-pit",
+          "tra-prepared",
+          "spike-trap",
+          "tra-cunning",
+          "tra-net",
+          "tra-venom",
+          "tra-mine",
+          "tra-patient",
+          "tra-master"
+        ],
+        "tiers": [
+          [
+            "trap",
+            "tra-wire"
+          ],
+          [
+            "trapper-craft",
+            "tra-read"
+          ],
+          [
+            "snare",
+            "tra-barb"
+          ],
+          [
+            "tra-pit",
+            "tra-prepared"
+          ],
+          [
+            "spike-trap",
+            "tra-cunning"
+          ],
+          [
+            "tra-net",
+            "tra-venom"
+          ],
+          [
+            "tra-mine",
+            "tra-patient"
+          ],
+          [
+            "tra-master"
+          ]
         ]
       }
     }

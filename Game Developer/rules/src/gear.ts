@@ -89,6 +89,8 @@ export function stats(c: Character): Stats {
   if (traits.defenseMult) defense = Math.round(defense * traits.defenseMult);
   if (bonus.turtle) defense = Math.round(defense * (1 + bonus.turtle));
   if (traits.hpMult) maxHp = Math.round(maxHp * traits.hpMult);
+  if (traits.attackMult) attack = Math.round(attack * traits.attackMult);
+  if (traits.manaMult) maxMana = Math.round(maxMana * traits.manaMult);
   const p = powers(c);
   if (p.bloodthirst) {
     // Gorefang: harder the more HP is missing, up to the value more.

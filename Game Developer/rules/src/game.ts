@@ -2,7 +2,7 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
-import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
+import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './skills.ts';
 import { notePlace } from './journal.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
@@ -1150,7 +1150,7 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
     if (!canLearn(c, action.ability)) return reject(state, action, 'not now');
     const rank = (c.abilities[action.ability] ?? 0) + 1;
     const isRule = !!ABILITIES[action.ability]!.rule;
-    const carried = isRule || c.carried.includes(action.ability) || c.carried.length >= MAX_CARRIED ? c.carried : [...c.carried, action.ability];
+    const carried = isRule || c.carried.includes(action.ability) || c.carried.length >= carriedLimit(c.level) ? c.carried : [...c.carried, action.ability];
     return done({ ...c, carried, abilities: { ...c.abilities, [action.ability]: rank } }, [{ type: 'learned', action: action.id, player: action.player, ability: action.ability, rank }]);
   }
   if (action.op === 'testClass') {
@@ -1180,7 +1180,7 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
   if (action.op === 'carry') {
     if (!c.abilities[action.ability] || ABILITIES[action.ability]?.rule) return reject(state, action, 'no such ability');
     if (c.carried.includes(action.ability)) return done({ ...c, carried: c.carried.filter((a) => a !== action.ability) });
-    if (c.carried.length >= MAX_CARRIED) return reject(state, action, 'not now');
+    if (c.carried.length >= carriedLimit(c.level)) return reject(state, action, 'not now');
     return done({ ...c, carried: [...c.carried, action.ability] });
   }
   const kind = state.board.spaces[c.space]?.kind;

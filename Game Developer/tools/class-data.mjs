@@ -144,6 +144,216 @@ const C = {
   },
 };
 
+// ---- The talent trees (Robin, 2026-11-02: "think like how wow classic does it, where you mainly go down one tree, and take some in the others"; "enough points and abilities up to level 30"; "classes to feel different").
+// Eight tiers a tree; each asks for points already in that tree and a level. Mine: every name, number and pairing. Passives scale by rank.
+const pas = (name, text, traits, n = 3) => ({ name, text, mana: 0, rule: traits, ranks: Array.from({ length: n }, () => ({})) });
+const act = (name, text, mana, ranks, extra = {}) => ({ name, text, mana, ranks, ...extra });
+const TALENTS = {
+  warrior: {
+    paladin: [
+      ['holy-strike', 'pal-devotion'], ['paladin-oath', 'pal-steadfast'], ['judgement', 'pal-mercy'], ['pal-consecrate', 'pal-wrath'], ['last-light', 'pal-aura'], ['pal-avenger', 'pal-faith'], ['pal-exorcism', 'pal-zeal'], ['pal-miracle'],
+    ],
+    berserker: [
+      ['reckless', 'ber-fury'], ['berserker-rage', 'ber-thirst'], ['blood-price', 'ber-savage'], ['ber-cleave', 'ber-wounds'], ['bloodbath', 'ber-keen'], ['ber-frenzy', 'ber-drink'], ['ber-rampage', 'ber-iron'], ['ber-deathwish'],
+    ],
+    knight: [
+      ['shield-slam', 'kni-plate'], ['knight-oath', 'kni-guard'], ['iron-retort', 'kni-spikes'], ['kni-taunt', 'kni-resolve'], ['bulwark', 'kni-bastion'], ['kni-charge', 'kni-mail'], ['kni-rampart', 'kni-riposte'], ['kni-fortress'],
+    ],
+  },
+  mage: {
+    wizard: [
+      ['fireball', 'wiz-ember'], ['wizard-flame', 'wiz-focus'], ['detonate', 'wiz-well'], ['wiz-scorch', 'wiz-kindling'], ['meteor', 'wiz-clarity'], ['wiz-pillar', 'wiz-sear'], ['wiz-firestorm', 'wiz-heart'], ['wiz-phoenix'],
+    ],
+    cleric: [
+      ['smite', 'cle-prayer'], ['cleric-grace', 'cle-calm'], ['mend', 'cle-halo'], ['cle-renew', 'cle-radiance'], ['judgement-day', 'cle-ward'], ['cle-lance', 'cle-rest'], ['cle-sanctuary', 'cle-zeal'], ['cle-ascend'],
+    ],
+    spellsword: [
+      ['frost-blade', 'spl-edge'], ['spellsword-bond', 'spl-plate'], ['storm-blade', 'spl-eye'], ['spl-thrust', 'spl-flow'], ['arc-slash', 'spl-parry'], ['spl-whirl', 'spl-surge'], ['spl-tempest', 'spl-hunger'], ['spl-avatar'],
+    ],
+  },
+  rogue: {
+    ninja: [
+      ['shuriken', 'nin-hands'], ['ninja-step', 'nin-fleet'], ['smoke-escape', 'nin-first'], ['nin-kunai', 'nin-calm'], ['clone', 'nin-edge'], ['nin-vanish', 'nin-grip'], ['nin-lotus', 'nin-feint'], ['nin-army'],
+    ],
+    shadow: [
+      ['shadow-dance', 'sha-dark'], ['shadow-pact', 'sha-cover'], ['ambush', 'sha-opening'], ['sha-cut', 'sha-streak'], ['assassinate', 'sha-finish'], ['sha-blind', 'sha-sight'], ['sha-gloom', 'sha-feed'], ['sha-reaper'],
+    ],
+    alchemist: [
+      ['poison-coat', 'alc-toxin'], ['alchemist-brew', 'alc-flask'], ['caustic-flask', 'alc-fumes'], ['alc-vitriol', 'alc-tough'], ['bitter-end', 'alc-mend'], ['alc-bomb', 'alc-salve'], ['alc-plague', 'alc-tonic'], ['alc-philosopher'],
+    ],
+  },
+  ranger: {
+    ranger: [
+      ['quick-reflex', 'ran-draw'], ['ranger-eye', 'ran-hawkeye'], ['rain-arrows', 'ran-quick'], ['ran-pin', 'ran-steady'], ['return-fire', 'ran-lethal'], ['ran-snipe', 'ran-reflex'], ['ran-barrage', 'ran-opening'], ['ran-master'],
+    ],
+    beastmaster: [
+      ['hawk', 'bea-bond'], ['beast-bond', 'bea-feathers'], ['owl-swoop', 'bea-keen'], ['bea-call', 'bea-pack'], ['great-owl', 'bea-mend'], ['bea-stoop', 'bea-fierce'], ['bea-flock', 'bea-care'], ['bea-king'],
+    ],
+    trapper: [
+      ['trap', 'tra-wire'], ['trapper-craft', 'tra-read'], ['snare', 'tra-barb'], ['tra-pit', 'tra-prepared'], ['spike-trap', 'tra-cunning'], ['tra-net', 'tra-venom'], ['tra-mine', 'tra-patient'], ['tra-master'],
+    ],
+  },
+};
+const NEW = {
+  // Warrior / Paladin: heals through it, and wears the enemy down. Pairs with Knight's blocks and Berserker's last stand.
+  'pal-devotion': pas('Devotion', 'Your healing is 6% stronger a rank.', { healPower: 1.06 }),
+  'pal-steadfast': pas('Steadfast', '3% more HP a rank.', { hpMult: 1.03 }),
+  'pal-mercy': pas('Mercy', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
+  'pal-consecrate': act('Holy Ground', 'A hit that leaves you healing each round for a while.', 6, up({ power: 0.9, regen: { rounds: 4, share: 0.04 } }, { power: 1, regen: { rounds: 4, share: 0.05 } }, { power: 1.1, regen: { rounds: 5, share: 0.06 } })),
+  'pal-wrath': pas('Righteous Wrath', 'A weakened foe takes 6% more a rank.', { weakenedDamage: 1.06 }),
+  'pal-aura': pas('Warm Aura', 'You heal 1% of your HP each round, a rank.', { hpRegen: 0.01 }, 2),
+  'pal-avenger': act('Avenging Strike', 'Spend 2 Valor: a heavy hit that heals you for much of it.', 6, up({ power: 2, healDealt: 0.5 }, { power: 2.3 }, { power: 2.6, healDealt: 0.6 }), { meter: 2 }),
+  'pal-faith': pas('Shield of Faith', 'Start each fight with a barrier of 5% of your HP, a rank.', { barrierStart: 0.05 }),
+  'pal-exorcism': act('Exorcism', 'A blast of light that leaves the foe taking more damage.', 9, up({ power: 2.4, sunder: { rounds: 3, mult: 1.2 } }, { power: 2.7 }, { power: 3, sunder: { rounds: 4, mult: 1.25 } })),
+  'pal-zeal': pas('Zeal', 'Above 80% HP you deal 5% more a rank.', { highHpDamage: 1.05 }),
+  'pal-miracle': act('Miracle', 'Once a fight: back to most of your HP, cured of everything.', 8, [{ healShare: 0.7, cure: true }], { oncePerFight: true }),
+  // Warrior / Berserker: the nearer the end, the harder it hits.
+  'ber-fury': pas('Fury', '3% more attack a rank.', { attackMult: 1.03 }),
+  'ber-thirst': pas('Blood Thirst', 'Each win heals 4% of your HP a rank.', { winHeal: 0.04 }),
+  'ber-savage': pas('Savage Hits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'ber-cleave': act('Cleave', 'Two wild hits.', 6, up({ power: 1.9, hits: 2, split: true }, { power: 2.2 }, { power: 2.5 })),
+  'ber-wounds': pas('Open Wounds', 'Under a third of your HP you deal 6% more a rank.', { lowHpDamage: 1.06 }),
+  'ber-keen': pas('Keen Eye', '2% more crit a rank.', { crit: 0.02 }),
+  'ber-frenzy': act('Frenzy', 'Lose some HP: your hits land far harder for a few rounds.', 4, up({ selfHurt: 0.1, attackUp: { rounds: 3, mult: 1.4 } }, { attackUp: { rounds: 3, mult: 1.5 } }, { attackUp: { rounds: 4, mult: 1.6 } })),
+  'ber-drink': pas('Drink Deep', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
+  'ber-rampage': act('Rampage', 'Four huge swings, at a cost.', 8, up({ power: 3, hits: 4, split: true, selfHurt: 0.08 }, { power: 3.4 }, { power: 3.8 })),
+  'ber-iron': pas('Iron Will', 'Under a third of your HP you take 7% less a rank.', { lowHpTaken: 0.93 }),
+  'ber-deathwish': pas('Death Wish', 'Under a third of your HP: a quarter more damage dealt, 15% less taken.', { lowHpDamage: 1.25, lowHpTaken: 0.85 }, 1),
+  // Warrior / Knight: stands there, and what hits it gets hurt.
+  'kni-plate': pas('Heavy Plate', '4% more defense a rank.', { defenseMult: 1.04 }),
+  'kni-guard': pas('Practised Guard', 'A Block stops 5% more a rank.', { blockPower: 0.05 }),
+  'kni-spikes': pas('Spiked Plate', '5% more of each blow goes back, a rank.', { thorns: 0.05 }),
+  'kni-taunt': act('Taunting Shout', 'The foe swings wild: its blows are weaker for a few rounds.', 4, up({ weaken: { rounds: 3, mult: 0.75 } }, { weaken: { rounds: 3, mult: 0.7 } }, { weaken: { rounds: 4, mult: 0.65 } })),
+  'kni-resolve': pas('Resolve', 'Start each fight with a point of Valor, a rank.', { meterStart: 1 }, 2),
+  'kni-bastion': pas('Bastion', 'Start each fight with a barrier of 6% of your HP, a rank.', { barrierStart: 0.06 }),
+  'kni-charge': act('Shield Charge', 'A hit that grows with your defense and stuns a lesser foe.', 7, up({ power: 1.4, defensePower: 1.2, stun: 1 }, { defensePower: 1.5 }, { defensePower: 1.8 })),
+  'kni-mail': pas('Layered Mail', '4% more HP a rank.', { hpMult: 1.04 }),
+  'kni-rampart': act('Rampart', 'Spend 3 Valor: a great barrier, and far more of each blow goes back.', 6, up({ barrierShare: 0.4, thornsUp: { rounds: 3, share: 0.3 } }, { barrierShare: 0.5 }, { barrierShare: 0.6, thornsUp: { rounds: 4, share: 0.4 } }), { meter: 3 }),
+  'kni-riposte': pas('Riposte', 'A 5% chance a rank to strike back when hit.', { counterChance: 0.05 }),
+  'kni-fortress': act('Living Fortress', 'Once a fight: a huge barrier, and for a while your Block stops nearly all.', 8, [{ barrierShare: 0.6, blockUp: { rounds: 5, mult: 0.15 } }], { oncePerFight: true }),
+  // Magician / Wizard: fire and huge hits, and a mana problem.
+  'wiz-ember': pas('Embers', 'Your burns hurt 8% more a rank.', { burnPower: 1.08 }),
+  'wiz-focus': pas('Focus', 'Your spells are 3% stronger a rank.', { spellPower: 1.03 }),
+  'wiz-well': pas('Deep Well', '5% more mana a rank.', { manaMult: 1.05 }),
+  'wiz-scorch': act('Scorch', 'A cheap, quick flame that sets it burning.', 4, up({ power: 0.9, burn: { rounds: 3, power: 0.25 } }, { power: 1 }, { power: 1.1, burn: { rounds: 4, power: 0.3 } })),
+  'wiz-kindling': pas('Kindling', 'A burning foe takes 6% more a rank.', { burningDamage: 1.06 }),
+  'wiz-clarity': pas('Clarity', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
+  'wiz-pillar': act('Pillar of Fire', 'Three bursts of flame.', 12, up({ power: 2.4, hits: 3, split: true, burn: { rounds: 3, power: 0.3 } }, { power: 2.8 }, { power: 3.2 })),
+  'wiz-sear': pas('Searing Crits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'wiz-firestorm': act('Firestorm', 'A round to call it, then the sky falls.', 16, up({ windup: 1, power: 4.2 }, { power: 4.8 }, { power: 5.4 })),
+  'wiz-heart': pas('Heart of Flame', 'Each win gives back 5% of your mana a rank.', { winMana: 0.05 }),
+  'wiz-phoenix': act('Phoenix', 'Once a fight: a great blast, and the next blow that would fell you leaves you standing.', 14, [{ power: 2.5, guardian: 0.4, burn: { rounds: 4, power: 0.4 } }], { oncePerFight: true }),
+  // Magician / Cleric: outlasts everything with holy light.
+  'cle-prayer': pas('Prayer', 'Your healing is 6% stronger a rank.', { healPower: 1.06 }),
+  'cle-calm': pas('Calm Mind', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
+  'cle-halo': pas('Halo', 'Start each fight with a barrier of 5% of your HP, a rank.', { barrierStart: 0.05 }),
+  'cle-renew': act('Renew', 'You heal a share of your HP each round for a while.', 7, up({ regen: { rounds: 5, share: 0.05 } }, { regen: { rounds: 5, share: 0.06 } }, { regen: { rounds: 6, share: 0.07 } })),
+  'cle-radiance': pas('Radiance', 'Above 80% HP you deal 4% more a rank.', { highHpDamage: 1.04 }),
+  'cle-ward': pas('Holy Ward', 'You take 3% less a rank.', { damageTaken: 0.97 }),
+  'cle-lance': act('Lance of Light', 'A beam that heals you for part of it.', 9, up({ power: 2.1, healDealt: 0.4 }, { power: 2.4 }, { power: 2.7, healDealt: 0.5 })),
+  'cle-rest': pas('Blessed Rest', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
+  'cle-sanctuary': act('Sanctuary', 'A great barrier, and cured of everything.', 12, up({ barrierShare: 0.45, cure: true }, { barrierShare: 0.55 }, { barrierShare: 0.65 })),
+  'cle-zeal': pas('Holy Zeal', 'Your spells are 3% stronger a rank.', { spellPower: 1.03 }),
+  'cle-ascend': act('Ascension', 'Once a fight: healed of most wounds, and your hits land far harder for a while.', 12, [{ healShare: 0.7, attackUp: { rounds: 4, mult: 1.35 } }], { oncePerFight: true }),
+  // Magician / Spellsword: a mage in the thick of it, with a blade.
+  'spl-edge': pas('Honed Edge', '3% more attack a rank.', { attackMult: 1.03 }),
+  'spl-plate': pas('Enchanted Mail', '4% more defense a rank.', { defenseMult: 1.04 }),
+  'spl-eye': pas('Duelling Eye', '2% more crit a rank.', { crit: 0.02 }),
+  'spl-thrust': act('Spell Thrust', 'A clean thrust, charged with whatever the blade holds.', 5, up({ power: 1.7, melee: true }, { power: 1.95 }, { power: 2.2 })),
+  'spl-flow': pas('Flow', 'A crit gives back 2% of your mana, a rank.', { critMana: 0.02 }),
+  'spl-parry': pas('Parry', '2% more dodge a rank.', { dodge: 0.02 }),
+  'spl-whirl': act('Blade Whirl', 'Three quick cuts, all charged.', 9, up({ power: 2.2, hits: 3, split: true, melee: true }, { power: 2.5 }, { power: 2.8 })),
+  'spl-surge': pas('Surge', 'Start each fight with a point of Arcana, a rank.', { meterStart: 1 }, 2),
+  'spl-tempest': act('Tempest Blade', 'The blade holds the storm longer, and bites harder.', 10, up({ infuse: { kind: 'storm', rounds: 6, power: 0.5 } }, { infuse: { kind: 'storm', rounds: 6, power: 0.6 } }, { infuse: { kind: 'storm', rounds: 7, power: 0.7 } })),
+  'spl-hunger': pas('Hungry Blade', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
+  'spl-avatar': act('Avatar of War', 'Once a fight: for a while, every hit lands far harder.', 12, [{ attackUp: { rounds: 5, mult: 1.6 } }], { oncePerFight: true }),
+  // Rogue / Ninja: never where the blow lands.
+  'nin-hands': pas('Quick Hands', '2% more crit a rank.', { crit: 0.02 }),
+  'nin-fleet': pas('Fleet', '2% more dodge a rank.', { dodge: 0.02 }),
+  'nin-first': pas('First Blood', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
+  'nin-kunai': act('Kunai Storm', 'Five thrown blades, each with its own chance to crit.', 7, up({ power: 1.8, hits: 5, split: true }, { power: 2.1 }, { power: 2.4 })),
+  'nin-calm': pas('Still Water', 'A dodge heals you 2% of your HP, a rank.', { dodgeHeal: 0.02 }),
+  'nin-edge': pas('Razor Edge', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'nin-vanish': act('Vanish', 'The next two blows miss, and your next hit is a sure crit.', 7, up({ evade: 2, sureCrit: 1 }, { evade: 2, sureCrit: 2 }, { evade: 3, sureCrit: 2 })),
+  'nin-grip': pas('Sure Grip', '3% more attack a rank.', { attackMult: 1.03 }),
+  'nin-lotus': act('Falling Lotus', 'Seven strikes too fast to follow.', 11, up({ power: 3, hits: 7, split: true }, { power: 3.4 }, { power: 3.8 })),
+  'nin-feint': pas('Feint', 'After a dodge your next hit is a sure crit.', { dodgeCrit: true }, 1),
+  'nin-army': act('Army of One', 'Once a fight: copies of you join in, and every attack strikes again and again.', 10, [{ clone: { rounds: 6, power: 0.9 } }], { oncePerFight: true }),
+  // Rogue / Shadow: one perfect cut.
+  'sha-dark': pas('Cruel Edge', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'sha-cover': pas('Cover of Dark', '2% more dodge a rank.', { dodge: 0.02 }),
+  'sha-opening': pas('From Behind', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
+  'sha-cut': act('Crippling Cut', 'A hit that weakens its blows.', 5, up({ power: 1.5, weaken: { rounds: 3, mult: 0.75 } }, { power: 1.7 }, { power: 1.9, weaken: { rounds: 3, mult: 0.7 } })),
+  'sha-streak': pas('Patient Blade', 'Every hit adds 1% more to your growing crit chance, a rank.', { critStreak: 0.01 }),
+  'sha-finish': pas('Finisher', 'A foe under a third of its HP takes 8% more a rank.', { executeDamage: 1.08 }),
+  'sha-blind': act('Blinding Powder', 'The enemy loses its next turn, boss or not.', 8, [{ skip: 1 }, { skip: 1, sureCrit: 1 }]),
+  'sha-sight': pas('Dark Sight', '2% more crit a rank.', { crit: 0.02 }),
+  'sha-gloom': act('Night Cut', 'A sure crit from nowhere.', 9, up({ power: 2.6, sureCrit: 1 }, { power: 3 }, { power: 3.4 })),
+  'sha-feed': pas('Feed on Fear', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
+  'sha-reaper': act('Reaper', 'A hard cut, and a killing one on a foe under 40% of its HP.', 12, [{ power: 2.2, executeBelow: 0.4, executePower: 5.5 }]),
+  // Rogue / Alchemist: wins slowly, and drinks better.
+  'alc-toxin': pas('Stronger Toxin', 'Your poison hurts 8% more a rank.', { poisonPower: 1.08 }),
+  'alc-flask': pas('Better Flasks', 'Your flasks work 10% better a rank.', { potionPower: 1.1 }),
+  'alc-fumes': pas('Fumes', 'A poisoned foe takes 5% more a rank.', { poisonedDamage: 1.05 }),
+  'alc-vitriol': act('Vitriol', 'A splash that eats on for rounds.', 5, up({ power: 0.8, poison: { rounds: 4, power: 0.35 } }, { poison: { rounds: 4, power: 0.42 } }, { poison: { rounds: 5, power: 0.5 } })),
+  'alc-tough': pas('Tough Gut', 'You take 3% less a rank.', { damageTaken: 0.97 }),
+  'alc-mend': pas('Slow Mend', 'You heal 1% of your HP each round, a rank.', { hpRegen: 0.01 }, 2),
+  'alc-bomb': act('Fire Flask', 'A burst of flame that leaves it burning.', 8, up({ power: 2, burn: { rounds: 3, power: 0.35 } }, { power: 2.3 }, { power: 2.6 })),
+  'alc-salve': pas('Salve', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
+  'alc-plague': act('Plague Cloud', 'A choking cloud: long poison, and weaker blows.', 10, up({ poison: { rounds: 6, power: 0.55 }, weaken: { rounds: 3, mult: 0.8 } }, { poison: { rounds: 6, power: 0.65 } }, { poison: { rounds: 7, power: 0.75 } })),
+  'alc-tonic': pas('Tonic', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
+  'alc-philosopher': act("Philosopher's Draught", 'Once a fight: most of your wounds healed, and your hits land harder for a while.', 8, [{ healShare: 0.6, cure: true, attackUp: { rounds: 4, mult: 1.3 } }], { oncePerFight: true }),
+  // Hunter / Ranger: shoots back, and back again.
+  'ran-draw': pas('Strong Draw', '3% more attack a rank.', { attackMult: 1.03 }),
+  'ran-hawkeye': pas('Hawk Eye', '2% more crit a rank.', { crit: 0.02 }),
+  'ran-quick': pas('Quick Nock', 'A 3% better chance a rank to shoot back.', { counterChance: 0.03 }),
+  'ran-pin': act('Pinning Shot', 'A shot that stuns a lesser foe.', 5, up({ power: 1.3, stun: 1 }, { power: 1.5 }, { power: 1.7 })),
+  'ran-steady': pas('Steady Return', 'Your shots back are 6% stronger a rank.', { counterPower: 0.06 }),
+  'ran-lethal': pas('Lethal Shots', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'ran-snipe': act('Long Shot', 'A round to aim, then a very hard shot.', 8, up({ windup: 1, power: 3.2 }, { power: 3.7 }, { power: 4.2 })),
+  'ran-reflex': pas('Light Step', '2% more dodge a rank.', { dodge: 0.02 }),
+  'ran-barrage': act('Barrage', 'Six arrows at once.', 10, up({ power: 3, hits: 6, split: true }, { power: 3.4 }, { power: 3.8 })),
+  'ran-opening': pas('Opening Shot', 'In the first round you deal 12% more a rank.', { firstRoundDamage: 1.12 }),
+  'ran-master': act('Master Archer', 'Once a fight: for a while you shoot back at nearly everything, and shoot harder.', 8, [{ counterUp: { rounds: 6, chance: 0.5 }, attackUp: { rounds: 6, mult: 1.3 } }], { oncePerFight: true }),
+  // Hunter / Beastmaster: the owl does half the work.
+  'bea-bond': pas('Close Bond', 'Your owl hits 8% harder a rank.', { companionPower: 1.08 }),
+  'bea-feathers': pas('Thick Coat', '3% more HP a rank.', { hpMult: 1.03 }),
+  'bea-keen': pas('Keen Sight', '2% more crit a rank.', { crit: 0.02 }),
+  'bea-call': act('Call the Owl', 'The owl comes for a long while, no Aim asked.', 6, up({ companion: { rounds: 5, power: 0.6 } }, { companion: { rounds: 5, power: 0.7 } }, { companion: { rounds: 6, power: 0.8 } })),
+  'bea-pack': pas('Hunting Pair', '3% more attack a rank.', { attackMult: 1.03 }),
+  'bea-mend': pas('Preening', 'You heal 1% of your HP each round, a rank.', { hpRegen: 0.01 }, 2),
+  'bea-stoop': act('Stoop', 'The owl dives with your arrow: a very hard hit.', 8, up({ power: 2.4 }, { power: 2.8 }, { power: 3.2 })),
+  'bea-fierce': pas('Fierce Owl', 'Your owl hits 8% harder a rank.', { companionPower: 1.08 }),
+  'bea-flock': act('The Flock', 'Three strikes from the owl every round, for a while.', 11, up({ companion: { rounds: 4, power: 0.6, hits: 3 } }, { companion: { rounds: 4, power: 0.7, hits: 3 } }, { companion: { rounds: 5, power: 0.75, hits: 3 } })),
+  'bea-care': pas('Kindly Care', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
+  'bea-king': act('King of the Air', 'Once a fight: the greatest owl there is, hitting twice a round, for a long while.', 10, [{ companion: { rounds: 8, power: 1.3, hits: 2 } }], { oncePerFight: true }),
+  // Hunter / Trapper: knows what comes next.
+  'tra-wire': pas('Tripwire', 'A foe caught by a trap also takes 15% of your attack, a rank.', { trapHit: 0.15 }),
+  'tra-read': pas('Read the Ground', '2% more dodge a rank.', { dodge: 0.02 }),
+  'tra-barb': pas('Barbs', 'A stunned foe takes 6% more a rank.', { stunnedDamage: 1.06 }),
+  'tra-pit': act('Pit', 'It falls in: stunned for two rounds, if it is a lesser foe.', 6, up({ power: 0.6, stun: 2 }, { power: 0.8 }, { power: 1 })),
+  'tra-prepared': pas('Prepared', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
+  'tra-cunning': pas('Cunning', 'Start each fight with a point of Aim, a rank.', { meterStart: 1 }, 2),
+  'tra-net': act('Weighted Net', 'It loses its next turn and hits weaker after.', 8, [{ skip: 1 }, { skip: 1, weaken: { rounds: 3, mult: 0.75 } }]),
+  'tra-venom': pas('Venom on the Spikes', 'A poisoned foe takes 5% more a rank.', { poisonedDamage: 1.05 }),
+  'tra-mine': act('Fire Pot', 'A buried pot goes off: a hard blast that leaves it burning.', 10, up({ power: 2.6, burn: { rounds: 3, power: 0.35 } }, { power: 3 }, { power: 3.4 })),
+  'tra-patient': pas('Patient', 'A 3% better chance a rank to shoot back.', { counterChance: 0.03 }),
+  'tra-master': act('Master of Snares', 'Once a fight: its next three wind-ups fail, and it loses its next turn.', 9, [{ trap: 3, skip: 1 }], { oncePerFight: true }),
+};
+const TIER_LEVELS = [2, 5, 9, 13, 17, 21, 25, 30];
+for (const [classId, trees] of Object.entries(TALENTS)) {
+  for (const [tree, tiers] of Object.entries(trees)) {
+    C[classId].trees[tree].tiers = tiers;
+    C[classId].trees[tree].nodes = tiers.flat();
+    tiers.forEach((row, i) => {
+      for (const id of row) {
+        if (!A[id] && !NEW[id]) throw new Error(`no such talent: ${id}`);
+        A[id] = { ...(A[id] ?? NEW[id]), classId, level: TIER_LEVELS[i] };
+      }
+    });
+  }
+}
+
 const json = (x) => `${JSON.stringify(x, null, 2)}\n`;
 writeFileSync('rules/data/abilities.json', json(A));
 const old = JSON.parse(readFileSync('rules/data/classes.json', 'utf8'));

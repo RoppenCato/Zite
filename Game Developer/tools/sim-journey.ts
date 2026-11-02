@@ -73,6 +73,7 @@ function journey(classId: ClassId, tree: string, seed: string): { lands: Record<
     for (let guard = 0; guard < 20 && pointsFree(me()) > 0; guard++) {
       const c = me();
       const order = [...nodes, ...core, ...Object.keys(c.abilities)];
+      // Actives before passives on a tier, and carried with the newest first.
       const pick = order.find((id) => canLearn(c, id) && !c.abilities[id]) ?? order.find((id) => canLearn(c, id));
       if (!pick) break;
       act({ type: 'skill', op: 'learn', ability: pick });

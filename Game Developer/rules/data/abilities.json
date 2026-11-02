@@ -93,7 +93,7 @@
     "classId": "warrior",
     "text": "A hit that heals you for part of the damage.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 1.25,
@@ -127,7 +127,7 @@
     "classId": "warrior",
     "text": "A hit that weakens its blows and makes it take more damage.",
     "mana": 7,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 1,
@@ -171,7 +171,7 @@
     "mana": 4,
     "meter": 3,
     "oncePerFight": true,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "guardian": 0.3
@@ -189,7 +189,7 @@
     "classId": "warrior",
     "text": "A huge hit that costs you some of your own HP.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 2,
@@ -224,7 +224,7 @@
     "classId": "warrior",
     "text": "Lose some of your HP: gain 2 Valor at once, and your hits land much harder for a few rounds.",
     "mana": 0,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "selfHurt": 0.08,
@@ -257,7 +257,7 @@
     "classId": "warrior",
     "text": "A hit that grows with all the HP you have lost: the nearer the end, the harder.",
     "mana": 6,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "power": 1.5,
@@ -278,7 +278,7 @@
     "classId": "warrior",
     "text": "A hit that grows with your defense.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 1.1,
@@ -314,7 +314,7 @@
     "text": "Spend 2 Valor: for a few rounds, far more of each blow goes back.",
     "mana": 3,
     "meter": 2,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "thornsUp": {
@@ -341,7 +341,7 @@
     "classId": "warrior",
     "text": "For a few rounds your Block stops almost everything.",
     "mana": 5,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "blockUp": {
@@ -450,7 +450,7 @@
     "classId": "mage",
     "text": "A burst of flame: a huge hit that leaves it burning.",
     "mana": 8,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 1.8,
@@ -493,7 +493,7 @@
     "classId": "mage",
     "text": "Set off the fire: all the burning it has left lands at once, and stronger.",
     "mana": 3,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "consume": {
@@ -520,7 +520,7 @@
     "classId": "mage",
     "text": "Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.",
     "mana": 10,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "windup": 2,
@@ -541,7 +541,7 @@
     "classId": "mage",
     "text": "Holy light: a strong hit that heals you a little.",
     "mana": 6,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 1.6,
@@ -577,7 +577,7 @@
     "classId": "mage",
     "text": "Heal a share of your HP, and clear poison and weakness.",
     "mana": 7,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "healShare": 0.28,
@@ -598,7 +598,7 @@
     "classId": "mage",
     "text": "A blast of light that grows with all you have healed this fight.",
     "mana": 9,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "power": 1.2,
@@ -619,7 +619,7 @@
     "classId": "mage",
     "text": "For a few rounds your attacks chill: harder, and its blows weaken.",
     "mana": 6,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "infuse": {
@@ -668,7 +668,7 @@
     "classId": "mage",
     "text": "For a few rounds lightning jumps from your attacks: much harder, and a chance of a second strike.",
     "mana": 6,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "infuse": {
@@ -701,7 +701,7 @@
     "classId": "mage",
     "text": "Three quick cuts, far harder while your blade is infused.",
     "mana": 7,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "power": 0.9,
@@ -816,7 +816,7 @@
     "classId": "rogue",
     "text": "Four quick stars, each one a chance to crit.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "power": 1.5,
@@ -854,7 +854,7 @@
     "classId": "rogue",
     "text": "Gone in a puff: you always get away, even from a boss.",
     "mana": 4,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "flee": true
@@ -866,7 +866,7 @@
     "classId": "rogue",
     "text": "A copy of you joins in: for a few rounds every attack strikes again.",
     "mana": 7,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "clone": {
@@ -893,7 +893,7 @@
     "classId": "rogue",
     "text": "Drop your guard: take this round's blow in full, then almost nothing can touch you for two rounds.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "dance": {
@@ -933,7 +933,7 @@
     "classId": "rogue",
     "text": "A hard hit from the dark; far harder while you dance in shadow.",
     "mana": 5,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 1.2,
@@ -955,7 +955,7 @@
     "text": "Spend 3 Mischief: a sure crit, far harder on a foe under a third of its HP.",
     "mana": 3,
     "meter": 3,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "power": 1.3,
@@ -982,7 +982,7 @@
     "classId": "rogue",
     "text": "Coat your blade: your next hits poison, and each one makes it worse.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "coat": {
@@ -1026,7 +1026,7 @@
     "classId": "rogue",
     "text": "A thrown flask: it takes more damage for a few rounds.",
     "mana": 6,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 0.7,
@@ -1056,7 +1056,7 @@
     "classId": "rogue",
     "text": "All the poison in its veins lands at once, and stronger.",
     "mana": 5,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "consume": {
@@ -1177,7 +1177,7 @@
     "classId": "ranger",
     "text": "For a few rounds you shoot back far more often.",
     "mana": 5,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "counterUp": {
@@ -1217,7 +1217,7 @@
     "classId": "ranger",
     "text": "Five arrows from above.",
     "mana": 8,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 2.8,
@@ -1242,7 +1242,7 @@
     "text": "Spend 2 Aim: for a few rounds you shoot back every time it strikes, hit or miss.",
     "mana": 4,
     "meter": 2,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "counterUp": {
@@ -1270,7 +1270,7 @@
     "text": "Spend 2 Aim: your owl strikes on its own at the end of every round for a while.",
     "mana": 4,
     "meter": 2,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "companion": {
@@ -1311,7 +1311,7 @@
     "text": "Spend 3 Aim: the owl dives, a big hit that ignores its defense.",
     "mana": 3,
     "meter": 3,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 2.2,
@@ -1333,7 +1333,7 @@
     "text": "Spend 3 Aim: the owl strikes twice every round, for longer.",
     "mana": 6,
     "meter": 3,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "companion": {
@@ -1363,7 +1363,7 @@
     "classId": "ranger",
     "text": "Lay a tripwire: the enemy's next wind-up fails.",
     "mana": 6,
-    "level": 3,
+    "level": 2,
     "ranks": [
       {
         "trap": 1
@@ -1396,7 +1396,7 @@
     "classId": "ranger",
     "text": "A hit, and its next blows are much weaker.",
     "mana": 5,
-    "level": 8,
+    "level": 9,
     "ranks": [
       {
         "power": 1,
@@ -1426,7 +1426,7 @@
     "classId": "ranger",
     "text": "For a few rounds each blow it tries sets off spikes, and it takes more damage.",
     "mana": 7,
-    "level": 12,
+    "level": 17,
     "ranks": [
       {
         "spike": {
@@ -1459,5 +1459,2377 @@
         }
       }
     ]
+  },
+  "pal-devotion": {
+    "name": "Devotion",
+    "text": "Your healing is 6% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "healPower": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 2
+  },
+  "pal-steadfast": {
+    "name": "Steadfast",
+    "text": "3% more HP a rank.",
+    "mana": 0,
+    "rule": {
+      "hpMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 5
+  },
+  "pal-mercy": {
+    "name": "Mercy",
+    "text": "Each win heals 5% of your HP a rank.",
+    "mana": 0,
+    "rule": {
+      "winHeal": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 9
+  },
+  "pal-consecrate": {
+    "name": "Holy Ground",
+    "text": "A hit that leaves you healing each round for a while.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 0.9,
+        "regen": {
+          "rounds": 4,
+          "share": 0.04
+        }
+      },
+      {
+        "power": 1,
+        "regen": {
+          "rounds": 4,
+          "share": 0.05
+        }
+      },
+      {
+        "power": 1.1,
+        "regen": {
+          "rounds": 5,
+          "share": 0.06
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "pal-wrath": {
+    "name": "Righteous Wrath",
+    "text": "A weakened foe takes 6% more a rank.",
+    "mana": 0,
+    "rule": {
+      "weakenedDamage": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "pal-aura": {
+    "name": "Warm Aura",
+    "text": "You heal 1% of your HP each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "hpRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 17
+  },
+  "pal-avenger": {
+    "name": "Avenging Strike",
+    "text": "Spend 2 Valor: a heavy hit that heals you for much of it.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 2,
+        "healDealt": 0.5
+      },
+      {
+        "power": 2.3,
+        "healDealt": 0.5
+      },
+      {
+        "power": 2.6,
+        "healDealt": 0.6
+      }
+    ],
+    "meter": 2,
+    "classId": "warrior",
+    "level": 21
+  },
+  "pal-faith": {
+    "name": "Shield of Faith",
+    "text": "Start each fight with a barrier of 5% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "barrierStart": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "pal-exorcism": {
+    "name": "Exorcism",
+    "text": "A blast of light that leaves the foe taking more damage.",
+    "mana": 9,
+    "ranks": [
+      {
+        "power": 2.4,
+        "sunder": {
+          "rounds": 3,
+          "mult": 1.2
+        }
+      },
+      {
+        "power": 2.7,
+        "sunder": {
+          "rounds": 3,
+          "mult": 1.2
+        }
+      },
+      {
+        "power": 3,
+        "sunder": {
+          "rounds": 4,
+          "mult": 1.25
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 25
+  },
+  "pal-zeal": {
+    "name": "Zeal",
+    "text": "Above 80% HP you deal 5% more a rank.",
+    "mana": 0,
+    "rule": {
+      "highHpDamage": 1.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 25
+  },
+  "pal-miracle": {
+    "name": "Miracle",
+    "text": "Once a fight: back to most of your HP, cured of everything.",
+    "mana": 8,
+    "ranks": [
+      {
+        "healShare": 0.7,
+        "cure": true
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "warrior",
+    "level": 30
+  },
+  "ber-fury": {
+    "name": "Fury",
+    "text": "3% more attack a rank.",
+    "mana": 0,
+    "rule": {
+      "attackMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 2
+  },
+  "ber-thirst": {
+    "name": "Blood Thirst",
+    "text": "Each win heals 4% of your HP a rank.",
+    "mana": 0,
+    "rule": {
+      "winHeal": 0.04
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 5
+  },
+  "ber-savage": {
+    "name": "Savage Hits",
+    "text": "Your crits hit 10% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "critPower": 0.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 9
+  },
+  "ber-cleave": {
+    "name": "Cleave",
+    "text": "Two wild hits.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 1.9,
+        "hits": 2,
+        "split": true
+      },
+      {
+        "power": 2.2,
+        "hits": 2,
+        "split": true
+      },
+      {
+        "power": 2.5,
+        "hits": 2,
+        "split": true
+      }
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "ber-wounds": {
+    "name": "Open Wounds",
+    "text": "Under a third of your HP you deal 6% more a rank.",
+    "mana": 0,
+    "rule": {
+      "lowHpDamage": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "ber-keen": {
+    "name": "Keen Eye",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 17
+  },
+  "ber-frenzy": {
+    "name": "Frenzy",
+    "text": "Lose some HP: your hits land far harder for a few rounds.",
+    "mana": 4,
+    "ranks": [
+      {
+        "selfHurt": 0.1,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.4
+        }
+      },
+      {
+        "selfHurt": 0.1,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.5
+        }
+      },
+      {
+        "selfHurt": 0.1,
+        "attackUp": {
+          "rounds": 4,
+          "mult": 1.6
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "ber-drink": {
+    "name": "Drink Deep",
+    "text": "A crit heals you 2% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "critHeal": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "ber-rampage": {
+    "name": "Rampage",
+    "text": "Four huge swings, at a cost.",
+    "mana": 8,
+    "ranks": [
+      {
+        "power": 3,
+        "hits": 4,
+        "split": true,
+        "selfHurt": 0.08
+      },
+      {
+        "power": 3.4,
+        "hits": 4,
+        "split": true,
+        "selfHurt": 0.08
+      },
+      {
+        "power": 3.8,
+        "hits": 4,
+        "split": true,
+        "selfHurt": 0.08
+      }
+    ],
+    "classId": "warrior",
+    "level": 25
+  },
+  "ber-iron": {
+    "name": "Iron Will",
+    "text": "Under a third of your HP you take 7% less a rank.",
+    "mana": 0,
+    "rule": {
+      "lowHpTaken": 0.93
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 25
+  },
+  "ber-deathwish": {
+    "name": "Death Wish",
+    "text": "Under a third of your HP: a quarter more damage dealt, 15% less taken.",
+    "mana": 0,
+    "rule": {
+      "lowHpDamage": 1.25,
+      "lowHpTaken": 0.85
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "warrior",
+    "level": 30
+  },
+  "kni-plate": {
+    "name": "Heavy Plate",
+    "text": "4% more defense a rank.",
+    "mana": 0,
+    "rule": {
+      "defenseMult": 1.04
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 2
+  },
+  "kni-guard": {
+    "name": "Practised Guard",
+    "text": "A Block stops 5% more a rank.",
+    "mana": 0,
+    "rule": {
+      "blockPower": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 5
+  },
+  "kni-spikes": {
+    "name": "Spiked Plate",
+    "text": "5% more of each blow goes back, a rank.",
+    "mana": 0,
+    "rule": {
+      "thorns": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 9
+  },
+  "kni-taunt": {
+    "name": "Taunting Shout",
+    "text": "The foe swings wild: its blows are weaker for a few rounds.",
+    "mana": 4,
+    "ranks": [
+      {
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        }
+      },
+      {
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.7
+        }
+      },
+      {
+        "weaken": {
+          "rounds": 4,
+          "mult": 0.65
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "kni-resolve": {
+    "name": "Resolve",
+    "text": "Start each fight with a point of Valor, a rank.",
+    "mana": 0,
+    "rule": {
+      "meterStart": 1
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 13
+  },
+  "kni-bastion": {
+    "name": "Bastion",
+    "text": "Start each fight with a barrier of 6% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "barrierStart": 0.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 17
+  },
+  "kni-charge": {
+    "name": "Shield Charge",
+    "text": "A hit that grows with your defense and stuns a lesser foe.",
+    "mana": 7,
+    "ranks": [
+      {
+        "power": 1.4,
+        "defensePower": 1.2,
+        "stun": 1
+      },
+      {
+        "power": 1.4,
+        "defensePower": 1.5,
+        "stun": 1
+      },
+      {
+        "power": 1.4,
+        "defensePower": 1.8,
+        "stun": 1
+      }
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "kni-mail": {
+    "name": "Layered Mail",
+    "text": "4% more HP a rank.",
+    "mana": 0,
+    "rule": {
+      "hpMult": 1.04
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "kni-rampart": {
+    "name": "Rampart",
+    "text": "Spend 3 Valor: a great barrier, and far more of each blow goes back.",
+    "mana": 6,
+    "ranks": [
+      {
+        "barrierShare": 0.4,
+        "thornsUp": {
+          "rounds": 3,
+          "share": 0.3
+        }
+      },
+      {
+        "barrierShare": 0.5,
+        "thornsUp": {
+          "rounds": 3,
+          "share": 0.3
+        }
+      },
+      {
+        "barrierShare": 0.6,
+        "thornsUp": {
+          "rounds": 4,
+          "share": 0.4
+        }
+      }
+    ],
+    "meter": 3,
+    "classId": "warrior",
+    "level": 25
+  },
+  "kni-riposte": {
+    "name": "Riposte",
+    "text": "A 5% chance a rank to strike back when hit.",
+    "mana": 0,
+    "rule": {
+      "counterChance": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "warrior",
+    "level": 25
+  },
+  "kni-fortress": {
+    "name": "Living Fortress",
+    "text": "Once a fight: a huge barrier, and for a while your Block stops nearly all.",
+    "mana": 8,
+    "ranks": [
+      {
+        "barrierShare": 0.6,
+        "blockUp": {
+          "rounds": 5,
+          "mult": 0.15
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "warrior",
+    "level": 30
+  },
+  "wiz-ember": {
+    "name": "Embers",
+    "text": "Your burns hurt 8% more a rank.",
+    "mana": 0,
+    "rule": {
+      "burnPower": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 2
+  },
+  "wiz-focus": {
+    "name": "Focus",
+    "text": "Your spells are 3% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "spellPower": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 5
+  },
+  "wiz-well": {
+    "name": "Deep Well",
+    "text": "5% more mana a rank.",
+    "mana": 0,
+    "rule": {
+      "manaMult": 1.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 9
+  },
+  "wiz-scorch": {
+    "name": "Scorch",
+    "text": "A cheap, quick flame that sets it burning.",
+    "mana": 4,
+    "ranks": [
+      {
+        "power": 0.9,
+        "burn": {
+          "rounds": 3,
+          "power": 0.25
+        }
+      },
+      {
+        "power": 1,
+        "burn": {
+          "rounds": 3,
+          "power": 0.25
+        }
+      },
+      {
+        "power": 1.1,
+        "burn": {
+          "rounds": 4,
+          "power": 0.3
+        }
+      }
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "wiz-kindling": {
+    "name": "Kindling",
+    "text": "A burning foe takes 6% more a rank.",
+    "mana": 0,
+    "rule": {
+      "burningDamage": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "wiz-clarity": {
+    "name": "Clarity",
+    "text": "You regain 1% of your mana each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "manaRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 17
+  },
+  "wiz-pillar": {
+    "name": "Pillar of Fire",
+    "text": "Three bursts of flame.",
+    "mana": 12,
+    "ranks": [
+      {
+        "power": 2.4,
+        "hits": 3,
+        "split": true,
+        "burn": {
+          "rounds": 3,
+          "power": 0.3
+        }
+      },
+      {
+        "power": 2.8,
+        "hits": 3,
+        "split": true,
+        "burn": {
+          "rounds": 3,
+          "power": 0.3
+        }
+      },
+      {
+        "power": 3.2,
+        "hits": 3,
+        "split": true,
+        "burn": {
+          "rounds": 3,
+          "power": 0.3
+        }
+      }
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "wiz-sear": {
+    "name": "Searing Crits",
+    "text": "Your crits hit 10% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "critPower": 0.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "wiz-firestorm": {
+    "name": "Firestorm",
+    "text": "A round to call it, then the sky falls.",
+    "mana": 16,
+    "ranks": [
+      {
+        "windup": 1,
+        "power": 4.2
+      },
+      {
+        "windup": 1,
+        "power": 4.8
+      },
+      {
+        "windup": 1,
+        "power": 5.4
+      }
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "wiz-heart": {
+    "name": "Heart of Flame",
+    "text": "Each win gives back 5% of your mana a rank.",
+    "mana": 0,
+    "rule": {
+      "winMana": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "wiz-phoenix": {
+    "name": "Phoenix",
+    "text": "Once a fight: a great blast, and the next blow that would fell you leaves you standing.",
+    "mana": 14,
+    "ranks": [
+      {
+        "power": 2.5,
+        "guardian": 0.4,
+        "burn": {
+          "rounds": 4,
+          "power": 0.4
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "mage",
+    "level": 30
+  },
+  "cle-prayer": {
+    "name": "Prayer",
+    "text": "Your healing is 6% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "healPower": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 2
+  },
+  "cle-calm": {
+    "name": "Calm Mind",
+    "text": "You regain 1% of your mana each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "manaRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 5
+  },
+  "cle-halo": {
+    "name": "Halo",
+    "text": "Start each fight with a barrier of 5% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "barrierStart": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 9
+  },
+  "cle-renew": {
+    "name": "Renew",
+    "text": "You heal a share of your HP each round for a while.",
+    "mana": 7,
+    "ranks": [
+      {
+        "regen": {
+          "rounds": 5,
+          "share": 0.05
+        }
+      },
+      {
+        "regen": {
+          "rounds": 5,
+          "share": 0.06
+        }
+      },
+      {
+        "regen": {
+          "rounds": 6,
+          "share": 0.07
+        }
+      }
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "cle-radiance": {
+    "name": "Radiance",
+    "text": "Above 80% HP you deal 4% more a rank.",
+    "mana": 0,
+    "rule": {
+      "highHpDamage": 1.04
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "cle-ward": {
+    "name": "Holy Ward",
+    "text": "You take 3% less a rank.",
+    "mana": 0,
+    "rule": {
+      "damageTaken": 0.97
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 17
+  },
+  "cle-lance": {
+    "name": "Lance of Light",
+    "text": "A beam that heals you for part of it.",
+    "mana": 9,
+    "ranks": [
+      {
+        "power": 2.1,
+        "healDealt": 0.4
+      },
+      {
+        "power": 2.4,
+        "healDealt": 0.4
+      },
+      {
+        "power": 2.7,
+        "healDealt": 0.5
+      }
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "cle-rest": {
+    "name": "Blessed Rest",
+    "text": "Each win heals 5% of your HP a rank.",
+    "mana": 0,
+    "rule": {
+      "winHeal": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "cle-sanctuary": {
+    "name": "Sanctuary",
+    "text": "A great barrier, and cured of everything.",
+    "mana": 12,
+    "ranks": [
+      {
+        "barrierShare": 0.45,
+        "cure": true
+      },
+      {
+        "barrierShare": 0.55,
+        "cure": true
+      },
+      {
+        "barrierShare": 0.65,
+        "cure": true
+      }
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "cle-zeal": {
+    "name": "Holy Zeal",
+    "text": "Your spells are 3% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "spellPower": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "cle-ascend": {
+    "name": "Ascension",
+    "text": "Once a fight: healed of most wounds, and your hits land far harder for a while.",
+    "mana": 12,
+    "ranks": [
+      {
+        "healShare": 0.7,
+        "attackUp": {
+          "rounds": 4,
+          "mult": 1.35
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "mage",
+    "level": 30
+  },
+  "spl-edge": {
+    "name": "Honed Edge",
+    "text": "3% more attack a rank.",
+    "mana": 0,
+    "rule": {
+      "attackMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 2
+  },
+  "spl-plate": {
+    "name": "Enchanted Mail",
+    "text": "4% more defense a rank.",
+    "mana": 0,
+    "rule": {
+      "defenseMult": 1.04
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 5
+  },
+  "spl-eye": {
+    "name": "Duelling Eye",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 9
+  },
+  "spl-thrust": {
+    "name": "Spell Thrust",
+    "text": "A clean thrust, charged with whatever the blade holds.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 1.7,
+        "melee": true
+      },
+      {
+        "power": 1.95,
+        "melee": true
+      },
+      {
+        "power": 2.2,
+        "melee": true
+      }
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "spl-flow": {
+    "name": "Flow",
+    "text": "A crit gives back 2% of your mana, a rank.",
+    "mana": 0,
+    "rule": {
+      "critMana": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 13
+  },
+  "spl-parry": {
+    "name": "Parry",
+    "text": "2% more dodge a rank.",
+    "mana": 0,
+    "rule": {
+      "dodge": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 17
+  },
+  "spl-whirl": {
+    "name": "Blade Whirl",
+    "text": "Three quick cuts, all charged.",
+    "mana": 9,
+    "ranks": [
+      {
+        "power": 2.2,
+        "hits": 3,
+        "split": true,
+        "melee": true
+      },
+      {
+        "power": 2.5,
+        "hits": 3,
+        "split": true,
+        "melee": true
+      },
+      {
+        "power": 2.8,
+        "hits": 3,
+        "split": true,
+        "melee": true
+      }
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "spl-surge": {
+    "name": "Surge",
+    "text": "Start each fight with a point of Arcana, a rank.",
+    "mana": 0,
+    "rule": {
+      "meterStart": 1
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 21
+  },
+  "spl-tempest": {
+    "name": "Tempest Blade",
+    "text": "The blade holds the storm longer, and bites harder.",
+    "mana": 10,
+    "ranks": [
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 6,
+          "power": 0.5
+        }
+      },
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 6,
+          "power": 0.6
+        }
+      },
+      {
+        "infuse": {
+          "kind": "storm",
+          "rounds": 7,
+          "power": 0.7
+        }
+      }
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "spl-hunger": {
+    "name": "Hungry Blade",
+    "text": "A crit heals you 2% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "critHeal": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "mage",
+    "level": 25
+  },
+  "spl-avatar": {
+    "name": "Avatar of War",
+    "text": "Once a fight: for a while, every hit lands far harder.",
+    "mana": 12,
+    "ranks": [
+      {
+        "attackUp": {
+          "rounds": 5,
+          "mult": 1.6
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "mage",
+    "level": 30
+  },
+  "nin-hands": {
+    "name": "Quick Hands",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 2
+  },
+  "nin-fleet": {
+    "name": "Fleet",
+    "text": "2% more dodge a rank.",
+    "mana": 0,
+    "rule": {
+      "dodge": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 5
+  },
+  "nin-first": {
+    "name": "First Blood",
+    "text": "In the first round you deal 10% more a rank.",
+    "mana": 0,
+    "rule": {
+      "firstRoundDamage": 1.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 9
+  },
+  "nin-kunai": {
+    "name": "Kunai Storm",
+    "text": "Five thrown blades, each with its own chance to crit.",
+    "mana": 7,
+    "ranks": [
+      {
+        "power": 1.8,
+        "hits": 5,
+        "split": true
+      },
+      {
+        "power": 2.1,
+        "hits": 5,
+        "split": true
+      },
+      {
+        "power": 2.4,
+        "hits": 5,
+        "split": true
+      }
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "nin-calm": {
+    "name": "Still Water",
+    "text": "A dodge heals you 2% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "dodgeHeal": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "nin-edge": {
+    "name": "Razor Edge",
+    "text": "Your crits hit 10% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "critPower": 0.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 17
+  },
+  "nin-vanish": {
+    "name": "Vanish",
+    "text": "The next two blows miss, and your next hit is a sure crit.",
+    "mana": 7,
+    "ranks": [
+      {
+        "evade": 2,
+        "sureCrit": 1
+      },
+      {
+        "evade": 2,
+        "sureCrit": 2
+      },
+      {
+        "evade": 3,
+        "sureCrit": 2
+      }
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "nin-grip": {
+    "name": "Sure Grip",
+    "text": "3% more attack a rank.",
+    "mana": 0,
+    "rule": {
+      "attackMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "nin-lotus": {
+    "name": "Falling Lotus",
+    "text": "Seven strikes too fast to follow.",
+    "mana": 11,
+    "ranks": [
+      {
+        "power": 3,
+        "hits": 7,
+        "split": true
+      },
+      {
+        "power": 3.4,
+        "hits": 7,
+        "split": true
+      },
+      {
+        "power": 3.8,
+        "hits": 7,
+        "split": true
+      }
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "nin-feint": {
+    "name": "Feint",
+    "text": "After a dodge your next hit is a sure crit.",
+    "mana": 0,
+    "rule": {
+      "dodgeCrit": true
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "nin-army": {
+    "name": "Army of One",
+    "text": "Once a fight: copies of you join in, and every attack strikes again and again.",
+    "mana": 10,
+    "ranks": [
+      {
+        "clone": {
+          "rounds": 6,
+          "power": 0.9
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "rogue",
+    "level": 30
+  },
+  "sha-dark": {
+    "name": "Cruel Edge",
+    "text": "Your crits hit 10% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "critPower": 0.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 2
+  },
+  "sha-cover": {
+    "name": "Cover of Dark",
+    "text": "2% more dodge a rank.",
+    "mana": 0,
+    "rule": {
+      "dodge": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 5
+  },
+  "sha-opening": {
+    "name": "From Behind",
+    "text": "In the first round you deal 10% more a rank.",
+    "mana": 0,
+    "rule": {
+      "firstRoundDamage": 1.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 9
+  },
+  "sha-cut": {
+    "name": "Crippling Cut",
+    "text": "A hit that weakens its blows.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 1.5,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        }
+      },
+      {
+        "power": 1.7,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        }
+      },
+      {
+        "power": 1.9,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.7
+        }
+      }
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "sha-streak": {
+    "name": "Patient Blade",
+    "text": "Every hit adds 1% more to your growing crit chance, a rank.",
+    "mana": 0,
+    "rule": {
+      "critStreak": 0.01
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "sha-finish": {
+    "name": "Finisher",
+    "text": "A foe under a third of its HP takes 8% more a rank.",
+    "mana": 0,
+    "rule": {
+      "executeDamage": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 17
+  },
+  "sha-blind": {
+    "name": "Blinding Powder",
+    "text": "The enemy loses its next turn, boss or not.",
+    "mana": 8,
+    "ranks": [
+      {
+        "skip": 1
+      },
+      {
+        "skip": 1,
+        "sureCrit": 1
+      }
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "sha-sight": {
+    "name": "Dark Sight",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "sha-gloom": {
+    "name": "Night Cut",
+    "text": "A sure crit from nowhere.",
+    "mana": 9,
+    "ranks": [
+      {
+        "power": 2.6,
+        "sureCrit": 1
+      },
+      {
+        "power": 3,
+        "sureCrit": 1
+      },
+      {
+        "power": 3.4,
+        "sureCrit": 1
+      }
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "sha-feed": {
+    "name": "Feed on Fear",
+    "text": "A crit heals you 2% of your HP, a rank.",
+    "mana": 0,
+    "rule": {
+      "critHeal": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "sha-reaper": {
+    "name": "Reaper",
+    "text": "A hard cut, and a killing one on a foe under 40% of its HP.",
+    "mana": 12,
+    "ranks": [
+      {
+        "power": 2.2,
+        "executeBelow": 0.4,
+        "executePower": 5.5
+      }
+    ],
+    "classId": "rogue",
+    "level": 30
+  },
+  "alc-toxin": {
+    "name": "Stronger Toxin",
+    "text": "Your poison hurts 8% more a rank.",
+    "mana": 0,
+    "rule": {
+      "poisonPower": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 2
+  },
+  "alc-flask": {
+    "name": "Better Flasks",
+    "text": "Your flasks work 10% better a rank.",
+    "mana": 0,
+    "rule": {
+      "potionPower": 1.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 5
+  },
+  "alc-fumes": {
+    "name": "Fumes",
+    "text": "A poisoned foe takes 5% more a rank.",
+    "mana": 0,
+    "rule": {
+      "poisonedDamage": 1.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 9
+  },
+  "alc-vitriol": {
+    "name": "Vitriol",
+    "text": "A splash that eats on for rounds.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 0.8,
+        "poison": {
+          "rounds": 4,
+          "power": 0.35
+        }
+      },
+      {
+        "power": 0.8,
+        "poison": {
+          "rounds": 4,
+          "power": 0.42
+        }
+      },
+      {
+        "power": 0.8,
+        "poison": {
+          "rounds": 5,
+          "power": 0.5
+        }
+      }
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "alc-tough": {
+    "name": "Tough Gut",
+    "text": "You take 3% less a rank.",
+    "mana": 0,
+    "rule": {
+      "damageTaken": 0.97
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 13
+  },
+  "alc-mend": {
+    "name": "Slow Mend",
+    "text": "You heal 1% of your HP each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "hpRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 17
+  },
+  "alc-bomb": {
+    "name": "Fire Flask",
+    "text": "A burst of flame that leaves it burning.",
+    "mana": 8,
+    "ranks": [
+      {
+        "power": 2,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      },
+      {
+        "power": 2.3,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      },
+      {
+        "power": 2.6,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      }
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "alc-salve": {
+    "name": "Salve",
+    "text": "Each win heals 5% of your HP a rank.",
+    "mana": 0,
+    "rule": {
+      "winHeal": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 21
+  },
+  "alc-plague": {
+    "name": "Plague Cloud",
+    "text": "A choking cloud: long poison, and weaker blows.",
+    "mana": 10,
+    "ranks": [
+      {
+        "poison": {
+          "rounds": 6,
+          "power": 0.55
+        },
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.8
+        }
+      },
+      {
+        "poison": {
+          "rounds": 6,
+          "power": 0.65
+        },
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.8
+        }
+      },
+      {
+        "poison": {
+          "rounds": 7,
+          "power": 0.75
+        },
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.8
+        }
+      }
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "alc-tonic": {
+    "name": "Tonic",
+    "text": "You regain 1% of your mana each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "manaRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "rogue",
+    "level": 25
+  },
+  "alc-philosopher": {
+    "name": "Philosopher's Draught",
+    "text": "Once a fight: most of your wounds healed, and your hits land harder for a while.",
+    "mana": 8,
+    "ranks": [
+      {
+        "healShare": 0.6,
+        "cure": true,
+        "attackUp": {
+          "rounds": 4,
+          "mult": 1.3
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "rogue",
+    "level": 30
+  },
+  "ran-draw": {
+    "name": "Strong Draw",
+    "text": "3% more attack a rank.",
+    "mana": 0,
+    "rule": {
+      "attackMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 2
+  },
+  "ran-hawkeye": {
+    "name": "Hawk Eye",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
+  },
+  "ran-quick": {
+    "name": "Quick Nock",
+    "text": "A 3% better chance a rank to shoot back.",
+    "mana": 0,
+    "rule": {
+      "counterChance": 0.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 9
+  },
+  "ran-pin": {
+    "name": "Pinning Shot",
+    "text": "A shot that stuns a lesser foe.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 1.3,
+        "stun": 1
+      },
+      {
+        "power": 1.5,
+        "stun": 1
+      },
+      {
+        "power": 1.7,
+        "stun": 1
+      }
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "ran-steady": {
+    "name": "Steady Return",
+    "text": "Your shots back are 6% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "counterPower": 0.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "ran-lethal": {
+    "name": "Lethal Shots",
+    "text": "Your crits hit 10% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "critPower": 0.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 17
+  },
+  "ran-snipe": {
+    "name": "Long Shot",
+    "text": "A round to aim, then a very hard shot.",
+    "mana": 8,
+    "ranks": [
+      {
+        "windup": 1,
+        "power": 3.2
+      },
+      {
+        "windup": 1,
+        "power": 3.7
+      },
+      {
+        "windup": 1,
+        "power": 4.2
+      }
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "ran-reflex": {
+    "name": "Light Step",
+    "text": "2% more dodge a rank.",
+    "mana": 0,
+    "rule": {
+      "dodge": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "ran-barrage": {
+    "name": "Barrage",
+    "text": "Six arrows at once.",
+    "mana": 10,
+    "ranks": [
+      {
+        "power": 3,
+        "hits": 6,
+        "split": true
+      },
+      {
+        "power": 3.4,
+        "hits": 6,
+        "split": true
+      },
+      {
+        "power": 3.8,
+        "hits": 6,
+        "split": true
+      }
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "ran-opening": {
+    "name": "Opening Shot",
+    "text": "In the first round you deal 12% more a rank.",
+    "mana": 0,
+    "rule": {
+      "firstRoundDamage": 1.12
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "ran-master": {
+    "name": "Master Archer",
+    "text": "Once a fight: for a while you shoot back at nearly everything, and shoot harder.",
+    "mana": 8,
+    "ranks": [
+      {
+        "counterUp": {
+          "rounds": 6,
+          "chance": 0.5
+        },
+        "attackUp": {
+          "rounds": 6,
+          "mult": 1.3
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "ranger",
+    "level": 30
+  },
+  "bea-bond": {
+    "name": "Close Bond",
+    "text": "Your owl hits 8% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "companionPower": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 2
+  },
+  "bea-feathers": {
+    "name": "Thick Coat",
+    "text": "3% more HP a rank.",
+    "mana": 0,
+    "rule": {
+      "hpMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
+  },
+  "bea-keen": {
+    "name": "Keen Sight",
+    "text": "2% more crit a rank.",
+    "mana": 0,
+    "rule": {
+      "crit": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 9
+  },
+  "bea-call": {
+    "name": "Call the Owl",
+    "text": "The owl comes for a long while, no Aim asked.",
+    "mana": 6,
+    "ranks": [
+      {
+        "companion": {
+          "rounds": 5,
+          "power": 0.6
+        }
+      },
+      {
+        "companion": {
+          "rounds": 5,
+          "power": 0.7
+        }
+      },
+      {
+        "companion": {
+          "rounds": 6,
+          "power": 0.8
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "bea-pack": {
+    "name": "Hunting Pair",
+    "text": "3% more attack a rank.",
+    "mana": 0,
+    "rule": {
+      "attackMult": 1.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "bea-mend": {
+    "name": "Preening",
+    "text": "You heal 1% of your HP each round, a rank.",
+    "mana": 0,
+    "rule": {
+      "hpRegen": 0.01
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 17
+  },
+  "bea-stoop": {
+    "name": "Stoop",
+    "text": "The owl dives with your arrow: a very hard hit.",
+    "mana": 8,
+    "ranks": [
+      {
+        "power": 2.4
+      },
+      {
+        "power": 2.8
+      },
+      {
+        "power": 3.2
+      }
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "bea-fierce": {
+    "name": "Fierce Owl",
+    "text": "Your owl hits 8% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "companionPower": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "bea-flock": {
+    "name": "The Flock",
+    "text": "Three strikes from the owl every round, for a while.",
+    "mana": 11,
+    "ranks": [
+      {
+        "companion": {
+          "rounds": 4,
+          "power": 0.6,
+          "hits": 3
+        }
+      },
+      {
+        "companion": {
+          "rounds": 4,
+          "power": 0.7,
+          "hits": 3
+        }
+      },
+      {
+        "companion": {
+          "rounds": 5,
+          "power": 0.75,
+          "hits": 3
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "bea-care": {
+    "name": "Kindly Care",
+    "text": "Each win heals 5% of your HP a rank.",
+    "mana": 0,
+    "rule": {
+      "winHeal": 0.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "bea-king": {
+    "name": "King of the Air",
+    "text": "Once a fight: the greatest owl there is, hitting twice a round, for a long while.",
+    "mana": 10,
+    "ranks": [
+      {
+        "companion": {
+          "rounds": 8,
+          "power": 1.3,
+          "hits": 2
+        }
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "ranger",
+    "level": 30
+  },
+  "tra-wire": {
+    "name": "Tripwire",
+    "text": "A foe caught by a trap also takes 15% of your attack, a rank.",
+    "mana": 0,
+    "rule": {
+      "trapHit": 0.15
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 2
+  },
+  "tra-read": {
+    "name": "Read the Ground",
+    "text": "2% more dodge a rank.",
+    "mana": 0,
+    "rule": {
+      "dodge": 0.02
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
+  },
+  "tra-barb": {
+    "name": "Barbs",
+    "text": "A stunned foe takes 6% more a rank.",
+    "mana": 0,
+    "rule": {
+      "stunnedDamage": 1.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 9
+  },
+  "tra-pit": {
+    "name": "Pit",
+    "text": "It falls in: stunned for two rounds, if it is a lesser foe.",
+    "mana": 6,
+    "ranks": [
+      {
+        "power": 0.6,
+        "stun": 2
+      },
+      {
+        "power": 0.8,
+        "stun": 2
+      },
+      {
+        "power": 1,
+        "stun": 2
+      }
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "tra-prepared": {
+    "name": "Prepared",
+    "text": "In the first round you deal 10% more a rank.",
+    "mana": 0,
+    "rule": {
+      "firstRoundDamage": 1.1
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 13
+  },
+  "tra-cunning": {
+    "name": "Cunning",
+    "text": "Start each fight with a point of Aim, a rank.",
+    "mana": 0,
+    "rule": {
+      "meterStart": 1
+    },
+    "ranks": [
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 17
+  },
+  "tra-net": {
+    "name": "Weighted Net",
+    "text": "It loses its next turn and hits weaker after.",
+    "mana": 8,
+    "ranks": [
+      {
+        "skip": 1
+      },
+      {
+        "skip": 1,
+        "weaken": {
+          "rounds": 3,
+          "mult": 0.75
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "tra-venom": {
+    "name": "Venom on the Spikes",
+    "text": "A poisoned foe takes 5% more a rank.",
+    "mana": 0,
+    "rule": {
+      "poisonedDamage": 1.05
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 21
+  },
+  "tra-mine": {
+    "name": "Fire Pot",
+    "text": "A buried pot goes off: a hard blast that leaves it burning.",
+    "mana": 10,
+    "ranks": [
+      {
+        "power": 2.6,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      },
+      {
+        "power": 3,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      },
+      {
+        "power": 3.4,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "tra-patient": {
+    "name": "Patient",
+    "text": "A 3% better chance a rank to shoot back.",
+    "mana": 0,
+    "rule": {
+      "counterChance": 0.03
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "tra-master": {
+    "name": "Master of Snares",
+    "text": "Once a fight: its next three wind-ups fail, and it loses its next turn.",
+    "mana": 9,
+    "ranks": [
+      {
+        "trap": 3,
+        "skip": 1
+      }
+    ],
+    "oncePerFight": true,
+    "classId": "ranger",
+    "level": 30
   }
 }

@@ -52,7 +52,7 @@ describe('the new level curve', () => {
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
     const c = up.characters[P]!;
     expect(c.level).toBe(4);
-    expect(up.version).toBe(29);
+    expect(up.version).toBe(30);
     expect(c.xp).toBeGreaterThan(230);
     expect(c.xp).toBeLessThan(410);
   });

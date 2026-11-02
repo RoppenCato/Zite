@@ -1,6 +1,7 @@
 // Small pieces shared by the board, the fight and the shop: refusing, replacing a character in the state, gold, healing,
 // mana, xp and levels, the bag.
 
+import { withCore } from './skills.ts';
 import { CLASS_DATA, GEAR, ITEMS, PROGRESSION } from './data.ts';
 import { stats } from './gear.ts';
 import type { Action, ApplyResult, Character, GameEvent, GameState, GearItem, RejectReason } from './types.ts';
@@ -106,6 +107,7 @@ export function gainXp(c: Character, xp: number, action: Action, events: GameEve
       attack: next.attack + growth.attack,
       defense: next.defense + growth.defense,
     };
+    next = withCore(next);
     events.push({ type: 'levelled', action: action.id, player: action.player, level, maxHp: next.maxHp, maxMana: next.maxMana, attack: next.attack, defense: next.defense });
   }
   return next;

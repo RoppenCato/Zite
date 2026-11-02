@@ -9,7 +9,7 @@ export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type R
 export { stats, powers, plainGear, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
 export { levelFor, sellPrice } from './common.ts';
 export { makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, noteLevels } from './fight.ts';
-export { MAX_CARRIED, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
+export { MAX_CARRIED, TIER_POINTS, carriedLimit, needsFor, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
 export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts';
 export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';

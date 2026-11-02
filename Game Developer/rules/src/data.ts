@@ -60,6 +60,8 @@ export interface ClassData {
 
 /** A way to specialize (Robin, 2026-11-02): an ability, an always-on rule, an ability, a signature ability, each opening the next. */
 export interface ClassTree {
+  /** Eight tiers, each a row of talents. */
+  tiers: string[][];
   name: string;
   text: string;
   nodes: string[];
@@ -105,6 +107,30 @@ export interface ClassTraits {
   healOverflow?: number;
   /** Only bows may be worn. */
   rangedOnly?: boolean;
+  // The talents' passives (Robin, 2026-11-02).
+  attackMult?: number;
+  manaMult?: number;
+  critPower?: number;
+  meterStart?: number;
+  barrierStart?: number;
+  hpRegen?: number;
+  manaRegen?: number;
+  winHeal?: number;
+  winMana?: number;
+  critHeal?: number;
+  critMana?: number;
+  dodgeHeal?: number;
+  blockPower?: number;
+  lowHpDamage?: number;
+  lowHpTaken?: number;
+  highHpDamage?: number;
+  executeDamage?: number;
+  firstRoundDamage?: number;
+  burningDamage?: number;
+  poisonedDamage?: number;
+  weakenedDamage?: number;
+  stunnedDamage?: number;
+  burnPower?: number;
 }
 
 /** One rank of an ability: what it does. Fields left out do nothing. */

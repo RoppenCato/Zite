@@ -472,3 +472,7 @@ Bogglemire (tier 4, levels 12 to 16) and The Frostcrown (tier 5, 16 to 20) follo
 ## The hub's rules (Robin, 2026-11-02)
 
 Ready before the map lands. `Area.city`: `stroll { to }` walks its own streets with no die, its plain spots do nothing, and `roll` works only on a spot that leads out. `home`: to `world.hub` from anywhere outside a fight, once the hub is open, then a wait of `homeWaitMs`. A mini-boss on a `boss` spot with `opens` guards a gate like a boss. `Area.openWith`: a land with no gate opens when that land does. Bosses stop opening lands by the data: drop their `opens`.
+
+## The talent trees (Robin, 2026-11-02)
+
+`tools/class-data.mjs` writes them. Twelve trees of eight tiers: a tier asks for `TIER_POINTS` x its number of points in that tree, and a level (2, 5, 9, 13, 17, 21, 25, 30). A point a level; the class's four come free (`withCore`). A rule's numbers apply once a rank. Passives read in `gear.ts` (attackMult, manaMult) and `fight.ts`. `carriedLimit`: four carried, five from level 15. Save version 30 gives every point back.
