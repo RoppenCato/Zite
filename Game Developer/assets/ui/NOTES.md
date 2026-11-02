@@ -123,6 +123,7 @@ The rarity colours are read from the game's `layout.ts`: common #e8e4d8, uncommo
 | `mark_drop` | a drop of mana | 24 by 24 |  |
 | `mark_online` | an online dot | 24 by 24 |  |
 | `mark_scroll` | a note left on a spot | 32 by 32 |  |
+| `mark_elite` | a big, mean creature of this place: hard, worth it | 40 by 40 |  |
 | `mark_alert` | a "!" badge (a mini-boss) | 40 by 40 |  |
 | `mark_dollar` | a "$" badge (a merchant) | 40 by 40 |  |
 | `mark_ring` | a tap ring, static, white | 40 by 40 |  |

@@ -76,6 +76,7 @@ const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circl
 const RING_RADIUS = 42;
 const TOKEN_RADIUS = 15;
 const DOUBLE_TAP_MS = 320;
+const MAP_TOP_PAD = 400;
 interface WorldBridge {
   from: { x: number; y: number };
   to: { x: number; y: number };
@@ -399,7 +400,7 @@ export class BoardScene extends Phaser.Scene {
     // The labels keep one size on screen, whatever the zoom.
     const cam = this.cameras.main;
     for (const words of this.closedLabels.values()) words.setScale(DPR / cam.zoom);
-    for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale((0.5 * DPR) / cam.zoom);
+    for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale(((mark.frame.name === 'mark_unknown' ? 0.28 : 0.5) * DPR) / cam.zoom);
     for (const label of this.reachLabels) {
       const scale = DPR / cam.zoom;
       label.setScale(scale).setX((label.getData('x') as number) + 24 * scale);
@@ -1017,7 +1018,8 @@ export class BoardScene extends Phaser.Scene {
       }
       const mini = spawn.kind === 'miniboss' || spawn.kind === 'elite';
       const parts: Phaser.GameObjects.GameObject[] = [];
-      if (hasFrame(this, mini ? 'mark_alert' : 'mark_dollar')) parts.push(icon(this, mini ? 'mark_alert' : 'mark_dollar', 0, 0));
+      const markFrame = spawn.kind === 'elite' ? 'mark_elite' : mini ? 'mark_alert' : 'mark_dollar';
+      if (hasFrame(this, markFrame)) parts.push(icon(this, markFrame, 0, 0));
       else {
         parts.push(this.add.circle(0, 0, 14, mini ? 0xd9534f : 0xe8b84a, 1).setStrokeStyle(3, 0x101318, 1));
         parts.push(this.add.text(0, 0, mini ? '!' : '$', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#101318', resolution: 2 }).setOrigin(0.5));
@@ -1199,7 +1201,8 @@ export class BoardScene extends Phaser.Scene {
       return;
     }
     const b = this.openBounds();
-    this.cameras.main.setBounds(b.x, b.y, b.width, b.height);
+    // A margin over the top, so the goal line does not sit on the land.
+    this.cameras.main.setBounds(b.x, b.y - MAP_TOP_PAD, b.width, b.height + MAP_TOP_PAD);
   }
 
   /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
@@ -1226,10 +1229,9 @@ export class BoardScene extends Phaser.Scene {
 
   /** The box round everything open, and the zoom that fits it in the band. */
   private openBounds(): { x: number; y: number; width: number; height: number } {
-    // The next land too: dim, but there to look at (Robin, 2026-11-02).
+    // All the painted land, closed or not: what lies ahead is there to look at (Robin, 2026-11-02).
     const all = Object.values(this.game_.state.board.areas);
-    const reach = Math.max(...this.game_.me.opened.map((id) => this.game_.state.board.areas[id]?.tier ?? 1)) + 1;
-    const areas = all.filter((a) => this.game_.me.opened.includes(a.id) || (this.painted && a.tier === reach && PAINTED[a.id]));
+    const areas = all.filter((a) => this.game_.me.opened.includes(a.id) || (this.painted && PAINTED[a.id]));
     const list: Area[] = areas.length ? areas : Object.values(this.game_.state.board.areas);
     const boxes = list.map((a) => PAINTED[a.id] ?? a.bounds);
     const x = Math.min(...boxes.map((a) => a.x));
