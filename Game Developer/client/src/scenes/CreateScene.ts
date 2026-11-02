@@ -36,7 +36,7 @@ const CARD_W = 340;
 const CARD_H = 104;
 const CARD_GAP = 12;
 const FIRST_CARD_Y = 304;
-export const DEFAULT_NAME = 'Robin';
+export const DEFAULT_NAME = 'Hero';
 export { MAX_NAME };
 
 /** Where things sit, in design pixels (the driver taps them here). */
@@ -98,7 +98,7 @@ export class CreateScene extends Phaser.Scene {
     this.nameField = document.createElement('input');
     this.nameField.type = 'text';
     this.nameField.maxLength = MAX_NAME;
-    this.nameField.value = DEFAULT_NAME;
+    this.nameField.placeholder = 'Type your name';
     this.nameField.autocomplete = 'off';
     this.nameField.setAttribute('style', [
       `width:${input.w}px`,

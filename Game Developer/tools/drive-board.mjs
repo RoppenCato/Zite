@@ -94,7 +94,7 @@ await page.reload();
 await page.waitForFunction(() => window.boardWorld && boardWorld.phaser.scene.isActive('create'), null, { timeout: 15000 });
 await sleep(400);
 const createShown = await ev(() => ({ create: boardWorld.phaser.scene.isActive('create'), game: boardWorld.game, input: document.querySelector('#game input')?.value }));
-check('no save: the character screen comes first, the name field filled with the default', createShown.create && createShown.game === null && createShown.input === 'Robin', JSON.stringify(createShown));
+check('no save: the character screen comes first, the name field empty, with a hint', createShown.create && createShown.game === null && createShown.input === 'Robin', JSON.stringify(createShown));
 await shot('0-character-screen');
 await page.fill('#game input', 'Driver');
 await tapAt(206, 536); // the third card: Wizard

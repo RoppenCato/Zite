@@ -117,29 +117,32 @@ export class SettingsScene extends Phaser.Scene {
       location.reload();
     });
     // For Robin's testing (2026-11-02), to go before an Alpha: another class at the same level, or a level more. The page loads again for its art.
-    const next = TEST_CLASSES[(TEST_CLASSES.indexOf(this.game_.me.classId) + 1) % TEST_CLASSES.length]!;
-    const row = rows.length + (code ? 6 : 5);
-    this.settingRow(row, 'Test: class', `Now ${CLASS_DATA[this.game_.me.classId]?.name}. Skills start over.`, CLASS_DATA[next]!.name, () => {
-      if (this.game_.me.fight) return;
-      void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
-    });
-    this.settingRow(row + 1, 'Test: level', `Now level ${this.game_.me.level}.`, '+1 level', () => {
-      if (this.game_.me.fight) return;
-      void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
-    });
-    const { board } = this.game_.state;
-    const towns = Object.values(board.areas).filter((a) => !a.dungeon).sort((a, b) => a.tier - b.tier).map((a) => Object.values(board.spaces).find((s) => s.area === a.id && s.kind === 'town')).filter((s): s is NonNullable<typeof s> => !!s);
-    const hereTier = towns.findIndex((t) => t.area === board.spaces[this.game_.me.space]?.area);
-    const nextTown = towns[(hereTier + 1) % towns.length];
-    if (nextTown) {
-      this.settingRow(row + 3, 'Test: land', `Next: ${board.areas[nextTown.area]?.name}.`, 'Go', () => {
+    // The public site has none of them (mine, for Robin's friends).
+    if (/^(localhost|127\.|192\.168\.)/.test(location.hostname)) {
+      const next = TEST_CLASSES[(TEST_CLASSES.indexOf(this.game_.me.classId) + 1) % TEST_CLASSES.length]!;
+      const row = rows.length + (code ? 6 : 5);
+      this.settingRow(row, 'Test: class', `Now ${CLASS_DATA[this.game_.me.classId]?.name}. Skills start over.`, CLASS_DATA[next]!.name, () => {
         if (this.game_.me.fight) return;
-        void this.game_.act({ type: 'skill', op: 'testLand', to: nextTown.id, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+        void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+      });
+      this.settingRow(row + 1, 'Test: level', `Now level ${this.game_.me.level}.`, '+1 level', () => {
+        if (this.game_.me.fight) return;
+        void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+      });
+      const { board } = this.game_.state;
+      const towns = Object.values(board.areas).filter((a) => !a.dungeon).sort((a, b) => a.tier - b.tier).map((a) => Object.values(board.spaces).find((s) => s.area === a.id && s.kind === 'town')).filter((s): s is NonNullable<typeof s> => !!s);
+      const hereTier = towns.findIndex((t) => t.area === board.spaces[this.game_.me.space]?.area);
+      const nextTown = towns[(hereTier + 1) % towns.length];
+      if (nextTown) {
+        this.settingRow(row + 3, 'Test: land', `Next: ${board.areas[nextTown.area]?.name}.`, 'Go', () => {
+          if (this.game_.me.fight) return;
+          void this.game_.act({ type: 'skill', op: 'testLand', to: nextTown.id, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+        });
+      }
+      this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
+        void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
       });
     }
-    this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
-      void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
-    });
     this.settingRow(rows.length + (code ? 4 : 3), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
     this.settingRow(rows.length + (code ? 5 : 4), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
       if (!window.confirm('Start over with a new character?')) return;
