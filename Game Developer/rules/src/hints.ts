@@ -5,6 +5,7 @@ import { GEAR, SPACE_KIND_DATA } from './data.ts';
 import { creature } from './fight.ts';
 import { rankName } from './gear.ts';
 import { grownIndex, peekArea } from './generate.ts';
+import { groundAt } from './grounds.ts';
 import { questLine } from './quests.ts';
 import type { GameState } from './types.ts';
 
@@ -53,7 +54,9 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
   const spawn = state.spawns[spaceId];
   switch (space.kind) {
     case 'normal': {
-      const mobs = (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
+      // The hunting ground: what mostly roams here and what it tends to drop.
+      const ground = groundAt(state.board, space);
+      const mobs = ground ? `${ground.name}: mostly ${creature(ground.mob, bestiary)?.name ?? ground.mob}, finds lean to ${ground.drops.join(' and ')}` : (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
       const prowl =
         spawn?.kind === 'worldboss' && spawn.enemy
           ? ` A world boss, ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
@@ -62,7 +65,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
             : spawn?.kind === 'merchant'
               ? ' A wandering merchant has camped here.'
               : '';
-      return `${where}, levels ${area?.levels[0]} to ${area?.levels[1]}: ${mobs} roam here. Gold, xp, now and then ${rank} gear, and sometimes something else.${prowl}`;
+      return `${where}, levels ${area?.levels[0]} to ${area?.levels[1]}: ${mobs}. Gold, xp, now and then ${rank} gear, and sometimes something else.${prowl}`;
     }
     case 'chest': {
       if (space.locked) {
@@ -79,11 +82,12 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
     case 'church':
       return `${where}: heals you fully and takes off poison and weakness. Always open, and free.`;
     case 'shop':
-      return `${where}: ${rank} gear, potions and dice cards; it buys what you carry.`;
-    case 'town': {
-      const mine = me?.quests.find((q) => q.town === spaceId);
-      const errand = mine ? ` Your errand: ${questLine(mine)}` : (me?.cooldowns[`quest:${spaceId}`] ?? 0) > now ? '' : ' Someone here may have an errand.';
-      return `${where}: rest, HP and mana to full. A shop, a trainer.${errand}`;
+      return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
+    case 'town':
+      return `${where}: rest, HP and mana to full. Flasks and cards for sale, a trainer.`;
+    case 'board': {
+      const mine = me?.quests[0];
+      return `${where}: pick a quest, one at a time. It pays the moment you finish it.${mine ? ` Yours: ${questLine(mine)}` : ''}`;
     }
     case 'boss': {
       const boss = space.boss ? creature(space.boss, bestiary) : undefined;

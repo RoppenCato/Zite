@@ -37,6 +37,11 @@ const ALIASES: Record<string, string> = {
   'ui/die-land': 'ui/die-land-b',
   'ui/arrive-church': 'ui/arrive-shrine',
   // Chapter 2's names (Nigel, SD), silent or borrowed until his drops land.
+  'ui/board-open': 'ui/sheet-open',
+  'ui/quest-done': 'ui/errand-done',
+  'ui/person-found': 'ui/errand-done',
+  'ui/log-open': 'ui/sheet-open',
+  'fight/dodge': 'fight/miss',
   'fight/meter-pip-trickster': 'fight/meter-pip',
   'fight/meter-pip-wizard': 'fight/meter-pip',
   'fight/meter-pip-archer': 'fight/meter-pip',

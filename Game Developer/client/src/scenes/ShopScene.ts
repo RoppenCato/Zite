@@ -4,7 +4,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEM_IDS, ITEMS, plainGear, PROGRESSION, sellPrice, SLOTS, SPACE_KIND_DATA, type GearItem } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, type GearItem, type GearLine } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -50,6 +50,8 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'train';
+
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
   private ink: { text: string; dim: string; gold: string } = { text: COLORS.text, dim: COLORS.dim, gold: COLORS.gold };
@@ -61,7 +63,7 @@ export class ShopScene extends Phaser.Scene {
   private gold!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private rows: Phaser.GameObjects.GameObject[] = [];
-  private tab: 'buy' | 'items' | 'sell' | 'train' = 'buy';
+  private tab: Tab = 'items';
   private merchant = false;
   private town = false;
 
@@ -73,7 +75,7 @@ export class ShopScene extends Phaser.Scene {
 
   create(data?: { merchant?: boolean }): void {
     this.merchant = !!data?.merchant;
-    this.tab = 'buy';
+    this.tab = 'items';
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space];
     this.town = !this.merchant && space?.kind === 'town';
@@ -84,18 +86,24 @@ export class ShopScene extends Phaser.Scene {
     this.add.text(CENTRE, 134, title, { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: this.ink.text }).setOrigin(0.5);
     this.gold = this.add.text(CENTRE, 160, '', { fontFamily: FONT, fontSize: '15px', color: this.ink.gold }).setOrigin(0.5);
     const { tabY, leave } = SHOP_LAYOUT;
-    const tabs: ['buy' | 'items' | 'sell' | 'train', string][] = [['buy', 'Gear'], ['items', 'Items'], ['sell', 'Sell'], ...(this.town ? ([['train', 'Train']] as ['train', string][]) : [])];
+    // What this shop sells, as tabs (Robin, 2026-11-02: "landing on different shops should give you option to buy different gear").
+    const offer = shopOffer(this.game_.state, me);
+    const tier = this.game_.state.board.areas[space?.area ?? '']?.tier ?? 1;
+    const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
+    const lines = (offer?.lines ?? []) as GearLine[];
+    const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
+    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['train', 'Train']] as [Tab, string][]) : [])];
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
-    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '16px', () => this.show(id)));
+    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
     this.message = this.add
       .text(CENTRE, 636, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);
     makeButton(this, leave.x, leave.y, leave.w, leave.h, 'Leave', COLORS.log, '20px', () => (this.scene.get('board') as BoardScene).shopLeft());
-    this.show('buy');
+    this.show(lines[0] ?? 'items');
     this.log.note(`shop: ${title}`);
   }
 
-  private show(tab: 'buy' | 'items' | 'sell' | 'train'): void {
+  private show(tab: Tab): void {
     this.tab = tab;
     for (const r of this.rows) r.destroy();
     this.rows = [];
@@ -137,16 +145,17 @@ export class ShopScene extends Phaser.Scene {
           if (!top) this.buy({ ability: id });
         }, '', id);
       });
-    } else if (tab === 'buy') {
+    } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
       SLOTS.forEach((slot, i) => {
-        const g = plainGear('preview', slot, tier);
-        row(i, g.name, this.ink.text, `${describeGear(g).split(' · ').slice(2).join(' · ')}${compareWorn(g, me.equipment[slot])}`, `${g.price} g`, 'Buy', () => this.buy({ slot }), ownedGear(me.equipment[slot], me.bag, g.base));
+        const g = plainGear('preview', slot, tier, tab, me.classId);
+        row(i, g.name, this.ink.text, `${describeGear(g).split(' · ').slice(2).join(' · ')}${compareWorn(g, me.equipment[slot])}`, `${g.price} g`, 'Buy', () => this.buy({ slot, line: tab }), ownedGear(me.equipment[slot], me.bag, g.base));
       });
-    } else if (tab === 'items') {
-      ITEM_IDS.forEach((id, i) => {
+    } else if (tab === 'items' || tab === 'cards') {
+      const sold = (shopOffer(this.game_.state, me)?.items ?? []).filter((id) => !!ITEMS[id]!.dice === (tab === 'cards'));
+      sold.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(i, item.name, this.ink.text, `${item.text.split(/[.:;] /)[0]!.replace(/[.]$/, "")}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '');
+        row(i, item.name, this.ink.text, `${item.text.split('. ')[0]!.replace(/.$/, '')}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '');
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);
@@ -157,7 +166,7 @@ export class ShopScene extends Phaser.Scene {
     }
   }
 
-  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string }): void {
+  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine }): void {
     if (this.inFlight) return;
     this.inFlight = true;
     this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));

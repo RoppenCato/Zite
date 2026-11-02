@@ -12,6 +12,7 @@ import { GuideScene } from './GuideScene.ts';
 import { HudScene } from './HudScene.ts';
 import { MomentScene } from './MomentScene.ts';
 import { RevealScene } from './RevealScene.ts';
+import { LogScene } from './LogScene.ts';
 import { QuestScene } from './QuestScene.ts';
 import { SettingsScene } from './SettingsScene.ts';
 import { ShopScene } from './ShopScene.ts';
@@ -29,5 +30,6 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'ask', scene: new AskScene() },
     { key: 'guide', scene: new GuideScene({ game }) },
     { key: 'moment', scene: new MomentScene() },
+    { key: 'log', scene: new LogScene() },
   ];
 }

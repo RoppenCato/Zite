@@ -188,7 +188,7 @@ export class BagScene extends Phaser.Scene {
       const count = me.items[p.item] ?? 0;
       const s = stats(me);
       const flask = !!item && !item.dice;
-      const helps = flask && count > 0 && ((!!item.healShare && me.hp < s.maxHp) || (!!item.manaShare && me.mana < s.maxMana));
+      const helps = flask && count > 0 && ((!!item.heal && me.hp < s.maxHp) || (!!item.mana && me.mana < s.maxMana) || !!item.elixir || (!!item.cure && Object.keys(me.ailments ?? {}).length > 0));
       this.detailName.setText(item?.name ?? p.item).setColor(kitReady(this) ? INK : COLORS.text);
       this.detailLine.setText(flask ? (helps ? item.text.split('.')[0] + '.' : 'You are full: it would do nothing now.') : 'Use it after a roll: it shows above the message then.');
       this.actButton.label.setText(flask ? 'Drink' : 'Wear');
@@ -258,7 +258,7 @@ export class BagScene extends Phaser.Scene {
       (events) => {
         this.inFlight = false;
         const rejected = events.find((e) => e.type === 'rejected');
-        if (!rejected) sfx.play(intent.type === 'use' ? (intent.item === 'mana-potion' ? 'fight/mana-potion' : 'fight/potion') : intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
+        if (!rejected) sfx.play(intent.type === 'use' ? (intent.item.startsWith('mana-potion') ? 'fight/mana-potion' : 'fight/potion') : intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
         this.note = rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done;
         // A worn piece taken off is carried now, and a piece put on is worn: the pick follows it.
         if (!rejected && intent.type === 'equip') {

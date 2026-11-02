@@ -6,12 +6,13 @@
 // the guards and all the numbers are mine, first settings.
 
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
-import { addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
+import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
-import { questProgress } from './quests.ts';
+import { dropSlot, groundAt, rollLine } from './grounds.ts';
+import { finishQuests, questProgress } from './quests.ts';
 import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Spawn } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
@@ -202,7 +203,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     if (f.windup.rounds <= 0) {
       const w = f.windup;
       f.windup = null;
-      strike(r, w.name, w.power, 1, r.s.crit);
+      strike(r, w.name, w.power, 1, r.s.crit, true);
       if (r.done) return r.done;
     }
   }
@@ -294,7 +295,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         let power = rk.power;
         if (rk.executeBelow && rk.executePower && f.enemy.hp < f.enemy.maxHp * rk.executeBelow) power = rk.executePower;
         if (ability.meterAll && rk.perMeter) power += rk.perMeter * meterCost;
-        strike(r, ability.name, power * powerMult, rk.hits ?? 1, rk.crit ?? r.s.crit);
+        strike(r, ability.name, power * powerMult, rk.hits ?? 1, rk.crit ?? r.s.crit, true);
         if (r.done) return r.done;
       }
       if (rk.steal) {
@@ -327,11 +328,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       const item = ITEMS[move.item];
       if (!item) return reject(state, action, 'no such item');
       if ((r.c.items[move.item] ?? 0) <= 0) return reject(state, action, 'none left');
-      if (!item.healShare && !item.manaShare) return reject(state, action, 'not now');
+      if (!item.heal && !item.mana) return reject(state, action, 'not now');
       r.c = spend(r.c, move.item);
       events.push({ type: 'used', action: id, player, item: move.item });
-      if (item.healShare) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * item.healShare)), action, events);
-      if (item.manaShare) r.c = restoreMana(r.c, Math.max(1, Math.round(r.s.maxMana * item.manaShare)), action, events);
+      if (item.heal) r.c = heal(r.c, item.heal, action, events);
+      if (item.mana) r.c = restoreMana(r.c, item.mana, action, events);
       break;
     }
     case 'flee': {
@@ -411,7 +412,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         if (guard === 'block') dealt = Math.ceil(dealt * PROGRESSION.guards.block);
         if (guard === 'brace') {
           dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
-          r.c = restoreMana(r.c, PROGRESSION.guards.braceMana, action, events);
+          r.c = restoreMana(r.c, Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
         }
         let absorbed = 0;
         if (f.barrier > 0) {
@@ -504,7 +505,7 @@ function gainMeter(r: Round, gain: 'hurt' | 'hit' | 'round' | 'miss', n: number)
  * sure crits, Stormcaller's third hits and the Sunblade apply; lifesteal heals; Frostbrand chills and Venomtooth poisons.
  * Ends the fight (sets `done`) when the enemy falls.
  */
-function strike(r: Round, move: string, power: number, hits: number, crit: number): void {
+function strike(r: Round, move: string, power: number, hits: number, crit: number, spell = false): void {
   const { f, s, rng, events } = r;
   const id = r.action.id;
   const player = r.action.player;
@@ -536,7 +537,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     } else if (p.thunder && f.strikes % p.thunder === 0) {
       chance = 1;
     }
-    const b = blow(s.attack, hitPower, enemyDefense(f.enemy), chance, rng);
+    const b = blow(s.attack + (spell ? s.magic : 0), hitPower, enemyDefense(f.enemy), chance, rng);
     f.enemy.hp = Math.max(0, f.enemy.hp - b.damage);
     events.push({ type: 'hit', action: id, player, by: 'player', move, damage: b.damage, crit: b.crit, hp: f.enemy.hp, absorbed: 0 });
     gainMeter(r, 'hit', 1);
@@ -687,7 +688,7 @@ function win(r: Round): ApplyResult {
   let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
-  next = questProgress(next, { beat: e.id }, action, events);
+  next = questProgress(next, { beat: e.id }, rng, action, events);
 
   const space = r.state.board.spaces[f.space];
   const area = space ? r.state.board.areas[space.area] : undefined;
@@ -700,16 +701,19 @@ function win(r: Round): ApplyResult {
     if (unique) {
       next = addLoot(next, unique, action, events);
     } else {
-      const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
-      next = addLoot(next, rollGear(got.id, slot, rank, GEAR.rarityBoost[e.role], rng), action, events);
+      next = addLoot(next, rollGear(got.id, dropSlot(space ? groundAt(s.board, space) : null, rng), rank, GEAR.rarityBoost[e.role], rng, rollLine(rng), c.classId), action, events);
     }
   }
   if (rng.next() < GEAR.consumableDrop.potion) {
-    next = giveItem(next, 'potion', 1, action, events);
+    next = giveItem(next, flaskId('potion', rank), 1, action, events);
   } else if (rng.next() < GEAR.consumableDrop.card) {
     const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
     next = giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
+
+  const paid = finishQuests(s, next, action, rng, events);
+  s = paid.state;
+  next = paid.c;
 
   // A mini-boss of an area with a locked chest carries its key, until the character holds one.
   if (e.role === 'mini' && area && (next.keys[area.id] ?? 0) === 0 && Object.values(s.board.spaces).some((x) => x.area === area.id && x.locked)) {
@@ -780,12 +784,15 @@ function worldBossDown(r: Round): ApplyResult {
     let next: Character = { ...c, gold: c.gold + gold, fight: c.fight?.shared && c.fight.space === space ? null : c.fight };
     const levelBefore = next.level;
     next = gainXp(next, xp, action, out);
-    next = questProgress(next, { beat: e.id }, action, out);
+    next = questProgress(next, { beat: e.id }, rng, action, out);
+    const paid = finishQuests(s, next, action, rng, out);
+    s = paid.state;
+    next = paid.c;
     if (rng.next() < GEAR.dropChance.boss) {
       const got = nextGearId(s);
       s = got.state;
       const unique = rng.next() < GEAR.uniqueChance.boss ? rollUnique(got.id, rank, rank, rng) : null;
-      next = addLoot(next, unique ?? rollGear(got.id, SLOTS[rng.int(SLOTS.length) - 1]!, rank, GEAR.rarityBoost.boss, rng), action, out);
+      next = addLoot(next, unique ?? rollGear(got.id, SLOTS[rng.int(SLOTS.length) - 1]!, rank, GEAR.rarityBoost.boss, rng, rollLine(rng), c.classId), action, out);
     }
     next = offerPicks(next, rng, levelBefore, action, out);
     characters[who] = next;

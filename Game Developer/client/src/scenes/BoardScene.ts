@@ -36,6 +36,8 @@ import {
   type Rarity,
   type Space,
   type SpaceKind,
+  groundsOf,
+  questLine,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
@@ -93,6 +95,7 @@ const WHEEL_STEP = 1.1; // one notch of a mouse wheel
 
 // One colour and one letter per kind of spot (mine, 2026-10-31, placeholders until the art comes).
 const KIND_COLORS: Record<SpaceKind, number> = {
+  board: 0xe8b84a,
   town: 0x4fb06d,
   shop: 0xe8b84a,
   normal: 0x5d6678,
@@ -102,7 +105,7 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   church: 0xf4f0e4,
   boss: 0x8f2f3b,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -575,8 +578,13 @@ export class BoardScene extends Phaser.Scene {
         case 'keyFound':
           m.find('item_key', 'A key!', 'It opens this area\'s vault.', 0xe8b84a);
           break;
+        case 'personFound':
+          sfx.play('ui/person-found');
+          m.find('mark_star', `You found ${e.person}!`, 'Your quest is done.', 0xfff1b0);
+          break;
         case 'questDone':
-          m.find('mark_star', 'Errand done', e.quest.text, 0xfff1b0);
+          sfx.play('ui/quest-done');
+          m.find('mark_scroll', 'Quest complete!', `+${e.quest.xp} xp, +${e.quest.gold} gold and a chest.`, 0xe8b84a);
           break;
         case 'locked':
           m.find('mark_lock', 'Locked', 'A vault. Its key is carried by this area\'s mini-boss.', 0xd6cfbd);
@@ -660,8 +668,24 @@ export class BoardScene extends Phaser.Scene {
     if (this.drawn.size > fresh.length) this.log.note(`board grown: ${fresh.map((a) => a.name).join(', ')}; ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
   }
 
+  /** The hunting grounds' names on the map, each by its spot: what mostly roams there (Robin, 2026-11-02). */
+  private drawGrounds(area: Area): void {
+    const { board } = this.game_.state;
+    for (const g of groundsOf(board, area.id)) {
+      const hub = board.spaces[g.hub];
+      if (!hub) continue;
+      const mob = creature(g.mob, board.bestiary)?.name ?? g.mob;
+      this.add
+        .text(hub.x, hub.y - 62, `${g.name}\n${mob}s`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#fff4c8', stroke: '#2a2030', strokeThickness: 4, align: 'center', resolution: 2 })
+        .setOrigin(0.5)
+        .setAlpha(0.9)
+        .setDepth(KIT_DEPTH.names);
+    }
+  }
+
   /** An area's ground in its theme's colour, its name written large and faint. */
   private drawGround(area: Area): void {
+    this.drawGrounds(area);
     const kit = kitFor(this, area.theme);
     if (kit) {
       const { board, seed } = this.game_.state;
@@ -1258,7 +1282,7 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const offer = me.offer;
     if (offer?.kind === 'gamble') this.offerGamble();
-    else if (offer?.kind === 'quest') this.offerQuest();
+    else if (offer?.kind === 'board') this.offerBoard();
     else if (offer?.kind === 'loot') this.offerKeep();
     else if (me.picks.length) this.offerPick();
   }
@@ -1302,35 +1326,53 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
-  /** A town's errand: Take it or Not now (mine, 2026-11-01). */
-  private offerQuest(): void {
-    const offer = this.game_.me.offer;
-    if (!offer || offer.kind !== 'quest') return;
-    const q = offer.quest;
-    const town = this.game_.state.board.spaces[q.town]?.name ?? 'the town';
-    this.setMessage(`An errand from ${town}.`);
+  /** The quest board (Robin, 2026-11-02): pick one of what it offers; with one under way, keep it or drop it. */
+  private offerBoard(): void {
+    const me = this.game_.me;
+    const offer = me.offer;
+    if (!offer || offer.kind !== 'board') return;
+    sfx.play('ui/board-open');
+    this.refreshHud();
+    const mine = me.quests[0];
+    if (mine) {
+      this.setMessage('The quest board.');
+      this.ask({
+        icon: 'mark_scroll',
+        color: 0xe8b84a,
+        title: 'You have a quest',
+        text: questLine(mine),
+        pays: 'One at a time. Drop it to pick another.',
+        options: [
+          { label: 'Keep going', color: COLORS.button, onTap: () => this.answerQuest(false) },
+          { label: 'Drop it', color: COLORS.log, onTap: () => this.answerQuest(false, 0, true) },
+        ],
+      });
+      return;
+    }
+    this.setMessage('The quest board.');
+    const words = { kill: 'Hunt', loot: 'Gather', mini: 'Mini-boss', find: 'Find someone' };
     this.ask({
-      icon: 'mark_scroll',
       color: 0xe8b84a,
-      title: `An errand from ${town}`,
-      text: q.text,
-      pays: `Pays ${q.gold} gold and ${q.xp} xp${q.unique ? ', maybe a unique' : ''}`,
+      title: 'Quest Board',
+      text: 'One at a time. It pays the moment you finish it, with a chest.',
       options: [
-        { label: 'Take it', color: COLORS.button, onTap: () => this.answerQuest(true) },
+        ...offer.quests.map((q, i) => ({ label: `${words[q.kind]}: ${q.xp} xp, ${q.gold} g`, color: COLORS.button, note: q.text, onTap: () => this.answerQuest(true, i) })),
         { label: 'Not now', color: COLORS.log, onTap: () => this.answerQuest(false) },
       ],
     });
   }
 
-  answerQuest(accept: boolean): void {
+  answerQuest(accept: boolean, index = 0, drop = false): void {
     this.closeAsk();
-    this.send({ type: 'quest', player: this.game_.player, accept }, (events) => {
+    this.send({ type: 'quest', player: this.game_.player, accept, index, drop }, (events) => {
       this.hud?.setChips([]);
       const taken = events.find((e) => e.type === 'questTaken');
-      if (taken) sfx.play('ui/errand-take');
-      if (taken?.type === 'questTaken') moments(this)?.find('mark_scroll', 'Errand taken', taken.quest.text, 0xe8b84a);
-      this.log.note(`quest ${accept ? 'taken' : 'declined'}`);
-      this.finish(taken?.type === 'questTaken' ? `Errand taken: ${taken.quest.text}` : this.describe(events) === 'questDeclined' ? 'Maybe another time.' : this.describe(events));
+      if (taken?.type === 'questTaken') {
+        sfx.play('ui/errand-take');
+        moments(this)?.find('mark_scroll', 'Quest taken', taken.quest.text, 0xe8b84a);
+      }
+      this.log.note(`quest ${accept ? 'taken' : drop ? 'dropped' : 'left'}`);
+      this.finish(taken?.type === 'questTaken' ? `Quest: ${taken.quest.text}` : drop ? 'Quest dropped.' : 'Maybe later.');
     });
   }
 
@@ -1474,13 +1516,12 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'ui/board-open', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
         else if (e.type === 'learned') sfx.play('ui/shrine-teach');
         else if (e.type === 'empty') sfx.play('ui/spot-empty');
-        else if (e.type === 'questDone') sfx.play('ui/errand-done');
       }
       const after = () => {
         const me = this.game_.me;
@@ -1586,7 +1627,7 @@ export class BoardScene extends Phaser.Scene {
       releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
       releaseBackdrops(this.game, area.theme);
     }
-    const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : ''].filter(Boolean).join(', ');
+    const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : '', me.elixirs?.vigor ? `vigor ${me.elixirs.vigor.fights}` : '', me.elixirs?.arcana ? `arcana ${me.elixirs.arcana.fights}` : ''].filter(Boolean).join(', ');
     this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried || (area?.name ?? '')} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
@@ -1627,10 +1668,13 @@ export class BoardScene extends Phaser.Scene {
           parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
           break;
         case 'questProgress':
-          parts.push(`Errand: ${e.quest.done} of ${e.quest.count}.`);
+          parts.push(`Quest: ${e.quest.done} of ${e.quest.count}.`);
+          break;
+        case 'personFound':
+          parts.push(`You found ${e.person}!`);
           break;
         case 'questDone':
-          parts.push(`Errand done: ${e.quest.text}`);
+          parts.push(`Quest complete: ${e.quest.text}`);
           break;
         case 'bagFull':
           parts.push(e.sold !== null ? `No room in the bag: ${e.gear.name} sold for ${e.sold} gold.` : '');

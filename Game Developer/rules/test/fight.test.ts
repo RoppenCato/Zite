@@ -241,9 +241,9 @@ describe('a fight', () => {
     const { rounds } = playOut(state, rng, [[{ kind: 'item', item: 'potion' }, 'block'], [attack, 'block']]);
     expect(rounds[0]).toEqual([
       { type: 'used', item: 'potion' },
-      { type: 'healed', amount: 48, hp: 88 },
+      { type: 'healed', amount: 50, hp: 90 },
       { type: 'guarded', guard: 'block' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 83, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 85, absorbed: 0 },
     ]);
     expect(rounds[2]).toEqual([{ type: 'rejected', reason: 'none left' }]);
     expect(apply(state, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'none left' });
@@ -266,7 +266,7 @@ describe('a fight', () => {
         expect(block.damage).toBe(Math.ceil(none.damage / 2));
         expect(braced.damage).toBe(Math.ceil(none.damage * 0.75));
       }
-      expect(brace.events.find((e) => e.type === 'mana')).toMatchObject({ delta: 4, mana: 14 });
+      expect(brace.events.find((e) => e.type === 'mana')).toMatchObject({ delta: 10, mana: 20 });
       expect(counter.find((e) => e.type === 'countered')).toBeDefined();
       const dodge = apply(tough, turn(attack, 'dodge'), makeRng(seed), NOW).events;
       if (dodge.some((e) => e.type === 'missed')) misses++;

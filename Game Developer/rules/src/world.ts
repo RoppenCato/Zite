@@ -3,7 +3,7 @@
 // into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
 // Pure and deterministic: the same world always gives the same board.
 
-import type { Area, Board, Space, SpaceKind } from './types.ts';
+import type { Area, Board, Space, SpaceKind , Ground, ShopStock } from './types.ts';
 
 /** A named spot at a fixed position: a town, a shrine, a fork, a boss on the board. */
 export interface WorldHub {
@@ -18,6 +18,8 @@ export interface WorldHub {
   opens?: string | null;
   /** A chest that needs the area's key. */
   locked?: boolean;
+  /** A shop's stock. */
+  stock?: ShopStock;
 }
 
 /**
@@ -41,6 +43,7 @@ export interface WorldArea {
   tier: number;
   levels: [number, number];
   mobs: string[];
+  grounds?: Ground[];
   miniBosses: string[];
   /** The kingdom or territory the area belongs to: a label for the atlas and the hints. */
   kingdom?: string;
@@ -59,7 +62,7 @@ export interface World {
 }
 
 /** One letter per kind of spot, for writing roads by hand: "nnptnn" is wilds, wilds, spring, chest, wilds, wilds. */
-export const KIND_LETTERS: Record<string, SpaceKind> = {
+export const KIND_LETTERS: Record<string, SpaceKind> = { q: 'board',
   n: 'normal',
   t: 'chest',
   p: 'potion',
@@ -100,13 +103,14 @@ export function buildBoard(world: World): Board {
 /** Lay an area's hubs and roads into the board (the board is changed in place; pass a copy to keep the old one). */
 export function addArea(board: Board, area: WorldArea, worldName = 'world'): void {
   if (board.areas[area.id]) throw new Error(`world ${worldName}: duplicate area id "${area.id}"`);
-  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, ...(area.kingdom ? { kingdom: area.kingdom } : {}), tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
+  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, ...(area.kingdom ? { kingdom: area.kingdom } : {}), ...(area.grounds ? { grounds: area.grounds } : {}), tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
   for (const hub of area.hubs) {
     if (!KNOWN_KINDS.has(hub.kind)) throw new Error(`world ${worldName}: hub "${hub.id}" has unknown kind "${hub.kind}"`);
     if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${worldName}: boss spot "${hub.id}" names no boss`);
     if (hub.name === '') throw new Error(`world ${worldName}: hub "${hub.id}" has no name`);
     const space: Space = { id: hub.id, kind: hub.kind, name: hub.name, x: hub.x, y: hub.y, links: [], area: area.id };
     if (hub.locked && hub.kind === 'chest') space.locked = true;
+    if (hub.stock && hub.kind === 'shop') space.stock = hub.stock;
     if (hub.kind === 'boss') {
       space.boss = hub.boss;
       space.opens = hub.opens ?? null;

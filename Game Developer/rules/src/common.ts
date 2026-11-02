@@ -109,3 +109,8 @@ export function nextGearId(state: GameState): { state: GameState; id: string } {
 export function sellPrice(gear: GearItem): number {
   return Math.max(1, Math.round(gear.price * GEAR.sellShare));
 }
+
+/** The flask of a tier: a chest, a spring or a drop gives what the area's fights call for. */
+export function flaskId(base: 'potion' | 'mana-potion', tier: number): string {
+  return tier >= 3 ? `${base}-3` : tier === 2 ? `${base}-2` : base;
+}

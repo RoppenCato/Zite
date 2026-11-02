@@ -17,7 +17,7 @@ import shapesJson from '../data/shapes.json' with { type: 'json' };
 import eventsJson from '../data/events.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
-import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind } from './types.ts';
+import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine } from './types.ts';
 
 export interface ClassData {
   name: string;
@@ -114,16 +114,36 @@ export interface ItemData {
   name: string;
   text: string;
   price: number;
-  healShare?: number;
-  manaShare?: number;
+  /** The area tier a flask belongs to: shops sell their own tier's and the one before. */
+  tier: number;
+  stock: ('arms' | 'magic' | 'town')[];
+  /** A flask: a set amount (Robin, 2026-11-02: "so that you need better potions later"). */
+  heal?: number;
+  mana?: number;
+  elixir?: { kind: 'vigor' | 'arcana'; value: number; fights: number };
+  cure?: boolean;
   dice?: 'reroll' | 'plus' | 'minus' | 'exact';
 }
 
 /** The towns' errands: how many are carried, how long a town waits before asking again, and the kinds with their numbers. */
 export interface QuestsData {
   maxActive: number;
-  cooldownMs: number;
-  kinds: Record<'cull' | 'chests' | 'hunt' | 'boss', { weight: number; text: string; count: [number, number]; gold: number; xp: number; unique: number }>;
+  offered: number;
+  remembered: number;
+  /** A quest's chest skips this many of the lowest rarities. */
+  chestBoost: number;
+  kinds: Record<'kill' | 'loot' | 'mini' | 'find', { weight: number; text: string; count: [number, number]; gold: number; xp: number; unique: number; dropChance?: number; spawnChance?: number; foundChance?: number }>;
+  people: string[];
+}
+
+export interface LineSlot {
+  base: string;
+  stat: GearStat;
+  perRank: number[];
+  /** A second number on the piece. */
+  extra?: { stat: GearStat; perRank: number[] };
+  /** A bonus every piece of it carries, even plain: leather's crits. */
+  affix?: { kind: AffixKind; perRank: number[] };
 }
 
 export interface GearData {
@@ -132,7 +152,11 @@ export interface GearData {
   /** How much each rank beyond the tables multiplies the last table entry's number and price. */
   rankGrowth: number;
   priceGrowth: number;
-  slots: Record<Slot, { base: string; stat: 'attack' | 'defense' | 'maxHp' | 'maxMana'; perRank: number[]; price: number[] }>;
+  slots: Record<Slot, { base: string; stat: GearStat; perRank: number[]; price: number[] }>;
+  /** The chance a found piece takes one of its ground's two slots. */
+  groundDrop: number;
+  /** The kinds of gear; heavy reads `slots`, the others their own numbers at the same prices times `priceMult`. */
+  lines: Record<GearLine, { weight: number; words: string[]; weaponByClass?: Record<ClassId, string>; firstWeapon?: string; priceMult?: number; slots?: Record<Slot, LineSlot> }>;
   rarities: Record<Rarity, { mult: number; weight: number; priceMult: number; affixes: number; named: boolean }>;
   /** The spread of a roll round the rank's number, as a share. */
   roll: number;
@@ -173,7 +197,7 @@ export interface ProgressionData {
   charge: number;
   enemyCharge: number;
   manaPerRound: number;
-  guards: { block: number; dodge: number; brace: number; braceMana: number; counter: number };
+  guards: { block: number; dodge: number; brace: number; braceMana: number; braceManaShare: number; counter: number };
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
   spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number };

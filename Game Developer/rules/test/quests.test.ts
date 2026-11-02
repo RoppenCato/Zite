@@ -1,185 +1,270 @@
-// The towns' errands (mine, 2026-11-01, from Robin's list): offered in a town, taken or declined, moved along by what
-// happens, paid back in town; the trainer in the same town; the bag's limit and the question it asks.
+// The hunting grounds, the quest board, the shops by kind, set potions and elixirs (Robin, 2026-11-02).
+
 import { describe, expect, it } from 'vitest';
-import { ABILITIES, GEAR, PROGRESSION, QUESTS } from '../src/data.ts';
-import { startFight } from '../src/fight.ts';
-import { apply, newGame } from '../src/game.ts';
-import { addLoot } from '../src/common.ts';
-import { plainGear } from '../src/gear.ts';
-import { hintFor } from '../src/hints.ts';
-import { newQuest, questLine } from '../src/quests.ts';
-import { makeRng } from '../src/rng.ts';
-import { SLOTS, type Action, type Character, type GameEvent, type GameState, type Quest } from '../src/types.ts';
-import { ringBoard } from './fixtures/ring.ts';
+import { apply, groundAt, groundsOf, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
+import type { Action, Character, GameEvent, GameState, Quest } from '../src/types.ts';
 
 const P = 'p1';
 const NOW = 1_000_000;
+const world = (): GameState => newGame({ seed: 'quests', player: P, name: 'R', classId: 'warrior' });
 const me = (s: GameState): Character => s.characters[P]!;
-const move = (path: string[], id = 'm1'): Action => ({ type: 'move', id, player: P, path });
+const put = (s: GameState, patch: Partial<Character>): GameState => ({ ...s, characters: { ...s.characters, [P]: { ...me(s), ...patch } } });
+const act = (s: GameState, a: Record<string, unknown>, seed: string | number = 'x') => apply(s, { id: 'a', player: P, ...a } as Action, makeRng(seed), NOW);
+const has = (events: GameEvent[], type: string) => events.some((e) => e.type === type);
 
-/** On the ring: s0 is the town, s1 the wilds, s5 the chest, s10 the boss; a character a step away from `space`. */
-function about(space: string, patch: Partial<Character> = {}, steps = 1): GameState {
-  const s = newGame({ seed: 'errand', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
-  return { ...s, characters: { [P]: { ...me(s), space, steps, ...patch } }, die: { ...s.die, last: steps } };
+/** Walk one step onto a spot. */
+function landOn(s: GameState, space: string, seed: string | number = 'x') {
+  const here = s.board.spaces[space]!;
+  return apply(put(s, { space: here.links[0]!, steps: 1, last: null } as Partial<Character>), { type: 'move', id: 'm', player: P, path: [space] } as Action, makeRng(seed), NOW);
 }
-/** Into the town from s11, one step. */
-const intoTown = (patch: Partial<Character> = {}, now = NOW, seed = 'errand') => apply(about('s11', patch), move(['s0']), makeRng(seed), now);
 
-describe('an errand from the town', () => {
-  it('is offered on landing in a town with none from there, as an offer the board waits on', () => {
-    const r = intoTown();
-    const offer = me(r.state).offer;
-    expect(offer?.kind).toBe('quest');
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'offer', offer }));
-    const q = (offer as { quest: Quest }).quest;
-    expect(q).toMatchObject({ id: 's0', town: 's0', area: 'ring', done: 0 });
-    expect(['cull', 'chests', 'hunt', 'boss']).toContain(q.kind);
-    expect(q.count).toBeGreaterThanOrEqual(1);
-    expect(q.gold).toBe(QUESTS.kinds[q.kind].gold * q.count); // the ring is tier 1
-    expect(q.text.length).toBeGreaterThan(10);
-    expect(apply(r.state, { type: 'roll', id: 'r', player: P }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'answer first' });
-  });
+const quest = (patch: Partial<Quest>): Quest => ({ id: 'q', kind: 'kill', town: 'crossroads', area: 'meadows', ground: 'jelly-shallows', target: 'slime', count: 2, done: 0, gold: 40, xp: 30, unique: 0, text: 'Beat 2.', ...patch });
 
-  it('draws every kind the area can give, each with its target, from the stream', () => {
-    const s = about('s11');
-    const kinds = new Set<string>();
-    for (let i = 0; i < 60; i++) {
-      const q = newQuest(s, me(s), s.board.spaces.s0!, makeRng(`q-${i}`))!;
-      kinds.add(q.kind);
-      if (q.kind === 'cull') expect(s.board.areas.ring!.mobs).toContain(q.target);
-      if (q.kind === 'hunt') expect(s.board.areas.ring!.miniBosses).toContain(q.target);
-      if (q.kind === 'boss') expect(q.target).toBe('thornwood-warden');
-      if (q.kind === 'chests') expect(q.target).toBeNull();
-      expect(q.text).not.toContain('{');
+describe('hunting grounds', () => {
+  it('cut every hand-laid area into four, each with its own creature and a spot on the map', () => {
+    const { board } = world();
+    for (const areaId of ['meadows', 'thornwood', 'frostpeak']) {
+      const grounds = groundsOf(board, areaId);
+      expect(grounds).toHaveLength(4);
+      expect(new Set(grounds.map((g) => g.mob)).size).toBe(4);
+      for (const g of grounds) {
+        expect(board.areas[areaId]!.mobs).toContain(g.mob);
+        expect(board.spaces[g.hub]?.area).toBe(areaId);
+      }
     }
-    expect([...kinds].sort()).toEqual(['boss', 'chests', 'cull', 'hunt']);
   });
 
-  it('taken, it is carried; declined, the town waits ten minutes before asking again; three at most are carried', () => {
-    const offered = intoTown();
-    const taken = apply(offered.state, { type: 'quest', id: 'q', player: P, accept: true }, makeRng('x'), NOW);
-    expect(taken.events[0]).toMatchObject({ type: 'questTaken' });
-    expect(me(taken.state).quests).toHaveLength(1);
+  it('put a spot in the ground whose named spot is nearest', () => {
+    const { board } = world();
+    expect(groundAt(board, board.spaces.saltmarsh!)?.mob).toBe('slime');
+    expect(groundAt(board, board.spaces.cairn!)?.mob).toBe('bandit');
+  });
+
+  it('send you mostly the ground\'s own creature', () => {
+    const s = world();
+    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.mob === 'slime')!;
+    let own = 0;
+    let fights = 0;
+    for (let seed = 0; seed < 300; seed++) {
+      const fight = landOn(s, wild.id, seed).events.find((e) => e.type === 'fight');
+      if (fight?.type !== 'fight') continue;
+      fights += 1;
+      if (fight.enemy.id === 'slime') own += 1;
+    }
+    expect(fights).toBeGreaterThan(100);
+    expect(own / fights).toBeGreaterThan(0.65);
+  });
+});
+
+describe('the quest board', () => {
+  it('stands on every hand-laid map and offers three different kinds', () => {
+    const s = world();
+    for (const area of ['meadows', 'thornwood', 'frostpeak']) expect(Object.values(s.board.spaces).filter((x) => x.area === area && x.kind === 'board')).toHaveLength(1);
+    const offer = me(landOn(s, 'crossroads').state).offer;
+    expect(offer?.kind).toBe('board');
+    if (offer?.kind !== 'board') return;
+    expect(offer.quests).toHaveLength(3);
+    expect(new Set(offer.quests.map((q) => q.kind)).size).toBe(3);
+    for (const q of offer.quests) expect(q.text).not.toContain('{');
+  });
+
+  it('gives one at a time: choose one, and the board only asks whether to drop it', () => {
+    const offered = landOn(world(), 'crossroads').state;
+    const offer = me(offered).offer;
+    if (offer?.kind !== 'board') throw new Error('no offer');
+    const taken = act(offered, { type: 'quest', accept: true, index: 1 });
+    expect(me(taken.state).quests).toEqual([offer.quests[1]]);
     expect(me(taken.state).offer).toBeNull();
-    // Back in the town with it unfinished: told how it stands, not offered another.
-    const back = apply({ ...taken.state, characters: { [P]: { ...me(taken.state), space: 's11', steps: 1 } } }, move(['s0'], 'm2'), makeRng('x'), NOW);
-    expect(back.events).toContainEqual(expect.objectContaining({ type: 'nothing', text: expect.stringContaining('Your errand here') }));
-    expect(me(back.state).offer).toBeNull();
-    const declined = apply(offered.state, { type: 'quest', id: 'q', player: P, accept: false }, makeRng('x'), NOW);
-    expect(declined.events[0]).toMatchObject({ type: 'questDeclined' });
-    expect(me(declined.state).cooldowns['quest:s0']).toBe(NOW + QUESTS.cooldownMs);
-    const soon = apply({ ...declined.state, characters: { [P]: { ...me(declined.state), space: 's11', steps: 1 } } }, move(['s0'], 'm3'), makeRng('x'), NOW + 1000);
-    expect(me(soon.state).offer).toBeNull();
-    const later = apply({ ...declined.state, characters: { [P]: { ...me(declined.state), space: 's11', steps: 1 } } }, move(['s0'], 'm4'), makeRng('x'), NOW + QUESTS.cooldownMs + 1);
-    expect(me(later.state).offer?.kind).toBe('quest');
-    const full = { ...me(offered.state), offer: null, quests: [1, 2, 3].map((n) => ({ ...(me(offered.state).offer as { quest: Quest }).quest, id: `t${n}`, town: `t${n}` })) };
-    const noRoom = apply({ ...offered.state, characters: { [P]: { ...full, space: 's11', steps: 1 } } }, move(['s0'], 'm5'), makeRng('x'), NOW);
-    expect(me(noRoom.state).offer).toBeNull();
-    expect(apply(offered.state, { type: 'gamble', id: 'g', player: P, choice: 'high' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
-    expect(apply(taken.state, { type: 'quest', id: 'q2', player: P, accept: true }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
+    const again = landOn(taken.state, 'crossroads').state;
+    expect(me(again).offer).toMatchObject({ kind: 'board', quests: [] });
+    const dropped = act(again, { type: 'quest', accept: false, drop: true });
+    expect(me(dropped.state).quests).toEqual([]);
+    expect(has(dropped.events, 'questDeclined')).toBe(true);
   });
 
-  it('moves along when its creature falls or a chest of its area opens, and says so; a stranger\'s fall does nothing', () => {
-    const cull: Quest = { id: 's0', kind: 'cull', town: 's0', area: 'ring', target: 'slime', count: 2, done: 0, gold: 24, xp: 16, unique: 0, text: 'Thin the Slimes: beat 2 of them.' };
-    const chests: Quest = { id: 'tX', kind: 'chests', town: 'tX', area: 'ring', target: null, count: 1, done: 0, gold: 20, xp: 10, unique: 0, text: 'Open 1 chest in the ring.' };
-    const s = about('s1', { quests: [cull, chests] });
-    const fighting = { ...s, characters: { [P]: startFight({ ...me(s), steps: 0 }, 'slime', 's1', false) } };
-    const nearly = { ...fighting, characters: { [P]: { ...me(fighting), fight: { ...me(fighting).fight!, enemy: { ...me(fighting).fight!.enemy, hp: 1 } } } } };
-    const won = apply(nearly, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'none' }, makeRng('x'), NOW);
-    expect(won.events).toContainEqual(expect.objectContaining({ type: 'questProgress', quest: expect.objectContaining({ id: 's0', done: 1 }) }));
-    expect(me(won.state).quests[0]!.done).toBe(1);
-    expect(me(won.state).quests[1]!.done).toBe(0);
-    const wolfState = { ...fighting, characters: { [P]: startFight({ ...me(s), steps: 0 }, 'wolf', 's1', false) } };
-    const wolfDown = { ...wolfState, characters: { [P]: { ...me(wolfState), fight: { ...me(wolfState).fight!, enemy: { ...me(wolfState).fight!.enemy, hp: 1 } } } } };
-    const stranger = apply(wolfDown, { type: 'fight', id: 'f2', player: P, move: { kind: 'attack' }, guard: 'none' }, makeRng('x'), NOW);
-    expect(stranger.events.some((e) => e.type === 'questProgress')).toBe(false);
-    const opened = apply(about('s4', { quests: [cull, chests] }), move(['s5']), makeRng('x'), NOW);
-    expect(opened.events).toContainEqual(expect.objectContaining({ type: 'questProgress', quest: expect.objectContaining({ id: 'tX', done: 1 }) }));
-    expect(questLine(me(opened.state).quests[1]!)).toContain('Done: back to town');
+  it('leaves the quest alone when you walk off', () => {
+    const offered = landOn(put(world(), { quests: [quest({})] }), 'crossroads').state;
+    expect(me(act(offered, { type: 'quest', accept: false }).state).quests).toHaveLength(1);
   });
+});
 
-  it('pays in its town when done: gold, xp, maybe a unique; then the town waits before asking again', () => {
-    const boss: Quest = { id: 's0', kind: 'boss', town: 's0', area: 'ring', target: 'thornwood-warden', count: 1, done: 1, gold: 90, xp: 60, unique: 1, text: 'Bring down Thornwood Warden.' };
-    const r = intoTown({ quests: [boss], gold: 10, xp: 0 });
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'questDone', quest: expect.objectContaining({ id: 's0' }) }));
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'gold', delta: 90, gold: 100 }));
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'levelled', level: 2 }));
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'loot', gear: expect.objectContaining({ rarity: 'unique' }) }));
+describe('a quest finished', () => {
+  const nearlyWon = (q: Quest, enemy: string) => {
+    const s = put(world(), { quests: [q], gold: 0, xp: 0 });
+    const fighting = startFight(me(s), enemy, 'saltmarsh', false);
+    fighting.fight!.enemy.hp = 1;
+    fighting.fight!.enemy.defense = 0;
+    return put(s, fighting);
+  };
+
+  it('pays at once wherever you stand: xp, gold and a chest better than common', () => {
+    const r = act(nearlyWon(quest({ done: 1 }), 'slime'), { type: 'fight', move: { kind: 'attack' }, guard: 'none' });
+    expect(has(r.events, 'questProgress')).toBe(true);
+    expect(has(r.events, 'questDone')).toBe(true);
     expect(me(r.state).quests).toEqual([]);
-    expect(me(r.state).questsDone.map((q) => q.id)).toEqual(['s0']);
-    expect(me(r.state).cooldowns['quest:s0']).toBe(NOW + QUESTS.cooldownMs);
-    expect(me(r.state).offer).toBeNull();
+    expect(me(r.state).questsDone).toHaveLength(1);
+    expect(me(r.state).gold).toBeGreaterThanOrEqual(40);
+    const looted = r.events.filter((e) => e.type === 'loot');
+    expect(looted.length).toBeGreaterThan(0);
+    const chest = looted[looted.length - 1]!;
+    if (chest.type === 'loot') expect(chest.gear.rarity).not.toBe('common');
   });
 
-  it('shows in the town\'s hint', () => {
-    const cull: Quest = { id: 's0', kind: 'cull', town: 's0', area: 'ring', target: 'slime', count: 2, done: 1, gold: 24, xp: 16, unique: 0, text: 'Thin the Slimes: beat 2 of them.' };
-    expect(hintFor(about('s11'), 's0', P, NOW)).toContain('Someone here may have an errand.');
-    expect(hintFor(about('s11', { quests: [cull] }), 's0', P, NOW)).toContain('Your errand: Thin the Slimes: beat 2 of them. 1 of 2.');
-    expect(hintFor(about('s11', { cooldowns: { 'quest:s0': NOW + 1000 } }), 's0', P, NOW)).not.toContain('errand');
+  it('a stranger\'s fall moves nothing', () => {
+    const r = act(nearlyWon(quest({}), 'wolf'), { type: 'fight', move: { kind: 'attack' }, guard: 'none' });
+    expect(has(r.events, 'questProgress')).toBe(false);
   });
-});
 
-describe('the trainer in the town', () => {
-  it('teaches an ability of the class for the tier\'s price, raises a rank for more, and refuses what it cannot', () => {
-    const s = about('s0', { gold: 500 }, 0);
-    const learn = apply(s, { type: 'buy', id: 'b', player: P, ability: 'war-cry' }, makeRng('x'), NOW);
-    expect(learn.events[0]).toEqual({ type: 'trained', action: 'b', player: P, ability: 'war-cry', rank: 1, price: PROGRESSION.training.learn, gold: 500 - PROGRESSION.training.learn });
-    expect(me(learn.state).abilities['war-cry']).toBe(1);
-    const raise = apply(learn.state, { type: 'buy', id: 'b2', player: P, ability: 'war-cry' }, makeRng('x'), NOW);
-    expect(raise.events[0]).toMatchObject({ type: 'trained', rank: 2, price: PROGRESSION.training.rank });
-    const top = apply({ ...s, characters: { [P]: { ...me(s), abilities: { 'war-cry': 3 } } } }, { type: 'buy', id: 'b3', player: P, ability: 'war-cry' }, makeRng('x'), NOW);
-    expect(top.events[0]).toMatchObject({ type: 'rejected', reason: 'not now' });
-    expect(apply(s, { type: 'buy', id: 'b4', player: P, ability: 'fireball' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such ability' });
-    expect(apply(about('s0', { gold: 5 }, 0), { type: 'buy', id: 'b5', player: P, ability: 'war-cry' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough gold' });
-    expect(apply(about('s2', { gold: 500 }, 0), { type: 'buy', id: 'b6', player: P, ability: 'war-cry' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not in a town' });
-    expect(Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === 'warrior')).toContain('war-cry');
+  it('a trophy drops about half the time', () => {
+    let got = 0;
+    for (let seed = 0; seed < 200; seed++) {
+      const r = act(nearlyWon(quest({ kind: 'loot', trophy: 'Jelly Blobs', count: 5 }), 'slime'), { type: 'fight', move: { kind: 'attack' }, guard: 'none' }, seed);
+      if (has(r.events, 'questProgress')) got += 1;
+    }
+    expect(got).toBeGreaterThan(60);
+    expect(got).toBeLessThan(140);
   });
-});
 
-describe('the bag\'s limit', () => {
-  const full = Array.from({ length: GEAR.bagLimit }, (_, i) => plainGear(`b${i}`, 'helm', 1));
+  it('a person turns up only on their ground, by chance, and that finishes it', () => {
+    const s = put(world(), { quests: [quest({ kind: 'find', count: 1, target: 'Old Bram' })] });
+    const own = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.id === 'jelly-shallows')!;
+    const other = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.id === 'bandit-thicket')!;
+    let found = 0;
+    for (let seed = 0; seed < 100; seed++) {
+      const r = landOn(s, own.id, seed);
+      if (has(r.events, 'personFound')) {
+        found += 1;
+        expect(has(r.events, 'questDone')).toBe(true);
+      }
+      expect(has(landOn(s, other.id, seed).events, 'personFound')).toBe(false);
+    }
+    expect(found).toBeGreaterThan(5);
+    expect(found).toBeLessThan(60);
+  });
 
-  it('a piece with no room waits as an offer to be sold or left; buying gear is refused; a second piece is sold at once', () => {
-    // Every slot filled: a piece for an empty one would go straight on.
-    const worn = Object.fromEntries(SLOTS.map((slot) => [slot, plainGear(`w-${slot}`, slot, 1)])) as Character['equipment'];
-    const s = about('s4', { bag: full, equipment: worn });
-    const chest = apply(s, move(['s5']), makeRng('ashford'), NOW); // the seed that drops gear from this chest
-    const loot = chest.events.find((e) => e.type === 'loot');
-    expect(loot).toBeDefined();
-    expect(chest.events).toContainEqual(expect.objectContaining({ type: 'bagFull', sold: null }));
-    expect(me(chest.state).bag).toHaveLength(GEAR.bagLimit);
-    expect(me(chest.state).offer?.kind).toBe('loot');
-    const gear = (me(chest.state).offer as { gear: { id: string; price: number } }).gear;
-    const sold = apply(chest.state, { type: 'keep', id: 'k', player: P, choice: 'sell' }, makeRng('x'), NOW);
-    expect(sold.events[0]).toMatchObject({ type: 'sold', gear: expect.objectContaining({ id: gear.id }), price: Math.max(1, Math.round(gear.price * GEAR.sellShare)) });
-    expect(me(sold.state).offer).toBeNull();
-    const dropped = apply(chest.state, { type: 'keep', id: 'k2', player: P, choice: 'drop' }, makeRng('x'), NOW);
-    expect(dropped.events[0]).toMatchObject({ type: 'dropped', gear: expect.objectContaining({ id: gear.id }) });
-    expect(me(dropped.state).gold).toBe(me(chest.state).gold);
-    expect(apply(about('s0', { bag: full, equipment: worn, gold: 500 }, 0), { type: 'buy', id: 'b', player: P, slot: 'weapon' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'bag full' });
-    expect(apply(s, { type: 'keep', id: 'k3', player: P, choice: 'sell' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'nothing to answer' });
-    // With a question already pending, the piece is sold on the spot.
-    const events: GameEvent[] = [];
-    const busy = { ...me(s), offer: { kind: 'gamble' as const, stake: 10 } };
-    const extra = plainGear('x', 'boots', 2);
-    const after = addLoot(busy, extra, { type: 'roll', id: 'a', player: P }, events);
-    expect(events).toEqual([expect.objectContaining({ type: 'loot', gear: extra }), expect.objectContaining({ type: 'bagFull', gear: extra, sold: Math.max(1, Math.round(extra.price * GEAR.sellShare)) })]);
-    expect(after.gold).toBe(busy.gold + Math.max(1, Math.round(extra.price * GEAR.sellShare)));
-    expect(after.bag).toHaveLength(GEAR.bagLimit);
-    expect(after.offer?.kind).toBe('gamble');
+  it('a mini-boss turns up more often while you hunt it', () => {
+    const plain = world();
+    const hunting = put(plain, { quests: [quest({ kind: 'mini', target: 'wolf-alpha', count: 1 })] });
+    const wild = Object.values(plain.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows')!;
+    const met = (s: GameState) => {
+      let n = 0;
+      for (let seed = 0; seed < 300; seed++) {
+        const f = landOn(s, wild.id, seed).events.find((e) => e.type === 'fight');
+        if (f?.type === 'fight' && f.enemy.id === 'wolf-alpha') n += 1;
+      }
+      return n;
+    };
+    expect(met(hunting)).toBeGreaterThan(met(plain) + 25);
+  });
+
+  it('says how it stands', () => {
+    expect(questLine(quest({ done: 1 }))).toContain('1 of 2');
   });
 });
 
-describe('the flasks', () => {
-  it('a potion heals four tenths of max HP and a mana potion gives back half the mana; the spring gives one of each', () => {
-    const s = about('s1', { hp: 10, mana: 2, items: { potion: 1, 'mana-potion': 1 } }, 0);
-    const fighting = { ...s, characters: { [P]: startFight(me(s), 'slime', 's1', false) } };
-    const drank = apply(fighting, { type: 'fight', id: 'f', player: P, move: { kind: 'item', item: 'potion' }, guard: 'block' }, makeRng('x'), NOW);
-    expect(drank.events[1]).toMatchObject({ type: 'healed', amount: 48, hp: 58 });
-    const sipped = apply(fighting, { type: 'fight', id: 'f2', player: P, move: { kind: 'item', item: 'mana-potion' }, guard: 'block' }, makeRng('x'), NOW);
-    expect(sipped.events[1]).toMatchObject({ type: 'mana', delta: 10, mana: 12 });
-    const spring = apply(about('s7'), move(['s8']), makeRng('x'), NOW);
-    expect(spring.events).toContainEqual(expect.objectContaining({ type: 'found', item: 'potion', count: 1 }));
-    expect(spring.events).toContainEqual(expect.objectContaining({ type: 'found', item: 'mana-potion', count: 1 }));
+describe('the shops', () => {
+  it('an arms shop has leather and tin, a magic shop cloth, a town neither', () => {
+    const s = world();
+    expect(shopOffer(put(s, { space: 'tinker' }), me(put(s, { space: 'tinker' })))?.lines).toEqual(['light', 'heavy']);
+    expect(shopOffer(put(s, { space: 'windy' }), me(put(s, { space: 'windy' })))?.lines).toEqual(['magic']);
+    expect(shopOffer(s, me(s))?.lines).toEqual([]);
+  });
+
+  it('sells each kind\'s flasks and elixirs, and only this tier\'s and the one before', () => {
+    const s = world();
+    const arms = shopOffer(put(s, { space: 'tinker' }), me(put(s, { space: 'tinker' })))!.items;
+    const magic = shopOffer(put(s, { space: 'windy' }), me(put(s, { space: 'windy' })))!.items;
+    expect(arms).toEqual(expect.arrayContaining(['potion', 'elixir-vigor']));
+    expect(arms).not.toContain('mana-potion');
+    expect(arms).not.toContain('potion-2');
+    expect(magic).toEqual(expect.arrayContaining(['mana-potion', 'elixir-arcana', 'elixir-cure']));
+    const forest = put(s, { space: 'mossy' });
+    expect(shopOffer(forest, me(forest))!.items).toEqual(expect.arrayContaining(['potion', 'potion-2']));
+  });
+
+  it('refuses what it does not sell', () => {
+    const atMagic = put(world(), { space: 'windy', gold: 500 });
+    expect(act(atMagic, { type: 'buy', slot: 'helm', line: 'heavy' }).events[0]).toMatchObject({ type: 'rejected' });
+    expect(act(atMagic, { type: 'buy', item: 'potion' }).events[0]).toMatchObject({ type: 'rejected' });
+    expect(act(atMagic, { type: 'buy', slot: 'armour' }).events[0]).toMatchObject({ type: 'bought', gear: expect.objectContaining({ name: 'Cloth Robe' }) });
+  });
+
+  it('sells only common gear, while a find can be any colour of any kind', () => {
+    const r = act(put(world(), { space: 'tinker', gold: 500 }), { type: 'buy', slot: 'helm', line: 'light' });
+    const bought = r.events[0];
+    if (bought?.type === 'bought') expect(bought.gear).toMatchObject({ name: 'Leather Cap', rarity: 'common', line: 'light' });
+    const blue = rollGear('g', 'helm', 1, 2, makeRng('blue'), 'light');
+    expect(blue.rarity).not.toBe('common');
+    expect(blue.base).toBe('leather cap');
+    expect(blue.affixes.some((a) => a.kind === 'crit')).toBe(true);
+  });
+});
+
+describe('gear by kind', () => {
+  it('first weapons are wood; heavy weapons follow the class', () => {
+    expect(plainGear('g', 'weapon', 1, 'light').name).toBe('Wooden Stick');
+    expect(plainGear('g', 'weapon', 1, 'magic').name).toBe('Wooden Staff');
+    expect(plainGear('g', 'weapon', 1, 'heavy', 'rogue').name).toBe('Tin Dagger');
+    expect(plainGear('g', 'weapon', 1, 'heavy', 'ranger').name).toBe('Tin Bow');
+  });
+
+  it('tin defends more, leather hits and crits more, cloth feeds magic', () => {
+    const on = (line: 'heavy' | 'light' | 'magic') => {
+      const c = { ...me(world()) };
+      const equipment = { ...c.equipment };
+      for (const slot of Object.keys(equipment) as (keyof typeof equipment)[]) equipment[slot] = plainGear(slot, slot, 1, line);
+      return stats({ ...c, equipment });
+    };
+    expect(on('heavy').defense).toBeGreaterThan(on('light').defense);
+    expect(on('heavy').maxHp).toBeGreaterThan(on('light').maxHp);
+    expect(on('light').crit).toBeGreaterThan(on('heavy').crit);
+    expect(on('magic').magic).toBeGreaterThan(5);
+    expect(on('magic').maxMana).toBeGreaterThan(on('heavy').maxMana);
+  });
+});
+
+describe('flasks and elixirs', () => {
+  it('a potion heals a set amount and the names are plain', () => {
+    expect(ITEMS.potion).toMatchObject({ name: 'Health Potion', heal: 50 });
+    expect(ITEMS['mana-potion']).toMatchObject({ name: 'Mana Potion', mana: 25 });
+    const s = put(world(), { hp: 10, items: { potion: 1 } });
+    expect(me(act(s, { type: 'use', item: 'potion' }).state).hp).toBe(60);
+  });
+
+  it('an elixir lasts three fights, then is gone', () => {
+    let s = put(world(), { items: { 'elixir-vigor': 1 } });
+    const before = stats(me(s)).maxHp;
+    s = act(s, { type: 'use', item: 'elixir-vigor' }).state;
+    expect(stats(me(s)).maxHp).toBe(before + 30);
+    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows')!;
+    for (let fight = 0; fight < 4; fight++) {
+      let seed = 0;
+      let r = landOn(s, wild.id, seed);
+      while (!has(r.events, 'fight')) r = landOn(s, wild.id, ++seed);
+      s = put(r.state, { fight: null });
+      if (fight < 3) expect(stats(me(s)).maxHp).toBe(before + 30);
+    }
+    expect(stats(me(s)).maxHp).toBe(before);
+  });
+
+  it('a cure elixir clears what you carry and is refused when there is nothing', () => {
+    const clean = put(world(), { items: { 'elixir-cure': 1 }, ailments: {} });
+    expect(act(clean, { type: 'use', item: 'elixir-cure' }).events[0]).toMatchObject({ type: 'rejected' });
+    const sick = put(clean, { ailments: { poison: { rolls: 3, damage: 2 } } });
+    expect(me(act(sick, { type: 'use', item: 'elixir-cure' }).state).ailments).toEqual({});
+  });
+});
+
+describe('a save from before the board', () => {
+  it('comes up with the board and the shops laid, errands done paid and the rest gone', () => {
+    const s = world();
+    const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
+    const up = migrate(JSON.parse(JSON.stringify(old)))!;
+    expect(up.version).toBe(15);
+    expect(me(up).quests).toEqual([]);
+    expect(me(up).gold).toBe(50);
+    expect(me(up).offer).toBeNull();
+    expect(up.board.spaces.crossroads!.kind).toBe('board');
+    expect(up.board.spaces.windy).toMatchObject({ kind: 'shop', stock: 'magic' });
   });
 });

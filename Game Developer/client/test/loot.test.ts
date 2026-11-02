@@ -91,7 +91,7 @@ describe('cardWords', () => {
   it('a piece sold for lack of room says so; gold and items have their own words', () => {
     expect(cardWords({ kind: 'gear', gear: sword, sold: 12 }).power.endsWith('no room: sold for 12 gold')).toBe(true);
     expect(cardWords({ kind: 'gold', amount: 48 })).toMatchObject({ name: '48 gold', tier: 'gold', square: 'Gold' });
-    expect(cardWords({ kind: 'item', item: 'potion', count: 2 })).toMatchObject({ name: '2 Honey Tonic', square: 'Flask', tier: 'gold' });
+    expect(cardWords({ kind: 'item', item: 'potion', count: 2 })).toMatchObject({ name: '2 Health Potion', square: 'Flask', tier: 'gold' });
     expect(cardWords({ kind: 'item', item: 'reroll', count: 1 })).toMatchObject({ name: 'Do-Over', square: 'Card' });
   });
 });

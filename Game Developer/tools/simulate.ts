@@ -30,6 +30,10 @@ import {
   type Slot,
 } from '../rules/src/index.ts';
 
+/** Which gear a bot of each class buys. */
+const LINE_OF: Record<ClassId, 'heavy' | 'light' | 'magic'> = { warrior: 'heavy', rogue: 'light', mage: 'magic', ranger: 'light' };
+
+
 const TURNS = Number(process.argv[2] ?? 400);
 const SEEDS = Number(process.argv[3] ?? 24);
 const CLASSES: ClassId[] = ['warrior', 'rogue', 'mage', 'ranger'];
@@ -74,7 +78,8 @@ function fightMove(me: Character): { move: FightMove; guard: Guard } {
   const e = f.enemy;
   const s = stats(me);
   let move: FightMove = { kind: 'attack' };
-  if (me.hp < s.maxHp * 0.35 && (me.items.potion ?? 0) > 0) move = { kind: 'item', item: 'potion' };
+  const flask = ['potion-3', 'potion-2', 'potion'].find((id) => (me.items[id] ?? 0) > 0);
+  if (me.hp < s.maxHp * 0.35 && flask) move = { kind: 'item', item: flask };
   else if (!f.charged && e.stunned > 0) move = { kind: 'charge' };
   else {
     let best: { id: string; value: number } | null = null;
@@ -126,15 +131,17 @@ function shop(state: GameState, rng: Rng, now: number): GameState {
   for (const slot of SLOTS) {
     const me = s.characters[P]!;
     const worn = me.equipment[slot];
-    const price = plainGear('x', slot, tier).price;
+    const line = LINE_OF[me.classId];
+    const price = plainGear('x', slot, tier, line, me.classId).price;
     if ((!worn || worn.rank < tier) && me.gold >= price + 20) {
-      s = apply(s, act('buy', { slot }), rng, now).state;
+      s = apply(s, act('buy', { slot, line }), rng, now).state;
       s = tidy(s, rng, now);
     }
   }
   for (let i = 0; i < 2; i++) {
     const me = s.characters[P]!;
-    if ((me.items.potion ?? 0) < 2 && me.gold >= ITEMS.potion!.price + 20) s = apply(s, act('buy', { item: 'potion' }), rng, now).state;
+    const potion = tier >= 3 ? 'potion-3' : tier === 2 ? 'potion-2' : 'potion';
+    if ((me.items[potion] ?? 0) < 2 && me.gold >= ITEMS[potion]!.price + 20) s = apply(s, act('buy', { item: potion }), rng, now).state;
   }
   for (const g of [...s.characters[P]!.bag]) s = apply(s, act('sell', { gear: g.id }), rng, now).state;
   return s;
@@ -168,6 +175,10 @@ function choose(state: GameState, now: number): string[] {
         break;
       case 'shop': {
         const tier = area.tier;
+        if ((space.stock ?? 'arms') !== (me.classId === 'mage' ? 'magic' : 'arms')) {
+          score = 0;
+          break;
+        }
         const wants = SLOTS.some((slot) => (!me.equipment[slot] || me.equipment[slot]!.rank < tier) && me.gold >= plainGear('x', slot, tier).price + 20);
         score = wants ? 50 : 0;
         break;
@@ -235,7 +246,7 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
     }
     if (me.offer) {
       // The gambler is waved on, an errand taken, a piece with no room in the bag sold.
-      const answer: Action = me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'quest' ? act('quest', { accept: true }) : act('keep', { choice: 'sell' });
+      const answer: Action = me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'board' ? act('quest', { accept: me.offer.quests.length > 0 }) : act('keep', { choice: 'sell' });
       state = apply(state, answer, rng, now).state;
       continue;
     }
@@ -288,11 +299,11 @@ function wall(classId: ClassId, boss: string, level: number, rank: number, seeds
     const growth = (await_import_classes(classId)).growth;
     me = { ...me, level, maxHp: me.maxHp + growth.hp * (level - 1), maxMana: me.maxMana + growth.mana * (level - 1), attack: me.attack + growth.attack * (level - 1), defense: me.defense + growth.defense * (level - 1) };
     const equipment = { ...me.equipment };
-    if (rank > 0) for (const slot of SLOTS) equipment[slot] = plainGear(`w-${slot}`, slot, rank);
+    if (rank > 0) for (const slot of SLOTS) equipment[slot] = plainGear(`w-${slot}`, slot, rank, LINE_OF[classId], classId);
     // The kit a character of the level would have: every ability of the class, ranked by the level (picks and shrines).
     const kitRank = level >= 16 ? 3 : level >= 8 ? 2 : 1;
     const abilities = Object.fromEntries(Object.keys(ABILITIES).filter((a) => ABILITIES[a]!.classId === classId).map((a) => [a, kitRank]));
-    me = { ...me, equipment, items: { potion: 2 }, abilities };
+    me = { ...me, equipment, items: { [rank >= 3 ? "potion-3" : rank === 2 ? "potion-2" : "potion"]: 2 }, abilities };
     const s = stats(me);
     me = { ...me, hp: s.maxHp, mana: s.maxMana };
     // Square up on the ring's boss spot by hand: the fight itself is what we measure.

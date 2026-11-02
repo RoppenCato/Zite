@@ -30,9 +30,9 @@
       "base": "Shield",
       "stat": "defense",
       "perRank": [
-        2,
-        4,
-        6
+        3,
+        5,
+        8
       ],
       "price": [
         25,
@@ -44,9 +44,9 @@
       "base": "Hat",
       "stat": "maxHp",
       "perRank": [
-        12,
-        24,
-        40
+        14,
+        28,
+        46
       ],
       "price": [
         20,
@@ -58,9 +58,9 @@
       "base": "Coat",
       "stat": "defense",
       "perRank": [
-        3,
-        6,
-        10
+        4,
+        7,
+        12
       ],
       "price": [
         25,
@@ -100,9 +100,9 @@
       "base": "Cape",
       "stat": "maxHp",
       "perRank": [
-        8,
-        16,
-        26
+        10,
+        20,
+        32
       ],
       "price": [
         20,
@@ -112,11 +112,11 @@
     },
     "trinket": {
       "base": "Charm",
-      "stat": "maxMana",
+      "stat": "maxHp",
       "perRank": [
-        6,
-        12,
-        20
+        10,
+        20,
+        34
       ],
       "price": [
         25,
@@ -274,5 +274,315 @@
   "sellShare": 0.5,
   "bagLimit": 12,
   "rankGrowth": 1.35,
-  "priceGrowth": 1.8
+  "priceGrowth": 1.8,
+  "groundDrop": 0.65,
+  "lines": {
+    "heavy": {
+      "weight": 40,
+      "words": [
+        "Tin",
+        "Copper",
+        "Iron",
+        "Silver",
+        "Moonsilver",
+        "Sunsteel",
+        "Dragonscale",
+        "Starglass",
+        "Crownsteel",
+        "Everbright"
+      ],
+      "weaponByClass": {
+        "warrior": "Sword",
+        "rogue": "Dagger",
+        "mage": "Staff",
+        "ranger": "Bow"
+      }
+    },
+    "light": {
+      "weight": 35,
+      "words": [
+        "Leather",
+        "Hide",
+        "Studded",
+        "Drakeskin",
+        "Nightskin",
+        "Sunskin",
+        "Wyrmskin",
+        "Starskin",
+        "Crownskin",
+        "Everskin"
+      ],
+      "firstWeapon": "Wooden Stick",
+      "priceMult": 0.7,
+      "slots": {
+        "weapon": {
+          "base": "Club",
+          "stat": "attack",
+          "perRank": [
+            3,
+            7,
+            11
+          ],
+          "affix": {
+            "kind": "crit",
+            "perRank": [
+              0.02,
+              0.03,
+              0.04
+            ]
+          }
+        },
+        "shield": {
+          "base": "Buckler",
+          "stat": "defense",
+          "perRank": [
+            1,
+            2,
+            4
+          ],
+          "affix": {
+            "kind": "dodge",
+            "perRank": [
+              0.02,
+              0.03,
+              0.04
+            ]
+          }
+        },
+        "helm": {
+          "base": "Cap",
+          "stat": "maxHp",
+          "perRank": [
+            6,
+            12,
+            20
+          ],
+          "affix": {
+            "kind": "crit",
+            "perRank": [
+              0.02,
+              0.03,
+              0.04
+            ]
+          }
+        },
+        "armour": {
+          "base": "Jerkin",
+          "stat": "defense",
+          "perRank": [
+            2,
+            4,
+            7
+          ],
+          "extra": {
+            "stat": "attack",
+            "perRank": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        "gloves": {
+          "base": "Gloves",
+          "stat": "attack",
+          "perRank": [
+            3,
+            5,
+            7
+          ]
+        },
+        "boots": {
+          "base": "Boots",
+          "stat": "defense",
+          "perRank": [
+            1,
+            2,
+            4
+          ],
+          "affix": {
+            "kind": "dodge",
+            "perRank": [
+              0.02,
+              0.03,
+              0.04
+            ]
+          }
+        },
+        "cape": {
+          "base": "Cloak",
+          "stat": "maxHp",
+          "perRank": [
+            4,
+            8,
+            14
+          ],
+          "affix": {
+            "kind": "crit",
+            "perRank": [
+              0.01,
+              0.02,
+              0.03
+            ]
+          }
+        },
+        "trinket": {
+          "base": "Fang",
+          "stat": "attack",
+          "perRank": [
+            1,
+            2,
+            4
+          ],
+          "affix": {
+            "kind": "crit",
+            "perRank": [
+              0.02,
+              0.03,
+              0.04
+            ]
+          }
+        }
+      }
+    },
+    "magic": {
+      "weight": 25,
+      "words": [
+        "Cloth",
+        "Linen",
+        "Silk",
+        "Moonweave",
+        "Starweave",
+        "Sunweave",
+        "Dreamweave",
+        "Aetherweave",
+        "Crownweave",
+        "Everweave"
+      ],
+      "firstWeapon": "Wooden Staff",
+      "priceMult": 0.9,
+      "slots": {
+        "weapon": {
+          "base": "Staff",
+          "stat": "magic",
+          "perRank": [
+            4,
+            8,
+            13
+          ],
+          "extra": {
+            "stat": "attack",
+            "perRank": [
+              1,
+              3,
+              6
+            ]
+          }
+        },
+        "shield": {
+          "base": "Tome",
+          "stat": "maxMana",
+          "perRank": [
+            8,
+            16,
+            26
+          ],
+          "extra": {
+            "stat": "defense",
+            "perRank": [
+              2,
+              3,
+              5
+            ]
+          }
+        },
+        "helm": {
+          "base": "Hood",
+          "stat": "maxMana",
+          "perRank": [
+            8,
+            16,
+            26
+          ],
+          "extra": {
+            "stat": "magic",
+            "perRank": [
+              2,
+              3,
+              5
+            ]
+          }
+        },
+        "armour": {
+          "base": "Robe",
+          "stat": "maxMana",
+          "perRank": [
+            10,
+            20,
+            32
+          ],
+          "extra": {
+            "stat": "defense",
+            "perRank": [
+              3,
+              5,
+              8
+            ]
+          }
+        },
+        "gloves": {
+          "base": "Gloves",
+          "stat": "magic",
+          "perRank": [
+            2,
+            4,
+            6
+          ]
+        },
+        "boots": {
+          "base": "Shoes",
+          "stat": "maxMana",
+          "perRank": [
+            4,
+            8,
+            12
+          ],
+          "extra": {
+            "stat": "defense",
+            "perRank": [
+              2,
+              3,
+              5
+            ]
+          }
+        },
+        "cape": {
+          "base": "Mantle",
+          "stat": "maxMana",
+          "perRank": [
+            6,
+            12,
+            20
+          ],
+          "extra": {
+            "stat": "maxHp",
+            "perRank": [
+              6,
+              12,
+              20
+            ]
+          }
+        },
+        "trinket": {
+          "base": "Amulet",
+          "stat": "magic",
+          "perRank": [
+            2,
+            4,
+            7
+          ]
+        }
+      }
+    }
+  }
 }

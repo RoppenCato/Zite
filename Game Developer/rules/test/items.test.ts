@@ -21,22 +21,24 @@ const me = (s: GameState): Character => s.characters[P]!;
 describe('the shop', () => {
   it('sells a consumable for its price and the plain gear of its area\'s rank for a slot, when standing on a shop or in a town', () => {
     const { state, events } = apply(at('s2', { gold: 200 }), buy({ item: 'potion' }), makeRng('x'), NOW);
-    expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 25, gold: 175 }]);
-    expect(me(state)).toMatchObject({ gold: 175, items: { potion: 1 } });
+    expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 20, gold: 180 }]);
+    expect(me(state)).toMatchObject({ gold: 180, items: { potion: 1 } });
     const sword = apply(state, buy({ slot: 'weapon' }, 'b2'), makeRng('x'), NOW);
     // The weapon's slot is empty: it goes straight on (Robin, 2026-11-01). A second one goes into the bag.
     expect(sword.events).toEqual([
-      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 145 },
+      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 150 },
       { type: 'equipped', action: 'b2', player: P, gear: plainGear('g1', 'weapon', 1), replaced: null },
     ]);
     expect(me(sword.state).bag).toEqual([]);
     expect(me(sword.state).equipment.weapon).toEqual(plainGear('g1', 'weapon', 1));
     expect(sword.state.nextItem).toBe(2);
     const second = apply(sword.state, buy({ slot: 'weapon' }, 'b3'), makeRng('x'), NOW);
-    expect(me(second.state).bag).toEqual([plainGear('g2', 'weapon', 1)]);
-    expect(me(second.state).equipment.weapon?.id).toBe('g1');
+    // Bought to be worn: it goes on and the one it replaces goes to the bag.
+    expect(me(second.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
+    expect(me(second.state).equipment.weapon?.id).toBe('g2');
+    // A town sells flasks and cards, no gear.
     const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
-    expect(inTown.events[0]).toMatchObject({ type: 'bought', gear: expect.objectContaining({ name: 'Tin Hat' }), price: 20 });
+    expect(inTown.events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
     const camped = { ...at('s1', { gold: 200 }), spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1 } } };
     expect(apply(camped, buy({ item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'bought', item: 'reroll', price: 20 });
   });
@@ -64,7 +66,7 @@ describe('the shop', () => {
   it('prices every item and gives each one a use', () => {
     for (const [id, item] of Object.entries(ITEMS)) {
       expect(item.price, id).toBeGreaterThan(0);
-      expect(Boolean(item.healShare || item.manaShare) !== Boolean(item.dice), `${id} is a potion or a dice card`).toBe(true);
+      expect(Boolean(item.heal || item.mana || item.elixir || item.cure) !== Boolean(item.dice), `${id} is a flask or a dice card`).toBe(true);
     }
   });
 });
@@ -87,7 +89,7 @@ describe('the wardrobe', () => {
     expect(me(two.state).bag.map((g) => g.id)).toEqual(['g3', 'g1']);
     expect(stats(me(two.state))).toMatchObject({ attack: 20, crit: 0.2 });
     const three = apply(two.state, { type: 'equip', id: 'e3', player: P, gear: 'g3' }, makeRng('x'), NOW);
-    expect(stats(me(three.state)).maxHp).toBe(132);
+    expect(stats(me(three.state)).maxHp).toBe(134);
     expect(me(three.state).hp).toBe(120); // worn, not healed
   });
 
@@ -95,7 +97,7 @@ describe('the wardrobe', () => {
     const worn = at('s1', { hp: 132, maxHp: 120, mana: 26, maxMana: 20, equipment: { shield: null, gloves: null, cape: null, weapon: null, armour: null, helm, boots: null, trinket: plainGear('g4', 'trinket', 1) } });
     const bare = apply(worn, { type: 'unequip', id: 'u1', player: P, slot: 'helm' }, makeRng('x'), NOW);
     expect(bare.events).toEqual([{ type: 'unequipped', action: 'u1', player: P, gear: helm }]);
-    expect(me(bare.state)).toMatchObject({ hp: 120, mana: 26 });
+    expect(me(bare.state)).toMatchObject({ hp: 130, mana: 20 });
     expect(me(bare.state).bag).toEqual([helm]);
     const barer = apply(bare.state, { type: 'unequip', id: 'u2', player: P, slot: 'trinket' }, makeRng('x'), NOW);
     expect(me(barer.state).mana).toBe(20);
@@ -173,7 +175,7 @@ describe('the dice cards', () => {
 describe('buying a higher plain piece', () => {
   const inForestTown = (old: GearItem) => {
     const s = newGame({ seed: 'buy', player: 'p', name: 'R', classId: 'warrior' });
-    const town = Object.values(s.board.spaces).find((x) => x.kind === 'town' && s.board.areas[x.area]?.tier === 2)!;
+    const town = Object.values(s.board.spaces).find((x) => x.kind === 'shop' && x.stock === 'arms' && s.board.areas[x.area]?.tier === 2)!;
     const me = s.characters.p!;
     return { ...s, characters: { p: { ...me, space: town.id, gold: 500, equipment: { ...me.equipment, weapon: old } } } };
   };

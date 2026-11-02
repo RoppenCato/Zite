@@ -1,11 +1,66 @@
 {
-  "_about": "Quests (mine, 2026-11-01, from Robin's list: direction between bosses). A town offers one at a time to a character; up to three are carried; a town that was answered waits before it asks again. Rewards are the kind's numbers times the area's tier times the count; a hunt or a boss may add a unique of the tier.",
-  "maxActive": 3,
-  "cooldownMs": 600000,
+  "_about": "The quest board (Robin, 2026-11-02): one quest at a time, chosen at the map's board, paid the moment it is finished with xp, gold and a chest. The numbers are mine: xp and gold are per count and per tier.",
+  "maxActive": 1,
+  "offered": 3,
+  "remembered": 20,
+  "chestBoost": 1,
   "kinds": {
-    "cull":   { "weight": 50, "text": "Thin the {target}: beat {count} of them.",        "count": [3, 5], "gold": 12, "xp": 8,  "unique": 0 },
-    "chests": { "weight": 25, "text": "Open {count} chests in {area}.",                   "count": [2, 3], "gold": 20, "xp": 10, "unique": 0 },
-    "hunt":   { "weight": 15, "text": "Hunt down the {target} prowling the wilds.",       "count": [1, 1], "gold": 60, "xp": 40, "unique": 0.25 },
-    "boss":   { "weight": 10, "text": "Bring down {target}.",                              "count": [1, 1], "gold": 90, "xp": 60, "unique": 0.5 }
-  }
+    "kill": {
+      "weight": 35,
+      "text": "Beat {count} {target}s in {ground}.",
+      "count": [
+        4,
+        6
+      ],
+      "gold": 10,
+      "xp": 10,
+      "unique": 0
+    },
+    "loot": {
+      "weight": 30,
+      "text": "Bring {count} {trophy}: {target}s in {ground} carry them.",
+      "count": [
+        5,
+        5
+      ],
+      "gold": 12,
+      "xp": 11,
+      "unique": 0,
+      "dropChance": 0.5
+    },
+    "mini": {
+      "weight": 20,
+      "text": "Hunt the {target}, somewhere in {area}. Keep walking the wilds.",
+      "count": [
+        1,
+        1
+      ],
+      "gold": 70,
+      "xp": 50,
+      "unique": 0.25,
+      "spawnChance": 0.2
+    },
+    "find": {
+      "weight": 15,
+      "text": "Find {target}, lost somewhere in {ground}.",
+      "count": [
+        1,
+        1
+      ],
+      "gold": 50,
+      "xp": 30,
+      "unique": 0,
+      "foundChance": 0.25
+    }
+  },
+  "people": [
+    "Old Bram",
+    "Little Pip",
+    "Granny Moss",
+    "Tam the Tinker",
+    "Wandering Lia",
+    "Brother Oat",
+    "Nell the Goose Girl",
+    "Hob the Lamplighter"
+  ]
 }

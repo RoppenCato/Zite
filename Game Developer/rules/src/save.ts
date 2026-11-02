@@ -116,7 +116,7 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 12 || candidate.version === 13) return fillSlots(raw as GameState);
+  if (candidate.version === 12 || candidate.version === 13 || candidate.version === 14) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -153,7 +153,7 @@ function fillSlots(state: GameState | null): GameState | null {
   if (!state) return null;
   const characters: Record<string, Character> = {};
   for (const [id, c] of Object.entries(state.characters)) {
-    characters[id] = { ...c, equipment: { ...emptyEquipment(), ...(c.equipment ?? {}) }, ailments: c.ailments ?? {}, questsDone: c.questsDone ?? [] };
+    characters[id] = { ...c, equipment: { ...emptyEquipment(), ...(c.equipment ?? {}) }, ailments: c.ailments ?? {}, ...fromErrands(c) };
   }
   return { ...state, version: STATE_VERSION, characters, board: withChurches(state.board) };
 }
@@ -170,6 +170,19 @@ function withChurches(board: Board): Board {
     if (pick) spaces[pick.id] = { ...pick, kind: 'church', name: HAND_LAID_CHURCHES[pick.id] ?? pick.name ?? `${area.name} Church` };
   }
   return { ...board, spaces };
+}
+
+/** 14 → 15 (2026-11-02): the board replaces the towns' errands. An errand already done pays its gold and is remembered; the rest go. */
+function fromErrands(c: Character): Pick<Character, 'quests' | 'questsDone' | 'gold' | 'offer'> {
+  const kinds = ['kill', 'loot', 'mini', 'find'];
+  const old = (c.quests ?? []).filter((q) => !kinds.includes(q.kind));
+  const finished = old.filter((q) => q.done >= q.count);
+  return {
+    quests: (c.quests ?? []).filter((q) => kinds.includes(q.kind)),
+    questsDone: [...(c.questsDone ?? []), ...finished].slice(-20),
+    gold: c.gold + finished.reduce((sum, q) => sum + q.gold, 0),
+    offer: (c.offer as { kind: string } | null)?.kind === 'quest' ? null : c.offer,
+  };
 }
 
 /** A state as version 10 stored it: today's shape, the board laid under the old names. */

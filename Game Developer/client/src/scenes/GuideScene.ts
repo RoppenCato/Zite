@@ -130,7 +130,7 @@ export class GuideScene extends Phaser.Scene {
         entries: [
           { title: 'Block', text: `Takes ${pct(g.block)} of the blow. The safe choice.` },
           { title: 'Dodge', text: `A ${pct(g.dodge)} chance that it misses altogether; if not, you take it all.` },
-          { title: 'Brace', text: `Takes ${pct(g.brace)} of the blow and gives you ${g.braceMana} mana.` },
+          { title: 'Brace', text: `Takes ${pct(g.brace)} of the blow and gives you ${pct(g.braceManaShare)} of your mana, at least ${g.braceMana}.` },
           { title: 'Counter', text: `Hit back for ${pct(g.counter)} of a plain hit, and take the blow in full.` },
           ...(meter ? [{ title: meter.name, text: `Your meter, the dots over your bars. ${meter.text}` }] : []),
         ],
@@ -144,7 +144,7 @@ export class GuideScene extends Phaser.Scene {
           { title: 'Stunned', text: 'The enemy loses its turn. Mini-bosses and bosses shrug it off.' },
           { title: 'Hardened, fading', text: 'A hardened enemy takes less from your hits; a fading one makes your next hit miss.' },
           { title: 'Barrier', text: 'Takes the damage before your HP does.' },
-          { title: ITEMS.potion!.name, text: `${ITEMS.potion!.text} You can also drink it from Hero.` },
+          { title: ITEMS.potion!.name, text: `${ITEMS.potion!.text} You can also drink it from Hero. Greater ones come with later maps.` },
           { title: ITEMS['mana-potion']!.name, text: `${ITEMS['mana-potion']!.text} You can also drink it from Hero.` },
         ],
       },
@@ -153,6 +153,8 @@ export class GuideScene extends Phaser.Scene {
         entries: [
           ...SPACE_KINDS.filter((k) => k !== 'normal').map((k) => ({ title: SPACE_KIND_DATA[k].label, text: SPACE_KIND_DATA[k].hint })),
           { title: 'Wilds', text: SPACE_KIND_DATA.normal.hint },
+          { title: 'Hunting grounds', text: 'Each map has four, named on the map. Each has its own creature, what a quest may ask for, and leans to its own finds.' },
+          { title: 'Gear', text: 'Tin defends, Leather hits and crits, Cloth feeds mana and magic. Shops sell it plain; colours only come from drops, bosses, quests and chests.' },
           { title: 'Looking around', text: 'Drag the map with a finger, pinch to zoom, or tap twice to zoom all the way out and in. Tap any spot to hear about it. Map shows it all; Back returns to you.' },
         ],
       },

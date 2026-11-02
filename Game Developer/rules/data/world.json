@@ -40,24 +40,26 @@
         },
         {
           "id": "crossroads",
-          "kind": "normal",
-          "name": "Clover Crossroads",
+          "kind": "board",
+          "name": "Clover Crossroads Board",
           "x": 400,
           "y": 3110
         },
         {
           "id": "windy",
-          "kind": "normal",
-          "name": "Windmill Hill",
+          "kind": "shop",
+          "name": "Windmill Apothecary",
           "x": 1000,
-          "y": 3110
+          "y": 3110,
+          "stock": "magic"
         },
         {
           "id": "tinker",
           "kind": "shop",
           "name": "Merchant Cart",
           "x": 250,
-          "y": 2690
+          "y": 2690,
+          "stock": "arms"
         },
         {
           "id": "hermit",
@@ -195,6 +197,52 @@
           "kinds": "nnn",
           "bow": 40
         }
+      ],
+      "grounds": [
+        {
+          "id": "jelly-shallows",
+          "name": "The Jelly Shallows",
+          "hub": "saltmarsh",
+          "mob": "slime",
+          "trophy": "Jelly Blobs",
+          "drops": [
+            "boots",
+            "cape"
+          ]
+        },
+        {
+          "id": "sprout-patch",
+          "name": "The Sprout Patch",
+          "hub": "ravine",
+          "mob": "wolf",
+          "trophy": "Sprout Roots",
+          "drops": [
+            "gloves",
+            "trinket"
+          ]
+        },
+        {
+          "id": "bandit-thicket",
+          "name": "Bandit Thicket",
+          "hub": "cairn",
+          "mob": "bandit",
+          "trophy": "Stolen Purses",
+          "drops": [
+            "weapon",
+            "helm"
+          ]
+        },
+        {
+          "id": "buzzing-orchard",
+          "name": "The Buzzing Orchard",
+          "hub": "hermit",
+          "mob": "wisp",
+          "trophy": "Bee Stingers",
+          "drops": [
+            "armour",
+            "shield"
+          ]
+        }
       ]
     },
     {
@@ -219,17 +267,18 @@
       "hubs": [
         {
           "id": "edge",
-          "kind": "normal",
-          "name": "Wobblewood Edge",
+          "kind": "board",
+          "name": "Wobblewood Board",
           "x": 1600,
           "y": 2500
         },
         {
           "id": "thicket",
-          "kind": "normal",
-          "name": "Fungal Ring",
+          "kind": "shop",
+          "name": "Fungal Apothecary",
           "x": 1650,
-          "y": 2050
+          "y": 2050,
+          "stock": "magic"
         },
         {
           "id": "briar",
@@ -266,7 +315,8 @@
           "kind": "shop",
           "name": "Hollow Log Shop",
           "x": 1650,
-          "y": 3050
+          "y": 3050,
+          "stock": "arms"
         },
         {
           "id": "weaver",
@@ -400,6 +450,52 @@
           "kinds": "nnnnn",
           "bow": 90
         }
+      ],
+      "grounds": [
+        {
+          "id": "twig-hollow",
+          "name": "Twig Hollow",
+          "hub": "dusk",
+          "mob": "spider",
+          "trophy": "Bent Twigs",
+          "drops": [
+            "boots",
+            "weapon"
+          ]
+        },
+        {
+          "id": "mossy-reach",
+          "name": "The Mossy Reach",
+          "hub": "elder",
+          "mob": "treant",
+          "trophy": "Moss Tufts",
+          "drops": [
+            "armour",
+            "gloves"
+          ]
+        },
+        {
+          "id": "spore-ring",
+          "name": "The Spore Ring",
+          "hub": "thicket",
+          "mob": "outlaw",
+          "trophy": "Spore Caps",
+          "drops": [
+            "helm",
+            "trinket"
+          ]
+        },
+        {
+          "id": "nutkin-wood",
+          "name": "Nutkin Wood",
+          "hub": "barrow",
+          "mob": "wraith",
+          "trophy": "Stolen Acorns",
+          "drops": [
+            "cape",
+            "shield"
+          ]
+        }
       ]
     },
     {
@@ -424,8 +520,8 @@
       "hubs": [
         {
           "id": "pass",
-          "kind": "normal",
-          "name": "Honeyhill Pass",
+          "kind": "board",
+          "name": "Honeyhill Board",
           "x": 2150,
           "y": 1850
         },
@@ -441,14 +537,16 @@
           "kind": "shop",
           "name": "Harvest Market",
           "x": 2650,
-          "y": 1700
+          "y": 1700,
+          "stock": "arms"
         },
         {
           "id": "icefall",
-          "kind": "normal",
-          "name": "Orchard Maze",
+          "kind": "shop",
+          "name": "Orchard Apothecary",
           "x": 1600,
-          "y": 1350
+          "y": 1350,
+          "stock": "magic"
         },
         {
           "id": "glacier",
@@ -585,6 +683,52 @@
           "to": "summit",
           "kinds": "nnn",
           "bow": 0
+        }
+      ],
+      "grounds": [
+        {
+          "id": "honey-rows",
+          "name": "The Honey Rows",
+          "hub": "hotspring",
+          "mob": "ice-wolf",
+          "trophy": "Honey Globs",
+          "drops": [
+            "boots",
+            "cape"
+          ]
+        },
+        {
+          "id": "corn-field",
+          "name": "The Tall Corn",
+          "hub": "frozen",
+          "mob": "yeti",
+          "trophy": "Corn Cobs",
+          "drops": [
+            "weapon",
+            "armour"
+          ]
+        },
+        {
+          "id": "buzz-meadow",
+          "name": "Buzz Meadow",
+          "hub": "ridge",
+          "mob": "frost-wisp",
+          "trophy": "Buzzbug Wings",
+          "drops": [
+            "gloves",
+            "helm"
+          ]
+        },
+        {
+          "id": "mimic-orchard",
+          "name": "The Sly Orchard",
+          "hub": "glacier",
+          "mob": "ice-golem",
+          "trophy": "Bitten Apples",
+          "drops": [
+            "trinket",
+            "shield"
+          ]
         }
       ]
     }

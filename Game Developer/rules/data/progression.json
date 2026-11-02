@@ -42,7 +42,8 @@
     "block": 0.5,
     "dodge": 0.3,
     "brace": 0.75,
-    "braceMana": 4,
+    "braceMana": 10,
+    "braceManaShare": 0.2,
     "counter": 0.5
   },
   "chest": {

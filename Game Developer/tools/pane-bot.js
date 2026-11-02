@@ -74,7 +74,7 @@ async function tick() {
     P.asks++;
     if (me.picks.length) b.answerPick(me.picks[0][0]);
     else if (me.offer?.kind === 'gamble') b.answerGamble('pass');
-    else if (me.offer?.kind === 'quest') b.answerQuest(true);
+    else if (me.offer?.kind === 'board') (me.offer.quests.length ? b.answerQuest(true, 0) : b.answerQuest(false));
     else if (me.offer) b.answerKeep('sell');
     return 'answered';
   }

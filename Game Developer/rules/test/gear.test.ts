@@ -22,8 +22,8 @@ describe('gear', () => {
 
   it('a plain piece is the common rank item of its slot, priced from the table', () => {
     expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Copper Sword', base: 'copper sword', stats: { attack: 8 }, affixes: [], price: 90 });
-    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 12 }, price: 20 });
-    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Iron Charm', stats: { maxMana: 20 } });
+    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 14 }, price: 20 });
+    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Iron Charm', stats: { maxHp: 34 } });
   });
 
   it('rolls rarities by weight, and a boost skips the lowest', () => {
@@ -80,7 +80,7 @@ describe('gear', () => {
   it('adds what is worn to the base numbers: stats, crit, dodge, lifesteal, thorns, vigor', () => {
     const board = makeBoard();
     const c = makeCharacter('p', 'R', 'warrior', board);
-    expect(stats(c)).toEqual({ attack: 12, defense: 8, maxHp: 120, maxMana: 20, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0, powers: {} });
+    expect(stats(c)).toEqual({ attack: 12, defense: 8, maxHp: 120, maxMana: 20, magic: 0, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0, powers: {} });
     const worn = {
       ...c,
       equipment: {
@@ -94,7 +94,7 @@ describe('gear', () => {
         trinket: { ...plainGear('t', 'trinket', 1), affixes: [{ kind: 'lifesteal' as const, value: 0.2 }] },
       },
     };
-    expect(stats(worn)).toEqual({ attack: 20, defense: 13, maxHp: Math.round(132 * 1.1), maxMana: 26, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, powers: {} });
+    expect(stats(worn)).toEqual({ attack: 20, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, powers: {} });
     expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique']);
   });
 });

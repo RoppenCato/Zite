@@ -158,7 +158,8 @@ const texOf = (slot: Slot, classId: ClassId): string => (slot === 'weapon' ? CLA
 function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): string | null {
   const part = partOf(g.slot, classId);
   const key = texOf(g.slot, classId);
-  for (const word of [RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
+  // Named by its first word when drawn (leather_hat, wooden_staff), else by its rank, else Tin (Robin, 2026-11-02: gear by kind).
+  for (const word of [g.base.split(' ')[0]!, RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
     if (has(scene, key, `${word}_${part}/stand/0001`)) return `${word}_${part}`;
   }
   return null;
@@ -168,7 +169,7 @@ function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): string | 
 export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { texture: string; frame: string } | null {
   const part = partOf(g.slot, classId);
   const key = g.slot === 'weapon' ? CLASS_ART[classId].icons.key : TEX.icons.key;
-  for (const word of [RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
+  for (const word of [g.base.split(' ')[0]!, RANK_WORDS[g.rank - 1] ?? 'tin', 'tin']) {
     if (has(scene, key, `${word}_${part}`)) return { texture: key, frame: `${word}_${part}` };
   }
   return null;

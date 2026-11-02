@@ -3,10 +3,11 @@
 // again after a while and for spawns; the rules never read a clock themselves.
 
 import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
-import { addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
+import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, offerPicks, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
-import { newQuest, questLine, questProgress } from './quests.ts';
+import { dropSlot, groundAt, rollLine } from './grounds.ts';
+import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { buildBoard } from './world.ts';
@@ -24,6 +25,8 @@ import {
   type Space,
   type Spawn,
   type Trace,
+  type GearLine,
+  type ShopStock,
 } from './types.ts';
 
 export interface NewGameOptions {
@@ -143,7 +146,7 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'pick':
       return pick(state, action, character);
     case 'quest':
-      return answerQuest(state, action, character, now);
+      return answerQuest(state, action, character);
     case 'keep':
       return keep(state, action, character);
     case 'trace':
@@ -242,33 +245,16 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   switch (space.kind) {
     case 'town': {
       const s = stats(c);
-      let rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana };
+      const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana };
       events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
-      // The town's errand: paid when done, told when not, offered when there is none from here.
-      const mine = rested.quests.find((q) => q.town === space.id);
-      let st = state;
-      if (mine && mine.done >= mine.count) {
-        events.push({ type: 'questDone', action: id, player, quest: mine });
-        rested = { ...rested, quests: rested.quests.filter((q) => q !== mine), questsDone: [...(rested.questsDone ?? []), mine].slice(-20), cooldowns: { ...rested.cooldowns, [`quest:${space.id}`]: now + QUESTS.cooldownMs } };
-        rested = giveGold(rested, mine.gold, action, events);
-        rested = gainXp(rested, mine.xp, action, events);
-        rested = offerPicks(rested, rng, c.level, action, events);
-        if (mine.unique > 0 && rng.next() < mine.unique) {
-          const got = nextGearId(st);
-          st = got.state;
-          const unique = rollUnique(got.id, tier, tier, rng);
-          if (unique) rested = addLoot(rested, unique, action, events);
-        }
-      } else if (mine) {
-        events.push({ type: 'nothing', action: id, player, text: `Your errand here: ${questLine(mine)}` });
-      } else if ((c.cooldowns[`quest:${space.id}`] ?? 0) <= now && rested.quests.length < QUESTS.maxActive && !rested.offer) {
-        const quest = newQuest(state, rested, space, rng);
-        if (quest) {
-          rested = { ...rested, offer: { kind: 'quest', quest } };
-          events.push({ type: 'offer', action: id, player, offer: rested.offer! });
-        }
-      }
-      return { state: withCharacter(st, rested), events };
+      return { state: withCharacter(state, rested), events };
+    }
+    case 'board': {
+      // One quest at a time: with one under way the board only asks whether to drop it.
+      const quests = c.quests.length ? [] : boardQuests(state, space, rng);
+      const offered: Character = { ...c, offer: { kind: 'board', quests } };
+      events.push({ type: 'offer', action: id, player, offer: offered.offer! });
+      return { state: withCharacter(state, offered), events };
     }
     case 'shop':
       return { state: withCharacter(state, c), events };
@@ -286,7 +272,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'potion': {
       if (onCooldown) return empty();
-      return { state: withCharacter(state, giveItem(giveItem(cooled(c), 'potion', 1, action, events), 'mana-potion', 1, action, events)), events };
+      return { state: withCharacter(state, giveItem(giveItem(cooled(c), flaskId('potion', tier), 1, action, events), flaskId('mana-potion', tier), 1, action, events)), events };
     }
     case 'spell': {
       if (onCooldown) return empty();
@@ -316,6 +302,15 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
       }
+      // A quest under way may turn up here (Robin, 2026-11-02: "chance of spawning").
+      const quest = c.quests[0];
+      if (quest?.kind === 'find' && quest.ground === groundAt(state.board, space)?.id && rng.next() < QUESTS.kinds.find.foundChance!) {
+        const met = finishQuests(state, questFound(c, quest, action, events), action, rng, events);
+        return { state: withCharacter(met.state, offerPicks(met.c, rng, c.level, action, events)), events };
+      }
+      if (quest?.kind === 'mini' && quest.area === space.area && quest.target && rng.next() < QUESTS.kinds.mini.spawnChance!) {
+        return begin(state, c, quest.target, space.id, false, action, rng, events);
+      }
       const what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
       if (what === 'event' && area && EVENTS[area.theme]) return themeEvent(state, c, area.theme, tier, action, rng, events);
@@ -336,10 +331,16 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       const mobs = area?.mobs ?? [];
       if (!mobs.length) return { state: withCharacter(state, c), events };
-      return begin(state, c, mobs[rng.int(mobs.length) - 1]!, space.id, false, action, rng, events);
+      // Mostly the ground's own creature (Robin, 2026-11-02: "you go around areas to hunt certain mobs").
+      const ground = groundAt(state.board, space);
+      const mob = ground && rng.next() < GROUND_SHARE ? ground.mob : mobs[rng.int(mobs.length) - 1]!;
+      return begin(state, c, mob, space.id, false, action, rng, events);
     }
   }
 }
+
+/** How often a wild fight is the ground's own creature. */
+const GROUND_SHARE = 0.75;
 
 /** What a normal spot holds this time, by the weights in surprises.json. One number from the stream. */
 function surprise(rng: Rng): keyof typeof SURPRISES {
@@ -353,8 +354,19 @@ function surprise(rng: Rng): keyof typeof SURPRISES {
   return 'fight';
 }
 
+/** An elixir lasts so many fights: one is counted off as each begins, and it is gone at the one after its last. */
+function fightStarted(c: Character): Character {
+  if (!c.elixirs) return c;
+  const elixirs: NonNullable<Character['elixirs']> = {};
+  for (const [kind, e] of Object.entries(c.elixirs) as ['vigor' | 'arcana', { value: number; fights: number }][]) {
+    if (e.fights > 0) elixirs[kind] = { value: e.value, fights: e.fights - 1 };
+  }
+  const next = { ...c, elixirs };
+  return { ...next, hp: Math.min(next.hp, stats(next).maxHp) };
+}
+
 function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, rng: Rng, events: GameEvent[], shared?: Spawn): ApplyResult {
-  let fighting = startFight(c, enemy, space, spawn, state.board.bestiary, rng);
+  let fighting = startFight(fightStarted(c), enemy, space, spawn, state.board.bestiary, rng);
   if (shared) {
     // A world boss: its HP is the spawn's, whatever others have done to it already.
     const f = fighting.fight!;
@@ -374,7 +386,7 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
 function openChest(state: GameState, c: Character, tier: number, areaId: string, action: Action, rng: Rng, events: GameEvent[], rich = false): ApplyResult {
   events.push({ type: 'chest', action: action.id, player: action.player });
   const [lo, hi] = PROGRESSION.chest.gold;
-  let next = giveGold(questProgress(c, { chest: areaId }, action, events), tier * (lo + rng.int(hi - lo + 1) - 1) * (rich ? 3 : 1), action, events);
+  let next = giveGold(c, tier * (lo + rng.int(hi - lo + 1) - 1) * (rich ? 3 : 1), action, events);
   let s = state;
   if (rich || rng.next() < PROGRESSION.chest.gearChance) {
     const got = nextGearId(s);
@@ -383,14 +395,13 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
     if (unique) {
       next = addLoot(next, unique, action, events);
     } else {
-      const slot = SLOTS[rng.int(SLOTS.length) - 1]!;
-      next = addLoot(next, rollGear(got.id, slot, tier, rich ? 3 : 0, rng), action, events);
+      next = addLoot(next, rollGear(got.id, dropSlot(null, rng), tier, rich ? 3 : 0, rng, rollLine(rng), c.classId), action, events);
     }
   }
   if (rng.next() < PROGRESSION.chest.consumableChance) {
     const cards = ITEM_IDS.filter((i) => ITEMS[i]!.dice);
     const roll = rng.next();
-    next = roll < 0.4 ? giveItem(next, 'potion', 1, action, events) : roll < 0.6 ? giveItem(next, 'mana-potion', 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
+    next = roll < 0.4 ? giveItem(next, flaskId('potion', tier), 1, action, events) : roll < 0.6 ? giveItem(next, flaskId('mana-potion', tier), 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
   return { state: withCharacter(s, next), events };
 }
@@ -426,7 +437,7 @@ function themeEvent(state: GameState, c: Character, theme: string, tier: number,
     case 'flask':
       amount = ev.value;
       events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
-      next = giveItem(next, rng.next() < 0.5 ? 'potion' : 'mana-potion', amount, action, events);
+      next = giveItem(next, flaskId(rng.next() < 0.5 ? 'potion' : 'mana-potion', tier), amount, action, events);
       break;
     case 'card': {
       amount = ev.value;
@@ -461,19 +472,31 @@ function learn(c: Character, action: Action, rng: Rng, events: GameEvent[]): Cha
 
 // ---- the shop and the bag ---------------------------------------------------------------------------------------------
 
-/** A shop is where you stand on one, in a town, or where a merchant has camped. */
-function atShop(state: GameState, c: Character): boolean {
-  const kind = state.board.spaces[c.space]?.kind;
-  return kind === 'shop' || kind === 'town' || state.spawns[c.space]?.kind === 'merchant';
+/** What can be bought where the character stands, or null away from any shop. A merchant has everything. */
+export function shopOffer(state: GameState, c: Character): { stock: ShopStock; lines: GearLine[]; items: string[] } | null {
+  const space = state.board.spaces[c.space];
+  const stock: ShopStock | null = state.spawns[c.space]?.kind === 'merchant' ? 'merchant' : space?.kind === 'town' ? 'town' : space?.kind === 'shop' ? (space.stock ?? 'arms') : null;
+  if (!stock || !space) return null;
+  const tier = state.board.areas[space.area]?.tier ?? 1;
+  const top = Math.min(tier, 3);
+  const items = ITEM_IDS.filter((id) => {
+    const item = ITEMS[id]!;
+    if (stock !== 'merchant' && !item.stock.includes(stock)) return false;
+    return !(item.heal || item.mana) || item.tier === top || item.tier === top - 1;
+  });
+  const lines: GearLine[] = stock === 'arms' ? ['light', 'heavy'] : stock === 'magic' ? ['magic'] : stock === 'merchant' ? ['light', 'heavy', 'magic'] : [];
+  return { stock, lines, items };
 }
 
 function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
   if (action.ability !== undefined) return train(state, action, character, action.ability);
-  if (!atShop(state, character)) return reject(state, action, 'not at a shop');
+  const offer = shopOffer(state, character);
+  if (!offer) return reject(state, action, 'not at a shop');
   if (action.item !== undefined) {
     const item = ITEMS[action.item];
     if (!item) return reject(state, action, 'no such item');
+    if (!offer.items.includes(action.item)) return reject(state, action, 'not at a shop');
     if (character.gold < item.price) return reject(state, action, 'not enough gold');
     const gold = character.gold - item.price;
     const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
@@ -482,14 +505,16 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
   if (action.slot !== undefined && SLOTS.includes(action.slot)) {
     const tier = state.board.areas[state.board.spaces[character.space]!.area]?.tier ?? 1;
     const got = nextGearId(state);
-    const gear = plainGear(got.id, action.slot, tier);
+    const line = action.line ?? (offer.lines.includes('heavy') ? 'heavy' : offer.lines[0]);
+    if (!line || !offer.lines.includes(line)) return reject(state, action, 'not at a shop');
+    const gear = plainGear(got.id, action.slot, tier, line, character.classId);
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
     const old = character.equipment[action.slot];
     const empty = !old;
     if (!empty && character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
     const gold = character.gold - gear.price;
-    // A plain piece of a higher rank replaces a plain lower one, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
-    if (old && old.rarity === 'common' && old.rank < gear.rank) {
+    // A plain piece replaces a plain one no higher, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
+    if (old && old.rarity === 'common' && old.rank <= gear.rank) {
       const worn = { ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } };
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: old }] };
     }
@@ -524,7 +549,7 @@ function train(state: GameState, action: BuyAction, character: Character, abilit
 
 function sell(state: GameState, action: SellAction, character: Character): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
-  if (!atShop(state, character)) return reject(state, action, 'not at a shop');
+  if (!shopOffer(state, character)) return reject(state, action, 'not at a shop');
   const gear = character.bag.find((g) => g.id === action.gear);
   if (!gear) return reject(state, action, 'no such gear');
   const price = sellPrice(gear);
@@ -591,12 +616,18 @@ function useCard(state: GameState, action: UseAction, character: Character, rng:
     // A flask drunk from the bag (Robin, 2026-11-01), not only in a fight.
     if (character.fight) return reject(state, action, 'finish the fight first');
     const s = stats(character);
-    const helps = (item.healShare && character.hp < s.maxHp) || (item.manaShare && character.mana < s.maxMana);
+    const ailing = Object.keys(character.ailments ?? {}).length > 0;
+    const helps = (item.heal && character.hp < s.maxHp) || (item.mana && character.mana < s.maxMana) || item.elixir || (item.cure && ailing);
     if (!helps) return reject(state, action, 'not now');
     const events: GameEvent[] = [{ type: 'used', action: action.id, player: action.player, item: action.item }];
     let c = spend(character, action.item);
-    if (item.healShare) c = heal(c, Math.max(1, Math.round(s.maxHp * item.healShare)), action, events);
-    if (item.manaShare) c = restoreMana(c, Math.max(1, Math.round(s.maxMana * item.manaShare)), action, events);
+    if (item.heal) c = heal(c, item.heal, action, events);
+    if (item.mana) c = restoreMana(c, item.mana, action, events);
+    if (item.elixir) c = { ...c, elixirs: { ...c.elixirs, [item.elixir.kind]: { value: item.elixir.value, fights: item.elixir.fights } } };
+    if (item.cure) {
+      events.push({ type: 'cured', action: action.id, player: action.player, ailments: Object.keys(c.ailments ?? {}) });
+      c = { ...c, ailments: {} };
+    }
     return { state: withCharacter(state, c), events };
   }
   const busy = boardBusy(character);
@@ -655,17 +686,17 @@ function pick(state: GameState, action: PickAction, character: Character): Apply
   return { state: withCharacter(state, next), events: [{ type: 'picked', action: action.id, player: action.player, ability: action.ability, rank }] };
 }
 
-/** The town's errand taken or declined; a declined town waits before it asks again. */
-function answerQuest(state: GameState, action: QuestAction, character: Character, now: number): ApplyResult {
+/** A quest chosen at the board, the board left, or the quest under way dropped. */
+function answerQuest(state: GameState, action: QuestAction, character: Character): ApplyResult {
   const offer = character.offer;
-  if (!offer || offer.kind !== 'quest') return reject(state, action, 'nothing to answer');
-  const quest = offer.quest;
-  if (action.accept) {
-    const next = { ...character, offer: null, quests: [...character.quests, quest] };
-    return { state: withCharacter(state, next), events: [{ type: 'questTaken', action: action.id, player: action.player, quest }] };
+  if (!offer || offer.kind !== 'board') return reject(state, action, 'nothing to answer');
+  const quest = action.accept ? offer.quests[action.index ?? 0] : undefined;
+  if (quest && !character.quests.length) {
+    return { state: withCharacter(state, { ...character, offer: null, quests: [quest] }), events: [{ type: 'questTaken', action: action.id, player: action.player, quest }] };
   }
-  const next = { ...character, offer: null, cooldowns: { ...character.cooldowns, [`quest:${quest.town}`]: now + QUESTS.cooldownMs } };
-  return { state: withCharacter(state, next), events: [{ type: 'questDeclined', action: action.id, player: action.player, quest }] };
+  const dropped = action.drop ? character.quests[0] : undefined;
+  const next = { ...character, offer: null, quests: dropped ? [] : character.quests };
+  return { state: withCharacter(state, next), events: dropped ? [{ type: 'questDeclined', action: action.id, player: action.player, quest: dropped }] : [] };
 }
 
 /** The piece that found no room in the bag: sold for half its worth, or left where it lay. */

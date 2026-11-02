@@ -9,9 +9,10 @@ export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type R
 export { stats, powers, plainGear, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
 export { levelFor, sellPrice } from './common.ts';
 export { makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, pickOptions, offerPicks } from './fight.ts';
-export { newQuest, questProgress, questLine } from './quests.ts';
+export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts';
+export { groundsOf, groundAt } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';
-export { newGame, newWorld, apply, makeBoard, makeCharacter, MAX_NAME, type NewGameOptions } from './game.ts';
+export { newGame, newWorld, apply, makeBoard, makeCharacter, shopOffer, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';
 export { migrate } from './save.ts';

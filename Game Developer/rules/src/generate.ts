@@ -77,7 +77,7 @@ function templates(): Template[] {
       roadCount.set(r.from, (roadCount.get(r.from) ?? 0) + 1);
       roadCount.set(r.to, (roadCount.get(r.to) ?? 0) + 1);
     }
-    const hubs = a.hubs.filter((h) => (roadCount.get(h.id) ?? 0) >= 2).map((h) => ({ id: h.id, kind: h.kind === 'boss' ? ('normal' as SpaceKind) : h.kind, name: h.name, x: h.x - ox, y: h.y - oy, ...(h.locked ? { locked: true } : {}) }));
+    const hubs = a.hubs.filter((h) => (roadCount.get(h.id) ?? 0) >= 2).map((h) => ({ ...(h.stock ? { stock: h.stock } : {}), id: h.id, kind: h.kind === 'boss' ? ('normal' as SpaceKind) : h.kind, name: h.name, x: h.x - ox, y: h.y - oy, ...(h.locked ? { locked: true } : {}) }));
     const keep = new Set(hubs.map((h) => h.id));
     const roads = a.roads.filter((r) => keep.has(r.from) && keep.has(r.to)).map((r) => ({ from: r.from, to: r.to, kinds: r.kinds, bow: r.bow }));
     return { hubs, roads };
@@ -230,8 +230,18 @@ export function generateArea(seed: string, n: number): GrownArea {
     if (h.id === entry.id) return { ...base, name: entryName(peek.name) };
     if (h.locked && kind === 'chest') return { ...base, name: `${adjective()} Vault`, locked: true };
     if (h.id === exit.id) return { ...base, name: `${adjective()} Gate`, boss: bossId, opens: `${GROWN_PREFIX}${n + 1}` };
-    return { ...base, name: placeName(kind) };
+    return { ...base, name: placeName(kind), ...(h.stock ? { stock: h.stock } : {}) };
   });
+  // Every map has its quest board and both shops (Robin, 2026-11-02), whichever hubs its shape kept.
+  const spare = (): WorldHub | undefined => hubs.find((h) => h.kind === 'normal' && h.id !== `${tag}-${entry.id}` && h.id !== `${tag}-${exit.id}`);
+  if (!hubs.some((h) => h.kind === 'board')) {
+    const h = spare();
+    if (h) Object.assign(h, { kind: 'board', name: placeName('board') });
+  }
+  if (!hubs.some((h) => h.kind === 'shop' && h.stock === 'magic')) {
+    const h = spare();
+    if (h) Object.assign(h, { kind: 'shop', stock: 'magic', name: placeName('shop') });
+  }
   const roads: WorldRoad[] = template.roads.map((r) => {
     const bow = Math.abs(r.bow) >= 20 ? r.bow + (rng.int(21) - 11) : r.bow;
     return { from: `${tag}-${r.from}`, to: `${tag}-${r.to}`, kinds: letters.get(`${r.from}-${r.to}`)!, bow };

@@ -16,9 +16,10 @@ import { abilityIcon, fly, HeldEffects, Owl, playOnce, preloadEffects } from '..
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
+import { rememberMessage } from '../messages.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import { Bar, makeButton } from '../ui.ts';
@@ -240,6 +241,7 @@ export class FightScene extends Phaser.Scene {
     this.message = this.add
       .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
       .setOrigin(0.5);
+    this.add.zone(CENTRE, L.messageY + 22, 384, 56).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.launch('log'));
     this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;
@@ -268,16 +270,19 @@ export class FightScene extends Phaser.Scene {
   /** The first row of choices: what you do. */
   private showMoves(): void {
     const me = this.game_.me;
-    const potions = me.items.potion ?? 0;
-    const manaPotions = me.items['mana-potion'] ?? 0;
+    // The strongest flask you carry of each (Robin, 2026-11-02: set amounts, better potions later).
+    const health = ['potion-3', 'potion-2', 'potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'potion';
+    const mana = ['mana-potion-3', 'mana-potion-2', 'mana-potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'mana-potion';
+    const potions = me.items[health] ?? 0;
+    const manaPotions = me.items[mana] ?? 0;
     this.prompt.setText(`Round ${me.fight?.round ?? 1} · your move`);
     this.setOptions([
       { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
       { text: 'Abilities', color: 0x8e6ad9, enabled: Object.keys(me.abilities).length > 0, onTap: () => this.showAbilities() },
       { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
-      { text: potions > 1 ? `${ITEMS.potion!.name} ×${potions}` : ITEMS.potion!.name, color: 0x4aa3df, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: 'potion' }) },
+      { text: potions > 1 ? `${ITEMS[health]!.name} ×${potions}` : ITEMS[health]!.name, color: 0xc84b4b, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: health }) },
       { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
-      { text: manaPotions > 1 ? `${ITEMS['mana-potion']!.name} ×${manaPotions}` : ITEMS['mana-potion']!.name, color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: 'mana-potion' }) },
+      { text: manaPotions > 1 ? `${ITEMS[mana]!.name} ×${manaPotions}` : ITEMS[mana]!.name, color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: mana }) },
     ]);
   }
 
@@ -447,6 +452,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
           this.enemy?.play('attack1');
           sfx.play(`creature/${this.enemyId}/attack`);
           this.hero?.play('stand');
+          this.showDodge();
         } else this.hero?.play('attack1');
         sfx.play('fight/miss');
         {
@@ -544,7 +550,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         break;
       case 'used':
         this.say(`You drink a ${ITEMS[e.item]?.name ?? e.item}.`);
-        if (ITEMS[e.item]?.manaShare) {
+        if (ITEMS[e.item]?.mana) {
           const at = this.spot('hero', 'chest');
           playOnce(this, 'mana_sparkle', at.x, at.y);
         }
@@ -591,8 +597,12 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         (this.scene.get('board') as BoardScene).refreshHud();
         break;
       case 'questProgress':
-        this.say(`Errand: ${e.quest.done} of ${e.quest.count}.`);
-        if (e.quest.done >= e.quest.count) moments(this)?.find('mark_scroll', 'Errand done!', `Go back to ${this.game_.state.board.spaces[e.quest.town]?.name ?? 'town'} to be paid.`, 0xe8b84a);
+        this.say(e.quest.trophy ? `${e.quest.trophy} for your quest: ${e.quest.done} of ${e.quest.count}.` : `Quest: ${e.quest.done} of ${e.quest.count}.`);
+        break;
+      case 'questDone':
+        sfx.play('ui/quest-done');
+        moments(this)?.find('mark_scroll', 'Quest complete!', `+${e.quest.xp} xp, +${e.quest.gold} gold and a chest.`, 0xe8b84a);
+        this.say(`Quest complete: ${e.quest.text}`);
         break;
       case 'found':
         this.say(`You find ${e.count > 1 ? `${e.count} ` : 'a '}${ITEMS[e.item]?.name ?? e.item}.`);
@@ -693,6 +703,20 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     });
   }
 
+  /** A dodge you can see (Robin, 2026-11-02): the hero slips back and fades a little, a whoosh, a faint blue word over them. */
+  private showDodge(): void {
+    sfx.play('fight/dodge');
+    const at = this.spot('hero', 'chest');
+    const word = this.add.text(at.x + 22, at.y - 30, 'dodge', { fontFamily: FONT_DISPLAY, fontSize: '24px', fontStyle: 'bold', color: '#a8d8ff', stroke: '#1a2a44', strokeThickness: 3 }).setOrigin(0.5).setAlpha(0.8).setDepth(60);
+    this.tweens.add({ targets: word, y: word.y - 46, alpha: 0, duration: settings.ms(1100) || 1, ease: 'Sine.easeOut', onComplete: () => word.destroy() });
+    if (!settings.ms(1)) return;
+    const whoosh = playOnce(this, 'dodge_whoosh', at.x + 34, at.y);
+    whoosh?.setScale(whoosh.scale * 1.8);
+    const body = this.heroBody;
+    const home = body.x;
+    this.tweens.add({ targets: body, x: home - 30, alpha: 0.45, duration: 110, ease: 'Quad.easeOut', yoyo: true, hold: 170 });
+  }
+
   /** Where an effect goes on a figure. */
   private spot(who: 'hero' | 'enemy', where: 'chest' | 'head'): { x: number; y: number } {
     const height = who === 'hero' ? 150 : (this.enemy?.headHeight() ?? 56);
@@ -744,6 +768,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       f.skip ? `time bent ${f.skip}` : '',
       f.poisoned ? `poisoned ${f.poisoned.rounds}` : '',
       f.weak ? `weakened ${f.weak.rounds}` : '',
+      this.game_.me.elixirs?.vigor ? 'vigor' : '',
+      this.game_.me.elixirs?.arcana ? 'arcana' : '',
     ].filter(Boolean);
     this.heroStatus.setText(heroBits.join(' · '));
     // What lasts is seen on the figure (Mitch, AD's clips). No clip of its own: burn; Firework hits as a plain hit for now.
@@ -815,11 +841,13 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const number = this.add
       .text(body.x + 30, top, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '32px' : '24px', fontStyle: 'bold', color: crit ? '#fff27a' : '#ffffff', stroke: '#1a2030', strokeThickness: 4 })
       .setOrigin(0.5);
-    this.tweens.add({ targets: number, y: top - 50, alpha: 0, duration: settings.ms(700) || 1, ease: 'Quad.easeOut', onComplete: () => number.destroy() });
+    // It stays to be read (Robin, 2026-11-02: "fades too quickly"), then rises away.
+    this.tweens.add({ targets: number, y: top - 56, alpha: { value: 0, delay: settings.ms(1000), duration: settings.ms(600) || 1 }, duration: settings.ms(1600) || 1, ease: 'Sine.easeOut', onComplete: () => number.destroy() });
   }
 
   private say(text: string): void {
     if (!text) return;
+    rememberMessage(text);
     const last = this.message.text;
     if (last && last !== text) {
       this.lines = [last];

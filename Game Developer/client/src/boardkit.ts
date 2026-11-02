@@ -95,7 +95,7 @@ const KITS: Record<string, Kit> = {
   },
 };
 
-const PLATES: Record<SpaceKind, string> = { normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
+const PLATES: Record<SpaceKind, string> = { board: 'spot_board', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
 
 /** Queue the kits of these themes, and the cover and banner they share. The board is drawn whole, so an area's kit must be here before it opens. */
 export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[]): void {
@@ -200,7 +200,8 @@ export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all
 
 /** A spot's plate from the kit, at the spot's centre; its tap area is the plate's rectangle. */
 export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phaser.GameObjects.Image {
-  const frame = PLATES[space.kind];
+  // A spot with no plate of its own yet takes the wilds' (the quest board's, until Mitch, AD's comes).
+  const frame = scene.textures.get(kit.props).has(PLATES[space.kind]) ? PLATES[space.kind] : PLATES.normal;
   const plate = scene.add.image(space.x, space.y, kit.props, frame).setScale(SCALE).setDepth(KIT_DEPTH.plates);
   // A thumb is wider than a plate: the tap area reaches well past it, as it did round the old circles.
   const { width, height } = plate;

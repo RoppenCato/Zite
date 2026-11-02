@@ -128,7 +128,7 @@ describe('a version-8 save', () => {
     delete c.keys;
     const v8 = { ...structuredClone(today), version: 8, characters: { [P]: c } };
     const s = migrate(structuredClone(v8));
-    expect(s!.version).toBe(14);
+    expect(s!.version).toBe(15);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).quests).toEqual([]);
   });

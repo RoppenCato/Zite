@@ -1,9 +1,9 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 14;
+export const STATE_VERSION = 15;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -72,8 +72,20 @@ export interface Space {
   area: string;
   boss?: string;
   opens?: string | null;
+  /** A shop's stock: arms when not said. */
+  stock?: ShopStock;
   /** A locked chest: it opens only with the area's key, which its mini-boss carries, and holds more (mine, 2026-11-01). */
   locked?: boolean;
+}
+
+/** A hunting ground (Robin, 2026-11-02): the spots nearest `hub`, where `mob` mostly roams, carries `trophy` and leans to `drops`. */
+export interface Ground {
+  id: string;
+  name: string;
+  hub: string;
+  mob: string;
+  trophy: string;
+  drops: Slot[];
 }
 
 /** An area of the map: a theme, a tier, the levels of what lives there, and which mobs and mini-bosses those are. */
@@ -87,6 +99,8 @@ export interface Area {
   levels: [number, number];
   mobs: string[];
   miniBosses: string[];
+  /** Its hunting grounds, where the data names them; `groundsOf` makes them for a grown area. */
+  grounds?: Ground[];
   /** The box round its spaces, with a margin, in world pixels: the camera's overview of what is open. */
   bounds: { x: number; y: number; width: number; height: number };
 }
@@ -119,7 +133,13 @@ export interface Board {
   bestiary: Record<string, EnemyData>;
 }
 
-export type GearStat = 'attack' | 'defense' | 'maxHp' | 'maxMana';
+export type GearStat = 'attack' | 'defense' | 'maxHp' | 'maxMana' | 'magic';
+
+/** Which kind of gear: heavy Tin for defense and health, light Leather for crits and attack, magic Cloth for spells (Robin, 2026-11-02). */
+export type GearLine = 'heavy' | 'light' | 'magic';
+
+/** What a shop sells: arms and armour, magic, a town's flasks and cards, or all of it from a merchant. */
+export type ShopStock = 'arms' | 'magic' | 'town' | 'merchant';
 
 /** A piece of gear as rolled: its rank by tier, its rarity, its name, what it adds, and its special effect if named. */
 export interface GearItem {
@@ -132,6 +152,8 @@ export interface GearItem {
   /** The plain description under a proper name: "iron sword". */
   base: string;
   stats: Partial<Record<GearStat, number>>;
+  /** Heavy when not said. */
+  line?: GearLine;
   /** Rare and up carry one; a legendary two; a unique one beside its power. */
   affixes: Affix[];
   /** The id in uniques.json when the piece is a unique: its power is read from there. */
@@ -141,13 +163,17 @@ export interface GearItem {
 
 /** A town's errand (mine, 2026-11-01, from Robin's list: direction between bosses): what to do, where, how far along, what it pays. */
 export interface Quest {
-  /** The space id of the town that gave it: one errand a town. */
   id: string;
-  kind: 'cull' | 'chests' | 'hunt' | 'boss';
+  kind: 'kill' | 'loot' | 'mini' | 'find';
+  /** The board that gave it. */
   town: string;
   area: string;
-  /** The creature to beat (cull, hunt, boss); null for chests. */
+  /** The ground it asks you to walk. */
+  ground?: string;
+  /** The creature to beat, or the person to find. */
   target: string | null;
+  /** What a loot quest carries home. */
+  trophy?: string;
   count: number;
   done: number;
   gold: number;
@@ -158,7 +184,7 @@ export interface Quest {
 }
 
 /** A pending question the character must answer before rolling again: the gambler's, a town's errand, or a piece that found no room in the bag. */
-export type Offer = { kind: 'gamble'; stake: number } | { kind: 'quest'; quest: Quest } | { kind: 'loot'; gear: GearItem };
+export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[] } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
   id: string;
@@ -198,6 +224,8 @@ export interface Character {
   quests: Quest[];
   /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
   questsDone: Quest[];
+  /** Elixirs drunk: what they add and for how many more fights. */
+  elixirs?: Partial<Record<'vigor' | 'arcana', { value: number; fights: number }>>;
   /** Picks of one ability in two owed from levels, answered one at a time before the next roll. */
   picks: string[][];
   /** Keys to the locked chests, by area: a mini-boss of the area drops one. */
@@ -352,7 +380,7 @@ export type Action =
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
   /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot; in a town, an ability from the trainer. */
-  | { type: 'buy'; id: string; player: string; item?: string; slot?: Slot; ability?: string }
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; ability?: string }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }
@@ -363,7 +391,7 @@ export type Action =
   /** The answer to a pick of one ability in two. */
   | { type: 'pick'; id: string; player: string; ability: string }
   /** The answer to a town's errand. */
-  | { type: 'quest'; id: string; player: string; accept: boolean }
+  | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
   /** The answer for a piece that found no room in the bag: sold on the spot, or left. */
   | { type: 'keep'; id: string; player: string; choice: 'sell' | 'drop' }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
@@ -437,6 +465,7 @@ export type GameEvent =
   | { type: 'questDeclined'; action: string; player: string; quest: Quest }
   /** An errand moved along; `quest` is how it stands now. */
   | { type: 'questProgress'; action: string; player: string; quest: Quest }
+  | { type: 'personFound'; action: string; player: string; person: string; quest: Quest }
   /** An errand turned in; what it paid follows as gold, levels and maybe loot. */
   | { type: 'questDone'; action: string; player: string; quest: Quest }
   /** A piece that found no room in the bag: it waits in `offer` for keep, or was sold at once for `sold` when something else was pending. */

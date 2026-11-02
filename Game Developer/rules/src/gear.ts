@@ -4,7 +4,7 @@
 
 import { CLASS_DATA, GEAR, PROGRESSION, UNIQUE_IDS, UNIQUES } from './data.ts';
 import type { Rng } from './rng.ts';
-import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type GearItem, type PowerKind, type Rarity, type Slot } from './types.ts';
+import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
 
 /** The numbers a fight uses: the base from class and levels, plus everything worn, and the powers of the uniques worn. */
 export interface Stats {
@@ -12,6 +12,8 @@ export interface Stats {
   defense: number;
   maxHp: number;
   maxMana: number;
+  /** Added to the attack behind an ability, never a plain hit. */
+  magic: number;
   crit: number;
   dodge: number;
   lifesteal: number;
@@ -36,6 +38,7 @@ export function stats(c: Character): Stats {
   let defense = c.defense;
   let maxHp = c.maxHp;
   let maxMana = c.maxMana;
+  let magic = 0;
   let crit = cls?.crit ?? PROGRESSION.baseCrit;
   let dodge = cls?.dodge ?? 0;
   let lifesteal = 0;
@@ -48,6 +51,7 @@ export function stats(c: Character): Stats {
     defense += g.stats.defense ?? 0;
     maxHp += g.stats.maxHp ?? 0;
     maxMana += g.stats.maxMana ?? 0;
+    magic += g.stats.magic ?? 0;
     for (const affix of g.affixes ?? []) {
       switch (affix.kind) {
         case 'crit':
@@ -68,6 +72,8 @@ export function stats(c: Character): Stats {
       }
     }
   }
+  maxHp += c.elixirs?.vigor?.value ?? 0;
+  magic += c.elixirs?.arcana?.value ?? 0;
   maxHp = Math.round(maxHp * (1 + vigor));
   const p = powers(c);
   if (p.bloodthirst) {
@@ -75,7 +81,7 @@ export function stats(c: Character): Stats {
     const missing = Math.min(1, Math.max(0, 1 - c.hp / Math.max(1, maxHp)));
     attack = Math.round(attack * (1 + p.bloodthirst * missing));
   }
-  return { attack, defense, maxHp, maxMana, crit, dodge, lifesteal, thorns, powers: p };
+  return { attack, defense, maxHp, maxMana, magic, crit, dodge, lifesteal, thorns, powers: p };
 }
 
 /** A wardrobe with nothing in any slot. */
@@ -105,12 +111,39 @@ export function rankPrice(slot: Slot, rank: number): number {
   return r <= n ? def.price[r - 1]! : Math.round(def.price[n - 1]! * Math.pow(GEAR.priceGrowth, r - n));
 }
 
-/** A plain common piece of the rank: what a shop sells. */
-export function plainGear(id: string, slot: Slot, rank: number): GearItem {
+/** A table's number at a rank: the table while it lasts, then the last entry grown. */
+function tableAt(table: number[], rank: number): number {
+  return rank <= table.length ? table[rank - 1]! : Math.round(table[table.length - 1]! * Math.pow(GEAR.rankGrowth, rank - table.length));
+}
+
+/** The piece's word for a line and rank: Tin, Leather, Cloth, and on up. */
+function lineWord(line: GearLine, rank: number): string {
+  return GEAR.lines[line].words[rank - 1] ?? `Rank ${rank}`;
+}
+
+/** A piece's plain name: the weapon follows the class in heavy gear; the first light and magic weapons are wood. */
+function pieceName(slot: Slot, rank: number, line: GearLine, classId: ClassId): string {
+  const data = GEAR.lines[line];
+  if (slot === 'weapon' && rank === 1 && data.firstWeapon) return data.firstWeapon;
+  if (slot === 'weapon' && data.weaponByClass) return `${lineWord(line, rank)} ${data.weaponByClass[classId]}`;
+  return `${lineWord(line, rank)} ${data.slots?.[slot].base ?? GEAR.slots[slot].base}`;
+}
+
+/** What a piece of this line adds at this rank, its numbers times `mult`, and the bonus it always carries. */
+function lineNumbers(slot: Slot, rank: number, line: GearLine, mult: number): { stats: Partial<Record<GearStat, number>>; affixes: Affix[] } {
+  const own = GEAR.lines[line].slots?.[slot];
+  if (!own) return { stats: { [GEAR.slots[slot].stat]: Math.max(1, Math.round(rankStat(slot, rank) * mult)) }, affixes: [] };
+  const stats: Partial<Record<GearStat, number>> = { [own.stat]: Math.max(1, Math.round(tableAt(own.perRank, rank) * mult)) };
+  if (own.extra) stats[own.extra.stat] = Math.max(1, Math.round(tableAt(own.extra.perRank, rank) * mult));
+  const affixes = own.affix ? [{ kind: own.affix.kind, value: own.affix.perRank[Math.min(rank, own.affix.perRank.length) - 1]! }] : [];
+  return { stats, affixes };
+}
+
+/** A plain common piece of the rank and line: what a shop sells. */
+export function plainGear(id: string, slot: Slot, rank: number, line: GearLine = 'heavy', classId: ClassId = 'warrior'): GearItem {
   const r = Math.max(1, Math.floor(rank));
-  const def = GEAR.slots[slot];
-  const base = `${rankName(r)} ${def.base}`;
-  return { id, slot, rank: r, rarity: 'common', name: base, base: base.toLowerCase(), stats: { [def.stat]: rankStat(slot, r) }, affixes: [], price: rankPrice(slot, r) };
+  const name = pieceName(slot, r, line, classId);
+  return { id, slot, rank: r, rarity: 'common', name, base: name.toLowerCase(), ...lineNumbers(slot, r, line, 1), price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1)), ...(line === 'heavy' ? {} : { line }) };
 }
 
 /**
@@ -144,21 +177,26 @@ function rollAffixes(count: number, rng: Rng): Affix[] {
  * A rolled piece: the rarity, the rank's number times the rarity's multiplier swung by `roll` either way, the rarity's
  * affixes (a legendary carries two), a proper name when it is named. Four to eight numbers from the stream.
  */
-export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng): GearItem {
+export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng, line: GearLine = 'heavy', classId: ClassId = 'warrior'): GearItem {
   const r = Math.max(1, Math.floor(rank));
-  const def = GEAR.slots[slot];
   const rarity = rollRarity(rng, boost);
   const rar = GEAR.rarities[rarity];
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
-  const value = Math.max(1, Math.round(rankStat(slot, r) * rar.mult * swing));
-  const plain = `${rankName(r)} ${def.base}`;
-  const affixes = rollAffixes(rar.affixes, rng);
+  const plain = pieceName(slot, r, line, classId);
+  const numbers = lineNumbers(slot, r, line, rar.mult * swing);
+  // A rolled bonus of the kind the line already carries adds to it.
+  const affixes = [...numbers.affixes];
+  for (const a of rollAffixes(rar.affixes, rng)) {
+    const same = affixes.find((x) => x.kind === a.kind);
+    if (same) same.value = Math.round((same.value + a.value) * 100) / 100;
+    else affixes.push(a);
+  }
   let name = plain;
   if (rar.named) {
     const names = GEAR.names[slot];
     name = names[rng.int(names.length) - 1]!;
   }
-  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes, price: Math.round(rankPrice(slot, r) * rar.priceMult) };
+  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: numbers.stats, affixes, price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1) * rar.priceMult), ...(line === 'heavy' ? {} : { line }) };
 }
 
 /** The uniques a tier's bosses carry: every unique from that tier or an earlier one. */
@@ -201,7 +239,7 @@ export function gearPowers(g: GearItem): string[] {
   return parts;
 }
 
-const STAT_WORDS: Record<string, string> = { attack: 'attack', defense: 'defense', maxHp: 'HP', maxMana: 'mana' };
+const STAT_WORDS: Record<string, string> = { attack: 'attack', defense: 'defense', maxHp: 'HP', maxMana: 'mana', magic: 'magic' };
 
 function capitalise(s: string): string {
   return s.replace(/\b\w/g, (ch) => ch.toUpperCase());

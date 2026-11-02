@@ -115,3 +115,5 @@ server's state, so a mutation in place would be caught the day it is written.
 Many regions (the world is one region today, so one actor holds every character); a fight room for live joint fights;
 presence by place (the geohash cell) and QR tokens; push; deltas smaller than a whole character. A world boss and the
 notes on spots travel inside the state (spawns and traces), with no message of their own.
+
+The `quest` intent gained `index` (which of the board's quests) and `drop` (drop the one under way); `buy` gained `line`. The offer `quest` became `board`. Events added: `personFound`.

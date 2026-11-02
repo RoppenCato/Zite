@@ -116,7 +116,7 @@ function botAction(state: GameState, player: string, rng: Rng, id: string): Acti
   const me = state.characters[player]!;
   if (me.fight) return { type: 'fight', id, player, move: rng.next() < 0.25 && !me.fight.charged ? { kind: 'charge' } : { kind: 'attack' }, guard: rng.next() < 0.5 ? 'block' : 'counter' };
   if (me.offer?.kind === 'gamble') return { type: 'gamble', id, player, choice: 'high' };
-  if (me.offer?.kind === 'quest') return { type: 'quest', id, player, accept: true };
+  if (me.offer?.kind === 'board') return { type: 'quest', id, player, accept: me.offer.quests.length > 0 };
   if (me.offer?.kind === 'loot') return { type: 'keep', id, player, choice: 'sell' };
   if (me.picks.length) return { type: 'pick', id, player, ability: me.picks[0]![0]! };
   if (me.steps > 0) {

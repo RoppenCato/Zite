@@ -1,38 +1,146 @@
 {
   "potion": {
-    "name": "Honey Tonic",
-    "text": "Heals four tenths of your HP. Drink it in a fight; it takes your turn.",
-    "price": 25,
-    "healShare": 0.4
+    "name": "Health Potion",
+    "text": "Heals 50 HP. In a fight it takes your turn.",
+    "price": 20,
+    "tier": 1,
+    "stock": [
+      "arms",
+      "town"
+    ],
+    "heal": 50
+  },
+  "potion-2": {
+    "name": "Greater Health Potion",
+    "text": "Heals 90 HP. In a fight it takes your turn.",
+    "price": 40,
+    "tier": 2,
+    "stock": [
+      "arms",
+      "town"
+    ],
+    "heal": 90
+  },
+  "potion-3": {
+    "name": "Superior Health Potion",
+    "text": "Heals 160 HP. In a fight it takes your turn.",
+    "price": 80,
+    "tier": 3,
+    "stock": [
+      "arms",
+      "town"
+    ],
+    "heal": 160
   },
   "mana-potion": {
-    "name": "Moon Dew",
-    "text": "Gives back half your mana. Drink it in a fight; it takes your turn.",
+    "name": "Mana Potion",
+    "text": "Gives back 25 mana. In a fight it takes your turn.",
+    "price": 20,
+    "tier": 1,
+    "stock": [
+      "magic",
+      "town"
+    ],
+    "mana": 25
+  },
+  "mana-potion-2": {
+    "name": "Greater Mana Potion",
+    "text": "Gives back 45 mana. In a fight it takes your turn.",
+    "price": 40,
+    "tier": 2,
+    "stock": [
+      "magic",
+      "town"
+    ],
+    "mana": 45
+  },
+  "mana-potion-3": {
+    "name": "Superior Mana Potion",
+    "text": "Gives back 80 mana. In a fight it takes your turn.",
+    "price": 80,
+    "tier": 3,
+    "stock": [
+      "magic",
+      "town"
+    ],
+    "mana": 80
+  },
+  "elixir-vigor": {
+    "name": "Elixir of Vigor",
+    "text": "30 more HP for three fights.",
+    "price": 45,
+    "tier": 1,
+    "stock": [
+      "arms"
+    ],
+    "elixir": {
+      "kind": "vigor",
+      "value": 30,
+      "fights": 3
+    }
+  },
+  "elixir-arcana": {
+    "name": "Elixir of Arcana",
+    "text": "Abilities hit 8 harder for three fights.",
+    "price": 45,
+    "tier": 1,
+    "stock": [
+      "magic"
+    ],
+    "elixir": {
+      "kind": "arcana",
+      "value": 8,
+      "fights": 3
+    }
+  },
+  "elixir-cure": {
+    "name": "Cure Elixir",
+    "text": "Clears poison and weakness.",
     "price": 25,
-    "manaShare": 0.5
+    "tier": 1,
+    "stock": [
+      "magic"
+    ],
+    "cure": true
   },
   "reroll": {
     "name": "Do-Over",
     "text": "Roll the die again before you walk.",
     "price": 20,
+    "tier": 1,
+    "stock": [
+      "town"
+    ],
     "dice": "reroll"
   },
   "plus-one": {
     "name": "Hop",
     "text": "One more step: a hop.",
     "price": 12,
+    "tier": 1,
+    "stock": [
+      "town"
+    ],
     "dice": "plus"
   },
   "minus-one": {
     "name": "Hold",
     "text": "Hold back one step, never below one.",
     "price": 12,
+    "tier": 1,
+    "stock": [
+      "town"
+    ],
     "dice": "minus"
   },
   "exact": {
     "name": "Fairy Pick",
     "text": "The fairy picks the number you ask for: walk exactly that.",
     "price": 40,
+    "tier": 1,
+    "stock": [
+      "town"
+    ],
     "dice": "exact"
   }
 }

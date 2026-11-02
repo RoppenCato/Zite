@@ -10,6 +10,7 @@ import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VI
 import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
 import { feel } from '../feel.ts';
+import { rememberMessage } from '../messages.ts';
 import { CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
 import { settings } from '../settings.ts';
 import { Bar, makeButton, type Button } from '../ui.ts';
@@ -35,6 +36,10 @@ const MESSAGE_W = 380;
 export const CHIPS_Y = 754;
 /** The die's place in the panel. */
 const DIE = { x: DESIGN_WIDTH - 48, y: HUD_HEIGHT / 2 } as const;
+/** The big die: how much larger than the corner's, where it stands, how long its number stays. */
+const BIG_DIE_SCALE = 2.6;
+const BIG_DIE_Y = 390;
+const BIG_DIE_HOLD_MS = 620;
 
 /** The numbers the panel shows. */
 export interface HudNumbers {
@@ -65,6 +70,8 @@ export class HudScene extends Phaser.Scene {
   /** The die: the kit's face (or the blur while it tumbles) in a box, or a number in a drawn box before the kit. */
   private dieBox!: Phaser.GameObjects.Container;
   private dieFace: Phaser.GameObjects.Image | null = null;
+  private bigDie: Phaser.GameObjects.Container | null = null;
+  private bigFace: Phaser.GameObjects.Image | null = null;
   private dieText: Phaser.GameObjects.Text | null = null;
   private dieValue = '–';
   /** A roll under way: when it began, the tumble's sound, the faces flickering, what the die showed before. */
@@ -133,6 +140,7 @@ export class HudScene extends Phaser.Scene {
     this.rolling = { started: this.time.now, tumble: null, flicker: null, was: this.dieValue };
     audio.play('ui/die-shake');
     if (!settings.ms(1)) return;
+    this.showBigDie();
     this.tweens.killTweensOf(this.dieBox);
     this.dieBox.setScale(1).setAngle(0);
     this.tweens.add({
@@ -152,7 +160,9 @@ export class HudScene extends Phaser.Scene {
           loop: true,
           callback: () => {
             spin += 1;
-            if (this.dieFace) this.dieFace.setFrame(spin % 2 ? 'die_blur' : `die_${1 + Math.floor(Math.random() * 6)}`).setAlpha(1).setAngle(spin * 37);
+            const frame = spin % 2 ? 'die_blur' : `die_${1 + Math.floor(Math.random() * 6)}`;
+            if (this.dieFace) this.dieFace.setFrame(frame).setAlpha(1).setAngle(spin * 37);
+            this.bigFace?.setFrame(frame);
             this.dieText?.setText(String(1 + Math.floor(Math.random() * 6)));
           },
         });
@@ -184,13 +194,58 @@ export class HudScene extends Phaser.Scene {
           this.tweens.add({ targets: ring, scale: 2.1, alpha: 0, duration: 380, ease: 'Quad.easeOut', onComplete: () => ring.destroy() });
         }
       }
-      done();
+      if (quick || !this.bigDie) {
+        done();
+        return;
+      }
+      this.landBigDie(value, done);
     };
     // The shake and a little of the tumble are always seen, even when the answer is instant.
     const minMs = quick ? 0 : 620;
     const elapsed = r ? this.time.now - r.started : minMs;
     if (elapsed >= minMs) land();
     else this.time.delayedCall(minMs - elapsed, land);
+  }
+
+  /** The die in the middle of the screen while it rolls (Robin, 2026-11-02). */
+  private showBigDie(): void {
+    if (!this.kit || !this.dieFace) return;
+    this.bigDie?.destroy();
+    this.bigFace = this.add.image(0, 0, this.dieFace.texture.key, 'die_blur').setScale(this.dieFace.scale * BIG_DIE_SCALE);
+    this.bigDie = this.add.container(DESIGN_WIDTH / 2, BIG_DIE_Y, [this.add.circle(0, 0, 92, 0x0a0c14, 0.28), this.bigFace]).setDepth(20);
+    this.bigDie.setScale(0.4);
+    this.tweens.add({ targets: this.bigDie, scale: 1, duration: 170, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: this.bigFace, angle: 360, duration: 420, repeat: -1 });
+  }
+
+  /** It lands: the number, a pop, a moment to read it, then it flies to the corner die and the world goes on. */
+  private landBigDie(value: number, done: () => void): void {
+    const die = this.bigDie!;
+    const face = this.bigFace!;
+    this.tweens.killTweensOf(face);
+    face.setAngle(0).setFrame(`die_${value}`);
+    this.tweens.killTweensOf(die);
+    die.setScale(1.25);
+    this.tweens.add({ targets: die, scale: 1, duration: 240, ease: 'Back.easeOut' });
+    this.time.delayedCall(BIG_DIE_HOLD_MS, () => {
+      this.tweens.add({
+        targets: die,
+        x: DIE.x,
+        y: DIE.y,
+        scale: 0.32,
+        alpha: 0,
+        duration: 180,
+        ease: 'Quad.easeIn',
+        onComplete: () => {
+          die.destroy();
+          if (this.bigDie === die) {
+            this.bigDie = null;
+            this.bigFace = null;
+          }
+        },
+      });
+      done();
+    });
   }
 
   /** The world refused the roll: the die goes back to what it showed. */
@@ -203,10 +258,14 @@ export class HudScene extends Phaser.Scene {
     this.tweens.killTweensOf(this.dieBox);
     this.dieBox.setAngle(0).setScale(1);
     this.showDie(r.was);
+    this.bigDie?.destroy();
+    this.bigDie = null;
+    this.bigFace = null;
   }
 
   /** The message box: up to two lines at the usual size, smaller for a long one, and the box grows for the rest. */
   setMessage(text: string): void {
+    rememberMessage(text);
     if (text && text !== this.message.text) audio.play('ui/message-tick', { volume: 0.6 });
     this.message.setFontSize(settings.font(15)).setText(text);
     if (this.message.height > 44) this.message.setFontSize(settings.font(13));
@@ -315,6 +374,8 @@ export class HudScene extends Phaser.Scene {
     this.chipRow = this.add.container(DESIGN_WIDTH / 2, CHIPS_Y);
 
     if (this.kit) this.messagePlate = plate(this, 'panel_message', DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, MESSAGE_W, 44);
+    // A tap on the words opens the last few (Robin, 2026-11-02).
+    this.add.zone(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 28, MESSAGE_W, 56).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.launch('log'));
     this.message = this.add
       .text(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, '', {
         fontFamily: FONT,
