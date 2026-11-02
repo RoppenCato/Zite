@@ -190,7 +190,8 @@ export class BagScene extends Phaser.Scene {
       const flask = !!item && !item.dice;
       const helps = flask && count > 0 && ((!!item.heal && me.hp < s.maxHp) || (!!item.mana && me.mana < s.maxMana) || !!item.elixir || (!!item.cure && Object.keys(me.ailments ?? {}).length > 0));
       this.detailName.setText(item?.name ?? p.item).setColor(kitReady(this) ? INK : COLORS.text);
-      this.detailLine.setText(flask ? (helps ? item.text.split('.')[0] + '.' : 'You are full: it would do nothing now.') : 'Use it after a roll: it shows above the message then.');
+      // What it does first, whatever else there is to say (Robin, 2026-11-02: they "dont really tell you what they do when you press them").
+      this.detailLine.setText(flask ? `${item.text.split('.')[0]}.${helps ? '' : ' You are full: it would do nothing now.'}` : `${item?.text ?? ''} Use it after a roll.`);
       this.actButton.label.setText(flask ? 'Drink' : 'Wear');
       this.actButton.setEnabled(helps && !this.inFlight);
       this.dropButton.setEnabled(false);

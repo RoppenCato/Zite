@@ -485,3 +485,7 @@ The draw order gains `far_back` before `body`. What is held decides the arms in 
 ## The fight's name boards (Robin, 2026-11-02)
 
 `fightboard.ts`: a plank under each fighter with bars and pips, words on a slip that shows only when there are words, positions from Mitch, AD's `fight_boards` notes. Words pack by ` · `, then wrap; first lines kept (mine: greedy packing, so three short bits can fit in two lines). `Bar` takes `small` and `fontSize`; HUD bars unchanged.
+
+## The message box (Robin, 2026-11-02)
+
+The words are no longer a tap target. `logButtons` puts a small scroll button on each side of the box, on the board and in fights; the box is `MESSAGE_BOX_W` wide. The bag says what a flask or card does, whatever else it says.

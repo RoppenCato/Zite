@@ -23,7 +23,7 @@ import { rememberMessage } from '../messages.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
 import { ENEMY_BOARD, FightBoard, HERO_BOARD } from '../fightboard.ts';
-import { Bar, makeButton } from '../ui.ts';
+import { Bar, logButtons, makeButton, MESSAGE_BOX_W } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 import { moments } from './MomentScene.ts';
 
@@ -182,7 +182,7 @@ export class FightScene extends Phaser.Scene {
     const kit = kitReady(this);
     if (kit) {
       plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, SCREEN_WIDTH, 915 - L.stripY);
-      plate(this, 'panel_message', CENTRE, L.messageY + 22, 384, 56);
+      plate(this, 'panel_message', CENTRE, L.messageY + 22, MESSAGE_BOX_W, 56);
     }
     const feetY = this.backdrop.feetY;
     this.feetY = feetY;
@@ -229,9 +229,9 @@ export class FightScene extends Phaser.Scene {
     this.manaBar = this.heroBoard.mana!;
 
     this.message = this.add
-      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
+      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: MESSAGE_BOX_W - 24 } })
       .setOrigin(0.5);
-    this.add.zone(CENTRE, L.messageY + 22, 384, 56).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.launch('log'));
+    logButtons(this, L.messageY + 22);
     this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5);
 
     this.continueButton = makeButton(this, FIGHT_BUTTONS.continue.x, FIGHT_BUTTONS.continue.y, FIGHT_BUTTONS.continue.w, FIGHT_BUTTONS.continue.h, 'Continue', COLORS.button, '22px', () => this.leave()).button;

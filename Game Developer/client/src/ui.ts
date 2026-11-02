@@ -4,8 +4,8 @@
 
 import Phaser from 'phaser';
 import { feel, sfx } from './feel.ts';
-import { CREAM, fx, INK, kitReady, plate, resizePlate } from './kit.ts';
-import { COLORS, FONT, FONT_DISPLAY } from './layout.ts';
+import { CREAM, fx, INK, KIT, kitReady, plate, resizePlate } from './kit.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY } from './layout.ts';
 import { settings } from './settings.ts';
 
 export interface Button {
@@ -26,6 +26,20 @@ function kindOf(color: number): { kind: ButtonKind; tint: number | null } {
 }
 
 /** A button that squashes on the press, calls `onTap` at once (so it answers within a frame), and pops on release. */
+/** How wide the message box is now that a button stands on each side of it. */
+export const MESSAGE_BOX_W = 320;
+
+/**
+ * A small button on each side of the message box, opening the last messages (Robin, 2026-11-02: "the what just happend box seem
+ * easy to accidently press. Maybe there should be a button on the side of it instead... Like a button on each side?").
+ */
+export function logButtons(scene: Phaser.Scene, y: number): void {
+  for (const x of [24, DESIGN_WIDTH - 24]) {
+    const { button } = makeButton(scene, x, y, 36, 44, kitReady(scene) ? '' : '…', COLORS.log, '18px', () => scene.scene.launch('log'));
+    if (kitReady(scene)) button.add(scene.add.image(0, -2, KIT, 'mark_scroll').setScale(0.38));
+  }
+}
+
 export function makeButton(
   scene: Phaser.Scene,
   x: number,

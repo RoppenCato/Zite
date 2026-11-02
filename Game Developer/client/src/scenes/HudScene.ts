@@ -13,7 +13,7 @@ import { feel } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
 import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
 import { settings } from '../settings.ts';
-import { Bar, makeButton, type Button } from '../ui.ts';
+import { Bar, makeButton, type Button, logButtons, MESSAGE_BOX_W } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface HudSceneDeps {
@@ -31,7 +31,7 @@ export const BUTTONS = {
 } as const;
 /** The message box: its bottom edge stays here; it grows upward for a longer line. */
 const MESSAGE_BOTTOM = 802;
-const MESSAGE_W = 380;
+const MESSAGE_W = MESSAGE_BOX_W;
 /** The row of chips, between the band and the message box. */
 export const CHIPS_Y = 754;
 /** The die's place in the panel. */
@@ -373,8 +373,7 @@ export class HudScene extends Phaser.Scene {
     this.chipRow = this.add.container(DESIGN_WIDTH / 2, CHIPS_Y);
 
     if (this.kit) this.messagePlate = plate(this, 'panel_message', DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, MESSAGE_W, 44);
-    // A tap on the words opens the last few (Robin, 2026-11-02).
-    this.add.zone(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 28, MESSAGE_W, 56).setInteractive({ useHandCursor: true }).on('pointerup', () => this.scene.launch('log'));
+    logButtons(this, MESSAGE_BOTTOM - 22);
     this.message = this.add
       .text(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, '', {
         fontFamily: FONT,
