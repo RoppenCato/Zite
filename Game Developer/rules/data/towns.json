@@ -34,6 +34,8 @@
     "city-potions": "herbalist",
     "city-inn": "herbalist",
     "saltwick": "herbalist",
-    "rumcove": "smith"
+    "rumcove": "smith",
+    "hearthhold": "herbalist",
+    "lasthearth": "smith"
   }
 }

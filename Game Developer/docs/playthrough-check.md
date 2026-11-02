@@ -128,3 +128,7 @@ Level 20 takes 2.8 to 5.5 hours for most builds, about as before. Grumblebark is
 ### With the Pirate Isles (one seed a build)
 
 Level 30 now takes 7 to 13 hours for most builds, down from 12 to 15: the isles pay full XP from level 20 to 24. About 5 hours are spent there, since the Giants' Land is not in yet. Captain Saltjaw: 13 to 25 rounds, up to 3 tries.
+
+### With the Giants' Land (six seeds a build, all tactics)
+
+The whole world, every boss down. Median hours to level 30, by the sensible player: Warrior 9.3, Rogue 7.7, Magician 8.1, Hunter 7.3; to level 20: 3.5 to 4.1. Old Snowshoulder falls at level 24 in about 1.1 tries, The Yeti King at level 28 in about 1.2 and 24 rounds. Careful play is the fastest or close to it. Still slow or stuck: Berserker+Knight Warrior (up to 24 hours), the Ninja who only presses Attack (40 hours, 9 bosses left), the Wizard who only presses Attack (never past level 20). These are bots; nothing here is felt.

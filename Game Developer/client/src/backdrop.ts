@@ -11,6 +11,11 @@ import cityGroundPng from '../../assets/city_fight/ground.png';
 import cityMidPng from '../../assets/city_fight/mid.png';
 import cityNearPng from '../../assets/city_fight/near.png';
 import cloudsPng from '../../assets/meadow_fight/clouds.png';
+import giantsCloudsPng from '../../assets/giants_fight/clouds.png';
+import giantsFarPng from '../../assets/giants_fight/far.png';
+import giantsGroundPng from '../../assets/giants_fight/ground.png';
+import giantsMidPng from '../../assets/giants_fight/mid.png';
+import giantsNearPng from '../../assets/giants_fight/near.png';
 import piratesCloudsPng from '../../assets/pirates_fight/clouds.png';
 import piratesFarPng from '../../assets/pirates_fight/far.png';
 import piratesGroundPng from '../../assets/pirates_fight/ground.png';
@@ -109,6 +114,19 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'pirates-mid', png: piratesMidPng, w: 512, h: 289, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'pirates-near', png: piratesNearPng, w: 512, h: 256, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'pirates-ground', png: piratesGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  // The snow road, the way back between ice spires to the Yeti King's seat (Mitch, AD, 2026-11-02).
+  giants: {
+    sky: { top: 0x6fa4dc, bottom: 0xeaf2fa },
+    soil: 0xe8f0f6,
+    feet: 46,
+    strips: [
+      { key: 'giants-clouds', png: giantsCloudsPng, w: 512, h: 168, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'giants-far', png: giantsFarPng, w: 512, h: 369, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'giants-mid', png: giantsMidPng, w: 512, h: 259, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'giants-near', png: giantsNearPng, w: 512, h: 217, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'giants-ground', png: giantsGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
   forest: {

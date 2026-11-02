@@ -52,7 +52,7 @@ import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons, preloadSeals } from '../effects.ts';
-import { COMING_LANDS, FOG_FAR_PIECES, FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
+import { FOG_FAR_PIECES, FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
@@ -115,7 +115,7 @@ const MAX_ZOOM = 1.4 * DPR; // the closest a pinch gets
 const REGION_NEAR = 900;
 const REGION_FAR = 1500;
 const HARD_MIN_ZOOM = 0.12 * DPR; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
-const ZOOM_FLOOR = 0.025 * DPR;
+const ZOOM_FLOOR = 0.0225 * DPR;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
 /** The lowest row of the screen that a framed spot may use: above the message's sign and its chips. */
 const FRAME_BOTTOM = 738;
@@ -785,7 +785,6 @@ export class BoardScene extends Phaser.Scene {
     if (PAINTED[area.id]) {
       this.painted ??= new PaintedGround(this);
       this.closedWords(area);
-      if (!this.closedLabels.has(COMING_LANDS[0]!.id)) this.drawComing();
       this.cameras.main.setBackgroundColor(SEA);
       this.kitted = true;
       return;
@@ -1328,17 +1327,6 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** The lands not in the world yet, closed on the map: a silhouette, marks, their name and levels (Robin, 2026-11-02). */
-  private drawComing(): void {
-    for (const land of COMING_LANDS) {
-      const words = this.add.text(EDGE_INSET, land.label[1]!, `${land.name}\nComing later`, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'left', stroke: '#2a2030', strokeThickness: 4 }).setOrigin(0, 0.5).setDepth(KIT_DEPTH.names);
-      this.closedLabels.set(land.id, words);
-      if (!this.textures.exists(FOG_FAR_PIECES) || !this.textures.exists(FOG_PIECES)) continue;
-      const marks = [this.add.image(land.boss.x, land.boss.y, FOG_FAR_PIECES, land.boss.silhouette), ...land.marks.map(([x, y]) => this.add.image(x!, y!, FOG_PIECES, 'mark_unknown'))];
-      for (const mark of marks) mark.setOrigin(0.5, 1).setDepth(KIT_DEPTH.names);
-      this.closedMarks.set(land.id, marks);
-    }
-  }
-
   /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
   private closedWords(area: Area): void {
     const box = PAINTED[area.id]!;
@@ -1362,6 +1350,7 @@ export class BoardScene extends Phaser.Scene {
     const eastShape = shape === 'silhouette_murk' || shape === 'silhouette_frostbeard';
     if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' || eastShape ? 40 : 0), eastShape ? FOG_EAST_PIECES : FOG_PIECES, shape));
     if (boss?.boss === 'captain-saltjaw' && this.textures.exists(FOG_FAR_PIECES)) marks.push(this.add.image(boss.x, boss.y, FOG_FAR_PIECES, 'silhouette_captain'));
+    if (boss?.boss === 'yeti-king' && this.textures.exists(FOG_FAR_PIECES)) marks.push(this.add.image(boss.x, boss.y, FOG_FAR_PIECES, 'silhouette_yeti_king'));
     for (const g of area.openWith ? [] : groundsOf(board, area.id)) {
       const hub = board.spaces[g.hub];
       if (hub) marks.push(this.add.image(hub.x, hub.y, FOG_PIECES, 'mark_unknown'));

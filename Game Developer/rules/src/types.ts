@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 33;
+export const STATE_VERSION = 34;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -147,7 +147,7 @@ export interface EnemyData {
 
 /** What makes a boss its own, and the words that say so. */
 export interface BossTrick {
-  kind: 'regrow' | 'swarm' | 'fumes' | 'iceShell' | 'deathRoll' | 'charger';
+  kind: 'regrow' | 'swarm' | 'fumes' | 'iceShell' | 'deathRoll' | 'charger' | 'storm';
   /** Said when the fight begins. */
   text: string;
   /** Said when it happens. */

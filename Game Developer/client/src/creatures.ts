@@ -78,6 +78,27 @@ import saltjawPng from '../../assets/creatures_pirates/captain_saltjaw/captain_s
 import saltjaw2Data from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.json';
 import saltjaw2Json from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.json?url';
 import saltjaw2Png from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.png';
+import youngYetiData from '../../assets/creatures_giants/young_yeti/young_yeti.json';
+import youngYetiJson from '../../assets/creatures_giants/young_yeti/young_yeti.json?url';
+import youngYetiPng from '../../assets/creatures_giants/young_yeti/young_yeti.png';
+import snowMonsterData from '../../assets/creatures_giants/snow_monster/snow_monster.json';
+import snowMonsterJson from '../../assets/creatures_giants/snow_monster/snow_monster.json?url';
+import snowMonsterPng from '../../assets/creatures_giants/snow_monster/snow_monster.png';
+import frostOgreData from '../../assets/creatures_giants/frost_ogre/frost_ogre.json';
+import frostOgreJson from '../../assets/creatures_giants/frost_ogre/frost_ogre.json?url';
+import frostOgrePng from '../../assets/creatures_giants/frost_ogre/frost_ogre.png';
+import icicleBatData from '../../assets/creatures_giants/icicle_bat/icicle_bat.json';
+import icicleBatJson from '../../assets/creatures_giants/icicle_bat/icicle_bat.json?url';
+import icicleBatPng from '../../assets/creatures_giants/icicle_bat/icicle_bat.png';
+import oldSnowshoulderData from '../../assets/creatures_giants/old_snowshoulder/old_snowshoulder.json';
+import oldSnowshoulderJson from '../../assets/creatures_giants/old_snowshoulder/old_snowshoulder.json?url';
+import oldSnowshoulderPng from '../../assets/creatures_giants/old_snowshoulder/old_snowshoulder.png';
+import yetiKingData from '../../assets/creatures_giants/yeti_king/yeti_king.json';
+import yetiKingJson from '../../assets/creatures_giants/yeti_king/yeti_king.json?url';
+import yetiKingPng from '../../assets/creatures_giants/yeti_king/yeti_king.png';
+import yetiKing2Data from '../../assets/creatures_giants/yeti_king2/yeti_king2.json';
+import yetiKing2Json from '../../assets/creatures_giants/yeti_king2/yeti_king2.json?url';
+import yetiKing2Png from '../../assets/creatures_giants/yeti_king2/yeti_king2.png';
 import bogToadData from '../../assets/creatures_swamp/bog_toad/bog_toad.json';
 import bogToadJson from '../../assets/creatures_swamp/bog_toad/bog_toad.json?url';
 import bogToadPng from '../../assets/creatures_swamp/bog_toad/bog_toad.png';
@@ -180,6 +201,13 @@ const CREATURES: Record<string, CreatureFiles> = {
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },
   // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  // The Giants' Land (Mitch, AD, 2026-11-02). The King at 1.1, not the atlas's 1.3333, to stay in the column, like the other bosses.
+  'young-yeti': { key: 'young_yeti', png: youngYetiPng, json: youngYetiJson, actions: actionsOf(youngYetiData), scale: 0.6667, blowFrame: 7 },
+  'snow-monster': { key: 'snow_monster', png: snowMonsterPng, json: snowMonsterJson, actions: actionsOf(snowMonsterData), scale: 0.6667, blowFrame: 7 },
+  'frost-ogre': { key: 'frost_ogre', png: frostOgrePng, json: frostOgreJson, actions: actionsOf(frostOgreData), scale: 0.6667, blowFrame: 4 },
+  'icicle-bat': { key: 'icicle_bat', png: icicleBatPng, json: icicleBatJson, actions: actionsOf(icicleBatData), scale: 0.5, blowFrame: 7 },
+  'old-snowshoulder': { key: 'old_snowshoulder', png: oldSnowshoulderPng, json: oldSnowshoulderJson, actions: actionsOf(oldSnowshoulderData), scale: 1, blowFrame: 7 },
+  'yeti-king': { key: 'yeti_king', png: yetiKingPng, json: yetiKingJson, actions: actionsOf(yetiKingData), scale: 1.1, blowFrame: 5, phase2: { key: 'yeti_king2', png: yetiKing2Png, json: yetiKing2Json, actions: actionsOf(yetiKing2Data) } },
   // The Pirate Isles (Mitch, AD, 2026-11-02). The Captain at 1.1, not the atlas's 1.3333, to stay in the column, like the other bosses.
   'deck-hand': { key: 'deck_hand', png: deckHandPng, json: deckHandJson, actions: actionsOf(deckHandData), scale: 0.5, blowFrame: 4 },
   'buccaneer': { key: 'buccaneer', png: buccaneerPng, json: buccaneerJson, actions: actionsOf(buccaneerData), scale: 0.5714, blowFrame: 4 },

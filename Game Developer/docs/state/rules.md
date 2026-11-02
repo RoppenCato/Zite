@@ -497,6 +497,14 @@ Waiting: Mitch, AD's signature weapons, each a unique with its own art.
 
 
 
+## The Giants’ Land (Mitch, AD, 2026-11-02)
+
+Area `giantsland`, tier 7, levels 24 to 28, baked roads. `gate-snowshoulder` stands on the Kingswood's coast past `kw-nw`, opens it; Old Snowshoulder lifts a boulder (`charger`). The Yeti King holds the seventh Seal; his trick is `storm`: every third round 8% of your HP, through any guard, never the last blow. `SEALS_COMING` is empty. State version 34. All numbers mine.
+
+## Legendary weapons (2026-11-02)
+
+Twelve `legend-<art>` entries in `uniques.json`, each with `classId`, `art`, `kind`, and sometimes `stat` and `affix`. `rollLegend` draws only for the character's class, up to the land's tier; never from `uniquePool`. `GEAR.legendChance`: mob 0.05%, mini-boss 1%, boss 5%, rich chest 2% (mine).
+
 ## The Pirate Isles (Mitch, AD, 2026-11-02)
 
 Area `pirateisles`, tier 6, levels 20 to 24, baked roads. `gate-redwake` stands in the Kingswood past `kw-camp-9`, opens it. Its `lookout` hub is `crowsnest` here, since the Rootways has a `lookout`. Boss `captain-saltjaw` at `flagship`, with a Seal. No Arena or hidden places yet.

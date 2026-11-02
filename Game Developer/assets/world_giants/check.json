@@ -1,0 +1,36 @@
+{
+ "spots": 129,
+ "hubs": 15,
+ "roads": 22,
+ "tooClose": [
+  [
+   "ogreledge>yeticrown",
+   "lasthearth>yeticrown",
+   69
+  ]
+ ],
+ "crossings": [],
+ "offLand": [],
+ "grounds": {
+  "yeti-dens": 31,
+  "great-snowfield": 58,
+  "icicle-caves": 24,
+  "ogre-ledge": 16
+ },
+ "kinds": {
+  "board": 1,
+  "town": 2,
+  "shop": 1,
+  "shop_magic": 1,
+  "church": 1,
+  "spring": 5,
+  "shrine": 3,
+  "chest": 3,
+  "wild": 106,
+  "gate": 1,
+  "gear": 5
+ },
+ "sprites": 249,
+ "baked": 658,
+ "mostInAViewAt08": 33
+}

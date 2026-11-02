@@ -391,5 +391,56 @@
         "need": 6
       }
     ]
+  },
+  "giants": {
+    "events": [
+      {
+        "text": "A hermit shares a mug of something that steams.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A snowdrift drops off a ledge, right onto you.",
+        "kind": "hurt",
+        "value": 0.08
+      },
+      {
+        "text": "A frozen purse cracks out of the ice.",
+        "kind": "gold",
+        "value": 50
+      },
+      {
+        "text": "The cold air clears your head.",
+        "kind": "mana",
+        "value": 0.25
+      },
+      {
+        "text": "A dwarf on the road gives you a stoppered bottle, for the cold.",
+        "kind": "flask",
+        "value": 1
+      },
+      {
+        "text": "A card lies frozen on the path.",
+        "kind": "card",
+        "value": 1
+      }
+    ],
+    "finds": [
+      {
+        "text": "A chest sticks out of a snowbank. Dig?",
+        "slot": "armour",
+        "need": 6
+      },
+      {
+        "text": "A helm sits high on a giant’s cairn. Climb?",
+        "slot": "helm",
+        "need": 5
+      },
+      {
+        "text": "A blade is frozen in the ice. Pull?",
+        "slot": "weapon",
+        "need": 6
+      }
+    ]
   }
 }

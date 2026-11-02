@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "snow_monster/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 214,
+    "h": 271
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 271
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 271
+   },
+   "pivot": {
+    "x": 0.6121,
+    "y": 1.0185
+   }
+  },
+  "snow_monster/attack1/0007": {
+   "frame": {
+    "x": 218,
+    "y": 2,
+    "w": 224,
+    "h": 266
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 266
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 266
+   },
+   "pivot": {
+    "x": 0.625,
+    "y": 1.0038
+   }
+  },
+  "snow_monster/attack1/0005": {
+   "frame": {
+    "x": 444,
+    "y": 2,
+    "w": 208,
+    "h": 261
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 261
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 261
+   },
+   "pivot": {
+    "x": 0.5337,
+    "y": 1.0077
+   }
+  },
+  "snow_monster/hit1/0001": {
+   "frame": {
+    "x": 654,
+    "y": 2,
+    "w": 248,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 248,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 248,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.2984,
+    "y": 0.9606
+   }
+  },
+  "snow_monster/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 275,
+    "w": 230,
+    "h": 252
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 230,
+    "h": 252
+   },
+   "sourceSize": {
+    "w": 230,
+    "h": 252
+   },
+   "pivot": {
+    "x": 0.5652,
+    "y": 0.9921
+   }
+  },
+  "snow_monster/attack1/0011": {
+   "frame": {
+    "x": 234,
+    "y": 275,
+    "w": 196,
+    "h": 248
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 248
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 248
+   },
+   "pivot": {
+    "x": 0.4031,
+    "y": 0.9798
+   }
+  },
+  "snow_monster/stand/0005": {
+   "frame": {
+    "x": 432,
+    "y": 275,
+    "w": 195,
+    "h": 247
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 247
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 247
+   },
+   "pivot": {
+    "x": 0.3949,
+    "y": 0.9798
+   }
+  },
+  "snow_monster/stand/0006": {
+   "frame": {
+    "x": 629,
+    "y": 275,
+    "w": 195,
+    "h": 247
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 247
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 247
+   },
+   "pivot": {
+    "x": 0.3949,
+    "y": 0.9798
+   }
+  },
+  "snow_monster/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 529,
+    "w": 215,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 215,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 215,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.3442,
+    "y": 0.9795
+   }
+  },
+  "snow_monster/stand/0001": {
+   "frame": {
+    "x": 219,
+    "y": 529,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 0.9794
+   }
+  },
+  "snow_monster/stand/0004": {
+   "frame": {
+    "x": 419,
+    "y": 529,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 0.9794
+   }
+  },
+  "snow_monster/move/0001": {
+   "frame": {
+    "x": 619,
+    "y": 529,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 1
+   }
+  },
+  "snow_monster/move/0004": {
+   "frame": {
+    "x": 819,
+    "y": 529,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 1
+   }
+  },
+  "snow_monster/attack1/0012": {
+   "frame": {
+    "x": 2,
+    "y": 775,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 0.9794
+   }
+  },
+  "snow_monster/die1/0001": {
+   "frame": {
+    "x": 202,
+    "y": 775,
+    "w": 198,
+    "h": 243
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 243
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 243
+   },
+   "pivot": {
+    "x": 0.3939,
+    "y": 0.9794
+   }
+  },
+  "snow_monster/stand/0002": {
+   "frame": {
+    "x": 402,
+    "y": 775,
+    "w": 201,
+    "h": 239
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 239
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 239
+   },
+   "pivot": {
+    "x": 0.393,
+    "y": 0.9791
+   }
+  },
+  "snow_monster/stand/0003": {
+   "frame": {
+    "x": 605,
+    "y": 775,
+    "w": 201,
+    "h": 239
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 239
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 239
+   },
+   "pivot": {
+    "x": 0.393,
+    "y": 0.9791
+   }
+  },
+  "snow_monster/move/0002": {
+   "frame": {
+    "x": 808,
+    "y": 775,
+    "w": 204,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 204,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.3578,
+    "y": 0.9915
+   }
+  },
+  "snow_monster/move/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1020,
+    "w": 204,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 204,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.3578,
+    "y": 0.9915
+   }
+  },
+  "snow_monster/move/0005": {
+   "frame": {
+    "x": 208,
+    "y": 1020,
+    "w": 202,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.4307,
+    "y": 0.9915
+   }
+  },
+  "snow_monster/move/0006": {
+   "frame": {
+    "x": 412,
+    "y": 1020,
+    "w": 202,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.4307,
+    "y": 0.9915
+   }
+  },
+  "snow_monster/attack1/0001": {
+   "frame": {
+    "x": 616,
+    "y": 1020,
+    "w": 206,
+    "h": 233
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 206,
+    "h": 233
+   },
+   "sourceSize": {
+    "w": 206,
+    "h": 233
+   },
+   "pivot": {
+    "x": 0.3786,
+    "y": 0.9785
+   }
+  },
+  "snow_monster/attack1/0010": {
+   "frame": {
+    "x": 2,
+    "y": 1258,
+    "w": 220,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 220,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 220,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.4273,
+    "y": 0.9784
+   }
+  },
+  "snow_monster/attack1/0009": {
+   "frame": {
+    "x": 224,
+    "y": 1258,
+    "w": 241,
+    "h": 224
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 241,
+    "h": 224
+   },
+   "sourceSize": {
+    "w": 241,
+    "h": 224
+   },
+   "pivot": {
+    "x": 0.4855,
+    "y": 0.9777
+   }
+  },
+  "snow_monster/attack1/0002": {
+   "frame": {
+    "x": 467,
+    "y": 1258,
+    "w": 218,
+    "h": 219
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 219
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 219
+   },
+   "pivot": {
+    "x": 0.3578,
+    "y": 0.9772
+   }
+  },
+  "snow_monster/attack1/0003": {
+   "frame": {
+    "x": 687,
+    "y": 1258,
+    "w": 231,
+    "h": 210
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 210
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 210
+   },
+   "pivot": {
+    "x": 0.3506,
+    "y": 0.9762
+   }
+  },
+  "snow_monster/attack1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1491,
+    "w": 238,
+    "h": 205
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 238,
+    "h": 205
+   },
+   "sourceSize": {
+    "w": 238,
+    "h": 205
+   },
+   "pivot": {
+    "x": 0.3571,
+    "y": 0.9756
+   }
+  },
+  "snow_monster/die1/0003": {
+   "frame": {
+    "x": 242,
+    "y": 1491,
+    "w": 232,
+    "h": 201
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 232,
+    "h": 201
+   },
+   "sourceSize": {
+    "w": 232,
+    "h": 201
+   },
+   "pivot": {
+    "x": 0.319,
+    "y": 0.9652
+   }
+  },
+  "snow_monster/die1/0004": {
+   "frame": {
+    "x": 476,
+    "y": 1491,
+    "w": 238,
+    "h": 151
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 238,
+    "h": 151
+   },
+   "sourceSize": {
+    "w": 238,
+    "h": 151
+   },
+   "pivot": {
+    "x": 0.3361,
+    "y": 0.947
+   }
+  },
+  "snow_monster/die1/0005": {
+   "frame": {
+    "x": 716,
+    "y": 1491,
+    "w": 245,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.351,
+    "y": 0.9174
+   }
+  },
+  "snow_monster/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1698,
+    "w": 191,
+    "h": 53
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 53
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 53
+   },
+   "pivot": {
+    "x": 0.4817,
+    "y": 0.8113
+   }
+  },
+  "snow_monster/die1/0007": {
+   "frame": {
+    "x": 195,
+    "y": 1698,
+    "w": 190,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 42
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.7381
+   }
+  },
+  "snow_monster/die1/0008": {
+   "frame": {
+    "x": 387,
+    "y": 1698,
+    "w": 189,
+    "h": 34
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 189,
+    "h": 34
+   },
+   "sourceSize": {
+    "w": 189,
+    "h": 34
+   },
+   "pivot": {
+    "x": 0.4921,
+    "y": 0.5882
+   }
+  }
+ },
+ "meta": {
+  "image": "snow_monster.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1.5
+ },
+ "actions": {
+  "stand": {
+   "delay": 130,
+   "loop": true,
+   "frames": [
+    {
+     "name": "snow_monster/stand/0001",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 238
+     },
+     "delay": 130,
+     "lt": {
+      "x": -78,
+      "y": -238
+     },
+     "rb": {
+      "x": 120,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -238
+     }
+    },
+    {
+     "name": "snow_monster/stand/0002",
+     "w": 201,
+     "h": 239,
+     "origin": {
+      "x": 79,
+      "y": 234
+     },
+     "delay": 130,
+     "lt": {
+      "x": -79,
+      "y": -234
+     },
+     "rb": {
+      "x": 122,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    },
+    {
+     "name": "snow_monster/stand/0003",
+     "w": 201,
+     "h": 239,
+     "origin": {
+      "x": 79,
+      "y": 234
+     },
+     "delay": 130,
+     "lt": {
+      "x": -79,
+      "y": -234
+     },
+     "rb": {
+      "x": 122,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    },
+    {
+     "name": "snow_monster/stand/0004",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 238
+     },
+     "delay": 130,
+     "lt": {
+      "x": -78,
+      "y": -238
+     },
+     "rb": {
+      "x": 120,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -238
+     }
+    },
+    {
+     "name": "snow_monster/stand/0005",
+     "w": 195,
+     "h": 247,
+     "origin": {
+      "x": 77,
+      "y": 242
+     },
+     "delay": 130,
+     "lt": {
+      "x": -77,
+      "y": -242
+     },
+     "rb": {
+      "x": 118,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "snow_monster/stand/0006",
+     "w": 195,
+     "h": 247,
+     "origin": {
+      "x": 77,
+      "y": 242
+     },
+     "delay": 130,
+     "lt": {
+      "x": -77,
+      "y": -242
+     },
+     "rb": {
+      "x": 118,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "snow_monster/move/0001",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 243
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -243
+     },
+     "rb": {
+      "x": 120,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -243
+     }
+    },
+    {
+     "name": "snow_monster/move/0002",
+     "w": 204,
+     "h": 236,
+     "origin": {
+      "x": 73,
+      "y": 234
+     },
+     "delay": 100,
+     "lt": {
+      "x": -73,
+      "y": -234
+     },
+     "rb": {
+      "x": 131,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    },
+    {
+     "name": "snow_monster/move/0003",
+     "w": 204,
+     "h": 236,
+     "origin": {
+      "x": 73,
+      "y": 234
+     },
+     "delay": 100,
+     "lt": {
+      "x": -73,
+      "y": -234
+     },
+     "rb": {
+      "x": 131,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    },
+    {
+     "name": "snow_monster/move/0004",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 243
+     },
+     "delay": 100,
+     "lt": {
+      "x": -78,
+      "y": -243
+     },
+     "rb": {
+      "x": 120,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -243
+     }
+    },
+    {
+     "name": "snow_monster/move/0005",
+     "w": 202,
+     "h": 236,
+     "origin": {
+      "x": 87,
+      "y": 234
+     },
+     "delay": 100,
+     "lt": {
+      "x": -87,
+      "y": -234
+     },
+     "rb": {
+      "x": 115,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    },
+    {
+     "name": "snow_monster/move/0006",
+     "w": 202,
+     "h": 236,
+     "origin": {
+      "x": 87,
+      "y": 234
+     },
+     "delay": 100,
+     "lt": {
+      "x": -87,
+      "y": -234
+     },
+     "rb": {
+      "x": 115,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -234
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "snow_monster/attack1/0001",
+     "w": 206,
+     "h": 233,
+     "origin": {
+      "x": 78,
+      "y": 228
+     },
+     "delay": 67,
+     "lt": {
+      "x": -78,
+      "y": -228
+     },
+     "rb": {
+      "x": 128,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0002",
+     "w": 218,
+     "h": 219,
+     "origin": {
+      "x": 78,
+      "y": 214
+     },
+     "delay": 67,
+     "lt": {
+      "x": -78,
+      "y": -214
+     },
+     "rb": {
+      "x": 140,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -214
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0003",
+     "w": 231,
+     "h": 210,
+     "origin": {
+      "x": 81,
+      "y": 205
+     },
+     "delay": 67,
+     "lt": {
+      "x": -81,
+      "y": -205
+     },
+     "rb": {
+      "x": 150,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -205
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0004",
+     "w": 238,
+     "h": 205,
+     "origin": {
+      "x": 85,
+      "y": 200
+     },
+     "delay": 100,
+     "lt": {
+      "x": -85,
+      "y": -200
+     },
+     "rb": {
+      "x": 153,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -200
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0005",
+     "w": 208,
+     "h": 261,
+     "origin": {
+      "x": 111,
+      "y": 263
+     },
+     "delay": 67,
+     "lt": {
+      "x": -111,
+      "y": -263
+     },
+     "rb": {
+      "x": 97,
+      "y": -2
+     },
+     "head": {
+      "x": 0,
+      "y": -263
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0006",
+     "w": 214,
+     "h": 271,
+     "origin": {
+      "x": 131,
+      "y": 276
+     },
+     "delay": 50,
+     "lt": {
+      "x": -131,
+      "y": -276
+     },
+     "rb": {
+      "x": 83,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -276
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0007",
+     "w": 224,
+     "h": 266,
+     "origin": {
+      "x": 140,
+      "y": 267
+     },
+     "delay": 134,
+     "lt": {
+      "x": -140,
+      "y": -267
+     },
+     "rb": {
+      "x": 84,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -267
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0008",
+     "w": 230,
+     "h": 252,
+     "origin": {
+      "x": 130,
+      "y": 250
+     },
+     "delay": 67,
+     "lt": {
+      "x": -130,
+      "y": -250
+     },
+     "rb": {
+      "x": 100,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -250
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0009",
+     "w": 241,
+     "h": 224,
+     "origin": {
+      "x": 117,
+      "y": 219
+     },
+     "delay": 67,
+     "lt": {
+      "x": -117,
+      "y": -219
+     },
+     "rb": {
+      "x": 124,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -219
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0010",
+     "w": 220,
+     "h": 231,
+     "origin": {
+      "x": 94,
+      "y": 226
+     },
+     "delay": 67,
+     "lt": {
+      "x": -94,
+      "y": -226
+     },
+     "rb": {
+      "x": 126,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -226
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0011",
+     "w": 196,
+     "h": 248,
+     "origin": {
+      "x": 79,
+      "y": 243
+     },
+     "delay": 67,
+     "lt": {
+      "x": -79,
+      "y": -243
+     },
+     "rb": {
+      "x": 117,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -243
+     }
+    },
+    {
+     "name": "snow_monster/attack1/0012",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 238
+     },
+     "delay": 67,
+     "lt": {
+      "x": -78,
+      "y": -238
+     },
+     "rb": {
+      "x": 120,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -238
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "snow_monster/hit1/0001",
+     "w": 248,
+     "h": 254,
+     "origin": {
+      "x": 74,
+      "y": 244
+     },
+     "delay": 600,
+     "lt": {
+      "x": -74,
+      "y": -244
+     },
+     "rb": {
+      "x": 174,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -244
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "snow_monster/die1/0001",
+     "w": 198,
+     "h": 243,
+     "origin": {
+      "x": 78,
+      "y": 238
+     },
+     "delay": 83,
+     "lt": {
+      "x": -78,
+      "y": -238
+     },
+     "rb": {
+      "x": 120,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -238
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "snow_monster/die1/0002",
+     "w": 215,
+     "h": 244,
+     "origin": {
+      "x": 74,
+      "y": 239
+     },
+     "delay": 83,
+     "lt": {
+      "x": -74,
+      "y": -239
+     },
+     "rb": {
+      "x": 141,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -239
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "snow_monster/die1/0003",
+     "w": 232,
+     "h": 201,
+     "origin": {
+      "x": 74,
+      "y": 194
+     },
+     "delay": 83,
+     "lt": {
+      "x": -74,
+      "y": -194
+     },
+     "rb": {
+      "x": 158,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -194
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "snow_monster/die1/0004",
+     "w": 238,
+     "h": 151,
+     "origin": {
+      "x": 80,
+      "y": 143
+     },
+     "delay": 83,
+     "lt": {
+      "x": -80,
+      "y": -143
+     },
+     "rb": {
+      "x": 158,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -143
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "snow_monster/die1/0005",
+     "w": 245,
+     "h": 109,
+     "origin": {
+      "x": 86,
+      "y": 100
+     },
+     "delay": 83,
+     "lt": {
+      "x": -86,
+      "y": -100
+     },
+     "rb": {
+      "x": 159,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -100
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "snow_monster/die1/0006",
+     "w": 191,
+     "h": 53,
+     "origin": {
+      "x": 92,
+      "y": 43
+     },
+     "delay": 83,
+     "lt": {
+      "x": -92,
+      "y": -43
+     },
+     "rb": {
+      "x": 99,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -43
+     },
+     "a0": 255,
+     "a1": 170
+    },
+    {
+     "name": "snow_monster/die1/0007",
+     "w": 190,
+     "h": 42,
+     "origin": {
+      "x": 93,
+      "y": 31
+     },
+     "delay": 83,
+     "lt": {
+      "x": -93,
+      "y": -31
+     },
+     "rb": {
+      "x": 97,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -31
+     },
+     "a0": 170,
+     "a1": 80
+    },
+    {
+     "name": "snow_monster/die1/0008",
+     "w": 189,
+     "h": 34,
+     "origin": {
+      "x": 93,
+      "y": 20
+     },
+     "delay": 83,
+     "lt": {
+      "x": -93,
+      "y": -20
+     },
+     "rb": {
+      "x": 96,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -20
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

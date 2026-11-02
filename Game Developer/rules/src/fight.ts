@@ -851,6 +851,15 @@ function bossTrick(r: Round): void {
         events.push({ type: 'effect', action: action.id, player: action.player, target: 'enemy', kind: 'armoured', rounds: t.rounds ?? 2 });
       }
       return;
+    case 'storm':
+      // No guard stops it, and it never lands the last blow: the King does that.
+      if (due) {
+        say();
+        const damage = Math.max(1, Math.round(r.s.maxHp * (t.share ?? 0)));
+        r.c = { ...r.c, hp: Math.max(1, r.c.hp - damage) };
+        events.push({ type: 'poisoned', action: action.id, player: action.player, target: 'player', damage, hp: r.c.hp });
+      }
+      return;
     case 'charger':
       if (due && !e.charged) {
         const windUp = e.moves.find((m) => m.charge);

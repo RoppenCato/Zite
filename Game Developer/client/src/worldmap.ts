@@ -15,7 +15,6 @@ import fogSwampJson from '../../assets/world_moved/fog_swamp.json';
 import fogSwampPng from '../../assets/fog_east/fog_swamp.png';
 import fogFrostJson from '../../assets/world_moved/fog_frost.json';
 import fogFrostPng from '../../assets/fog_east/fog_frost.png';
-import comingData from '../../assets/coming_lands/coming.json';
 import comingOverviews from '../../assets/coming_lands/overviews_coming.json';
 import overviewNorthwestJpg from '../../assets/coming_lands/overview_northwest.jpg';
 import overviewSouthwestJpg from '../../assets/coming_lands/overview_southwest.jpg';
@@ -64,7 +63,7 @@ export const PAINTED: Record<string, { x: number; y: number; width: number; heig
 );
 
 /** Lands whose roads are baked into the ground (Mitch, AD): stroking them would cover the planks, the snow and the city's streets. */
-export const BAKED_ROADS = new Set(['bogglemire', 'frostcrown', 'crownhaven', 'pirateisles']);
+export const BAKED_ROADS = new Set(['bogglemire', 'frostcrown', 'crownhaven', 'pirateisles', 'giantsland']);
 
 /** One set of chunks for the world; a dungeon's lie on squares of the same grid, and only one set is ever wanted. */
 const CHUNKS = new Map<string, Chunk & { areas: string[] }>();
@@ -92,7 +91,7 @@ const FOG: Record<string, { key: string; png: string; box: typeof fogSwampJson }
   frostpeak: { key: 'fog_honeyhill', png: fogHoneyhillPng, box: fogHoneyhillJson },
   bogglemire: { key: 'fog_swamp', png: fogSwampPng, box: fogSwampJson },
   frostcrown: { key: 'fog_frost', png: fogFrostPng, box: fogFrostJson },
-  // Not in the world yet: they show closed until they are (Robin, 2026-11-02; Mitch, AD's first pass).
+  // The two far lands (Mitch, AD).
   giantsland: { key: 'fog_giants', png: fogGiantsPng, box: fogGiantsJson },
   pirateisles: { key: 'fog_pirates', png: fogPiratesPng, box: fogPiratesJson },
 };
@@ -100,8 +99,6 @@ const FOG: Record<string, { key: string; png: string; box: typeof fogSwampJson }
 export const FOG_PIECES = 'fog_pieces';
 export const FOG_EAST_PIECES = 'fog_east_pieces';
 export const FOG_FAR_PIECES = 'fog_far_pieces';
-/** The lands to come: what the map shows of them, from Mitch, AD's coming.json. */
-export const COMING_LANDS = Object.values(comingData);
 const OVERVIEWS: { key: string; jpg: string; box: typeof overviewsData.middle }[] = [
   { key: 'world_overview_west', jpg: overviewWestJpg, box: overviewsData.west },
   { key: 'world_overview_east', jpg: overviewEastJpg, box: overviewsData.east },

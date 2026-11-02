@@ -6,6 +6,8 @@ import facesJson from '../../../assets/journal/journal_faces.json?url';
 import facesPng from '../../../assets/journal/journal_faces.png';
 import facesEastJson from '../../../assets/journal_east/journal_faces_east.json?url';
 import facesEastPng from '../../../assets/journal_east/journal_faces_east.png';
+import facesGiantsJson from '../../../assets/journal_giants/journal_faces_giants.json?url';
+import facesGiantsPng from '../../../assets/journal_giants/journal_faces_giants.png';
 import facesPiratesJson from '../../../assets/journal_pirates/journal_faces_pirates.json?url';
 import facesPiratesPng from '../../../assets/journal_pirates/journal_faces_pirates.png';
 import { preloadSeals, SEALS } from '../effects.ts';
@@ -20,6 +22,7 @@ const RUST = '#a23c2c';
 const FACES = 'journal_faces';
 const FACES_EAST = 'journal_faces_east';
 const FACES_PIRATES = 'journal_faces_pirates';
+const FACES_GIANTS = 'journal_faces_giants';
 const ROW_H = 62;
 
 export class SealsScene extends Phaser.Scene {
@@ -35,6 +38,7 @@ export class SealsScene extends Phaser.Scene {
     if (!this.textures.exists(FACES)) this.load.atlas(FACES, facesPng, facesJson);
     if (!this.textures.exists(FACES_EAST)) this.load.atlas(FACES_EAST, facesEastPng, facesEastJson);
     if (!this.textures.exists(FACES_PIRATES)) this.load.atlas(FACES_PIRATES, facesPiratesPng, facesPiratesJson);
+    if (!this.textures.exists(FACES_GIANTS)) this.load.atlas(FACES_GIANTS, facesGiantsPng, facesGiantsJson);
   }
 
   create(): void {
@@ -54,7 +58,7 @@ export class SealsScene extends Phaser.Scene {
     let y = 258;
     for (const seal of sealsOf(board, me)) {
       this.medal(seal.won ? seal.land : null, y);
-      const face = seal.open ? [FACES, FACES_EAST, FACES_PIRATES].find((key) => this.textures.exists(key) && this.textures.get(key).has(seal.boss)) : undefined;
+      const face = seal.open ? [FACES, FACES_EAST, FACES_PIRATES, FACES_GIANTS].find((key) => this.textures.exists(key) && this.textures.get(key).has(seal.boss)) : undefined;
       if (face) {
         const pic = this.add.image(370, y, face, seal.boss).setDisplaySize(44, 44);
         if (!seal.won) pic.setTint(0x777777);

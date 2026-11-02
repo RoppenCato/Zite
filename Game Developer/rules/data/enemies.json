@@ -1154,5 +1154,203 @@
       "text": "Every third round the Captain’s guns are loaded for a Broadside. Block it.",
       "line": "The guns are loaded."
     }
+  },
+  "young-yeti": {
+    "name": "Young Yeti",
+    "level": 24,
+    "role": "mob",
+    "hp": 1632,
+    "attack": 256,
+    "defense": 34,
+    "xp": 218,
+    "gold": 78,
+    "moves": [
+      {
+        "name": "Big Paw",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Snowball",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      },
+      {
+        "name": "Belly Flop",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "snow-monster": {
+    "name": "Snow Monster",
+    "level": 25,
+    "role": "mob",
+    "hp": 2070,
+    "attack": 241,
+    "defense": 44,
+    "xp": 236,
+    "gold": 82,
+    "moves": [
+      {
+        "name": "Slush Slap",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Pack In",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      },
+      {
+        "name": "Avalanche Arm",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "icicle-bat": {
+    "name": "Icicle Bat",
+    "level": 26,
+    "role": "mob",
+    "hp": 1456,
+    "attack": 313,
+    "defense": 30,
+    "xp": 254,
+    "gold": 88,
+    "moves": [
+      {
+        "name": "Icy Bite",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Flit",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      },
+      {
+        "name": "Drop Icicle",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "frost-ogre": {
+    "name": "Frost Ogre",
+    "level": 27,
+    "role": "mob",
+    "hp": 1988,
+    "attack": 307,
+    "defense": 38,
+    "xp": 272,
+    "gold": 94,
+    "moves": [
+      {
+        "name": "Ice Club",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Roar",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      },
+      {
+        "name": "Overhead Smash",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "old-snowshoulder": {
+    "name": "Old Snowshoulder",
+    "level": 25,
+    "role": "mini",
+    "hp": 4153,
+    "attack": 203,
+    "defense": 34,
+    "xp": 600,
+    "gold": 400,
+    "moves": [
+      {
+        "name": "Shoulder Barge",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Boulder",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round Old Snowshoulder lifts a boulder. Block it.",
+      "line": "Up comes a boulder."
+    }
+  },
+  "yeti-king": {
+    "name": "The Yeti King",
+    "level": 29,
+    "role": "boss",
+    "hp": 9600,
+    "attack": 287,
+    "defense": 40,
+    "xp": 2200,
+    "gold": 860,
+    "moves": [
+      {
+        "name": "Crown Swipe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Mountain Fall",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The Yeti King roars: the storm comes!",
+      "moves": [
+        {
+          "name": "Crown Swipe",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Mountain Fall",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Blizzard Breath",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "storm",
+      "every": 3,
+      "share": 0.08,
+      "text": "Every third round the storm bites through any guard: 8% of your HP.",
+      "line": "The storm bites."
+    }
   }
 }

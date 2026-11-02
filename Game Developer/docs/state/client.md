@@ -546,6 +546,10 @@ Tapping a class on the character screen opens its window: `tagline`, `story` and
 
 
 
-## The lands to come (2026-11-02)
+## The far lands (2026-11-02)
 
-`assets/coming_lands/coming.json` (Mitch, AD) draws The Giants’ Land and The Pirate Isles closed on the map: overview, veil, silhouette, marks, words. They are not in `world.json` yet: no areas, no way there. `SEALS_COMING` in `rules/src/seals.ts` lists them on the Seals page. As each land is laid, take it off both lists.
+The Pirate Isles and The Giants’ Land are real areas now, closed under their veils (`FOG` in `worldmap.ts`) with a silhouette each in `BoardScene`. `coming.json` and `drawComing` are gone; `overview_northwest.jpg` and `overview_southwest.jpg` stay in `assets/coming_lands`. `ZOOM_FLOOR` went down to 0.0225 so the whole world fits a phone's width.
+
+## Legendary weapons (2026-11-02)
+
+`assets/legends/<id>/` (Mitch, AD): an atlas each, loaded only while worn. `hero.ts` adds each to `SETS`, and `artWords` and `gearIcon` look at `UNIQUES[g.unique].art` first. Settings has a home-only row, Test: legend.

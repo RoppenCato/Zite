@@ -29,6 +29,13 @@ import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
 import forestPropsPng from '../../assets/board_forest/board_props.png';
 import forestPlacementJson from '../../assets/world_moved/placement_thornwood.json';
+import giantsGroundJson from '../../assets/board_giants/board_ground.json?url';
+import giantsGroundPng from '../../assets/board_giants/board_ground.png';
+import giantsPropsJson from '../../assets/board_giants/board_props.json?url';
+import giantsPropsPng from '../../assets/board_giants/board_props.png';
+import giantsPlacementJson from '../../assets/world_giants/placement.json';
+import giantsPlacesJson from '../../assets/world_giants/board_places.json?url';
+import giantsPlacesPng from '../../assets/world_giants/board_places.png';
 import piratesGroundJson from '../../assets/board_pirates/board_ground.json?url';
 import piratesGroundPng from '../../assets/board_pirates/board_ground.png';
 import piratesPropsJson from '../../assets/board_pirates/board_props.json?url';
@@ -93,12 +100,13 @@ const FOREST_PLACES = 'forest_places';
 const HARVEST_PLACES = 'harvest_places';
 const SWAMP_PLACES = 'swamp_places';
 const PIRATE_PLACES = 'pirate_places';
+const GIANT_PLACES = 'giant_places';
 const FROST_PLACES = 'frost_places';
 
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, ROOTWAYS_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
@@ -113,6 +121,7 @@ const THEME_PLACES: Record<string, { key: string; png: string; json: string }> =
   swamp: { key: SWAMP_PLACES, png: swampPlacesPng, json: swampPlacesJson },
   mountain: { key: FROST_PLACES, png: frostPlacesPng, json: frostPlacesJson },
   pirates: { key: PIRATE_PLACES, png: piratesPlacesPng, json: piratesPlacesJson },
+  giants: { key: GIANT_PLACES, png: giantsPlacesPng, json: giantsPlacesJson },
 };
 const ROOTWAYS_CLEARED = new Set(rootways.door.remove.map((p) => `${p.name}@${p.x},${p.y}`));
 /** A road's line from a colour written #rrggbb or rgba(r,g,b,a). */
@@ -219,6 +228,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
 const landKit = (id: string, area: string, placement: Placement[], files: Kit['files']): Kit => ({ ...KITS.harvest!, ground: `${id}_ground`, props: `${id}_props`, placements: { [area]: placement }, flat: new Set<string>(), files });
 KITS.swamp = landKit('swamp', 'bogglemire', swampPlacementJson as Placement[], { groundPng: swampGroundPng, groundJson: swampGroundJson, propsPng: swampPropsPng, propsJson: swampPropsJson });
 KITS.mountain = landKit('mountain', 'frostcrown', frostPlacementJson as Placement[], { groundPng: frostGroundPng, groundJson: frostGroundJson, propsPng: frostPropsPng, propsJson: frostPropsJson });
+KITS.giants = landKit('giants', 'giantsland', giantsPlacementJson as Placement[], { groundPng: giantsGroundPng, groundJson: giantsGroundJson, propsPng: giantsPropsPng, propsJson: giantsPropsJson });
 KITS.pirates = landKit('pirates', 'pirateisles', piratesPlacementJson as Placement[], { groundPng: piratesGroundPng, groundJson: piratesGroundJson, propsPng: piratesPropsPng, propsJson: piratesPropsJson });
 
 /** Crownhaven is baked whole: it needs only the Meadows' plates (Mitch, AD). */
