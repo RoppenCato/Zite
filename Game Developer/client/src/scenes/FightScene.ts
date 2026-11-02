@@ -840,7 +840,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const top = body instanceof Phaser.GameObjects.Arc ? body.y - 40 : body.y - body.displayHeight * 0.75;
     const number = this.add
       .text(body.x + 30, top, `-${damage}`, { fontFamily: FONT, fontSize: crit ? '32px' : '24px', fontStyle: 'bold', color: crit ? '#fff27a' : '#ffffff', stroke: '#1a2030', strokeThickness: 4 })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(60); // over every figure: a big boss used to hide it
     // It stays to be read (Robin, 2026-11-02: "fades too quickly"), then rises away.
     this.tweens.add({ targets: number, y: top - 56, alpha: { value: 0, delay: settings.ms(1000), duration: settings.ms(600) || 1 }, duration: settings.ms(1600) || 1, ease: 'Sine.easeOut', onComplete: () => number.destroy() });
   }

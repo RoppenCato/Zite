@@ -5,6 +5,7 @@
 // little, so the clouds move.
 
 import Phaser from 'phaser';
+import cloudsPng from '../../assets/meadow_fight/clouds.png';
 import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
 import midPng from '../../assets/meadow_fight/mid.png';
@@ -12,6 +13,7 @@ import nearPng from '../../assets/meadow_fight/near.png';
 import forestFarPng from '../../assets/forest_fight/far.png';
 import forestGroundPng from '../../assets/forest_fight/ground.png';
 import forestMidPng from '../../assets/forest_fight/mid.png';
+import forestMotesPng from '../../assets/forest_fight/motes.png';
 import forestNearPng from '../../assets/forest_fight/near.png';
 import { DESIGN_WIDTH, HUD_HEIGHT } from './layout.ts';
 
@@ -40,27 +42,29 @@ interface BackdropFiles {
 
 /** By theme id (`rules/data/world.json`, `themes.json`). */
 const BACKDROPS: Record<string, BackdropFiles> = {
+  // Mitch, AD's second pass (Robin, 2026-11-02: "A, the road to the mill. Looks great! Apply the same idea to the others"): the fighters stand on the region's own road.
   meadow: {
-    sky: { top: 0x5fb0ec, bottom: 0xcdebfb },
-    soil: 0x5c4a30,
-    feet: 14,
+    sky: { top: 0x55b2f2, bottom: 0xd4f0f6 },
+    soil: 0x86cf5c,
+    feet: 46,
     strips: [
-      { key: 'meadow-far', png: farPng, w: 1024, h: 300, bottom: 40, scroll: 0.15, drift: 2 },
-      { key: 'meadow-mid', png: midPng, w: 1024, h: 300, bottom: 24, scroll: 0.45, drift: 0 },
-      { key: 'meadow-near', png: nearPng, w: 1024, h: 140, bottom: 8, scroll: 0.8, drift: 0 },
-      { key: 'meadow-ground', png: groundPng, w: 512, h: 120, bottom: 120, scroll: 1, drift: 0 },
+      { key: 'meadow-clouds', png: cloudsPng, w: 512, h: 152, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'meadow-far', png: farPng, w: 512, h: 262, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'meadow-mid', png: midPng, w: 512, h: 227, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'meadow-near', png: nearPng, w: 512, h: 176, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'meadow-ground', png: groundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
-  // Mitch, AD's Wobblewood (2026-11-01): far and mid are 1x in their files, which saves about 9.5 MB decoded.
   forest: {
     sky: { top: 0x8ed2b4, bottom: 0xf0f6c8 },
-    soil: 0x3a3a34,
-    feet: 14,
+    soil: 0x6fb478,
+    feet: 46,
     strips: [
-      { key: 'forest-far', png: forestFarPng, w: 1024, h: 300, bottom: 40, scroll: 0.15, drift: 2, tileScale: 1 },
-      { key: 'forest-mid', png: forestMidPng, w: 1024, h: 420, bottom: 24, scroll: 0.45, drift: 0, tileScale: 1 },
-      { key: 'forest-near', png: forestNearPng, w: 1024, h: 140, bottom: 8, scroll: 0.8, drift: 0 },
-      { key: 'forest-ground', png: forestGroundPng, w: 512, h: 120, bottom: 120, scroll: 1, drift: 0 },
+      { key: 'forest-far', png: forestFarPng, w: 512, h: 400, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'forest-motes', png: forestMotesPng, w: 512, h: 272, bottom: -20, scroll: 0.3, drift: 3, tileScale: 1 },
+      { key: 'forest-mid', png: forestMidPng, w: 512, h: 244, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'forest-near', png: forestNearPng, w: 512, h: 410, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'forest-ground', png: forestGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
 };

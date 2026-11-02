@@ -108,3 +108,5 @@ effects" switch may render at 1x on weak phones later; it needs no extra files.
 - Frame rates: stand and move 10 a second, attack 15, die 12, hit one frame held 150 ms. The names and rates of each
   drop's animations are in its NOTES.md and go into data here.
 - PNG-8 palette where it holds up, PNG-32 where gradients band; WebP (Chrome on Android reads it) if a kit will not fit.
+
+The Meadows' and Wobblewood's fight backdrops are Mitch, AD's second pass since 2026-11-02 (Robin chose A, the road to the mill, for the Meadows, and asked for the same idea elsewhere; he has not judged Wobblewood's on its own). The ground runs behind the fighters: feet stand 46 below the ground line. Honeyhill has none until its kit.
