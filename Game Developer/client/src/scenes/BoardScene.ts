@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -51,7 +51,7 @@ import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
-import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
+import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
@@ -136,8 +136,9 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   church: 0xf4f0e4,
   boss: 0x8f2f3b,
   arena: 0xa23c2c,
+  door: 0x6b5a48,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { arena: 'A', gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { arena: 'A', door: 'D', gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -204,6 +205,7 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
+  private readonly dungeonFloors = new Map<string, Phaser.GameObjects.Rectangle>();
   private arenaParts: Phaser.GameObjects.GameObject[] = [];
   private arenaBuildings: ArenaDrawn[] = [];
   private arenaDrawnKey = '';
@@ -751,6 +753,13 @@ export class BoardScene extends Phaser.Scene {
 
   /** An area's ground in its theme's colour, its name written large and faint. */
   private drawGround(area: Area): void {
+    if (area.dungeon) {
+      // Dark under its chunks, over the sea of the overview; hidden with the rest while you are outside. Its chunks come with the painted ground.
+      const land = DUNGEON_LAND[area.id] ?? { ...area.bounds, fill: 0x1c1620 };
+      this.painted ??= new PaintedGround(this);
+      this.dungeonFloors.set(area.id, this.add.rectangle(land.x + land.width / 2, land.y + land.height / 2, land.width, land.height, land.fill, 1).setDepth(-2.5).setVisible(false));
+      return;
+    }
     this.drawGrounds(area);
     if (PAINTED[area.id]) {
       this.painted ??= new PaintedGround(this);
@@ -782,7 +791,7 @@ export class BoardScene extends Phaser.Scene {
   /** The roads of the given spots: each link once, and a link to a spot drawn earlier (the passage from a boss into a grown area). */
   /** The roads of a painted area, each as the line through its hubs and points. Hidden while the land is closed. */
   private drawPaintedRoads(areaId: string): void {
-    const data = WORLD_DATA.areas.find((a) => a.id === areaId);
+    const data = WORLD_DATA.areas.find((a) => a.id === areaId) ?? DUNGEONS[areaId]?.area;
     const area = this.game_.state.board.areas[areaId];
     const kit = area ? kitFor(this, area.theme) : null;
     if (!data || !kit) return;
@@ -843,14 +852,14 @@ export class BoardScene extends Phaser.Scene {
     const kitted = spaces.filter((s) => kitFor(this, areas[s.area]?.theme ?? ''));
     const kits = new Map(kitted.map((s) => [areas[s.area]!.theme, kitFor(this, areas[s.area]!.theme)!]));
     // A painted area's roads follow their own points, unsmoothed, so they pass through their spots (Mitch, AD); no road on the bridge's painted deck.
-    const paintedNow = new Set(kitted.filter((s) => PAINTED[s.area]).map((s) => s.area));
+    const paintedNow = new Set(kitted.filter((s) => PAINTED[s.area] || areas[s.area]?.dungeon).map((s) => s.area));
     for (const areaId of paintedNow) this.drawPaintedRoads(areaId);
     this.drawCrossingRoads(all);
     const onPainted = (x: number, y: number): boolean => Object.values(PAINTED).some((p) => x >= p.x && x < p.x + p.width && y >= p.y && y < p.y + p.height);
     // A road running over painted land is stroked with that land's roads, never smoothed through its spots.
     const onLand = (a: Space, c: Space): boolean => onPainted((a.x + c.x) / 2, (a.y + c.y) / 2);
     for (const [theme, kit] of kits) {
-      const own = kitted.filter((s) => areas[s.area]?.theme === theme && !PAINTED[s.area] && !onPainted(s.x, s.y));
+      const own = kitted.filter((s) => areas[s.area]?.theme === theme && !PAINTED[s.area] && !areas[s.area]?.dungeon && !onPainted(s.x, s.y));
       if (own.length) this.closedRoads.set(own[0]!.area, drawKitRoads(this, kit, own, all, onLand));
     }
     spaces = spaces.filter((s) => !kitFor(this, areas[s.area]?.theme ?? ''));
@@ -952,7 +961,7 @@ export class BoardScene extends Phaser.Scene {
     const top = v.y - margin;
     const bottom = v.bottom + margin;
     const namesHidden = cam.zoom < NAME_ZOOM;
-    const open = new Set(this.game_.me.opened);
+    const open = this.shownAreas();
     this.painted?.update(cam, open);
     const openLand = [...open].flatMap((id) => (PAINTED[id] ? [PAINTED[id]!] : []));
     this.fitArena();
@@ -976,6 +985,7 @@ export class BoardScene extends Phaser.Scene {
 
   /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
   private drawCover(area: Area): void {
+    if (area.dungeon) return;
     // Closed land past a painted one is simply sea until it opens: no square cloud (Robin, 2026-11-02).
     if (this.painted) {
       if (PAINTED[area.id]) return;
@@ -1008,7 +1018,9 @@ export class BoardScene extends Phaser.Scene {
     for (const areaId of opened) raiseTallProps(areaId);
     for (const [areaId, words] of this.closedLabels) words.setVisible(!opened.has(areaId));
     for (const [areaId, marks] of this.closedMarks) for (const mark of marks) mark.setVisible(!opened.has(areaId));
-    for (const [areaId, roads] of this.closedRoads) roads.setVisible(opened.has(areaId.replace('road:', '')));
+    const shown = this.shownAreas();
+    for (const [areaId, roads] of this.closedRoads) roads.setVisible(shown.has(areaId.replace('road:', '')));
+    for (const [areaId, floor] of this.dungeonFloors) floor.setVisible(shown.has(areaId));
     this.lastCull.count = -1;
     for (const [gate, image] of this.gates) image.setFrame(opened.has(gate.opens) ? gate.open : gate.barred);
     this.fitBounds();
@@ -1230,7 +1242,8 @@ export class BoardScene extends Phaser.Scene {
     }
     const b = this.openBounds();
     // A margin over the top, so the goal line does not sit on the land.
-    this.cameras.main.setBounds(b.x, b.y - MAP_TOP_PAD, b.width, b.height + MAP_TOP_PAD);
+    const pad = this.dungeonHere() ? 0 : MAP_TOP_PAD;
+    this.cameras.main.setBounds(b.x, b.y - pad, b.width, b.height + pad);
   }
 
   /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
@@ -1255,13 +1268,30 @@ export class BoardScene extends Phaser.Scene {
     this.closedMarks.set(area.id, marks);
   }
 
+  /** The dungeon you stand in, if any: the map is then only that. */
+  private dungeonHere(): Area | null {
+    const { board } = this.game_.state;
+    const area = board.areas[board.spaces[this.game_.me.space]?.area ?? ''];
+    return area?.dungeon ? area : null;
+  }
+
+  /** The lands drawn: what is open, but a dungeon only while you stand in it. */
+  private shownAreas(): Set<string> {
+    const { board } = this.game_.state;
+    const here = this.dungeonHere();
+    // Inside, only that: its chunks share grid squares with the land outside.
+    if (here) return new Set([here.id]);
+    return new Set(this.game_.me.opened.filter((id) => !board.areas[id]?.dungeon));
+  }
+
   /** The box round everything open, and the zoom that fits it in the band. */
   private openBounds(): { x: number; y: number; width: number; height: number } {
     // All the painted land, closed or not: what lies ahead is there to look at (Robin, 2026-11-02).
     const all = Object.values(this.game_.state.board.areas);
-    const areas = all.filter((a) => this.game_.me.opened.includes(a.id) || (this.painted && PAINTED[a.id]));
-    const list: Area[] = areas.length ? areas : Object.values(this.game_.state.board.areas);
-    const boxes = list.map((a) => PAINTED[a.id] ?? a.bounds);
+    const inside = this.dungeonHere();
+    const areas = all.filter((a) => !a.dungeon && (this.game_.me.opened.includes(a.id) || (this.painted && PAINTED[a.id])));
+    const list: Area[] = inside ? [inside] : areas.length ? areas : all.filter((a) => !a.dungeon);
+    const boxes = list.map((a) => DUNGEON_LAND[a.id] ?? PAINTED[a.id] ?? a.bounds);
     const x = Math.min(...boxes.map((a) => a.x));
     const y = Math.min(...boxes.map((a) => a.y));
     const right = Math.max(...boxes.map((a) => a.x + a.width));
@@ -1274,6 +1304,7 @@ export class BoardScene extends Phaser.Scene {
     const b = this.openBounds();
     // The hand-laid world fits at 0.12 or more; a world grown wider than that may pull back further, down to the floor.
     const fit = Math.min(cam.width / b.width, cam.height / b.height);
+    if (this.dungeonHere()) return Math.max(fit, CHUNK_ZOOM + 0.02);
     return Math.max(fit >= HARD_MIN_ZOOM ? HARD_MIN_ZOOM : ZOOM_FLOOR, fit);
   }
 
@@ -1735,6 +1766,47 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
+  /** At a door: go through, or not. Inside, it is the way back to daylight. */
+  private offerDoor(): void {
+    const { board } = this.game_.state;
+    const here = board.spaces[this.game_.me.space];
+    const beyond = board.spaces[here?.door ?? ''];
+    if (!here || !beyond) return;
+    const inside = !!board.areas[here.area]?.dungeon;
+    const land = board.areas[beyond.area];
+    this.setMessage(inside ? 'Daylight, up ahead.' : `${here.name}.`);
+    this.ask({
+      icon: 'mark_alert',
+      color: inside ? 0xf4c14a : 0x6b5a78,
+      title: here.name || 'A door',
+      text: inside ? 'The way back out to the open air. You can come back whenever you like.' : 'A cold breath from the dark. Something waits at the far end.',
+      ...(inside || !land ? {} : { pays: `Levels ${land.levels[0]} to ${land.levels[1]}` }),
+      options: [
+        { label: inside ? 'Go out' : 'Go in', color: COLORS.button, onTap: () => this.goThrough() },
+        { label: 'Not yet', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish(inside ? 'You stay in the dark a while.' : 'You leave it be, for now.'); } },
+      ],
+    });
+  }
+
+  private goThrough(): void {
+    this.closeAsk();
+    this.send({ type: 'door', player: this.game_.player }, (events) => {
+      if (!events.some((e) => e.type === 'doored')) {
+        this.finish(this.describe(events));
+        return;
+      }
+      const { board } = this.game_.state;
+      this.placeToken();
+      this.refreshCovers();
+      this.minZoom = this.overviewZoom();
+      this.follow(true);
+      this.drawSpawns();
+      this.refreshHud();
+      sfx.play('ui/arrive-town');
+      this.finish(`You step through to ${board.areas[board.spaces[this.game_.me.space]!.area]?.name ?? 'the other side'}.`);
+    });
+  }
+
   /** At the Arena's gate: three ways in while it is open, each once a day; a word when it is closed. */
   private offerGate(): void {
     const me = this.game_.me;
@@ -1868,6 +1940,10 @@ export class BoardScene extends Phaser.Scene {
         this.openShop(camped && space.kind !== 'town' && space.kind !== 'shop');
         return;
       }
+      if (!this.busy && id === me.space && space.kind === 'door') {
+        this.offerDoor();
+        return;
+      }
       if (!this.busy && id === me.space && space.kind === 'arena') {
         this.offerGate();
         return;
@@ -1881,7 +1957,7 @@ export class BoardScene extends Phaser.Scene {
       }
       this.flashHint(id);
       // A boss in open land: fight it now, from anywhere (Robin, 2026-11-02).
-      if (space.kind === 'boss' && space.boss && !this.busy && !me.steps && !me.fight && me.opened.includes(space.area)) {
+      if (space.kind === 'boss' && space.boss && !this.game_.state.board.areas[space.area]?.dungeon && !this.busy && !me.steps && !me.fight && me.opened.includes(space.area)) {
         const away = (me.cooldowns[id] ?? 0) > this.game_.now();
         const foe = creature(space.boss, this.game_.state.board.bestiary);
         if (!away) {
@@ -1938,6 +2014,8 @@ export class BoardScene extends Phaser.Scene {
       case 'normal':
         if (inTownWalls(board, space)) return 'Street';
         return name(groundAt(board, space)?.mob) || 'Wilds';
+      case 'door':
+        return space.name || 'Door';
       case 'arena':
         return arenaOpen(me, this.game_.now()) ? 'The Arena: open!' : 'The Arena: closed';
       case 'town':
@@ -1998,7 +2076,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', arena: 'town', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', arena: 'town', door: 'town', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
@@ -2014,6 +2092,11 @@ export class BoardScene extends Phaser.Scene {
         if (me.offer) {
           this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
           this.offerChoice();
+          return;
+        }
+        if (space.kind === 'door') {
+          this.refreshHud();
+          this.offerDoor();
           return;
         }
         if (space.kind === 'arena') {

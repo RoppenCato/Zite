@@ -1,4 +1,4 @@
-import { ARENA } from './data.ts';
+import { ARENA, DUNGEONS } from './data.ts';
 // The world: areas by tier, each a set of hubs (named spots at fixed positions) joined by roads (a spot every step,
 // laid along a curve), and passage roads between areas that start at a boss. buildBoard turns the hand-laid description
 // into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
@@ -78,7 +78,7 @@ export const KIND_LETTERS: Record<string, SpaceKind> = { q: 'board',
   w: 'town',
 };
 
-const KNOWN_KINDS = new Set<string>(Object.values(KIND_LETTERS));
+const KNOWN_KINDS = new Set<string>([...Object.values(KIND_LETTERS), 'door']);
 const AREA_MARGIN = 60;
 /** The id of an area grown by the generator: "gen-" and its number from 1. */
 export const GROWN = /^gen-\d+$/;
@@ -252,4 +252,19 @@ export function withArenas(board: Board): Board {
     spaces[id] = { ...space, kind: 'arena', name: 'The Arena' };
   }
   return spaces === board.spaces ? board : { ...board, spaces };
+}
+
+/** The dungeons, each laid off the map with a door each way (Robin, 2026-11-02). Already laid, nothing changes. */
+export function withDungeons(board: Board): Board {
+  let out = board;
+  for (const [id, d] of Object.entries(DUNGEONS)) {
+    if (out.areas[id] || !out.spaces[d.outside.spot]) continue;
+    out = { ...out, spaces: { ...out.spaces }, areas: { ...out.areas } };
+    addArea(out, d.area);
+    setBounds(out, id);
+    out.areas[id] = { ...out.areas[id]!, dungeon: true };
+    out.spaces[d.inside] = { ...out.spaces[d.inside]!, door: d.outside.spot };
+    out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside };
+  }
+  return out;
 }

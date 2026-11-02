@@ -1,0 +1,421 @@
+{
+  "_about": "Dungeons (Robin, 2026-11-02: 'You enter them and walk around and theres a boss at the end'). Each is an area of its own, off the map, reached by a door at a road's end, hidden until you stand in it. The Rootways are Mitch, AD's.",
+  "rootways": {
+    "outside": {
+      "spot": "lookout",
+      "name": "The Rootways"
+    },
+    "inside": "rw-door",
+    "area": {
+      "id": "rootways",
+      "name": "The Rootways",
+      "theme": "dungeon",
+      "tier": 1,
+      "levels": [
+        3,
+        5
+      ],
+      "mobs": [
+        "wolf",
+        "glowcap"
+      ],
+      "miniBosses": [],
+      "kingdom": "Verdant Kingdom",
+      "hubs": [
+        {
+          "id": "rw-door",
+          "kind": "door",
+          "name": "The Way Out",
+          "x": 4860,
+          "y": 8930
+        },
+        {
+          "id": "rw-fork",
+          "kind": "normal",
+          "name": "The Forking Burrow",
+          "x": 5190,
+          "y": 8790
+        },
+        {
+          "id": "rw-pool",
+          "kind": "potion",
+          "name": "The Glowing Pool",
+          "x": 5450,
+          "y": 8500
+        },
+        {
+          "id": "rw-low",
+          "kind": "normal",
+          "name": "The Sprout Burrow",
+          "x": 5510,
+          "y": 8990
+        },
+        {
+          "id": "rw-stash",
+          "kind": "chest",
+          "name": "The Forgotten Stash",
+          "x": 5840,
+          "y": 9070
+        },
+        {
+          "id": "rw-join",
+          "kind": "normal",
+          "name": "The Hollow Crossing",
+          "x": 5880,
+          "y": 8700
+        },
+        {
+          "id": "rw-throne",
+          "kind": "boss",
+          "name": "Old Rootbeard's Hollow",
+          "x": 6250,
+          "y": 8540,
+          "boss": "old-rootbeard"
+        }
+      ],
+      "roads": [
+        {
+          "from": "rw-door",
+          "to": "rw-fork",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 4900,
+              "y": 8934
+            },
+            {
+              "x": 4939,
+              "y": 8932
+            },
+            {
+              "x": 4974,
+              "y": 8923
+            },
+            {
+              "x": 5006,
+              "y": 8908
+            },
+            {
+              "x": 5037,
+              "y": 8888
+            },
+            {
+              "x": 5066,
+              "y": 8865
+            },
+            {
+              "x": 5096,
+              "y": 8843
+            },
+            {
+              "x": 5126,
+              "y": 8823
+            },
+            {
+              "x": 5158,
+              "y": 8806
+            }
+          ]
+        },
+        {
+          "from": "rw-fork",
+          "to": "rw-pool",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5213,
+              "y": 8758
+            },
+            {
+              "x": 5236,
+              "y": 8726
+            },
+            {
+              "x": 5256,
+              "y": 8692
+            },
+            {
+              "x": 5273,
+              "y": 8655
+            },
+            {
+              "x": 5290,
+              "y": 8618
+            },
+            {
+              "x": 5310,
+              "y": 8583
+            },
+            {
+              "x": 5334,
+              "y": 8553
+            },
+            {
+              "x": 5366,
+              "y": 8529
+            },
+            {
+              "x": 5405,
+              "y": 8512
+            }
+          ]
+        },
+        {
+          "from": "rw-fork",
+          "to": "rw-low",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5219,
+              "y": 8814
+            },
+            {
+              "x": 5248,
+              "y": 8839
+            },
+            {
+              "x": 5276,
+              "y": 8866
+            },
+            {
+              "x": 5303,
+              "y": 8895
+            },
+            {
+              "x": 5329,
+              "y": 8924
+            },
+            {
+              "x": 5357,
+              "y": 8951
+            },
+            {
+              "x": 5388,
+              "y": 8971
+            },
+            {
+              "x": 5424,
+              "y": 8985
+            },
+            {
+              "x": 5465,
+              "y": 8990
+            }
+          ]
+        },
+        {
+          "from": "rw-pool",
+          "to": "rw-join",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5495,
+              "y": 8516
+            },
+            {
+              "x": 5540,
+              "y": 8531
+            },
+            {
+              "x": 5587,
+              "y": 8542
+            },
+            {
+              "x": 5636,
+              "y": 8551
+            },
+            {
+              "x": 5684,
+              "y": 8558
+            },
+            {
+              "x": 5732,
+              "y": 8569
+            },
+            {
+              "x": 5775,
+              "y": 8588
+            },
+            {
+              "x": 5814,
+              "y": 8616
+            },
+            {
+              "x": 5849,
+              "y": 8654
+            }
+          ]
+        },
+        {
+          "from": "rw-low",
+          "to": "rw-join",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5562,
+              "y": 8980
+            },
+            {
+              "x": 5609,
+              "y": 8964
+            },
+            {
+              "x": 5649,
+              "y": 8939
+            },
+            {
+              "x": 5684,
+              "y": 8907
+            },
+            {
+              "x": 5714,
+              "y": 8869
+            },
+            {
+              "x": 5742,
+              "y": 8828
+            },
+            {
+              "x": 5772,
+              "y": 8790
+            },
+            {
+              "x": 5805,
+              "y": 8757
+            },
+            {
+              "x": 5842,
+              "y": 8727
+            }
+          ]
+        },
+        {
+          "from": "rw-low",
+          "to": "rw-stash",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5543,
+              "y": 8997
+            },
+            {
+              "x": 5577,
+              "y": 9003
+            },
+            {
+              "x": 5611,
+              "y": 9007
+            },
+            {
+              "x": 5645,
+              "y": 9009
+            },
+            {
+              "x": 5680,
+              "y": 9011
+            },
+            {
+              "x": 5714,
+              "y": 9014
+            },
+            {
+              "x": 5747,
+              "y": 9020
+            },
+            {
+              "x": 5779,
+              "y": 9032
+            },
+            {
+              "x": 5810,
+              "y": 9049
+            }
+          ]
+        },
+        {
+          "from": "rw-join",
+          "to": "rw-throne",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 5916,
+              "y": 8681
+            },
+            {
+              "x": 5951,
+              "y": 8661
+            },
+            {
+              "x": 5985,
+              "y": 8638
+            },
+            {
+              "x": 6018,
+              "y": 8613
+            },
+            {
+              "x": 6051,
+              "y": 8587
+            },
+            {
+              "x": 6085,
+              "y": 8564
+            },
+            {
+              "x": 6121,
+              "y": 8546
+            },
+            {
+              "x": 6161,
+              "y": 8537
+            },
+            {
+              "x": 6204,
+              "y": 8535
+            }
+          ]
+        }
+      ],
+      "grounds": [
+        {
+          "id": "sprout-burrow",
+          "name": "The Sprout Burrow",
+          "hub": "rw-low",
+          "mob": "wolf",
+          "trophy": "Sprout Roots",
+          "drops": [
+            "gloves",
+            "trinket"
+          ],
+          "levels": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": "glowing-pool",
+          "name": "The Glowing Pool",
+          "hub": "rw-pool",
+          "mob": "glowcap",
+          "trophy": "Glow Spores",
+          "drops": [
+            "helm",
+            "trinket"
+          ],
+          "levels": [
+            3,
+            5
+          ]
+        }
+      ],
+      "places": []
+    }
+  }
+}

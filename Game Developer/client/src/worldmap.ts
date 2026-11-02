@@ -7,6 +7,8 @@ import forestChunks from '../../assets/world_forest/chunks.json';
 import harvestChunks from '../../assets/world_harvest/chunks.json';
 import meadowChunks from '../../assets/world_meadows/chunks.json';
 import westChunks from '../../assets/world_west/chunks.json';
+import rootwaysChunks from '../../assets/dungeon_meadows/chunks.json';
+import rootways from '../../assets/dungeon_meadows/rootways.json';
 import overviewData from '../../assets/world_meadows/overview.json';
 import overviewJpg from '../../assets/world_meadows/overview.jpg';
 import fogForestJson from '../../assets/fog/fog_forest.json';
@@ -16,7 +18,7 @@ import fogHarvestPng from '../../assets/fog/fog_harvest.png';
 import fogPiecesJson from '../../assets/fog/fog_pieces.json?url';
 import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 
-const FILES = import.meta.glob('../../assets/world_{meadows,forest,harvest,west}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FILES = import.meta.glob('../../assets/{world_meadows,world_forest,world_harvest,world_west,dungeon_meadows}/{ground,rootways}_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 interface Chunk {
   file: string;
@@ -25,6 +27,11 @@ interface Chunk {
   x: number;
   y: number;
 }
+
+/** A dungeon's painted floor: where the camera stays while inside, and the dark past it. */
+export const DUNGEON_LAND: Record<string, { x: number; y: number; width: number; height: number; fill: number }> = {
+  rootways: { ...rootways.bounds, fill: parseInt(rootways.fill.slice(1), 16) },
+};
 
 /** The areas painted so far, and the land each owns on the map. The forest's clamp is Mitch, AD's: its land ends about y 8150. */
 export const PAINTED: Record<string, { x: number; y: number; width: number; height: number }> = {
@@ -57,8 +64,11 @@ for (const c of CHUNKS.values()) if (c.row >= 3 && c.row <= 4 && c.col <= 2 && !
 /** The sea, behind everything. */
 export const SEA = 0x2f7fc4;
 const CHUNK_SIZE = meadowChunks.size;
+// A dungeon's chunks lie on grid squares the Forest's sea has too: they have their own keys, and only one set is ever wanted.
+for (const c of rootwaysChunks.chunks as Chunk[]) CHUNKS.set(`rootways_${c.col}_${c.row}`, { ...c, areas: ['rootways'] });
+
 /** Below this camera zoom, in canvas pixels, the overview does the work and no chunk is held. */
-const CHUNK_ZOOM = 0.6;
+export const CHUNK_ZOOM = 0.6;
 /** How far past the view a chunk loads, and how far it may be before it is freed: apart, so walking a border does not churn. */
 const LOAD_MARGIN = 256;
 const FREE_MARGIN = 512;

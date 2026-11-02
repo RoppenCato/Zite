@@ -186,7 +186,7 @@ describe('growing the board', () => {
 
   it('keeps growing: twenty areas, each reachable from the last over its passage, the board as wide as its last column', () => {
     const board = grownWorld('ashford', 20);
-    expect(Object.keys(board.areas)).toHaveLength(23);
+    expect(Object.keys(board.areas).filter((id) => !board.areas[id]!.dungeon)).toHaveLength(23);
     expect(board.width).toBe((cellFor(20).col + 1) * CELL.width);
     for (let n = 1; n <= 20; n++) {
       const gate = Object.values(board.spaces).find((s) => s.opens === `gen-${n}`)!;

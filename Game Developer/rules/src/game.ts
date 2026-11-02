@@ -13,7 +13,7 @@ import { dropSlot, groundAt, inTownWalls, rollLine } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
-import { buildBoard, withArenas } from './world.ts';
+import { buildBoard, withArenas, withDungeons } from './world.ts';
 import {
   SLOTS,
   STATE_VERSION,
@@ -49,6 +49,7 @@ type UnequipAction = Extract<Action, { type: 'unequip' }>;
 type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
+type DoorAction = Extract<Action, { type: 'door' }>;
 type ArenaAction = Extract<Action, { type: 'arena' }>;
 type SkillAction = Extract<Action, { type: 'skill' }>;
 type ChallengeAction = Extract<Action, { type: 'challenge' }> & { now?: number };
@@ -62,7 +63,7 @@ export const MAX_NAME = 12;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
-  return withArenas(buildBoard(WORLD_DATA));
+  return withDungeons(withArenas(buildBoard(WORLD_DATA)));
 }
 
 export function makeCharacter(id: string, name: string, classId: ClassId, board: Board): Character {
@@ -154,6 +155,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return useCard(state, action, character, rng, now);
     case 'gamble':
       return gamble(state, action, character, rng);
+    case 'door':
+      return door(state, action, character);
     case 'arena':
       return arena(state, action, character, rng, now);
     case 'skill':
@@ -185,8 +188,19 @@ function challenge(state: GameState, action: ChallengeAction, c: Character, rng:
   const busy = boardBusy(c);
   if (busy) return reject(state, action, busy);
   const space = state.board.spaces[action.space];
-  if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
+  if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || state.board.areas[space.area]?.dungeon || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
   return begin(state, { ...c, space: space.id, steps: 0 }, space.boss, space.id, false, action, rng, []);
+}
+
+/** Through the door you stand on; the land beyond is open to you from then on. */
+function door(state: GameState, action: DoorAction, c: Character): ApplyResult {
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  const here = state.board.spaces[c.space];
+  const to = here?.door ? state.board.spaces[here.door] : undefined;
+  if (!here || !to || c.steps > 0) return reject(state, action, 'not now');
+  const opened = c.opened.includes(to.area) ? c.opened : [...c.opened, to.area];
+  return { state: withCharacter(state, { ...c, space: to.id, opened }), events: [{ type: 'doored', action: action.id, player: action.player, from: here.id, to: to.id }] };
 }
 
 // ---- the Arena (Robin, 2026-11-02) ----------------------------------------------------------------------------------
@@ -394,6 +408,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
 
   switch (space.kind) {
     case 'arena':
+    case 'door':
       return { state: withCharacter(state, c), events };
     case 'town': {
       const s = stats(c);
@@ -1037,7 +1052,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       standing.add(c.space);
     }
     const candidates = Object.values(state.board.spaces)
-      .filter((s) => s.kind === 'normal' && open.has(s.area) && !spawns[s.id] && !standing.has(s.id))
+      .filter((s) => s.kind === 'normal' && open.has(s.area) && !state.board.areas[s.area]?.dungeon && !spawns[s.id] && !standing.has(s.id))
       .map((s) => s.id)
       .sort();
     if (candidates.length) {
@@ -1085,7 +1100,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
   } else if (rng.next() < w.chancePerTick) {
     const here = Object.values(characters)
       .map((c) => ({ c, area: state.board.areas[state.board.spaces[c.space]?.area ?? ''] }))
-      .filter((x): x is { c: Character; area: Area } => !!x.area && x.c.level < x.area.levels[1] + w.levelsOver)
+      .filter((x): x is { c: Character; area: Area } => !!x.area && !x.area.dungeon && x.c.level < x.area.levels[1] + w.levelsOver)
       .sort((a, b) => a.c.id.localeCompare(b.c.id));
     const pick = here.length ? here[rng.int(here.length) - 1]! : null;
     const wilds = pick ? Object.values(state.board.spaces).filter((s) => s.area === pick.area.id && free(s) && groundAt(state.board, s)).sort((a, b) => a.id.localeCompare(b.id)) : [];
@@ -1107,7 +1122,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       for (const a of c.opened) open.add(a);
       standing.add(c.space);
     }
-    const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
+    const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a && !a.dungeon).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
     const gate = frontier ? Object.values(state.board.spaces).find((s) => s.area === frontier.id && s.kind === 'boss' && s.boss) : undefined;
     const enemy = gate?.boss ?? frontier?.miniBosses[0] ?? null;
     const wilds = frontier ? Object.values(state.board.spaces).filter((s) => s.area === frontier.id && s.kind === 'normal' && !spawns[s.id] && !standing.has(s.id)).map((s) => s.id).sort() : [];

@@ -12,6 +12,7 @@ import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
 import townsJson from '../data/towns.json' with { type: 'json' };
 import arenaJson from '../data/arena.json' with { type: 'json' };
+import dungeonsJson from '../data/dungeons.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
@@ -402,3 +403,6 @@ export const ARENA = arenaJson as unknown as {
   classes: Record<string, { hp: number; hit: number }>;
   outgrown: { levelsOver: number; xp: number };
 };
+
+/** The dungeons, off the map (Robin, 2026-11-02). */
+export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string }; inside: string; area: import('./world.ts').WorldArea }>;

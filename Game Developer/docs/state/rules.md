@@ -448,3 +448,9 @@ A **wanderer** is a spawn outside the cap: one at a time, in land where someone 
 `rules/src/calendar.ts` and `data/calendar.json`: real days, the same for everyone. An event names its days; `isOn(event, now)` answers. The Arena is the first event.
 
 The Arena is a spot of its own at a road's end in each region, kind `arena` (`data/arena.json`, set by `withArenas`, save version 24). Three modes, once each per open day, whatever came of it. Each pays a fee, then waves. Waves are numbered from the fighter, half the class's bare numbers at that level and half what is worn, so coming back strong does not make it easy. A wave's pay goes in `character.arena`, and an `arena` offer asks take or go on; a fall or a flee loses the pot and only the pot. Pay is a share of a whole: gold by the fee, xp by the level's bar, cut for one far above the land. Before wave 3 the pot is worth less than the fee. `tools/sim-arena.ts` plays it. `op: 'test'` opens it whatever the day and lifts the once-a-day, a Settings switch to go before Alpha.
+
+## Dungeons (Robin, 2026-11-02)
+
+`data/dungeons.json`: an area with `dungeon: true`, off the map, reached by a `door` spot at a road's end (`withDungeons`, save version 26). `door` moves you through and opens the land beyond. No spawns in it and no walking straight to its boss. Falling inside wakes in the town nearest its door. The Rootways are the first, under the Meadows, with Old Rootbeard at the far end.
+
+A road's end stops a walk, whatever is left of the roll (`legalPaths`, `checkPath`).

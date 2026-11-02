@@ -10,6 +10,11 @@ import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
 import midPng from '../../assets/meadow_fight/mid.png';
 import nearPng from '../../assets/meadow_fight/near.png';
+import dungeonFarPng from '../../assets/dungeon_meadows/fight/far.png';
+import dungeonGroundPng from '../../assets/dungeon_meadows/fight/ground.png';
+import dungeonMidPng from '../../assets/dungeon_meadows/fight/mid.png';
+import dungeonMotesPng from '../../assets/dungeon_meadows/fight/motes.png';
+import dungeonNearPng from '../../assets/dungeon_meadows/fight/near.png';
 import forestFarPng from '../../assets/forest_fight/far.png';
 import forestGroundPng from '../../assets/forest_fight/ground.png';
 import forestMidPng from '../../assets/forest_fight/mid.png';
@@ -70,6 +75,18 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'forest-mid', png: forestMidPng, w: 512, h: 244, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'forest-near', png: forestNearPng, w: 512, h: 410, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'forest-ground', png: forestGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  dungeon: {
+    sky: { top: 0x1c1826, bottom: 0x3c3248 },
+    soil: 0x8a7058,
+    feet: 46,
+    strips: [
+      { key: 'dungeon-far', png: dungeonFarPng, w: 512, h: 400, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'dungeon-motes', png: dungeonMotesPng, w: 512, h: 283, bottom: -20, scroll: 0.3, drift: 3, tileScale: 1 },
+      { key: 'dungeon-mid', png: dungeonMidPng, w: 512, h: 400, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'dungeon-near', png: dungeonNearPng, w: 512, h: 410, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'dungeon-ground', png: dungeonGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
   harvest: {

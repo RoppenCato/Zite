@@ -58,5 +58,10 @@
     "label": "Arena",
     "letter": "A",
     "hint": "Fights in a row, on the days it is open."
+  },
+  "door": {
+    "label": "Door",
+    "letter": "D",
+    "hint": "Leads somewhere else."
   }
 }

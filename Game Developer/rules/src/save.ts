@@ -4,7 +4,7 @@ import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
-import { withArenas } from './world.ts';
+import { withArenas, withDungeons } from './world.ts';
 import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
@@ -115,19 +115,37 @@ interface OldCharacter {
  * 8 → 9 (2026-11-01): locked vaults. A character gains `keys`.
  */
 export function migrate(raw: unknown): GameState | null {
-  const up = migrateOlder(raw);
-  if (!up || (raw as { version?: unknown }).version === STATE_VERSION) return up;
+  const version = (raw as { version?: unknown } | null)?.version;
+  // 25 → 26: a stand-in cave gives way to the Rootways, before the board is laid again.
+  const up = migrateOlder(version === 25 ? withoutStandIn(raw as GameState) : raw);
+  if (!up || version === STATE_VERSION) return up;
+  if (version === 25) return withArena(up);
+  // 24 → 25: the dungeons are laid.
+  if (version === 24) return withArena(up);
   // 23 → 24: the Arena takes its spot in each land laid so far.
-  const version = (raw as { version?: unknown }).version;
   if (version === 23) return withArena(up);
   // 22 → 23: the journal starts empty; nothing else moves.
   if (version === 22) return withArena(withJournal(up));
   return withArena(withJournal(toPaths(up)));
 }
 
+/** A build on Robin's phone for a while had a stand-in cave, `grotto`: anyone in it comes out at its door, and the real one is laid. */
+function withoutStandIn(state: GameState): GameState {
+  const areas = { ...state.board.areas };
+  delete areas.grotto;
+  const spaces = Object.fromEntries(Object.entries(state.board.spaces).filter(([, s]) => s.area !== 'grotto'));
+  const characters = Object.fromEntries(
+    Object.entries(state.characters).map(([id, c]) => {
+      const inside = state.board.spaces[c.space]?.area === 'grotto';
+      return [id, { ...c, opened: c.opened.filter((a) => a !== 'grotto'), ...(inside ? { space: 'lookout', steps: 0, fight: null, offer: null } : {}) }];
+    }),
+  );
+  return { ...state, characters, board: { ...state.board, areas, spaces } };
+}
+
 /** To 24 (Robin, 2026-11-02): the Arena's spots; anyone standing on one just stands at the Arena. */
 function withArena(state: GameState): GameState {
-  return { ...state, version: STATE_VERSION, board: withArenas(state.board) };
+  return { ...state, version: STATE_VERSION, board: withDungeons(withArenas(state.board)) };
 }
 
 /**
@@ -158,7 +176,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -205,6 +223,7 @@ const HAND_LAID_CHURCHES: Record<string, string> = { ravine: 'Little Clover Chur
 function withChurches(board: Board): Board {
   const spaces = { ...board.spaces };
   for (const area of Object.values(board.areas)) {
+    if (area.dungeon) continue;
     const own = Object.values(spaces).filter((s) => s.area === area.id).sort((a, b) => a.id.localeCompare(b.id));
     if (own.some((s) => s.kind === 'church')) continue;
     const set = own.find((s) => HAND_LAID_CHURCHES[s.id] && s.kind === 'normal');

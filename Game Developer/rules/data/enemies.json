@@ -531,5 +531,57 @@
         }
       ]
     }
+  },
+  "glowcap": {
+    "name": "Glowcap",
+    "level": 3,
+    "role": "mob",
+    "hp": 78,
+    "attack": 15,
+    "defense": 4,
+    "xp": 12,
+    "gold": 12,
+    "moves": [
+      {
+        "name": "Spore Puff",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Choking Cloud",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "old-rootbeard": {
+    "name": "Old Rootbeard",
+    "level": 5,
+    "role": "boss",
+    "hp": 560,
+    "attack": 28,
+    "defense": 8,
+    "xp": 120,
+    "gold": 130,
+    "moves": [
+      {
+        "name": "Staff Slam",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Root Snare",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      },
+      {
+        "name": "Earthshaker",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
   }
 }

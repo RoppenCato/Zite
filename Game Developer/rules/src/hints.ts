@@ -93,6 +93,10 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: heals you fully and takes off poison and weakness. Always open, and free.`;
     case 'shop':
       return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
+    case 'door': {
+      const beyond = space.door ? state.board.spaces[space.door] : undefined;
+      return area?.dungeon ? `${where}: the way back to daylight.` : `${where}: a way in, levels ${state.board.areas[beyond?.area ?? '']?.levels.join(' to ') ?? '?'}. Something waits at the far end.`;
+    }
     case 'arena':
       return me && arenaOpen(me, now) ? `${where}: open today! Fights in a row, three ways to try them.` : `${where}: closed. Opens on ${nextDay('arena', now)}.`;
     case 'town':

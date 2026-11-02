@@ -1,9 +1,9 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 24;
+export const STATE_VERSION = 26;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -72,6 +72,8 @@ export interface Space {
   area: string;
   boss?: string;
   opens?: string | null;
+  /** A door: the spot it leads to, in another part of the board. */
+  door?: string;
   /** A shop's stock: arms when not said. */
   stock?: ShopStock;
   /** A locked chest: it opens only with the area's key, which its mini-boss carries, and holds more (mine, 2026-11-01). */
@@ -100,6 +102,8 @@ export interface Place {
 
 /** An area of the map: a theme, a tier, the levels of what lives there, and which mobs and mini-bosses those are. */
 export interface Area {
+  /** A dungeon: off the map, hidden until you stand in it, with no spawns and no boss to walk straight to. */
+  dungeon?: boolean;
   id: string;
   name: string;
   theme: string;
@@ -441,6 +445,8 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
+  /** Through the door you stand on. */
+  | { type: 'door'; id: string; player: string }
   /** The Arena: go in, go on to the next wave, take the pot; `test` opens it for this character. */
   | { type: 'arena'; id: string; player: string; op: 'enter' | 'next' | 'take' | 'test'; mode?: string }
   /** The skill board: learn or raise an ability, carry or put down an ability, or reset in a town. */
@@ -516,6 +522,7 @@ export type GameEvent =
   | { type: 'learned'; action: string; player: string; ability: string; rank: number }
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
+  | { type: 'doored'; action: string; player: string; from: string; to: string }
   | { type: 'arenaTaken'; action: string; player: string; waves: number; gold: number; xp: number }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
   /** Levels crossed or a boss beaten brought skill points. */

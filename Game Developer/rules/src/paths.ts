@@ -24,10 +24,10 @@ export function legalPaths(board: Board, from: string, steps: number, open: Read
     }
     const space = board.spaces[here];
     if (!space) return;
-    for (const next of space.links) {
-      if (next === cameFrom || !allowed(board, next, open)) continue;
-      walk(next, here, [...path, next]);
-    }
+    const ways = space.links.filter((next) => next !== cameFrom && allowed(board, next, open));
+    // A road's end stops the walk, whatever is left of the roll (Robin, 2026-11-02: the Arena and the dungeon doors stand at them).
+    if (!ways.length && path.length > 0) out.push(path);
+    for (const next of ways) walk(next, here, [...path, next]);
   };
   walk(from, null, []);
   return out;
@@ -58,7 +58,7 @@ export function reachable(board: Board, from: string, steps: number, open: Reado
 
 /** Why `path` is not a legal walk of `steps` steps from `from`, or null when it is. */
 export function checkPath(board: Board, from: string, steps: number, path: string[], open: ReadonlySet<string> | null = null): PathProblem | null {
-  if (path.length !== steps) return 'wrong number of steps';
+  if (path.length > steps || path.length === 0) return 'wrong number of steps';
   let here = from;
   let cameFrom: string | null = null;
   for (const next of path) {
@@ -69,6 +69,11 @@ export function checkPath(board: Board, from: string, steps: number, path: strin
     if (!allowed(board, next, open)) return 'that way is closed';
     cameFrom = here;
     here = next;
+  }
+  if (path.length < steps) {
+    const last = board.spaces[here];
+    const prev = path.length > 1 ? path[path.length - 2]! : from;
+    if (last?.links.some((next) => next !== prev && allowed(board, next, open))) return 'wrong number of steps';
   }
   return null;
 }

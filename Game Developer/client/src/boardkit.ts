@@ -4,6 +4,10 @@
 // theme with no kit keeps the board's shapes. Files are 2x, drawn at 0.5; sizes here are world pixels.
 
 import Phaser from 'phaser';
+import rootways from '../../assets/dungeon_meadows/rootways.json';
+import rootwaysPlacement from '../../assets/dungeon_meadows/placement.json';
+import rootwaysPlacesJson from '../../assets/dungeon_meadows/rootways_places.json?url';
+import rootwaysPlacesPng from '../../assets/dungeon_meadows/rootways_places.png';
 import { ARENA_CLEARED, preloadArena } from './arena.ts';
 import type { Area, Space, SpaceKind } from '../../rules/src/index.ts';
 import bannerPng from '../../assets/board_meadows/area_banner.png';
@@ -65,11 +69,19 @@ const HARVEST_PLACES = 'harvest_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = theme === 'forest' ? FOREST_PLACES : theme === 'harvest' ? HARVEST_PLACES : PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, ROOTWAYS_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
+const ROOTWAYS_PLACES = 'rootways_places';
+const ROOTWAYS_CLEARED = new Set(rootways.door.remove.map((p) => `${p.name}@${p.x},${p.y}`));
+/** A road's line from a colour written #rrggbb or rgba(r,g,b,a). */
+function roadLine(width: number, colour: string): { width: number; color: number; alpha: number } {
+  const rgba = colour.match(/rgba\((\d+),(\d+),(\d+),([\d.]+)\)/);
+  if (rgba) return { width, color: (Number(rgba[1]) << 16) | (Number(rgba[2]) << 8) | Number(rgba[3]), alpha: Number(rgba[4]) };
+  return { width, color: parseInt(colour.slice(1), 16), alpha: 1 };
+}
 export const KIT_DEPTH = { ground: 0, flat: 1, roads: 2, plates: 3, props: 5, names: 6, cover: 8 } as const;
 
 const KITS: Record<string, Kit> = {
@@ -91,7 +103,7 @@ const KITS: Record<string, Kit> = {
       { width: 10, color: 0xecd49c, alpha: 0.8 },
     ],
     flat: new Set(['clover', 'worn', 'hill']),
-    placements: { meadows: placementJson as Placement[] },
+    placements: { meadows: [...(placementJson as Placement[]), { name: rootways.door.frame, x: rootways.door.x, y: rootways.door.y }] },
     files: { groundPng, groundJson, propsPng, propsJson },
   },
   // Mitch, AD's Wobblewood (2026-11-01): the cover and the banner are the meadows'.
@@ -139,7 +151,7 @@ const KITS: Record<string, Kit> = {
   },
 };
 
-const PLATES: Record<SpaceKind, string> = { arena: 'spot_town', board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
+const PLATES: Record<SpaceKind, string> = { arena: 'spot_town', door: 'spot_door', board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
 
 /** Queue the kits of these themes, and the cover and banner they share. The board is drawn whole, so an area's kit must be here before it opens. */
 export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[]): void {
@@ -148,6 +160,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   preloadArena(scene);
+  if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   if (themes.includes('forest') && !scene.textures.exists(FOREST_PLACES)) scene.load.atlas(FOREST_PLACES, forestPlacesPng, forestPlacesJson);
   if (themes.includes('harvest') && !scene.textures.exists(HARVEST_PLACES)) scene.load.atlas(HARVEST_PLACES, harvestPlacesPng, harvestPlacesJson);
   for (const theme of new Set(['meadow', ...themes])) {
@@ -159,6 +172,9 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
 }
 
 /** The kit for a theme, when its atlases are loaded; null keeps the shapes. */
+/** A dungeon uses the Meadows' plates, with its own roads and pieces. */
+KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };
+
 export function kitFor(scene: Phaser.Scene, theme: string): Kit | null {
   const k = KITS[theme];
   return k && scene.textures.exists(k.ground) && scene.textures.exists(k.props) ? k : null;
@@ -254,8 +270,9 @@ export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phase
   // A spot with no plate of its own yet takes the wilds' (the quest board's, until Mitch, AD's comes).
   // A magic shop is a shop in the rules, with its own plate on the map.
   const wanted = space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
-  const frame = scene.textures.get(kit.props).has(wanted) ? wanted : PLATES.normal;
-  const plate = scene.add.image(space.x, space.y, kit.props, frame).setScale(SCALE).setDepth(KIT_DEPTH.plates);
+  const own = scene.textures.get(kit.props).has(wanted);
+  const elsewhere = own ? null : placesAtlas(scene, wanted);
+  const plate = scene.add.image(space.x, space.y, elsewhere ?? kit.props, own || elsewhere ? wanted : PLATES.normal).setScale(SCALE).setDepth(KIT_DEPTH.plates);
   // A thumb is wider than a plate: the tap area reaches well past it, as it did round the old circles.
   const { width, height } = plate;
   plate.setInteractive(new Phaser.Geom.Rectangle(-30, -50, width + 60, height + 100), Phaser.Geom.Rectangle.Contains);
@@ -267,7 +284,7 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
   const list = kit.placements[area.id];
   if (!list) return 0;
   for (const p of list) {
-    if (ARENA_CLEARED.has(`${p.name}@${p.x},${p.y}`)) continue;
+    if (ARENA_CLEARED.has(`${p.name}@${p.x},${p.y}`) || ROOTWAYS_CLEARED.has(`${p.name}@${p.x},${p.y}`)) continue;
     const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : placesAtlas(scene, p.name, area.theme);
     if (!atlas) continue;
     const sprite = scene.add.image(p.x, p.y, atlas, p.name).setScale(SCALE);

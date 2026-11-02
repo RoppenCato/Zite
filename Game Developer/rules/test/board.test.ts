@@ -6,6 +6,7 @@ import type { Board } from '../src/types.ts';
 import { GROWN } from '../src/world.ts';
 import { grownWorld } from './fixtures/grown.ts';
 import { ringBoard } from './fixtures/ring.ts';
+import { surface } from './fixtures/surface.ts';
 
 // Every board the game can play on must be a sound graph and drawable: these checks run over the ring fixture and the
 // built world alike, and the generator that comes later must pass them too.
@@ -18,10 +19,10 @@ const MARGIN = 40; // from the board's edge, so a space and its ring are never c
 const boards: { name: string; board: Board; maxLink: number }[] = [
   // The ring's chord across the middle is 300 pixels long: it is the fork test, not a map to draw, so it alone may be long.
   { name: 'the twelve-space ring (the test fixture)', board: ringBoard(), maxLink: 300 },
-  { name: 'the world (built from rules/data/world.json)', board: makeBoard(), maxLink: MAX_LINK },
+  { name: 'the world (built from rules/data/world.json)', board: surface(makeBoard()), maxLink: MAX_LINK },
   // The generator must pass every check the hand-laid world does: ten grown areas, more than one round of the themes.
-  { name: 'the world grown ten areas (the generator, seed ashford)', board: grownWorld('ashford', 10), maxLink: MAX_LINK },
-  { name: 'the world grown ten areas (the generator, seed moon)', board: grownWorld('moon', 10), maxLink: MAX_LINK },
+  { name: 'the world grown ten areas (the generator, seed ashford)', board: surface(grownWorld('ashford', 10)), maxLink: MAX_LINK },
+  { name: 'the world grown ten areas (the generator, seed moon)', board: surface(grownWorld('moon', 10)), maxLink: MAX_LINK },
 ];
 
 describe.each(boards)('$name', ({ board, maxLink }) => {
@@ -123,7 +124,7 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
 });
 
 describe('the world', () => {
-  const board = makeBoard();
+  const board = surface(makeBoard());
   const spaces = Object.values(board.spaces);
 
   it('is Zite: three areas by tier, about 180 spots, starting in the town Ashford in the meadows', () => {

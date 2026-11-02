@@ -1047,7 +1047,10 @@ export function noteLevels(c: Character, from: number, action: Action, events: G
 function die(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
   // In the Arena the pot is what you lose.
   const lostGold = c.arena ? 0 : Math.floor(c.gold * PROGRESSION.deathGoldLoss);
-  const town = nearestTown(state.board, c.space, new Set(c.opened));
+  // Out of a dungeon by its door: no road leads from inside to a town.
+  const area = state.board.spaces[c.space]?.area ?? '';
+  const exit = state.board.areas[area]?.dungeon ? Object.values(state.board.spaces).find((s) => s.area === area && s.door)?.door : undefined;
+  const town = nearestTown(state.board, exit ?? c.space, new Set(c.opened));
   events.push({ type: 'died', action: action.id, player: action.player, town, lostGold });
   const woke: Character = { ...outOfArena(c), gold: c.gold - lostGold, space: town, steps: 0, fight: null, offer: null, ailments: {} };
   const s = stats(woke);

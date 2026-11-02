@@ -513,3 +513,7 @@ A plank of `HUD_PLANK` 74 with two signs hanging to `HUD_HEIGHT` 100: the region
 ## The bottom bar (Robin, 2026-11-02: bottom bar 1)
 
 A plank from `PLANK_TOP` 835, four small buttons with icons, Roll in the middle rising to `ROLL_TOP` 824 with the last roll's die on it. The message stands on a sign over the map with its foot at 814; it grows upward, and the log's scroll sits in it. Chips stand above the sign. The board's camera runs from 74 to 835. `HudScene.covers` says which taps are not the map's: the bars, the signs, Roll and the chips. Sheets stay where they were; `veil` in `kit.ts` dims from plank to plank, around Roll. Mitch, AD's numbers are in his `bottom_bar/NOTES.md`.
+
+## Dungeons on the board (Robin, 2026-11-02)
+
+The board shows a dungeon only while you stand in it (`shownAreas`): its chunks, roads, spots and props, with the camera held to its `DUNGEON_LAND`. Its chunks have their own keys, because they share grid squares with the Forest's sea. Theme `dungeon` uses the Meadows' plates with its own roads.

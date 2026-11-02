@@ -1,0 +1,255 @@
+{
+ "frames": {
+  "mob_rootbeard": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 383,
+    "h": 439
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 383,
+    "h": 439
+   },
+   "sourceSize": {
+    "w": 383,
+    "h": 439
+   },
+   "pivot": {
+    "x": 0.5326,
+    "y": 0.9271
+   }
+  },
+  "door_rootways": {
+   "frame": {
+    "x": 389,
+    "y": 3,
+    "w": 533,
+    "h": 278
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 533,
+    "h": 278
+   },
+   "sourceSize": {
+    "w": 533,
+    "h": 278
+   },
+   "pivot": {
+    "x": 0.4559,
+    "y": 0.8957
+   }
+  },
+  "rw_stalagmite_a": {
+   "frame": {
+    "x": 3,
+    "y": 445,
+    "w": 130,
+    "h": 204
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 130,
+    "h": 204
+   },
+   "sourceSize": {
+    "w": 130,
+    "h": 204
+   },
+   "pivot": {
+    "x": 0.3846,
+    "y": 0.8971
+   }
+  },
+  "rw_stalagmite_b": {
+   "frame": {
+    "x": 136,
+    "y": 445,
+    "w": 94,
+    "h": 148
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 94,
+    "h": 148
+   },
+   "sourceSize": {
+    "w": 94,
+    "h": 148
+   },
+   "pivot": {
+    "x": 0.383,
+    "y": 0.8919
+   }
+  },
+  "rw_crystal": {
+   "frame": {
+    "x": 233,
+    "y": 445,
+    "w": 100,
+    "h": 118
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 100,
+    "h": 118
+   },
+   "sourceSize": {
+    "w": 100,
+    "h": 118
+   },
+   "pivot": {
+    "x": 0.48,
+    "y": 0.8729
+   }
+  },
+  "rw_glow_a": {
+   "frame": {
+    "x": 336,
+    "y": 445,
+    "w": 126,
+    "h": 107
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 126,
+    "h": 107
+   },
+   "sourceSize": {
+    "w": 126,
+    "h": 107
+   },
+   "pivot": {
+    "x": 0.4841,
+    "y": 0.8411
+   }
+  },
+  "mob_sprout": {
+   "frame": {
+    "x": 465,
+    "y": 445,
+    "w": 70,
+    "h": 106
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 70,
+    "h": 106
+   },
+   "sourceSize": {
+    "w": 70,
+    "h": 106
+   },
+   "pivot": {
+    "x": 0.5143,
+    "y": 0.9528
+   }
+  },
+  "mob_glowcap": {
+   "frame": {
+    "x": 538,
+    "y": 445,
+    "w": 107,
+    "h": 101
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 107,
+    "h": 101
+   },
+   "sourceSize": {
+    "w": 107,
+    "h": 101
+   },
+   "pivot": {
+    "x": 0.4953,
+    "y": 0.9604
+   }
+  },
+  "rw_glow_b": {
+   "frame": {
+    "x": 648,
+    "y": 445,
+    "w": 91,
+    "h": 79
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 91,
+    "h": 79
+   },
+   "sourceSize": {
+    "w": 91,
+    "h": 79
+   },
+   "pivot": {
+    "x": 0.4835,
+    "y": 0.8354
+   }
+  },
+  "spot_door": {
+   "frame": {
+    "x": 742,
+    "y": 445,
+    "w": 116,
+    "h": 67
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 116,
+    "h": 67
+   },
+   "sourceSize": {
+    "w": 116,
+    "h": 67
+   },
+   "pivot": {
+    "x": 0.4914,
+    "y": 0.4925
+   }
+  }
+ },
+ "meta": {
+  "image": "rootways_places.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/rootways_build.js",
+  "filePx": 2
+ }
+}

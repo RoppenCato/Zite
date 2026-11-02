@@ -76,7 +76,7 @@ describe('buildBoard', () => {
   it('reads one letter per kind of spot, bosses never on a road', () => {
     expect(KIND_LETTERS).toEqual({ q: 'board', a: 'gear', n: 'normal', t: 'chest', p: 'potion', h: 'spell', c: 'church', s: 'shop', g: 'boss', w: 'town' });
     // The Arena takes its spot after the letters are read (`withArenas`).
-    expect(new Set(Object.values(KIND_LETTERS))).toEqual(new Set(SPACE_KINDS.filter((k) => k !== 'arena')));
+    expect(new Set(Object.values(KIND_LETTERS))).toEqual(new Set(SPACE_KINDS.filter((k) => k !== 'arena' && k !== 'door')));
     const board = buildBoard(world([square([road('a', 'b', 'ntphsw')])]));
     expect([1, 2, 3, 4, 5, 6].map((n) => board.spaces[`a-b-${n}`]!.kind)).toEqual(['normal', 'chest', 'potion', 'spell', 'shop', 'town']);
     expect(() => buildBoard(world([square([road('a', 'b', 'ngn')])]))).toThrow(/puts a boss on a road/);

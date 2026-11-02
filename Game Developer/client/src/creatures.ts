@@ -57,6 +57,12 @@ import buzzbugPng from '../../assets/harvest/buzzbug/buzzbug.png';
 import appleMimicData from '../../assets/harvest/apple_mimic/apple_mimic.json';
 import appleMimicJson from '../../assets/harvest/apple_mimic/apple_mimic.json?url';
 import appleMimicPng from '../../assets/harvest/apple_mimic/apple_mimic.png';
+import glowcapData from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json';
+import glowcapJson from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json?url';
+import glowcapPng from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.png';
+import rootbeardData from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.json';
+import rootbeardJson from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.json?url';
+import rootbeardPng from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.png';
 import scarecrowData from '../../assets/harvest/scarecrow/scarecrow.json';
 import scarecrowJson from '../../assets/harvest/scarecrow/scarecrow.json?url';
 import scarecrowPng from '../../assets/harvest/scarecrow/scarecrow.png';
@@ -108,6 +114,9 @@ const CREATURES: Record<string, CreatureFiles> = {
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },
   // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  // The Rootways (Mitch, AD, 2026-11-02). Old Rootbeard at his number, not the atlas's, which runs past the column.
+  'glowcap': { key: 'glowcap', png: glowcapPng, json: glowcapJson, actions: actionsOf(glowcapData), scale: 0.5714, blowFrame: 7 },
+  'old-rootbeard': { key: 'old_rootbeard', png: rootbeardPng, json: rootbeardJson, actions: actionsOf(rootbeardData), scale: 1.2, blowFrame: 5 },
   'spider': { key: 'twigling', png: twiglingPng, json: twiglingJson, actions: actionsOf(twiglingData), scale: 0.5, blowFrame: 7 },
   'treant': { key: 'moss_goblin', png: mossGoblinPng, json: mossGoblinJson, actions: actionsOf(mossGoblinData), scale: 0.5, blowFrame: 4 },
   'outlaw': { key: 'sporeling', png: sporelingPng, json: sporelingJson, actions: actionsOf(sporelingData), scale: 0.5, blowFrame: 7 },
