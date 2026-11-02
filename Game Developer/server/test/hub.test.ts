@@ -267,6 +267,24 @@ describe('the hub', () => {
     expect(await b.quiet()).toBe(true); // nothing new to tell: the same player came again
   });
 
+  it('links two phones: the server rolls the code, the friend types it, and the first phone hears', async () => {
+    const s = await server();
+    stop = s.stop;
+    const a = await s.player('Robin');
+    const b = await s.player('Sam', 'mage');
+    await a.c.nextOf('event');
+    a.c.send({ type: 'intent', action: { type: 'link', id: 'l1', op: 'offer' } });
+    const shown = await a.c.nextOf('result');
+    const offered = shown.events.find((e) => e.type === 'linkOffered');
+    const code = offered?.type === 'linkOffered' ? offered.code : '';
+    b.c.send({ type: 'intent', action: { type: 'link', id: 'l2', op: 'accept', code } });
+    const done = await b.c.nextOf('result');
+    expect(done.events[0]).toMatchObject({ type: 'linked', player: b.snap.player, with: a.snap.player });
+    const heard = await a.c.nextOf('event');
+    expect(heard.events[0]).toMatchObject({ type: 'linked', with: a.snap.player });
+    expect(heard.delta?.characters?.[a.snap.player]?.link?.with).toBe(b.snap.player);
+  });
+
   it('refuses a flood and then cuts the socket off', async () => {
     const s = await server();
     stop = s.stop;

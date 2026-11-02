@@ -491,7 +491,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         this.heroBar.set(e.hp, s.maxHp);
         break;
       case 'poisoned':
-        sfx.play('fight/effect-poison-tick');
+        sfx.play(e.storm ? 'fight/storm-bite' : 'fight/effect-poison-tick');
         if (e.target === 'enemy') {
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
@@ -499,7 +499,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         } else {
           this.flash(this.heroBody, e.damage, false);
           this.heroBar.set(e.hp, s.maxHp);
-          this.say(`The poison bites you for ${e.damage}.`);
+          this.say(e.storm ? `The storm bites you for ${e.damage}.` : `The poison bites you for ${e.damage}.`);
         }
         break;
       case 'intent':
@@ -507,7 +507,6 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         break;
       case 'trick':
         this.say(e.text);
-        if (this.game_.me.fight?.enemy.trick?.kind === 'storm') sfx.play('fight/storm-bite');
         this.refreshStatus();
         break;
       case 'phase':

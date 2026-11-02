@@ -497,6 +497,14 @@ Waiting: Mitch, AD's signature weapons, each a unique with its own art.
 
 
 
+## The Buried Crown (Mitch, AD, 2026-11-02)
+
+The last dungeon, in `dungeons.json`: tier 8, levels 28 to 30, off the map. `city-castle` is its door, `sealed`: `door` refuses until `sealsAllWon`. The Last Steward (a mini-boss, counted like a gate since `area.dungeon`) stands before The Hollow King (`FINAL_BOSS`), whose first fall sends `gameWon`. State version 36. Numbers mine.
+
+## Links (2026-11-02)
+
+`link` action: `offer`, `accept`, `join`, on `Character.link` and `linkCode`; numbers in `PROGRESSION.link`. See `protocol.md`.
+
 ## The Giants’ Land (Mitch, AD, 2026-11-02)
 
 Area `giantsland`, tier 7, levels 24 to 28, baked roads. `gate-snowshoulder` stands on the Kingswood's coast past `kw-nw`, opens it; Old Snowshoulder lifts a boulder (`charger`). The Yeti King holds the seventh Seal; his trick is `storm`: every third round 8% of your HP, through any guard, never the last blow. `SEALS_COMING` is empty. State version 34. All numbers mine.

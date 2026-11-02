@@ -105,7 +105,7 @@ export class SettingsScene extends Phaser.Scene {
     });
     const code = this.game_.recovery();
     if (code) {
-      this.settingRow(rows.length + 2, 'Account', `Your code for another phone: ${code}.`, 'Use a code…', () => {
+      this.settingRow(rows.length + 2, 'Account', `Your code: ${code}`, 'Use a code…', () => {
         const typed = window.prompt('The code from your other phone:');
         if (!typed?.trim()) return;
         try {

@@ -642,7 +642,7 @@ export type GameEvent =
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
   | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
   /** A poison bit; `hp` is what it left. */
-  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean }
+  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean }
   /** What the enemy will do next round. */
   | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
   /** A boss's second phase began. */

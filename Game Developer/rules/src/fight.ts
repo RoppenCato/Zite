@@ -857,7 +857,7 @@ function bossTrick(r: Round): void {
         say();
         const damage = Math.max(1, Math.round(r.s.maxHp * (t.share ?? 0)));
         r.c = { ...r.c, hp: Math.max(1, r.c.hp - damage) };
-        events.push({ type: 'poisoned', action: action.id, player: action.player, target: 'player', damage, hp: r.c.hp });
+        events.push({ type: 'poisoned', action: action.id, player: action.player, target: 'player', damage, hp: r.c.hp, storm: true });
       }
       return;
     case 'charger':

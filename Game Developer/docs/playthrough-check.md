@@ -132,3 +132,7 @@ Level 30 now takes 7 to 13 hours for most builds, down from 12 to 15: the isles 
 ### With the Giants' Land (six seeds a build, all tactics)
 
 The whole world, every boss down. Median hours to level 30, by the sensible player: Warrior 9.3, Rogue 7.7, Magician 8.1, Hunter 7.3; to level 20: 3.5 to 4.1. Old Snowshoulder falls at level 24 in about 1.1 tries, The Yeti King at level 28, softened once from attack 136 to 120: Warrior 1.1 tries, Rogue 2.5, Hunter 4.2, Magician 5.2, across all tactics, against 1.1 to 2.3 for Captain Saltjaw. The last boss is meant to be the hardest. Careful play is the fastest or close to it. Still slow or stuck: Berserker+Knight Warrior (up to 24 hours), the Ninja who only presses Attack (40 hours, 9 bosses left), the Wizard who only presses Attack (never past level 20). These are bots; nothing here is felt.
+
+### With the Buried Crown (three seeds a build, all tactics)
+
+The whole game, all 14 bosses. Median hours to level 30, sensible player: Warrior 8.6, Rogue 7.8, Magician 7.2, Hunter 6.9. The Hollow King (level 31, attack 130, HP 7200, 14 to 33 rounds) falls in one try for most, up to about 25 for the reckless. 105 of 108 runs finish everything; the 3 left are the Wizard who never opens Abilities, who now reaches level 27 to 30 in 40 hours, not 15 to 20. The bots used to give up on a boss for good after a loss at the cap; fixed. These are bots; nothing here is felt.

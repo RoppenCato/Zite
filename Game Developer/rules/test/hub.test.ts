@@ -262,3 +262,23 @@ describe('linking two players (the brief: Proximity)', () => {
     expect(apply(s, { type: 'link', id: 'z', player: 'p2', op: 'join' }, makeRng('z'), 6000).events[0]).toMatchObject({ type: 'rejected' });
   });
 });
+
+describe('the Yeti King\'s storm (mine, 2026-11-02)', () => {
+  it('bites 8% of your HP every third round through a block, and never lands the last blow', () => {
+    let s = newGame({ seed: 'storm', player: P, name: 'Robin', classId: 'warrior' });
+    let c = startFight({ ...s.characters[P]!, level: 28, maxHp: 900, hp: 900 }, 'yeti-king', 'yeticrown', false, {}, makeRng('s'));
+    s = { ...s, characters: { [P]: c } };
+    const bites: number[] = [];
+    for (let i = 1; i <= 3; i++) {
+      const r = apply(s, { type: 'fight', id: `f${i}`, player: P, move: { kind: 'attack' }, guard: 'block' }, makeRng(`r${i}`), 1000 + i);
+      s = r.state;
+      for (const e of r.events) if (e.type === 'trick') bites.push(i);
+    }
+    expect(bites).toEqual([3]);
+    c = { ...s.characters[P]!, hp: 5 };
+    s = { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, round: 6, enemy: { ...c.fight!.enemy, moves: [{ name: 'Pause', power: 0, weight: 1 }], next: { name: 'Pause', power: 0, weight: 1 } } } } } };
+    const last = apply(s, { type: 'fight', id: 'f9', player: P, move: { kind: 'attack' }, guard: 'block' }, makeRng('r9'), 2000);
+    expect(last.events.some((e) => e.type === 'trick')).toBe(true);
+    expect(last.state.characters[P]!.hp).toBeGreaterThanOrEqual(1);
+  });
+});
