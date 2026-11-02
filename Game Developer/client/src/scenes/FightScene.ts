@@ -7,7 +7,7 @@
 // layout and the pacing are mine; the backdrop's measures are Mitch, AD's (assets/meadow_fight/NOTES.md).
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -267,14 +267,16 @@ export class FightScene extends Phaser.Scene {
     const mana = ['mana-potion-3', 'mana-potion-2', 'mana-potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'mana-potion';
     const potions = me.items[health] ?? 0;
     const manaPotions = me.items[mana] ?? 0;
+    // The Arena lets you drink only so many (its rule): the buttons say so instead of doing nothing.
+    const mayDrink = !me.arena || me.arena.flasks < ARENA.flasks;
     this.prompt.setText(`Round ${me.fight?.round ?? 1} · your move`);
     this.setOptions([
       { text: 'Attack', color: COLORS.button, enabled: true, onTap: () => this.pick({ kind: 'attack' }) },
       { text: 'Abilities', color: 0x8e6ad9, enabled: me.carried.length > 0, onTap: () => this.showAbilities() },
       { text: me.fight?.charged ? 'Charged' : 'Charge', color: 0xf0a030, enabled: !me.fight?.charged, onTap: () => this.pick({ kind: 'charge' }) },
-      { text: potions > 1 ? `${ITEMS[health]!.name} ×${potions}` : ITEMS[health]!.name, color: 0xc84b4b, enabled: potions > 0, onTap: () => this.pick({ kind: 'item', item: health }) },
+      { text: potions > 1 ? `${ITEMS[health]!.name} ×${potions}` : ITEMS[health]!.name, color: 0xc84b4b, enabled: potions > 0 && mayDrink, onTap: () => this.pick({ kind: 'item', item: health }) },
       { text: 'Flee', color: COLORS.log, enabled: true, onTap: () => this.pick({ kind: 'flee' }) },
-      { text: manaPotions > 1 ? `${ITEMS[mana]!.name} ×${manaPotions}` : ITEMS[mana]!.name, color: 0x3a7fbf, enabled: manaPotions > 0, onTap: () => this.pick({ kind: 'item', item: mana }) },
+      { text: manaPotions > 1 ? `${ITEMS[mana]!.name} ×${manaPotions}` : ITEMS[mana]!.name, color: 0x3a7fbf, enabled: manaPotions > 0 && mayDrink, onTap: () => this.pick({ kind: 'item', item: mana }) },
     ]);
   }
 
@@ -339,7 +341,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const move = this.pendingMove;
     this.pendingMove = null;
     this.setBusy(true);
-    sfx.play(move.kind === 'ability' ? `fight/ability-${move.ability}` : move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
+    if (move.kind === 'ability') sfx.playOr(`fight/ability-${move.ability}`, 'fight/swing');
+    else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
         this.log.note(`fight ${move.kind}${'ability' in move ? ` ${move.ability}` : ''}/${guard}: ${events.map((e) => (e.type === 'hit' ? `${e.by} ${e.damage}` : e.type)).join(', ')}`);

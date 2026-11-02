@@ -189,14 +189,19 @@ export class SkillsScene extends Phaser.Scene {
         branch.lineStyle(3.6, lit ? GOLD : 0x6a4630, 1).strokePoints(points);
         if (lit && tier > 0) branch.fillStyle(0x7ccf6a, 1).fillEllipse(bend + 6, mid, 9, 5);
       });
-      tree.tiers.forEach((row, tier) => row.forEach((id, i) => this.node(id, row.length === 1 ? x : x + (i ? TWIG : -TWIG), FIRST_TIER + tier * TIER_H, me, row.length === 1 ? SIGNATURE : TREE_NODE)));
+      tree.tiers.forEach((row, tier) => {
+        const y = FIRST_TIER + tier * TIER_H;
+        row.forEach((id, i) => this.node(id, row.length === 1 ? x : x + (i ? TWIG : -TWIG), y, me, row.length === 1 ? SIGNATURE : TREE_NODE, false));
+        const need = ABILITIES[row[0]!]!.level;
+        if (me.level < need) this.rows.push(this.add.text(x, row.length === 1 ? y + SIGNATURE / 2 - 3 : y, `${need}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 1 } }).setOrigin(0.5));
+      });
     });
 
     this.card(me);
   }
 
   /** A slot: its cubby and icon, its rank's dots, a ring when carried, a + when a point can go here, the level when it is out of reach. */
-  private node(id: string, cx: number, cy: number, me: Character, size = NODE): void {
+  private node(id: string, cx: number, cy: number, me: Character, size = NODE, levelTag = true): void {
     const a = ABILITIES[id]!;
     const rank = me.abilities[id] ?? 0;
     const open = isOpen(me, id);
@@ -218,7 +223,7 @@ export class SkillsScene extends Phaser.Scene {
       for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx + (i - (a.ranks.length - 1) / 2) * 7, cy + size / 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7.5 / 24));
     }
     if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 2, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(17, 17));
-    if (!rank && me.level < a.level) {
+    if (levelTag && !rank && me.level < a.level) {
       this.rows.push(this.add.text(cx, cy + size / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
     }
     const zone = this.add.zone(cx, cy, size + 14, size + 5).setInteractive({ useHandCursor: true });

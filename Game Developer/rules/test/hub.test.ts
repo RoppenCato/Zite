@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { apply, hubOf, makeRng, newGame, PROGRESSION, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
+import { apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
 import { migrate } from '../src/save.ts';
 import { WORLD_DATA } from '../src/data.ts';
 import { ringBoard } from './fixtures/ring.ts';
@@ -79,7 +79,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(31);
+    expect(up.version).toBe(32);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
@@ -94,6 +94,36 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
       s = apply(s, { type: 'tick', id: `t${i}`, player: P } as never, rng, now).state;
       for (const id of Object.keys(s.spawns)) expect(s.board.areas[s.board.spaces[id]!.area]!.city ?? false, id).toBe(false);
     }
+  });
+  it("the city's board sends you out: its errands lie in a land you have open, never in its streets", () => {
+    const s = made();
+    const c = { ...s.characters[P]!, level: 9, opened: ['meadows', 'kingswood', 'crownhaven', 'thornwood', 'frostpeak'], space: 'city-square' };
+    const quests = boardQuests({ ...s, characters: { [P]: c } }, s.board.spaces['city-quests']!, makeRng('city'), c);
+    expect(quests.length).toBeGreaterThan(0);
+    for (const q of quests) expect(q.area).toBe('frostpeak');
+  });
+  it('a Hunter can wield a rare bow, whose name has no "bow" in it, and a unique', () => {
+    const s = made();
+    const hunter = newGame({ seed: 'bow', player: P, name: 'Robin', classId: 'ranger' });
+    void s;
+    const me = hunter.characters[P]!;
+    const rare = { ...plainGear('g1', 'weapon', 2, 'light', 'ranger'), rarity: 'rare' as const, name: 'Fierce Thistledown of the Hunter' };
+    const sword = { ...plainGear('g2', 'weapon', 2, 'heavy', 'warrior'), rarity: 'common' as const };
+    const unique = makeUnique('g3', 'twinfang', 2, makeRng('u'));
+    const st = { ...hunter, characters: { [P]: { ...me, bag: [rare, sword, unique] } } };
+    const wear = (gear: string) => apply(st, { type: 'equip', id: 'e', player: P, gear }, makeRng('e'), NOW).events[0]!.type;
+    expect(wear('g1')).toBe('equipped');
+    expect(wear('g3')).toBe('equipped');
+    expect(wear('g2')).toBe('rejected');
+  });
+  it("the hub's shops keep up: the stock of the furthest land you have opened", () => {
+    const s = made();
+    const at = (opened: string[]) => {
+      const c = { ...s.characters[P]!, opened, space: 'city-armoury' };
+      return shopOffer({ ...s, characters: { [P]: c } }, c)!.tier;
+    };
+    expect(at(['meadows', 'kingswood', 'crownhaven'])).toBe(2);
+    expect(at(['meadows', 'kingswood', 'crownhaven', 'bogglemire', 'frostcrown'])).toBe(5);
   });
   it('going home works on the real world', () => {
     const s = made();

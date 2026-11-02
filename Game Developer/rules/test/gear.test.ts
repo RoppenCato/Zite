@@ -80,7 +80,7 @@ describe('gear', () => {
   it('adds what is worn to the base numbers: stats, crit, dodge, lifesteal, thorns, vigor', () => {
     const board = makeBoard();
     const c = makeCharacter('p', 'R', 'warrior', board);
-    expect(stats(c)).toEqual({ attack: 12, defense: 8, maxHp: 120, maxMana: 20, magic: 0, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0, bonus: {}, powers: {} });
+    expect(stats(c)).toEqual({ attack: 13, defense: 8, maxHp: 120, maxMana: 20, magic: 0, crit: 0.1, dodge: 0, lifesteal: 0, thorns: 0, bonus: {}, powers: {} });
     const worn = {
       ...c,
       equipment: {
@@ -94,7 +94,7 @@ describe('gear', () => {
         trinket: { ...plainGear('t', 'trinket', 1), affixes: [{ kind: 'lifesteal' as const, value: 0.2 }] },
       },
     };
-    expect(stats(worn)).toEqual({ attack: 20, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, bonus: {}, powers: {} });
+    expect(stats(worn)).toEqual({ attack: 22, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, bonus: {}, powers: {} });
     expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique']);
   });
 });

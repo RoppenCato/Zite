@@ -98,6 +98,7 @@ const C = {
   warrior: {
     name: 'Warrior', style: 'Blocks to build Valor, then hits hard.', about: 'Blocks to build Valor, then spends it on hard hits and walls of steel, or holds it for a harder swing.',
     hp: 120, mana: 20, attack: 12, defense: 8, gold: 50, growth: { hp: 12, mana: 2, attack: 2, defense: 1 },
+    traits: { attackMult: 1.12 },
     kit: ['heavy-blow', 'execute'], core: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'],
     meter: { name: 'Valor', gain: 'block', text: 'Valor builds when you Block a blow, more from a wound-up one.' },
     trees: {
@@ -234,7 +235,7 @@ const NEW = {
   // Magician / Wizard: fire and huge hits, and a mana problem.
   'wiz-ember': pas('Embers', 'Your burns hurt 8% more a rank.', { burnPower: 1.08 }),
   'wiz-focus': pas('Focus', 'Your spells are 3% stronger a rank.', { spellPower: 1.03 }),
-  'wiz-well': pas('Deep Well', '5% more mana a rank.', { manaMult: 1.05 }),
+  'wiz-well': pas('Deep Well', '5% more mana and 4% more HP a rank.', { manaMult: 1.05, hpMult: 1.04 }),
   'wiz-scorch': act('Scorch', 'A cheap, quick flame that sets it burning.', 4, up({ power: 0.9, burn: { rounds: 3, power: 0.25 } }, { power: 1 }, { power: 1.1, burn: { rounds: 4, power: 0.3 } })),
   'wiz-kindling': pas('Kindling', 'A burning foe takes 6% more a rank.', { burningDamage: 1.06 }),
   'wiz-clarity': pas('Clarity', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
@@ -307,7 +308,7 @@ const NEW = {
   'ran-draw': pas('Strong Draw', '3% more attack a rank.', { attackMult: 1.03 }),
   'ran-hawkeye': pas('Hawk Eye', '2% more crit a rank.', { crit: 0.02 }),
   'ran-quick': pas('Quick Nock', 'A 3% better chance a rank to shoot back.', { counterChance: 0.03 }),
-  'ran-pin': act('Pinning Shot', 'A shot that stuns a lesser foe.', 5, up({ power: 1.3, stun: 1 }, { power: 1.5 }, { power: 1.7 })),
+  'ran-pin': act('Hobbling Shot', 'A shot that stuns a lesser foe.', 5, up({ power: 1.3, stun: 1 }, { power: 1.5 }, { power: 1.7 })),
   'ran-steady': pas('Steady Return', 'Your shots back are 6% stronger a rank.', { counterPower: 0.06 }),
   'ran-lethal': pas('Lethal Shots', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
   'ran-snipe': act('Long Shot', 'A round to aim, then a very hard shot.', 8, up({ windup: 1, power: 3.2 }, { power: 3.7 }, { power: 4.2 })),
@@ -328,7 +329,7 @@ const NEW = {
   'bea-care': pas('Kindly Care', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
   'bea-king': act('King of the Air', 'Once a fight: the greatest owl there is, hitting twice a round, for a long while.', 10, [{ companion: { rounds: 8, power: 1.3, hits: 2 } }], { oncePerFight: true }),
   // Hunter / Trapper: knows what comes next.
-  'tra-wire': pas('Tripwire', 'A foe caught by a trap also takes 15% of your attack, a rank.', { trapHit: 0.15 }),
+  'tra-wire': pas('Barbed Wire', 'A foe caught by a trap also takes 15% of your attack, a rank.', { trapHit: 0.15 }),
   'tra-read': pas('Read the Ground', '2% more dodge a rank.', { dodge: 0.02 }),
   'tra-barb': pas('Barbs', 'A stunned foe takes 6% more a rank.', { stunnedDamage: 1.06 }),
   'tra-pit': act('Pit', 'It falls in: stunned for two rounds, if it is a lesser foe.', 6, up({ power: 0.6, stun: 2 }, { power: 0.8 }, { power: 1 })),

@@ -2095,10 +2095,11 @@
   },
   "wiz-well": {
     "name": "Deep Well",
-    "text": "5% more mana a rank.",
+    "text": "5% more mana and 4% more HP a rank.",
     "mana": 0,
     "rule": {
-      "manaMult": 1.05
+      "manaMult": 1.05,
+      "hpMult": 1.04
     },
     "ranks": [
       {},
@@ -3303,7 +3304,7 @@
     "level": 9
   },
   "ran-pin": {
-    "name": "Pinning Shot",
+    "name": "Hobbling Shot",
     "text": "A shot that stuns a lesser foe.",
     "mana": 5,
     "ranks": [
@@ -3645,7 +3646,7 @@
     "level": 30
   },
   "tra-wire": {
-    "name": "Tripwire",
+    "name": "Barbed Wire",
     "text": "A foe caught by a trap also takes 15% of your attack, a rank.",
     "mana": 0,
     "rule": {

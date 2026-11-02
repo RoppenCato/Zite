@@ -480,3 +480,10 @@ Ready before the map lands. `Area.city`: `stroll { to }` walks its own streets w
 ## The hub world's data (Robin, 2026-11-02)
 
 `world.json` is Mitch, AD's moved world: 17600 by 12700, hub `city-square` in `crownhaven`. King Goo's `gate` opens the Kingswood, and Crownhaven, Wobblewood and Honeyhill `openWith` it. `gate-bogsnapper` opens Bogglemire, `gate-bighorn` The Frostcrown. No other boss opens anything, and grown lands are off. Save version 31 opens the new lands for anyone past King Goo.
+
+## Balance tools (2026-11-02)
+
+`tools/enemy-base.json` holds every creature as first set; `tools/enemy-curve.mjs` writes `rules/data/enemies.json` from it. Change creatures in the base, or the curve, and run it: never edit enemies.json by hand. `docs/playthrough-check.md` says what the sims do and where the numbers stand.
+
+Save version 32 lays the board again. A city has no creatures, no spawns and no rumours. Its board sends you to the land that suits your level, and its shops stock the tier of the furthest land you have opened.
+

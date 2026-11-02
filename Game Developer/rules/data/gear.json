@@ -583,10 +583,10 @@
     "boss": 0.5
   },
   "consumableDrop": {
-    "potion": 0.2,
+    "potion": 0.08,
     "card": 0.08
   },
-  "sellShare": 0.5,
+  "sellShare": 0.2,
   "bagLimit": 12,
   "rankGrowth": 1.35,
   "priceGrowth": 1.8,

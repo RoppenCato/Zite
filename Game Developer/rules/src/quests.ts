@@ -8,14 +8,24 @@ import { dropSlot, groundsOf, rollLine } from './grounds.ts';
 import { rollGear, rollUnique } from './gear.ts';
 import { addLoot, gainXp, giveGold, nextGearId } from './common.ts';
 import type { Rng } from './rng.ts';
-import type { Action, Character, GameEvent, GameState, Ground, Quest, Space } from './types.ts';
+import type { Action, Area, Character, GameEvent, GameState, Ground, Quest, Space } from './types.ts';
 
 type Kind = Quest['kind'];
 const KINDS = Object.keys(QUESTS.kinds) as Kind[];
 
+/** The land a board's errands lie in: its own; a city's streets have no creatures, so its board sends you to the land that suits you (Robin, 2026-11-02: the hub). */
+function errandLand(state: GameState, board: Space, c?: Character): Area | undefined {
+  const own = state.board.areas[board.area];
+  if (!own?.city) return own;
+  const lands = (c?.opened ?? []).map((id) => state.board.areas[id]).filter((a): a is Area => !!a && !a.dungeon && !a.city && groundsOf(state.board, a.id).length > 0);
+  const level = c?.level ?? 1;
+  const fit = lands.filter((a) => a.levels[0] <= level).sort((a, b) => b.levels[1] - a.levels[1]);
+  return fit[0] ?? lands[0];
+}
+
 /** The quest of a kind on this area's board, or null when the area cannot give it. */
-function makeQuest(state: GameState, board: Space, kind: Kind, rng: Rng): Quest | null {
-  const area = state.board.areas[board.area];
+function makeQuest(state: GameState, board: Space, kind: Kind, rng: Rng, c?: Character): Quest | null {
+  const area = errandLand(state, board, c);
   if (!area) return null;
   const grounds = groundsOf(state.board, area.id);
   const data = QUESTS.kinds[kind];
@@ -55,7 +65,7 @@ function makeQuest(state: GameState, board: Space, kind: Kind, rng: Rng): Quest 
 }
 
 /** What the board offers: one of each of up to three kinds, drawn without repeats. */
-export function boardQuests(state: GameState, board: Space, rng: Rng): Quest[] {
+export function boardQuests(state: GameState, board: Space, rng: Rng, c?: Character): Quest[] {
   const left = [...KINDS];
   const out: Quest[] = [];
   while (left.length && out.length < QUESTS.offered) {
@@ -69,7 +79,7 @@ export function boardQuests(state: GameState, board: Space, rng: Rng): Quest[] {
         break;
       }
     }
-    const quest = makeQuest(state, board, left.splice(index, 1)[0]!, rng);
+    const quest = makeQuest(state, board, left.splice(index, 1)[0]!, rng, c);
     if (quest) out.push(quest);
   }
   return out;

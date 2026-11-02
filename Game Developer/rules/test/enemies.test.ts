@@ -80,11 +80,11 @@ describe("the enemies' effects", () => {
     expect(hits(weak.events, 'enemy')).toHaveLength(0); // a move that is all effect strikes no blow
     expect(fight(weak.state).weak).toEqual({ rounds: 2, mult: 0.7 });
     const softer = hits(apply(weak.state, turn(attack, 'none', 'f2'), makeRng('y'), NOW).events, 'player')[0]!;
-    expect(softer.damage).toBeLessThanOrEqual(Math.round(60 * 0.7) - 5 + 2);
+    expect(softer.damage).toBeLessThanOrEqual(Math.round(60 * 1.12 * 0.7) - 5 + 2);
     const hard = apply(versus('warrior', 'ice-golem', { attack: 60 }, { hp: 5000, next: mv('Harden', 0, 'armour') }), turn(attack), makeRng('x'), NOW);
     expect(fight(hard.state).enemy.armoured).toEqual({ rounds: 1, mult: 1.5 });
     const dented = hits(apply(hard.state, turn(attack, 'none', 'f2'), makeRng('y'), NOW).events, 'player')[0]!;
-    if (!dented.crit) expect(dented.damage).toBeLessThanOrEqual(60 - 13 + 2);
+    if (!dented.crit) expect(dented.damage).toBeLessThanOrEqual(Math.round(60 * 1.12) - 13 + 2);
     const faded = apply(versus('warrior', 'wraith', {}, { hp: 5000, next: mv('Fade', 0, 'evade') }), turn(attack), makeRng('x'), NOW);
     expect(fight(faded.state).enemy.evade).toBe(1);
     const swing = apply(faded.state, turn(attack, 'none', 'f2'), makeRng('x'), NOW);

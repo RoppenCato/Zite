@@ -223,6 +223,11 @@ class Audio {
   }
 
   /** A short sound once; silent if it does not exist yet. */
+  /** Whether a sound of this name is known yet. */
+  has(name: string): boolean {
+    return !!this.find(name);
+  }
+
   play(name: string, options: PlayOptions = {}): void {
     if (this.quiet) return;
     const found = this.find(name);

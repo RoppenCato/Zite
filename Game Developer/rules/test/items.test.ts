@@ -52,10 +52,10 @@ describe('the shop', () => {
     expect(apply(at('s2', { gold: 100 }), buy({ slot: 'hat' as Slot }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
   });
 
-  it('buys back what you carry for half its worth, at a shop, never what you wear', () => {
+  it('buys back what you carry for a fifth of its worth, at a shop, never what you wear', () => {
     const sword = plainGear('g9', 'weapon', 2);
     const { state, events } = apply(at('s2', { gold: 10, bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW);
-    expect(events).toEqual([{ type: 'sold', action: 's1', player: P, gear: sword, price: 45, gold: 55 }]);
+    expect(events).toEqual([{ type: 'sold', action: 's1', player: P, gear: sword, price: 18, gold: 28 }]);
     expect(me(state).bag).toEqual([]);
     expect(apply(at('s2', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'nope' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such gear' });
     expect(apply(at('s1', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
@@ -78,16 +78,16 @@ describe('the wardrobe', () => {
 
   it('equips from the bag into the piece\'s slot, swapping out what was worn; the numbers follow', () => {
     const start = at('s1', { bag: [sword, better, helm] });
-    expect(stats(me(start)).attack).toBe(12);
+    expect(stats(me(start)).attack).toBe(13);
     const one = apply(start, { type: 'equip', id: 'e1', player: P, gear: 'g1' }, makeRng('x'), NOW);
     expect(one.events).toEqual([{ type: 'equipped', action: 'e1', player: P, gear: sword, replaced: null }]);
     expect(me(one.state).equipment.weapon).toEqual(sword);
     expect(me(one.state).bag.map((g) => g.id)).toEqual(['g2', 'g3']);
-    expect(stats(me(one.state)).attack).toBe(16);
+    expect(stats(me(one.state)).attack).toBe(18);
     const two = apply(one.state, { type: 'equip', id: 'e2', player: P, gear: 'g2' }, makeRng('x'), NOW);
     expect(two.events).toEqual([{ type: 'equipped', action: 'e2', player: P, gear: better, replaced: sword }]);
     expect(me(two.state).bag.map((g) => g.id)).toEqual(['g3', 'g1']);
-    expect(stats(me(two.state))).toMatchObject({ attack: 20, crit: 0.2 });
+    expect(stats(me(two.state))).toMatchObject({ attack: 22, crit: 0.2 });
     const three = apply(two.state, { type: 'equip', id: 'e3', player: P, gear: 'g3' }, makeRng('x'), NOW);
     expect(stats(me(three.state)).maxHp).toBe(134);
     expect(me(three.state).hp).toBe(120); // worn, not healed

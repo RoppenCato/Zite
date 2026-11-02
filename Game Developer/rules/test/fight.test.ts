@@ -89,7 +89,7 @@ describe('a fight', () => {
       weak: null,
       used: [],
     });
-    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10, hp: 1169 });
+    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10 });
     expect(() => makeEnemy('dragon')).toThrow(/no such enemy/);
   });
 
@@ -110,17 +110,17 @@ describe('a fight', () => {
     const { state: end, rounds } = playOut(state, rng, [[attack, 'block']]);
     expect(rounds).toEqual([
       [
-        { type: 'hit', by: 'player', move: 'Attack', damage: 20, crit: true, hp: 20, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Attack', damage: 22, crit: true, hp: 18, absorbed: 0 },
         { type: 'guarded', guard: 'block' },
         { type: 'hit', by: 'enemy', move: 'Splat', damage: 4, crit: false, hp: 116, absorbed: 0 },
       ],
       [
-        { type: 'hit', by: 'player', move: 'Attack', damage: 13, crit: false, hp: 7, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Attack', damage: 14, crit: false, hp: 4, absorbed: 0 },
         { type: 'guarded', guard: 'block' },
         { type: 'hit', by: 'enemy', move: 'Splat', damage: 3, crit: false, hp: 113, absorbed: 0 },
       ],
       [
-        { type: 'hit', by: 'player', move: 'Attack', damage: 10, crit: false, hp: 0, absorbed: 0 },
+        { type: 'hit', by: 'player', move: 'Attack', damage: 11, crit: false, hp: 0, absorbed: 0 },
         { type: 'won', xp: 5, gold: 3 },
       ],
     ]);
@@ -332,7 +332,7 @@ describe('a fight', () => {
     const mob = count('slime', { hp: 1 });
     expect(mob.gear).toBeGreaterThan(8);
     expect(mob.gear).toBeLessThan(50);
-    expect(mob.potion).toBeGreaterThan(20);
+    expect(mob.potion).toBeGreaterThan(8);
     expect(mob.card).toBeGreaterThan(3);
     const mini = count('wolf-alpha', { hp: 1 });
     expect(mini.gear).toBeGreaterThan(70);

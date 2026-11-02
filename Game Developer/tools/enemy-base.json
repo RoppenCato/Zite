@@ -1,0 +1,928 @@
+{
+  "slime": {
+    "name": "Jelly Slime",
+    "level": 1,
+    "role": "mob",
+    "hp": 40,
+    "attack": 10,
+    "defense": 2,
+    "xp": 5,
+    "gold": 3,
+    "moves": [
+      {
+        "name": "Splat",
+        "power": 1,
+        "weight": 1
+      }
+    ]
+  },
+  "wolf": {
+    "name": "Grumpy Sprout",
+    "level": 2,
+    "role": "mob",
+    "hp": 60,
+    "attack": 13,
+    "defense": 3,
+    "xp": 8,
+    "gold": 5,
+    "moves": [
+      {
+        "name": "Root Whip",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Headbutt",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "bandit": {
+    "name": "Meadow Bandit",
+    "level": 3,
+    "role": "mob",
+    "hp": 80,
+    "attack": 16,
+    "defense": 5,
+    "xp": 12,
+    "gold": 8,
+    "moves": [
+      {
+        "name": "Slash",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Cheap Shot",
+        "power": 1.5,
+        "weight": 1
+      },
+      {
+        "name": "Dirty Trick",
+        "power": 0.6,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "wisp": {
+    "name": "Bumbling Bee",
+    "level": 3,
+    "role": "mob",
+    "hp": 50,
+    "attack": 18,
+    "defense": 1,
+    "xp": 10,
+    "gold": 5,
+    "moves": [
+      {
+        "name": "Sting",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Pollen Daze",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "wolf-alpha": {
+    "name": "Mushroom Muncher",
+    "level": 5,
+    "role": "mini",
+    "hp": 242,
+    "attack": 19,
+    "defense": 6,
+    "xp": 40,
+    "gold": 25,
+    "moves": [
+      {
+        "name": "Chomp",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Spore Puff",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Toxic Nibble",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "thornwood-warden": {
+    "name": "King Goo",
+    "level": 6,
+    "role": "boss",
+    "hp": 540,
+    "attack": 27,
+    "defense": 11,
+    "xp": 105,
+    "gold": 75,
+    "moves": [
+      {
+        "name": "Squish",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Belly Flop",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "King Goo wobbles with rage: the tiny crown slips and the goo surges!",
+      "moves": [
+        {
+          "name": "Squish",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Belly Flop",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Acid Splash",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    }
+  },
+  "spider": {
+    "name": "Twigling",
+    "level": 5,
+    "role": "mob",
+    "hp": 140,
+    "attack": 24,
+    "defense": 7,
+    "xp": 20,
+    "gold": 11,
+    "moves": [
+      {
+        "name": "Poke",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Snap",
+        "power": 1.4,
+        "weight": 1
+      },
+      {
+        "name": "Splinter",
+        "power": 0.8,
+        "weight": 2,
+        "effect": "poison"
+      }
+    ]
+  },
+  "treant": {
+    "name": "Moss Goblin",
+    "level": 6,
+    "role": "mob",
+    "hp": 200,
+    "attack": 22,
+    "defense": 11,
+    "xp": 26,
+    "gold": 13,
+    "moves": [
+      {
+        "name": "Club",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Mossy Tackle",
+        "power": 1.6,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Moss Patch",
+        "power": 0,
+        "weight": 1,
+        "effect": "heal"
+      }
+    ]
+  },
+  "outlaw": {
+    "name": "Sporeling",
+    "level": 6,
+    "role": "mob",
+    "hp": 150,
+    "attack": 28,
+    "defense": 6,
+    "xp": 24,
+    "gold": 14,
+    "moves": [
+      {
+        "name": "Puff",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Spore Cloud",
+        "power": 1.2,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "wraith": {
+    "name": "Nutkin Thief",
+    "level": 7,
+    "role": "mob",
+    "hp": 170,
+    "attack": 30,
+    "defense": 5,
+    "xp": 30,
+    "gold": 15,
+    "moves": [
+      {
+        "name": "Scratch",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Scamper",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      },
+      {
+        "name": "Nut Snatch",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "spider-queen": {
+    "name": "Sleepy Owlbear Cub",
+    "level": 9,
+    "role": "mini",
+    "hp": 440,
+    "attack": 30,
+    "defense": 11,
+    "xp": 90,
+    "gold": 50,
+    "moves": [
+      {
+        "name": "Swipe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Pounce",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Yawning Roar",
+        "power": 0,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "briar-king": {
+    "name": "Grumblebark",
+    "level": 10,
+    "role": "boss",
+    "hp": 1169,
+    "attack": 40,
+    "defense": 12,
+    "xp": 245,
+    "gold": 150,
+    "moves": [
+      {
+        "name": "Branch Swipe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Trunk Slam",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Grumblebark wakes fully: the whole forest shakes!",
+      "moves": [
+        {
+          "name": "Branch Swipe",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Trunk Slam",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Root Grip",
+          "power": 1.2,
+          "weight": 1,
+          "effect": "weaken"
+        },
+        {
+          "name": "Regrow",
+          "power": 0,
+          "weight": 1,
+          "effect": "heal"
+        }
+      ]
+    }
+  },
+  "ice-wolf": {
+    "name": "Honey Blob",
+    "level": 9,
+    "role": "mob",
+    "hp": 260,
+    "attack": 38,
+    "defense": 11,
+    "xp": 40,
+    "gold": 23,
+    "moves": [
+      {
+        "name": "Sticky Slap",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Glue Down",
+        "power": 1.4,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "yeti": {
+    "name": "Corn Goblin",
+    "level": 10,
+    "role": "mob",
+    "hp": 360,
+    "attack": 42,
+    "defense": 14,
+    "xp": 50,
+    "gold": 28,
+    "moves": [
+      {
+        "name": "Stalk Whack",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Cob Toss",
+        "power": 1.7,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "frost-wisp": {
+    "name": "Buzzbug",
+    "level": 10,
+    "role": "mob",
+    "hp": 240,
+    "attack": 48,
+    "defense": 8,
+    "xp": 46,
+    "gold": 25,
+    "moves": [
+      {
+        "name": "Buzz Sting",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Frantic Drone",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "drain"
+      }
+    ]
+  },
+  "ice-golem": {
+    "name": "Apple Mimic",
+    "level": 11,
+    "role": "mob",
+    "hp": 420,
+    "attack": 40,
+    "defense": 18,
+    "xp": 56,
+    "gold": 33,
+    "moves": [
+      {
+        "name": "Chomp",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Core Crunch",
+        "power": 1.8,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Shut Tight",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      }
+    ]
+  },
+  "yeti-elder": {
+    "name": "Scarecrow Scrapper",
+    "level": 13,
+    "role": "mini",
+    "hp": 770,
+    "attack": 48,
+    "defense": 16,
+    "xp": 170,
+    "gold": 90,
+    "moves": [
+      {
+        "name": "Rake Swing",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Crow Call",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      },
+      {
+        "name": "Straw Choke",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "frost-matriarch": {
+    "name": "Queen Bumble",
+    "level": 14,
+    "role": "boss",
+    "hp": 1650,
+    "attack": 51,
+    "defense": 15,
+    "xp": 490,
+    "gold": 300,
+    "moves": [
+      {
+        "name": "Royal Sting",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Swarm",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Queen Bumble's hive answers: the swarm thickens!",
+      "moves": [
+        {
+          "name": "Royal Sting",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Swarm",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Royal Jelly",
+          "power": 0,
+          "weight": 1,
+          "effect": "armour"
+        },
+        {
+          "name": "Hive Swarm",
+          "power": 1.3,
+          "weight": 1
+        }
+      ]
+    }
+  },
+  "glowcap": {
+    "name": "Glowcap",
+    "level": 3,
+    "role": "mob",
+    "hp": 78,
+    "attack": 15,
+    "defense": 4,
+    "xp": 12,
+    "gold": 6,
+    "moves": [
+      {
+        "name": "Spore Puff",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Choking Cloud",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "old-rootbeard": {
+    "name": "Old Rootbeard",
+    "level": 5,
+    "role": "boss",
+    "hp": 560,
+    "attack": 28,
+    "defense": 8,
+    "xp": 84,
+    "gold": 65,
+    "moves": [
+      {
+        "name": "Staff Slam",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Root Snare",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      },
+      {
+        "name": "Earthshaker",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "bog-toad": {
+    "name": "Bog Toad",
+    "level": 12,
+    "role": "mob",
+    "hp": 470,
+    "attack": 52,
+    "defense": 15,
+    "xp": 66,
+    "gold": 27,
+    "moves": [
+      {
+        "name": "Long Tongue",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Belly Slam",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "mudling": {
+    "name": "Mudling",
+    "level": 13,
+    "role": "mob",
+    "hp": 560,
+    "attack": 54,
+    "defense": 20,
+    "xp": 74,
+    "gold": 29,
+    "moves": [
+      {
+        "name": "Mud Fist",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Clogging Muck",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "lantern-wisp": {
+    "name": "Lantern Wisp",
+    "level": 14,
+    "role": "mob",
+    "hp": 440,
+    "attack": 64,
+    "defense": 12,
+    "xp": 82,
+    "gold": 31,
+    "moves": [
+      {
+        "name": "Ember Spit",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Flare",
+        "power": 1.4,
+        "weight": 1
+      }
+    ],
+    "hovers": true
+  },
+  "reed-witch": {
+    "name": "Reed Witch",
+    "level": 15,
+    "role": "mob",
+    "hp": 600,
+    "attack": 64,
+    "defense": 20,
+    "xp": 92,
+    "gold": 35,
+    "moves": [
+      {
+        "name": "Dragonfly Hex",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Withering Hex",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "bogsnapper": {
+    "name": "Bogsnapper",
+    "level": 13,
+    "role": "mini",
+    "hp": 900,
+    "attack": 56,
+    "defense": 18,
+    "xp": 200,
+    "gold": 150,
+    "moves": [
+      {
+        "name": "Snap",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Death Grip",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "mother-murk": {
+    "name": "Old Mother Murk",
+    "level": 17,
+    "role": "boss",
+    "hp": 2375,
+    "attack": 70,
+    "defense": 20,
+    "xp": 770,
+    "gold": 315,
+    "moves": [
+      {
+        "name": "Ladle Slam",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Boiling Bog",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The bog boils around Old Mother Murk!",
+      "moves": [
+        {
+          "name": "Ladle Slam",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Boiling Bog",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Foul Steam",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    }
+  },
+  "snow-goat": {
+    "name": "Snow Goat",
+    "level": 16,
+    "role": "mob",
+    "hp": 680,
+    "attack": 72,
+    "defense": 22,
+    "xp": 104,
+    "gold": 39,
+    "moves": [
+      {
+        "name": "Horn Charge",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Hoof Stamp",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "crag-goblin": {
+    "name": "Crag Goblin",
+    "level": 17,
+    "role": "mob",
+    "hp": 740,
+    "attack": 74,
+    "defense": 26,
+    "xp": 116,
+    "gold": 43,
+    "moves": [
+      {
+        "name": "Pick Swing",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Rockfall",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "pebble-golem": {
+    "name": "Pebble Golem",
+    "level": 18,
+    "role": "mob",
+    "hp": 900,
+    "attack": 72,
+    "defense": 34,
+    "xp": 128,
+    "gold": 48,
+    "moves": [
+      {
+        "name": "Rock Fist",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Crushing Blow",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "frostling": {
+    "name": "Frostling",
+    "level": 19,
+    "role": "mob",
+    "hp": 700,
+    "attack": 88,
+    "defense": 22,
+    "xp": 140,
+    "gold": 53,
+    "moves": [
+      {
+        "name": "Icicle Jab",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Numbing Touch",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "old-bighorn": {
+    "name": "Old Bighorn",
+    "level": 17,
+    "role": "mini",
+    "hp": 1300,
+    "attack": 70,
+    "defense": 24,
+    "xp": 320,
+    "gold": 220,
+    "moves": [
+      {
+        "name": "Great Charge",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Avalanche Run",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "frostbeard": {
+    "name": "Frostbeard",
+    "level": 21,
+    "role": "boss",
+    "hp": 3375,
+    "attack": 95,
+    "defense": 28,
+    "xp": 1190,
+    "gold": 490,
+    "moves": [
+      {
+        "name": "Hammer Fall",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Glacier Strike",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The blizzard comes: Frostbeard roars!",
+      "moves": [
+        {
+          "name": "Hammer Fall",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Glacier Strike",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Freezing Gale",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    }
+  },
+  "city-outcast": {
+    "name": "City Outcast",
+    "level": 5,
+    "role": "mob",
+    "hp": 120,
+    "attack": 20,
+    "defense": 6,
+    "xp": 18,
+    "gold": 9,
+    "moves": [
+      {
+        "name": "Rusty Knife",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Dirty Trick",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  }
+}

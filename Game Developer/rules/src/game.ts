@@ -600,7 +600,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'board': {
       // One quest at a time: with one under way the board only asks whether to drop it.
-      const quests = c.quests.length ? [] : boardQuests(state, space, rng);
+      const quests = c.quests.length ? [] : boardQuests(state, space, rng, c);
       const offered: Character = { ...c, offer: { kind: 'board', quests } };
       events.push({ type: 'offer', action: id, player, offer: offered.offer! });
       return { state: withCharacter(state, offered), events };
@@ -706,7 +706,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       if (what === 'stranger' && !c.quests.length) {
         // Someone on the road with a job (Robin, 2026-11-02: "sometimes meet a questgiver"), a quest of the board's kind.
-        const quests = boardQuests(state, space, rng).slice(0, 1);
+        const quests = boardQuests(state, space, rng, c).slice(0, 1);
         if (quests.length) {
           const offered: Character = { ...c, offer: { kind: 'board', quests, from: QUESTS.people[rng.int(QUESTS.people.length) - 1]! } };
           events.push({ type: 'offer', action: id, player, offer: offered.offer! });
@@ -819,8 +819,7 @@ function fightStarted(c: Character): Character {
   for (const [kind, e] of Object.entries(c.elixirs) as ['vigor' | 'arcana', { value: number; fights: number }][]) {
     if (e.fights > 0) elixirs[kind] = { value: e.value, fights: e.fights - 1 };
   }
-  const next = { ...c, elixirs };
-  return { ...next, hp: Math.min(next.hp, stats(next).maxHp) };
+  return capped({ ...c, elixirs });
 }
 
 function begin(state: GameState, c: Character, enemy: string, space: string, spawn: boolean, action: Action, rng: Rng, events: GameEvent[], shared?: Spawn): ApplyResult {
@@ -927,7 +926,8 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
   const space = state.board.spaces[c.space];
   const stock: ShopStock | null = state.spawns[c.space]?.kind === 'merchant' ? 'merchant' : space?.kind === 'town' ? 'town' : space?.kind === 'shop' ? (space.stock ?? 'arms') : null;
   if (!stock || !space) return null;
-  const tier = state.board.areas[space.area]?.tier ?? 1;
+  const own = state.board.areas[space.area];
+  const tier = own?.city ? Math.max(own.tier, ...c.opened.map((id) => state.board.areas[id]?.tier ?? 1)) : (own?.tier ?? 1);
   const top = Math.min(tier, 3);
   const items = ITEM_IDS.filter((id) => {
     const item = ITEMS[id]!;
@@ -996,12 +996,12 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
     const gold = character.gold - gear.price;
     // A plain piece replaces a plain one no higher, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
     if (old && old.rarity === 'common' && old.rank <= gear.rank) {
-      const worn = { ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } };
+      const worn = capped({ ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } });
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: old }] };
     }
     // A piece for an empty slot goes straight on (Robin, 2026-11-01).
     if (empty) {
-      const worn = { ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } };
+      const worn = capped({ ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } });
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: null }] };
     }
     return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
@@ -1031,7 +1031,7 @@ function equip(state: GameState, action: EquipAction, character: Character): App
   const gear = character.bag.find((g) => g.id === action.gear);
   if (!gear) return reject(state, action, 'no such gear');
   // A Hunter uses bows only (Robin, 2026-11-02).
-  if (gear.slot === 'weapon' && traitsOf(character).rangedOnly && !/bow\b/i.test(gear.name)) return reject(state, action, 'not now');
+  if (gear.slot === 'weapon' && traitsOf(character).rangedOnly && gear.rarity !== 'unique' && !/bow\b/i.test(gear.base)) return reject(state, action, 'not now');
   const replaced = character.equipment[gear.slot];
   const bag = character.bag.filter((g) => g.id !== gear.id);
   if (replaced) bag.push(replaced);
@@ -1185,7 +1185,7 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
   }
   const kind = state.board.spaces[c.space]?.kind;
   if (kind !== 'town' && kind !== 'church') return reject(state, action, 'not now');
-  return done(resetSkills(c), [{ type: 'skillReset', action: action.id, player: action.player }]);
+  return done(capped(resetSkills(c)), [{ type: 'skillReset', action: action.id, player: action.player }]);
 }
 
 /** A quest chosen at the board, the board left, or the quest under way dropped. */

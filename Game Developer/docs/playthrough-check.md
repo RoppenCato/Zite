@@ -64,3 +64,58 @@ Whole climb 3.0 hours: Warrior 3.4, Magician 2.7, Rogue 2.9, Hunter 3.1. The sim
 
 Still true: Honeyhill is the safest land, and gold still climbs late.
 
+## The whole game to level 30 (Robin, 2026-11-02)
+
+Robin: "Level up each class naturally all the way to 30. Try different specs and talents. Try fighting with different tactics. Kill all the bosses. Do quests, buy stuff etc etc. Try everything and see what needs fixing. Tune the balance after every playthrough."
+
+    node tools/sim-full.ts 1 warrior --tactics     one class; leave the class off for all four; --to 21 stops at Frostbeard
+    node tools/sim-summary.mjs <the text files>    the table
+    node tools/sim-talents.ts 40                   each talent taken away: does a fight change?
+    node tools/sim-monkey.ts 20000                 everything tapped in no order
+    node tools/enemy-curve.mjs                     enemies.json from enemy-base.json and the curve
+
+Twelve playthroughs, nine builds a class: each tree alone, each with a second tree, and four tactics (sensible, all in, careful, Attack only). Each plays with an hour and a half a day on the calendar: every boss, quest boards, shops and the smith's fine piece, the Arena on its days, the Rootways, rumours, hidden places, the coach, Home, a respec at 15. These are rules played by a script, with time guessed from taps: how it feels is still Robin's to say.
+
+### Found and fixed
+
+- A Hunter could not wear a rare or better bow: the check read the name, and those names have no "bow" in them. Nor a unique. **The Hunter's best weapons were refused, with no message.**
+- The city's quest board gave errands in the city's streets, which have no creatures: they could never be finished. It now sends you to the land that suits you.
+- Crownhaven's Journal page could never fill, for the same reason.
+- HP or mana could stay above the maximum after a respec, after buying gear or when an elixir ran out.
+- A level 45 Dread could walk into the city (fixed before this run).
+- The Arena's flask limit: the buttons stayed lit and did nothing. They dim now.
+- About 90 pressed talents made no sound. They borrow the swing until Nigel, SD has made theirs.
+- Two pairs of talents shared a name.
+- The hub's shops sold tier 2 gear for ever. They now keep up with the furthest land you have opened.
+- The skill board wore a level tag on every talent: one a tier now, on the branch.
+
+### Tuned (numbers mine)
+
+| What | Before | After |
+| --- | --- | --- |
+| Creatures from level 7 up: attack, by level over 6 | as first set | +6.5% a level, HP +2% |
+| Mini-bosses | | attack +5%, HP +3% a level, HP x1.15 |
+| Bosses | | attack +4%, HP +4% a level, attack x1.1 |
+| What a shop pays | half | a fifth |
+| Flask from a creature | 20% | 8% |
+| The Warrior's attack | | x1.12: it killed slowest |
+| Wizard's Deep Well | 5% mana a rank | also 4% HP a rank |
+
+### Where it stands (sensible player, hours to reach a level)
+
+| Class | Level 10 | Level 20 | Level 30 | Deaths |
+| --- | --- | --- | --- | --- |
+| Warrior | 1.0 | 4.3 | 14.7 | 2 |
+| Magician | 1.3 | 4.0 | 12.2 | 15 |
+| Rogue | 0.9 | 3.4 | 12.2 | 2 |
+| Hunter | 0.9 | 3.6 | 12.9 | 1 |
+
+A creature at your level costs about 5% of your HP in 3 to 5 rounds. Bosses take 11 to 25 rounds and up to 3 flasks; most fall on the first or second try, Frostbeard takes a Magician about three. Before tuning, nothing after level 10 cost more than 2 to 4% HP and most bosses fell first try with no flask. All in dies about ten times as often as careful, so tactics matter.
+
+### Still open
+
+- **Level 21 to 30 is 8 to 10 hours in The Frostcrown.** The world ends at 20, so nothing is a danger there (2 to 3% HP a fight) and gold piles up to about 100,000 with nothing to buy. The Pirate Isles and The Giants' Land are the answer.
+- **The Magician dies most**, the pure Wizard and Spellsword above all (28 to 33 deaths against 0 to 4 for most builds). Read as a glass cannon for now.
+- **A Magician who only taps Attack does not get through:** stuck at level 17 with six bosses left.
+- Not played by this: two players at once, and the screens at length. The pane saw character making, the board, the Hero sheet, the skill board, the Journal, the quest board, a shop, the Arena's door, a fight and its abilities list, the map.
+

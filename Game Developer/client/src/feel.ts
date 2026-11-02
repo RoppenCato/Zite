@@ -12,6 +12,8 @@ type Pressable = Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.T
 /** The sound hook: a name from the Sound Director's sprites (`audio.ts`); a name with no sound yet is silent. */
 export const sfx = {
   play: (name: string): void => audio.play(name),
+  /** A talent with no sound of its own yet borrows one, so no press is silent. */
+  playOr: (name: string, fallback: string): void => audio.play(audio.has(name) ? name : fallback),
 };
 
 export const feel = {
