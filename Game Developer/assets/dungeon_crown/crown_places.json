@@ -1,0 +1,490 @@
+{
+ "frames": {
+  "throne": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 647,
+    "h": 691
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 647,
+    "h": 691
+   },
+   "sourceSize": {
+    "w": 647,
+    "h": 691
+   },
+   "pivot": {
+    "x": 0.4699,
+    "y": 0.919
+   },
+   "what": "place"
+  },
+  "mob_hollow_king": {
+   "frame": {
+    "x": 3,
+    "y": 697,
+    "w": 431,
+    "h": 569
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 431,
+    "h": 569
+   },
+   "sourceSize": {
+    "w": 431,
+    "h": 569
+   },
+   "pivot": {
+    "x": 0.5174,
+    "y": 0.9772
+   },
+   "what": "creature"
+  },
+  "door_crown_barred": {
+   "frame": {
+    "x": 437,
+    "y": 697,
+    "w": 392,
+    "h": 349
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 392,
+    "h": 349
+   },
+   "sourceSize": {
+    "w": 392,
+    "h": 349
+   },
+   "pivot": {
+    "x": 0.4388,
+    "y": 0.8768
+   },
+   "what": "place"
+  },
+  "door_crown_open": {
+   "frame": {
+    "x": 3,
+    "y": 1269,
+    "w": 392,
+    "h": 349
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 392,
+    "h": 349
+   },
+   "sourceSize": {
+    "w": 392,
+    "h": 349
+   },
+   "pivot": {
+    "x": 0.4388,
+    "y": 0.8768
+   },
+   "what": "place"
+  },
+  "pillar": {
+   "frame": {
+    "x": 398,
+    "y": 1269,
+    "w": 130,
+    "h": 315
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 130,
+    "h": 315
+   },
+   "sourceSize": {
+    "w": 130,
+    "h": 315
+   },
+   "pivot": {
+    "x": 0.4615,
+    "y": 0.927
+   },
+   "what": "place"
+  },
+  "stair_up": {
+   "frame": {
+    "x": 531,
+    "y": 1269,
+    "w": 443,
+    "h": 311
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 443,
+    "h": 311
+   },
+   "sourceSize": {
+    "w": 443,
+    "h": 311
+   },
+   "pivot": {
+    "x": 0.4312,
+    "y": 0.8489
+   },
+   "what": "place"
+  },
+  "statue": {
+   "frame": {
+    "x": 3,
+    "y": 1621,
+    "w": 169,
+    "h": 310
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 310
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 310
+   },
+   "pivot": {
+    "x": 0.4497,
+    "y": 0.9129
+   },
+   "what": "place"
+  },
+  "mob_last_steward": {
+   "frame": {
+    "x": 175,
+    "y": 1621,
+    "w": 122,
+    "h": 262
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 262
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 262
+   },
+   "pivot": {
+    "x": 0.5492,
+    "y": 0.8893
+   },
+   "what": "creature"
+  },
+  "banner": {
+   "frame": {
+    "x": 300,
+    "y": 1621,
+    "w": 90,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 90,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 90,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9488
+   },
+   "what": "place"
+  },
+  "pillar_broken": {
+   "frame": {
+    "x": 393,
+    "y": 1621,
+    "w": 191,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.2932,
+    "y": 0.8128
+   },
+   "what": "place"
+  },
+  "brazier": {
+   "frame": {
+    "x": 587,
+    "y": 1621,
+    "w": 77,
+    "h": 180
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 77,
+    "h": 180
+   },
+   "sourceSize": {
+    "w": 77,
+    "h": 180
+   },
+   "pivot": {
+    "x": 0.4545,
+    "y": 0.9167
+   },
+   "what": "place"
+  },
+  "mob_crypt_guard": {
+   "frame": {
+    "x": 667,
+    "y": 1621,
+    "w": 87,
+    "h": 163
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 87,
+    "h": 163
+   },
+   "sourceSize": {
+    "w": 87,
+    "h": 163
+   },
+   "pivot": {
+    "x": 0.4943,
+    "y": 0.9202
+   },
+   "what": "creature"
+  },
+  "mob_stone_gargoyle": {
+   "frame": {
+    "x": 757,
+    "y": 1621,
+    "w": 135,
+    "h": 144
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 135,
+    "h": 144
+   },
+   "sourceSize": {
+    "w": 135,
+    "h": 144
+   },
+   "pivot": {
+    "x": 0.4296,
+    "y": 0.9375
+   },
+   "what": "creature"
+  },
+  "mob_gilded_wraith": {
+   "frame": {
+    "x": 895,
+    "y": 1621,
+    "w": 94,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 94,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 94,
+    "h": 136
+   },
+   "pivot": {
+    "x": 0.4894,
+    "y": 0.9779
+   },
+   "what": "creature"
+  },
+  "mob_gold_mimic": {
+   "frame": {
+    "x": 3,
+    "y": 1934,
+    "w": 124,
+    "h": 105
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 105
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 105
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9714
+   },
+   "what": "creature"
+  },
+  "spot_door": {
+   "frame": {
+    "x": 130,
+    "y": 1934,
+    "w": 174,
+    "h": 99
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 99
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 99
+   },
+   "pivot": {
+    "x": 0.4943,
+    "y": 0.4949
+   },
+   "what": "spot"
+  },
+  "coffin": {
+   "frame": {
+    "x": 307,
+    "y": 1934,
+    "w": 194,
+    "h": 91
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 91
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 91
+   },
+   "pivot": {
+    "x": 0.4742,
+    "y": 0.6593
+   },
+   "what": "place"
+  },
+  "gold_pile": {
+   "frame": {
+    "x": 504,
+    "y": 1934,
+    "w": 150,
+    "h": 67
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 150,
+    "h": 67
+   },
+   "sourceSize": {
+    "w": 150,
+    "h": 67
+   },
+   "pivot": {
+    "x": 0.4733,
+    "y": 0.6866
+   },
+   "what": "place"
+  },
+  "rubble": {
+   "frame": {
+    "x": 657,
+    "y": 1934,
+    "w": 114,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 114,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 114,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.4649,
+    "y": 0.6964
+   },
+   "what": "place"
+  }
+ },
+ "meta": {
+  "image": "crown_places.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/land_build.js",
+  "filePx": 2
+ }
+}

@@ -350,8 +350,11 @@ export class HudScene extends Phaser.Scene {
 
   /** While the player is choosing, walking, fighting or shopping, the Roll button is dimmed. */
   setBusy(busy: boolean): void {
-    this.rollButton.setEnabled(!busy, true);
-    this.rollButton.icon?.setAlpha(busy ? 0.55 : 1);
+    const { board: map } = this.game_.state;
+    const at = map.spaces[this.game_.me.space];
+    const walled = !!at && !!map.areas[at.area]?.city && !at.links.some((l) => map.spaces[l]?.area !== at.area);
+    this.rollButton.setEnabled(!busy && !walled, true);
+    this.rollButton.icon?.setAlpha(busy || walled ? 0.55 : 1);
   }
 
   /** The Map button reads "Map" while the camera follows the character and "Back" when it has been moved away. */

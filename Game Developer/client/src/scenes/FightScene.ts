@@ -232,7 +232,7 @@ export class FightScene extends Phaser.Scene {
     this.manaBar = this.heroBoard.mana!;
 
     this.message = this.add
-      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : enemy.trick ? enemy.trick.text : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: MESSAGE_BOX_W - 24 } })
+      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : enemy.trick ? enemy.trick.text : this.game_.me.classId === 'mage' && this.game_.me.level <= 4 ? `${enemy.name} blocks the way! Spells are your strength: tap Abilities.` : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: MESSAGE_BOX_W - 24 } })
       .setOrigin(0.5);
     logButtons(this, L.messageY + 22);
     this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5);
@@ -629,6 +629,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'bossDown':
         this.say(`${this.enemyName} falls. It will be back in five minutes.`);
         moments(this)?.bossDown(this.enemyName);
+        break;
+      case 'gameWon':
+        moments(this)?.find('item_gold', 'The Hollow King falls', 'The flame goes out under the old crown. You have beaten the game. The world is still yours to walk.', 0xf4c14a);
+        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} The old kingdom sleeps at last.` };
         break;
       case 'sealWon':
         moments(this)?.seal(e.land, 'A Seal!', `${this.game_.state.board.areas[e.land]?.name ?? e.land}: ${e.won} of ${e.total} Seals.`);

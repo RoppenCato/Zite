@@ -13,6 +13,7 @@ import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
+import { sealsAllWon } from './seals.ts';
 import { buildBoard, withArenas, withDungeons, withSecrets } from './world.ts';
 import {
   SLOTS,
@@ -258,6 +259,7 @@ function door(state: GameState, action: DoorAction, c: Character): ApplyResult {
   const here = state.board.spaces[c.space];
   const to = here?.door ? state.board.spaces[here.door] : undefined;
   if (!here || !to || c.steps > 0) return reject(state, action, 'not now');
+  if (here.sealed && !sealsAllWon(state.board, c)) return reject(state, action, 'not now');
   const opened = c.opened.includes(to.area) ? c.opened : [...c.opened, to.area];
   return { state: withCharacter(state, { ...c, space: to.id, opened }), events: [{ type: 'doored', action: action.id, player: action.player, from: here.id, to: to.id }] };
 }

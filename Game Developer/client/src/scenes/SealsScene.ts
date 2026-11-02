@@ -1,11 +1,13 @@
 // The Seals (Robin, 2026-11-02): how far you are from the end of the game. One for each land's greatest boss, the ones still to come, and what they open. Opened from Hero. Layout mine.
 
 import Phaser from 'phaser';
-import { sealCount, sealsOf, SEALS_COMING } from '../../../rules/src/index.ts';
+import { FINAL_BOSS, sealCount, sealsOf, SEALS_COMING } from '../../../rules/src/index.ts';
 import facesJson from '../../../assets/journal/journal_faces.json?url';
 import facesPng from '../../../assets/journal/journal_faces.png';
 import facesEastJson from '../../../assets/journal_east/journal_faces_east.json?url';
 import facesEastPng from '../../../assets/journal_east/journal_faces_east.png';
+import facesCrownJson from '../../../assets/journal_crown/journal_faces_crown.json?url';
+import facesCrownPng from '../../../assets/journal_crown/journal_faces_crown.png';
 import facesGiantsJson from '../../../assets/journal_giants/journal_faces_giants.json?url';
 import facesGiantsPng from '../../../assets/journal_giants/journal_faces_giants.png';
 import facesPiratesJson from '../../../assets/journal_pirates/journal_faces_pirates.json?url';
@@ -23,6 +25,7 @@ const FACES = 'journal_faces';
 const FACES_EAST = 'journal_faces_east';
 const FACES_PIRATES = 'journal_faces_pirates';
 const FACES_GIANTS = 'journal_faces_giants';
+const FACES_CROWN = 'journal_faces_crown';
 const ROW_H = 62;
 
 export class SealsScene extends Phaser.Scene {
@@ -39,6 +42,7 @@ export class SealsScene extends Phaser.Scene {
     if (!this.textures.exists(FACES_EAST)) this.load.atlas(FACES_EAST, facesEastPng, facesEastJson);
     if (!this.textures.exists(FACES_PIRATES)) this.load.atlas(FACES_PIRATES, facesPiratesPng, facesPiratesJson);
     if (!this.textures.exists(FACES_GIANTS)) this.load.atlas(FACES_GIANTS, facesGiantsPng, facesGiantsJson);
+    if (!this.textures.exists(FACES_CROWN)) this.load.atlas(FACES_CROWN, facesCrownPng, facesCrownJson);
   }
 
   create(): void {
@@ -46,6 +50,7 @@ export class SealsScene extends Phaser.Scene {
     const { board } = this.game_.state;
     const { won, total } = sealCount(board, me);
     const all = won === total + SEALS_COMING.length;
+    const finished = Object.values(this.game_.state.board.spaces).some((s) => s.boss === FINAL_BOSS && (this.game_.me.bossKills[s.id] ?? 0) > 0);
     sheet(this);
     if (kitReady(this)) plate(this, 'board_plain', 18, 116, 376, 40).setOrigin(0, 0);
     this.add.text(32, 136, `Seals  ${won} of ${total + SEALS_COMING.length}`, { fontFamily: FONT_DISPLAY, fontSize: '18px', fontStyle: 'bold', color: CREAM, stroke: WOOD_INK, strokeThickness: 4 }).setOrigin(0, 0.5);
@@ -58,7 +63,7 @@ export class SealsScene extends Phaser.Scene {
     let y = 258;
     for (const seal of sealsOf(board, me)) {
       this.medal(seal.won ? seal.land : null, y);
-      const face = seal.open ? [FACES, FACES_EAST, FACES_PIRATES, FACES_GIANTS].find((key) => this.textures.exists(key) && this.textures.get(key).has(seal.boss)) : undefined;
+      const face = seal.open ? [FACES, FACES_EAST, FACES_PIRATES, FACES_GIANTS, FACES_CROWN].find((key) => this.textures.exists(key) && this.textures.get(key).has(seal.boss)) : undefined;
       if (face) {
         const pic = this.add.image(370, y, face, seal.boss).setDisplaySize(44, 44);
         if (!seal.won) pic.setTint(0x777777);
@@ -75,7 +80,7 @@ export class SealsScene extends Phaser.Scene {
       this.add.text(78, y + 15, `Level ${land.levels[0]} to ${land.levels[1]}`, { fontFamily: FONT, fontSize: '12px', color: DIM });
       y += ROW_H;
     }
-    if (all) this.add.text(32, y - 14, 'You hold every Seal. The way under Crownhaven is still being dug: it opens in a coming version.', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: RUST, wordWrap: { width: 348 } });
+    if (all) this.add.text(32, y - 14, finished ? 'The Hollow King is beaten. The old kingdom sleeps. You have done it all.' : 'You hold every Seal. The door before Crownhaven’s castle stands open.', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: RUST, wordWrap: { width: 348 } });
   }
 
   /** A land's seal when won; the empty one when not. */

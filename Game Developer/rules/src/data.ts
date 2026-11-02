@@ -96,6 +96,8 @@ export interface ClassTraits {
   blockHeal?: number;
   /** Plain attacks use magic too. */
   plainMagic?: boolean;
+  /** Plain attacks use this share of magic: a Magician's staff. */
+  attackMagic?: number;
   spellPower?: number;
   healPower?: number;
   poisonPower?: number;
@@ -470,7 +472,7 @@ export const ARENA = arenaJson as unknown as {
 };
 
 /** The dungeons, off the map (Robin, 2026-11-02). */
-export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string }; inside: string; area: import('./world.ts').WorldArea }>;
+export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string; sealed?: boolean }; inside: string; area: import('./world.ts').WorldArea }>;
 
 /** Rumours' numbers and words (Robin, 2026-11-02). */
 export const RUMOURS = rumoursJson as unknown as { max: number; cooldownMs: number; minDistance: number; weights: Record<'stash' | 'beast' | 'secret', number>; beast: { hp: number; attack: number; xp: number; gold: number }; lines: Record<'stash' | 'beast' | 'secret', string[]> };

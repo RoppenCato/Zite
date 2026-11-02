@@ -11,6 +11,8 @@ import overviewWestJpg from '../../assets/world_moved/overview_west.jpg';
 import overviewEastJpg from '../../assets/world_moved/overview_east.jpg';
 import rootwaysChunks from '../../assets/world_moved/rootways_chunks.json';
 import rootways from '../../assets/world_moved/rootways.json';
+import buriedCrown from '../../assets/dungeon_crown/buried_crown.json';
+import crownChunks from '../../assets/dungeon_crown/chunks.json';
 import fogSwampJson from '../../assets/world_moved/fog_swamp.json';
 import fogSwampPng from '../../assets/fog_east/fog_swamp.png';
 import fogFrostJson from '../../assets/world_moved/fog_frost.json';
@@ -35,7 +37,7 @@ import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 import fogEastPiecesJson from '../../assets/fog_east/fog_east_pieces.json?url';
 import fogEastPiecesPng from '../../assets/fog_east/fog_east_pieces.png';
 
-const FILES = import.meta.glob('../../assets/world_moved/{ground,rootways}_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FILES = import.meta.glob('../../assets/world_moved/{ground,rootways,crown}_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 interface Chunk {
   file: string;
@@ -48,6 +50,7 @@ interface Chunk {
 /** A dungeon's painted floor: where the camera stays while inside, and the dark past it. */
 export const DUNGEON_LAND: Record<string, { x: number; y: number; width: number; height: number; fill: number }> = {
   rootways: { ...rootways.bounds, fill: parseInt(rootways.fill.slice(1), 16) },
+  'buried-crown': { ...buriedCrown.bounds, fill: parseInt(buriedCrown.fill.slice(1), 16) },
 };
 
 /** The land each area owns on the map (Robin, 2026-11-02: the hub world): round its spots. */
@@ -74,6 +77,8 @@ export const SEA = 0x2f7fc4;
 const CHUNK_SIZE = worldChunks.size;
 // A dungeon's chunks lie on grid squares the Forest's sea has too: they have their own keys, and only one set is ever wanted.
 for (const c of rootwaysChunks.chunks as Chunk[]) CHUNKS.set(`rootways_${c.col}_${c.row}`, { ...c, file: `rootways_${c.col}_${c.row}.jpg`, areas: ['rootways'] });
+
+for (const c of crownChunks.chunks as Chunk[]) CHUNKS.set(`crown_${c.col}_${c.row}`, { ...c, file: `crown_${c.col}_${c.row}.jpg`, areas: ['buried-crown'] });
 
 /** Below this camera zoom, in canvas pixels, the overview does the work and no chunk is held. */
 export const CHUNK_ZOOM = 0.6;

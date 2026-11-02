@@ -6,6 +6,10 @@
 import Phaser from 'phaser';
 import secretPlacesJson from '../../assets/secrets/secrets_atlas.json?url';
 import secretPlacesPng from '../../assets/secrets/secrets.png';
+import buriedCrown from '../../assets/dungeon_crown/buried_crown.json';
+import crownPlacement from '../../assets/dungeon_crown/placement.json';
+import crownPlacesJson from '../../assets/dungeon_crown/crown_places.json?url';
+import crownPlacesPng from '../../assets/dungeon_crown/crown_places.png';
 import rootways from '../../assets/world_moved/rootways.json';
 import rootwaysPlacement from '../../assets/world_moved/placement_rootways.json';
 import rootwaysPlacesJson from '../../assets/dungeon_meadows/rootways_places.json?url';
@@ -106,12 +110,15 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 const ROOTWAYS_PLACES = 'rootways_places';
+export const CROWN_PLACES = 'crown_places';
+/** The door under Crownhaven: where it stands, barred or open. */
+export const CROWN_DOOR = buriedCrown.door;
 const KINGSWOOD_PLACES = 'kingswood_places';
 export const SECRET_PLACES = 'secret_places';
 /** The painted world's pieces that belong to one region. */
@@ -211,6 +218,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(SECRET_PLACES)) scene.load.atlas(SECRET_PLACES, secretPlacesPng, secretPlacesJson);
   if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
+  if (!scene.textures.exists(CROWN_PLACES)) scene.load.atlas(CROWN_PLACES, crownPlacesPng, crownPlacesJson);
   for (const theme of themes) {
     const places = THEME_PLACES[theme];
     if (places && !scene.textures.exists(places.key)) scene.load.atlas(places.key, places.png, places.json);
@@ -235,6 +243,7 @@ KITS.pirates = landKit('pirates', 'pirateisles', piratesPlacementJson as Placeme
 KITS.city = { ...KITS.meadow!, placements: {} };
 
 /** A dungeon uses the Meadows' plates, with its own roads and pieces. */
+KITS.crown = { ...KITS.meadow!, road: buriedCrown.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { 'buried-crown': crownPlacement as Placement[] } };
 KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };
 
 export function kitFor(scene: Phaser.Scene, theme: string): Kit | null {
@@ -401,6 +410,17 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
     if (sprite.getBounds().top < area.bounds.y + TOP_MARGIN) tall.set(area.id, [...(tall.get(area.id) ?? []), sprite]);
   }
   return list.length;
+}
+
+/** The door under Crownhaven: drawn once, then barred or open as the Seals say. */
+export function drawCrownDoor(scene: Phaser.Scene, door: Phaser.GameObjects.Image | null, open: boolean): Phaser.GameObjects.Image | null {
+  if (!scene.textures.exists(CROWN_PLACES)) return null;
+  const frame = open ? CROWN_DOOR.open : CROWN_DOOR.barred;
+  if (door?.active) return door.setFrame(frame);
+  const sprite = scene.add.image(CROWN_DOOR.x, CROWN_DOOR.y, CROWN_PLACES, frame).setScale(SCALE).setDepth(standingDepth(CROWN_DOOR.y));
+  allProps.push(sprite);
+  propArea.set(sprite, 'crownhaven');
+  return sprite;
 }
 
 /** The cover over an area not yet open: the kit's cloud, tiled, with a little dark over it. */

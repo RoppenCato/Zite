@@ -41,13 +41,13 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
 import secretData from '../../../assets/world_moved/secrets.json';
 import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
-import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
+import { drawCrownDoor, allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -223,6 +223,7 @@ export class BoardScene extends Phaser.Scene {
   private arenaFar = false;
   private arenaWasOpen: boolean | null = null;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
+  private crownDoor: Phaser.GameObjects.Image | null = null;
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
   /** The other players' figures, by id: `others` holds their marks. */
   private readonly otherHeroes = new Map<string, Hero>();
@@ -1040,6 +1041,7 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private refreshCovers(): void {
+    this.crownDoor = drawCrownDoor(this, this.crownDoor, sealsAllWon(this.game_.state.board, this.game_.me));
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
@@ -1991,6 +1993,10 @@ export class BoardScene extends Phaser.Scene {
     const beyond = board.spaces[here?.door ?? ''];
     if (!here || !beyond) return;
     const inside = !!board.areas[here.area]?.dungeon;
+    if (here.sealed && !sealsAllWon(board, this.game_.me)) {
+      this.finish('A door with seven sockets. It wants every land’s Seal.');
+      return;
+    }
     const land = board.areas[beyond.area];
     this.setMessage(inside ? 'Daylight, up ahead.' : `${here.name}.`);
     this.ask({

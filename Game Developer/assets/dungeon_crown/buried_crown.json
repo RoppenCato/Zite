@@ -1,0 +1,1369 @@
+{
+ "area": {
+  "id": "buried-crown",
+  "name": "The Buried Crown",
+  "theme": "crown",
+  "tier": 8,
+  "levels": [
+   28,
+   30
+  ],
+  "mobs": [
+   "crypt-guard",
+   "gilded-wraith",
+   "stone-gargoyle",
+   "gold-mimic"
+  ],
+  "miniBosses": [
+   "last-steward"
+  ],
+  "kingdom": "The Old Kingdom",
+  "hubs": [
+   {
+    "id": "bc-stair",
+    "kind": "door",
+    "name": "The Long Stair",
+    "x": 13680,
+    "y": 10960
+   },
+   {
+    "id": "bc-hall",
+    "kind": "normal",
+    "name": "The Hall of Kings",
+    "x": 14280,
+    "y": 10740
+   },
+   {
+    "id": "bc-well",
+    "kind": "potion",
+    "name": "The Silver Well",
+    "x": 13720,
+    "y": 10220
+   },
+   {
+    "id": "bc-peddler",
+    "kind": "shop",
+    "name": "The Ghost Peddler",
+    "x": 14960,
+    "y": 10960,
+    "stock": "magic"
+   },
+   {
+    "id": "bc-vault",
+    "kind": "chest",
+    "name": "The Sealed Vault",
+    "x": 15860,
+    "y": 10900
+   },
+   {
+    "id": "bc-crypts",
+    "kind": "normal",
+    "name": "The Long Crypts",
+    "x": 14420,
+    "y": 9980
+   },
+   {
+    "id": "bc-gallery",
+    "kind": "normal",
+    "name": "The Gargoyle Gallery",
+    "x": 15480,
+    "y": 10220
+   },
+   {
+    "id": "bc-chapel",
+    "kind": "church",
+    "name": "The Drowned Chapel",
+    "x": 13680,
+    "y": 9420
+   },
+   {
+    "id": "bc-treasury",
+    "kind": "normal",
+    "name": "The Old Treasury",
+    "x": 14480,
+    "y": 9220
+   },
+   {
+    "id": "bc-steward",
+    "kind": "boss",
+    "name": "The Steward’s Door",
+    "x": 15400,
+    "y": 9440,
+    "boss": "last-steward"
+   },
+   {
+    "id": "bc-throne",
+    "kind": "boss",
+    "name": "The Hollow Throne",
+    "x": 15120,
+    "y": 8760,
+    "boss": "hollow-king"
+   }
+  ],
+  "roads": [
+   {
+    "from": "bc-stair",
+    "to": "bc-hall",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 13741,
+      "y": 10941
+     },
+     {
+      "x": 13802,
+      "y": 10921
+     },
+     {
+      "x": 13864,
+      "y": 10904
+     },
+     {
+      "x": 13926,
+      "y": 10888
+     },
+     {
+      "x": 13988,
+      "y": 10873
+     },
+     {
+      "x": 14050,
+      "y": 10855
+     },
+     {
+      "x": 14110,
+      "y": 10834
+     },
+     {
+      "x": 14169,
+      "y": 10807
+     },
+     {
+      "x": 14225,
+      "y": 10776
+     }
+    ]
+   },
+   {
+    "from": "bc-stair",
+    "to": "bc-well",
+    "kinds": "nann",
+    "bow": 0,
+    "via": [
+     {
+      "x": 13682,
+      "y": 10886
+     },
+     {
+      "x": 13683,
+      "y": 10812
+     },
+     {
+      "x": 13683,
+      "y": 10738
+     },
+     {
+      "x": 13682,
+      "y": 10663
+     },
+     {
+      "x": 13680,
+      "y": 10589
+     },
+     {
+      "x": 13680,
+      "y": 10515
+     },
+     {
+      "x": 13684,
+      "y": 10441
+     },
+     {
+      "x": 13692,
+      "y": 10367
+     },
+     {
+      "x": 13704,
+      "y": 10293
+     }
+    ]
+   },
+   {
+    "from": "bc-hall",
+    "to": "bc-well",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14226,
+      "y": 10686
+     },
+     {
+      "x": 14172,
+      "y": 10632
+     },
+     {
+      "x": 14119,
+      "y": 10576
+     },
+     {
+      "x": 14068,
+      "y": 10519
+     },
+     {
+      "x": 14016,
+      "y": 10462
+     },
+     {
+      "x": 13964,
+      "y": 10407
+     },
+     {
+      "x": 13908,
+      "y": 10354
+     },
+     {
+      "x": 13849,
+      "y": 10306
+     },
+     {
+      "x": 13786,
+      "y": 10261
+     }
+    ]
+   },
+   {
+    "from": "bc-hall",
+    "to": "bc-peddler",
+    "kinds": "npn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14347,
+      "y": 10764
+     },
+     {
+      "x": 14414,
+      "y": 10789
+     },
+     {
+      "x": 14481,
+      "y": 10815
+     },
+     {
+      "x": 14548,
+      "y": 10842
+     },
+     {
+      "x": 14614,
+      "y": 10869
+     },
+     {
+      "x": 14681,
+      "y": 10895
+     },
+     {
+      "x": 14748,
+      "y": 10917
+     },
+     {
+      "x": 14818,
+      "y": 10935
+     },
+     {
+      "x": 14888,
+      "y": 10949
+     }
+    ]
+   },
+   {
+    "from": "bc-peddler",
+    "to": "bc-vault",
+    "kinds": "nnan",
+    "bow": 0,
+    "via": [
+     {
+      "x": 15050,
+      "y": 10952
+     },
+     {
+      "x": 15140,
+      "y": 10943
+     },
+     {
+      "x": 15229,
+      "y": 10933
+     },
+     {
+      "x": 15319,
+      "y": 10922
+     },
+     {
+      "x": 15409,
+      "y": 10910
+     },
+     {
+      "x": 15498,
+      "y": 10900
+     },
+     {
+      "x": 15588,
+      "y": 10894
+     },
+     {
+      "x": 15679,
+      "y": 10892
+     },
+     {
+      "x": 15769,
+      "y": 10894
+     }
+    ]
+   },
+   {
+    "from": "bc-hall",
+    "to": "bc-crypts",
+    "kinds": "ntnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14292,
+      "y": 10664
+     },
+     {
+      "x": 14303,
+      "y": 10587
+     },
+     {
+      "x": 14313,
+      "y": 10510
+     },
+     {
+      "x": 14322,
+      "y": 10433
+     },
+     {
+      "x": 14330,
+      "y": 10356
+     },
+     {
+      "x": 14340,
+      "y": 10280
+     },
+     {
+      "x": 14354,
+      "y": 10204
+     },
+     {
+      "x": 14372,
+      "y": 10128
+     },
+     {
+      "x": 14394,
+      "y": 10054
+     }
+    ]
+   },
+   {
+    "from": "bc-well",
+    "to": "bc-crypts",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 13791,
+      "y": 10199
+     },
+     {
+      "x": 13862,
+      "y": 10178
+     },
+     {
+      "x": 13933,
+      "y": 10158
+     },
+     {
+      "x": 14006,
+      "y": 10140
+     },
+     {
+      "x": 14078,
+      "y": 10123
+     },
+     {
+      "x": 14149,
+      "y": 10103
+     },
+     {
+      "x": 14220,
+      "y": 10080
+     },
+     {
+      "x": 14288,
+      "y": 10052
+     },
+     {
+      "x": 14355,
+      "y": 10018
+     }
+    ]
+   },
+   {
+    "from": "bc-well",
+    "to": "bc-chapel",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 13714,
+      "y": 10140
+     },
+     {
+      "x": 13707,
+      "y": 10060
+     },
+     {
+      "x": 13699,
+      "y": 9980
+     },
+     {
+      "x": 13690,
+      "y": 9901
+     },
+     {
+      "x": 13680,
+      "y": 9821
+     },
+     {
+      "x": 13672,
+      "y": 9741
+     },
+     {
+      "x": 13668,
+      "y": 9661
+     },
+     {
+      "x": 13668,
+      "y": 9581
+     },
+     {
+      "x": 13672,
+      "y": 9501
+     }
+    ]
+   },
+   {
+    "from": "bc-crypts",
+    "to": "bc-gallery",
+    "kinds": "nnannn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14525,
+      "y": 10008
+     },
+     {
+      "x": 14630,
+      "y": 10036
+     },
+     {
+      "x": 14735,
+      "y": 10065
+     },
+     {
+      "x": 14839,
+      "y": 10097
+     },
+     {
+      "x": 14943,
+      "y": 10129
+     },
+     {
+      "x": 15048,
+      "y": 10159
+     },
+     {
+      "x": 15154,
+      "y": 10184
+     },
+     {
+      "x": 15261,
+      "y": 10202
+     },
+     {
+      "x": 15370,
+      "y": 10213
+     }
+    ]
+   },
+   {
+    "from": "bc-peddler",
+    "to": "bc-gallery",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 15010,
+      "y": 10884
+     },
+     {
+      "x": 15059,
+      "y": 10809
+     },
+     {
+      "x": 15107,
+      "y": 10732
+     },
+     {
+      "x": 15154,
+      "y": 10654
+     },
+     {
+      "x": 15200,
+      "y": 10576
+     },
+     {
+      "x": 15248,
+      "y": 10499
+     },
+     {
+      "x": 15300,
+      "y": 10425
+     },
+     {
+      "x": 15356,
+      "y": 10354
+     },
+     {
+      "x": 15416,
+      "y": 10286
+     }
+    ]
+   },
+   {
+    "from": "bc-vault",
+    "to": "bc-gallery",
+    "kinds": "nhnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 15824,
+      "y": 10831
+     },
+     {
+      "x": 15789,
+      "y": 10761
+     },
+     {
+      "x": 15754,
+      "y": 10692
+     },
+     {
+      "x": 15721,
+      "y": 10621
+     },
+     {
+      "x": 15687,
+      "y": 10550
+     },
+     {
+      "x": 15653,
+      "y": 10480
+     },
+     {
+      "x": 15615,
+      "y": 10412
+     },
+     {
+      "x": 15574,
+      "y": 10346
+     },
+     {
+      "x": 15528,
+      "y": 10282
+     }
+    ]
+   },
+   {
+    "from": "bc-chapel",
+    "to": "bc-treasury",
+    "kinds": "nann",
+    "bow": 0,
+    "via": [
+     {
+      "x": 13761,
+      "y": 9403
+     },
+     {
+      "x": 13841,
+      "y": 9386
+     },
+     {
+      "x": 13923,
+      "y": 9370
+     },
+     {
+      "x": 14004,
+      "y": 9357
+     },
+     {
+      "x": 14086,
+      "y": 9343
+     },
+     {
+      "x": 14167,
+      "y": 9328
+     },
+     {
+      "x": 14247,
+      "y": 9309
+     },
+     {
+      "x": 14326,
+      "y": 9284
+     },
+     {
+      "x": 14404,
+      "y": 9254
+     }
+    ]
+   },
+   {
+    "from": "bc-crypts",
+    "to": "bc-treasury",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14424,
+      "y": 9904
+     },
+     {
+      "x": 14427,
+      "y": 9828
+     },
+     {
+      "x": 14429,
+      "y": 9751
+     },
+     {
+      "x": 14430,
+      "y": 9675
+     },
+     {
+      "x": 14430,
+      "y": 9598
+     },
+     {
+      "x": 14432,
+      "y": 9522
+     },
+     {
+      "x": 14438,
+      "y": 9446
+     },
+     {
+      "x": 14448,
+      "y": 9370
+     },
+     {
+      "x": 14462,
+      "y": 9295
+     }
+    ]
+   },
+   {
+    "from": "bc-treasury",
+    "to": "bc-steward",
+    "kinds": "nnpnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 14571,
+      "y": 9246
+     },
+     {
+      "x": 14662,
+      "y": 9272
+     },
+     {
+      "x": 14753,
+      "y": 9299
+     },
+     {
+      "x": 14843,
+      "y": 9329
+     },
+     {
+      "x": 14933,
+      "y": 9359
+     },
+     {
+      "x": 15024,
+      "y": 9387
+     },
+     {
+      "x": 15115,
+      "y": 9410
+     },
+     {
+      "x": 15209,
+      "y": 9426
+     },
+     {
+      "x": 15304,
+      "y": 9435
+     }
+    ]
+   },
+   {
+    "from": "bc-gallery",
+    "to": "bc-steward",
+    "kinds": "npnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 15470,
+      "y": 10142
+     },
+     {
+      "x": 15459,
+      "y": 10065
+     },
+     {
+      "x": 15447,
+      "y": 9987
+     },
+     {
+      "x": 15434,
+      "y": 9909
+     },
+     {
+      "x": 15420,
+      "y": 9832
+     },
+     {
+      "x": 15408,
+      "y": 9754
+     },
+     {
+      "x": 15400,
+      "y": 9676
+     },
+     {
+      "x": 15396,
+      "y": 9598
+     },
+     {
+      "x": 15396,
+      "y": 9519
+     }
+    ]
+   },
+   {
+    "from": "bc-steward",
+    "to": "bc-throne",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 15373,
+      "y": 9372
+     },
+     {
+      "x": 15346,
+      "y": 9303
+     },
+     {
+      "x": 15320,
+      "y": 9234
+     },
+     {
+      "x": 15295,
+      "y": 9165
+     },
+     {
+      "x": 15269,
+      "y": 9096
+     },
+     {
+      "x": 15243,
+      "y": 9027
+     },
+     {
+      "x": 15215,
+      "y": 8959
+     },
+     {
+      "x": 15185,
+      "y": 8892
+     },
+     {
+      "x": 15154,
+      "y": 8826
+     }
+    ]
+   }
+  ],
+  "grounds": [
+   {
+    "id": "hall-of-kings",
+    "name": "The Hall of Kings",
+    "hub": "bc-hall",
+    "mob": "crypt-guard",
+    "trophy": "Grave Iron",
+    "drops": [
+     "boots",
+     "cape"
+    ],
+    "levels": [
+     28,
+     29
+    ]
+   },
+   {
+    "id": "long-crypts",
+    "name": "The Long Crypts",
+    "hub": "bc-crypts",
+    "mob": "gilded-wraith",
+    "trophy": "Grave Gold",
+    "drops": [
+     "weapon",
+     "armour"
+    ],
+    "levels": [
+     28,
+     29
+    ]
+   },
+   {
+    "id": "gargoyle-gallery",
+    "name": "The Gargoyle Gallery",
+    "hub": "bc-gallery",
+    "mob": "stone-gargoyle",
+    "trophy": "Stone Wings",
+    "drops": [
+     "gloves",
+     "helm"
+    ],
+    "levels": [
+     29,
+     30
+    ]
+   },
+   {
+    "id": "old-treasury",
+    "name": "The Old Treasury",
+    "hub": "bc-treasury",
+    "mob": "gold-mimic",
+    "trophy": "Mimic Teeth",
+    "drops": [
+     "trinket",
+     "shield"
+    ],
+    "levels": [
+     29,
+     30
+    ]
+   }
+  ],
+  "places": []
+ },
+ "bounds": {
+  "x": 13312,
+  "y": 8192,
+  "width": 3072,
+  "height": 3072
+ },
+ "fill": "#141020",
+ "roadColours": [
+  [
+   30,
+   "#2a2438"
+  ],
+  [
+   25,
+   "#8a84a0"
+  ],
+  [
+   10,
+   "rgba(180,174,200,0.7)"
+  ]
+ ],
+ "door": {
+  "spot": "city-castle",
+  "name": "The Buried Crown",
+  "inside": "bc-stair",
+  "barred": "door_crown_barred",
+  "open": "door_crown_open",
+  "plate": "spot_door",
+  "x": 6880,
+  "y": 6464,
+  "atlas": "crown_places",
+  "opensWhen": "all seven Seals"
+ },
+ "boss": {
+  "id": "hollow-king",
+  "name": "The Hollow King",
+  "sprite": "mob_hollow_king"
+ },
+ "miniBoss": {
+  "id": "last-steward",
+  "name": "The Last Steward",
+  "sprite": "mob_last_steward",
+  "hub": "bc-steward"
+ },
+ "spots": [
+  {
+   "x": 13680,
+   "y": 10960,
+   "kind": "door",
+   "hub": "bc-stair"
+  },
+  {
+   "x": 14280,
+   "y": 10740,
+   "kind": "wild",
+   "hub": "bc-hall"
+  },
+  {
+   "x": 13720,
+   "y": 10220,
+   "kind": "spring",
+   "hub": "bc-well"
+  },
+  {
+   "x": 14960,
+   "y": 10960,
+   "kind": "shop_magic",
+   "hub": "bc-peddler"
+  },
+  {
+   "x": 15860,
+   "y": 10900,
+   "kind": "chest",
+   "hub": "bc-vault"
+  },
+  {
+   "x": 14420,
+   "y": 9980,
+   "kind": "wild",
+   "hub": "bc-crypts"
+  },
+  {
+   "x": 15480,
+   "y": 10220,
+   "kind": "wild",
+   "hub": "bc-gallery"
+  },
+  {
+   "x": 13680,
+   "y": 9420,
+   "kind": "church",
+   "hub": "bc-chapel"
+  },
+  {
+   "x": 14480,
+   "y": 9220,
+   "kind": "wild",
+   "hub": "bc-treasury"
+  },
+  {
+   "x": 15400,
+   "y": 9440,
+   "kind": "gate",
+   "hub": "bc-steward"
+  },
+  {
+   "x": 15120,
+   "y": 8760,
+   "kind": "gate",
+   "hub": "bc-throne"
+  },
+  {
+   "x": 13833,
+   "y": 10912,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13989,
+   "y": 10873,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14141,
+   "y": 10820,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13683,
+   "y": 10811,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13682,
+   "y": 10663,
+   "kind": "gear",
+   "hub": null
+  },
+  {
+   "x": 13680,
+   "y": 10514,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13692,
+   "y": 10366,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14171,
+   "y": 10631,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14068,
+   "y": 10519,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13963,
+   "y": 10406,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13848,
+   "y": 10305,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14448,
+   "y": 10802,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14614,
+   "y": 10869,
+   "kind": "spring",
+   "hub": null
+  },
+  {
+   "x": 14784,
+   "y": 10926,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15140,
+   "y": 10943,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15319,
+   "y": 10922,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15499,
+   "y": 10900,
+   "kind": "gear",
+   "hub": null
+  },
+  {
+   "x": 15679,
+   "y": 10892,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14303,
+   "y": 10587,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14322,
+   "y": 10433,
+   "kind": "chest",
+   "hub": null
+  },
+  {
+   "x": 14340,
+   "y": 10279,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14372,
+   "y": 10127,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13863,
+   "y": 10178,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14006,
+   "y": 10140,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14150,
+   "y": 10103,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14290,
+   "y": 10051,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13707,
+   "y": 10060,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13690,
+   "y": 9900,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13672,
+   "y": 9741,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13668,
+   "y": 9580,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14570,
+   "y": 10020,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14721,
+   "y": 10061,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14870,
+   "y": 10106,
+   "kind": "gear",
+   "hub": null
+  },
+  {
+   "x": 15019,
+   "y": 10151,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15171,
+   "y": 10187,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15325,
+   "y": 10208,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15059,
+   "y": 10808,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15154,
+   "y": 10654,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15248,
+   "y": 10498,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15357,
+   "y": 10353,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15789,
+   "y": 10761,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15721,
+   "y": 10620,
+   "kind": "shrine",
+   "hub": null
+  },
+  {
+   "x": 15653,
+   "y": 10480,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15573,
+   "y": 10345,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 13842,
+   "y": 9386,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14005,
+   "y": 9357,
+   "kind": "gear",
+   "hub": null
+  },
+  {
+   "x": 14168,
+   "y": 9328,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14327,
+   "y": 9284,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14427,
+   "y": 9827,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14430,
+   "y": 9674,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14432,
+   "y": 9522,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14448,
+   "y": 9369,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14632,
+   "y": 9263,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14784,
+   "y": 9309,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 14934,
+   "y": 9359,
+   "kind": "spring",
+   "hub": null
+  },
+  {
+   "x": 15086,
+   "y": 9403,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15242,
+   "y": 9429,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15459,
+   "y": 10064,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15434,
+   "y": 9909,
+   "kind": "spring",
+   "hub": null
+  },
+  {
+   "x": 15408,
+   "y": 9754,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15396,
+   "y": 9597,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15333,
+   "y": 9269,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15269,
+   "y": 9096,
+   "kind": "wild",
+   "hub": null
+  },
+  {
+   "x": 15200,
+   "y": 8926,
+   "kind": "wild",
+   "hub": null
+  }
+ ]
+}

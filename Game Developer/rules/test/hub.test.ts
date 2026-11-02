@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, sealCount, sealsOf, SEALS_COMING, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
+import { CLASS_DATA, apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, sealCount, sealsOf, SEALS_COMING, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
 import { migrate } from '../src/save.ts';
 import { WORLD_DATA } from '../src/data.ts';
 import { ringBoard } from './fixtures/ring.ts';
@@ -79,7 +79,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(34);
+    expect(up.version).toBe(35);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
@@ -191,5 +191,27 @@ describe('going home (Robin, 2026-11-02)', () => {
     } finally {
       if (old !== undefined) data.hub = old;
     }
+  });
+});
+
+describe('the Buried Crown (Robin, 2026-11-02)', () => {
+  const at = (bossKills: Record<string, number>) => {
+    const s = newGame({ seed: 'crown', player: P, name: 'Robin', classId: 'warrior' });
+    const c = s.characters[P]!;
+    return { ...s, characters: { ...s.characters, [P]: { ...c, space: 'city-castle', steps: 0, bossKills } } };
+  };
+  it('its door stays shut until every Seal is won, then opens', () => {
+    const shut = apply(at({}), { type: 'door', id: 'a', player: P }, makeRng('x'), 0);
+    expect(shut.events[0]).toMatchObject({ type: 'rejected' });
+    const kills = Object.fromEntries(sealsOf(at({}).board, at({}).characters[P]!).map((x) => [x.space, 1]));
+    const open = apply(at(kills), { type: 'door', id: 'a', player: P }, makeRng('x'), 0);
+    expect(open.state.characters[P]!.space).toBe('bc-stair');
+    expect(open.state.characters[P]!.opened).toContain('buried-crown');
+  });
+});
+
+describe('a Magician with no spells (mine, 2026-11-02)', () => {
+  it('its plain Attack still uses half its magic', () => {
+    expect(CLASS_DATA.mage!.traits?.attackMagic).toBe(0.5);
   });
 });

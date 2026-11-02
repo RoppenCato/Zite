@@ -11,6 +11,11 @@ import cityGroundPng from '../../assets/city_fight/ground.png';
 import cityMidPng from '../../assets/city_fight/mid.png';
 import cityNearPng from '../../assets/city_fight/near.png';
 import cloudsPng from '../../assets/meadow_fight/clouds.png';
+import crownFarPng from '../../assets/dungeon_crown/fight/far.png';
+import crownGroundPng from '../../assets/dungeon_crown/fight/ground.png';
+import crownMidPng from '../../assets/dungeon_crown/fight/mid.png';
+import crownMotesPng from '../../assets/dungeon_crown/fight/motes.png';
+import crownNearPng from '../../assets/dungeon_crown/fight/near.png';
 import giantsCloudsPng from '../../assets/giants_fight/clouds.png';
 import giantsFarPng from '../../assets/giants_fight/far.png';
 import giantsGroundPng from '../../assets/giants_fight/ground.png';
@@ -163,6 +168,19 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'mountain-mid', png: frostMidPng, w: 512, h: 256, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'mountain-near', png: frostNearPng, w: 512, h: 174, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'mountain-ground', png: frostGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  // The old kingdom's carpet, the way back between pillars to the empty throne (Mitch, AD, 2026-11-02).
+  crown: {
+    sky: { top: 0x141020, bottom: 0x2a2440 },
+    soil: 0x5c5670,
+    feet: 46,
+    strips: [
+      { key: 'crown-far', png: crownFarPng, w: 512, h: 352, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'crown-motes', png: crownMotesPng, w: 512, h: 285, bottom: -20, scroll: 0.3, drift: 3, tileScale: 1 },
+      { key: 'crown-mid', png: crownMidPng, w: 512, h: 283, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'crown-near', png: crownNearPng, w: 512, h: 385, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'crown-ground', png: crownGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
   dungeon: {

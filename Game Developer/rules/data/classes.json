@@ -234,7 +234,8 @@
       "defense": 1
     },
     "traits": {
-      "shieldMana": 0.5
+      "shieldMana": 0.5,
+      "attackMagic": 0.5
     },
     "kit": [
       "arcane-bolt",

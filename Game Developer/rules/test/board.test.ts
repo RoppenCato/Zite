@@ -143,7 +143,7 @@ describe('the world', () => {
       ['giantsland', 7],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
-    expect(spaces.length).toBeLessThanOrEqual(1300);
+    expect(spaces.length).toBeLessThanOrEqual(1400);
     expect(board).toMatchObject({ width: 17600, height: 12700 });
   });
 

@@ -442,5 +442,56 @@
         "need": 6
       }
     ]
+  },
+  "crown": {
+    "events": [
+      {
+        "text": "A cold spring runs from a king’s tomb. You drink.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A stone falls from the old roof, onto you.",
+        "kind": "hurt",
+        "value": 0.08
+      },
+      {
+        "text": "A coin rolls out of the dark to your feet. Then more.",
+        "kind": "gold",
+        "value": 60
+      },
+      {
+        "text": "The silence clears your head.",
+        "kind": "mana",
+        "value": 0.25
+      },
+      {
+        "text": "A stoppered bottle stands on a tomb, as if left for you.",
+        "kind": "flask",
+        "value": 1
+      },
+      {
+        "text": "A card lies on a dead king’s chest.",
+        "kind": "card",
+        "value": 1
+      }
+    ],
+    "finds": [
+      {
+        "text": "A chest sits under a fallen banner. Lift it?",
+        "slot": "armour",
+        "need": 6
+      },
+      {
+        "text": "A crown of a helm rests high on a statue. Climb?",
+        "slot": "helm",
+        "need": 6
+      },
+      {
+        "text": "A blade lies in a stone hand. Pull?",
+        "slot": "weapon",
+        "need": 6
+      }
+    ]
   }
 }

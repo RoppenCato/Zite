@@ -56,3 +56,12 @@ export function sealCount(board: Board, c: Character): { won: number; total: num
   const all = sealsOf(board, c);
   return { won: all.filter((s) => s.won).length, total: all.length };
 }
+
+/** The door under Crownhaven asks for this. */
+export function sealsAllWon(board: Board, c: Character): boolean {
+  const { won, total } = sealCount(board, c);
+  return total > 0 && won >= total;
+}
+
+/** The last boss of all. */
+export const FINAL_BOSS = 'hollow-king';

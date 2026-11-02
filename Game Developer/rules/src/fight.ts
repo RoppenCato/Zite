@@ -15,7 +15,7 @@ import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { dropSlot, groundAt, rollLine } from './grounds.ts';
 import { finishQuests, questProgress } from './quests.ts';
-import { sealAt, sealCount, SEALS_COMING } from './seals.ts';
+import { FINAL_BOSS, sealAt, sealCount, SEALS_COMING } from './seals.ts';
 import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Spawn } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
@@ -723,7 +723,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     } else if (p.thunder && f.strikes % p.thunder === 0) {
       chance = 1;
     }
-    const b = blow(s.attack + (spell ? s.magic : 0), hitPower, how.ignoreDefense ? 0 : Math.floor(enemyDefense(f.enemy) * (1 - (s.bonus.ruin ?? 0))), chance, rng);
+    const b = blow(s.attack + (spell ? s.magic : how.melee && traits.attackMagic ? Math.round(s.magic * traits.attackMagic) : 0), hitPower, how.ignoreDefense ? 0 : Math.floor(enemyDefense(f.enemy) * (1 - (s.bonus.ruin ?? 0))), chance, rng);
     if (b.crit && s.bonus.cruelty) b.damage = Math.round(b.damage * (1 + s.bonus.cruelty));
     if (b.crit && traits.critPower) b.damage = Math.round(b.damage * (1 + traits.critPower));
     // Split: the hits share one blow's power, so defense counts once, not on every small hit.
@@ -1028,8 +1028,8 @@ function win(r: Round): ApplyResult {
     events.push({ type: 'keyFound', action: id, player, area: area.id });
   }
 
-  // A land's boss, or a mini-boss guarding a land's gate.
-  if (space?.kind === 'boss' && (e.role === 'boss' || (e.role === 'mini' && space.opens))) {
+  // A land's boss, or a mini-boss guarding a land's gate or a dungeon's last door.
+  if (space?.kind === 'boss' && (e.role === 'boss' || (e.role === 'mini' && (space.opens || area?.dungeon)))) {
     const until = now + (SPACE_KIND_DATA.boss.cooldownMs ?? 0);
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };
     events.push({ type: 'bossDown', action: id, player, space: f.space, until });
@@ -1038,6 +1038,7 @@ function win(r: Round): ApplyResult {
       const held = sealCount(s.board, next);
       events.push({ type: 'sealWon', action: id, player, land: sealLand, won: held.won, total: held.total + SEALS_COMING.length });
     }
+    if (space.boss === FINAL_BOSS && next.bossKills[f.space] === 1) events.push({ type: 'gameWon', action: id, player });
     if (space.opens && !next.opened.includes(space.opens)) {
       // An area not laid yet grows now, from the seed, the same for everyone.
       if (!s.board.areas[space.opens]) s = { ...s, board: growBoard(s.board, s.seed, space.opens) };

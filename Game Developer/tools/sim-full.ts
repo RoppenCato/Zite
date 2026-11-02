@@ -134,7 +134,10 @@ function check(state: GameState, where: string): void {
 const score = (c: Character): number => {
   const s = stats(c);
   const might = c.classId === 'mage' ? (s.magic ?? 0) * 2.5 + s.attack * 0.5 : s.attack * 2;
-  return might + s.defense * 2 + s.maxHp * 0.25;
+  // Uniques and sets do more than their numbers say; about this much (mine).
+  const worn = Object.values(c.equipment) as (GearItem | null)[];
+  const special = 1 + worn.reduce((sum, g) => sum + (g?.unique ? 0.06 : 0) + (g?.set ? 0.04 : 0), 0);
+  return might * special + s.defense * 2 + s.maxHp * 0.25;
 };
 const wearing = (c: Character, g: GearItem): Character => ({ ...c, equipment: { ...c.equipment, [g.slot]: g } });
 

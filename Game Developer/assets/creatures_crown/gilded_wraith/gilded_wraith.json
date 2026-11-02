@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "gilded_wraith/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 223,
+    "h": 312
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 312
+   },
+   "sourceSize": {
+    "w": 223,
+    "h": 312
+   },
+   "pivot": {
+    "x": 0.6637,
+    "y": 1.0224
+   }
+  },
+  "gilded_wraith/attack1/0007": {
+   "frame": {
+    "x": 227,
+    "y": 2,
+    "w": 232,
+    "h": 304
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 232,
+    "h": 304
+   },
+   "sourceSize": {
+    "w": 232,
+    "h": 304
+   },
+   "pivot": {
+    "x": 0.6767,
+    "y": 1.0033
+   }
+  },
+  "gilded_wraith/attack1/0005": {
+   "frame": {
+    "x": 461,
+    "y": 2,
+    "w": 212,
+    "h": 302
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 302
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 302
+   },
+   "pivot": {
+    "x": 0.6038,
+    "y": 1.0265
+   }
+  },
+  "gilded_wraith/attack1/0008": {
+   "frame": {
+    "x": 675,
+    "y": 2,
+    "w": 236,
+    "h": 288
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 236,
+    "h": 288
+   },
+   "sourceSize": {
+    "w": 236,
+    "h": 288
+   },
+   "pivot": {
+    "x": 0.6314,
+    "y": 0.9826
+   }
+  },
+  "gilded_wraith/attack1/0011": {
+   "frame": {
+    "x": 2,
+    "y": 316,
+    "w": 194,
+    "h": 286
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 286
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 286
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.951
+   }
+  },
+  "gilded_wraith/stand/0006": {
+   "frame": {
+    "x": 198,
+    "y": 316,
+    "w": 192,
+    "h": 285
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 285
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 285
+   },
+   "pivot": {
+    "x": 0.4896,
+    "y": 0.9509
+   }
+  },
+  "gilded_wraith/stand/0005": {
+   "frame": {
+    "x": 392,
+    "y": 316,
+    "w": 192,
+    "h": 284
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 284
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 284
+   },
+   "pivot": {
+    "x": 0.4896,
+    "y": 0.9542
+   }
+  },
+  "gilded_wraith/stand/0001": {
+   "frame": {
+    "x": 586,
+    "y": 316,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 0.9821
+   }
+  },
+  "gilded_wraith/stand/0004": {
+   "frame": {
+    "x": 782,
+    "y": 316,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 0.9821
+   }
+  },
+  "gilded_wraith/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 604,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 1.0036
+   }
+  },
+  "gilded_wraith/move/0004": {
+   "frame": {
+    "x": 198,
+    "y": 604,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 1.0036
+   }
+  },
+  "gilded_wraith/attack1/0012": {
+   "frame": {
+    "x": 394,
+    "y": 604,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 0.9643
+   }
+  },
+  "gilded_wraith/die1/0001": {
+   "frame": {
+    "x": 590,
+    "y": 604,
+    "w": 194,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 0.9821
+   }
+  },
+  "gilded_wraith/stand/0003": {
+   "frame": {
+    "x": 786,
+    "y": 604,
+    "w": 198,
+    "h": 276
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 276
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 276
+   },
+   "pivot": {
+    "x": 0.4899,
+    "y": 1.0109
+   }
+  },
+  "gilded_wraith/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 886,
+    "w": 198,
+    "h": 275
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 275
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 275
+   },
+   "pivot": {
+    "x": 0.4899,
+    "y": 1.0145
+   }
+  },
+  "gilded_wraith/hit1/0001": {
+   "frame": {
+    "x": 202,
+    "y": 886,
+    "w": 220,
+    "h": 274
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 220,
+    "h": 274
+   },
+   "sourceSize": {
+    "w": 220,
+    "h": 274
+   },
+   "pivot": {
+    "x": 0.4,
+    "y": 0.9781
+   }
+  },
+  "gilded_wraith/move/0002": {
+   "frame": {
+    "x": 424,
+    "y": 886,
+    "w": 199,
+    "h": 273
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 273
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 273
+   },
+   "pivot": {
+    "x": 0.4673,
+    "y": 1.0256
+   }
+  },
+  "gilded_wraith/move/0003": {
+   "frame": {
+    "x": 625,
+    "y": 886,
+    "w": 199,
+    "h": 273
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 273
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 273
+   },
+   "pivot": {
+    "x": 0.4673,
+    "y": 1.0256
+   }
+  },
+  "gilded_wraith/move/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1163,
+    "w": 201,
+    "h": 273
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 273
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 273
+   },
+   "pivot": {
+    "x": 0.5124,
+    "y": 0.9634
+   }
+  },
+  "gilded_wraith/move/0005": {
+   "frame": {
+    "x": 205,
+    "y": 1163,
+    "w": 201,
+    "h": 271
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 271
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 271
+   },
+   "pivot": {
+    "x": 0.5124,
+    "y": 0.9705
+   }
+  },
+  "gilded_wraith/attack1/0001": {
+   "frame": {
+    "x": 408,
+    "y": 1163,
+    "w": 201,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4776,
+    "y": 0.9851
+   }
+  },
+  "gilded_wraith/attack1/0010": {
+   "frame": {
+    "x": 611,
+    "y": 1163,
+    "w": 218,
+    "h": 266
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 266
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 266
+   },
+   "pivot": {
+    "x": 0.5229,
+    "y": 0.9511
+   }
+  },
+  "gilded_wraith/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1438,
+    "w": 204,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 204,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 204,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.451,
+    "y": 0.9887
+   }
+  },
+  "gilded_wraith/attack1/0009": {
+   "frame": {
+    "x": 208,
+    "y": 1438,
+    "w": 241,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 241,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 241,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.5685,
+    "y": 0.9609
+   }
+  },
+  "gilded_wraith/attack1/0002": {
+   "frame": {
+    "x": 451,
+    "y": 1438,
+    "w": 212,
+    "h": 252
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 252
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 252
+   },
+   "pivot": {
+    "x": 0.4623,
+    "y": 1.0079
+   }
+  },
+  "gilded_wraith/attack1/0003": {
+   "frame": {
+    "x": 665,
+    "y": 1438,
+    "w": 223,
+    "h": 241
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 241
+   },
+   "sourceSize": {
+    "w": 223,
+    "h": 241
+   },
+   "pivot": {
+    "x": 0.4574,
+    "y": 1.0249
+   }
+  },
+  "gilded_wraith/attack1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1705,
+    "w": 230,
+    "h": 235
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 230,
+    "h": 235
+   },
+   "sourceSize": {
+    "w": 230,
+    "h": 235
+   },
+   "pivot": {
+    "x": 0.4652,
+    "y": 1.034
+   }
+  },
+  "gilded_wraith/die1/0003": {
+   "frame": {
+    "x": 234,
+    "y": 1705,
+    "w": 213,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.4225,
+    "y": 0.9913
+   }
+  },
+  "gilded_wraith/die1/0004": {
+   "frame": {
+    "x": 449,
+    "y": 1705,
+    "w": 224,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.442,
+    "y": 1
+   }
+  },
+  "gilded_wraith/die1/0005": {
+   "frame": {
+    "x": 675,
+    "y": 1705,
+    "w": 236,
+    "h": 137
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 236,
+    "h": 137
+   },
+   "sourceSize": {
+    "w": 236,
+    "h": 137
+   },
+   "pivot": {
+    "x": 0.4576,
+    "y": 1.0146
+   }
+  },
+  "gilded_wraith/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1942,
+    "w": 201,
+    "h": 89
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 89
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 89
+   },
+   "pivot": {
+    "x": 0.4726,
+    "y": 1.0449
+   }
+  },
+  "gilded_wraith/die1/0007": {
+   "frame": {
+    "x": 205,
+    "y": 1942,
+    "w": 200,
+    "h": 70
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 200,
+    "h": 70
+   },
+   "sourceSize": {
+    "w": 200,
+    "h": 70
+   },
+   "pivot": {
+    "x": 0.48,
+    "y": 1.0714
+   }
+  },
+  "gilded_wraith/die1/0008": {
+   "frame": {
+    "x": 407,
+    "y": 1942,
+    "w": 200,
+    "h": 53
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 200,
+    "h": 53
+   },
+   "sourceSize": {
+    "w": 200,
+    "h": 53
+   },
+   "pivot": {
+    "x": 0.485,
+    "y": 1.0943
+   }
+  }
+ },
+ "meta": {
+  "image": "gilded_wraith.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 130,
+   "loop": true,
+   "frames": [
+    {
+     "name": "gilded_wraith/stand/0001",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 275
+     },
+     "delay": 130,
+     "lt": {
+      "x": -95,
+      "y": -275
+     },
+     "rb": {
+      "x": 99,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -275
+     }
+    },
+    {
+     "name": "gilded_wraith/stand/0002",
+     "w": 198,
+     "h": 275,
+     "origin": {
+      "x": 97,
+      "y": 279
+     },
+     "delay": 130,
+     "lt": {
+      "x": -97,
+      "y": -279
+     },
+     "rb": {
+      "x": 101,
+      "y": -4
+     },
+     "head": {
+      "x": 0,
+      "y": -279
+     }
+    },
+    {
+     "name": "gilded_wraith/stand/0003",
+     "w": 198,
+     "h": 276,
+     "origin": {
+      "x": 97,
+      "y": 279
+     },
+     "delay": 130,
+     "lt": {
+      "x": -97,
+      "y": -279
+     },
+     "rb": {
+      "x": 101,
+      "y": -3
+     },
+     "head": {
+      "x": 0,
+      "y": -279
+     }
+    },
+    {
+     "name": "gilded_wraith/stand/0004",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 275
+     },
+     "delay": 130,
+     "lt": {
+      "x": -95,
+      "y": -275
+     },
+     "rb": {
+      "x": 99,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -275
+     }
+    },
+    {
+     "name": "gilded_wraith/stand/0005",
+     "w": 192,
+     "h": 284,
+     "origin": {
+      "x": 94,
+      "y": 271
+     },
+     "delay": 130,
+     "lt": {
+      "x": -94,
+      "y": -271
+     },
+     "rb": {
+      "x": 98,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -271
+     }
+    },
+    {
+     "name": "gilded_wraith/stand/0006",
+     "w": 192,
+     "h": 285,
+     "origin": {
+      "x": 94,
+      "y": 271
+     },
+     "delay": 130,
+     "lt": {
+      "x": -94,
+      "y": -271
+     },
+     "rb": {
+      "x": 98,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -271
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "gilded_wraith/move/0001",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 281
+     },
+     "delay": 100,
+     "lt": {
+      "x": -95,
+      "y": -281
+     },
+     "rb": {
+      "x": 99,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -281
+     }
+    },
+    {
+     "name": "gilded_wraith/move/0002",
+     "w": 199,
+     "h": 273,
+     "origin": {
+      "x": 93,
+      "y": 280
+     },
+     "delay": 100,
+     "lt": {
+      "x": -93,
+      "y": -280
+     },
+     "rb": {
+      "x": 106,
+      "y": -7
+     },
+     "head": {
+      "x": 0,
+      "y": -280
+     }
+    },
+    {
+     "name": "gilded_wraith/move/0003",
+     "w": 199,
+     "h": 273,
+     "origin": {
+      "x": 93,
+      "y": 280
+     },
+     "delay": 100,
+     "lt": {
+      "x": -93,
+      "y": -280
+     },
+     "rb": {
+      "x": 106,
+      "y": -7
+     },
+     "head": {
+      "x": 0,
+      "y": -280
+     }
+    },
+    {
+     "name": "gilded_wraith/move/0004",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 281
+     },
+     "delay": 100,
+     "lt": {
+      "x": -95,
+      "y": -281
+     },
+     "rb": {
+      "x": 99,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -281
+     }
+    },
+    {
+     "name": "gilded_wraith/move/0005",
+     "w": 201,
+     "h": 271,
+     "origin": {
+      "x": 103,
+      "y": 263
+     },
+     "delay": 100,
+     "lt": {
+      "x": -103,
+      "y": -263
+     },
+     "rb": {
+      "x": 98,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -263
+     }
+    },
+    {
+     "name": "gilded_wraith/move/0006",
+     "w": 201,
+     "h": 273,
+     "origin": {
+      "x": 103,
+      "y": 263
+     },
+     "delay": 100,
+     "lt": {
+      "x": -103,
+      "y": -263
+     },
+     "rb": {
+      "x": 98,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -263
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "gilded_wraith/attack1/0001",
+     "w": 201,
+     "h": 269,
+     "origin": {
+      "x": 96,
+      "y": 265
+     },
+     "delay": 67,
+     "lt": {
+      "x": -96,
+      "y": -265
+     },
+     "rb": {
+      "x": 105,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -265
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0002",
+     "w": 212,
+     "h": 252,
+     "origin": {
+      "x": 98,
+      "y": 254
+     },
+     "delay": 67,
+     "lt": {
+      "x": -98,
+      "y": -254
+     },
+     "rb": {
+      "x": 114,
+      "y": -2
+     },
+     "head": {
+      "x": 0,
+      "y": -254
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0003",
+     "w": 223,
+     "h": 241,
+     "origin": {
+      "x": 102,
+      "y": 247
+     },
+     "delay": 67,
+     "lt": {
+      "x": -102,
+      "y": -247
+     },
+     "rb": {
+      "x": 121,
+      "y": -6
+     },
+     "head": {
+      "x": 0,
+      "y": -247
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0004",
+     "w": 230,
+     "h": 235,
+     "origin": {
+      "x": 107,
+      "y": 243
+     },
+     "delay": 100,
+     "lt": {
+      "x": -107,
+      "y": -243
+     },
+     "rb": {
+      "x": 123,
+      "y": -8
+     },
+     "head": {
+      "x": 0,
+      "y": -243
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0005",
+     "w": 212,
+     "h": 302,
+     "origin": {
+      "x": 128,
+      "y": 310
+     },
+     "delay": 67,
+     "lt": {
+      "x": -128,
+      "y": -310
+     },
+     "rb": {
+      "x": 84,
+      "y": -8
+     },
+     "head": {
+      "x": 0,
+      "y": -310
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0006",
+     "w": 223,
+     "h": 312,
+     "origin": {
+      "x": 148,
+      "y": 319
+     },
+     "delay": 50,
+     "lt": {
+      "x": -148,
+      "y": -319
+     },
+     "rb": {
+      "x": 75,
+      "y": -7
+     },
+     "head": {
+      "x": 0,
+      "y": -319
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0007",
+     "w": 232,
+     "h": 304,
+     "origin": {
+      "x": 157,
+      "y": 305
+     },
+     "delay": 134,
+     "lt": {
+      "x": -157,
+      "y": -305
+     },
+     "rb": {
+      "x": 75,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -305
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0008",
+     "w": 236,
+     "h": 288,
+     "origin": {
+      "x": 149,
+      "y": 283
+     },
+     "delay": 67,
+     "lt": {
+      "x": -149,
+      "y": -283
+     },
+     "rb": {
+      "x": 87,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -283
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0009",
+     "w": 241,
+     "h": 256,
+     "origin": {
+      "x": 137,
+      "y": 246
+     },
+     "delay": 67,
+     "lt": {
+      "x": -137,
+      "y": -246
+     },
+     "rb": {
+      "x": 104,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -246
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0010",
+     "w": 218,
+     "h": 266,
+     "origin": {
+      "x": 114,
+      "y": 253
+     },
+     "delay": 67,
+     "lt": {
+      "x": -114,
+      "y": -253
+     },
+     "rb": {
+      "x": 104,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0011",
+     "w": 194,
+     "h": 286,
+     "origin": {
+      "x": 97,
+      "y": 272
+     },
+     "delay": 67,
+     "lt": {
+      "x": -97,
+      "y": -272
+     },
+     "rb": {
+      "x": 97,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -272
+     }
+    },
+    {
+     "name": "gilded_wraith/attack1/0012",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 270
+     },
+     "delay": 67,
+     "lt": {
+      "x": -95,
+      "y": -270
+     },
+     "rb": {
+      "x": 99,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -270
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "gilded_wraith/hit1/0001",
+     "w": 220,
+     "h": 274,
+     "origin": {
+      "x": 88,
+      "y": 268
+     },
+     "delay": 600,
+     "lt": {
+      "x": -88,
+      "y": -268
+     },
+     "rb": {
+      "x": 132,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -268
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "gilded_wraith/die1/0001",
+     "w": 194,
+     "h": 280,
+     "origin": {
+      "x": 95,
+      "y": 275
+     },
+     "delay": 83,
+     "lt": {
+      "x": -95,
+      "y": -275
+     },
+     "rb": {
+      "x": 99,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -275
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "gilded_wraith/die1/0002",
+     "w": 204,
+     "h": 265,
+     "origin": {
+      "x": 92,
+      "y": 262
+     },
+     "delay": 83,
+     "lt": {
+      "x": -92,
+      "y": -262
+     },
+     "rb": {
+      "x": 112,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -262
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "gilded_wraith/die1/0003",
+     "w": 213,
+     "h": 231,
+     "origin": {
+      "x": 90,
+      "y": 229
+     },
+     "delay": 83,
+     "lt": {
+      "x": -90,
+      "y": -229
+     },
+     "rb": {
+      "x": 123,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "gilded_wraith/die1/0004",
+     "w": 224,
+     "h": 181,
+     "origin": {
+      "x": 99,
+      "y": 181
+     },
+     "delay": 83,
+     "lt": {
+      "x": -99,
+      "y": -181
+     },
+     "rb": {
+      "x": 125,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "gilded_wraith/die1/0005",
+     "w": 236,
+     "h": 137,
+     "origin": {
+      "x": 108,
+      "y": 139
+     },
+     "delay": 83,
+     "lt": {
+      "x": -108,
+      "y": -139
+     },
+     "rb": {
+      "x": 128,
+      "y": -2
+     },
+     "head": {
+      "x": 0,
+      "y": -139
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "gilded_wraith/die1/0006",
+     "w": 201,
+     "h": 89,
+     "origin": {
+      "x": 95,
+      "y": 93
+     },
+     "delay": 83,
+     "lt": {
+      "x": -95,
+      "y": -93
+     },
+     "rb": {
+      "x": 106,
+      "y": -4
+     },
+     "head": {
+      "x": 0,
+      "y": -93
+     },
+     "a0": 255,
+     "a1": 170
+    },
+    {
+     "name": "gilded_wraith/die1/0007",
+     "w": 200,
+     "h": 70,
+     "origin": {
+      "x": 96,
+      "y": 75
+     },
+     "delay": 83,
+     "lt": {
+      "x": -96,
+      "y": -75
+     },
+     "rb": {
+      "x": 104,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -75
+     },
+     "a0": 170,
+     "a1": 80
+    },
+    {
+     "name": "gilded_wraith/die1/0008",
+     "w": 200,
+     "h": 53,
+     "origin": {
+      "x": 97,
+      "y": 58
+     },
+     "delay": 83,
+     "lt": {
+      "x": -97,
+      "y": -58
+     },
+     "rb": {
+      "x": 103,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -58
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

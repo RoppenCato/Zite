@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 34;
+export const STATE_VERSION = 35;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -78,6 +78,8 @@ export interface Space {
   mob?: string;
   /** A door: the spot it leads to, in another part of the board. */
   door?: string;
+  /** A door that opens only with every Seal (Robin, 2026-11-02: "when all are dead, the final dungeon opens"). */
+  sealed?: boolean;
   /** A shop's stock: arms when not said. */
   stock?: ShopStock;
   /** A locked chest: it opens only with the area's key, which its mini-boss carries, and holds more (mine, 2026-11-01). */
@@ -581,6 +583,8 @@ export type GameEvent =
   | { type: 'secretFound'; action: string; player: string; space: string; name: string }
   | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
+  /** The last boss of all, beaten for the first time. */
+  | { type: 'gameWon'; action: string; player: string }
   | { type: 'arenaTaken'; action: string; player: string; waves: number; gold: number; xp: number }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
   /** Levels crossed or a boss beaten brought skill points. */

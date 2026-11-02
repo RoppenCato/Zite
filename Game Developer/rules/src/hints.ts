@@ -10,6 +10,7 @@ import { grownIndex, peekArea } from './generate.ts';
 import { groundAt } from './grounds.ts';
 import { questLine } from './quests.ts';
 import type { GameState } from './types.ts';
+import { sealsAllWon } from './seals.ts';
 
 /** A rough age: "just now", "5 min ago", "2 h ago". */
 function ago(ms: number): string {
@@ -97,6 +98,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
     case 'door': {
       const beyond = space.door ? state.board.spaces[space.door] : undefined;
+      if (space.sealed && me && !sealsAllWon(state.board, me)) return `${where}: a door with seven sockets, sealed. Every land's Seal opens it.`;
       return area?.dungeon ? `${where}: the way back to daylight.` : `${where}: a way in, levels ${state.board.areas[beyond?.area ?? '']?.levels.join(' to ') ?? '?'}. Something waits at the far end.`;
     }
     case 'arena':

@@ -268,7 +268,7 @@ export function withDungeons(board: Board): Board {
     setBounds(out, id);
     out.areas[id] = { ...out.areas[id]!, dungeon: true };
     out.spaces[d.inside] = { ...out.spaces[d.inside]!, door: d.outside.spot };
-    out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside };
+    out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside, ...(d.outside.sealed ? { sealed: true } : {}) };
   }
   return out;
 }

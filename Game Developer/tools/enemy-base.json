@@ -1352,5 +1352,205 @@
       "text": "Every third round the storm bites through any guard: 8% of your HP.",
       "line": "The storm bites."
     }
+  },
+  "crypt-guard": {
+    "name": "Crypt Guard",
+    "level": 28,
+    "role": "mob",
+    "hp": 1500,
+    "attack": 124,
+    "defense": 40,
+    "xp": 290,
+    "gold": 98,
+    "moves": [
+      {
+        "name": "Old Sword",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Shield Up",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      },
+      {
+        "name": "Grave Cleave",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "gilded-wraith": {
+    "name": "Gilded Wraith",
+    "level": 29,
+    "role": "mob",
+    "hp": 1180,
+    "attack": 150,
+    "defense": 30,
+    "xp": 310,
+    "gold": 104,
+    "moves": [
+      {
+        "name": "Cold Touch",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Fade",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      },
+      {
+        "name": "Gold Sickness",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "stone-gargoyle": {
+    "name": "Stone Gargoyle",
+    "level": 30,
+    "role": "mob",
+    "hp": 1800,
+    "attack": 128,
+    "defense": 52,
+    "xp": 330,
+    "gold": 108,
+    "moves": [
+      {
+        "name": "Stone Claw",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Turn to Stone",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      },
+      {
+        "name": "Dive",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "gold-mimic": {
+    "name": "Gold Mimic",
+    "level": 30,
+    "role": "mob",
+    "hp": 1400,
+    "attack": 146,
+    "defense": 40,
+    "xp": 340,
+    "gold": 170,
+    "moves": [
+      {
+        "name": "Lid Snap",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Coin Spit",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      },
+      {
+        "name": "Swallow",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "last-steward": {
+    "name": "The Last Steward",
+    "level": 30,
+    "role": "mini",
+    "hp": 3000,
+    "attack": 126,
+    "defense": 40,
+    "xp": 900,
+    "gold": 600,
+    "moves": [
+      {
+        "name": "Key Ring",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Final Account",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "trick": {
+      "kind": "iceShell",
+      "every": 4,
+      "rounds": 2,
+      "mult": 2.5,
+      "text": "Every fourth round The Last Steward locks himself behind his keys: hits barely scratch him for two rounds.",
+      "line": "The locks turn. Wait it out."
+    }
+  },
+  "hollow-king": {
+    "name": "The Hollow King",
+    "level": 31,
+    "role": "boss",
+    "hp": 8000,
+    "attack": 142,
+    "defense": 44,
+    "xp": 4000,
+    "gold": 1500,
+    "moves": [
+      {
+        "name": "Empty Gauntlet",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Crown’s Judgement",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The crown burns: the blue flame turns to gold!",
+      "moves": [
+        {
+          "name": "Empty Gauntlet",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Crown’s Judgement",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Gold Fire",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "swarm",
+      "share": 0.03,
+      "max": 0.5,
+      "text": "The flame under his crown grows each round: he hits harder the longer it lasts.",
+      "line": "The flame grows."
+    }
   }
 }

@@ -99,6 +99,27 @@ import yetiKingPng from '../../assets/creatures_giants/yeti_king/yeti_king.png';
 import yetiKing2Data from '../../assets/creatures_giants/yeti_king2/yeti_king2.json';
 import yetiKing2Json from '../../assets/creatures_giants/yeti_king2/yeti_king2.json?url';
 import yetiKing2Png from '../../assets/creatures_giants/yeti_king2/yeti_king2.png';
+import cryptGuardData from '../../assets/creatures_crown/crypt_guard/crypt_guard.json';
+import cryptGuardJson from '../../assets/creatures_crown/crypt_guard/crypt_guard.json?url';
+import cryptGuardPng from '../../assets/creatures_crown/crypt_guard/crypt_guard.png';
+import gildedWraithData from '../../assets/creatures_crown/gilded_wraith/gilded_wraith.json';
+import gildedWraithJson from '../../assets/creatures_crown/gilded_wraith/gilded_wraith.json?url';
+import gildedWraithPng from '../../assets/creatures_crown/gilded_wraith/gilded_wraith.png';
+import stoneGargoyleData from '../../assets/creatures_crown/stone_gargoyle/stone_gargoyle.json';
+import stoneGargoyleJson from '../../assets/creatures_crown/stone_gargoyle/stone_gargoyle.json?url';
+import stoneGargoylePng from '../../assets/creatures_crown/stone_gargoyle/stone_gargoyle.png';
+import goldMimicData from '../../assets/creatures_crown/gold_mimic/gold_mimic.json';
+import goldMimicJson from '../../assets/creatures_crown/gold_mimic/gold_mimic.json?url';
+import goldMimicPng from '../../assets/creatures_crown/gold_mimic/gold_mimic.png';
+import lastStewardData from '../../assets/creatures_crown/last_steward/last_steward.json';
+import lastStewardJson from '../../assets/creatures_crown/last_steward/last_steward.json?url';
+import lastStewardPng from '../../assets/creatures_crown/last_steward/last_steward.png';
+import hollowKingData from '../../assets/creatures_crown/hollow_king/hollow_king.json';
+import hollowKingJson from '../../assets/creatures_crown/hollow_king/hollow_king.json?url';
+import hollowKingPng from '../../assets/creatures_crown/hollow_king/hollow_king.png';
+import hollowKing2Data from '../../assets/creatures_crown/hollow_king2/hollow_king2.json';
+import hollowKing2Json from '../../assets/creatures_crown/hollow_king2/hollow_king2.json?url';
+import hollowKing2Png from '../../assets/creatures_crown/hollow_king2/hollow_king2.png';
 import bogToadData from '../../assets/creatures_swamp/bog_toad/bog_toad.json';
 import bogToadJson from '../../assets/creatures_swamp/bog_toad/bog_toad.json?url';
 import bogToadPng from '../../assets/creatures_swamp/bog_toad/bog_toad.png';
@@ -201,6 +222,13 @@ const CREATURES: Record<string, CreatureFiles> = {
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },
   // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  // The Buried Crown (Mitch, AD, 2026-11-02). The King at 1.12, not the atlas's 1.6, to stay in the column, like the other bosses.
+  'crypt-guard': { key: 'crypt_guard', png: cryptGuardPng, json: cryptGuardJson, actions: actionsOf(cryptGuardData), scale: 0.6667, blowFrame: 4 },
+  'gilded-wraith': { key: 'gilded_wraith', png: gildedWraithPng, json: gildedWraithJson, actions: actionsOf(gildedWraithData), scale: 0.5714, blowFrame: 7 },
+  'stone-gargoyle': { key: 'stone_gargoyle', png: stoneGargoylePng, json: stoneGargoyleJson, actions: actionsOf(stoneGargoyleData), scale: 0.7273, blowFrame: 7 },
+  'gold-mimic': { key: 'gold_mimic', png: goldMimicPng, json: goldMimicJson, actions: actionsOf(goldMimicData), scale: 0.6154, blowFrame: 7 },
+  'last-steward': { key: 'last_steward', png: lastStewardPng, json: lastStewardJson, actions: actionsOf(lastStewardData), scale: 0.8, blowFrame: 4 },
+  'hollow-king': { key: 'hollow_king', png: hollowKingPng, json: hollowKingJson, actions: actionsOf(hollowKingData), scale: 1.12, blowFrame: 5, phase2: { key: 'hollow_king2', png: hollowKing2Png, json: hollowKing2Json, actions: actionsOf(hollowKing2Data) } },
   // The Giants' Land (Mitch, AD, 2026-11-02). The King at 1.1, not the atlas's 1.3333, to stay in the column, like the other bosses.
   'young-yeti': { key: 'young_yeti', png: youngYetiPng, json: youngYetiJson, actions: actionsOf(youngYetiData), scale: 0.6667, blowFrame: 7 },
   'snow-monster': { key: 'snow_monster', png: snowMonsterPng, json: snowMonsterJson, actions: actionsOf(snowMonsterData), scale: 0.6667, blowFrame: 7 },
