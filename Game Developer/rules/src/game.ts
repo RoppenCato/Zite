@@ -1273,7 +1273,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       standing.add(c.space);
     }
     const candidates = Object.values(state.board.spaces)
-      .filter((s) => s.kind === 'normal' && !s.hidden && open.has(s.area) && !state.board.areas[s.area]?.dungeon && !spawns[s.id] && !standing.has(s.id))
+      .filter((s) => s.kind === 'normal' && !s.hidden && open.has(s.area) && !state.board.areas[s.area]?.dungeon && !state.board.areas[s.area]?.city && !spawns[s.id] && !standing.has(s.id))
       .map((s) => s.id)
       .sort();
     if (candidates.length) {
@@ -1321,7 +1321,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
   } else if (rng.next() < w.chancePerTick) {
     const here = Object.values(characters)
       .map((c) => ({ c, area: state.board.areas[state.board.spaces[c.space]?.area ?? ''] }))
-      .filter((x): x is { c: Character; area: Area } => !!x.area && !x.area.dungeon && x.c.level < x.area.levels[1] + w.levelsOver)
+      .filter((x): x is { c: Character; area: Area } => !!x.area && !x.area.dungeon && !x.area.city && x.c.level < x.area.levels[1] + w.levelsOver)
       .sort((a, b) => a.c.id.localeCompare(b.c.id));
     const pick = here.length ? here[rng.int(here.length) - 1]! : null;
     const wilds = pick ? Object.values(state.board.spaces).filter((s) => s.area === pick.area.id && free(s) && groundAt(state.board, s)).sort((a, b) => a.id.localeCompare(b.id)) : [];

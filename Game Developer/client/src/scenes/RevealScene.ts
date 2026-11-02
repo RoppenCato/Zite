@@ -23,8 +23,20 @@ export interface RevealSceneDeps {
 const CENTRE = DESIGN_WIDTH / 2;
 /** Where things sit, in design pixels (mine): the chest's feet, its mouth where the glow and the particles centre, the card at rest. */
 export const REVEAL_LAYOUT = { titleY: 150, cardY: 330, chestY: 600, mouthY: 530, hintY: 696 } as const;
-/** The glow builds this long before the lid moves; a tap cuts it short. */
-const BUILD_MS = 1500;
+/**
+ * How a chest charges and pops, by what is inside (Robin, 2026-11-02: the highest "should really shake a lot and charge for a big pop 2-4 seconds later"; the numbers are mine).
+ * `ms`: the glow builds this long before the lid moves; a tap cuts it short. `shake`: how hard it stirs. `rumble`: the screen trembles and the phone ticks as it builds.
+ * `hold`: it stops dead and squeezes this long at the very end, the breath before the pop. `pop`: how far the flash goes; `jolt`: how hard the screen jumps.
+ */
+const CHARGE: Record<Tier, { ms: number; shake: number; rumble: boolean; hold: number; pop: number; jolt: number }> = {
+  gold: { ms: 700, shake: 0.5, rumble: false, hold: 0, pop: 4, jolt: 0 },
+  common: { ms: 700, shake: 0.5, rumble: false, hold: 0, pop: 4, jolt: 0 },
+  uncommon: { ms: 1000, shake: 0.75, rumble: false, hold: 0, pop: 5, jolt: 0 },
+  rare: { ms: 1500, shake: 1, rumble: false, hold: 0, pop: 6, jolt: 0.002 },
+  epic: { ms: 2300, shake: 1.4, rumble: true, hold: 120, pop: 8, jolt: 0.005 },
+  legendary: { ms: 3100, shake: 1.9, rumble: true, hold: 180, pop: 11, jolt: 0.009 },
+  unique: { ms: 3700, shake: 2.2, rumble: true, hold: 240, pop: 13, jolt: 0.012 },
+};
 /** Where the lid's centre starts against the chest's pivot, in design pixels (Mitch, AD). */
 const LID_FROM = { x: 4.25, y: -72.25 } as const;
 /** The card rests this long before the next card or the board, unless tapped. */
@@ -36,9 +48,9 @@ const BURST: Record<Tier, { sparkles: number; petals: number; buzz: number }> = 
   common: { sparkles: 6, petals: 4, buzz: 10 },
   uncommon: { sparkles: 8, petals: 5, buzz: 15 },
   rare: { sparkles: 10, petals: 6, buzz: 25 },
-  epic: { sparkles: 13, petals: 8, buzz: 35 },
-  legendary: { sparkles: 16, petals: 10, buzz: 50 },
-  unique: { sparkles: 16, petals: 10, buzz: 50 },
+  epic: { sparkles: 16, petals: 10, buzz: 60 },
+  legendary: { sparkles: 24, petals: 16, buzz: 110 },
+  unique: { sparkles: 30, petals: 20, buzz: 140 },
 };
 const FACE_INK = '#35292b';
 
@@ -139,24 +151,46 @@ export class RevealScene extends Phaser.Scene {
     // It shines in the colour, brighter and brighter, and shakes harder and harder.
     const { chestY } = REVEAL_LAYOUT;
     const light = lighten(this.tint);
+    const charge = CHARGE[this.tier];
     this.shaker = this.tweens.addCounter({
       from: 0,
       to: 1,
-      duration: BUILD_MS,
+      duration: charge.ms - charge.hold,
       ease: 'Sine.easeIn',
       onUpdate: (tween) => {
         const t = tween.getValue() ?? 0;
         const now = this.time.now;
-        this.chest.setAngle(Math.sin(now * 0.055) * (0.6 + t * 4.5));
-        this.chest.x = CENTRE + Math.sin(now * 0.083) * t * 4;
-        this.chest.y = chestY - Math.abs(Math.sin(now * 0.041)) * t * 6;
+        this.chest.setAngle(Math.sin(now * 0.055) * (0.6 + t * 4.5) * charge.shake);
+        this.chest.x = CENTRE + Math.sin(now * 0.083) * t * 4 * charge.shake;
+        this.chest.y = chestY - Math.abs(Math.sin(now * 0.041)) * t * 6 * charge.shake;
         this.glow.setAlpha(0.2 + t * 0.8 + Math.sin(now * 0.02) * 0.08);
         this.glow.setScale(LOOT_SCALE * (0.5 + t * 0.8));
         const mix = (from: number, to: number): number => Math.round(from + (to - from) * t * 0.7);
         this.chest.setTint((mix(255, (light >> 16) & 0xff) << 16) | (mix(255, (light >> 8) & 0xff) << 8) | mix(255, light & 0xff));
       },
     });
-    this.timer = this.time.delayedCall(BUILD_MS, () => this.open());
+    if (charge.rumble) this.rumble(charge.ms - charge.hold, 0);
+    if (charge.hold) {
+      this.time.delayedCall(charge.ms - charge.hold, () => {
+        if (this.phase !== 'build') return;
+        this.shaker?.stop();
+        this.shaker = null;
+        this.chest.setAngle(0).setPosition(CENTRE, chestY);
+        this.tweens.add({ targets: this.chest, scaleX: LOOT_SCALE * 1.14, scaleY: LOOT_SCALE * 0.84, duration: charge.hold, ease: 'Quad.easeOut' });
+      });
+    }
+    this.timer = this.time.delayedCall(charge.ms, () => this.open());
+  }
+
+  /** The ticks of a big chest's charge: the screen trembles, the phone taps and the shimmer comes back, closer and closer together, harder and harder. */
+  private rumble(ms: number, done: number): void {
+    if (this.phase !== 'build' || done >= ms) return;
+    const t = done / ms;
+    const gap = 520 - t * 360;
+    feel.buzz(Math.round(8 + t * 22));
+    this.cameras.main.shake(gap, 0.0006 + t * t * 0.004);
+    if (done > 0 && Math.floor(done / 900) !== Math.floor((done - gap) / 900)) sfx.play('ui/chest-shimmer');
+    this.time.delayedCall(gap, () => this.rumble(ms, done + gap));
   }
 
   /** The lid goes up (Mitch, AD's clip); the burst comes on the frame it is fully open. */
@@ -168,6 +202,7 @@ export class RevealScene extends Phaser.Scene {
     this.shaker?.stop();
     this.shaker = null;
     const { chestY } = REVEAL_LAYOUT;
+    this.tweens.killTweensOf(this.chest);
     this.chest.setAngle(0).setPosition(CENTRE, chestY).clearTint();
     // The pop: the body stays with its light showing, the lid flies.
     this.chest.setFrame('chest/body');
@@ -177,7 +212,8 @@ export class RevealScene extends Phaser.Scene {
     this.chest.setScale(LOOT_SCALE * 1.22, LOOT_SCALE * 0.82);
     this.tweens.add({ targets: this.chest, scaleX: LOOT_SCALE, scaleY: LOOT_SCALE, duration: 300, ease: 'Back.easeOut' });
     const flash = this.add.circle(CENTRE, REVEAL_LAYOUT.mouthY, 40, 0xffffff, 0.9).setDepth(5).setBlendMode(Phaser.BlendModes.ADD);
-    this.tweens.add({ targets: flash, scale: 5, alpha: 0, duration: 260, ease: 'Quad.easeOut', onComplete: () => flash.destroy() });
+    const { pop } = CHARGE[this.tier];
+    this.tweens.add({ targets: flash, scale: pop, alpha: 0, duration: 200 + pop * 25, ease: 'Quad.easeOut', onComplete: () => flash.destroy() });
     // Blown clean off the top of the screen, so it never hangs over the words.
     this.tweens.add({ targets: this.lid, y: -160, angle: 720, duration: 520, ease: 'Linear', onComplete: () => this.lid.setVisible(false) });
   }
@@ -196,7 +232,8 @@ export class RevealScene extends Phaser.Scene {
     }
     this.tweens.killTweensOf(this.glow);
     this.tweens.add({ targets: this.glow, alpha: 1, scale: LOOT_SCALE * 1.5, duration: 250, ease: 'Quad.easeOut', onComplete: () => this.tweens.add({ targets: this.glow, alpha: 0.85, scale: LOOT_SCALE * 1.4, duration: 400 }) });
-    if (this.tier === 'legendary' || this.tier === 'unique') this.cameras.main.shake(160, 0.003);
+    const { jolt } = CHARGE[this.tier];
+    if (jolt) this.cameras.main.shake(160 + jolt * 30000, jolt, true);
     this.sparkles(b.sparkles);
     this.petals(b.petals);
     this.showCard();

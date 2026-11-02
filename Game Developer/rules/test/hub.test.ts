@@ -84,6 +84,17 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
   });
+  it('nothing wanders into the city: no creature, merchant or Dread appears there', () => {
+    let s = made();
+    s = { ...s, characters: { [P]: { ...s.characters[P]!, opened: ['meadows', 'kingswood', 'crownhaven'], space: 'city-square' } } };
+    const rng = makeRng('quiet');
+    let now = NOW;
+    for (let i = 0; i < 400; i++) {
+      now += 60_000;
+      s = apply(s, { type: 'tick', id: `t${i}`, player: P } as never, rng, now).state;
+      for (const id of Object.keys(s.spawns)) expect(s.board.areas[s.board.spaces[id]!.area]!.city ?? false, id).toBe(false);
+    }
+  });
   it('going home works on the real world', () => {
     const s = made();
     const open: GameState = { ...s, characters: { [P]: { ...s.characters[P]!, opened: ['meadows', 'kingswood', 'crownhaven'], space: 'gate' } } };

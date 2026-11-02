@@ -533,3 +533,7 @@ World width 16600. `BAKED_ROADS`: Bogglemire's and The Frostcrown's roads are in
 ## The hub world on the board (Robin, 2026-11-02)
 
 One chunk set for the whole world (`assets/world_moved`), held by nearness; `PAINTED` is each land's box round its hubs. Three overviews: the middle at the start, west and east on the first zoom out. A city spot is tapped to stroll, with no die. The Home button between the top signs goes to `world.hub`. On the zoomed-out map, every land but the one you are in shows its name and levels.
+
+## The chest's charge (Robin, 2026-11-02)
+
+`CHARGE` in `RevealScene.ts`, by the best rarity inside: 0.7 s for gold and common up to 3.7 s for a unique, with harder shaking. Epic and up also tremble the screen and tap the phone as they build, stop dead and squeeze for a moment, then pop with a bigger flash and a jump of the screen. A tap still cuts it short, and Fewer effects still skips it.
