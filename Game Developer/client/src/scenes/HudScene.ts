@@ -415,8 +415,8 @@ export class HudScene extends Phaser.Scene {
     this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);
     this.goal = this.add.text(284, 88, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
     if (this.kit) this.add.image(34, 30, KIT, 'medal_level').setDisplaySize(48, 48);
-    this.add.text(34, 22, 'Lv', { fontFamily: FONT, fontSize: '9.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
-    this.levelText = this.add.text(34, 34, '', { fontFamily: FONT_DISPLAY, fontSize: '17px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
+    this.add.text(34, 20, 'Lv', { fontFamily: FONT, fontSize: '9.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
+    this.levelText = this.add.text(34, 35, '', { fontFamily: FONT_DISPLAY, fontSize: '17px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
     this.name = this.add.text(66, 13, '', { fontFamily: FONT_DISPLAY, fontSize: '14.5px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
     this.hpBar = new Bar(this, 145, 30, 158, 14, COLORS.button, 0, '', { fontSize: 10.5 });
     this.mpBar = new Bar(this, 145, 44, 158, 12, COLORS.mana, 0, '', { small: true, fontSize: 9.5 });
@@ -470,6 +470,7 @@ export class HudScene extends Phaser.Scene {
       .text(212, 0, '', {
         fontFamily: FONT,
         fontSize: settings.font(15),
+        fontStyle: 'bold',
         color: this.kit ? INK : COLORS.text,
         align: 'center',
         wordWrap: { width: 324 },
