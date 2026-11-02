@@ -2,6 +2,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { apply, groundAt, groundsOf, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
+import { pointsAlong } from '../src/world.ts';
 import type { Action, Character, GameEvent, GameState, Quest } from '../src/types.ts';
 
 const P = 'p1';
@@ -294,7 +295,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(16);
+    expect(up.version).toBe(17);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();
@@ -342,5 +343,33 @@ describe('a spot you roll for', () => {
   it('stands on every hand-laid map', () => {
     const s = world();
     for (const area of ['meadows', 'thornwood', 'frostpeak']) expect(Object.values(s.board.spaces).some((x) => x.area === area && x.kind === 'gear')).toBe(true);
+  });
+});
+
+describe('the coach between towns', () => {
+  const at = (space: string, gold: number, visited: string[]) => put(world(), { space, gold, visited, steps: 0 });
+
+  it('goes to a town you have stood in, for a fare, and you land there rested', () => {
+    const r = act(at('ashford', 100, ['ashford', 'millford']), { type: 'travel', to: 'millford' });
+    expect(r.events[0]).toMatchObject({ type: 'traveled', from: 'ashford', to: 'millford', price: 15, gold: 85 });
+    expect(me(r.state)).toMatchObject({ space: 'millford', gold: 85 });
+    expect(has(r.events, 'rested')).toBe(true);
+  });
+
+  it('charges by the tier of where you are going', () => {
+    const r = act(at('ashford', 100, ['ashford', 'brambleford']), { type: 'travel', to: 'brambleford' });
+    expect(r.events[0]).toMatchObject({ type: 'traveled', price: 30 });
+  });
+
+  it('refuses a town not yet seen, away from a town, or with too little gold', () => {
+    expect(act(at('ashford', 100, ['ashford']), { type: 'travel', to: 'millford' }).events[0]).toMatchObject({ type: 'rejected' });
+    expect(act(at('tinker', 100, ['ashford', 'millford']), { type: 'travel', to: 'millford' }).events[0]).toMatchObject({ type: 'rejected' });
+    expect(act(at('ashford', 5, ['ashford', 'millford']), { type: 'travel', to: 'millford' }).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough gold' });
+  });
+});
+
+describe('a road that wanders', () => {
+  it('spaces its spots evenly along the points it passes through', () => {
+    expect(pointsAlong([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }], 3)).toEqual([{ x: 50, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 50 }]);
   });
 });

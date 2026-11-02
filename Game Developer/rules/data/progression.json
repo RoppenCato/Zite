@@ -89,5 +89,8 @@
   },
   "lootRoll": {
     "need": 4
+  },
+  "travel": {
+    "perTier": 15
   }
 }

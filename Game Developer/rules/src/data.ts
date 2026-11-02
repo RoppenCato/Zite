@@ -198,6 +198,8 @@ export interface ProgressionData {
   enemyCharge: number;
   manaPerRound: number;
   lootRoll: { need: number };
+  /** The coach between towns: gold for each tier of where you are going. */
+  travel: { perTier: number };
   guards: { block: number; dodge: number; brace: number; braceMana: number; braceManaShare: number; counter: number };
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };

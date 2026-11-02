@@ -149,6 +149,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return answerQuest(state, action, character, rng, now);
     case 'try':
       return tryRoll(state, action, character, rng);
+    case 'travel':
+      return travel(state, action, character, rng, now);
     case 'keep':
       return keep(state, action, character);
     case 'trace':
@@ -257,7 +259,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   switch (space.kind) {
     case 'town': {
       const s = stats(c);
-      const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana };
+      const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana, visited: [...new Set([...(c.visited ?? []), space.id])] };
       events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
       return { state: withCharacter(state, rested), events };
     }
@@ -352,6 +354,30 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       return begin(state, c, mob, space.id, false, action, rng, events);
     }
   }
+}
+
+/** Where the coach goes from here: the other towns you have stood in, with the fare (mine, 2026-11-02: a bigger world needs a way back). */
+export function travelOptions(state: GameState, c: Character): { id: string; name: string; price: number }[] {
+  if (state.board.spaces[c.space]?.kind !== 'town') return [];
+  return (c.visited ?? [])
+    .filter((id) => id !== c.space && state.board.spaces[id]?.kind === 'town')
+    .map((id) => {
+      const space = state.board.spaces[id]!;
+      return { id, name: space.name, price: PROGRESSION.travel.perTier * (state.board.areas[space.area]?.tier ?? 1) };
+    });
+}
+
+function travel(state: GameState, action: Extract<Action, { type: 'travel' }>, character: Character, rng: Rng, now: number): ApplyResult {
+  if (character.fight) return reject(state, action, 'finish the fight first');
+  const busy = boardBusy(character);
+  if (busy) return reject(state, action, busy);
+  if (character.steps !== 0) return reject(state, action, 'not now');
+  const option = travelOptions(state, character).find((o) => o.id === action.to);
+  if (!option) return reject(state, action, 'not in a town');
+  if (character.gold < option.price) return reject(state, action, 'not enough gold');
+  const gold = character.gold - option.price;
+  const events: GameEvent[] = [{ type: 'traveled', action: action.id, player: action.player, from: character.space, to: action.to, price: option.price, gold }];
+  return land(state, { ...character, gold, space: action.to }, state.board.spaces[action.to]!, action, rng, now, events);
 }
 
 /** A spot you roll for (Robin, 2026-11-02, from Dokapon): the timer starts on landing, win or lose. */

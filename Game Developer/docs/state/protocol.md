@@ -119,3 +119,5 @@ notes on spots travel inside the state (spawns and traces), with no message of t
 The `quest` intent gained `index` (which of the board's quests) and `drop` (drop the one under way); `buy` gained `line`. The offer `quest` became `board`. Events added: `personFound`.
 
 The `try` intent answers the offer `roll`; it gives the event `tried`.
+
+The `travel` intent (`to`) gives the event `traveled`.

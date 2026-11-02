@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 16;
+export const STATE_VERSION = 17;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
@@ -224,6 +224,8 @@ export interface Character {
   quests: Quest[];
   /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
   questsDone: Quest[];
+  /** The towns this character has stood in: the coach goes to these. */
+  visited?: string[];
   /** The rest of a walk stopped at the quest board, walked once the board is answered. */
   walking?: string[];
   /** Elixirs drunk: what they add and for how many more fights. */
@@ -395,6 +397,7 @@ export type Action =
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
   | { type: 'try'; id: string; player: string }
+  | { type: 'travel'; id: string; player: string; to: string }
   /** The answer for a piece that found no room in the bag: sold on the spot, or left. */
   | { type: 'keep'; id: string; player: string; choice: 'sell' | 'drop' }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
@@ -468,6 +471,7 @@ export type GameEvent =
   | { type: 'questDeclined'; action: string; player: string; quest: Quest }
   /** An errand moved along; `quest` is how it stands now. */
   | { type: 'questProgress'; action: string; player: string; quest: Quest }
+  | { type: 'traveled'; action: string; player: string; from: string; to: string; price: number; gold: number }
   | { type: 'tried'; action: string; player: string; what: 'flask' | 'gear'; roll: number; need: number; won: boolean }
   | { type: 'personFound'; action: string; player: string; person: string; quest: Quest }
   /** An errand turned in; what it paid follows as gold, levels and maybe loot. */

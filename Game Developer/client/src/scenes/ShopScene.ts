@@ -4,7 +4,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, type GearItem, type GearLine } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -50,7 +50,7 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'train';
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'train' | 'coach';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -92,7 +92,7 @@ export class ShopScene extends Phaser.Scene {
     const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
-    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['train', 'Train']] as [Tab, string][]) : [])];
+    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['train', 'Train'], ['coach', 'Coach']] as [Tab, string][]) : [])];
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
     this.message = this.add
@@ -145,6 +145,11 @@ export class ShopScene extends Phaser.Scene {
           if (!top) this.buy({ ability: id });
         }, '', id);
       });
+    } else if (tab === 'coach') {
+      // The coach to a town you have stood in (mine, 2026-11-02: a bigger world needs a way back).
+      const options = travelOptions(this.game_.state, me);
+      if (!options.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'The coach goes to towns you have been to.\nNo other yet.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim, align: 'center' }).setOrigin(0.5, 0));
+      options.slice(0, SHOP_LAYOUT.rows).forEach((o, i) => row(i, o.name, this.ink.text, 'Rest there on arrival.', `${o.price} g`, 'Go', () => (this.scene.get('board') as BoardScene).travelTo(o.id)));
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier, tab, me.classId);
@@ -206,6 +211,11 @@ export class ShopScene extends Phaser.Scene {
   }
 
   /** The world did not answer (the socket is between two lives): say so; the next tap tries again. */
+  /** Words from elsewhere: why the coach would not go. */
+  showMessage(text: string): void {
+    this.message.setText(text);
+  }
+
   private failed(e: unknown): void {
     this.inFlight = false;
     this.log.error(`shop action failed: ${String(e)}`);

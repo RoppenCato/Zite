@@ -1331,6 +1331,23 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
+  /** The coach: the shop closes, you are there, rested. */
+  travelTo(to: string): void {
+    this.send({ type: 'travel', player: this.game_.player, to }, (events) => {
+      const went = events.find((e) => e.type === 'traveled');
+      if (went?.type !== 'traveled') {
+        const shop = this.scene.isActive('shop') ? (this.scene.get('shop') as { showMessage?: (t: string) => void }) : null;
+        shop?.showMessage?.(this.describe(events));
+        return;
+      }
+      this.shopLeft();
+      sfx.play('ui/arrive-town');
+      this.placeToken();
+      this.follow(true);
+      this.finish(`The coach to ${this.game_.state.board.spaces[to]?.name ?? 'town'}: ${went.price} gold. Rested.`);
+    });
+  }
+
   /** A potion or loot spot (Robin, 2026-11-02): a roll for it, seen on the big die. */
   private offerRoll(): void {
     const offer = this.game_.me.offer;

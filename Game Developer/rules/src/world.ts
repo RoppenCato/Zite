@@ -33,6 +33,8 @@ export interface WorldRoad {
   to: string;
   kinds: string;
   bow: number;
+  /** Points the road passes through, for a road that wanders; its spots are spaced evenly along them. */
+  via?: { x: number; y: number }[];
   area?: string;
 }
 
@@ -129,7 +131,7 @@ export function addRoad(board: Board, road: WorldRoad, areaId: string, worldName
   if (!b || b.name === '') throw new Error(`world ${worldName}: road ${road.from}-${road.to} ends at unknown hub "${road.to}"`);
   const area = road.area ?? areaId;
   if (!board.areas[area]) throw new Error(`world ${worldName}: road ${road.from}-${road.to} lies in unknown area "${area}"`);
-  const points = roadPoints(a, b, road.kinds.length, road.bow, areaCentre(board, area));
+  const points = road.via?.length ? pointsAlong([a, ...road.via, b], road.kinds.length) : roadPoints(a, b, road.kinds.length, road.bow, areaCentre(board, area));
   let previous = a.id;
   for (let n = 1; n <= road.kinds.length; n++) {
     const letter = road.kinds.charAt(n - 1);
@@ -176,6 +178,21 @@ function add(board: Board, space: Space, worldName: string): void {
 function link(board: Board, a: string, b: string): void {
   board.spaces[a] = { ...board.spaces[a]!, links: [...board.spaces[a]!.links, b] };
   board.spaces[b] = { ...board.spaces[b]!, links: [...board.spaces[b]!.links, a] };
+}
+
+/** `count` points evenly spaced along a line through `path`, its ends left out: they are the hubs. */
+export function pointsAlong(path: { x: number; y: number }[], count: number): { x: number; y: number }[] {
+  const lengths = path.slice(1).map((p, i) => Math.hypot(p.x - path[i]!.x, p.y - path[i]!.y));
+  const total = lengths.reduce((sum, l) => sum + l, 0);
+  const out: { x: number; y: number }[] = [];
+  for (let n = 1; n <= count; n++) {
+    let left = (total * n) / (count + 1);
+    let i = 0;
+    while (i < lengths.length - 1 && left > lengths[i]!) left -= lengths[i++]!;
+    const t = lengths[i]! ? left / lengths[i]! : 0;
+    out.push({ x: Math.round(path[i]!.x + (path[i + 1]!.x - path[i]!.x) * t), y: Math.round(path[i]!.y + (path[i + 1]!.y - path[i]!.y) * t) });
+  }
+  return out;
 }
 
 /** The middle of an area's hubs: what its roads bow away from. */
