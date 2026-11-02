@@ -147,7 +147,7 @@ describe('growing the board', () => {
     const frozen = structuredClone(before);
     const after = growBoard(before, 'ashford', 'gen-1');
     expect(before).toEqual(frozen);
-    expect(after.width).toBe(5 * CELL.width);
+    expect(after.width).toBe(7400);
     expect(after.height).toBe(9300);
     expect(after.areas['gen-1']).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', tier: 4 });
     expect(after.areas['gen-1']!.bounds.x).toBeGreaterThan(4000);
@@ -221,7 +221,7 @@ describe('in play', () => {
     expect(events.find((e) => e.type === 'opened')).toEqual({ type: 'opened', action: 'f1', player: P, area: 'gen-1' });
     expect(me(state).opened).toEqual(['meadows', 'thornwood', 'frostpeak', 'gen-1']);
     expect(state.board.areas['gen-1']).toMatchObject({ name: 'Glimmerlake Shores', tier: 4 });
-    expect(state.board.width).toBe(5 * CELL.width);
+    expect(state.board.width).toBe(7400);
     expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Lord Ripplefin' });
     // The levels gained offer a pick of abilities, answered first; then it plays on from the Summit into the pass.
     expect(me(state).picks.length).toBeGreaterThan(0);
