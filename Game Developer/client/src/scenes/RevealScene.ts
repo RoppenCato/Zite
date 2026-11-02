@@ -26,7 +26,7 @@ export const REVEAL_LAYOUT = { titleY: 150, cardY: 330, chestY: 600, mouthY: 530
 /** The glow builds this long before the lid moves; a tap cuts it short. */
 const BUILD_MS = 1500;
 /** Where the lid's centre starts against the chest's pivot, in design pixels (Mitch, AD). */
-const LID_FROM = { x: -0.5, y: -70.5 } as const;
+const LID_FROM = { x: 4.25, y: -72.25 } as const;
 /** The card rests this long before the next card or the board, unless tapped. */
 const REST_MS = 2200;
 const QUICK_REST_MS = 1500;
