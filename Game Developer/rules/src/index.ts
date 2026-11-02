@@ -1,15 +1,15 @@
 // The rules package: the game as a pure function. Import from here, never from the files inside.
 export * from './types.ts';
 export { makeRng, resumeRng, hashSeed, type Rng } from './rng.ts';
-export { WORLD_DATA, CLASS_DATA, ABILITIES, DICE_DATA, SPACE_KIND_DATA, ENEMIES, PROGRESSION, ITEMS, ITEM_IDS, GEAR, SURPRISES, THEMES, UNIQUES, UNIQUE_IDS, QUESTS, SHAPES, EVENTS, TRACES, SPACE_KINDS, CLASS_IDS } from './data.ts';
-export type { ClassData, AbilityData, AbilityRank, SpaceKindData, ProgressionData, ItemData, GearData, ThemesData, UniqueData, QuestsData, ThemeEvent } from './data.ts';
+export { SETS, SET_IDS, WORLD_DATA, CLASS_DATA, ABILITIES, DICE_DATA, SPACE_KIND_DATA, ENEMIES, PROGRESSION, ITEMS, ITEM_IDS, GEAR, SURPRISES, THEMES, UNIQUES, UNIQUE_IDS, QUESTS, SHAPES, EVENTS, TRACES, SPACE_KINDS, CLASS_IDS } from './data.ts';
+export type { SetData, ClassData, AbilityData, AbilityRank, SpaceKindData, ProgressionData, ItemData, GearData, ThemesData, UniqueData, QuestsData, ThemeEvent } from './data.ts';
 export { buildBoard, addArea, addRoad, setBounds, checkOpens, roadSpaceId, KIND_LETTERS, GROWN, type World, type WorldArea, type WorldHub, type WorldRoad } from './world.ts';
 export { peekArea, generateArea, growBoard, grownIndex, cellFor, entryName, GROWN_PREFIX, type AreaPeek, type GrownArea } from './generate.ts';
 export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type Reach } from './paths.ts';
-export { stats, powers, plainGear, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
+export { stats, powers, plainGear, rollSetPiece, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
 export { levelFor, sellPrice } from './common.ts';
 export { makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, noteLevels } from './fight.ts';
-export { MAX_CARRIED, TIER_POINTS, carriedLimit, needsFor, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
+export { setsWorn, MAX_CARRIED, TIER_POINTS, carriedLimit, needsFor, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
 export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts';
 export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';

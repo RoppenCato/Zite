@@ -20,6 +20,7 @@ import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
 import shapesJson from '../data/shapes.json' with { type: 'json' };
 import eventsJson from '../data/events.json' with { type: 'json' };
+import setsJson from '../data/sets.json' with { type: 'json' };
 import encountersJson from '../data/encounters.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
@@ -245,9 +246,23 @@ export interface UniqueData {
   slot: Slot;
   /** The earliest tier whose bosses carry it. */
   tier: number;
-  power: PowerKind;
-  value: number;
+  /** A power the rules read by name; or `traits`, the same words talents use. */
+  power?: PowerKind;
+  value?: number;
+  traits?: Partial<ClassTraits>;
   text: string;
+}
+
+/** A set of gear (Robin, 2026-11-02): wear 2 for one bonus, 4 for the other. */
+export interface SetData {
+  name: string;
+  /** What its pieces are called: "Warden's Hat". */
+  word: string;
+  /** The lowest land tier it drops in. */
+  tier: number;
+  line: GearLine;
+  slots: Slot[];
+  bonuses: Record<string, { traits: Partial<ClassTraits>; text: string }>;
 }
 
 /** A kind of spot and what landing on it does; the hint the player sees when touching one. */
@@ -317,6 +332,7 @@ export interface GearData {
   rarityBoost: Record<'mob' | 'mini' | 'boss', number>;
   /** The chance a fallen creature's drop is a unique of its tier. */
   uniqueChance: Record<'mob' | 'mini' | 'boss', number>;
+  setChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   consumableDrop: { potion: number; card: number };
   sellShare: number;
   /** How many pieces the bag carries; one more asks to be sold or left. */
@@ -398,6 +414,9 @@ export const THEMES = themesJson as ThemesData;
 const { _about: _uniquesAbout, ...uniqueEntries } = uniquesJson as unknown as { _about: string } & Record<string, UniqueData>;
 export const UNIQUES = uniqueEntries as Record<string, UniqueData>;
 export const UNIQUE_IDS = Object.keys(UNIQUES);
+const { _about: _setsAbout, ...setEntries } = setsJson as unknown as Record<string, unknown>;
+export const SETS = setEntries as Record<string, SetData>;
+export const SET_IDS = Object.keys(SETS);
 const { _about: _questsAbout, ...questEntries } = questsJson as unknown as { _about: string } & QuestsData;
 export const QUESTS = questEntries as QuestsData;
 

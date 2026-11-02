@@ -43,7 +43,8 @@ describe('the uniques', () => {
       const u = UNIQUES[id]!;
       expect(SLOTS, id).toContain(u.slot);
       expect(u.tier, id).toBeGreaterThanOrEqual(1);
-      expect(POWERS, id).toContain(u.power);
+      expect(u.power || u.traits, id).toBeTruthy();
+      if (u.power) expect(POWERS, id).toContain(u.power);
       expect(u.text.length, id).toBeGreaterThan(10);
       expect(u.name.length, id).toBeGreaterThan(2);
     }
@@ -60,7 +61,8 @@ describe('the uniques', () => {
     expect(describeGear(g)).toContain(UNIQUES.twinfang!.text);
     expect(() => makeUnique('x', 'excalibur', 1, makeRng('m'))).toThrow(/no such unique/);
     for (let i = 0; i < 500; i++) expect(rollGear(`r${i}`, 'weapon', 1, 0, makeRng(`r${i}`)).rarity).not.toBe('unique');
-    expect(uniquePool(1).sort()).toEqual(['misers-coin', 'quickdraw', 'sages-crown', 'striders', 'twinfang', 'wardweave']);
+    expect(uniquePool(1).sort()).toEqual(UNIQUE_IDS.filter((id) => UNIQUES[id]!.tier <= 1).sort());
+    expect(uniquePool(1)).toEqual(expect.arrayContaining(['misers-coin', 'twinfang']));
     expect(uniquePool(5).length).toBeGreaterThan(uniquePool(1).length);
     expect(rollUnique('y', 0, 1, makeRng('m'))).toBeNull();
   });

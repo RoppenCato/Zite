@@ -521,50 +521,99 @@
       "Frostnip",
       "Oathsworn",
       "Briarsong",
-      "Starfallen"
+      "Starfallen",
+      "Oakenfury",
+      "Nightsong",
+      "Emberkiss",
+      "Wispcutter",
+      "Gloomfang",
+      "Duskreaver",
+      "Dawnbringer",
+      "Bramblebite"
     ],
     "shield": [
       "Thornguard",
       "Moonward",
       "Sunbuckler",
-      "Turtleback"
+      "Turtleback",
+      "Hearthguard",
+      "Stoneward",
+      "Duskbarrier",
+      "Dragonplate",
+      "Mossback",
+      "Gatekeeper"
     ],
     "helm": [
       "Acorncap",
       "Starbrow",
       "Bumblecrest",
-      "Owlgaze"
+      "Owlgaze",
+      "Thornhelm",
+      "Dawnvisor",
+      "Wolfcrown",
+      "Emberbrow",
+      "Mistcowl",
+      "Stoneface"
     ],
     "armour": [
       "Oakheart",
       "Cloverweave",
       "Snugshell",
       "Moonmantle",
-      "Sunwarden"
+      "Sunwarden",
+      "Mossweave",
+      "Wyrmhide",
+      "Duskplate",
+      "Emberheart",
+      "Gladeguard"
     ],
     "gloves": [
       "Nimblefingers",
       "Honeygrips",
       "Frostmitts",
-      "Ironknuckles"
+      "Ironknuckles",
+      "Wolfpaws",
+      "Emberclasps",
+      "Thornwraps",
+      "Quickhands",
+      "Stonefists",
+      "Mistgrips"
     ],
     "boots": [
       "Puddlejumpers",
       "Windhoppers",
       "Tiptoes",
-      "Rootwalkers"
+      "Rootwalkers",
+      "Stormtreads",
+      "Mossteps",
+      "Duskwalkers",
+      "Hillstriders",
+      "Emberheels",
+      "Foxsteps"
     ],
     "cape": [
       "Dandelion Cloak",
       "Nightveil",
       "Starcloak",
-      "Foxtail"
+      "Foxtail",
+      "Wolfpelt",
+      "Emberwing",
+      "Mossdrape",
+      "Duskmantle",
+      "Stormcloak",
+      "Thistlewrap"
     ],
     "trinket": [
       "Moontear",
       "Firefly",
       "Fourleaf",
-      "Dragonwink"
+      "Dragonwink",
+      "Wishbone",
+      "Sunshard",
+      "Duskpearl",
+      "Foxglove",
+      "Emberseed",
+      "Stormglass"
     ]
   },
   "dropChance": {
@@ -959,5 +1008,12 @@
         "trinket"
       ]
     }
-  ]
+  ],
+  "setChance": {
+    "mob": 0.004,
+    "mini": 0.08,
+    "boss": 0.2,
+    "chest": 0.1
+  },
+  "_aboutSets": "A set piece (Robin, 2026-11-02): how often one comes instead of a plain drop. Mine."
 }

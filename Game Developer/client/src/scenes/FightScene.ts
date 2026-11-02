@@ -264,8 +264,8 @@ export class FightScene extends Phaser.Scene {
   private showMoves(): void {
     const me = this.game_.me;
     // The strongest flask you carry of each (Robin, 2026-11-02: set amounts, better potions later).
-    const health = ['potion-3', 'potion-2', 'potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'potion';
-    const mana = ['mana-potion-3', 'mana-potion-2', 'mana-potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'mana-potion';
+    const health = ['potion-5', 'potion-4', 'potion-3', 'potion-2', 'potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'potion';
+    const mana = ['mana-potion-5', 'mana-potion-4', 'mana-potion-3', 'mana-potion-2', 'mana-potion'].find((id) => (me.items[id] ?? 0) > 0) ?? 'mana-potion';
     const potions = me.items[health] ?? 0;
     const manaPotions = me.items[mana] ?? 0;
     // The Arena lets you drink only so many (its rule): the buttons say so instead of doing nothing.

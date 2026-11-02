@@ -6,9 +6,9 @@ import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './sk
 import { notePlace } from './journal.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
-import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
+import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
+import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollSetPiece } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
@@ -849,8 +849,9 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
     const got = nextGearId(s);
     s = got.state;
     const unique = rich && rng.next() < 0.3 ? rollUnique(got.id, tier, tier, rng) : null;
-    if (unique) {
-      next = addLoot(next, unique, action, events);
+    const setPiece = !unique && rich && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId) : null;
+    if (unique || setPiece) {
+      next = addLoot(next, (unique ?? setPiece)!, action, events);
     } else {
       next = addLoot(next, rollGear(got.id, dropSlot(null, rng), tier, rich ? 3 : 0, rng, rollLine(rng), c.classId), action, events);
     }
@@ -928,10 +929,11 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
   if (!stock || !space) return null;
   const own = state.board.areas[space.area];
   const tier = own?.city ? Math.max(own.tier, ...c.opened.map((id) => state.board.areas[id]?.tier ?? 1)) : (own?.tier ?? 1);
-  const top = Math.min(tier, 3);
+  const top = flaskTier(tier);
   const items = ITEM_IDS.filter((id) => {
     const item = ITEMS[id]!;
     if (stock !== 'merchant' && !item.stock.includes(stock)) return false;
+    if (item.elixir) return item.tier <= top;
     return !(item.heal || item.mana) || item.tier === top || item.tier === top - 1;
   });
   const town = stock === 'town' ? townKind(space.id) : null;

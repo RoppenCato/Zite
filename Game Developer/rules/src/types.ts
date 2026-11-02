@@ -182,6 +182,8 @@ export interface GearItem {
   affixes: Affix[];
   /** The id in uniques.json when the piece is a unique: its power is read from there. */
   unique?: string;
+  /** The id in sets.json when the piece belongs to a set. */
+  set?: string;
   price: number;
 }
 

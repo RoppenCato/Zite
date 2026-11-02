@@ -4,7 +4,7 @@
 // piece compares with what is worn, and holds only the buttons that apply. Equip, unequip, drop and use each send one intent.
 
 import Phaser from 'phaser';
-import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING } from '../../../rules/src/index.ts';
+import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING, SETS, setsWorn } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
 import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
@@ -384,6 +384,12 @@ export class BagScene extends Phaser.Scene {
     const kind = g.name.toLowerCase() === g.base.toLowerCase() ? g.rarity : `${g.rarity} ${g.base}`;
     this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind} ${SLOT_NAMES[g.slot].toLowerCase()}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
     const lines: { text: string; color?: string; bold?: boolean }[] = [{ text: gearPowers(g).join(' · ') || 'A plain piece.', bold: true }];
+    const set = g.set ? SETS[g.set] : undefined;
+    if (set) {
+      const count = setsWorn(me)[g.set!] ?? 0;
+      lines.push({ text: `${set.name}: ${count} of ${set.slots.length} worn`, bold: true, color: '#7a4fb5' });
+      for (const [need, bonus] of Object.entries(set.bonuses)) lines.push({ text: `${need}: ${bonus.text}`, color: count >= Number(need) ? '#3c7a33' : '#8a7458' });
+    }
     if (this.note) lines.push({ text: this.note });
     else if (!worn) lines.push(this.comparison(me, g));
     this.slip(88, card.y + 46, 296, 96, lines);

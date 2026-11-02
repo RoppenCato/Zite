@@ -3,9 +3,9 @@
 // many of a creature, hunt the area's mini-boss (a chance it turns up), loot trophies from a creature, find a person (a chance
 // they turn up on their ground). Pure: quests are drawn from the stream.
 
-import { ENEMIES, QUESTS } from './data.ts';
+import { ENEMIES, GEAR, QUESTS } from './data.ts';
 import { dropSlot, groundsOf, rollLine } from './grounds.ts';
-import { rollGear, rollUnique } from './gear.ts';
+import { rollGear, rollSetPiece, rollUnique } from './gear.ts';
 import { addLoot, gainXp, giveGold, nextGearId } from './common.ts';
 import type { Rng } from './rng.ts';
 import type { Action, Area, Character, GameEvent, GameState, Ground, Quest, Space } from './types.ts';
@@ -121,8 +121,9 @@ export function finishQuests(state: GameState, c: Character, action: Action, rng
     const got = nextGearId(s);
     s = got.state;
     const unique = q.unique > 0 && rng.next() < q.unique ? rollUnique(got.id, tier, tier, rng) : null;
+    const setPiece = !unique && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId) : null;
     const ground = groundsOf(s.board, q.area).find((g) => g.id === q.ground) ?? null;
-    next = addLoot(next, unique ?? rollGear(got.id, dropSlot(ground, rng), tier, QUESTS.chestBoost, rng, rollLine(rng), c.classId), action, events);
+    next = addLoot(next, unique ?? setPiece ?? rollGear(got.id, dropSlot(ground, rng), tier, QUESTS.chestBoost, rng, rollLine(rng), c.classId), action, events);
   }
   return { state: s, c: next };
 }

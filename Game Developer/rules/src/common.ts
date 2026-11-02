@@ -125,5 +125,11 @@ export function sellPrice(gear: GearItem): number {
 
 /** The flask of a tier: a chest, a spring or a drop gives what the area's fights call for. */
 export function flaskId(base: 'potion' | 'mana-potion', tier: number): string {
-  return tier >= 3 ? `${base}-3` : tier === 2 ? `${base}-2` : base;
+  const strength = flaskTier(tier);
+  return strength === 1 ? base : `${base}-${strength}`;
+}
+
+/** How strong a land's flasks are: 1 to 5, the top two for the late lands. */
+export function flaskTier(tier: number): number {
+  return tier >= 6 ? 5 : tier >= 4 ? 4 : Math.max(1, tier);
 }

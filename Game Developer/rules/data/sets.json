@@ -1,0 +1,255 @@
+{
+  "_about": "Sets (Robin, 2026-11-02: 'a few set bonuses, with 2(set), 4(set) so you can mix if you like'). Five pieces each, never a weapon, so two of one and two of another works. The bonuses use the same traits as talents. Which land they drop from goes by tier. Names and numbers mine.",
+  "warden": {
+    "name": "The Warden's Watch",
+    "word": "Warden's",
+    "tier": 1,
+    "line": "heavy",
+    "slots": [
+      "helm",
+      "armour",
+      "shield",
+      "boots",
+      "gloves"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "defenseMult": 1.08
+        },
+        "text": "8% more defense."
+      },
+      "4": {
+        "traits": {
+          "blockPower": 0.1,
+          "hpRegen": 0.01
+        },
+        "text": "A Block stops 10% more, and you regain 1% of your HP each round."
+      }
+    }
+  },
+  "stormrunner": {
+    "name": "Stormrunner",
+    "word": "Stormrunner",
+    "tier": 2,
+    "line": "light",
+    "slots": [
+      "helm",
+      "armour",
+      "boots",
+      "cape",
+      "gloves"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "dodge": 0.05
+        },
+        "text": "5% more dodge."
+      },
+      "4": {
+        "traits": {
+          "dodgeHeal": 0.03,
+          "critPower": 0.15
+        },
+        "text": "A dodged blow heals 3% of your HP, and crits hit 15% harder."
+      }
+    }
+  },
+  "moonweave": {
+    "name": "Moonweave",
+    "word": "Moonweave",
+    "tier": 2,
+    "line": "magic",
+    "slots": [
+      "helm",
+      "armour",
+      "cape",
+      "boots",
+      "trinket"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "manaRegen": 0.015
+        },
+        "text": "You regain 1.5% of your mana each round."
+      },
+      "4": {
+        "traits": {
+          "spellPower": 1.1,
+          "winMana": 0.06
+        },
+        "text": "Spells 10% stronger, and each win gives back 6% of your mana."
+      }
+    }
+  },
+  "bloodmoon": {
+    "name": "Bloodmoon",
+    "word": "Bloodmoon",
+    "tier": 3,
+    "line": "heavy",
+    "slots": [
+      "armour",
+      "gloves",
+      "helm",
+      "cape",
+      "trinket"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "winHeal": 0.04
+        },
+        "text": "Each win heals 4% of your HP."
+      },
+      "4": {
+        "traits": {
+          "lowHpDamage": 1.2,
+          "lowHpTaken": 0.9
+        },
+        "text": "Under a third of your HP: 20% more damage dealt, 10% less taken."
+      }
+    }
+  },
+  "huntsman": {
+    "name": "The Huntsman's Garb",
+    "word": "Huntsman's",
+    "tier": 3,
+    "line": "light",
+    "slots": [
+      "gloves",
+      "boots",
+      "cape",
+      "helm",
+      "trinket"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "crit": 0.05
+        },
+        "text": "5% more crits."
+      },
+      "4": {
+        "traits": {
+          "firstRoundDamage": 1.25,
+          "critHeal": 0.02
+        },
+        "text": "25% more damage in the first round, and each crit heals 2% of your HP."
+      }
+    }
+  },
+  "thornkeeper": {
+    "name": "Thornkeeper",
+    "word": "Thornkeeper",
+    "tier": 4,
+    "line": "heavy",
+    "slots": [
+      "armour",
+      "shield",
+      "gloves",
+      "boots",
+      "cape"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "thorns": 0.08
+        },
+        "text": "8% of each blow goes back at whoever struck."
+      },
+      "4": {
+        "traits": {
+          "damageTaken": 0.92,
+          "hpMult": 1.06
+        },
+        "text": "8% less damage taken, and 6% more HP."
+      }
+    }
+  },
+  "sunsworn": {
+    "name": "Sunsworn",
+    "word": "Sunsworn",
+    "tier": 5,
+    "line": "magic",
+    "slots": [
+      "helm",
+      "armour",
+      "gloves",
+      "cape",
+      "trinket"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "healPower": 1.15
+        },
+        "text": "Healing 15% stronger."
+      },
+      "4": {
+        "traits": {
+          "highHpDamage": 1.12,
+          "barrierStart": 0.08
+        },
+        "text": "Above 80% HP you deal 12% more, and start each fight behind a barrier of 8% of your HP."
+      }
+    }
+  },
+  "corsair": {
+    "name": "The Corsair's Finery",
+    "word": "Corsair's",
+    "tier": 6,
+    "line": "light",
+    "slots": [
+      "helm",
+      "armour",
+      "boots",
+      "gloves",
+      "cape"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "meterStart": 1
+        },
+        "text": "Start each fight with a point of your meter."
+      },
+      "4": {
+        "traits": {
+          "attackMult": 1.08,
+          "critMana": 0.03
+        },
+        "text": "8% more attack, and each crit gives back 3% of your mana."
+      }
+    }
+  },
+  "giantborn": {
+    "name": "Giantborn",
+    "word": "Giantborn",
+    "tier": 7,
+    "line": "heavy",
+    "slots": [
+      "helm",
+      "armour",
+      "shield",
+      "boots",
+      "gloves"
+    ],
+    "bonuses": {
+      "2": {
+        "traits": {
+          "hpMult": 1.08
+        },
+        "text": "8% more HP."
+      },
+      "4": {
+        "traits": {
+          "attackMult": 1.1,
+          "defenseMult": 1.1
+        },
+        "text": "10% more attack and defense."
+      }
+    }
+  }
+}

@@ -183,5 +183,221 @@
     "power": "fury",
     "value": 0.25,
     "text": "Every point of your meter has a one-in-four chance to bring a second."
+  },
+  "first-light": {
+    "name": "First Light",
+    "slot": "weapon",
+    "tier": 3,
+    "traits": {
+      "firstRoundDamage": 1.5
+    },
+    "text": "In the first round of a fight you deal half as much again."
+  },
+  "kingslayer": {
+    "name": "Kingslayer",
+    "slot": "weapon",
+    "tier": 4,
+    "traits": {
+      "executeDamage": 1.3
+    },
+    "text": "A foe under a third of its HP takes 30% more."
+  },
+  "saltjaw-cutlass": {
+    "name": "Saltjaw’s Cutlass",
+    "slot": "weapon",
+    "tier": 6,
+    "traits": {
+      "critPower": 0.5,
+      "crit": 0.05
+    },
+    "text": "5% more crits, and they hit half as hard again."
+  },
+  "yeti-tooth": {
+    "name": "The Yeti’s Tooth",
+    "slot": "weapon",
+    "tier": 7,
+    "traits": {
+      "attackMult": 1.15
+    },
+    "text": "15% more attack."
+  },
+  "everbright": {
+    "name": "Everbright",
+    "slot": "weapon",
+    "tier": 7,
+    "traits": {
+      "attackMult": 1.1,
+      "spellPower": 1.1,
+      "healPower": 1.1
+    },
+    "text": "10% more attack, spells and healing."
+  },
+  "pot-lid": {
+    "name": "The Pot Lid",
+    "slot": "shield",
+    "tier": 1,
+    "traits": {
+      "blockPower": 0.1
+    },
+    "text": "A Block stops 10% more. It still smells of stew."
+  },
+  "buzzing-buckler": {
+    "name": "Buzzing Buckler",
+    "slot": "shield",
+    "tier": 3,
+    "traits": {
+      "thorns": 0.15
+    },
+    "text": "15% of each blow goes back at whoever struck."
+  },
+  "crownhaven-door": {
+    "name": "Crownhaven’s Door",
+    "slot": "shield",
+    "tier": 5,
+    "traits": {
+      "barrierStart": 0.15
+    },
+    "text": "Start each fight behind a barrier of 15% of your HP."
+  },
+  "cutpurse-mitts": {
+    "name": "Cutpurse’s Mitts",
+    "slot": "gloves",
+    "tier": 1,
+    "traits": {
+      "critMana": 0.02
+    },
+    "text": "Each crit gives back 2% of your mana."
+  },
+  "knucklebells": {
+    "name": "Knucklebells",
+    "slot": "gloves",
+    "tier": 2,
+    "traits": {
+      "critPower": 0.3
+    },
+    "text": "Your crits hit 30% harder."
+  },
+  "giants-grip": {
+    "name": "Giant’s Grip",
+    "slot": "gloves",
+    "tier": 6,
+    "traits": {
+      "attackMult": 1.1
+    },
+    "text": "10% more attack."
+  },
+  "scarecrow-rag": {
+    "name": "Scarecrow’s Rag",
+    "slot": "cape",
+    "tier": 1,
+    "traits": {
+      "dodge": 0.06
+    },
+    "text": "6% more dodge. Crows keep away too."
+  },
+  "cloak-of-dusk": {
+    "name": "Cloak of Dusk",
+    "slot": "cape",
+    "tier": 3,
+    "traits": {
+      "dodgeHeal": 0.03
+    },
+    "text": "Each blow you dodge heals 3% of your HP."
+  },
+  "ember-mantle": {
+    "name": "Ember Mantle",
+    "slot": "cape",
+    "tier": 5,
+    "traits": {
+      "hpRegen": 0.02
+    },
+    "text": "You regain 2% of your HP each round."
+  },
+  "lucky-acorn": {
+    "name": "Lucky Acorn",
+    "slot": "trinket",
+    "tier": 1,
+    "traits": {
+      "crit": 0.04
+    },
+    "text": "4% more crits."
+  },
+  "bottled-storm": {
+    "name": "Bottled Storm",
+    "slot": "trinket",
+    "tier": 3,
+    "traits": {
+      "manaRegen": 0.02
+    },
+    "text": "You regain 2% of your mana each round."
+  },
+  "saints-tooth": {
+    "name": "Saint’s Tooth",
+    "slot": "trinket",
+    "tier": 4,
+    "traits": {
+      "healPower": 1.2,
+      "potionPower": 1.2
+    },
+    "text": "Your healing and your flasks work 20% better."
+  },
+  "sand-of-patience": {
+    "name": "Sand of Patience",
+    "slot": "trinket",
+    "tier": 5,
+    "traits": {
+      "meterStart": 2
+    },
+    "text": "Start each fight with 2 points of your meter."
+  },
+  "drowned-compass": {
+    "name": "Drowned Compass",
+    "slot": "trinket",
+    "tier": 6,
+    "traits": {
+      "winHeal": 0.04,
+      "winMana": 0.08
+    },
+    "text": "Each win heals 4% of your HP and gives back 8% of your mana."
+  },
+  "kings-seal": {
+    "name": "The King’s Signet",
+    "slot": "trinket",
+    "tier": 7,
+    "traits": {
+      "hpMult": 1.1,
+      "attackMult": 1.05
+    },
+    "text": "10% more HP and 5% more attack."
+  },
+  "captains-hat": {
+    "name": "Captain’s Tricorn",
+    "slot": "helm",
+    "tier": 6,
+    "traits": {
+      "crit": 0.06,
+      "firstRoundDamage": 1.2
+    },
+    "text": "6% more crits, and 20% more damage in the first round."
+  },
+  "snowshoulder-hide": {
+    "name": "Snowshoulder’s Hide",
+    "slot": "armour",
+    "tier": 7,
+    "traits": {
+      "hpMult": 1.08,
+      "damageTaken": 0.93
+    },
+    "text": "8% more HP and 7% less damage taken."
+  },
+  "tide-walkers": {
+    "name": "Tidewalkers",
+    "slot": "boots",
+    "tier": 6,
+    "traits": {
+      "dodge": 0.05,
+      "dodgeHeal": 0.02
+    },
+    "text": "5% more dodge; a dodged blow heals 2% of your HP."
   }
 }

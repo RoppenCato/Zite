@@ -142,5 +142,77 @@
       "town"
     ],
     "dice": "exact"
+  },
+  "potion-4": {
+    "name": "Grand Health Potion",
+    "text": "Heals 280 HP. In a fight it takes your turn.",
+    "price": 150,
+    "tier": 4,
+    "stock": [
+      "arms",
+      "town"
+    ],
+    "heal": 280
+  },
+  "potion-5": {
+    "name": "Royal Health Potion",
+    "text": "Heals 450 HP. In a fight it takes your turn.",
+    "price": 280,
+    "tier": 5,
+    "stock": [
+      "arms",
+      "town"
+    ],
+    "heal": 450
+  },
+  "mana-potion-4": {
+    "name": "Grand Mana Potion",
+    "text": "Gives back 120 mana. In a fight it takes your turn.",
+    "price": 150,
+    "tier": 4,
+    "stock": [
+      "magic",
+      "town"
+    ],
+    "mana": 120
+  },
+  "mana-potion-5": {
+    "name": "Royal Mana Potion",
+    "text": "Gives back 180 mana. In a fight it takes your turn.",
+    "price": 280,
+    "tier": 5,
+    "stock": [
+      "magic",
+      "town"
+    ],
+    "mana": 180
+  },
+  "elixir-vigor-2": {
+    "name": "Great Elixir of Vigor",
+    "text": "120 more HP for three fights.",
+    "price": 160,
+    "tier": 4,
+    "stock": [
+      "arms"
+    ],
+    "elixir": {
+      "kind": "vigor",
+      "value": 120,
+      "fights": 3
+    }
+  },
+  "elixir-arcana-2": {
+    "name": "Great Elixir of Arcana",
+    "text": "Abilities hit 30 harder for three fights.",
+    "price": 160,
+    "tier": 4,
+    "stock": [
+      "magic"
+    ],
+    "elixir": {
+      "kind": "arcana",
+      "value": 30,
+      "fights": 3
+    }
   }
 }

@@ -3,7 +3,7 @@
 // evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
 import { traitsOf } from './skills.ts';
-import { CLASS_DATA, GEAR, PROGRESSION, UNIQUE_IDS, UNIQUES } from './data.ts';
+import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, UNIQUE_IDS, UNIQUES } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
 
@@ -30,7 +30,7 @@ export function powers(c: Character): Partial<Record<PowerKind, number>> {
   for (const slot of SLOTS) {
     const g = c.equipment[slot];
     const u = g?.unique ? UNIQUES[g.unique] : undefined;
-    if (u) out[u.power] = (out[u.power] ?? 0) + u.value;
+    if (u?.power) out[u.power] = (out[u.power] ?? 0) + (u.value ?? 0);
   }
   return out;
 }
@@ -263,6 +263,17 @@ export function rollUnique(id: string, tier: number, rank: number, rng: Rng): Ge
   return makeUnique(id, pool[rng.int(pool.length) - 1]!, rank, rng);
 }
 
+/** A set's piece for this land's tier (Robin, 2026-11-02), at least a rare one, or null when none has come in yet. */
+export function rollSetPiece(id: string, tier: number, rank: number, rng: Rng, classId: ClassId = 'warrior'): GearItem | null {
+  const pool = SET_IDS.filter((s) => SETS[s]!.tier <= tier);
+  if (!pool.length) return null;
+  const setId = pool[rng.int(pool.length) - 1]!;
+  const set = SETS[setId]!;
+  const slot = set.slots[rng.int(set.slots.length) - 1]!;
+  const piece = rollGear(id, slot, rank, GEAR.rarityBoost.boss, rng, set.line, classId);
+  return { ...piece, name: `${set.word} ${GEAR.slots[slot].base}`, set: setId };
+}
+
 /** One line on a piece: "Stormborn, iron sword · epic · +14 attack · +12% crit chance"; a unique adds what its power does. */
 export function describeGear(g: GearItem): string {
   return [g.name === capitalise(g.base) ? g.name : `${g.name}, ${g.base}`, g.rarity, ...gearPowers(g)].join(' · ');
@@ -278,6 +289,8 @@ export function gearPowers(g: GearItem): string[] {
   }
   const u = g.unique ? UNIQUES[g.unique] : undefined;
   if (u) parts.push(u.text);
+  const set = g.set ? SETS[g.set] : undefined;
+  if (set) parts.push(`Set: ${set.name}`);
   return parts;
 }
 

@@ -9,7 +9,7 @@ import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
-import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
+import { powers, rollGear, rollUnique, stats, type Stats, rollSetPiece } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -937,8 +937,9 @@ function win(r: Round): ApplyResult {
     const got = nextGearId(s);
     s = got.state;
     const unique = rng.next() < GEAR.uniqueChance[e.role] ? rollUnique(got.id, rank, rank, rng) : null;
-    if (unique) {
-      next = addLoot(next, unique, action, events);
+    const setPiece = !unique && rng.next() < GEAR.setChance[e.wanderer ? 'boss' : e.role] ? rollSetPiece(got.id, rank, rank, rng, c.classId) : null;
+    if (unique || setPiece) {
+      next = addLoot(next, (unique ?? setPiece)!, action, events);
     } else {
       next = addLoot(next, rollGear(got.id, dropSlot(space ? groundAt(s.board, space) : null, rng), rank, GEAR.rarityBoost[e.wanderer ? 'boss' : e.role], rng, rollLine(rng), c.classId), action, events);
     }

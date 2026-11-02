@@ -1,7 +1,7 @@
 // How a class grows (Robin, 2026-11-02: "think like how wow classic does it, where you mainly go down one tree, and take some in the others"; "enough points and abilities up to level 30"). A point a level, and a region's boss one more. The class's own four come free with the level; a point raises them. Each of the three trees has eight tiers: a tier asks for points already spent in that tree and a level, so a tree is walked down, and there are never enough points for all three. Five abilities can be carried from level 15, four before. Everything can be reset for free in a town.
 
-import { ABILITIES, CLASS_DATA, type ClassTraits } from './data.ts';
-import type { Character } from './types.ts';
+import { ABILITIES, CLASS_DATA, SETS, UNIQUES, type ClassTraits } from './data.ts';
+import { SLOTS, type Character } from './types.ts';
 
 export const MAX_CARRIED = 5;
 /** Points a tier asks for already in its tree, a tier. */
@@ -31,8 +31,35 @@ export function pointsFree(c: Character): number {
 const MULTIPLIED = new Set(['attackMult', 'manaMult', 'lowHpDamage', 'highHpDamage', 'lowHpTaken', 'executeDamage', 'firstRoundDamage', 'burningDamage', 'poisonedDamage', 'weakenedDamage', 'stunnedDamage', 'burnPower', 'damageDealt', 'damageTaken', 'defenseMult', 'hpMult', 'spellPower', 'healPower', 'poisonPower', 'potionPower', 'companionPower']);
 
 /** The class's always-on rules, with those of the tree rules it has learned. */
+/** How many pieces of each set are worn. */
+export function setsWorn(c: Character): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const slot of SLOTS) {
+    const set = c.equipment[slot]?.set;
+    if (set && SETS[set]) out[set] = (out[set] ?? 0) + 1;
+  }
+  return out;
+}
+
 export function traitsOf(c: Character): ClassTraits {
   const out: Record<string, number | boolean> = { ...CLASS_DATA[c.classId]?.traits };
+  // What gear gives: a unique's traits, and each set's bonuses for the pieces worn. The same words as talents, helping the same way.
+  const fromGear: Partial<ClassTraits>[] = [];
+  for (const slot of SLOTS) {
+    const u = c.equipment[slot]?.unique;
+    if (u && UNIQUES[u]?.traits) fromGear.push(UNIQUES[u]!.traits!);
+  }
+  for (const [set, worn] of Object.entries(setsWorn(c))) {
+    for (const [need, bonus] of Object.entries(SETS[set]!.bonuses)) if (worn >= Number(need)) fromGear.push(bonus.traits);
+  }
+  for (const traits of fromGear) {
+    for (const [key, value] of Object.entries(traits)) {
+      const had = out[key];
+      if (typeof value === 'boolean') out[key] = value;
+      else if (MULTIPLIED.has(key)) out[key] = (typeof had === 'number' ? had : 1) * (value as number);
+      else out[key] = (typeof had === 'number' ? had : 0) + (value as number);
+    }
+  }
   for (const [id, rank] of Object.entries(c.abilities)) {
     for (const [key, value] of Object.entries(ABILITIES[id]?.rule ?? {})) {
       // A rank is another helping of the rule.
