@@ -7,6 +7,7 @@
 // layout and the pacing are mine; the backdrop's measures are Mitch, AD's (assets/meadow_fight/NOTES.md).
 
 import Phaser from 'phaser';
+import talentSounds from '../../../assets/sound/talents/talent-map.json';
 import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
@@ -341,7 +342,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const move = this.pendingMove;
     this.pendingMove = null;
     this.setBusy(true);
-    if (move.kind === 'ability') sfx.playOr(`fight/ability-${move.ability}`, 'fight/swing');
+    // Each pressed talent's sound, from Nigel, SD's map; anything not arrived yet borrows the swing.
+    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, 'fight/swing');
     else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
