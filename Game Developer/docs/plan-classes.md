@@ -21,7 +21,8 @@ I read the rules and the data. The classes differ less than their names promise.
    A barrier is on the Knight (Castle Stance) and the Wizard (Bubble Shield, Moonlight Veil). Most of the rest are "a hit of N power".
 4. **The numbers grow the same.** All four gain 2 attack and 1 defense a level. The Wizard has the highest attack (14), though the
    brief calls the Knight the high damage one, and a Wizard's plain attack is as good as a spell's base.
-5. **The brief's Wizard isn't there.** "Charges for a turn, then a huge hit" exists only as Falling Star, if the offers bring it.
+5. **The brief's Wizard isn't special.** "Charges for a turn, then a huge hit": any class can Charge, and it doubles the next hit, ability or not. Nothing makes
+   it the Wizard's way.
 
 ## What makes a class feel different
 
@@ -42,7 +43,7 @@ Short enough to read on the class card, and felt from the first fight.
 
 - **Knight, Stalwart:** a Block stops more (60% instead of 50%), and a Counter always builds 1 Valor.
 - **Trickster, On a Roll:** each hit in a row raises crit chance a little, until you are hit. The chain the brief asks for.
-- **Wizard, Focus:** Charge works on spells, and doubles them. The brief's Wizard, on the first turn of the game.
+- **Wizard, Focus:** Charge is better for the Wizard: it triples the next spell instead of doubling it, and gives back a little mana. The brief's Wizard, from the first fight.
 - **Archer, First Shot:** strikes first, as now, and that first arrow can't be weak: it counts as charged.
 
 ### Starting numbers (changes)
@@ -54,7 +55,7 @@ Short enough to read on the class card, and felt from the first fight.
 | Wizard | 85 | 40 | **8** | **8** | 4 | 9 HP, 5 mana, **1 attack**, **2 magic**, 1 defense |
 | Archer | 100 | 25 | 10 | 0 | 6 | 10 HP, 3 mana, 2 attack, 1 defense |
 
-The Wizard's staff is poor and their spells are great, so they want to cast. Today's rules already add magic to spells.
+The Wizard's staff is poor and their spells are great, so they want to cast. Today's rules already add magic to every ability, and not to a plain attack.
 
 ## The abilities
 
