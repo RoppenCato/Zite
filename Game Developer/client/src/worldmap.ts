@@ -25,10 +25,12 @@ import fogGiantsJson from '../../assets/coming_lands/fog_giants.json';
 import fogGiantsPng from '../../assets/coming_lands/fog_giants.png';
 import fogPiratesJson from '../../assets/coming_lands/fog_pirates.json';
 import fogPiratesPng from '../../assets/coming_lands/fog_pirates.png';
-import fogForestJson from '../../assets/fog/fog_forest.json';
-import fogForestPng from '../../assets/fog/fog_forest.png';
-import fogHarvestJson from '../../assets/fog/fog_harvest.json';
-import fogHarvestPng from '../../assets/fog/fog_harvest.png';
+import fogHoneyhillJson from '../../assets/fog_hub/fog_honeyhill.json';
+import fogHoneyhillPng from '../../assets/fog_hub/fog_honeyhill.png';
+import fogKingswoodJson from '../../assets/fog_hub/fog_kingswood.json';
+import fogKingswoodPng from '../../assets/fog_hub/fog_kingswood.png';
+import fogWobblewoodJson from '../../assets/fog_hub/fog_wobblewood.json';
+import fogWobblewoodPng from '../../assets/fog_hub/fog_wobblewood.png';
 import fogPiecesJson from '../../assets/fog/fog_pieces.json?url';
 import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 import fogEastPiecesJson from '../../assets/fog_east/fog_east_pieces.json?url';
@@ -82,13 +84,12 @@ const FREE_MARGIN = 512;
 const DEPTH = { overview: -3, chunk: -2 } as const;
 const OVERVIEW_KEY = 'world_overview';
 
-/** How far the hub world moved the forest and the fields. */
-const MOVED = { x: 5120, y: 2048 };
 /** The mist over a closed land (Mitch, AD), cut to its coast. */
 const FOG: Record<string, { key: string; png: string; box: typeof fogSwampJson }> = {
-  // The first lands past the Meadows darken too (Robin, 2026-11-02). Mitch, AD's veils, where the moved world put their lands.
-  thornwood: { key: 'fog_forest', png: fogForestPng, box: { ...fogForestJson, worldX: fogForestJson.worldX + MOVED.x, worldY: fogForestJson.worldY + MOVED.y } },
-  frostpeak: { key: 'fog_harvest', png: fogHarvestPng, box: { ...fogHarvestJson, worldX: fogHarvestJson.worldX + MOVED.x, worldY: fogHarvestJson.worldY + MOVED.y } },
+  // The first lands past the Meadows darken too (Robin, 2026-11-02; Mitch, AD): the Kingswood's holds the city as well, and they open together.
+  kingswood: { key: 'fog_kingswood', png: fogKingswoodPng, box: fogKingswoodJson },
+  thornwood: { key: 'fog_wobblewood', png: fogWobblewoodPng, box: fogWobblewoodJson },
+  frostpeak: { key: 'fog_honeyhill', png: fogHoneyhillPng, box: fogHoneyhillJson },
   bogglemire: { key: 'fog_swamp', png: fogSwampPng, box: fogSwampJson },
   frostcrown: { key: 'fog_frost', png: fogFrostPng, box: fogFrostJson },
   // Not in the world yet: they show closed until they are (Robin, 2026-11-02; Mitch, AD's first pass).
