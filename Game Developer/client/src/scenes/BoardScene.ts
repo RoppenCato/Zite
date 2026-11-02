@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -208,6 +208,7 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
+  private rumourMarks: Phaser.GameObjects.Image[] = [];
   /** The painted regions whose board art is held now. */
   private readonly regions = new Set<string>();
   private readonly dungeonFloors = new Map<string, Phaser.GameObjects.Rectangle>();
@@ -422,6 +423,7 @@ export class BoardScene extends Phaser.Scene {
     // The labels keep one size on screen, whatever the zoom.
     const cam = this.cameras.main;
     for (const words of this.closedLabels.values()) words.setScale(DPR / cam.zoom);
+    for (const mark of this.rumourMarks) mark.setScale((0.28 * DPR) / cam.zoom);
     for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale(((mark.frame.name === 'mark_unknown' ? 0.28 : 0.3) * DPR) / cam.zoom);
     for (const label of this.reachLabels) {
       const scale = DPR / cam.zoom;
@@ -673,6 +675,9 @@ export class BoardScene extends Phaser.Scene {
     for (const e of events) {
       if (e.type === 'levelled') m.levelUp(e.level, `HP ${e.maxHp} · mana ${e.maxMana} · attack ${e.attack} · defense ${e.defense}`);
       else if (e.type === 'opened') m.opened(this.game_.state.board.areas[e.area]?.name ?? e.area);
+      else if (e.type === 'rumour') m.find('mark_scroll', 'A rumour', e.rumour.text, 0xe8b84a);
+      else if (e.type === 'secretFound') m.find('mark_star', 'A hidden path!', e.name ? `It leads to ${e.name}.` : 'Something lies off the road here.', 0x6fcf7a);
+      else if (e.type === 'secretTreasure') m.find('item_gold', `${e.name}!`, 'Nobody has been here in years.', 0xe8b84a);
     }
   }
 
@@ -972,9 +977,11 @@ export class BoardScene extends Phaser.Scene {
       const area = propArea.get(p) ?? '';
       p.setVisible(p.x >= left - 100 && p.x <= right + 100 && p.y >= top - 100 && p.y <= bottom + 200 && (open.has(area) || !this.painted || openLand.some((l) => p.x >= l.x && p.x < l.x + l.width && p.y >= l.y && p.y < l.y + l.height)));
     }
+    const found = new Set(this.game_.me.found ?? []);
     for (const [id, spot] of this.spotParts) {
       // A closed land's spots stay hidden even where its road crosses painted ground.
-      const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom && (!this.painted || open.has(this.game_.state.board.spaces[id]?.area ?? ''));
+      const known = this.game_.state.board.spaces[id];
+      const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom && (!this.painted || open.has(known?.area ?? '')) && (!known?.hidden || found.has(id));
       for (const p of spot.parts) p.setVisible(inView);
       for (const n of spot.names) n.setVisible(inView && !namesHidden);
     }
@@ -1030,8 +1037,23 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
+  /** The "?" of each rumour you carry. */
+  private drawRumours(): void {
+    for (const mark of this.rumourMarks) mark.destroy();
+    this.rumourMarks = [];
+    if (!this.textures.exists(FOG_PIECES)) return;
+    const { board } = this.game_.state;
+    const shown = this.shownAreas();
+    for (const r of this.game_.me.rumours ?? []) {
+      const space = board.spaces[r.space];
+      if (!space || !shown.has(space.area)) continue;
+      this.rumourMarks.push(this.add.image(space.x, space.y - 40, FOG_PIECES, 'mark_unknown').setDepth(9));
+    }
+  }
+
   private drawSpawns(): void {
     this.drawArena();
+    this.drawRumours();
     for (const mark of this.spawnMarks.values()) mark.destroy();
     this.spawnMarks.clear();
     const { board, spawns } = this.game_.state;
@@ -1585,7 +1607,7 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const { board } = this.game_.state;
     const value = this.game_.state.die.last ?? me.steps;
-    const options = reachable(board, me.space, me.steps, new Set(me.opened));
+    const options = reachable(board, me.space, me.steps, walkable(me));
     if (options.length === 0) {
       this.finish(`No way to walk ${me.steps} from here.`);
       return;
@@ -2109,6 +2131,7 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const spawn = spawns[space.id];
     const name = (id: string | null | undefined) => (id ? (creature(id, board.bestiary)?.name ?? id) : '');
+    if (me.rumours?.some((r) => r.space === space.id)) return 'Rumour!';
     if (spawn?.kind === 'wanderer') return `Lv ${spawn.level ?? '?'} Dread ${name(spawn.enemy)}`;
     if (spawn?.kind === 'elite') return `Elite ${name(spawn.enemy)}`;
     if (spawn?.kind === 'miniboss' || spawn?.kind === 'worldboss') return name(spawn.enemy);
@@ -2217,6 +2240,8 @@ export class BoardScene extends Phaser.Scene {
         }
         this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
       };
+      this.drawRumours();
+      this.lastCull.count = -1;
       this.showMoments(moved);
       const chest = moved.some((e) => e.type === 'chest');
       if (!chest) this.showFinds(moved);
@@ -2321,6 +2346,15 @@ export class BoardScene extends Phaser.Scene {
           break;
         case 'cured':
           parts.push(`Cured of ${e.ailments.join(' and ')}.`);
+          break;
+        case 'rumour':
+          parts.push('You hear a rumour: see the ? on your map.');
+          break;
+        case 'rumourDone':
+          parts.push('The rumour was true!');
+          break;
+        case 'secretFound':
+          parts.push('You spot a hidden path.');
           break;
         case 'chest':
           parts.push('A chest!');

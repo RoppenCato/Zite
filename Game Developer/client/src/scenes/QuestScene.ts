@@ -48,6 +48,19 @@ export class QuestScene extends Phaser.Scene {
       y += ROW_H;
     }
 
+    // What you have heard (Robin, 2026-11-02).
+    const rumours = me.rumours ?? [];
+    if (rumours.length) {
+      y += 6;
+      this.add.text(24, y, `Rumours · ${rumours.length}`, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: ink.dim });
+      y += 24;
+      for (const r of rumours) {
+        if (kitReady(this)) icon(this, 'mark_scroll', 36, y + 10).setScale(0.32);
+        const line = this.add.text(52, y, r.text, { fontFamily: FONT, fontSize: '13.5px', color: ink.text, wordWrap: { width: DESIGN_WIDTH - 90 }, maxLines: 2 });
+        y += line.height + 8;
+      }
+    }
+
     y += 12;
     const done = [...(me.questsDone ?? [])].reverse();
     this.add.text(24, y, `Finished · ${done.length}`, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: ink.dim });

@@ -72,6 +72,10 @@ export interface Space {
   area: string;
   boss?: string;
   opens?: string | null;
+  /** A hidden place: not walked or shown until found (`Character.found`). */
+  hidden?: boolean;
+  /** A hidden place's beast: fought on landing. */
+  mob?: string;
   /** A door: the spot it leads to, in another part of the board. */
   door?: string;
   /** A shop's stock: arms when not said. */
@@ -236,6 +240,11 @@ export interface Character {
   /** Times each boss space's boss was beaten. */
   bossKills: Record<string, number>;
   offer: Offer | null;
+  /** What you have heard: a mark on your map, paid off by walking onto it. */
+  rumours?: Rumour[];
+  /** The hidden spots you have found, and the ends whose first treasure you have had. */
+  found?: string[];
+  foundDone?: string[];
   /** A run in the Arena: the wave under way and the pot so far, lost on a fall. */
   arena?: { mode: string; wave: number; gold: number; xp: number; flasks: number };
   /** The Arena's modes already tried on this day: once each, so it cannot be farmed. */
@@ -393,6 +402,15 @@ export interface Spawn {
   hitters?: Record<string, number>;
 }
 
+/** Something heard in a town (Robin, 2026-11-02). */
+export interface Rumour {
+  kind: 'stash' | 'beast' | 'secret';
+  space: string;
+  text: string;
+  /** A beast's creature. */
+  mob?: string;
+}
+
 /** A note a player left on a spot (mine, 2026-11-01). */
 export interface Trace {
   player: string;
@@ -523,6 +541,10 @@ export type GameEvent =
   | { type: 'learned'; action: string; player: string; ability: string; rank: number }
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
+  | { type: 'rumour'; action: string; player: string; rumour: Rumour }
+  | { type: 'rumourDone'; action: string; player: string; rumour: Rumour }
+  | { type: 'secretFound'; action: string; player: string; space: string; name: string }
+  | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
   | { type: 'arenaTaken'; action: string; player: string; waves: number; gold: number; xp: number }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }

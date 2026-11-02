@@ -14,9 +14,9 @@ export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts
 export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';
 export { regionCreatures } from './journal.ts';
-export { townKind, TOWNS, ARENA, DUNGEONS, type TownKind, type ArenaMode } from './data.ts';
+export { townKind, TOWNS, ARENA, DUNGEONS, RUMOURS, SECRETS, type TownKind, type ArenaMode } from './data.ts';
 export { CALENDAR, DAY_NAMES, isOn, nextDay, weekday } from './calendar.ts';
-export { newGame, newWorld, apply, makeBoard, makeCharacter, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
+export { newGame, newWorld, apply, makeBoard, makeCharacter, walkable, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';
 export { migrate } from './save.ts';

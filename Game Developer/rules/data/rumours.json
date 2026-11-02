@@ -1,0 +1,35 @@
+{
+  "_about": "Rumours (Robin, 2026-11-02: yes). Standing in a town you may hear one: a '?' on your map in that land, and walking onto it pays off. Numbers and words mine.",
+  "max": 3,
+  "cooldownMs": 1200000,
+  "minDistance": 400,
+  "weights": {
+    "stash": 45,
+    "beast": 35,
+    "secret": 60
+  },
+  "beast": {
+    "hp": 1.8,
+    "attack": 1.2,
+    "xp": 3,
+    "gold": 3
+  },
+  "lines": {
+    "stash": [
+      "They say something glints near {place}.",
+      "A pedlar swears a purse was buried near {place}. Worth a look.",
+      "My old dad hid his savings near {place}, and never told a soul where. Well, he told me.",
+      "There's a chest that fell off a cart near {place}. Nobody's gone back for it."
+    ],
+    "beast": [
+      "Folk say a huge {mob} has been seen near {place}. Mind yourself.",
+      "Something big is eating the sheep near {place}. A {mob}, they reckon.",
+      "A {mob} the size of a barn, near {place}. Three people have seen it, and they all ran."
+    ],
+    "secret": [
+      "An old trapper swears there's a hidden trail near {place}. Keep your eyes open.",
+      "There's a way off the road near {place}, if you know where to look.",
+      "My grandmother used to walk a path near {place} that isn't on any map."
+    ]
+  }
+}

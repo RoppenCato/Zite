@@ -45,6 +45,8 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
   const me = state.characters[player];
   const where = `${space.name || SPACE_KIND_DATA[space.kind].label} · ${area?.name ?? space.area}`;
   const bestiary = state.board.bestiary;
+  const heard = me?.rumours?.find((r) => r.space === spaceId);
+  if (heard) return `A rumour points here. "${heard.text}"`;
   if (area && me && !me.opened.includes(area.id)) {
     const gate = Object.values(state.board.spaces).find((s) => s.opens === area.id);
     const boss = gate?.boss ? creature(gate.boss, bestiary) : undefined;

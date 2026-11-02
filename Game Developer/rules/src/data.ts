@@ -12,6 +12,8 @@ import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
 import townsJson from '../data/towns.json' with { type: 'json' };
 import arenaJson from '../data/arena.json' with { type: 'json' };
+import rumoursJson from '../data/rumours.json' with { type: 'json' };
+import secretsJson from '../data/secrets.json' with { type: 'json' };
 import dungeonsJson from '../data/dungeons.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
@@ -406,3 +408,16 @@ export const ARENA = arenaJson as unknown as {
 
 /** The dungeons, off the map (Robin, 2026-11-02). */
 export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string }; inside: string; area: import('./world.ts').WorldArea }>;
+
+/** Rumours' numbers and words (Robin, 2026-11-02). */
+export const RUMOURS = rumoursJson as unknown as { max: number; cooldownMs: number; minDistance: number; weights: Record<'stash' | 'beast' | 'secret', number>; beast: { hp: number; attack: number; xp: number; gold: number }; lines: Record<'stash' | 'beast' | 'secret', string[]> };
+
+/** A hidden trail: spots off an anchor on the road, the last named. */
+export interface SecretTrail {
+  id: string;
+  area: string;
+  anchor: string;
+  prop?: string;
+  spots: { x: number; y: number; name?: string; kind?: string; mob?: string }[];
+}
+export const SECRETS = (secretsJson as unknown as { trails: SecretTrail[] }).trails;

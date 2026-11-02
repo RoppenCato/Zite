@@ -5,7 +5,8 @@ export type PathProblem = 'wrong number of steps' | 'no such space' | 'not conne
 /** A step may land on a space only when its area is open (or when no `open` set is given: the whole board). */
 function allowed(board: Board, id: string, open: ReadonlySet<string> | null): boolean {
   const space = board.spaces[id];
-  return !!space && (open === null || open.has(space.area));
+  // A hidden spot's own id in the set is how it is known to be found.
+  return !!space && (open === null || (open.has(space.area) && (!space.hidden || open.has(space.id))));
 }
 
 /**

@@ -458,3 +458,9 @@ A road's end stops a walk, whatever is left of the roll (`legalPaths`, `checkPat
 ## Five hand-laid lands (Robin, 2026-11-02)
 
 Bogglemire (tier 4, levels 12 to 16) and The Frostcrown (tier 5, 16 to 20) follow Honeyhill; Mitch, AD's layouts are in `world.json`, stats mine. Queen Bumble opens the swamp, Old Mother Murk the mountains, Frostbeard the first grown land, whose first column moves east to 12 and whose tiers start at 6. Save version 27: anyone already in a grown land has the two opened.
+
+## Rumours and hidden places (Robin, 2026-11-02)
+
+`data/rumours.json`: landing in a town may tell you a rumour about its land, at most `max` held, each town again after `cooldownMs`. A stash pays on landing, a beast is a fight with a sure drop, a secret points to where a hidden trail leaves the road. A rumour's spot stops a walk.
+
+`data/secrets.json`: hidden trails, `withSecrets`. A spot with `hidden` is walkable only with its id in `Character.found` (`walkable`). You notice a trail on landing within `SECRET_NOTICE` of its anchor. Its named end gives a first treasure once (`foundDone`), then what its kind gives.

@@ -4,16 +4,16 @@
 
 import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
-import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
+import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
-import { dropSlot, groundAt, inTownWalls, rollLine } from './grounds.ts';
+import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
-import { buildBoard, withArenas, withDungeons } from './world.ts';
+import { buildBoard, withArenas, withDungeons, withSecrets } from './world.ts';
 import {
   SLOTS,
   STATE_VERSION,
@@ -29,8 +29,7 @@ import {
   type Spawn,
   type Trace,
   type GearLine,
-  type ShopStock,
-} from './types.ts';
+  type ShopStock, type Rumour } from './types.ts';
 
 export interface NewGameOptions {
   seed: string;
@@ -63,7 +62,7 @@ export const MAX_NAME = 12;
 
 /** The world from rules/data/world.json, built fresh so the state owns it. */
 export function makeBoard(): Board {
-  return withDungeons(withArenas(buildBoard(WORLD_DATA)));
+  return withSecrets(withDungeons(withArenas(buildBoard(WORLD_DATA))));
 }
 
 export function makeCharacter(id: string, name: string, classId: ClassId, board: Board): Character {
@@ -359,12 +358,18 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   return { state: next, events };
 }
 
+/** How near where a trail leaves the road you must stand to notice it, in world pixels. */
+const SECRET_NOTICE = 300;
+
 function move(state: GameState, action: MoveAction, character: Character, rng: Rng, now: number): ApplyResult {
   const busy = boardBusy(character);
   if (busy) return reject(state, action, busy);
   if (character.steps === 0) return reject(state, action, 'roll first');
-  const problem = checkPath(state.board, character.space, character.steps, action.path, new Set(character.opened));
+  const problem = checkPath(state.board, character.space, character.steps, action.path, walkable(character));
   if (problem) return reject(state, action, problem);
+  // A rumour's mark stops the walk: it is what you came for (Robin, 2026-11-02).
+  const heard = action.path.findIndex((id) => character.rumours?.some((r) => r.space === id));
+  if (heard >= 0 && heard < action.path.length - 1) return walkTo(state, character, action.path.slice(0, heard + 1), action, rng, now);
   // Walking past the quest board with no quest stops there to choose; the walk goes on after the answer (Robin, 2026-11-02).
   const stop = character.quests.length ? -1 : action.path.findIndex((id, i) => i < action.path.length - 1 && state.board.spaces[id]?.kind === 'board');
   if (stop >= 0) {
@@ -381,7 +386,104 @@ function walkTo(state: GameState, character: Character, path: string[], action: 
     { type: 'moved', action: action.id, player: action.player, from: character.space, path: [...path] },
     { type: 'landed', action: action.id, player: action.player, space: landing, kind: space.kind },
   ];
-  return land(state, { ...character, space: landing, steps: 0 }, space, action, rng, now, events);
+  const noticed = noticeSecrets(state.board, { ...character, space: landing, steps: 0 }, space, action, events);
+  return landWithRumour(state, noticed, space, action, rng, now, events);
+}
+
+/** The spots you can walk: open land, and hidden spots you have found. */
+export function walkable(c: Character): Set<string> {
+  return new Set([...c.opened, ...(c.found ?? [])]);
+}
+
+/** A hidden trail shows when you stand within reach of where it leaves the road (Robin, 2026-11-02: "only show once you stand close"). */
+function noticeSecrets(board: Board, c: Character, space: Space, action: Action, events: GameEvent[]): Character {
+  const known = new Set(c.found ?? []);
+  let found = c.found;
+  for (const s of Object.values(board.spaces)) {
+    if (!s.hidden || known.has(s.id) || s.area !== space.area) continue;
+    const anchor = board.spaces[s.links[0] ?? ''];
+    if (!anchor || anchor.hidden || Math.hypot(anchor.x - space.x, anchor.y - space.y) > SECRET_NOTICE) continue;
+    // The whole trail with its first spot.
+    const trail: Space[] = [];
+    let at: Space | undefined = s;
+    while (at) {
+      trail.push(at);
+      at = board.spaces[at.links.find((id) => board.spaces[id]?.hidden && !trail.some((x) => x.id === id)) ?? ''];
+    }
+    found = [...(found ?? []), ...trail.map((x) => x.id)];
+    for (const x of trail) known.add(x.id);
+    events.push({ type: 'secretFound', action: action.id, player: action.player, space: s.id, name: trail[trail.length - 1]!.name });
+  }
+  return found === c.found ? c : { ...c, found };
+}
+
+/** Standing in a town you may hear something, once in a while (Robin, 2026-11-02). */
+function hearRumour(state: GameState, c: Character, town: Space, action: Action, rng: Rng, now: number, events: GameEvent[]): Character {
+  const key = `rumour:${town.id}`;
+  const rumours = c.rumours ?? [];
+  if (rumours.length >= RUMOURS.max || (c.cooldowns[key] ?? 0) > now) return c;
+  const board = state.board;
+  const taken = new Set(rumours.map((r) => r.space));
+  const wild = Object.values(board.spaces)
+    .filter((s) => s.area === town.area && s.kind === 'normal' && !s.hidden && !taken.has(s.id) && !inTownWalls(board, s) && Math.hypot(s.x - town.x, s.y - town.y) >= RUMOURS.minDistance)
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const known = new Set(c.found ?? []);
+  const secrets = Object.values(board.spaces)
+    .filter((s) => s.hidden && s.area === town.area && !known.has(s.id) && !board.spaces[s.links[0] ?? '']?.hidden && !taken.has(s.links[0] ?? ''))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const weights = RUMOURS.weights;
+  const choices = [...(wild.length ? (['stash', 'beast'] as const) : []), ...(secrets.length ? (['secret'] as const) : [])];
+  if (!choices.length) return c;
+  let pick = rng.next() * choices.reduce((sum, k) => sum + weights[k], 0);
+  const kind = choices.find((k) => (pick -= weights[k]) < 0) ?? choices[0]!;
+  const target = kind === 'secret' ? board.spaces[secrets[rng.int(secrets.length) - 1]!.links[0]!]! : wild[rng.int(wild.length) - 1]!;
+  const mob = kind === 'beast' ? (groundAt(board, target)?.mob ?? board.areas[target.area]?.mobs[0]) : undefined;
+  const lines = RUMOURS.lines[kind];
+  // The place it stands in, or the nearest named spot: "near Cloverfield Meadows" sends nobody anywhere.
+  const named = Object.values(board.spaces)
+    .filter((s) => s.area === target.area && s.name && !s.hidden && s.id !== town.id)
+    .sort((p, q) => Math.hypot(p.x - target.x, p.y - target.y) - Math.hypot(q.x - target.x, q.y - target.y))[0];
+  const place = target.name || placeName(board, target) || named?.name || board.areas[target.area]?.name || 'the road';
+  const text = lines[rng.int(lines.length) - 1]!.replace('{place}', place).replace('{mob}', mob ? (creature(mob, board.bestiary)?.name ?? mob) : 'beast');
+  const rumour: Rumour = { kind, space: target.id, text, ...(mob ? { mob } : {}) };
+  events.push({ type: 'rumour', action: action.id, player: action.player, rumour });
+  return { ...c, rumours: [...rumours, rumour], cooldowns: { ...c.cooldowns, [key]: now + RUMOURS.cooldownMs } };
+}
+
+/** Landing on what a rumour named pays it off, then the spot itself: a stash or a beast takes the place of what the spot would do. A hidden place's end gives its first treasure once. */
+function landWithRumour(state: GameState, character: Character, space: Space, action: Action, rng: Rng, now: number, events: GameEvent[]): ApplyResult {
+  let c = character;
+  let s = state;
+  const tier = state.board.areas[space.area]?.tier ?? 1;
+  if (space.hidden && space.name && !(c.foundDone ?? []).includes(space.id)) {
+    events.push({ type: 'secretTreasure', action: action.id, player: action.player, space: space.id, name: space.name });
+    c = { ...c, foundDone: [...(c.foundDone ?? []), space.id] };
+    c = giveGold(c, tier * 60, action, events);
+    const got = nextGearId(s);
+    s = got.state;
+    c = addLoot(c, rollGear(got.id, dropSlot(null, rng), tier, GEAR.rarityBoost.mini, rng, rollLine(rng), c.classId), action, events);
+    s = withCharacter(s, c);
+  }
+  const rumour = c.rumours?.find((r) => r.space === space.id);
+  if (!rumour) return land(s, c, space, action, rng, now, events);
+  c = { ...c, rumours: c.rumours!.filter((r) => r !== rumour) };
+  events.push({ type: 'rumourDone', action: action.id, player: action.player, rumour });
+  if (rumour.kind === 'stash') {
+    const opened = openChest(s, c, tier, space.area, action, rng, events);
+    const after = opened.state.characters[c.id]!;
+    const got = nextGearId(opened.state);
+    const prize = addLoot(after, rollGear(got.id, dropSlot(null, rng), tier, GEAR.rarityBoost.mini, rng, rollLine(rng), c.classId), action, events);
+    return { state: withCharacter(got.state, prize), events };
+  }
+  if (rumour.kind === 'beast' && rumour.mob) {
+    const met = begin(s, c, rumour.mob, space.id, false, action, rng, events);
+    const me = met.state.characters[c.id]!;
+    const e = me.fight!.enemy;
+    const b = RUMOURS.beast;
+    const big = { ...e, name: `Huge ${e.name}`, role: 'mini' as const, wanderer: true, hp: Math.round(e.hp * b.hp), maxHp: Math.round(e.maxHp * b.hp), attack: Math.round(e.attack * b.attack), xp: Math.round(e.xp * b.xp), gold: Math.round(e.gold * b.gold) };
+    return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: big } }), events: met.events.map((ev) => (ev.type === 'fight' ? { ...ev, enemy: { ...big, moves: big.moves.map((m) => ({ ...m })) } } : ev)) };
+  }
+  return land(s, c, space, action, rng, now, events);
 }
 
 /**
@@ -414,7 +516,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       const s = stats(c);
       const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana, visited: [...new Set([...(c.visited ?? []), space.id])] };
       events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
-      return { state: withCharacter(state, rested), events };
+      return { state: withCharacter(state, hearRumour(state, rested, space, action, rng, now, events)), events };
     }
     case 'board': {
       // One quest at a time: with one under way the board only asks whether to drop it.
@@ -469,6 +571,8 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       return begin(state, c, space.boss, space.id, false, action, rng, events);
     }
     case 'normal': {
+      // A hidden place's beast.
+      if (space.mob && !onCooldown) return begin(state, cooled(c), space.mob, space.id, false, action, rng, events);
       const spawn = state.spawns[space.id];
       if (spawn?.kind === 'worldboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events, spawn);
       if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);
@@ -1060,7 +1164,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       standing.add(c.space);
     }
     const candidates = Object.values(state.board.spaces)
-      .filter((s) => s.kind === 'normal' && open.has(s.area) && !state.board.areas[s.area]?.dungeon && !spawns[s.id] && !standing.has(s.id))
+      .filter((s) => s.kind === 'normal' && !s.hidden && open.has(s.area) && !state.board.areas[s.area]?.dungeon && !spawns[s.id] && !standing.has(s.id))
       .map((s) => s.id)
       .sort();
     if (candidates.length) {
@@ -1079,7 +1183,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
   // Wanderers (Robin, 2026-11-02): a creature far above its land walks the roads, its level on the map. One at a time, in land where someone stands who it still towers over.
   const w = PROGRESSION.wanderer;
   const standingOn = new Set(Object.values(characters).map((c) => c.space));
-  const free = (s: Space | undefined): s is Space => !!s && s.kind === 'normal' && !spawns[s.id] && !standingOn.has(s.id) && !inTownWalls(state.board, s);
+  const free = (s: Space | undefined): s is Space => !!s && s.kind === 'normal' && !s.hidden && !spawns[s.id] && !standingOn.has(s.id) && !inTownWalls(state.board, s);
   const roaming = Object.entries(spawns).find(([, s]) => s.kind === 'wanderer');
   if (roaming) {
     if (rng.next() < w.moveChance) {
@@ -1133,7 +1237,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
     const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a && !a.dungeon).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
     const gate = frontier ? Object.values(state.board.spaces).find((s) => s.area === frontier.id && s.kind === 'boss' && s.boss) : undefined;
     const enemy = gate?.boss ?? frontier?.miniBosses[0] ?? null;
-    const wilds = frontier ? Object.values(state.board.spaces).filter((s) => s.area === frontier.id && s.kind === 'normal' && !spawns[s.id] && !standing.has(s.id)).map((s) => s.id).sort() : [];
+    const wilds = frontier ? Object.values(state.board.spaces).filter((s) => s.area === frontier.id && s.kind === 'normal' && !s.hidden && !spawns[s.id] && !standing.has(s.id)).map((s) => s.id).sort() : [];
     if (enemy && wilds.length) {
       const space = wilds[rng.int(wilds.length) - 1]!;
       const hp = Math.round(makeEnemy(enemy, state.board.bestiary).maxHp * wb.hpMult);

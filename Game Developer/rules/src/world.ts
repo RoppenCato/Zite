@@ -1,4 +1,4 @@
-import { ARENA, DUNGEONS } from './data.ts';
+import { ARENA, DUNGEONS, SECRETS, type SecretTrail } from './data.ts';
 // The world: areas by tier, each a set of hubs (named spots at fixed positions) joined by roads (a spot every step,
 // laid along a curve), and passage roads between areas that start at a boss. buildBoard turns the hand-laid description
 // into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
@@ -265,6 +265,27 @@ export function withDungeons(board: Board): Board {
     out.areas[id] = { ...out.areas[id]!, dungeon: true };
     out.spaces[d.inside] = { ...out.spaces[d.inside]!, door: d.outside.spot };
     out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside };
+  }
+  return out;
+}
+
+/** The hidden trails laid into the board, each joined to its anchor only (Robin, 2026-11-02). Already laid, nothing changes. */
+export function withSecrets(board: Board, trails: readonly SecretTrail[] = SECRETS): Board {
+  let out = board;
+  for (const trail of trails) {
+    const first = `${trail.id}-1`;
+    if (out.spaces[first] || !out.spaces[trail.anchor]) continue;
+    const spaces = { ...out.spaces };
+    let previous = trail.anchor;
+    trail.spots.forEach((p, i) => {
+      const id = `${trail.id}-${i + 1}`;
+      const last = i === trail.spots.length - 1;
+      const space: Space = { id, kind: (last && p.kind ? p.kind : 'normal') as SpaceKind, name: last ? (p.name ?? '') : '', x: p.x, y: p.y, links: [previous], area: trail.area, hidden: true, ...(p.mob ? { mob: p.mob } : {}) };
+      spaces[id] = space;
+      spaces[previous] = { ...spaces[previous]!, links: [...spaces[previous]!.links, id] };
+      previous = id;
+    });
+    out = { ...out, spaces };
   }
   return out;
 }
