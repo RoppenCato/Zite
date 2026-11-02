@@ -87,6 +87,7 @@ export class PaintedGround {
   private readonly loading = new Set<string>();
   private readonly overviews = new Map<string, Phaser.GameObjects.Image>();
   private readonly veils = new Map<string, Phaser.GameObjects.Image>();
+  private readonly wanted = new Set<string>();
   /** The most chunks ever in memory at once, for the measure. */
   peak = 0;
 
@@ -129,8 +130,13 @@ export class PaintedGround {
     for (const [key, c] of CHUNKS) {
       const box = (margin: number): boolean => c.x < midX + halfW + margin && c.x + CHUNK_SIZE > midX - halfW - margin && c.y < midY + halfH + margin && c.y + CHUNK_SIZE > midY - halfH - margin;
       const open = c.areas.some((a) => opened.has(a));
-      if (near && open && box(LOAD_MARGIN)) this.want(key, c);
-      else if (!near || !open || !box(FREE_MARGIN)) this.free(key);
+      if (near && open && box(LOAD_MARGIN)) {
+        this.wanted.add(key);
+        this.want(key, c);
+      } else if (!near || !open || !box(FREE_MARGIN)) {
+        this.wanted.delete(key);
+        this.free(key);
+      }
     }
     this.peak = Math.max(this.peak, this.held.size);
   }
@@ -158,7 +164,8 @@ export class PaintedGround {
   }
 
   private place(key: string, c: Chunk): void {
-    if (this.held.has(key)) return;
+    // Zoomed out or walked away while it loaded: it is not wanted any more.
+    if (this.held.has(key) || !this.wanted.has(key)) return;
     this.held.set(key, this.scene.add.image(c.x, c.y, key).setOrigin(0, 0).setDepth(DEPTH.chunk));
   }
 

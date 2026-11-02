@@ -400,7 +400,7 @@ export class BoardScene extends Phaser.Scene {
     // The labels keep one size on screen, whatever the zoom.
     const cam = this.cameras.main;
     for (const words of this.closedLabels.values()) words.setScale(DPR / cam.zoom);
-    for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale(((mark.frame.name === 'mark_unknown' ? 0.28 : 0.5) * DPR) / cam.zoom);
+    for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale(((mark.frame.name === 'mark_unknown' ? 0.28 : 0.3) * DPR) / cam.zoom);
     for (const label of this.reachLabels) {
       const scale = DPR / cam.zoom;
       label.setScale(scale).setX((label.getData('x') as number) + 24 * scale);
