@@ -4,11 +4,11 @@
 
 import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './skills.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollSetPiece } from './gear.ts';
+import { makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
@@ -848,7 +848,7 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
   if (rich || rng.next() < PROGRESSION.chest.gearChance) {
     const got = nextGearId(s);
     s = got.state;
-    const unique = rich && rng.next() < 0.3 ? rollUnique(got.id, tier, tier, rng) : null;
+    const unique = (rich && rng.next() < GEAR.legendChance.chest ? rollLegend(got.id, tier, rng, c.classId) : null) ?? (rich && rng.next() < 0.3 ? rollUnique(got.id, tier, tier, rng) : null);
     const setPiece = !unique && rich && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId) : null;
     if (unique || setPiece) {
       next = addLoot(next, (unique ?? setPiece)!, action, events);
@@ -1171,6 +1171,16 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
     if (!to || !land || to.kind !== 'town' || c.steps > 0) return reject(state, action, 'not now');
     const opened = Object.values(state.board.areas).filter((a) => !a.dungeon && a.tier <= land.tier).map((a) => a.id);
     return done({ ...c, space: to.id, opened: [...new Set([...c.opened, ...opened])] });
+  }
+  if (action.op === 'testLegend') {
+    // The next of this class's legendary weapons, to look at (Robin's testing).
+    const own = UNIQUE_IDS.filter((u) => UNIQUES[u]!.legend && UNIQUES[u]!.classId === c.classId);
+    const at = own.indexOf(c.equipment.weapon?.unique ?? '');
+    const got = nextGearId(state);
+    const next = own[(at + 1) % own.length]!;
+    const piece = makeUnique(got.id, next, UNIQUES[next]!.tier, makeRng(`${got.id}`));
+    const old = c.equipment.weapon;
+    return { state: withCharacter(got.state, capped({ ...c, bag: old ? [...c.bag, old].slice(-GEAR.bagLimit) : c.bag, equipment: { ...c.equipment, weapon: piece } })), events: [] };
   }
   if (action.op === 'testLevel') {
     const level = c.level + 1;

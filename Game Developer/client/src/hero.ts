@@ -6,7 +6,9 @@
 // has no art yet shows the Tin piece. Files are 2x and face left; `face(true)` flips the whole hero to face right.
 
 import Phaser from 'phaser';
-import type { Character, ClassId, GearItem, Slot } from '../../rules/src/index.ts';
+import { UNIQUES, type Character, type ClassId, type GearItem, type Slot } from '../../rules/src/index.ts';
+import legendIconsJson from '../../assets/legends/icons.json?url';
+import legendIconsPng from '../../assets/legends/icons.png';
 import archerOverJson from '../../assets/hero_classes/archer/gear_over.json?url';
 import archerOverPng from '../../assets/hero_classes/archer/gear_over.png';
 import clothArcherJson from '../../assets/gear_sets/cloth/cloth_archer.json?url';
@@ -133,17 +135,27 @@ const SETS: Record<string, Tex> = {
   wooden: { key: 'set_wooden', png: woodenPng, json: woodenJson },
 };
 /** The Archer's hands move their own way (Mitch, AD's corrected arm, 2026-11-02): these load only for an Archer. */
+// The legendary weapons (Mitch, AD, 2026-11-02): an atlas each, loaded only while worn.
+const LEGEND_FILES = import.meta.glob('../../assets/legends/*/*.{png,json}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+for (const [path, url] of Object.entries(LEGEND_FILES)) {
+  const m = /legends\/(\w+)\/\w+\.(png|json)$/.exec(path);
+  if (!m) continue;
+  const tex = (SETS[m[1]!] ??= { key: `legend_${m[1]!}`, png: '', json: '' });
+  if (m[2] === 'png') tex.png = url;
+  else tex.json = url;
+}
 const ARCHER_OVER: Tex = { key: 'hero_gear_over_archer', png: archerOverPng, json: archerOverJson };
 const ARCHER_SETS: Record<string, Tex> = {
   set_leather: { key: 'set_leather_archer', png: leatherArcherPng, json: leatherArcherJson },
   set_cloth: { key: 'set_cloth_archer', png: clothArcherPng, json: clothArcherJson },
 };
 const SET_ICONS: Tex = { key: 'set_icons', png: setIconsPng, json: setIconsJson };
+const LEGEND_ICONS: Tex = { key: 'legend_icons', png: legendIconsPng, json: legendIconsJson };
 /** A later rank of a kind shows its first set until its own is drawn: Hide as Leather, Linen as Cloth. */
 const LINE_SET: Record<string, string> = { light: 'leather', magic: 'cloth' };
 
 /** The atlases every class shares: the gear and its icons. */
-const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS];
+const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS];
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
@@ -188,7 +200,8 @@ const texOf = (slot: Slot, classId: ClassId): string => (slot === 'weapon' ? CLA
 /** The words a piece's art may go by, best first: its own, its kind's first set, its rank, Tin. */
 function artWords(g: GearItem): string[] {
   const first = g.base.split(' ')[0]!;
-  return [first, ...(g.line && LINE_SET[g.line] ? [LINE_SET[g.line]!] : []), RANK_WORDS[g.rank - 1] ?? 'tin', 'tin'];
+  const legend = g.unique ? UNIQUES[g.unique]?.art : undefined;
+  return [...(legend ? [legend] : []), first, ...(g.line && LINE_SET[g.line] ? [LINE_SET[g.line]!] : []), RANK_WORDS[g.rank - 1] ?? 'tin', 'tin'];
 }
 
 /** Wooden weapons are named by the item, one drawing for every class. */
@@ -234,6 +247,8 @@ export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { 
   const wood = woodenPiece(g);
   if (wood && has(scene, SET_ICONS.key, wood)) return { texture: SET_ICONS.key, frame: wood };
   const part = partOf(g.slot, classId);
+  const legend = g.unique ? UNIQUES[g.unique]?.art : undefined;
+  if (legend && has(scene, LEGEND_ICONS.key, `${legend}_${part}`)) return { texture: LEGEND_ICONS.key, frame: `${legend}_${part}` };
   for (const word of artWords(g)) {
     if (has(scene, SET_ICONS.key, `${word}_${part}`)) return { texture: SET_ICONS.key, frame: `${word}_${part}` };
     const key = g.slot === 'weapon' ? CLASS_ART[classId].icons.key : TEX.icons.key;

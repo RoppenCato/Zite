@@ -76,9 +76,6 @@ export function hasFrame(scene: Phaser.Scene, frame: string): boolean {
 
 /** The kit's item icon for an item id, if there is one. */
 export function itemFrame(item: string): string {
-  // Flasks Mitch, AD has not drawn yet wear the strongest that is drawn.
-  if (/^(mana-)?potion-[45]$/.test(item)) return item.replace(/-[45]$/, '-3');
-  if (/^elixir-.*-2$/.test(item)) return item.slice(0, -2);
   if (item.startsWith('potion') || item.startsWith('mana-potion') || item.startsWith('elixir-')) return item;
   return { reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', exact: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
 }

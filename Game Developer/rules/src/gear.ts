@@ -240,7 +240,7 @@ export function rollGear(id: string, slot: Slot, rank: number, boost: number, rn
 
 /** The uniques a tier's bosses carry: every unique from that tier or an earlier one. */
 export function uniquePool(tier: number): string[] {
-  return UNIQUE_IDS.filter((u) => UNIQUES[u]!.tier <= tier);
+  return UNIQUE_IDS.filter((u) => UNIQUES[u]!.tier <= tier && !UNIQUES[u]!.legend);
 }
 
 /** The unique `uniqueId` at `rank`: its number as a unique's (the top multiplier, swung), one affix, its power. */
@@ -252,8 +252,15 @@ export function makeUnique(id: string, uniqueId: string, rank: number, rng: Rng)
   const rar = GEAR.rarities.unique;
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
   const value = Math.max(1, Math.round(rankStat(u.slot, r) * rar.mult * swing));
-  const plain = `${rankName(r)} ${def.base}`;
-  return { id, slot: u.slot, rank: r, rarity: 'unique', name: u.name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes: rollAffixes(rar.affixes, u.slot, r, rar.mult, rng).affixes, unique: uniqueId, price: Math.round(rankPrice(u.slot, r) * rar.priceMult) };
+  const plain = u.kind ?? `${rankName(r)} ${def.base}`;
+  return { id, slot: u.slot, rank: r, rarity: 'unique', name: u.name, base: plain.toLowerCase(), stats: { [u.stat ?? def.stat]: value }, affixes: [...rollAffixes(rar.affixes, u.slot, r, rar.mult, rng).affixes, ...(u.affix ? [u.affix] : [])], unique: uniqueId, price: Math.round(rankPrice(u.slot, r) * rar.priceMult) };
+}
+
+/** A legendary weapon for this class that has come in by this tier, or null (Robin, 2026-11-02: "rare to find or drop from bosses"). */
+export function rollLegend(id: string, tier: number, rng: Rng, classId: ClassId): GearItem | null {
+  const pool = UNIQUE_IDS.filter((u) => UNIQUES[u]!.legend && UNIQUES[u]!.classId === classId && UNIQUES[u]!.tier <= tier);
+  if (!pool.length) return null;
+  return makeUnique(id, pool[rng.int(pool.length) - 1]!, tier, rng);
 }
 
 /** One of the tier's uniques at `rank`, or null when the tier has none. */

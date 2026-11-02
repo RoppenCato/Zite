@@ -4,7 +4,7 @@
 // read from the events of a landing or a fight, and the words on a card.
 
 import type Phaser from 'phaser';
-import { gearPowers, ITEMS, RARITIES, type GameEvent, type GearItem, type Rarity, type Slot } from '../../rules/src/index.ts';
+import { gearPowers, ITEMS, RARITIES, type GameEvent, type GearItem, type Rarity, type Slot, UNIQUES } from '../../rules/src/index.ts';
 import cardPng from '../../assets/loot/card.png';
 import chestData from '../../assets/loot/chest/chest.json';
 import chestJson from '../../assets/loot/chest/chest.json?url';
@@ -111,7 +111,7 @@ export function cardWords(p: Prize): { name: string; power: string; square: stri
   switch (p.kind) {
     case 'gear': {
       const g = p.gear;
-      const kind = g.name.toLowerCase() === g.base.toLowerCase() ? capitalise(g.rarity) : g.unique ? `Unique ${SLOT_WORDS[g.slot].toLowerCase()}` : `${capitalise(g.rarity)} ${g.base}`;
+      const kind = g.name.toLowerCase() === g.base.toLowerCase() ? capitalise(g.rarity) : g.unique && UNIQUES[g.unique]?.legend ? `Legendary ${g.base}` : g.unique ? `Unique ${SLOT_WORDS[g.slot].toLowerCase()}` : `${capitalise(g.rarity)} ${g.base}`;
       const parts = [kind, ...gearPowers(g)];
       if (p.worn) parts.push('put on');
       if (p.sold !== null) parts.push(`no room: sold for ${p.sold} gold`);

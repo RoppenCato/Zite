@@ -4,7 +4,7 @@
 // piece compares with what is worn, and holds only the buttons that apply. Equip, unequip, drop and use each send one intent.
 
 import Phaser from 'phaser';
-import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING, SETS, setsWorn } from '../../../rules/src/index.ts';
+import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING, SETS, setsWorn, UNIQUES } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
 import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
@@ -381,7 +381,8 @@ export class BagScene extends Phaser.Scene {
     this.cubby(`cubby_${g.rarity}`, 30, iconY, 46, this.artOf(g), false, () => undefined);
     (this.rows.slice(before).find((o) => o instanceof Phaser.GameObjects.Zone) as Phaser.GameObjects.Zone | undefined)?.disableInteractive();
     this.rows.push(this.woodText(88, card.y + 16, g.name, 15).setOrigin(0, 0.5));
-    const kind = g.name.toLowerCase() === g.base.toLowerCase() ? g.rarity : `${g.rarity} ${g.base}`;
+    const rarity = g.unique && UNIQUES[g.unique]?.legend ? 'legendary' : g.rarity;
+    const kind = g.name.toLowerCase() === g.base.toLowerCase() ? rarity : `${rarity} ${g.base}`;
     this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind} ${SLOT_NAMES[g.slot].toLowerCase()}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
     const lines: { text: string; color?: string; bold?: boolean; small?: boolean }[] = [{ text: gearPowers(g).filter((p) => !p.startsWith('Set: ')).join(' · ') || 'A plain piece.', bold: true }];
     const set = g.set ? SETS[g.set] : undefined;

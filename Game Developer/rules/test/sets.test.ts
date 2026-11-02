@@ -1,6 +1,6 @@
 // Sets, and uniques that work by traits (Robin, 2026-11-02: "a few set bonuses, with 2(set), 4(set) so you can mix if you like").
 import { describe, expect, it } from 'vitest';
-import { GEAR, ITEMS, makeRng, makeUnique, newGame, plainGear, rollSetPiece, SET_IDS, SETS, setsWorn, SLOTS, stats, traitsOf, UNIQUE_IDS, UNIQUES, type Character, type GearItem } from '../src/index.ts';
+import { GEAR, ITEMS, makeRng, makeUnique, newGame, plainGear, rollLegend, rollSetPiece, SET_IDS, SETS, setsWorn, SLOTS, stats, traitsOf, UNIQUE_IDS, UNIQUES, uniquePool, type Character, type GearItem } from '../src/index.ts';
 
 const hero = (): Character => newGame({ seed: 's', player: 'p', name: 'R', classId: 'warrior' }).characters.p!;
 const piece = (set: string, slot: (typeof SLOTS)[number]): GearItem => ({ ...plainGear(`${set}-${slot}`, slot, 2), set });
@@ -46,6 +46,31 @@ describe('sets', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 400; i++) seen.add(rollSetPiece('g', 7, 7, makeRng(`x${i}`))!.set!);
     expect(seen.size).toBe(SET_IDS.length);
+  });
+});
+
+describe('the legendary weapons (Robin, 2026-11-02)', () => {
+  it('every class has some, early and late, each with its own art', () => {
+    for (const classId of ['warrior', 'rogue', 'mage', 'ranger']) {
+      const own = UNIQUE_IDS.filter((id) => UNIQUES[id]!.legend && UNIQUES[id]!.classId === classId);
+      expect(own.length, classId).toBeGreaterThanOrEqual(2);
+      for (const id of own) expect(UNIQUES[id]!.art, id).toBeTruthy();
+    }
+  });
+  it('are never drawn as a plain unique, and only for their own class and tier', () => {
+    for (const id of uniquePool(7)) expect(UNIQUES[id]!.legend, id).toBeFalsy();
+    for (let i = 0; i < 100; i++) {
+      const g = rollLegend('g', 3, makeRng(`l${i}`), 'warrior')!;
+      expect(UNIQUES[g.unique!]!.classId).toBe('warrior');
+      expect(UNIQUES[g.unique!]!.tier).toBeLessThanOrEqual(3);
+    }
+    expect(rollLegend('g', 1, makeRng('x'), 'warrior')).toBeNull();
+  });
+  it('a magic staff adds magic, and its special affix comes with it', () => {
+    const g = makeUnique('s', 'legend-worldkindle', 7, makeRng('m'));
+    expect(g.stats.magic).toBeGreaterThan(0);
+    expect(g.stats.attack).toBeUndefined();
+    expect(g.affixes.some((a) => a.kind === 'embers')).toBe(true);
   });
 });
 

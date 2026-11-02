@@ -505,6 +505,7 @@ export type Action =
   /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
   | { type: 'skill'; id: string; player: string; op: 'testClass'; classId: ClassId }
   | { type: 'skill'; id: string; player: string; op: 'testLevel' }
+  | { type: 'skill'; id: string; player: string; op: 'testLegend' }
   | { type: 'skill'; id: string; player: string; op: 'testLand'; to: string }
   | { type: 'skill'; id: string; player: string; op: 'reset' }
   /** The answer to a town's errand. */

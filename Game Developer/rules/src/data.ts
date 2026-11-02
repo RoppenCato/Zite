@@ -24,7 +24,7 @@ import setsJson from '../data/sets.json' with { type: 'json' };
 import encountersJson from '../data/encounters.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
-import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine } from './types.ts';
+import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine, Affix } from './types.ts';
 
 export interface ClassData {
   name: string;
@@ -251,6 +251,15 @@ export interface UniqueData {
   value?: number;
   traits?: Partial<ClassTraits>;
   text: string;
+  /** A legendary weapon (Robin, 2026-11-02): rarer than a unique, for one class, with art of its own. */
+  legend?: boolean;
+  classId?: ClassId;
+  art?: string;
+  /** What it is, in words: a bow, a great axe. */
+  kind?: string;
+  /** What its number adds to, when not the slot's own. */
+  stat?: GearStat;
+  affix?: Affix;
 }
 
 /** A set of gear (Robin, 2026-11-02): wear 2 for one bonus, 4 for the other. */
@@ -333,6 +342,7 @@ export interface GearData {
   /** The chance a fallen creature's drop is a unique of its tier. */
   uniqueChance: Record<'mob' | 'mini' | 'boss', number>;
   setChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
+  legendChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   consumableDrop: { potion: number; card: number };
   sellShare: number;
   /** How many pieces the bag carries; one more asks to be sold or left. */

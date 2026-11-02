@@ -125,7 +125,11 @@ export class SettingsScene extends Phaser.Scene {
         if (this.game_.me.fight) return;
         void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
       });
-      this.settingRow(row + 1, 'Test: level', `Now level ${this.game_.me.level}.`, '+1 level', () => {
+      this.settingRow(row + 4, 'Test: legend', 'Wear your class’s next one.', 'Next', () => {
+        if (this.game_.me.fight) return;
+        void this.game_.act({ type: 'skill', op: 'testLegend', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+      });
+    this.settingRow(row + 1, 'Test: level', `Now level ${this.game_.me.level}.`, '+1 level', () => {
         if (this.game_.me.fight) return;
         void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
       });

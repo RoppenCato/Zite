@@ -523,7 +523,6 @@
       "Briarsong",
       "Starfallen",
       "Oakenfury",
-      "Nightsong",
       "Emberkiss",
       "Wispcutter",
       "Gloomfang",
@@ -1015,5 +1014,11 @@
     "boss": 0.2,
     "chest": 0.1
   },
-  "_aboutSets": "A set piece (Robin, 2026-11-02): how often one comes instead of a plain drop. Mine."
+  "_aboutSets": "A set piece (Robin, 2026-11-02): how often one comes instead of a plain drop. Mine.",
+  "legendChance": {
+    "mob": 0.0005,
+    "mini": 0.01,
+    "boss": 0.05,
+    "chest": 0.02
+  }
 }
