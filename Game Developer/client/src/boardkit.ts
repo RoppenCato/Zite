@@ -6,8 +6,8 @@
 import Phaser from 'phaser';
 import secretPlacesJson from '../../assets/secrets/secrets_atlas.json?url';
 import secretPlacesPng from '../../assets/secrets/secrets.png';
-import rootways from '../../assets/dungeon_meadows/rootways.json';
-import rootwaysPlacement from '../../assets/dungeon_meadows/placement.json';
+import rootways from '../../assets/world_moved/rootways.json';
+import rootwaysPlacement from '../../assets/world_moved/placement_rootways.json';
 import rootwaysPlacesJson from '../../assets/dungeon_meadows/rootways_places.json?url';
 import rootwaysPlacesPng from '../../assets/dungeon_meadows/rootways_places.png';
 import { ARENA_CLEARED, preloadArena } from './arena.ts';
@@ -18,33 +18,36 @@ import groundPng from '../../assets/board_meadows/board_ground.png';
 import propsJson from '../../assets/board_meadows/board_props.json?url';
 import propsPng from '../../assets/board_meadows/board_props.png';
 import coverPng from '../../assets/board_meadows/cover.png';
-import placementJson from '../../assets/world_meadows/placement.json';
+import placementJson from '../../assets/world_moved/placement_meadows.json';
+import kingswoodPlacementJson from '../../assets/world_moved/placement_kingswood.json';
+import kingswoodPlacesJson from '../../assets/world_moved/kingswood_places.json?url';
+import kingswoodPlacesPng from '../../assets/world_moved/kingswood_places.png';
 import placesJson from '../../assets/world_meadows/board_places.json?url';
 import placesPng from '../../assets/world_meadows/board_places.png';
 import forestGroundJson from '../../assets/board_forest/board_ground.json?url';
 import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
 import forestPropsPng from '../../assets/board_forest/board_props.png';
-import forestPlacementJson from '../../assets/world_forest/placement.json';
+import forestPlacementJson from '../../assets/world_moved/placement_thornwood.json';
 import swampGroundJson from '../../assets/board_swamp/board_ground.json?url';
 import swampGroundPng from '../../assets/board_swamp/board_ground.png';
 import swampPropsJson from '../../assets/board_swamp/board_props.json?url';
 import swampPropsPng from '../../assets/board_swamp/board_props.png';
-import swampPlacementJson from '../../assets/world_swamp/placement.json';
+import swampPlacementJson from '../../assets/world_moved/placement_bogglemire.json';
 import swampPlacesJson from '../../assets/world_swamp/board_places.json?url';
 import swampPlacesPng from '../../assets/world_swamp/board_places.png';
 import frostGroundJson from '../../assets/board_frost/board_ground.json?url';
 import frostGroundPng from '../../assets/board_frost/board_ground.png';
 import frostPropsJson from '../../assets/board_frost/board_props.json?url';
 import frostPropsPng from '../../assets/board_frost/board_props.png';
-import frostPlacementJson from '../../assets/world_frost/placement.json';
+import frostPlacementJson from '../../assets/world_moved/placement_frostcrown.json';
 import frostPlacesJson from '../../assets/world_frost/board_places.json?url';
 import frostPlacesPng from '../../assets/world_frost/board_places.png';
 import harvestGroundJson from '../../assets/board_harvest/board_ground.json?url';
 import harvestGroundPng from '../../assets/board_harvest/board_ground.png';
 import harvestPropsJson from '../../assets/board_harvest/board_props.json?url';
 import harvestPropsPng from '../../assets/board_harvest/board_props.png';
-import harvestPlacementJson from '../../assets/world_harvest/placement.json';
+import harvestPlacementJson from '../../assets/world_moved/placement_frostpeak.json';
 import harvestPlacesJson from '../../assets/world_harvest/board_places.json?url';
 import harvestPlacesPng from '../../assets/world_harvest/board_places.png';
 import forestPlacesJson from '../../assets/world_forest/board_places.json?url';
@@ -87,12 +90,13 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, ROOTWAYS_PLACES, SECRET_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, ROOTWAYS_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 const ROOTWAYS_PLACES = 'rootways_places';
+const KINGSWOOD_PLACES = 'kingswood_places';
 export const SECRET_PLACES = 'secret_places';
 /** The painted world's pieces that belong to one region. */
 const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
@@ -129,7 +133,7 @@ const KITS: Record<string, Kit> = {
       { width: 10, color: 0xecd49c, alpha: 0.8 },
     ],
     flat: new Set(['clover', 'worn', 'hill']),
-    placements: { meadows: [...(placementJson as Placement[]), { name: rootways.door.frame, x: rootways.door.x, y: rootways.door.y }] },
+    placements: { meadows: [...(placementJson as Placement[]), { name: rootways.door.frame, x: rootways.door.x, y: rootways.door.y }], kingswood: kingswoodPlacementJson as Placement[] },
     files: { groundPng, groundJson, propsPng, propsJson },
   },
   // Mitch, AD's Wobblewood (2026-11-01): the cover and the banner are the meadows'.
@@ -187,6 +191,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   preloadArena(scene);
   if (!scene.textures.exists(SECRET_PLACES)) scene.load.atlas(SECRET_PLACES, secretPlacesPng, secretPlacesJson);
+  if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   for (const theme of themes) {
     const places = THEME_PLACES[theme];
@@ -205,6 +210,9 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
 const landKit = (id: string, area: string, placement: Placement[], files: Kit['files']): Kit => ({ ...KITS.harvest!, ground: `${id}_ground`, props: `${id}_props`, placements: { [area]: placement }, flat: new Set<string>(), files });
 KITS.swamp = landKit('swamp', 'bogglemire', swampPlacementJson as Placement[], { groundPng: swampGroundPng, groundJson: swampGroundJson, propsPng: swampPropsPng, propsJson: swampPropsJson });
 KITS.mountain = landKit('mountain', 'frostcrown', frostPlacementJson as Placement[], { groundPng: frostGroundPng, groundJson: frostGroundJson, propsPng: frostPropsPng, propsJson: frostPropsJson });
+
+/** Crownhaven is baked whole: it needs only the Meadows' plates (Mitch, AD). */
+KITS.city = { ...KITS.meadow!, placements: {} };
 
 /** A dungeon uses the Meadows' plates, with its own roads and pieces. */
 KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };

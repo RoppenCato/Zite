@@ -40,7 +40,8 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
     for (const s of spaces) {
       expect(SPACE_KINDS).toContain(s.kind);
       if (s.kind === 'boss') {
-        expect(s.boss && (board.bestiary[s.boss] ?? ENEMIES[s.boss])?.role, `${s.id} names a boss`).toBe('boss');
+        // A mini-boss may stand on a boss spot to guard a land's gate.
+        expect(s.boss && (board.bestiary[s.boss] ?? ENEMIES[s.boss])?.role, `${s.id} names a boss`).toBe(s.opens && !GROWN.test(s.opens) && ENEMIES[s.boss!]?.role === 'mini' ? 'mini' : 'boss');
         if (s.opens) expect(!!board.areas[s.opens] || GROWN.test(s.opens), `${s.id} opens ${s.opens}`).toBe(true);
       } else {
         expect(s.boss).toBeUndefined();
@@ -127,7 +128,7 @@ describe('the world', () => {
   const board = surface(makeBoard());
   const spaces = Object.values(board.spaces);
 
-  it('is Zite: five areas by tier, starting in the town Ashford in the meadows', () => {
+  it('is Zite: five lands by tier, the ring and the hub, starting in the town Ashford in the meadows', () => {
     expect(WORLD_DATA.name).toBe('Zite');
     expect(board.start).toBe('ashford');
     expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Puddlewick Village', area: 'meadows' });
@@ -137,15 +138,16 @@ describe('the world', () => {
       ['frostpeak', 3],
       ['bogglemire', 4],
       ['frostcrown', 5],
+      ['kingswood', 2],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
     expect(spaces.length).toBeLessThanOrEqual(1000);
-    expect(board).toMatchObject({ width: 16600, height: 9300 });
+    expect(board).toMatchObject({ width: 17600, height: 12700 });
   });
 
   it('keeps each area to its own mobs, every mob of the area within its levels', () => {
-    for (const area of Object.values(board.areas)) {
-      expect(area.mobs.length).toBeGreaterThanOrEqual(3);
+    for (const area of Object.values(board.areas).filter((a) => a.id !== 'kingswood')) {
+      expect(area.mobs.length).toBeGreaterThanOrEqual(2);
       for (const id of [...area.mobs, ...area.miniBosses]) {
         const e = ENEMIES[id];
         expect(e, `${area.id} has ${id}`).toBeDefined();
@@ -160,24 +162,19 @@ describe('the world', () => {
     }
   });
 
-  it('passes from area to area over a boss spot: the Copper Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit Bogglemire, Murk the Frostcrown, Frostbeard the first grown area', () => {
-    expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'thornwood' });
-    expect(board.spaces.briar).toMatchObject({ kind: 'boss', area: 'thornwood', boss: 'briar-king', opens: 'frostpeak' });
-    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: 'bogglemire' });
-    expect(board.spaces.murkpool).toMatchObject({ kind: 'boss', area: 'bogglemire', boss: 'mother-murk', opens: 'frostcrown' });
-    expect(board.spaces.frostseat).toMatchObject({ kind: 'boss', area: 'frostcrown', boss: 'frostbeard', opens: 'gen-1' });
-    // The road beyond a gate belongs to the next area, so it is closed until the gate's boss falls.
-    expect(board.spaces['gate-edge-1']).toMatchObject({ area: 'thornwood', kind: 'normal' });
-    expect(board.spaces['briar-pass-1']).toMatchObject({ area: 'frostpeak' });
-    // Every area but the first is opened by exactly one boss.
-    for (const area of Object.values(board.areas)) {
-      const gates = spaces.filter((s) => s.opens === area.id);
-      expect(gates.length, area.id).toBe(area.tier === 1 ? 0 : 1);
-    }
+  it('opens from the first boss, and by mini-bosses at two gates; no other boss opens anything (Robin, 2026-11-02)', () => {
+    expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'kingswood' });
+    expect(board.spaces['gate-bogsnapper']).toMatchObject({ kind: 'boss', boss: 'bogsnapper', opens: 'bogglemire' });
+    expect(board.spaces['gate-bighorn']).toMatchObject({ kind: 'boss', boss: 'old-bighorn', opens: 'frostcrown' });
+    for (const id of ['briar', 'summit', 'murkpool', 'frostseat']) expect(board.spaces[id]!.opens ?? null, id).toBeNull();
+    const makes = makeBoard();
+    for (const id of ['crownhaven', 'thornwood', 'frostpeak']) expect(makes.areas[id]!.openWith).toBe('kingswood');
+    expect(makes.areas.crownhaven!.city).toBe(true);
   });
 
   it('gives every area a town, a shop, a shrine, chests and springs', () => {
-    for (const area of Object.values(board.areas)) {
+    // The Kingswood is only woods and camps (Robin, 2026-11-02).
+    for (const area of Object.values(board.areas).filter((a) => a.id !== 'kingswood')) {
       const own = spaces.filter((s) => s.area === area.id);
       const count = (kind: string) => own.filter((s) => s.kind === kind).length;
       expect(count('town'), `${area.id} towns`).toBeGreaterThanOrEqual(1);

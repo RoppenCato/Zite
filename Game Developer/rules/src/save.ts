@@ -120,7 +120,9 @@ export function migrate(raw: unknown): GameState | null {
   const before = migrateOlder(version === 25 ? withoutStandIn(raw as GameState) : raw);
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
-  const up = withEastOpen(before);
+  const up = withHubOpen(withEastOpen(before));
+  // 30 → 31: the hub world: the land moved, and bosses no longer open lands.
+  if (version === 30) return withArena(up);
   // 29 → 30: the talent trees: every point back to spend again.
   if (version === 29) return withArena(withTalents(up));
   // 28 → 29: the level curve moved; everyone keeps their level and how far along it they were.
@@ -154,6 +156,18 @@ function onNewCurve(state: GameState): GameState {
       const low = now[c.level - 1] ?? c.xp;
       const high = now[c.level] ?? low + 1;
       return [id, { ...c, xp: Math.round(low + share * (high - low)) }];
+    }),
+  );
+  return { ...state, characters };
+}
+
+/** Past the first boss, the hub and the lands with no gate are open (Robin, 2026-11-02); a rumour on a road that has gone is forgotten. */
+function withHubOpen(state: GameState): GameState {
+  const characters = Object.fromEntries(
+    Object.entries(state.characters).map(([id, c]) => {
+      const past = c.opened.includes('thornwood') || (c.bossKills.gate ?? 0) > 0;
+      const opened = past ? [...new Set([...c.opened, 'kingswood', 'crownhaven', 'thornwood', 'frostpeak'])] : c.opened;
+      return [id, { ...c, opened, ...(c.rumours ? { rumours: c.rumours.filter((r) => state.board.spaces[r.space]) } : {}) }];
     }),
   );
   return { ...state, characters };
@@ -213,7 +227,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -260,7 +274,7 @@ const HAND_LAID_CHURCHES: Record<string, string> = { ravine: 'Little Clover Chur
 function withChurches(board: Board): Board {
   const spaces = { ...board.spaces };
   for (const area of Object.values(board.areas)) {
-    if (area.dungeon) continue;
+    if (area.dungeon || area.city || area.id === 'kingswood') continue;
     const own = Object.values(spaces).filter((s) => s.area === area.id).sort((a, b) => a.id.localeCompare(b.id));
     if (own.some((s) => s.kind === 'church')) continue;
     const set = own.find((s) => HAND_LAID_CHURCHES[s.id] && s.kind === 'normal');

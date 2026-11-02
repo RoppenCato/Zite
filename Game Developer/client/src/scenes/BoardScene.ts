@@ -41,11 +41,11 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
-import secretData from '../../../assets/secrets/secrets.json';
+import secretData from '../../../assets/world_moved/secrets.json';
 import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
 import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
@@ -90,8 +90,7 @@ const worldBridge = (): WorldBridge | undefined => (WORLD_DATA as unknown as { b
 type WorldGate = Pick<WorldBridge, 'foot' | 'barred' | 'open' | 'opens'> & { theme?: string };
 /** What stands in the way between lands: the bridge, the pass by Grumblebark's Glade, and the gate on the north shore. */
 const worldGates = (): WorldGate[] => {
-  const { bridge, pass, exit, gates } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate; exit?: WorldGate; gates?: WorldGate[] };
-  return [bridge, pass, ...(gates ?? []), exit].filter((g): g is WorldGate => !!g);
+  return (WORLD_DATA as unknown as { gates?: WorldGate[] }).gates ?? [];
 };
 /** Whether a point lies within `margin` of a line segment. */
 function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }, margin: number): boolean {
@@ -313,7 +312,7 @@ export class BoardScene extends Phaser.Scene {
       this.setBusy(true);
       this.offerChoices();
     } else {
-      this.finish(message ?? `Tap Roll to move ${me.name}. Tap any spot to hear about it.`);
+      this.finish(message ?? (this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.city ? 'Tap a place in the city to walk there. The die works at the gates.' : `Tap Roll to move ${me.name}. Tap any spot to hear about it.`));
     }
   }
 
@@ -441,6 +440,12 @@ export class BoardScene extends Phaser.Scene {
 
   /** Roll the die; then walk, or light up the places the roll can end and wait for a tap. */
   roll(): void {
+    const { board } = this.game_.state;
+    const at = board.spaces[this.game_.me.space];
+    if (at && board.areas[at.area]?.city && !at.links.some((l) => board.spaces[l]?.area !== at.area)) {
+      this.setMessage('Inside the walls you walk: tap where you want to go. A gate leads out.');
+      return;
+    }
     // Roll with a sheet open: the sheet goes, or the die would roll and the spots light behind it.
     this.closeSheets();
     if (this.busy) {
@@ -725,7 +730,7 @@ export class BoardScene extends Phaser.Scene {
     for (const area of fresh) {
       const kit = kitFor(this, area.theme);
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
-      if (kit && PAINTED[area.id] && area.theme !== 'meadow' && regionHeld(this, area.theme)) this.regions.add(area.id);
+      if (kit && PAINTED[area.id] && area.theme !== 'meadow' && area.theme !== 'city' && regionHeld(this, area.theme)) this.regions.add(area.id);
     }
     for (const area of fresh) this.drawCover(area);
     this.drawGates();
@@ -973,6 +978,10 @@ export class BoardScene extends Phaser.Scene {
     const namesHidden = cam.zoom < NAME_ZOOM;
     const open = this.shownAreas();
     this.painted?.update(cam, open);
+    const zoomedOut = cam.zoom < CHUNK_ZOOM;
+    const standing = this.game_.state.board.spaces[this.game_.me.space]?.area;
+    const inDungeon = !!this.dungeonHere();
+    for (const [areaId, words] of this.closedLabels) words.setVisible(zoomedOut && !inDungeon && areaId !== standing);
     const openLand = [...open].flatMap((id) => (PAINTED[id] ? [PAINTED[id]!] : []));
     this.fitArena();
     for (const p of allProps) {
@@ -1028,8 +1037,11 @@ export class BoardScene extends Phaser.Scene {
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
-    for (const [areaId, words] of this.closedLabels) words.setVisible(!opened.has(areaId));
     for (const [areaId, marks] of this.closedMarks) for (const mark of marks) mark.setVisible(!opened.has(areaId));
+    for (const [areaId, words] of this.closedLabels) {
+      const area = this.game_.state.board.areas[areaId];
+      if (area && words.text !== this.landWords(area)) words.setText(this.landWords(area));
+    }
     const shown = this.shownAreas();
     for (const [areaId, roads] of this.closedRoads) roads.setVisible(shown.has(areaId.replace('road:', '')));
     for (const [areaId, floor] of this.dungeonFloors) floor.setVisible(shown.has(areaId));
@@ -1299,16 +1311,25 @@ export class BoardScene extends Phaser.Scene {
     this.cameras.main.setBounds(b.x, b.y - pad, b.width, b.height + pad);
   }
 
+  /** On the world map, a land you are not in says its name and its level (Robin, 2026-11-02), and what opens it while it is shut. */
+  private landWords(area: Area): string {
+    const board = this.game_.state.board;
+    const gate = Object.values(board.spaces).find((s) => s.opens === area.id);
+    const keeper = gate?.boss && !this.game_.me.opened.includes(area.id) ? (creature(gate.boss, board.bestiary)?.name ?? '') : '';
+    return `${area.name}${area.city ? '' : `\nLevel ${area.levels[0]} to ${area.levels[1]}`}${keeper ? `\nBeat ${keeper}` : ''}`;
+  }
+
   /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
   private closedWords(area: Area): void {
     const box = PAINTED[area.id]!;
     const board = this.game_.state.board;
     const gate = Object.values(board.spaces).find((s) => s.opens === area.id);
-    const keeper = gate?.boss ? (creature(gate.boss, board.bestiary)?.name ?? '') : '';
-    const words = this.add.text(box.x + box.width / 2, box.y + Math.min(box.height / 2, 1500), `${area.name}${keeper ? `\nBeat ${keeper}` : ''}`, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
+    // A land behind a gate wears its words under it: its middle has the silhouette and the marks.
+    const gated = !!gate?.boss && !!(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id && g.opens !== 'kingswood');
+    const words = this.add.text(box.x + box.width / 2, gated ? box.y + box.height + 30 : box.y + box.height / 2, this.landWords(area), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
     this.closedLabels.set(area.id, words);
     // What waits there: the boss's silhouette, and a "?" at each ground (Mitch, AD).
-    if (!this.textures.exists(FOG_PIECES)) return;
+    if (!this.textures.exists(FOG_PIECES) || !gate?.boss || !(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id)) return;
     const marks: Phaser.GameObjects.Image[] = [];
     const boss = Object.values(board.spaces).find((s) => s.area === area.id && s.kind === 'boss');
     const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : boss?.boss === 'mother-murk' ? 'silhouette_murk' : boss?.boss === 'frostbeard' ? 'silhouette_frostbeard' : null;
@@ -1344,7 +1365,8 @@ export class BoardScene extends Phaser.Scene {
     const { areas } = this.game_.state.board;
     for (const [id, land] of Object.entries(PAINTED)) {
       const area = areas[id];
-      if (!area || area.theme === 'meadow') continue;
+      // The Meadows' art stays, and the Kingswood and the city use only that.
+      if (!area || area.theme === 'meadow' || area.theme === 'city') continue;
       const nearest = Math.min(Infinity, ...points.map((p) => away(land, p)));
       if (nearest < REGION_NEAR && !this.regions.has(id)) this.bringRegion(area);
       else if (nearest > REGION_FAR && this.regions.has(id)) this.dropRegion(area);
@@ -1428,7 +1450,7 @@ export class BoardScene extends Phaser.Scene {
     const inside = this.dungeonHere();
     // The west is there to look at from the start; each land in the east once the land before it is open.
     const opened = this.game_.me.opened;
-    const inSight = (a: Area): boolean => a.id === 'bogglemire' ? opened.includes('frostpeak') || opened.includes('bogglemire') : a.id === 'frostcrown' ? opened.includes('bogglemire') : !!PAINTED[a.id];
+    const inSight = (a: Area): boolean => !!PAINTED[a.id];
     const areas = all.filter((a) => !a.dungeon && (opened.includes(a.id) || (this.painted && inSight(a))));
     const list: Area[] = inside ? [inside] : areas.length ? areas : all.filter((a) => !a.dungeon);
     const boxes = list.map((a) => DUNGEON_LAND[a.id] ?? PAINTED[a.id] ?? a.bounds);
@@ -1910,6 +1932,42 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
+  /** Back to the hub: free, with a short wait (Robin, 2026-11-02). */
+  goHome(): void {
+    const me = this.game_.me;
+    if (me.fight || me.offer) return;
+    if (this.busy) {
+      this.setMessage('Finish your walk first, then go home.');
+      return;
+    }
+    const hub = hubOf(this.game_.state, me);
+    if (!hub) {
+      this.setMessage('Beat the first boss to open the way to Crownhaven.');
+      return;
+    }
+    const left = (me.cooldowns.home ?? 0) - this.game_.now();
+    if (hub === me.space) return;
+    if (left > 0) {
+      this.setMessage(`You can go home again in ${countdown(left)}.`);
+      return;
+    }
+    this.send({ type: 'home', player: this.game_.player }, (events) => {
+      if (!events.some((e) => e.type === 'wentHome')) {
+        this.finish(this.describe(events));
+        return;
+      }
+      this.clearChoices?.();
+      this.placeToken();
+      this.refreshCovers();
+      this.minZoom = this.overviewZoom();
+      this.follow(true);
+      this.drawSpawns();
+      this.refreshHud();
+      sfx.play('ui/arrive-town');
+      this.finish(`Home in ${this.game_.state.board.spaces[hub]?.name ?? 'the city'}. Rested.`);
+    });
+  }
+
   /** At a door: go through, or not. Inside, it is the way back to daylight. */
   private offerDoor(): void {
     const { board } = this.game_.state;
@@ -2091,6 +2149,15 @@ export class BoardScene extends Phaser.Scene {
         this.openShop(camped && space.kind !== 'town' && space.kind !== 'shop');
         return;
       }
+      // Inside the walls: tap a spot and walk there, no die (Robin, 2026-11-02).
+      if (!this.busy && !me.steps && id !== me.space && this.game_.state.board.areas[space.area]?.city) {
+        const path = strollPath(this.game_.state, me.space, id);
+        if (path) {
+          this.setBusy(true);
+          this.send({ type: 'stroll', player: this.game_.player, to: id }, (moved) => this.went(path, moved, true));
+          return;
+        }
+      }
       if (!this.busy && id === me.space && space.kind === 'door') {
         this.offerDoor();
         return;
@@ -2210,13 +2277,14 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** The move was taken: walk the token, then what the landing brought. */
-  private went(path: string[], moved: GameEvent[]): void {
+  private went(path: string[], moved: GameEvent[], strolled = false): void {
     const landed = moved.find((e) => e.type === 'landed');
     if (!landed || landed.type !== 'landed') {
       this.finish(this.describe(moved));
       return;
     }
     const value = this.game_.state.die.last;
+    const rolled = strolled ? '' : `Rolled ${value}. `;
     this.follow(false);
     // The rules may have stopped the walk at the quest board: walk what they walked.
     const walked = moved.find((e) => e.type === 'moved');
@@ -2242,7 +2310,7 @@ export class BoardScene extends Phaser.Scene {
           return;
         }
         if (me.offer) {
-          this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+          this.setMessage(`${rolled}Landed ${where}. ${story}`.trimEnd());
           this.offerChoice();
           return;
         }
@@ -2252,18 +2320,18 @@ export class BoardScene extends Phaser.Scene {
           return;
         }
         if (space.kind === 'arena') {
-          this.setMessage(`Rolled ${value}. Landed ${where}.`);
+          this.setMessage(`${rolled}Landed ${where}.`);
           this.refreshHud();
           this.offerGate();
           return;
         }
         if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
-          this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+          this.setMessage(`${rolled}Landed ${where}. ${story}`.trimEnd());
           this.refreshHud();
           this.openShop(moved.some((e) => e.type === 'merchant'));
           return;
         }
-        this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
+        this.finish(`${rolled}Landed ${where}. ${story}`.trimEnd());
       };
       this.drawRumours();
       this.drawSecrets();

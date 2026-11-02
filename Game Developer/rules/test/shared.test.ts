@@ -87,8 +87,10 @@ describe('the delta between two states', () => {
   });
 
   it('holds the whole board when a boss lays a new area', () => {
-    const s0 = newGame({ seed: 'grow', player: 'p1', name: 'Robin', classId: 'warrior' });
-    const summit = Object.values(s0.board.spaces).find((sp) => sp.opens?.startsWith('gen-'))!;
+    const made = newGame({ seed: 'grow', player: 'p1', name: 'Robin', classId: 'warrior' });
+    // Grown lands are off for now: this gives a boss the way on they would use.
+    const s0 = { ...made, board: { ...made.board, spaces: { ...made.board.spaces, frostseat: { ...made.board.spaces.frostseat!, opens: 'gen-1' } } } };
+    const summit = s0.board.spaces.frostseat!;
     const c = startFight({ ...s0.characters.p1!, space: summit.id, attack: 500, opened: ['meadows', 'thornwood', 'frostpeak'] }, summit.boss!, summit.id, false, s0.board.bestiary);
     c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
     const s = { ...s0, characters: { p1: c } };

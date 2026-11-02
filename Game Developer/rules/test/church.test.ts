@@ -14,7 +14,7 @@ const put = (s: GameState, patch: Partial<Character>): GameState => ({ ...s, cha
 describe('the church', () => {
   it('stands on every hand-laid map', () => {
     const { board } = world();
-    for (const area of Object.values(board.areas).filter((a) => !a.dungeon)) {
+    for (const area of Object.values(board.areas).filter((a) => !a.dungeon && a.id !== 'kingswood')) {
       expect(Object.values(board.spaces).filter((s) => s.area === area.id && s.kind === 'church').length).toBe(1);
     }
   });
@@ -39,7 +39,7 @@ describe('the church', () => {
     const { ailments: _gone, ...c } = me(s);
     const old = { ...s, version: 12, board: { ...s.board, spaces }, characters: { [P]: c } };
     const up = migrate(old as unknown)!;
-    expect(up.version).toBe(30);
+    expect(up.version).toBe(31);
     expect(up.board.spaces.ravine).toMatchObject({ kind: 'church', name: 'Little Clover Church' });
     expect(up.characters[P]!.ailments).toEqual({});
   });

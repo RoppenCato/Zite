@@ -1,0 +1,32 @@
+{
+ "middle": {
+  "image": "overview_middle.jpg",
+  "worldX": 4096,
+  "worldY": 0,
+  "worldW": 8704,
+  "worldH": 12288,
+  "width": 1915,
+  "height": 2703,
+  "filePxPerWorldPx": 0.22
+ },
+ "west": {
+  "image": "overview_west.jpg",
+  "worldX": 0,
+  "worldY": 4096,
+  "worldW": 5120,
+  "worldH": 5120,
+  "width": 1126,
+  "height": 1126,
+  "filePxPerWorldPx": 0.22
+ },
+ "east": {
+  "image": "overview_east.jpg",
+  "worldX": 12288,
+  "worldY": 2048,
+  "worldW": 5312,
+  "worldH": 6144,
+  "width": 1169,
+  "height": 1352,
+  "filePxPerWorldPx": 0.22
+ }
+}

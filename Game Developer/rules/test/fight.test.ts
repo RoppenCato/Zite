@@ -348,12 +348,12 @@ describe('a fight', () => {
     expect(events.map((e) => e.type).slice(0, 2)).toEqual(['hit', 'won']);
     expect(events.find((e) => e.type === 'loot')).toBeDefined();
     expect(events.find((e) => e.type === 'bossDown')).toEqual({ type: 'bossDown', action: 'f1', player: P, space: 'gate', until: NOW + 300000 });
-    expect(events.find((e) => e.type === 'opened')).toEqual({ type: 'opened', action: 'f1', player: P, area: 'thornwood' });
-    expect(me(state)).toMatchObject({ opened: ['meadows', 'thornwood'], cooldowns: { gate: NOW + 300000 }, bossKills: { gate: 1 }, fight: null });
+    expect(events.find((e) => e.type === 'opened')).toEqual({ type: 'opened', action: 'f1', player: P, area: 'kingswood' });
+    expect(me(state)).toMatchObject({ opened: ['meadows', 'kingswood', 'thornwood', 'frostpeak', 'crownhaven'], cooldowns: { gate: NOW + 300000 }, bossKills: { gate: 1 }, fight: null });
     const again = versus('warrior', 'thornwood-warden', { ...me(state), space: 'gate', fight: null }, { hp: 1 }, 'gate', false, true);
     const second = apply(again, turn(attack, 'none', 'f2'), makeRng('y'), NOW + 400000);
     expect(second.events.find((e) => e.type === 'opened')).toBeUndefined();
-    expect(me(second.state)).toMatchObject({ opened: ['meadows', 'thornwood'], bossKills: { gate: 2 }, cooldowns: { gate: NOW + 700000 } });
+    expect(me(second.state)).toMatchObject({ opened: ['meadows', 'kingswood', 'thornwood', 'frostpeak', 'crownhaven'], bossKills: { gate: 2 }, cooldowns: { gate: NOW + 700000 } });
   });
 
   it('beaten next to a gate, wakes in a town of an open area, never behind the boss', () => {

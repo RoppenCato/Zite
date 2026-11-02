@@ -7,7 +7,7 @@ import { hintFor } from '../src/hints.ts';
 import { legalPaths, nearestTown } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
 import type { Board, Character, GameEvent, GameState } from '../src/types.ts';
-import { grownWorld } from './fixtures/grown.ts';
+import { growable, grownWorld } from './fixtures/grown.ts';
 
 const P = 'p1';
 const NOW = 1_000_000;
@@ -143,12 +143,12 @@ describe('a grown area', () => {
 
 describe('growing the board', () => {
   it('lays the area into a copy, widening the board, and leaves the old board as it was', () => {
-    const before = makeBoard();
+    const before = growable();
     const frozen = structuredClone(before);
     const after = growBoard(before, 'ashford', 'gen-1');
     expect(before).toEqual(frozen);
     expect(after.width).toBe(18200);
-    expect(after.height).toBe(9300);
+    expect(after.height).toBe(12700);
     expect(after.areas['gen-1']).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', tier: 6 });
     expect(after.areas['gen-1']!.bounds.x).toBeGreaterThan(4000);
     expect(after.areas['gen-1']!.bounds.x + after.areas['gen-1']!.bounds.width).toBeLessThanOrEqual(after.width);
@@ -169,15 +169,15 @@ describe('growing the board', () => {
   });
 
   it('does nothing for an area already laid or an id that is not a grown one', () => {
-    const one = growBoard(makeBoard(), 'ashford', 'gen-1');
+    const one = growBoard(growable(), 'ashford', 'gen-1');
     expect(growBoard(one, 'ashford', 'gen-1')).toBe(one);
     expect(growBoard(one, 'ashford', 'meadows')).toBe(one);
     expect(growBoard(one, 'ashford', 'nowhere')).toBe(one);
   });
 
   it('lays the same area whether it comes first or after others, so every player sees one world', () => {
-    const straight = growBoard(growBoard(makeBoard(), 'ashford', 'gen-1'), 'ashford', 'gen-2');
-    const skipped = growBoard(growBoard(makeBoard(), 'ashford', 'gen-2'), 'ashford', 'gen-1');
+    const straight = growBoard(growBoard(growable(), 'ashford', 'gen-1'), 'ashford', 'gen-2');
+    const skipped = growBoard(growBoard(growable(), 'ashford', 'gen-2'), 'ashford', 'gen-1');
     const own = (b: Board, area: string) => Object.values(b.spaces).filter((s) => s.area === area).map((s) => ({ ...s, links: [...s.links].sort() }));
     expect(own(skipped, 'gen-1')).toEqual(own(straight, 'gen-1'));
     expect(own(skipped, 'gen-2')).toEqual(own(straight, 'gen-2'));
@@ -186,7 +186,7 @@ describe('growing the board', () => {
 
   it('keeps growing: twenty areas, each reachable from the last over its passage, the board as wide as its last column', () => {
     const board = grownWorld('ashford', 20);
-    expect(Object.keys(board.areas).filter((id) => !board.areas[id]!.dungeon)).toHaveLength(25);
+    expect(Object.keys(board.areas).filter((id) => !board.areas[id]!.dungeon)).toHaveLength(27);
     expect(board.width).toBe((cellFor(20).col + 1) * CELL.width);
     for (let n = 1; n <= 20; n++) {
       const gate = Object.values(board.spaces).find((s) => s.opens === `gen-${n}`)!;
@@ -201,7 +201,9 @@ describe('growing the board', () => {
 describe('in play', () => {
   /** A character on the Summit, every hand-laid area open, with the Frost Matriarch at one hp. */
   function atTheSummit(): GameState {
-    const s = newGame({ seed: 'w', player: P, name: 'Robin', classId: 'warrior' });
+    // Grown lands are off for now (Robin, 2026-11-02): this gives Frostbeard the way on they would use.
+    const made = newGame({ seed: 'w', player: P, name: 'Robin', classId: 'warrior' });
+    const s = { ...made, board: { ...made.board, spaces: { ...made.board.spaces, frostseat: { ...made.board.spaces.frostseat!, opens: 'gen-1' } } } };
     const c = startFight({ ...me(s), space: 'frostseat', opened: ['meadows', 'thornwood', 'frostpeak', 'bogglemire', 'frostcrown'] }, 'frostbeard', 'frostseat', false);
     c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
     return { ...s, characters: { [P]: c } };
@@ -238,7 +240,7 @@ describe('in play', () => {
     const second = apply({ ...state, characters: { [P]: c } }, { type: 'fight', id: 'f2', player: P, move: { kind: 'attack' }, guard: 'none' }, makeRng('w'), NOW);
     expect(second.events.find((e) => e.type === 'opened')).toMatchObject({ area: 'gen-2' });
     expect(second.state.board.areas['gen-2']).toMatchObject({ name: 'Moonwhisper Woods', tier: 7 });
-    expect(second.state.board.height).toBe(9300);
+    expect(second.state.board.height).toBe(12700);
     expect(me(second.state).bossKills[gate.id]).toBe(1);
   });
 

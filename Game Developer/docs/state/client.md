@@ -529,3 +529,7 @@ World width 16600. `BAKED_ROADS`: Bogglemire's and The Frostcrown's roads are in
 ## Hidden places on the board (Robin, 2026-11-02)
 
 `drawSecrets`: a found trail's faint road and far-end sprite, in Mitch, AD's shared `secret_places` atlas, always held at about 2 MB. Unfound, its spots stay hidden in the cull and nothing else is drawn. The end's plate is `spot_secret`.
+
+## The hub world on the board (Robin, 2026-11-02)
+
+One chunk set for the whole world (`assets/world_moved`), held by nearness; `PAINTED` is each land's box round its hubs. Three overviews: the middle at the start, west and east on the first zoom out. A city spot is tapped to stroll, with no die. The Home button between the top signs goes to `world.hub`. On the zoomed-out map, every land but the one you are in shows its name and levels.

@@ -27,6 +27,11 @@
     "stiltwick": "herbalist",
     "lanternhollow": "smith",
     "pinefoot": "cards",
-    "snowgate": "smith"
+    "snowgate": "smith",
+    "city-square": "cards",
+    "city-smith": "smith",
+    "city-coach": "cards",
+    "city-potions": "herbalist",
+    "city-inn": "herbalist"
   }
 }

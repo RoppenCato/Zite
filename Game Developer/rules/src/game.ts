@@ -498,7 +498,7 @@ function hearRumour(state: GameState, c: Character, town: Space, action: Action,
   const board = state.board;
   const taken = new Set(rumours.map((r) => r.space));
   const wild = Object.values(board.spaces)
-    .filter((s) => s.area === town.area && s.kind === 'normal' && !s.hidden && !taken.has(s.id) && !inTownWalls(board, s) && Math.hypot(s.x - town.x, s.y - town.y) >= RUMOURS.minDistance)
+    .filter((s) => s.area === town.area && !board.areas[s.area]?.city && s.kind === 'normal' && !s.hidden && !taken.has(s.id) && !inTownWalls(board, s) && Math.hypot(s.x - town.x, s.y - town.y) >= RUMOURS.minDistance)
     .sort((a, b) => a.id.localeCompare(b.id));
   const known = new Set(c.found ?? []);
   const secrets = Object.values(board.spaces)

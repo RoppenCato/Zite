@@ -677,13 +677,13 @@
   },
   "bogsnapper": {
     "name": "Bogsnapper",
-    "level": 16,
+    "level": 13,
     "role": "mini",
-    "hp": 1200,
-    "attack": 66,
-    "defense": 22,
-    "xp": 280,
-    "gold": 105,
+    "hp": 900,
+    "attack": 56,
+    "defense": 18,
+    "xp": 200,
+    "gold": 150,
     "moves": [
       {
         "name": "Snap",
@@ -835,13 +835,13 @@
   },
   "old-bighorn": {
     "name": "Old Bighorn",
-    "level": 20,
+    "level": 17,
     "role": "mini",
-    "hp": 1700,
-    "attack": 88,
-    "defense": 30,
-    "xp": 420,
-    "gold": 154,
+    "hp": 1300,
+    "attack": 70,
+    "defense": 24,
+    "xp": 320,
+    "gold": 220,
     "moves": [
       {
         "name": "Great Charge",
@@ -901,5 +901,28 @@
         }
       ]
     }
+  },
+  "city-outcast": {
+    "name": "City Outcast",
+    "level": 5,
+    "role": "mob",
+    "hp": 120,
+    "attack": 20,
+    "defense": 6,
+    "xp": 18,
+    "gold": 9,
+    "moves": [
+      {
+        "name": "Rusty Knife",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Dirty Trick",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
   }
 }

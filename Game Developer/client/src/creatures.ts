@@ -99,6 +99,9 @@ import frostbeardPng from '../../assets/creatures_frost/frostbeard/frostbeard.pn
 import frostbeard2Data from '../../assets/creatures_frost/frostbeard2/frostbeard2.json';
 import frostbeard2Json from '../../assets/creatures_frost/frostbeard2/frostbeard2.json?url';
 import frostbeard2Png from '../../assets/creatures_frost/frostbeard2/frostbeard2.png';
+import outcastData from '../../assets/creatures_hub/city_outcast/city_outcast.json';
+import outcastJson from '../../assets/creatures_hub/city_outcast/city_outcast.json?url';
+import outcastPng from '../../assets/creatures_hub/city_outcast/city_outcast.png';
 import glowcapData from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json';
 import glowcapJson from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json?url';
 import glowcapPng from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.png';
@@ -169,6 +172,8 @@ const CREATURES: Record<string, CreatureFiles> = {
   'frostling': { key: 'frostling', png: frostlingPng, json: frostlingJson, actions: actionsOf(frostlingData), scale: 0.5, blowFrame: 7 },
   'old-bighorn': { key: 'old_bighorn', png: oldBighornPng, json: oldBighornJson, actions: actionsOf(oldBighornData), scale: 1, blowFrame: 7 },
   'frostbeard': { key: 'frostbeard', png: frostbeardPng, json: frostbeardJson, actions: actionsOf(frostbeardData), scale: 1.1, blowFrame: 5, phase2: { key: 'frostbeard2', png: frostbeard2Png, json: frostbeard2Json, actions: actionsOf(frostbeard2Data) } },
+  // The Kingswood (Mitch, AD, 2026-11-02).
+  'city-outcast': { key: 'city_outcast', png: outcastPng, json: outcastJson, actions: actionsOf(outcastData), scale: 0.5, blowFrame: 4 },
   // The Rootways (Mitch, AD, 2026-11-02). Old Rootbeard at his number, not the atlas's, which runs past the column.
   'glowcap': { key: 'glowcap', png: glowcapPng, json: glowcapJson, actions: actionsOf(glowcapData), scale: 0.5714, blowFrame: 7 },
   'old-rootbeard': { key: 'old_rootbeard', png: rootbeardPng, json: rootbeardJson, actions: actionsOf(rootbeardData), scale: 1.2, blowFrame: 5 },

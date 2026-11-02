@@ -476,3 +476,7 @@ Ready before the map lands. `Area.city`: `stroll { to }` walks its own streets w
 ## The talent trees (Robin, 2026-11-02)
 
 `tools/class-data.mjs` writes them. Twelve trees of eight tiers: a tier asks for `TIER_POINTS` x its number of points in that tree, and a level (2, 5, 9, 13, 17, 21, 25, 30). A point a level; the class's four come free (`withCore`). A rule's numbers apply once a rank. Passives read in `gear.ts` (attackMult, manaMult) and `fight.ts`. `carriedLimit`: four carried, five from level 15. Save version 30 gives every point back.
+
+## The hub world's data (Robin, 2026-11-02)
+
+`world.json` is Mitch, AD's moved world: 17600 by 12700, hub `city-square` in `crownhaven`. King Goo's `gate` opens the Kingswood, and Crownhaven, Wobblewood and Honeyhill `openWith` it. `gate-bogsnapper` opens Bogglemire, `gate-bighorn` The Frostcrown. No other boss opens anything, and grown lands are off. Save version 31 opens the new lands for anyone past King Goo.

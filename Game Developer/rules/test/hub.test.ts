@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { apply, hubOf, makeRng, newGame, PROGRESSION, strollPath, type Board, type GameState } from '../src/index.ts';
+import { apply, hubOf, makeRng, newGame, PROGRESSION, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
+import { migrate } from '../src/save.ts';
 import { WORLD_DATA } from '../src/data.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
@@ -43,6 +44,53 @@ describe('a city (Robin, 2026-11-02)', () => {
   });
 });
 
+describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
+  const made = () => newGame({ seed: 'real', player: P, name: 'Robin', classId: 'warrior' });
+  it('every spot can be reached on foot from the start, with everything open', () => {
+    const s = made();
+    const seen = new Set([s.board.start]);
+    let ring = [s.board.start];
+    while (ring.length) {
+      ring = ring.flatMap((id) => s.board.spaces[id]!.links).filter((id) => !seen.has(id) && !!seen.add(id));
+    }
+    const missing = Object.values(s.board.spaces).filter((x) => !seen.has(x.id) && !s.board.areas[x.area]!.dungeon).map((x) => x.id);
+    expect(missing).toEqual([]);
+  });
+  it("King Goo's fall opens the ring, the city and the lands with no gate, and not the gated ones", () => {
+    const s = made();
+    const c = startFight({ ...s.characters[P]!, space: 'gate', attack: 5000 }, 'thornwood-warden', 'gate', false);
+    c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
+    const r = apply({ ...s, characters: { [P]: c } }, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'none' } as never, makeRng('w'), NOW);
+    const opened = r.state.characters[P]!.opened;
+    for (const id of ['kingswood', 'crownhaven', 'thornwood', 'frostpeak']) expect(opened).toContain(id);
+    for (const id of ['bogglemire', 'frostcrown']) expect(opened).not.toContain(id);
+  });
+  it('a mini-boss at a gate opens its land', () => {
+    const s = made();
+    const c = startFight({ ...s.characters[P]!, space: 'gate-bogsnapper', opened: ['meadows', 'kingswood'], attack: 5000 }, 'bogsnapper', 'gate-bogsnapper', false);
+    c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
+    const r = apply({ ...s, characters: { [P]: c } }, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'none' } as never, makeRng('w'), NOW);
+    expect(r.state.characters[P]!.opened).toContain('bogglemire');
+  });
+  it('a save from before keeps its character, and stands on a real spot, its lands open', () => {
+    const s = made();
+    const me = s.characters[P]!;
+    const old = { ...s, version: 30, characters: { [P]: { ...me, gold: 123, level: 7, space: 'shoreend', opened: ['meadows', 'thornwood'], bossKills: { gate: 1 } } } };
+    const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
+    const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
+    const c = up.characters[P]!;
+    expect(up.version).toBe(31);
+    expect(c.gold).toBe(123);
+    expect(up.board.spaces[c.space]).toBeTruthy();
+    expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
+  });
+  it('going home works on the real world', () => {
+    const s = made();
+    const open: GameState = { ...s, characters: { [P]: { ...s.characters[P]!, opened: ['meadows', 'kingswood', 'crownhaven'], space: 'gate' } } };
+    expect(apply(open, { type: 'home', id: 'h', player: P }, makeRng('h'), NOW).state.characters[P]!.space).toBe('city-square');
+  });
+});
+
 describe('going home (Robin, 2026-11-02)', () => {
   const data = WORLD_DATA as unknown as { hub?: string };
   it('takes you to the hub from anywhere, with a wait, not in a fight', () => {
@@ -66,7 +114,13 @@ describe('going home (Robin, 2026-11-02)', () => {
     }
   });
   it('is not there on a world with no hub', () => {
-    const s = at('s1');
-    if (!data.hub) expect(apply(s, { type: 'home', id: 'h', player: P }, makeRng('h'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    const old = data.hub;
+    delete data.hub;
+    try {
+      const s = at('s1');
+      expect(apply(s, { type: 'home', id: 'h', player: P }, makeRng('h'), NOW).events[0]).toMatchObject({ type: 'rejected' });
+    } finally {
+      if (old !== undefined) data.hub = old;
+    }
   });
 });

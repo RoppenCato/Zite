@@ -2,10 +2,10 @@
 import Phaser from 'phaser';
 import pngUrl from '../../assets/arena/arena.png';
 import jsonUrl from '../../assets/arena/arena.json?url';
-import places from '../../assets/arena/arena_places.json';
+import places from '../../assets/world_moved/arena_places.json';
 import eastPngUrl from '../../assets/arena_east/arena.png';
 import eastJsonUrl from '../../assets/arena_east/arena.json?url';
-import eastPlaces from '../../assets/arena_east/arena_places.json';
+import eastPlaces from '../../assets/world_moved/arena_east_places.json';
 import { standingDepth } from './boardkit.ts';
 
 export const ARENA_ATLAS = 'arena_buildings';

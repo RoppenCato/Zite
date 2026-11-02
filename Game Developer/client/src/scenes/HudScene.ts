@@ -338,7 +338,7 @@ export class HudScene extends Phaser.Scene {
   /** Whether a spot in the column is covered by the bars, the signs or the chips that stand over the map; a tap there is not the map's. */
   covers(x: number, y: number): boolean {
     if (y < HUD_PLANK || y >= PLANK_TOP) return true;
-    if (y < 100 && ((x >= 12 && x <= 196) || (x >= 240 && x <= 400))) return true;
+    if (y < 104 && x >= 12 && x <= 400) return true;
     if (y >= ROLL_TOP && x >= ROLL_LEFT && x <= ROLL_RIGHT) return true;
     if (y >= this.signTop && y <= 828 && x >= SIGN.x && x <= SIGN.x + SIGN.w) return true;
     if (this.chipRow.length > 0 && y >= this.signTop - 4 - CHIP_H && y < this.signTop) {
@@ -411,6 +411,7 @@ export class HudScene extends Phaser.Scene {
       plate(this, 'board_slip', 12, 76, 184, 24).setOrigin(0, 0);
       plate(this, 'board_slip', 240, 76, 160, 24).setOrigin(0, 0);
     }
+    makeButton(this, 218, 89, 40, 26, 'Home', COLORS.log, '10.5px', () => (this.scene.get('board') as BoardScene).goHome(), { small: true });
     this.place = this.add.text(24, 88, '', { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
     this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);
     this.goal = this.add.text(284, 88, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
