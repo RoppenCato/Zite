@@ -46,11 +46,11 @@ export function drawArenaBuilding(scene: Phaser.Scene, spot: string, open: boole
   const near: Phaser.GameObjects.GameObject[] = [body];
   if (open) {
     b.flags.forEach((f, i) => {
-      const flag = scene.add.image(b.x + f.x, b.y + f.y, ARENA_ATLAS, b.flag).setScale(SCALE).setDepth(depth + 0.01);
+      const flag = scene.add.image(b.x + f.x, b.y + f.y, ARENA_ATLAS, b.flag).setScale(SCALE).setDepth(depth + 0.0001);
       scene.tweens.add({ targets: flag, scaleX: SCALE * 0.82, duration: 620 + i * 70, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       near.push(flag);
     });
-  } else near.push(scene.add.image(b.x, b.y, ARENA_ATLAS, b.doors).setScale(SCALE).setDepth(depth + 0.01));
+  } else near.push(scene.add.image(b.x, b.y, ARENA_ATLAS, b.doors).setScale(SCALE).setDepth(depth + 0.0001));
   const far = scene.add.image(b.x, b.y, ARENA_ATLAS, b.far).setScale(FAR_SCALE).setDepth(depth).setVisible(false);
   return { near, far, top: b.y - 300, x: b.x };
 }

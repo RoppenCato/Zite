@@ -52,7 +52,7 @@ import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
 import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
-import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
+import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
@@ -1793,8 +1793,20 @@ export class BoardScene extends Phaser.Scene {
     for (const id of spots) {
       const drawn = drawArenaBuilding(this, id, open);
       const space = board.spaces[id]!;
-      const sign = this.add.text(drawn?.x ?? space.x, drawn ? drawn.top : space.y - 90, open ? 'Arena: open' : 'Arena: closed', { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: open ? '#a23c2c' : '#6b6658', padding: { x: 8, y: 3 }, resolution: 2 }).setOrigin(0.5).setDepth(9);
-      this.arenaParts.push(sign);
+      // The top bar's slip (Mitch, AD's). These sizes are his 12 px sign in world pixels, so it reads the same at the follow zoom.
+      const x = drawn?.x ?? space.x;
+      const y = drawn ? drawn.top : space.y - 90;
+      const slip = plate(this, 'board_slip', x, y, open ? 106 : 172, 32).setDepth(9);
+      const ink = { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#3a2410', resolution: 2 };
+      const word = this.add.text(x, y, open ? 'Arena' : 'Arena: ', ink).setOrigin(open ? 0.5 : 0, 0.5).setDepth(9.01);
+      this.arenaParts.push(slip, word);
+      if (!open) {
+        const shut = this.add.text(0, y, 'closed', { ...ink, color: '#a23c2c' }).setOrigin(0, 0.5).setDepth(9.01);
+        const left = x - (word.width + shut.width) / 2;
+        word.setX(left);
+        shut.setX(left + word.width);
+        this.arenaParts.push(shut);
+      }
       if (drawn) {
         this.arenaParts.push(...drawn.near, drawn.far);
         this.arenaBuildings.push(drawn);
