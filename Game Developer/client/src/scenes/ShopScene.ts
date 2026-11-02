@@ -83,7 +83,7 @@ export class ShopScene extends Phaser.Scene {
     const { tabY, leave } = SHOP_LAYOUT;
     // What this shop sells, as tabs (Robin, 2026-11-02: "landing on different shops should give you option to buy different gear").
     const offer = shopOffer(this.game_.state, me);
-    const tier = this.game_.state.board.areas[space?.area ?? '']?.tier ?? 1;
+    const tier = offer?.tier ?? 1;
     const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
@@ -91,7 +91,7 @@ export class ShopScene extends Phaser.Scene {
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
     this.message = this.add
-      .text(CENTRE, 636, 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
+      .text(CENTRE, 636, offer?.town?.line ?? 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);
     makeButton(this, leave.x, leave.y, leave.w, leave.h, 'Leave', COLORS.log, '20px', () => (this.scene.get('board') as BoardScene).shopLeft());
     this.show(lines[0] ?? 'items');
@@ -105,7 +105,7 @@ export class ShopScene extends Phaser.Scene {
     const me = this.game_.me;
     this.gold.setText(`Gold ${me.gold}`);
     const { firstRowY, rowStep, button } = SHOP_LAYOUT;
-    const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
+    const tier = shopOffer(this.game_.state, me)?.tier ?? 1;
     const gearRow = (i: number, g: GearItem, price: string, own: string, onTap: () => void): void => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
@@ -153,7 +153,7 @@ export class ShopScene extends Phaser.Scene {
       sold.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(i, item.name, this.ink.text, `${item.text.split('. ')[0]!.replace(/.$/, '')}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '', item.dice ? '' : id);
+        row(i, item.name, this.ink.text, `${item.text.split('. ')[0]!.replace(/.$/, '')}.`, `${shopOffer(this.game_.state, me)?.price(id) ?? item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '', item.dice ? '' : id);
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);

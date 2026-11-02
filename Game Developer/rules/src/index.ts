@@ -14,6 +14,7 @@ export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts
 export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';
 export { regionCreatures } from './journal.ts';
+export { townKind, TOWNS, type TownKind } from './data.ts';
 export { newGame, newWorld, apply, makeBoard, makeCharacter, shopOffer, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';

@@ -4,7 +4,7 @@
 
 import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, townKind, type TownKind } from './data.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
@@ -357,6 +357,14 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         const big = { ...e, name: `Elite ${e.name}`, role: 'mini' as const, hp: Math.round(e.hp * 2.5), maxHp: Math.round(e.maxHp * 2.5), attack: Math.round(e.attack * 1.2), xp: e.xp * 3, gold: e.gold * 3 };
         return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: big } }), events };
       }
+      if (spawn?.kind === 'wanderer' && spawn.enemy) {
+        const met = begin(state, c, spawn.enemy, space.id, true, action, rng, events);
+        const me = met.state.characters[c.id]!;
+        const e = me.fight!.enemy;
+        const w = PROGRESSION.wanderer;
+        const huge = { ...e, name: `Dread ${e.name}`, level: spawn.level ?? e.level, role: 'mini' as const, wanderer: true, hp: Math.round(e.hp * w.hp), maxHp: Math.round(e.maxHp * w.hp), attack: Math.round(e.attack * w.attack), defense: Math.round(e.defense * w.defense), xp: Math.round(e.xp * w.xp), gold: Math.round(e.gold * w.gold) };
+        return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: huge } }), events };
+      }
       if (spawn?.kind === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
@@ -604,7 +612,7 @@ function themeEvent(state: GameState, c: Character, theme: string, tier: number,
 // ---- the shop and the bag ---------------------------------------------------------------------------------------------
 
 /** What can be bought where the character stands, or null away from any shop. A merchant has everything. */
-export function shopOffer(state: GameState, c: Character): { stock: ShopStock; lines: GearLine[]; items: string[] } | null {
+export function shopOffer(state: GameState, c: Character): { stock: ShopStock; lines: GearLine[]; items: string[]; town: TownKind | null; tier: number; price: (item: string) => number } | null {
   const space = state.board.spaces[c.space];
   const stock: ShopStock | null = state.spawns[c.space]?.kind === 'merchant' ? 'merchant' : space?.kind === 'town' ? 'town' : space?.kind === 'shop' ? (space.stock ?? 'arms') : null;
   if (!stock || !space) return null;
@@ -615,8 +623,14 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
     if (stock !== 'merchant' && !item.stock.includes(stock)) return false;
     return !(item.heal || item.mana) || item.tier === top || item.tier === top - 1;
   });
-  const lines: GearLine[] = stock === 'arms' ? ['light', 'heavy'] : stock === 'magic' ? ['magic'] : stock === 'merchant' ? ['light', 'heavy', 'magic'] : [];
-  return { stock, lines, items };
+  const town = stock === 'town' ? townKind(space.id) : null;
+  const lines: GearLine[] = stock === 'arms' ? ['light', 'heavy'] : stock === 'magic' ? ['magic'] : stock === 'merchant' || town?.rank ? ['light', 'heavy', 'magic'] : [];
+  const price = (id: string): number => {
+    const item = ITEMS[id]!;
+    const share = item.dice ? town?.cards : item.heal || item.mana ? town?.flasks : undefined;
+    return Math.max(1, Math.round(item.price * (share ?? 1)));
+  };
+  return { stock, lines, items, town, tier: tier + (town?.rank ?? 0), price };
 }
 
 function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
@@ -627,13 +641,14 @@ function buy(state: GameState, action: BuyAction, character: Character): ApplyRe
     const item = ITEMS[action.item];
     if (!item) return reject(state, action, 'no such item');
     if (!offer.items.includes(action.item)) return reject(state, action, 'not at a shop');
-    if (character.gold < item.price) return reject(state, action, 'not enough gold');
-    const gold = character.gold - item.price;
+    const cost = offer.price(action.item);
+    if (character.gold < cost) return reject(state, action, 'not enough gold');
+    const gold = character.gold - cost;
     const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
-    return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, gear: null, price: item.price, gold }] };
+    return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, gear: null, price: cost, gold }] };
   }
   if (action.slot !== undefined && SLOTS.includes(action.slot)) {
-    const tier = state.board.areas[state.board.spaces[character.space]!.area]?.tier ?? 1;
+    const tier = offer.tier;
     const got = nextGearId(state);
     const line = action.line ?? (offer.lines.includes('heavy') ? 'heavy' : offer.lines[0]);
     if (!line || !offer.lines.includes(line)) return reject(state, action, 'not at a shop');
@@ -906,7 +921,7 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
     }
   }
   const settings = PROGRESSION.spawns;
-  if (Object.keys(spawns).length < settings.cap && rng.next() < settings.chancePerTick) {
+  if (Object.values(spawns).filter((s) => s.kind !== 'wanderer').length < settings.cap && rng.next() < settings.chancePerTick) {
     const open = new Set<string>();
     const standing = new Set<string>();
     for (const c of Object.values(state.characters)) {
@@ -928,6 +943,50 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       spawns[space] = spawn;
       changed = true;
       events.push({ type: 'spawned', action: action.id, player: action.player, space, spawn });
+    }
+  }
+  // Wanderers (Robin, 2026-11-02): a creature far above its land walks the roads, its level on the map. One at a time, in land where someone stands who it still towers over.
+  const w = PROGRESSION.wanderer;
+  const standingOn = new Set(Object.values(characters).map((c) => c.space));
+  const free = (s: Space | undefined): s is Space => !!s && s.kind === 'normal' && !spawns[s.id] && !standingOn.has(s.id) && !inTownWalls(state.board, s);
+  const roaming = Object.entries(spawns).find(([, s]) => s.kind === 'wanderer');
+  if (roaming) {
+    if (rng.next() < w.moveChance) {
+      const [from, spawn] = roaming;
+      const fighting = Object.values(characters).some((c) => c.fight?.space === from);
+      const area = state.board.spaces[from]?.area;
+      // It walks over whatever lies on the road, up to three spots, to the next free wild spot.
+      const seen = new Set([from]);
+      let ring = [from];
+      const ways: string[] = [];
+      for (let step = 0; step < 3 && !ways.length; step++) {
+        ring = ring.flatMap((id) => state.board.spaces[id]?.links ?? []).filter((id) => !seen.has(id) && state.board.spaces[id]?.area === area);
+        for (const id of ring) seen.add(id);
+        ways.push(...ring.filter((id) => free(state.board.spaces[id])));
+      }
+      ways.sort();
+      if (ways.length && !fighting) {
+        const to = ways[rng.int(ways.length) - 1]!;
+        delete spawns[from];
+        spawns[to] = spawn;
+        changed = true;
+        events.push({ type: 'despawned', action: action.id, player: action.player, space: from });
+        events.push({ type: 'spawned', action: action.id, player: action.player, space: to, spawn });
+      }
+    }
+  } else if (rng.next() < w.chancePerTick) {
+    const here = Object.values(characters)
+      .map((c) => ({ c, area: state.board.areas[state.board.spaces[c.space]?.area ?? ''] }))
+      .filter((x): x is { c: Character; area: Area } => !!x.area && x.c.level < x.area.levels[1] + w.levelsOver)
+      .sort((a, b) => a.c.id.localeCompare(b.c.id));
+    const pick = here.length ? here[rng.int(here.length) - 1]! : null;
+    const wilds = pick ? Object.values(state.board.spaces).filter((s) => s.area === pick.area.id && free(s) && groundAt(state.board, s)).sort((a, b) => a.id.localeCompare(b.id)) : [];
+    if (pick && wilds.length) {
+      const at = wilds[rng.int(wilds.length) - 1]!;
+      const spawn: Spawn = { kind: 'wanderer', enemy: groundAt(state.board, at)!.mob, level: pick.area.levels[1] + w.levelsOver, until: now + w.lifeMs };
+      spawns[at.id] = spawn;
+      changed = true;
+      events.push({ type: 'spawned', action: action.id, player: action.player, space: at.id, spawn });
     }
   }
   // A world boss (mine, 2026-11-01): now and then, when none is about, the boss of the highest area anyone has opened

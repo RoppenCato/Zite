@@ -1,7 +1,7 @@
 // What touching a spot tells the player (Robin, 2026-10-31: hints on what you could meet, level range and loot, but
 // not everything). Pure text from the state, so the server can send the same line later.
 
-import { GEAR, SPACE_KIND_DATA } from './data.ts';
+import { GEAR, SPACE_KIND_DATA, townKind } from './data.ts';
 import { creature } from './fight.ts';
 import { rankName } from './gear.ts';
 import { grownIndex, peekArea } from './generate.ts';
@@ -60,6 +60,8 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       const prowl =
         spawn?.kind === 'worldboss' && spawn.enemy
           ? ` A world boss, ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
+          : spawn?.kind === 'wanderer' && spawn.enemy
+            ? ` A Dread ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, level ${spawn.level ?? '?'}, walks here. Far too strong for this land, and rich if you can beat it.`
           : spawn?.kind === 'elite' && spawn.enemy
             ? ` An elite ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here: hard, and worth it.`
             : spawn?.kind === 'miniboss' && spawn.enemy
@@ -90,7 +92,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
     case 'shop':
       return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
     case 'town':
-      return `${where}: rest, HP and mana to full. Flasks and cards for sale, a trainer.`;
+      return `${where}: rest, HP and mana to full. ${townKind(space.id).line}`;
     case 'board': {
       const mine = me?.quests[0];
       return `${where}: walk onto or past it to pick a quest, one at a time. It pays the moment you finish it.${mine ? ` Yours: ${questLine(mine)}` : ''}`;

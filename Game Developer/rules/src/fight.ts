@@ -898,14 +898,14 @@ function win(r: Round): ApplyResult {
   next = noteBeaten(next, e.id, r.state.board, area?.id, action, events);
   const rank = area?.tier ?? 1;
   let s = r.state;
-  if (rng.next() < GEAR.dropChance[e.role] + (r.s.bonus.scavenger ?? 0)) {
+  if (e.wanderer || rng.next() < GEAR.dropChance[e.role] + (r.s.bonus.scavenger ?? 0)) {
     const got = nextGearId(s);
     s = got.state;
     const unique = rng.next() < GEAR.uniqueChance[e.role] ? rollUnique(got.id, rank, rank, rng) : null;
     if (unique) {
       next = addLoot(next, unique, action, events);
     } else {
-      next = addLoot(next, rollGear(got.id, dropSlot(space ? groundAt(s.board, space) : null, rng), rank, GEAR.rarityBoost[e.role], rng, rollLine(rng), c.classId), action, events);
+      next = addLoot(next, rollGear(got.id, dropSlot(space ? groundAt(s.board, space) : null, rng), rank, GEAR.rarityBoost[e.wanderer ? 'boss' : e.role], rng, rollLine(rng), c.classId), action, events);
     }
   }
   if (rng.next() < GEAR.consumableDrop.potion) {

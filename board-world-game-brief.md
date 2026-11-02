@@ -46,6 +46,10 @@ Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-
 - **One connected board with many paths**, forks every few spots, so the die gives a choice of where to go (Robin, 2026-10-31). Spaces and connections, never a grid.
 - Generated, and big enough never to run out. Each area of the map has its own look and its own fight background (Robin, 2026-10-31).
 
+### Open world (Robin, 2026-11-02)
+Yes to: rumours that send you somewhere; hidden places that show only when you stand close; small dungeons of their own; creatures far too strong for their land, visible and avoidable; towns that differ, and every town always heals. A bigger map with clear areas: "It makes it more interesting to 'enter the swamp' or 'go up in the mountains'."
+No to: a map misted in open land, a second way past bosses, tap-to-set a destination, things travelling the roads, timed local trouble. Day, night and weather: maybe later.
+
 ## The look
 - **The theme is Enchanted Kingdoms** (Robin, 2026-11-01): a cheerful fantasy world of rival kingdoms, mischievous creatures, magical treasures and strange places, charming before grim, growing mysterious and more dangerous the farther you travel. **The world itself is called Zite**, as the game is. The content is the Game Developer's `docs/world-content.md` (twelve region archetypes with their creatures, bosses and places; Robin, 2026-11-01: the names as written, one archetype per tier in the catalogue's order, Cloverfield Meadows first).
 - **A new look and theme** (Robin, 2026-11-01): the art direction of 2026-10-31 (the MapleStory-referenced painted look) is scrapped with everything drawn under it; the art starts again from the Art Director's `CLAUDE.md` and `docs/direction.md`. The shell stays: the board from a raised camera, side-view fights, areas as kits of data, the Game Developer's budgets and atlas form.

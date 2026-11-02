@@ -41,8 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt,
-} from '../../../rules/src/index.ts';
+  groundAt, townKind } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -202,6 +201,7 @@ export class BoardScene extends Phaser.Scene {
   private readonly closedRoads = new Map<string, Phaser.GameObjects.Graphics>();
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
+  private wandererSeen = 0;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
   /** The other players' figures, by id: `others` holds their marks. */
@@ -356,6 +356,12 @@ export class BoardScene extends Phaser.Scene {
       if (e.type === 'spawned' && e.spawn.kind === 'worldboss' && e.spawn.enemy) {
         const sp = board.spaces[e.space];
         return `A world boss rages in ${board.areas[sp?.area ?? '']?.name ?? 'the wilds'}: the ${creature(e.spawn.enemy, board.bestiary)?.name ?? e.spawn.enemy}! Land there to fight it together.`;
+      }
+      if (e.type === 'spawned' && e.spawn.kind === 'wanderer' && e.spawn.enemy && board.spaces[e.space]?.area === board.spaces[this.game_.me.space]?.area) {
+        if (this.wandererSeen !== e.spawn.until) {
+          this.wandererSeen = e.spawn.until;
+          return `Something huge walks these roads: a Dread ${creature(e.spawn.enemy, board.bestiary)?.name ?? e.spawn.enemy}, level ${e.spawn.level ?? '?'}.`;
+        }
       }
       if (e.type === 'bossLeft') return `The ${creature(e.enemy, board.bestiary)?.name ?? e.enemy} is gone from ${board.spaces[e.space]?.name || 'the wilds'}.`;
       if (e.player === this.game_.player) continue;
@@ -1014,6 +1020,16 @@ export class BoardScene extends Phaser.Scene {
         const text = this.add.text(0, 0, 'W', { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#fff27a', resolution: 2 }).setOrigin(0.5);
         const hp = this.add.text(0, -24, `${spawn.hp ?? '?'} / ${spawn.maxHp ?? '?'}`, { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#e8e4d8', resolution: 2 }).setOrigin(0.5, 1);
         const mark = this.add.container(space.x + 26, space.y - 34, [badge, text, hp]).setDepth(9);
+        this.tweens.add({ targets: mark, y: mark.y - 8, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+        this.spawnMarks.set(spaceId, mark);
+        continue;
+      }
+      if (spawn.kind === 'wanderer') {
+        // Too strong, and it says so from far off: the danger mark and its level in red.
+        const parts: Phaser.GameObjects.GameObject[] = [];
+        if (hasFrame(this, 'mark_elite')) parts.push(icon(this, 'mark_elite', 0, 0).setDisplaySize(46, 46));
+        parts.push(this.add.text(0, -33, `Lv ${spawn.level ?? '?'}`, { fontFamily: FONT, fontSize: '17px', fontStyle: 'bold', color: '#fff1e0', backgroundColor: '#a23c2c', padding: { x: 7, y: 2 }, resolution: 2 }).setOrigin(0.5));
+        const mark = this.add.container(space.x, space.y - 44, parts).setDepth(9);
         this.tweens.add({ targets: mark, y: mark.y - 8, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
         this.spawnMarks.set(spaceId, mark);
         continue;
@@ -1758,6 +1774,7 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const spawn = spawns[space.id];
     const name = (id: string | null | undefined) => (id ? (creature(id, board.bestiary)?.name ?? id) : '');
+    if (spawn?.kind === 'wanderer') return `Lv ${spawn.level ?? '?'} Dread ${name(spawn.enemy)}`;
     if (spawn?.kind === 'elite') return `Elite ${name(spawn.enemy)}`;
     if (spawn?.kind === 'miniboss' || spawn?.kind === 'worldboss') return name(spawn.enemy);
     if (spawn?.kind === 'merchant') return 'Merchant';
@@ -1767,7 +1784,7 @@ export class BoardScene extends Phaser.Scene {
         if (inTownWalls(board, space)) return 'Street';
         return name(groundAt(board, space)?.mob) || 'Wilds';
       case 'town':
-        return space.name || 'Town';
+        return `${space.name || 'Town'}: ${townKind(space.id).name}`;
       case 'boss':
         return name(space.boss);
       case 'potion':

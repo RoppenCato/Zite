@@ -64,6 +64,17 @@
     "miniboss": 0.7,
     "elite": 0.5
   },
+  "wanderer": {
+    "chancePerTick": 0.12,
+    "lifeMs": 1500000,
+    "moveChance": 0.3,
+    "levelsOver": 5,
+    "hp": 6,
+    "attack": 2.2,
+    "defense": 1.5,
+    "xp": 8,
+    "gold": 6
+  },
   "worldBoss": {
     "chancePerTick": 0.02,
     "lifeMs": 1800000,

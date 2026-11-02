@@ -10,6 +10,7 @@ import itemsJson from '../data/items.json' with { type: 'json' };
 import abilitiesJson from '../data/abilities.json' with { type: 'json' };
 import gearJson from '../data/gear.json' with { type: 'json' };
 import surprisesJson from '../data/surprises.json' with { type: 'json' };
+import townsJson from '../data/towns.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
@@ -318,6 +319,7 @@ export interface ProgressionData {
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
   spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number; elite: number };
+  wanderer: { chancePerTick: number; lifeMs: number; moveChance: number; levelsOver: number; hp: number; attack: number; defense: number; xp: number; gold: number };
   /** The world boss (mine, 2026-11-01): how often a tick brings one when none is about, how long it stays, its HP against the area's boss, the least share a hitter gets. */
   worldBoss: { chancePerTick: number; lifeMs: number; hpMult: number; minShare: number };
   /** The notes left on spots: how many a spot keeps, how long one lasts. */
@@ -364,3 +366,20 @@ export const QUESTS = questEntries as QuestsData;
 export const SPACE_KINDS = Object.keys(SPACE_KIND_DATA) as SpaceKind[];
 export const CLASS_IDS = Object.keys(CLASS_DATA) as ClassId[];
 export const ITEM_IDS = Object.keys(ITEMS);
+
+/** What a town offers besides its rest (Robin, 2026-11-02). */
+export interface TownKind {
+  name: string;
+  line: string;
+  flasks?: number;
+  cards?: number;
+  rank?: number;
+}
+export const TOWNS = townsJson as unknown as { kinds: Record<string, TownKind>; towns: Record<string, string> };
+/** The town's kind: from the list, or from its id, for towns the generator lays. */
+export function townKind(id: string): TownKind {
+  const kinds = Object.keys(TOWNS.kinds).sort();
+  const named = TOWNS.towns[id];
+  const key = named ?? kinds[[...id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % kinds.length]!;
+  return TOWNS.kinds[key]!;
+}

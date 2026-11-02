@@ -1,0 +1,28 @@
+{
+  "_about": "What makes each town worth the walk (Robin, 2026-11-02: 'we need to make towns feel different, but they should always heal you'). Every town rests you. Words and numbers mine. A town not listed takes a kind from its id.",
+  "kinds": {
+    "herbalist": {
+      "name": "Herbalist",
+      "line": "The herbalist sells every flask at half price.",
+      "flasks": 0.5
+    },
+    "smith": {
+      "name": "Master smith",
+      "line": "The master smith makes gear a rank above any other shop here.",
+      "rank": 1
+    },
+    "cards": {
+      "name": "Card seller",
+      "line": "The card seller lets every dice card go at half price.",
+      "cards": 0.5
+    }
+  },
+  "towns": {
+    "ashford": "herbalist",
+    "millford": "smith",
+    "brambleford": "cards",
+    "oakshade": "smith",
+    "frosthold": "herbalist",
+    "honeybell": "cards"
+  }
+}

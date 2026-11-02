@@ -283,6 +283,8 @@ export interface Enemy {
   name: string;
   level: number;
   role: 'mob' | 'mini' | 'boss';
+  /** A wanderer always drops a piece, at a boss's rarity. */
+  wanderer?: boolean;
   hp: number;
   maxHp: number;
   attack: number;
@@ -370,9 +372,11 @@ export interface Fight {
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
 export interface Spawn {
-  kind: 'miniboss' | 'merchant' | 'worldboss' | 'elite';
+  kind: 'miniboss' | 'merchant' | 'worldboss' | 'elite' | 'wanderer';
   enemy: string | null;
   until: number;
+  /** A wanderer (Robin, 2026-11-02): far too strong for its land, its level shown on the map; it walks the roads, to be avoided or tried later. */
+  level?: number;
   /** A world boss (mine, 2026-11-01): its HP, shared by everyone who fights it, and the damage each player dealt. */
   hp?: number;
   maxHp?: number;

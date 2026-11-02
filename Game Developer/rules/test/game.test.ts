@@ -260,6 +260,15 @@ describe('landing', () => {
     expect(broke.events[2]?.type).not.toBe('offer');
   });
 
+  it('in the wilds, a wanderer is far above the land: its shown level, Dread, rich and tough (Robin, 2026-11-02)', () => {
+    const w = PROGRESSION.wanderer;
+    const met = { ...about('s0'), spawns: { s1: { kind: 'wanderer' as const, enemy: 'wolf', level: 9, until: NOW + 1000 } } };
+    const e = me(apply(met, move(['s1']), makeRng('x'), NOW).state).fight!.enemy;
+    const base = ENEMIES.wolf!;
+    expect(e).toMatchObject({ name: `Dread ${base.name}`, level: 9, role: 'mini', wanderer: true, attack: Math.round(base.attack * w.attack), xp: Math.round(base.xp * w.xp) });
+    expect(e.maxHp).toBeGreaterThanOrEqual(Math.round(base.hp * w.hp * 0.8));
+  });
+
   it('in the wilds where something has spawned, meets it: a mini-boss to fight, or a merchant', () => {
     const base = about('s0');
     const prowling = { ...base, spawns: { s1: { kind: 'miniboss' as const, enemy: 'wolf-alpha', until: NOW + 1000 } } };
@@ -293,7 +302,10 @@ describe('the world\'s tick', () => {
         expect(world.board.spaces[space]!.area).toBe('meadows');
         expect(world.board.spaces[space]!.kind).toBe('normal');
         expect(space).not.toBe('ashford');
-        if (spawn.kind === 'worldboss') {
+        if (spawn.kind === 'wanderer') {
+          expect(spawn.until).toBe(NOW + PROGRESSION.wanderer.lifeMs);
+          continue;
+        } else if (spawn.kind === 'worldboss') {
           // Now and then the world boss: the meadows' own boss, for longer, on top of the cap (coop.test.ts has the rest).
           expect(spawn.until).toBe(NOW + PROGRESSION.worldBoss.lifeMs);
           expect(spawn.enemy).toBe('thornwood-warden');
@@ -305,8 +317,10 @@ describe('the world\'s tick', () => {
       }
     }
     const full = { ...world, spawns: { 'ashford-millford-1': { kind: 'merchant' as const, enemy: null, until: NOW + 1000 }, 'ashford-millford-2': { kind: 'merchant' as const, enemy: null, until: NOW + 1000 }, 'ashford-millford-3': { kind: 'merchant' as const, enemy: null, until: NOW + 1000 } } };
-    const r = apply(full, tick('t'), makeRng(0), NOW);
-    expect(r.state).toBe(full);
+    // Grown past the land, so no wanderer comes for this character either.
+    const quiet = { ...full, characters: { [P]: { ...full.characters[P]!, level: 40 } } };
+    const r = apply(quiet, tick('t'), makeRng('quiet'), NOW);
+    expect(r.state).toBe(quiet);
     expect(r.events).toEqual([]);
   });
 });

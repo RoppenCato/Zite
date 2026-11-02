@@ -36,7 +36,7 @@ describe('the shop', () => {
     // Bought to be worn: it goes on and the one it replaces goes to the bag.
     expect(me(second.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
     expect(me(second.state).equipment.weapon?.id).toBe('g2');
-    // A town sells flasks and cards, no gear.
+    // A town that is not a smith's sells flasks and cards, no gear.
     const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
     expect(inTown.events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
     const camped = { ...at('s1', { gold: 200 }), spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1 } } };

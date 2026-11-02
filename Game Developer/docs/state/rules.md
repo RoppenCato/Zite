@@ -436,3 +436,9 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 ## Suffixes and prefixes (2026-11-02)
 
 `gear.json` `affixes` and `prefixes`. A suffix's number is base + step per rank, capped, so old gear is outgrown. Uncommon has a prefix, rare a suffix, epic both, legendary a prefix and two suffixes (the name shows the first). `stats().bonus` adds up the suffixes that are not stats; fight and board rules read it.
+
+## Wanderers and towns (Robin, 2026-11-02)
+
+A **wanderer** is a spawn outside the cap: one at a time, in land where someone stands who is under its level, the land's top level plus `progression.wanderer.levelsOver`. It walks up to three spots along the road on some ticks and shows its level on the map. Its fight is a `Dread` creature with `wanderer`: rich, and it always drops at a boss's rarity.
+
+**Towns** all rest you. `data/towns.json` gives each a kind: herbalist (flasks half price), master smith (all three lines a rank above the land), card seller (cards half price). `shopOffer` carries the town, its tier and its prices.
