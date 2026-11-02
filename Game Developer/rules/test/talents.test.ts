@@ -72,6 +72,19 @@ describe('the talents that wait for their moment', () => {
 });
 
 describe('the talent data', () => {
+  it("every class's window shows three talents of each of its trees, ones you press", () => {
+    for (const cls of Object.values(CLASS_DATA)) {
+      expect(cls.tagline.length, cls.name).toBeGreaterThan(20);
+      expect(cls.story.length, cls.name).toBeGreaterThan(100);
+      for (const [id, tree] of Object.entries(cls.trees)) {
+        expect(cls.showcase[id], id).toHaveLength(3);
+        for (const talent of cls.showcase[id]!) {
+          expect(tree.nodes, talent).toContain(talent);
+          expect(ABILITIES[talent]!.rule, talent).toBeFalsy();
+        }
+      }
+    }
+  });
   it('no two talents of a class share a name', () => {
     const names = new Set<string>();
     for (const a of Object.values(ABILITIES)) {

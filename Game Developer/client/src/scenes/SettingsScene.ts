@@ -12,6 +12,7 @@ import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { audio } from '../audio.ts';
 import { sfx } from '../feel.ts';
 import { makeButton } from '../ui.ts';
+import { setFlow } from '../slots.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface SettingsSceneDeps {
@@ -110,9 +111,14 @@ export class SettingsScene extends Phaser.Scene {
         location.reload();
       });
     }
+    this.settingRow(rows.length + (code ? 3 : 2), 'Characters', 'Play another character, or make a new one.', 'Choose', () => {
+      if (this.game_.me.fight) return;
+      setFlow('choose');
+      location.reload();
+    });
     // For Robin's testing (2026-11-02), to go before an Alpha: another class at the same level, or a level more. The page loads again for its art.
     const next = TEST_CLASSES[(TEST_CLASSES.indexOf(this.game_.me.classId) + 1) % TEST_CLASSES.length]!;
-    const row = rows.length + (code ? 5 : 4);
+    const row = rows.length + (code ? 6 : 5);
     this.settingRow(row, 'Test: class', `Now ${CLASS_DATA[this.game_.me.classId]?.name}. Skills start over.`, CLASS_DATA[next]!.name, () => {
       if (this.game_.me.fight) return;
       void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
@@ -134,10 +140,11 @@ export class SettingsScene extends Phaser.Scene {
     this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
       void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
     });
-    this.settingRow(rows.length + (code ? 3 : 2), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
-    this.settingRow(rows.length + (code ? 4 : 3), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
+    this.settingRow(rows.length + (code ? 4 : 3), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
+    this.settingRow(rows.length + (code ? 5 : 4), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
       if (!window.confirm('Start over with a new character?')) return;
       this.game_.reset();
+      setFlow('choose');
       location.reload();
     });
   }

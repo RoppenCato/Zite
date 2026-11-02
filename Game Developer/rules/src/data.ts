@@ -31,6 +31,12 @@ export interface ClassData {
   style: string;
   /** A longer line on it, for the skill board. */
   about: string;
+  /** What it is, in a sentence: its card on the character screen. */
+  tagline: string;
+  /** How it plays and who it suits: the panel on the character screen. */
+  story: string;
+  /** Three talents of each tree, by tree: the examples in that panel. */
+  showcase: Record<string, string[]>;
   hp: number;
   mana: number;
   attack: number;

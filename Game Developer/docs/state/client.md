@@ -537,3 +537,10 @@ One chunk set for the whole world (`assets/world_moved`), held by nearness; `PAI
 ## The chest's charge (Robin, 2026-11-02)
 
 `CHARGE` in `RevealScene.ts`, by the best rarity inside: 0.7 s for gold and common up to 3.7 s for a unique, with harder shaking. Epic and up also tremble the screen and tap the phone as they build, stop dead and squeeze for a moment, then pop with a bigger flash and a jump of the screen. A tap still cuts it short, and Fewer effects still skips it.
+
+## Characters and the class window (Robin, 2026-11-02)
+
+`client/src/slots.ts` and `SlotsScene`: a phone holds up to six characters. Solo, each is a save of its own (`boardworld.save`, then `boardworld.save.2` and on), so an old save simply appears; `boardworld.active` says which was last played. In a shared world, each is an account, and `boardworld.accounts` keeps their tokens and what the list shows; `boardworld.account` is the current one. A character is switched by setting the current one and loading the page again. With two or more the page opens on the list once a tab (`boardworld.flow` in sessionStorage); with one it opens on the board; Settings has a Characters row.
+
+Tapping a class on the character screen opens its window: `tagline`, `story` and `showcase` in `tools/class-data.mjs`, three pressed talents for each tree.
+

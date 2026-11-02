@@ -358,5 +358,93 @@ for (const [classId, trees] of Object.entries(TALENTS)) {
 const json = (x) => `${JSON.stringify(x, null, 2)}\n`;
 writeFileSync('rules/data/abilities.json', json(A));
 const old = JSON.parse(readFileSync('rules/data/classes.json', 'utf8'));
+// What the character screen says of each class (Robin, 2026-11-02: "better overarching descriptions... some examples of what the class can do").
+const WORDS = {
+  "warrior": {
+    "tagline": "Takes the hits up front. Every blow it blocks comes back harder.",
+    "story": "The hardest class to knock down, with the most HP and armour. Its power comes from the fight itself: block a blow to build Valor, then spend it on a huge swing or a wall of steel. For you if you like to stand your ground and outlast anything.",
+    "showcase": {
+      "paladin": [
+        "holy-strike",
+        "last-light",
+        "pal-miracle"
+      ],
+      "berserker": [
+        "reckless",
+        "blood-price",
+        "ber-rampage"
+      ],
+      "knight": [
+        "shield-slam",
+        "iron-retort",
+        "kni-fortress"
+      ]
+    }
+  },
+  "mage": {
+    "tagline": "The strongest spells of all, and very little to stand on.",
+    "story": "Fragile, with a weak staff, but nothing hits harder than its spells. Mana is everything: it pays for your magic, and when you Block, a Mana Shield spends it to soak up the blow. Run dry and you are in trouble. For you if you like to plan ahead and end fights fast.",
+    "showcase": {
+      "wizard": [
+        "fireball",
+        "detonate",
+        "meteor"
+      ],
+      "cleric": [
+        "smite",
+        "mend",
+        "cle-ascend"
+      ],
+      "spellsword": [
+        "frost-blade",
+        "storm-blade",
+        "spl-avatar"
+      ]
+    }
+  },
+  "rogue": {
+    "tagline": "Quick, slippery and lucky. Hits three times while others swing once.",
+    "story": "Its Attack strikes three times, and each hit makes a crit more likely until one lands. It dodges often but takes more when caught, so it wins by not being hit. Every attack builds Mischief for its finishing moves. For you if you like fast fights and big numbers.",
+    "showcase": {
+      "ninja": [
+        "shuriken",
+        "clone",
+        "nin-army"
+      ],
+      "shadow": [
+        "shadow-dance",
+        "assassinate",
+        "sha-reaper"
+      ],
+      "alchemist": [
+        "poison-coat",
+        "bitter-end",
+        "alc-philosopher"
+      ]
+    }
+  },
+  "ranger": {
+    "tagline": "Strikes first and shoots back. Enemies pay for every swing they take.",
+    "story": "Bows only. It acts first in every fight and often shoots back when struck, so the fight is half won before it reaches you. Aim builds when a blow misses you and when you crit. For you if you like to read the fight and let it come to you.",
+    "showcase": {
+      "ranger": [
+        "quick-reflex",
+        "rain-arrows",
+        "ran-master"
+      ],
+      "beastmaster": [
+        "hawk",
+        "great-owl",
+        "bea-king"
+      ],
+      "trapper": [
+        "trap",
+        "spike-trap",
+        "tra-master"
+      ]
+    }
+  }
+};
+for (const [id, words] of Object.entries(WORDS)) Object.assign(C[id], words);
 writeFileSync('rules/data/classes.json', json(old.classes ? { ...old, classes: C } : C));
 console.log(`${Object.keys(A).length} abilities, ${Object.keys(C).length} classes`);

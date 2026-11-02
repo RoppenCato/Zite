@@ -156,6 +156,9 @@ export class RemoteGame implements GameHolder {
   reset(): void {
     tips.clear();
     try {
+      const token = this.account?.token;
+      const list = JSON.parse(this.storage?.getItem('boardworld.accounts') ?? '[]') as { token: string }[];
+      this.storage?.setItem('boardworld.accounts', JSON.stringify(list.filter((a) => a.token !== token)));
       this.storage?.removeItem(ACCOUNT_KEY);
     } catch {
       // nothing to forget

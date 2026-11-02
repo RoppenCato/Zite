@@ -38,23 +38,26 @@ export class LocalGame implements GameHolder {
   readonly player = PLAYER;
   private rng: Rng;
   private readonly storage: Storage | null;
+  /** This character's save: a phone can hold several (Robin, 2026-11-02). */
+  private readonly key: string;
   onSpawns: (() => void) | null = null;
   onChange: GameHolder['onChange'] = null;
 
-  private constructor(state: GameState, rng: Rng, storage: Storage | null) {
+  private constructor(state: GameState, rng: Rng, storage: Storage | null, key: string) {
     this.state = state;
     this.rng = rng;
     this.storage = storage;
+    this.key = key;
   }
 
   /** The saved game if there is one we understand; null when there is none (or it is broken), so the character screen comes up. */
-  static load(storage: Storage | null): LocalGame | null {
+  static load(storage: Storage | null, key: string = SAVE_KEY): LocalGame | null {
     try {
-      const raw = storage?.getItem(SAVE_KEY);
+      const raw = storage?.getItem(key);
       if (raw) {
         const save = JSON.parse(raw) as Partial<Save>;
         const state = save.version === SAVE_VERSION ? migrate(save.state) : null;
-        if (state && typeof save.rng === 'number') return new LocalGame(state, resumeRng(save.rng), storage);
+        if (state && typeof save.rng === 'number') return new LocalGame(state, resumeRng(save.rng), storage, key);
       }
     } catch {
       // A broken save: start fresh.
@@ -63,9 +66,9 @@ export class LocalGame implements GameHolder {
   }
 
   /** A fresh game for the character the player made, saved at once. */
-  static create(storage: Storage | null, o: { name: string; classId: ClassId; seed?: string }): LocalGame {
+  static create(storage: Storage | null, o: { name: string; classId: ClassId; seed?: string }, key: string = SAVE_KEY): LocalGame {
     const seed = o.seed ?? newSeed();
-    const game = new LocalGame(newGame({ seed, player: PLAYER, name: o.name, classId: o.classId }), makeRng(seed), storage);
+    const game = new LocalGame(newGame({ seed, player: PLAYER, name: o.name, classId: o.classId }), makeRng(seed), storage, key);
     game.save();
     return game;
   }
@@ -116,7 +119,7 @@ export class LocalGame implements GameHolder {
   reset(): void {
     tips.clear();
     try {
-      this.storage?.removeItem(SAVE_KEY);
+      this.storage?.removeItem(this.key);
     } catch {
       // Storage blocked: nothing to throw away.
     }
@@ -125,7 +128,7 @@ export class LocalGame implements GameHolder {
   private save(): void {
     try {
       const save: Save = { version: SAVE_VERSION, state: this.state, rng: this.rng.state };
-      this.storage?.setItem(SAVE_KEY, JSON.stringify(save));
+      this.storage?.setItem(this.key, JSON.stringify(save));
     } catch {
       // Storage full or blocked: the game goes on, unsaved.
     }
