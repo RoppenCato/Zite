@@ -201,7 +201,9 @@ export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all
 /** A spot's plate from the kit, at the spot's centre; its tap area is the plate's rectangle. */
 export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phaser.GameObjects.Image {
   // A spot with no plate of its own yet takes the wilds' (the quest board's, until Mitch, AD's comes).
-  const frame = scene.textures.get(kit.props).has(PLATES[space.kind]) ? PLATES[space.kind] : PLATES.normal;
+  // A magic shop is a shop in the rules, with its own plate on the map.
+  const wanted = space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
+  const frame = scene.textures.get(kit.props).has(wanted) ? wanted : PLATES.normal;
   const plate = scene.add.image(space.x, space.y, kit.props, frame).setScale(SCALE).setDepth(KIT_DEPTH.plates);
   // A thumb is wider than a plate: the tap area reaches well past it, as it did round the old circles.
   const { width, height } = plate;

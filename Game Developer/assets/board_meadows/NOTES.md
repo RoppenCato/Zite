@@ -82,14 +82,16 @@ The cliff and the rims were checked as repeats only.
 | `chest` | Slime Cave, a chest spot (closed; the opening is the loot drop) | 39 by 33 | 19, 25 |
 | `gate` | King Goo's Gate | 98 by 78 | 50, 70 |
 | `spot_wild` | a wild spot (n) | 61 by 36 | the centre, where the token stands |
-| `spot_town` | a town hub | 95 by 54 | the centre, where the token stands |
-| `spot_shop` | a shop hub | 95 by 54 | the centre, where the token stands |
-| `spot_chest` | a chest spot (t) | 61 by 36 | the centre, where the token stands |
-| `spot_spring` | a spring spot (p) | 61 by 36 | the centre, where the token stands |
-| `spot_shrine` | a shrine spot (s) | 61 by 36 | the centre, where the token stands |
-| `spot_board` | a quest board hub | 61 by 36 | the centre, where the token stands |
-| `spot_church` | a church hub, heals and clears poison | 61 by 36 | the centre, where the token stands |
-| `spot_gate` | the boss hub | 125 by 71 | the centre, where the token stands |
+| `spot_town` | a town hub | 95 by 57 | the centre, where the token stands |
+| `spot_shop` | a shop hub | 95 by 73 | the centre, where the token stands |
+| `spot_chest` | a chest spot (t) | 61 by 39 | the centre, where the token stands |
+| `spot_spring` | a spring spot (p) | 61 by 42 | the centre, where the token stands |
+| `spot_shrine` | a shrine spot (s) | 61 by 42 | the centre, where the token stands |
+| `spot_board` | a quest board hub | 61 by 41 | the centre, where the token stands |
+| `spot_gear` | a loot spot, roll for basic gear | 61 by 39 | the centre, where the token stands |
+| `spot_shop_magic` | a magic shop hub | 95 by 74 | the centre, where the token stands |
+| `spot_church` | a church hub, heals and clears poison | 61 by 42 | the centre, where the token stands |
+| `spot_gate` | the boss hub | 125 by 87 | the centre, where the token stands |
 
 ## The ground (`board_ground`, 1 px extruded)
 

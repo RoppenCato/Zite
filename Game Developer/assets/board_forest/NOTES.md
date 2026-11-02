@@ -42,7 +42,7 @@ Not seen in the game. The first map test used my own road curve, which follows t
 | --- | --- | --- | --- |
 | `wobble_a` | wild ground, leaning right | 106 by 118 | 47, 113 |
 | `wobble_b` | wild ground, leaning left | 91 by 117 | 56, 112 |
-| `tall_a` | wild ground, old giants, few | 119 by 173 | 63, 167 |
+| `tall_a` | wild ground, old giants, few | 110 by 160 | 58, 154 |
 | `fir_a` | wild ground, dark corners | 73 by 86 | 46, 82 |
 | `big_mush_a` | anywhere, magenta | 69 by 69 | 30, 65 |
 | `big_mush_b` | anywhere, teal | 72 by 80 | 43, 74 |
@@ -74,20 +74,22 @@ Not seen in the game. The first map test used my own road curve, which follows t
 | `tree_house_c` | Tumbletree Village | 87 by 112 | 44, 107 |
 | `tumbletree` | Tumbletree Village, its great tree | 192 by 227 | 63, 220 |
 | `hollow_log` | Hollow Log Shop | 188 by 73 | 91, 65 |
-| `upside_tree` | The Upside-Down Tree | 147 by 198 | 75, 177 |
+| `upside_tree` | The Upside-Down Tree | 133 by 180 | 68, 160 |
 | `fungal_ring` | Fungal Ring | 120 by 75 | 62, 72 |
 | `root_bridge` | Root Bridge | 155 by 69 | 72, 56 |
-| `owl_tree` | Owl Hollow | 144 by 184 | 72, 177 |
-| `glade_gate` | Grumblebark's Glade | 173 by 192 | 81, 183 |
+| `owl_tree` | Owl Hollow | 131 by 167 | 65, 161 |
+| `glade_gate` | Grumblebark's Glade | 157 by 174 | 74, 166 |
 | `church` | Oakshade Church, under its oak | 164 by 178 | 50, 172 |
 | `shrine` | Mossy Shrine | 44 by 55 | 26, 52 |
 | `spring` | Dewdrop Pool | 82 by 61 | 39, 45 |
 | `spot_wild` | a wild spot | 61 by 36 | the centre, where the token stands |
-| `spot_town` | a town hub | 95 by 54 | the centre, where the token stands |
-| `spot_shop` | a shop hub | 95 by 54 | the centre, where the token stands |
-| `spot_chest` | a chest spot | 61 by 36 | the centre, where the token stands |
-| `spot_spring` | a spring spot | 61 by 36 | the centre, where the token stands |
-| `spot_shrine` | a shrine spot | 61 by 36 | the centre, where the token stands |
-| `spot_board` | a quest board hub | 61 by 36 | the centre, where the token stands |
-| `spot_church` | a church hub | 61 by 36 | the centre, where the token stands |
-| `spot_gate` | the boss hub | 125 by 71 | the centre, where the token stands |
+| `spot_town` | a town hub | 95 by 57 | the centre, where the token stands |
+| `spot_shop` | a shop hub | 95 by 73 | the centre, where the token stands |
+| `spot_chest` | a chest spot | 61 by 39 | the centre, where the token stands |
+| `spot_spring` | a spring spot | 61 by 42 | the centre, where the token stands |
+| `spot_shrine` | a shrine spot | 61 by 42 | the centre, where the token stands |
+| `spot_board` | a quest board hub | 61 by 41 | the centre, where the token stands |
+| `spot_gear` | a loot spot, roll for basic gear | 61 by 39 | the centre, where the token stands |
+| `spot_shop_magic` | a magic shop hub | 95 by 74 | the centre, where the token stands |
+| `spot_church` | a church hub | 61 by 42 | the centre, where the token stands |
+| `spot_gate` | the boss hub | 125 by 87 | the centre, where the token stands |

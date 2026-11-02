@@ -347,9 +347,8 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       const mobs = area?.mobs ?? [];
       if (!mobs.length) return { state: withCharacter(state, c), events };
-      // Mostly the ground's own creature (Robin, 2026-11-02: "you go around areas to hunt certain mobs").
-      const ground = groundAt(state.board, space);
-      const mob = ground && rng.next() < GROUND_SHARE ? ground.mob : mobs[rng.int(mobs.length) - 1]!;
+      // Only the place's own creature (Robin, 2026-11-02: "creatures only in their own place").
+      const mob = groundAt(state.board, space)?.mob ?? mobs[rng.int(mobs.length) - 1]!;
       return begin(state, c, mob, space.id, false, action, rng, events);
     }
   }
@@ -386,9 +385,6 @@ function tryRoll(state: GameState, action: Action, character: Character, rng: Rn
 
 /** How much of its shop price a loot spot's piece is worth. */
 const LOOT_SPOT_PRICE = 0.2;
-
-/** How often a wild fight is the ground's own creature. */
-const GROUND_SHARE = 0.75;
 
 /** What a normal spot holds this time, by the weights in surprises.json. One number from the stream. */
 function surprise(rng: Rng): keyof typeof SURPRISES {
