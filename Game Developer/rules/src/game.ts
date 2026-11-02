@@ -6,7 +6,7 @@ import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRE
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, offerPicks, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
-import { dropSlot, groundAt, rollLine } from './grounds.ts';
+import { dropSlot, groundAt, inTownWalls, rollLine } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -328,6 +328,11 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       if (quest?.kind === 'mini' && quest.area === space.area && quest.target && rng.next() < QUESTS.kinds.mini.spawnChance!) {
         return begin(state, c, quest.target, space.id, false, action, rng, events);
+      }
+      // Nothing hunts inside a town's walls (mine, from Mitch, AD's map): a creature lives only in its own place (Robin, 2026-11-02).
+      if (inTownWalls(state.board, space)) {
+        events.push({ type: 'nothing', action: id, player, text: 'Safe inside the town walls.' });
+        return { state: withCharacter(state, c), events };
       }
       const what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);

@@ -30,8 +30,32 @@ export function groundsOf(board: Board, areaId: string): Ground[] {
   return made;
 }
 
-/** The ground a spot lies in: the one whose named spot is nearest. */
+/** The drawn place a spot stands in, if any. */
+export function placeAt(board: Board, space: Space): string | null {
+  for (const place of board.areas[space.area]?.places ?? []) {
+    let inside = false;
+    const s = place.shape;
+    for (let i = 0, j = s.length - 1; i < s.length; j = i++) {
+      const [xi, yi] = s[i]!;
+      const [xj, yj] = s[j]!;
+      if (yi > space.y !== yj > space.y && space.x < ((xj - xi) * (space.y - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    if (inside) return place.id;
+  }
+  return null;
+}
+
+/** A spot inside a town's walls: a place, but no ground. Nothing hunts there. */
+export function inTownWalls(board: Board, space: Space): boolean {
+  const place = placeAt(board, space);
+  return !!place && !groundsOf(board, space.area).some((g) => g.id === place);
+}
+
+/** The ground a spot lies in: the one it stands in, else the one whose named spot is nearest. */
 export function groundAt(board: Board, space: Space): Ground | null {
+  const place = placeAt(board, space);
+  const own = place ? groundsOf(board, space.area).find((g) => g.id === place) : undefined;
+  if (own) return own;
   let best: Ground | null = null;
   let distance = Infinity;
   for (const g of groundsOf(board, space.area)) {

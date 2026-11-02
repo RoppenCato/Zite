@@ -39,7 +39,7 @@ describe("the themes' events", () => {
       throw new Error('no event in 400 seeds');
     };
     const wildBy = (hub: string) => s.board.spaces[hub]!.links.find((l) => s.board.spaces[l]!.kind === 'normal')!;
-    const picnic = findEvent('ashford', wildBy('ashford'), { hp: 50 });
+    const picnic = findEvent('saltmarsh', wildBy('saltmarsh'), { hp: 50 });
     expect(picnic.ev).toMatchObject({ kind: 'heal', amount: 24 });
     expect(picnic.r.events).toContainEqual(expect.objectContaining({ type: 'healed', amount: 24, hp: 74 }));
     const brambles = findEvent('brambleford', wildBy('brambleford'), { hp: 3 });
@@ -128,7 +128,7 @@ describe('a version-8 save', () => {
     delete c.keys;
     const v8 = { ...structuredClone(today), version: 8, characters: { [P]: c } };
     const s = migrate(structuredClone(v8));
-    expect(s!.version).toBe(17);
+    expect(s!.version).toBe(18);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).quests).toEqual([]);
   });

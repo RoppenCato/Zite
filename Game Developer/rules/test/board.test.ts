@@ -61,7 +61,8 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
   it('has no dead ends, except a boss spot at the end of the world with nothing beyond it laid yet', () => {
     for (const s of spaces) {
       if (s.kind === 'boss' && (!s.opens || !board.areas[s.opens])) expect(s.links.length, s.id).toBeGreaterThanOrEqual(1);
-      else expect(s.links.length, s.id).toBeGreaterThanOrEqual(2);
+      // A painted map may end a side road at a place of its own: a landing there walks back the way it came.
+      else if (!board.areas[s.area]?.places) expect(s.links.length, s.id).toBeGreaterThanOrEqual(2);
     }
   });
 
@@ -135,8 +136,8 @@ describe('the world', () => {
       ['frostpeak', 3],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
-    expect(spaces.length).toBeLessThanOrEqual(220);
-    expect(board).toMatchObject({ width: 2800, height: 3800 });
+    expect(spaces.length).toBeLessThanOrEqual(240);
+    expect(board).toMatchObject({ width: 7400, height: 9300 });
   });
 
   it('keeps each area to its own mobs, every mob of the area within its levels', () => {

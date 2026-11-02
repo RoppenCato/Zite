@@ -29,6 +29,7 @@ import {
   stats,
   TRACES,
   traceLine,
+  WORLD_DATA,
   type Area,
   type Board,
   type GameEvent,
@@ -42,11 +43,12 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
-import { groundDepth, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
+import { allProps, groundDepth, PLACES, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
+import { PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
@@ -71,6 +73,22 @@ const TAP_RADIUS = 38; // thumbs are wide: the tap area is bigger than the circl
 const RING_RADIUS = 42;
 const TOKEN_RADIUS = 15;
 const DOUBLE_TAP_MS = 320;
+interface WorldBridge {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  foot: { x: number; y: number };
+  barred: string;
+  open: string;
+  opens: string;
+}
+const worldBridge = (): WorldBridge | undefined => (WORLD_DATA as unknown as { bridge?: WorldBridge }).bridge;
+/** Whether a point lies within `margin` of a line segment. */
+function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }, margin: number): boolean {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy || 1)));
+  return Math.hypot(a.x + dx * t - x, a.y + dy * t - y) < margin;
+}
 /** The steps on an area's ground; the forest takes turns on roots and moss (Nigel, SD), the rest on grass until theirs come. */
 function stepSound(theme: string | undefined): string {
   if (theme !== 'forest') return 'ui/step-grass';
@@ -164,6 +182,11 @@ export class BoardScene extends Phaser.Scene {
   /** Where the pending roll can end, by landing space, while the player is choosing; null otherwise. */
   private choices_: Map<string, string[]> | null = null;
   private busy = false;
+  /** The painted ground: what is near the camera, in memory. */
+  private painted: PaintedGround | null = null;
+  private bridge: Phaser.GameObjects.Image | null = null;
+  /** Roads of a land not open yet: where they run over painted ground no cover hides them. */
+  private readonly closedRoads = new Map<string, Phaser.GameObjects.Graphics>();
   /** The other players' figures, by id: `others` holds their marks. */
   private readonly otherHeroes = new Map<string, Hero>();
   /** The area whose creatures and backdrop are kept in memory. */
@@ -653,16 +676,22 @@ export class BoardScene extends Phaser.Scene {
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
     }
     for (const area of fresh) this.drawCover(area);
+    const bridge = worldBridge();
+    if (bridge && !this.bridge && this.textures.exists(PLACES)) {
+      this.bridge = this.add.image(bridge.foot.x, bridge.foot.y, PLACES, bridge.barred).setScale(0.5).setDepth(standingDepth(bridge.foot.y));
+    }
     // Past the areas' edges there is cloud, not a void (the map can be dragged there).
-    if (this.textures.exists('board_cover')) {
+    if (this.textures.exists('board_cover') && !this.painted) {
       this.outside ??= this.add.tileSprite(0, 0, board.width, board.height, 'board_cover').setOrigin(0, 0).setTileScale(0.5).setDepth(-1).setTint(0x8a8fa8);
       this.outside.setSize(board.width, board.height);
     }
     this.border.clear();
-    this.border.lineStyle(6, COLORS.border, 1);
-    this.border.strokeRect(3, 3, board.width - 6, board.height - 6);
+    if (!this.painted) {
+      this.border.lineStyle(6, COLORS.border, 1);
+      this.border.strokeRect(3, 3, board.width - 6, board.height - 6);
+    }
     const cam = this.cameras.main;
-    cam.setBounds(0, 0, board.width, board.height);
+    this.fitBounds();
     this.minZoom = this.overviewZoom();
     this.lastCull.count = -1; // the new spots take the view's rule at the next frame
     this.refreshCovers();
@@ -677,7 +706,7 @@ export class BoardScene extends Phaser.Scene {
       if (!hub) continue;
       const mob = creature(g.mob, board.bestiary)?.name ?? g.mob;
       this.add
-        .text(hub.x, hub.y - 62, `${g.name}\n${mob}s`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#fff4c8', stroke: '#2a2030', strokeThickness: 4, align: 'center', resolution: 2 })
+        .text(hub.x, hub.y - 62, `${g.name}\n${mob}s${g.levels ? ` · Lv ${g.levels[0]}-${g.levels[1]}` : ''}`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#fff4c8', stroke: '#2a2030', strokeThickness: 4, align: 'center', resolution: 2 })
         .setOrigin(0.5)
         .setAlpha(0.9)
         .setDepth(KIT_DEPTH.names);
@@ -687,10 +716,16 @@ export class BoardScene extends Phaser.Scene {
   /** An area's ground in its theme's colour, its name written large and faint. */
   private drawGround(area: Area): void {
     this.drawGrounds(area);
+    if (PAINTED[area.id]) {
+      this.painted ??= new PaintedGround(this);
+      this.cameras.main.setBackgroundColor(SEA);
+      this.kitted = true;
+      return;
+    }
     const kit = kitFor(this, area.theme);
     if (kit) {
       const { board, seed } = this.game_.state;
-      drawKitGround(this, kit, area, seed, board.width, board.height);
+      drawKitGround(this, kit, area, seed, board.width, board.height, Object.values(PAINTED));
       drawKitBanner(this, kit, area, FONT);
       this.kitted = true;
       return;
@@ -707,11 +742,44 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** The roads of the given spots: each link once, and a link to a spot drawn earlier (the passage from a boss into a grown area). */
+  /** The roads of a painted area, each as the line through its hubs and points. */
+  private drawPaintedRoads(areaId: string): void {
+    const data = WORLD_DATA.areas.find((a) => a.id === areaId);
+    const area = this.game_.state.board.areas[areaId];
+    const kit = area ? kitFor(this, area.theme) : null;
+    if (!data || !kit) return;
+    const g = this.add.graphics().setDepth(KIT_DEPTH.roads);
+    const hubs = new Map(data.hubs.map((h) => [h.id, h]));
+    for (const line of kit.road) {
+      g.lineStyle(line.width, line.color, line.alpha);
+      g.fillStyle(line.color, line.alpha);
+      for (const road of data.roads) {
+        const from = hubs.get(road.from);
+        const to = hubs.get(road.to);
+        if (!from || !to) continue;
+        const path = [from, ...(road.via ?? []), to];
+        path.forEach((p, i) => {
+          g.fillCircle(p.x, p.y, line.width / 2);
+          const next = path[i + 1];
+          if (next) g.lineBetween(p.x, p.y, next.x, next.y);
+        });
+      }
+    }
+  }
+
   private drawLinks(spaces: Space[], all: Record<string, Space>): void {
     const areas = this.game_.state.board.areas;
     const kitted = spaces.filter((s) => kitFor(this, areas[s.area]?.theme ?? ''));
     const kits = new Map(kitted.map((s) => [areas[s.area]!.theme, kitFor(this, areas[s.area]!.theme)!]));
-    for (const [theme, kit] of kits) drawKitRoads(this, kit, kitted.filter((s) => areas[s.area]?.theme === theme), all);
+    // A painted area's roads follow their own points, unsmoothed, so they pass through their spots (Mitch, AD); no road on the bridge's painted deck.
+    const paintedNow = new Set(kitted.filter((s) => PAINTED[s.area]).map((s) => s.area));
+    for (const areaId of paintedNow) this.drawPaintedRoads(areaId);
+    const deck = worldBridge();
+    const onDeck = (a: Space, c: Space): boolean => !!deck && nearSegment((a.x + c.x) / 2, (a.y + c.y) / 2, deck.from, deck.to, 40);
+    for (const [theme, kit] of kits) {
+      const own = kitted.filter((s) => areas[s.area]?.theme === theme && !PAINTED[s.area]);
+      if (own.length) this.closedRoads.set(own[0]!.area, drawKitRoads(this, kit, own, all, onDeck));
+    }
     spaces = spaces.filter((s) => !kitFor(this, areas[s.area]?.theme ?? ''));
     const fresh = new Set(spaces.map((s) => s.id));
     this.links.lineStyle(6, COLORS.link, 1);
@@ -810,8 +878,12 @@ export class BoardScene extends Phaser.Scene {
     const top = v.y - margin;
     const bottom = v.bottom + margin;
     const namesHidden = cam.zoom < NAME_ZOOM;
-    for (const spot of this.spotParts.values()) {
-      const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom;
+    this.painted?.update(cam);
+    for (const p of allProps) p.setVisible(p.x >= left - 100 && p.x <= right + 100 && p.y >= top - 100 && p.y <= bottom + 200);
+    const open = new Set(this.game_.me.opened);
+    for (const [id, spot] of this.spotParts) {
+      // A closed land's spots stay hidden even where its road crosses painted ground.
+      const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom && (!this.painted || open.has(this.game_.state.board.spaces[id]?.area ?? ''));
       for (const p of spot.parts) p.setVisible(inView);
       for (const n of spot.names) n.setVisible(inView && !namesHidden);
     }
@@ -819,6 +891,18 @@ export class BoardScene extends Phaser.Scene {
 
   /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
   private drawCover(area: Area): void {
+    // Closed land past a painted one is simply sea until it opens: no square cloud (Robin, 2026-11-02).
+    if (this.painted) {
+      if (PAINTED[area.id]) return;
+      const b = area.bounds;
+      const under = Object.values(this.game_.state.board.areas).filter((a) => a.tier < area.tier && a.bounds.x < b.x + b.width && a.bounds.x + a.bounds.width > b.x && a.bounds.y > b.y && a.bounds.y < b.y + b.height);
+      const bottom = Math.min(b.y + b.height, ...under.map((a) => a.bounds.y + TOP_MARGIN));
+      // It never lies over painted land, where its road's first spots may start.
+      const left = Math.max(b.x, ...Object.values(PAINTED).filter((p) => p.y < bottom && p.y + p.height > b.y).map((p) => p.x + p.width));
+      const right = Math.max(left, b.x + b.width);
+      this.covers.set(area.id, this.add.rectangle((left + right) / 2, b.y + (bottom - b.y) / 2, right - left, bottom - b.y, SEA, 1).setDepth(KIT_DEPTH.cover));
+      return;
+    }
     // The meadow's cloud over any closed area, kit or not: nothing shows until it opens.
     const kit = kitFor(this, area.theme) ?? kitFor(this, 'meadow');
     if (kit) {
@@ -837,6 +921,11 @@ export class BoardScene extends Phaser.Scene {
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
+    for (const [areaId, roads] of this.closedRoads) roads.setVisible(opened.has(areaId));
+    this.lastCull.count = -1;
+    const bridge = worldBridge();
+    if (bridge && this.bridge) this.bridge.setFrame(opened.has(bridge.opens) ? bridge.open : bridge.barred);
+    this.fitBounds();
   }
 
   /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
@@ -929,6 +1018,7 @@ export class BoardScene extends Phaser.Scene {
       fill.destroy();
       this.children.getByName('bar-back')?.destroy();
     });
+    preloadWorldMap(this);
     preloadHero(this, Object.values(this.game_.state.characters).map((c) => c.classId));
     preloadWornSets(this, Object.values(this.game_.state.characters));
     preloadLoot(this);
@@ -1025,20 +1115,32 @@ export class BoardScene extends Phaser.Scene {
     // The band between the HUD panel and the bottom controls; the HUD scene draws over the rest.
     // The band between the HUD and the strip, in canvas pixels (the canvas draws at DPR, hires.ts).
     cam.setViewport(0, HUD_HEIGHT * DPR, DESIGN_WIDTH * DPR, VIEW_HEIGHT * DPR);
-    cam.setBounds(0, 0, board.width, board.height);
+    this.fitBounds();
     cam.setRoundPixels(true);
     this.minZoom = this.overviewZoom();
     this.follow(true);
+  }
+
+  /** The camera stays over the land that is open: the painted land, or an area's box; on a world with nothing painted, the whole board. */
+  private fitBounds(): void {
+    const { board } = this.game_.state;
+    if (!this.painted) {
+      this.cameras.main.setBounds(0, 0, board.width, board.height);
+      return;
+    }
+    const b = this.openBounds();
+    this.cameras.main.setBounds(b.x, b.y, b.width, b.height);
   }
 
   /** The box round everything open, and the zoom that fits it in the band. */
   private openBounds(): { x: number; y: number; width: number; height: number } {
     const areas = Object.values(this.game_.state.board.areas).filter((a) => this.game_.me.opened.includes(a.id));
     const list: Area[] = areas.length ? areas : Object.values(this.game_.state.board.areas);
-    const x = Math.min(...list.map((a) => a.bounds.x));
-    const y = Math.min(...list.map((a) => a.bounds.y));
-    const right = Math.max(...list.map((a) => a.bounds.x + a.bounds.width));
-    const bottom = Math.max(...list.map((a) => a.bounds.y + a.bounds.height));
+    const boxes = list.map((a) => PAINTED[a.id] ?? a.bounds);
+    const x = Math.min(...boxes.map((a) => a.x));
+    const y = Math.min(...boxes.map((a) => a.y));
+    const right = Math.max(...boxes.map((a) => a.x + a.width));
+    const bottom = Math.max(...boxes.map((a) => a.y + a.height));
     return { x, y, width: right - x, height: bottom - y };
   }
 

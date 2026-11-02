@@ -426,3 +426,5 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 - **A creature lives only in its own hunting ground** (Robin, 2026-11-02); the 75% share is gone.
 
 - **The coach** (mine, 2026-11-02, with Robin's bigger world): in a town, go to any town you have stood in for 15 gold a tier of where you are going, and land there rested (`travel`, `travelOptions`, `Character.visited`). State version 17. **Roads may carry `via`**, points they pass through, so they can wander.
+
+- **The Meadows are Mitch, AD's layout** (2026-11-02): 87 spots, 17 hubs, 4 grounds with `levels`, four side roads that end in a place. Areas carry `places`, outlines: a spot in a ground's outline belongs to it; **a wild spot inside a town's outline fights nothing** (his suggestion, mine to try); open road takes the nearest ground until Robin has played it. State version 18 lays the board again; a character on a road spot that no longer exists goes to the start.

@@ -1,0 +1,145 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "meadows",
+ "x": 0,
+ "y": 5120,
+ "width": 4096,
+ "height": 4096,
+ "world": {
+  "width": 7400,
+  "height": 9300
+ },
+ "chunks": [
+  {
+   "file": "ground_0_5.jpg",
+   "col": 0,
+   "row": 5,
+   "x": -1,
+   "y": 5119,
+   "kb": 11
+  },
+  {
+   "file": "ground_0_6.jpg",
+   "col": 0,
+   "row": 6,
+   "x": -1,
+   "y": 6143,
+   "kb": 17
+  },
+  {
+   "file": "ground_0_7.jpg",
+   "col": 0,
+   "row": 7,
+   "x": -1,
+   "y": 7167,
+   "kb": 41
+  },
+  {
+   "file": "ground_0_8.jpg",
+   "col": 0,
+   "row": 8,
+   "x": -1,
+   "y": 8191,
+   "kb": 12
+  },
+  {
+   "file": "ground_1_5.jpg",
+   "col": 1,
+   "row": 5,
+   "x": 1023,
+   "y": 5119,
+   "kb": 80
+  },
+  {
+   "file": "ground_1_6.jpg",
+   "col": 1,
+   "row": 6,
+   "x": 1023,
+   "y": 6143,
+   "kb": 85
+  },
+  {
+   "file": "ground_1_7.jpg",
+   "col": 1,
+   "row": 7,
+   "x": 1023,
+   "y": 7167,
+   "kb": 87
+  },
+  {
+   "file": "ground_1_8.jpg",
+   "col": 1,
+   "row": 8,
+   "x": 1023,
+   "y": 8191,
+   "kb": 26
+  },
+  {
+   "file": "ground_2_5.jpg",
+   "col": 2,
+   "row": 5,
+   "x": 2047,
+   "y": 5119,
+   "kb": 73
+  },
+  {
+   "file": "ground_2_6.jpg",
+   "col": 2,
+   "row": 6,
+   "x": 2047,
+   "y": 6143,
+   "kb": 68
+  },
+  {
+   "file": "ground_2_7.jpg",
+   "col": 2,
+   "row": 7,
+   "x": 2047,
+   "y": 7167,
+   "kb": 97
+  },
+  {
+   "file": "ground_2_8.jpg",
+   "col": 2,
+   "row": 8,
+   "x": 2047,
+   "y": 8191,
+   "kb": 23
+  },
+  {
+   "file": "ground_3_5.jpg",
+   "col": 3,
+   "row": 5,
+   "x": 3071,
+   "y": 5119,
+   "kb": 172
+  },
+  {
+   "file": "ground_3_6.jpg",
+   "col": 3,
+   "row": 6,
+   "x": 3071,
+   "y": 6143,
+   "kb": 181
+  },
+  {
+   "file": "ground_3_7.jpg",
+   "col": 3,
+   "row": 7,
+   "x": 3071,
+   "y": 7167,
+   "kb": 137
+  },
+  {
+   "file": "ground_3_8.jpg",
+   "col": 3,
+   "row": 8,
+   "x": 3071,
+   "y": 8191,
+   "kb": 18
+  }
+ ]
+}

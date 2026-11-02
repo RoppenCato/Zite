@@ -1,7 +1,8 @@
 // The hunting grounds, the quest board, the shops by kind, set potions and elixirs (Robin, 2026-11-02).
 
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { apply, groundAt, groundsOf, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
+import { apply, groundAt, groundsOf, inTownWalls, placeAt, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
 import { pointsAlong } from '../src/world.ts';
 import type { Action, Character, GameEvent, GameState, Quest } from '../src/types.ts';
 
@@ -20,6 +21,8 @@ function landOn(s: GameState, space: string, seed: string | number = 'x') {
 }
 
 const quest = (patch: Partial<Quest>): Quest => ({ id: 'q', kind: 'kill', town: 'crossroads', area: 'meadows', ground: 'jelly-shallows', target: 'slime', count: 2, done: 0, gold: 40, xp: 30, unique: 0, text: 'Beat 2.', ...patch });
+
+const plainBoard = world().board;
 
 describe('hunting grounds', () => {
   it('cut every hand-laid area into four, each with its own creature and a spot on the map', () => {
@@ -43,7 +46,7 @@ describe('hunting grounds', () => {
 
   it('send you only the ground\'s own creature', () => {
     const s = world();
-    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.mob === 'slime')!;
+    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && !inTownWalls(s.board, x) && groundAt(s.board, x)?.mob === 'slime')!;
     let own = 0;
     let fights = 0;
     for (let seed = 0; seed < 300; seed++) {
@@ -162,8 +165,8 @@ describe('a quest finished', () => {
 
   it('a person turns up only on their ground, by chance, and that finishes it', () => {
     const s = put(world(), { quests: [quest({ kind: 'find', count: 1, target: 'Old Bram' })] });
-    const own = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.id === 'jelly-shallows')!;
-    const other = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.id === 'bandit-thicket')!;
+    const own = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && !inTownWalls(s.board, x) && groundAt(s.board, x)?.id === 'jelly-shallows')!;
+    const other = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && !inTownWalls(s.board, x) && groundAt(s.board, x)?.id === 'bandit-thicket')!;
     let found = 0;
     for (let seed = 0; seed < 100; seed++) {
       const r = landOn(s, own.id, seed);
@@ -180,7 +183,7 @@ describe('a quest finished', () => {
   it('a mini-boss turns up more often while you hunt it', () => {
     const plain = world();
     const hunting = put(plain, { quests: [quest({ kind: 'mini', target: 'wolf-alpha', count: 1 })] });
-    const wild = Object.values(plain.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows')!;
+    const wild = Object.values(plain.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows' && !inTownWalls(plainBoard, x))!;
     const met = (s: GameState) => {
       let n = 0;
       for (let seed = 0; seed < 300; seed++) {
@@ -271,7 +274,7 @@ describe('flasks and elixirs', () => {
     const before = stats(me(s)).maxHp;
     s = act(s, { type: 'use', item: 'elixir-vigor' }).state;
     expect(stats(me(s)).maxHp).toBe(before + 30);
-    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows')!;
+    const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && x.area === 'meadows' && !inTownWalls(plainBoard, x))!;
     for (let fight = 0; fight < 4; fight++) {
       let seed = 0;
       let r = landOn(s, wild.id, seed);
@@ -295,7 +298,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(17);
+    expect(up.version).toBe(18);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();
@@ -371,5 +374,21 @@ describe('the coach between towns', () => {
 describe('a road that wanders', () => {
   it('spaces its spots evenly along the points it passes through', () => {
     expect(pointsAlong([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }], 3)).toEqual([{ x: 50, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 50 }]);
+  });
+});
+
+describe('Cloverfield Meadows on the painted land', () => {
+  it('holds the spots Mitch, AD laid, where he laid them', () => {
+    const data = JSON.parse(readFileSync('assets/world_meadows/meadows.json', 'utf8')) as { spots: { x: number; y: number }[] };
+    const own = Object.values(world().board.spaces).filter((s) => s.area === 'meadows');
+    expect(own).toHaveLength(data.spots.length);
+    for (const s of own) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
+  });
+
+  it('has no fights inside a town wall, and hunting grounds keep to their creature', () => {
+    const s = world();
+    const inTown = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && inTownWalls(s.board, x))!;
+    for (let seed = 0; seed < 30; seed++) expect(has(landOn(s, inTown.id, seed).events, 'fight')).toBe(false);
+    expect(placeAt(s.board, s.board.spaces.saltmarsh!)).toBe('jelly-shallows');
   });
 });

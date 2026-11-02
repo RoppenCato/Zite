@@ -11,7 +11,9 @@ import groundPng from '../../assets/board_meadows/board_ground.png';
 import propsJson from '../../assets/board_meadows/board_props.json?url';
 import propsPng from '../../assets/board_meadows/board_props.png';
 import coverPng from '../../assets/board_meadows/cover.png';
-import placementJson from '../../assets/board_meadows/placement_cloverfield.json';
+import placementJson from '../../assets/world_meadows/placement.json';
+import placesJson from '../../assets/world_meadows/board_places.json?url';
+import placesPng from '../../assets/world_meadows/board_places.png';
 import forestGroundJson from '../../assets/board_forest/board_ground.json?url';
 import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
@@ -45,6 +47,8 @@ interface Kit {
 }
 
 const SCALE = 0.5;
+/** The new pieces of the painted world. */
+export const PLACES = 'board_places';
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 export const KIT_DEPTH = { ground: 0, flat: 1, roads: 2, plates: 3, props: 5, names: 6, cover: 8 } as const;
@@ -102,6 +106,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   const shared = KITS.meadow!;
   if (!scene.textures.exists(shared.cover)) scene.load.image(shared.cover, coverPng);
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
+  if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   for (const theme of new Set(['meadow', ...themes])) {
     const k = KITS[theme];
     if (!k) continue;
@@ -141,7 +146,7 @@ export function groundDepth(tier: number): number {
 }
 
 /** The area's ground: tiles over its bounds, chosen per cell from the seed. */
-export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: string, boardWidth: number, boardHeight: number): void {
+export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: string, boardWidth: number, boardHeight: number, avoid: { x: number; y: number; width: number; height: number }[] = []): void {
   const b = area.bounds;
   const t = kit.tile;
   const total = kit.tiles.reduce((n, x) => n + x.weight, 0);
@@ -149,6 +154,8 @@ export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: s
   const y0 = Math.floor(b.y / t) * t;
   for (let y = y0; y < Math.min(b.y + b.height, boardHeight); y += t) {
     for (let x = x0; x < Math.min(b.x + b.width, boardWidth); x += t) {
+      // Never over painted land: a road of this area may start on it.
+      if (avoid.some((p) => x < p.x + p.width && x + t > p.x && y < p.y + p.height && y + t > p.y)) continue;
       let pick = cellHash(seed, x / t, y / t) % total;
       let frame = kit.tiles[0]!.frame;
       for (const tile of kit.tiles) {
@@ -180,7 +187,7 @@ export function drawKitBanner(scene: Phaser.Scene, kit: Kit, area: Area, font: s
  * The roads between the given spots in the kit's colours: three strokes, outer first, each link as a line and each spot as
  * a round joint, so the curves the spots follow read as one road. A link to a spot drawn earlier is drawn once.
  */
-export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all: Record<string, Space>): void {
+export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all: Record<string, Space>, skip?: (a: Space, b: Space) => boolean): Phaser.GameObjects.Graphics {
   const g = scene.add.graphics().setDepth(KIT_DEPTH.roads);
   const fresh = new Set(spaces.map((s) => s.id));
   for (const line of kit.road) {
@@ -191,11 +198,12 @@ export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all
       for (const other of space.links) {
         if (!fresh.has(other) || space.id < other) {
           const b = all[other];
-          if (b) g.lineBetween(space.x, space.y, b.x, b.y);
+          if (b && !skip?.(space, b)) g.lineBetween(space.x, space.y, b.x, b.y);
         }
       }
     }
   }
+  return g;
 }
 
 /** A spot's plate from the kit, at the spot's centre; its tap area is the plate's rectangle. */
@@ -216,8 +224,10 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
   const list = kit.placements[area.id];
   if (!list) return 0;
   for (const p of list) {
-    if (!scene.textures.get(kit.props).has(p.name)) continue;
-    const sprite = scene.add.image(p.x, p.y, kit.props, p.name).setScale(SCALE);
+    const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : scene.textures.exists(PLACES) && scene.textures.get(PLACES).has(p.name) ? PLACES : null;
+    if (!atlas) continue;
+    const sprite = scene.add.image(p.x, p.y, atlas, p.name).setScale(SCALE);
+    allProps.push(sprite);
     sprite.setDepth(kit.flat.has(p.name) ? KIT_DEPTH.flat : standingDepth(p.y));
     if (sprite.getBounds().top < area.bounds.y + TOP_MARGIN) tall.set(area.id, [...(tall.get(area.id) ?? []), sprite]);
   }
@@ -232,6 +242,9 @@ export function drawKitCover(scene: Phaser.Scene, kit: Kit, area: Area, bottom =
   const dark = scene.add.rectangle(0, 0, b.width, height, 0x0b0d14, 0.3);
   return scene.add.container(b.x + b.width / 2, b.y + height / 2, [cloud, dark]).setDepth(KIT_DEPTH.cover);
 }
+
+/** Every prop on the map, for the camera's cull. */
+export const allProps: Phaser.GameObjects.Image[] = [];
 
 /** Props that rise past their area's top, by area: once the area is open they stand over the next area's cloud (the glade's gate does). */
 const tall = new Map<string, Phaser.GameObjects.Image[]>();

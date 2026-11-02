@@ -68,7 +68,8 @@ let templateCache: Template[] | null = null;
 function templates(): Template[] {
   if (templateCache) return templateCache;
   const { width, height } = THEMES.cell;
-  const laid: { hubs: WorldHub[]; roads: WorldRoad[] }[] = [...WORLD_DATA.areas, ...SHAPES];
+  // A painted area's shape is its own, too large and particular to repeat: grown areas keep the older shapes.
+  const laid: { hubs: WorldHub[]; roads: WorldRoad[] }[] = [...WORLD_DATA.areas.filter((a) => !a.places), ...SHAPES];
   templateCache = laid.map((a) => {
     const ox = Math.floor(Math.min(...a.hubs.map((h) => h.x)) / width) * width;
     const oy = Math.floor(Math.min(...a.hubs.map((h) => h.y)) / height) * height;

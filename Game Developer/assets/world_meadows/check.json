@@ -1,0 +1,73 @@
+{
+ "spots": 87,
+ "hubs": 17,
+ "roads": 20,
+ "tooClose": [],
+ "crossings": [],
+ "grounds": {
+  "jelly-shallows": {
+   "spots": 19,
+   "insideShape": 6,
+   "levels": [
+    1,
+    2
+   ]
+  },
+  "sprout-patch": {
+   "spots": 31,
+   "insideShape": 6,
+   "levels": [
+    2,
+    3
+   ]
+  },
+  "bandit-thicket": {
+   "spots": 16,
+   "insideShape": 7,
+   "levels": [
+    3,
+    4
+   ]
+  },
+  "buzzing-orchard": {
+   "spots": 21,
+   "insideShape": 7,
+   "levels": [
+    3,
+    4
+   ]
+  }
+ },
+ "spotInsideShapeOfAnotherGround": 0,
+ "spotsOutsideAnyPlaceOfTheirGround": 61,
+ "kinds": {
+  "town": 2,
+  "board": 1,
+  "shop_magic": 1,
+  "shop": 1,
+  "spring": 4,
+  "chest": 2,
+  "shrine": 2,
+  "gate": 1,
+  "wild": 69,
+  "church": 1,
+  "gear": 3
+ },
+ "sprites": 317,
+ "baked": 823,
+ "mostInAViewAt08": {
+  "max": 57,
+  "at": [
+   1200,
+   5600
+  ]
+ },
+ "mostInAViewAt06": {
+  "max": 77,
+  "at": [
+   2256,
+   6512
+  ]
+ },
+ "spotsInAPlace": 39
+}

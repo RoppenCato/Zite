@@ -217,7 +217,7 @@ export interface ProgressionData {
 }
 
 /** The world the game plays on: areas, hubs and roads; `buildBoard` lays the spots. */
-export const WORLD_DATA = worldJson as World;
+export const WORLD_DATA = worldJson as unknown as World;
 export const DICE_DATA: { sides: number } = diceJson;
 export const CLASS_DATA = classesJson as Record<ClassId, ClassData>;
 export const ABILITIES = abilitiesJson as Record<string, AbilityData>;
