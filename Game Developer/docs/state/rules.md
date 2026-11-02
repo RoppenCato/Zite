@@ -464,3 +464,7 @@ Bogglemire (tier 4, levels 12 to 16) and The Frostcrown (tier 5, 16 to 20) follo
 `data/rumours.json`: landing in a town may tell you a rumour about its land, at most `max` held, each town again after `cooldownMs`. A stash pays on landing, a beast is a fight with a sure drop, a secret points to where a hidden trail leaves the road. A rumour's spot stops a walk.
 
 `data/secrets.json`: hidden trails, `withSecrets`. A spot with `hidden` is walkable only with its id in `Character.found` (`walkable`). You notice a trail on landing within `SECRET_NOTICE` of its anchor. Its named end gives a first treasure once (`foundDone`), then what its kind gives.
+
+## XP, gold and bosses after the climb check (Robin, 2026-11-02)
+
+`softcap` in `common.ts`, numbers in `progression.softcap`. `bossKnown`: a boss can be gone straight to only once walked to or beaten. A boss not on cooldown stops a walk. `dailyPiece`: a master smith's piece of the day, per town, class and day, bought with `buy { daily: true }`. Save version 29 keeps level and share of the level across the new curve. `tools/sim-journey.ts` is how the climb is checked: see `docs/playthrough-check.md`.

@@ -8,7 +8,7 @@
 import { noteBeaten } from './journal.ts';
 import { MAX_CARRIED, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
-import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
+import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
@@ -889,6 +889,13 @@ function win(r: Round): ApplyResult {
   }
   xp = Math.round(xp * (1 + (r.s.bonus.wisdom ?? 0)));
   gold = Math.round(gold * (1 + (r.s.bonus.fortune ?? 0)));
+  // The Arena's pay is measured from the fighter already.
+  if (!c.arena) {
+    const land = r.state.board.areas[r.state.board.spaces[f.space]?.area ?? ''];
+    const cap = softcap(c.level, e.level, land?.levels[1] ?? 99, e.role === 'boss');
+    xp = Math.max(1, Math.round(xp * cap.xp));
+    gold = Math.round(gold * cap.gold);
+  }
   events.push({ type: 'won', action: id, player, xp, gold });
   if (c.arena) return arenaWon(r, xp, gold);
   let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };

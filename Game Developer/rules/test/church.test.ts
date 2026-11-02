@@ -39,7 +39,7 @@ describe('the church', () => {
     const { ailments: _gone, ...c } = me(s);
     const old = { ...s, version: 12, board: { ...s.board, spaces }, characters: { [P]: c } };
     const up = migrate(old as unknown)!;
-    expect(up.version).toBe(28);
+    expect(up.version).toBe(29);
     expect(up.board.spaces.ravine).toMatchObject({ kind: 'church', name: 'Little Clover Church' });
     expect(up.characters[P]!.ailments).toEqual({});
   });

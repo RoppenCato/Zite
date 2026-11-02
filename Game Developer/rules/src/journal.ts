@@ -7,7 +7,7 @@ import { placeAt, placeName } from './grounds.ts';
 import type { Action, Board, Character, GameEvent } from './types.ts';
 
 const FIRST_BEAT_XP = 8;
-const FIRST_PLACE_GOLD = 4;
+const FIRST_PLACE_GOLD = 2;
 
 /** What a region's page holds: its creatures, mini-bosses and boss. */
 export function regionCreatures(board: Board, areaId: string): string[] {

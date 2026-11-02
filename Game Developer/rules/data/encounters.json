@@ -20,12 +20,12 @@
       {
         "text": "Something glints under a mole hill: a lost purse.",
         "kind": "gold",
-        "value": 12
+        "value": 6
       },
       {
         "text": "A farmer pays you to chase a goat off the barley.",
         "kind": "gold",
-        "value": 8
+        "value": 4
       },
       {
         "text": "A warm breeze off the sea clears your head.",
@@ -86,12 +86,12 @@
       {
         "text": "A magpie's nest, full of stolen coins.",
         "kind": "gold",
-        "value": 14
+        "value": 7
       },
       {
         "text": "A nutkin drops its purse and runs.",
         "kind": "gold",
-        "value": 10
+        "value": 5
       },
       {
         "text": "Glowing motes drift through you, cool and bright.",
@@ -152,12 +152,12 @@
       {
         "text": "A coin jar turns up in a haystack.",
         "kind": "gold",
-        "value": 16
+        "value": 8
       },
       {
         "text": "A miller pays you to carry a sack to the road.",
         "kind": "gold",
-        "value": 12
+        "value": 6
       },
       {
         "text": "Bees hum a low sweet note and your thoughts settle.",
@@ -213,7 +213,7 @@
       {
         "text": "Old coins lie where the roots have split a stone.",
         "kind": "gold",
-        "value": 18
+        "value": 9
       },
       {
         "text": "The mushrooms hum, and your head clears.",
@@ -254,7 +254,7 @@
       {
         "text": "A purse floats by on a lily pad.",
         "kind": "gold",
-        "value": 60
+        "value": 30
       },
       {
         "text": "A lantern over the water hums, and your head clears.",
@@ -305,7 +305,7 @@
       {
         "text": "Old coins lie frozen in a crack. You chip them free.",
         "kind": "gold",
-        "value": 90
+        "value": 45
       },
       {
         "text": "The thin clean air clears your head.",

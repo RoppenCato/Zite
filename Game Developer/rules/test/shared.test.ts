@@ -47,7 +47,7 @@ describe('joining a game', () => {
     expect(second.events[0]).toMatchObject({ type: 'rolled', player: 'p2' });
     expect(s.characters.p1!.steps).toBeGreaterThan(0);
     expect(s.characters.p2!.steps).toBeGreaterThan(0);
-    const way = reachable(s.board, s.characters.p1!.space, s.characters.p1!.steps, new Set(s.characters.p1!.opened))[0]!;
+    const way = reachable(s.board, s.characters.p1!.space, s.characters.p1!.steps, new Set(s.characters.p1!.opened)).find((r) => !r.path.slice(0, -1).some((id) => s.board.spaces[id]!.kind === 'boss'))!;
     const moved = apply(s, { type: 'move', id: 'm1', player: 'p1', path: way.path }, rng, NOW);
     expect(moved.state.characters.p1!.space).toBe(way.space);
     expect(moved.state.characters.p2).toBe(s.characters.p2);

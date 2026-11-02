@@ -323,6 +323,7 @@ export interface ProgressionData {
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
   spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number; elite: number };
+  softcap: { below: number; floor: number; above: number; aboveMax: number; outgrownLand: number };
   wanderer: { chancePerTick: number; lifeMs: number; moveChance: number; levelsOver: number; hp: number; attack: number; defense: number; xp: number; gold: number };
   /** The world boss (mine, 2026-11-01): how often a tick brings one when none is about, how long it stays, its HP against the area's boss, the least share a hitter gets. */
   worldBoss: { chancePerTick: number; lifeMs: number; hpMult: number; minShare: number };
@@ -341,7 +342,7 @@ export const CLASS_DATA = classesJson as Record<ClassId, ClassData>;
 export const ABILITIES = abilitiesJson as Record<string, AbilityData>;
 export const SPACE_KIND_DATA = spacesJson as Record<SpaceKind, SpaceKindData>;
 export const ENEMIES = enemiesJson as Record<string, EnemyData>;
-export const PROGRESSION = progressionJson as ProgressionData;
+export const PROGRESSION = progressionJson as unknown as ProgressionData;
 export const ITEMS = itemsJson as Record<string, ItemData>;
 export const GEAR = gearJson as GearData;
 /** The notes a player may leave on a spot (mine, 2026-11-01: set lines, so nothing needs moderating). */

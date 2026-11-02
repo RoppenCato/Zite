@@ -412,7 +412,9 @@ describe('what a spot can hold', () => {
   it('a boss can be challenged from anywhere in land you have opened, not closed land, not while it is away', () => {
     const s = near();
     const go = (state: GameState, space: string) => apply(state, { type: 'challenge', id: 'c', player: P, space }, makeRng(1), NOW);
-    const ready = { ...s, characters: { [P]: { ...me(s), steps: 0 } } };
+    // The first visit is on foot (Robin, 2026-11-02).
+    expect(go({ ...s, characters: { [P]: { ...me(s), steps: 0 } } }, 'gate').events[0]).toMatchObject({ type: 'rejected' });
+    const ready = { ...s, characters: { [P]: { ...me(s), steps: 0, bossMet: ['gate'] } } };
     const r = go(ready, 'gate');
     expect(me(r.state)).toMatchObject({ space: 'gate' });
     expect(fight(r.state).enemy.id).toBe('thornwood-warden');

@@ -18,7 +18,7 @@
   "glimmerlake": {
     "text": "The sunken bell rings under the water, and a drowned purse washes up.",
     "kind": "gold",
-    "value": 15
+    "value": 8
   },
   "moonwhisper": {
     "text": "A moonlit witch swaps your voice for a moment; when it comes back, your mind is clear.",
@@ -79,7 +79,7 @@
     {
       "text": "A child hands back a coin you dropped.",
       "kind": "gold",
-      "value": 3
+      "value": 2
     },
     {
       "text": "A washerwoman mends your cloak and shoos you on.",

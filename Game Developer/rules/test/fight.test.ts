@@ -56,7 +56,7 @@ describe('a fight', () => {
   it('begins on a wild spot against the area\'s creature drawn from the seed: a Slime for the seed ashford, on s1', () => {
     const { state } = begin('warrior');
     expect(me(state).fight).toEqual({
-      enemy: { id: 'slime', name: 'Jelly Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 6, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null, next: { name: 'Splat', power: 1, weight: 1 }, armoured: null, evade: 0, phase: 1, phase2: null },
+      enemy: { id: 'slime', name: 'Jelly Slime', level: 1, role: 'mob', hp: 40, maxHp: 40, attack: 10, defense: 2, xp: 5, gold: 3, moves: [{ name: 'Splat', power: 1, weight: 1 }], charged: null, stunned: 0, weakened: null, poison: null, next: { name: 'Splat', power: 1, weight: 1 }, armoured: null, evade: 0, phase: 1, phase2: null },
       round: 1,
       charged: false,
       attackUp: null,
@@ -89,7 +89,7 @@ describe('a fight', () => {
       weak: null,
       used: [],
     });
-    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10, hp: 935 });
+    expect(makeEnemy('briar-king')).toMatchObject({ role: 'boss', level: 10, hp: 1169 });
     expect(() => makeEnemy('dragon')).toThrow(/no such enemy/);
   });
 
@@ -121,10 +121,10 @@ describe('a fight', () => {
       ],
       [
         { type: 'hit', by: 'player', move: 'Attack', damage: 10, crit: false, hp: 0, absorbed: 0 },
-        { type: 'won', xp: 5, gold: 6 },
+        { type: 'won', xp: 5, gold: 3 },
       ],
     ]);
-    expect(me(end)).toMatchObject({ hp: 113, mana: 20, gold: 56, xp: 5, level: 1, fight: null, space: 's1' });
+    expect(me(end)).toMatchObject({ hp: 113, mana: 20, gold: 53, xp: 5, level: 1, fight: null, space: 's1' });
   });
 
   it('Charge, then Mighty Swing: the charge doubles the next hit and is spent', () => {
@@ -302,11 +302,11 @@ describe('a fight', () => {
   });
 
   it('winning gives xp and the levels the table says: more HP, mana, attack and defense, the gains healed', () => {
-    const almost = versus('warrior', 'slime', { xp: 26, hp: 100, mana: 10, journal: { beaten: { slime: 1 }, places: [], done: [] } }, { hp: 1 });
+    const almost = versus('warrior', 'slime', { xp: 36, hp: 100, mana: 10, journal: { beaten: { slime: 1 }, places: [], done: [] } }, { hp: 1 });
     const { state, events } = apply(almost, turn(attack, 'none'), makeRng('x'), NOW);
-    expect(events[1]).toEqual({ type: 'won', action: 'f1', player: P, xp: 5, gold: 6 });
+    expect(events[1]).toEqual({ type: 'won', action: 'f1', player: P, xp: 5, gold: 3 });
     expect(events[2]).toEqual({ type: 'levelled', action: 'f1', player: P, level: 2, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
-    expect(me(state)).toMatchObject({ xp: 31, level: 2, hp: 112, mana: 12, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
+    expect(me(state)).toMatchObject({ xp: 41, level: 2, hp: 112, mana: 12, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
   });
 
   it('loot: a mob drops gear now and then, a mini-boss often and never common, a boss always and rare or better; flasks and cards sometimes', () => {

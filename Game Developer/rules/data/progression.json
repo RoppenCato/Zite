@@ -1,35 +1,35 @@
 {
   "xpForLevel": [
     0,
-    30,
-    80,
-    160,
-    280,
-    440,
-    650,
-    920,
-    1250,
-    1650,
-    2100,
-    2650,
-    3300,
-    4050,
-    4900,
-    5850,
-    6900,
-    8050,
-    9300,
-    10650,
-    12100,
-    13650,
-    15300,
-    17050,
-    18900,
-    20850,
-    22900,
-    25050,
-    27300,
-    29650
+    40,
+    110,
+    230,
+    410,
+    660,
+    1000,
+    1450,
+    2030,
+    2740,
+    3570,
+    4610,
+    5870,
+    7370,
+    9110,
+    11120,
+    13390,
+    15940,
+    18790,
+    21940,
+    25410,
+    29210,
+    33350,
+    37850,
+    42710,
+    47950,
+    53590,
+    59620,
+    66070,
+    72940
   ],
   "baseCrit": 0.1,
   "critPower": 2,
@@ -48,8 +48,8 @@
   },
   "chest": {
     "gold": [
-      6,
-      18
+      3,
+      9
     ],
     "gearChance": 0.25,
     "consumableChance": 0.25
@@ -91,5 +91,13 @@
   },
   "travel": {
     "perTier": 15
-  }
+  },
+  "softcap": {
+    "below": 0.15,
+    "floor": 0.1,
+    "above": 0.1,
+    "aboveMax": 1.3,
+    "outgrownLand": 0.5
+  },
+  "_aboutSoftcap": "Robin, 2026-11-02: 'softcap exp by zone, so that you need more exp to level up, and so you want to kill higher enemies'. A creature below you pays less by `below` a level, down to `floor`; one above you pays more by `above` a level, up to `aboveMax`; past the top of a land's levels its plain creatures pay `outgrownLand` on top. Gold takes the cut, not the bonus."
 }

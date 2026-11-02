@@ -12,7 +12,7 @@
         4,
         6
       ],
-      "gold": 6,
+      "gold": 3,
       "xp": 10,
       "unique": 0
     },
@@ -23,7 +23,7 @@
         5,
         5
       ],
-      "gold": 7,
+      "gold": 4,
       "xp": 11,
       "unique": 0,
       "dropChance": 0.5
@@ -35,7 +35,7 @@
         1,
         1
       ],
-      "gold": 40,
+      "gold": 20,
       "xp": 50,
       "unique": 0.25,
       "spawnChance": 0.2
@@ -47,7 +47,7 @@
         1,
         1
       ],
-      "gold": 30,
+      "gold": 15,
       "xp": 30,
       "unique": 0,
       "foundChance": 0.25

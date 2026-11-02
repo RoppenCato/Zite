@@ -8,7 +8,7 @@
     },
     "smith": {
       "name": "Master smith",
-      "line": "The master smith makes gear a rank above any other shop here.",
+      "line": "The master smith makes gear a rank above any other shop here, and one fine piece a day.",
       "rank": 1
     },
     "cards": {
@@ -23,6 +23,10 @@
     "brambleford": "cards",
     "oakshade": "smith",
     "frosthold": "herbalist",
-    "honeybell": "cards"
+    "honeybell": "smith",
+    "stiltwick": "herbalist",
+    "lanternhollow": "smith",
+    "pinefoot": "cards",
+    "snowgate": "smith"
   }
 }

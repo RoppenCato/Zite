@@ -182,9 +182,9 @@ describe('the powers', () => {
 
   it("the Owl's Crown adds half the xp; the Dragon's Penny doubles the gold and halves the xp; Kettle Hat makes a crit a plain hit", () => {
     const sage = apply(versus(wearing('sages-crown'), 'slime', { hp: 1 }), turn(attack), makeRng('x'), NOW);
-    expect(sage.events).toContainEqual(expect.objectContaining({ type: 'won', xp: 8, gold: 6 }));
+    expect(sage.events).toContainEqual(expect.objectContaining({ type: 'won', xp: 8, gold: 3 }));
     const miser = apply(versus(wearing('misers-coin'), 'slime', { hp: 1 }), turn(attack), makeRng('x'), NOW);
-    expect(miser.events).toContainEqual(expect.objectContaining({ type: 'won', xp: 3, gold: 12 }));
+    expect(miser.events).toContainEqual(expect.objectContaining({ type: 'won', xp: 3, gold: 6 }));
     let resisted = 0;
     for (let i = 0; i < 120; i++) {
       const r = apply(versus(wearing('ironbrow'), 'slime', { hp: 5000, next: bite }), turn(attack), makeRng(`brow-${i}`), NOW);
@@ -249,7 +249,7 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(28);
+    expect(s!.version).toBe(29);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });

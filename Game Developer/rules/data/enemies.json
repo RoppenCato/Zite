@@ -7,7 +7,7 @@
     "attack": 10,
     "defense": 2,
     "xp": 5,
-    "gold": 6,
+    "gold": 3,
     "moves": [
       {
         "name": "Splat",
@@ -24,7 +24,7 @@
     "attack": 13,
     "defense": 3,
     "xp": 8,
-    "gold": 10,
+    "gold": 5,
     "moves": [
       {
         "name": "Root Whip",
@@ -46,7 +46,7 @@
     "attack": 16,
     "defense": 5,
     "xp": 12,
-    "gold": 16,
+    "gold": 8,
     "moves": [
       {
         "name": "Slash",
@@ -74,7 +74,7 @@
     "attack": 18,
     "defense": 1,
     "xp": 10,
-    "gold": 9,
+    "gold": 5,
     "moves": [
       {
         "name": "Sting",
@@ -97,7 +97,7 @@
     "attack": 19,
     "defense": 6,
     "xp": 40,
-    "gold": 50,
+    "gold": 25,
     "moves": [
       {
         "name": "Chomp",
@@ -122,11 +122,11 @@
     "name": "King Goo",
     "level": 6,
     "role": "boss",
-    "hp": 600,
-    "attack": 30,
+    "hp": 540,
+    "attack": 27,
     "defense": 11,
-    "xp": 150,
-    "gold": 150,
+    "xp": 105,
+    "gold": 75,
     "moves": [
       {
         "name": "Squish",
@@ -172,7 +172,7 @@
     "attack": 24,
     "defense": 7,
     "xp": 20,
-    "gold": 22,
+    "gold": 11,
     "moves": [
       {
         "name": "Poke",
@@ -200,7 +200,7 @@
     "attack": 22,
     "defense": 11,
     "xp": 26,
-    "gold": 26,
+    "gold": 13,
     "moves": [
       {
         "name": "Club",
@@ -229,7 +229,7 @@
     "attack": 28,
     "defense": 6,
     "xp": 24,
-    "gold": 28,
+    "gold": 14,
     "moves": [
       {
         "name": "Puff",
@@ -252,7 +252,7 @@
     "attack": 30,
     "defense": 5,
     "xp": 30,
-    "gold": 30,
+    "gold": 15,
     "moves": [
       {
         "name": "Scratch",
@@ -281,7 +281,7 @@
     "attack": 30,
     "defense": 11,
     "xp": 90,
-    "gold": 100,
+    "gold": 50,
     "moves": [
       {
         "name": "Swipe",
@@ -306,11 +306,11 @@
     "name": "Grumblebark",
     "level": 10,
     "role": "boss",
-    "hp": 935,
-    "attack": 36,
+    "hp": 1169,
+    "attack": 40,
     "defense": 12,
-    "xp": 350,
-    "gold": 300,
+    "xp": 245,
+    "gold": 150,
     "moves": [
       {
         "name": "Branch Swipe",
@@ -362,7 +362,7 @@
     "attack": 38,
     "defense": 11,
     "xp": 40,
-    "gold": 45,
+    "gold": 23,
     "moves": [
       {
         "name": "Sticky Slap",
@@ -385,7 +385,7 @@
     "attack": 42,
     "defense": 14,
     "xp": 50,
-    "gold": 55,
+    "gold": 28,
     "moves": [
       {
         "name": "Stalk Whack",
@@ -408,7 +408,7 @@
     "attack": 48,
     "defense": 8,
     "xp": 46,
-    "gold": 50,
+    "gold": 25,
     "moves": [
       {
         "name": "Buzz Sting",
@@ -431,7 +431,7 @@
     "attack": 40,
     "defense": 18,
     "xp": 56,
-    "gold": 65,
+    "gold": 33,
     "moves": [
       {
         "name": "Chomp",
@@ -460,7 +460,7 @@
     "attack": 48,
     "defense": 16,
     "xp": 170,
-    "gold": 180,
+    "gold": 90,
     "moves": [
       {
         "name": "Rake Swing",
@@ -485,11 +485,11 @@
     "name": "Queen Bumble",
     "level": 14,
     "role": "boss",
-    "hp": 1320,
-    "attack": 46,
+    "hp": 1650,
+    "attack": 51,
     "defense": 15,
-    "xp": 700,
-    "gold": 600,
+    "xp": 490,
+    "gold": 300,
     "moves": [
       {
         "name": "Royal Sting",
@@ -540,7 +540,7 @@
     "attack": 15,
     "defense": 4,
     "xp": 12,
-    "gold": 12,
+    "gold": 6,
     "moves": [
       {
         "name": "Spore Puff",
@@ -562,8 +562,8 @@
     "hp": 560,
     "attack": 28,
     "defense": 8,
-    "xp": 120,
-    "gold": 130,
+    "xp": 84,
+    "gold": 65,
     "moves": [
       {
         "name": "Staff Slam",
@@ -592,7 +592,7 @@
     "attack": 52,
     "defense": 15,
     "xp": 66,
-    "gold": 75,
+    "gold": 27,
     "moves": [
       {
         "name": "Long Tongue",
@@ -614,7 +614,7 @@
     "attack": 54,
     "defense": 20,
     "xp": 74,
-    "gold": 82,
+    "gold": 29,
     "moves": [
       {
         "name": "Mud Fist",
@@ -637,7 +637,7 @@
     "attack": 64,
     "defense": 12,
     "xp": 82,
-    "gold": 90,
+    "gold": 31,
     "moves": [
       {
         "name": "Ember Spit",
@@ -660,7 +660,7 @@
     "attack": 64,
     "defense": 20,
     "xp": 92,
-    "gold": 100,
+    "gold": 35,
     "moves": [
       {
         "name": "Dragonfly Hex",
@@ -683,7 +683,7 @@
     "attack": 66,
     "defense": 22,
     "xp": 280,
-    "gold": 300,
+    "gold": 105,
     "moves": [
       {
         "name": "Snap",
@@ -702,11 +702,11 @@
     "name": "Old Mother Murk",
     "level": 17,
     "role": "boss",
-    "hp": 1900,
-    "attack": 64,
+    "hp": 2375,
+    "attack": 70,
     "defense": 20,
-    "xp": 1100,
-    "gold": 900,
+    "xp": 770,
+    "gold": 315,
     "moves": [
       {
         "name": "Ladle Slam",
@@ -752,7 +752,7 @@
     "attack": 72,
     "defense": 22,
     "xp": 104,
-    "gold": 112,
+    "gold": 39,
     "moves": [
       {
         "name": "Horn Charge",
@@ -774,7 +774,7 @@
     "attack": 74,
     "defense": 26,
     "xp": 116,
-    "gold": 124,
+    "gold": 43,
     "moves": [
       {
         "name": "Pick Swing",
@@ -796,7 +796,7 @@
     "attack": 72,
     "defense": 34,
     "xp": 128,
-    "gold": 138,
+    "gold": 48,
     "moves": [
       {
         "name": "Rock Fist",
@@ -818,7 +818,7 @@
     "attack": 88,
     "defense": 22,
     "xp": 140,
-    "gold": 150,
+    "gold": 53,
     "moves": [
       {
         "name": "Icicle Jab",
@@ -841,7 +841,7 @@
     "attack": 88,
     "defense": 30,
     "xp": 420,
-    "gold": 440,
+    "gold": 154,
     "moves": [
       {
         "name": "Great Charge",
@@ -860,11 +860,11 @@
     "name": "Frostbeard",
     "level": 21,
     "role": "boss",
-    "hp": 2700,
-    "attack": 86,
+    "hp": 3375,
+    "attack": 95,
     "defense": 28,
-    "xp": 1700,
-    "gold": 1400,
+    "xp": 1190,
+    "gold": 490,
     "moves": [
       {
         "name": "Hammer Fall",

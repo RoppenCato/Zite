@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -2108,7 +2108,7 @@ export class BoardScene extends Phaser.Scene {
       }
       this.flashHint(id);
       // A boss in open land: fight it now, from anywhere (Robin, 2026-11-02).
-      if (space.kind === 'boss' && space.boss && !this.game_.state.board.areas[space.area]?.dungeon && !this.busy && !me.steps && !me.fight && me.opened.includes(space.area)) {
+      if (space.kind === 'boss' && space.boss && bossKnown(me, space.id) && !this.game_.state.board.areas[space.area]?.dungeon && !this.busy && !me.steps && !me.fight && me.opened.includes(space.area)) {
         const away = (me.cooldowns[id] ?? 0) > this.game_.now();
         const foe = creature(space.boss, this.game_.state.board.bestiary);
         if (!away) {

@@ -2,10 +2,9 @@
 
 Robin: "Do the level 1 to 20 playthrough check." `tools/sim-journey.ts` plays the whole climb with the real rules, from a new character to Frostbeard's fall: all four classes, all three trees each. The player is sensible, not perfect, and does not chase the Arena, the Rootways or rumours. Times come from my guesses of seconds per action (a roll 7, a fight round 4), so trust them as comparisons, not as clock time.
 
-    node tools/sim-journey.ts 10 quiet        bosses tapped from anywhere, as the game is now
-    node tools/sim-journey.ts 6 quiet walk    bosses must be walked to, landing exactly
+    node tools/sim-journey.ts 10 quiet
 
-## As the game is now (120 runs, none stuck)
+## Before the changes: bosses tapped from anywhere (120 runs, none stuck)
 
 | Land | Minutes | Fights | Deaths | Boss tries | Level in to out | Gold at the end |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -17,7 +16,7 @@ Robin: "Do the level 1 to 20 playthrough check." `tools/sim-journey.ts` plays th
 
 Whole climb 1.6 hours: Warrior 1.7, Magician 1.3, Rogue 1.6, Hunter 1.7.
 
-## Walking to each boss (72 runs, none stuck)
+## Before the changes: walking to each boss, landing exactly (72 runs, none stuck)
 
 | Land | Minutes | Fights | Deaths | Level in to out |
 | --- | --- | --- | --- | --- |
@@ -29,7 +28,7 @@ Whole climb 1.6 hours: Warrior 1.7, Magician 1.3, Rogue 1.6, Hunter 1.7.
 
 Whole climb 3.2 hours. Much of Honeyhill's time here is the wait for an exact roll onto the boss: the sim overlevels while it waits.
 
-## What it shows
+## What that showed
 
 1. **Nobody gets stuck.** Every class and tree finishes, both ways.
 2. **The two newest lands get skipped.** You reach each boss's level almost as you arrive, and the tap goes straight to it.
@@ -39,3 +38,29 @@ Whole climb 3.2 hours. Much of Honeyhill's time here is the wait for an exact ro
 6. **The classes are close over the whole climb.** The Magician is fastest. The Hunter is not ahead here, though it was in the Arena's own sim.
 
 Not covered: how it feels, the Arena, the Rootways, rumours and hidden places as goals, and shared play.
+
+## After Robin's yes (2026-11-02)
+
+Robin: "Yes to all three. I think you can also be smart and softcap exp by zone, so that you need more exp to level up, and so you want to kill higher enemies. I think when i played before, gold came by way to fast also."
+
+- **Bosses:** the first visit is on foot, the tap works after that, and a boss that is in stops a walk.
+- **XP:** a longer level curve. A creature below you pays less per level, one above pays more, and past a land's top plus one its plain creatures pay half again. Boss XP is cut to 70%.
+- **Bosses' strength:** King Goo softer, the others +25% HP and +10% attack.
+- **Gold:** halved from creatures, chests, quests and events, and 30% less again in the two new lands. A master smith sells one fine piece a day at twice its price.
+
+Old saves keep their level and how far along it they were.
+
+## After the changes (120 runs, none stuck)
+
+| Land | Minutes | Fights | Deaths | Boss tries | Level in to out | Gold at the end |
+| --- | --- | --- | --- | --- | --- | --- |
+| Meadows | 23 | 42 | 0.9 | 1.1 | 1.0 to 5.2 | 269 |
+| Wobblewood | 41 | 83 | 0.3 | 1.2 | 5.2 to 9.6 | 1955 |
+| Honeyhill | 28 | 57 | 0.1 | 1.2 | 9.6 to 12.7 | 4206 |
+| Bogglemire | 37 | 66 | 0.3 | 1.2 | 12.7 to 16.1 | 8079 |
+| The Frostcrown | 53 | 91 | 0.8 | 1.3 | 16.1 to 20.4 | 15828 |
+
+Whole climb 3.0 hours: Warrior 3.4, Magician 2.7, Rogue 2.9, Hunter 3.1. The sim skips the Arena, the Rootways, rumours and looking around, and buys no fine pieces, so real play is longer and gold lower. The aim is 4 to 6 hours of real play (Robin's yes, 2026-11-02), not yet measured.
+
+Still true: Honeyhill is the safest land, and gold still climbs late.
+

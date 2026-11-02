@@ -4,12 +4,11 @@
 // from the seconds below, not measurements. Not part of the game.
 //   node tools/sim-journey.ts [runs for each build]
 
-import { ABILITIES, apply, CLASS_DATA, ITEMS, makeRng, MAX_CARRIED, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, walkable, canLearn, groundsOf, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine } from '../rules/src/index.ts';
+import { ABILITIES, apply, CLASS_DATA, ITEMS, makeRng, MAX_CARRIED, bossKnown, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, walkable, canLearn, groundsOf, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const RUNS = Number(process.argv[2]) || 4;
-// `walk`: a boss must be walked to, as if the tap to go straight there only worked after you had stood by it once. `quiet`: only the summary.
-const WALK = process.argv.includes('walk');
+// `quiet`: only the summary.
 const QUIET = process.argv.includes('quiet');
 // Seconds a thing takes a player, by my own guess.
 const SEC = { roll: 7, round: 4, offer: 3, shop: 12, door: 2 };
@@ -145,6 +144,7 @@ function journey(classId: ClassId, tree: string, seed: string): { lands: Record<
           failed[land] = (failed[land] ?? 0) + (c.fight.enemy.id === boss?.boss ? 1 : 0);
         }
         if (e.type === 'won') lands[land]!.fights += 1;
+        if ((e.type === 'won' || e.type === 'died' || e.type === 'fled') && c.fight.enemy.role === 'boss') lands[land]!.bossTries += 1;
         if (e.type === 'bossDown' && (c.fight.enemy.id === 'frostbeard')) {
           lands[land]!.levelOut = me().level;
           lands[land]!.goldOut = me().gold;
@@ -179,11 +179,9 @@ function journey(classId: ClassId, tree: string, seed: string): { lands: Record<
       const top1 = [...LANDS].reverse().find((l) => c1.opened.includes(l))!;
       const boss1 = Object.values(state.board.spaces).find((sp) => sp.area === top1 && sp.boss && sp.kind === 'boss');
       const level1 = boss1?.boss ? enemyLevel(boss1.boss) : 99;
-      if (!WALK && boss1 && c1.level >= level1 - 1 + (failed[top1] ?? 0) && c1.hp >= s1.maxHp * 0.7 && flasks(c1) >= 2 && (c1.cooldowns[boss1.id] ?? 0) <= clock) {
-        const before = lands[land]!.bossTries;
+      if (boss1 && bossKnown(c1, boss1.id) && c1.level >= level1 - 1 + (failed[top1] ?? 0) && c1.hp >= s1.maxHp * 0.7 && flasks(c1) >= 2 && (c1.cooldowns[boss1.id] ?? 0) <= clock) {
         const events = act({ type: 'challenge', space: boss1.id });
         spend(SEC.offer);
-        lands[land]!.bossTries = before + 1;
         if (!events.some((e) => e.type === 'rejected')) continue;
       }
       act({ type: 'roll' });
@@ -203,16 +201,16 @@ function journey(classId: ClassId, tree: string, seed: string): { lands: Record<
     let goal: (id: string) => boolean;
     const bossSpot = spaces.find((sp) => sp.area === top && sp.boss && sp.kind === 'boss');
     const bossLevel = bossSpot?.boss ? (state.board.bestiary[bossSpot.boss]?.level ?? enemyLevel(bossSpot.boss)) : 99;
-    const ready = WALK && bossSpot && after.level >= bossLevel - 1 + (failed[top] ?? 0) && after.hp >= s.maxHp * 0.7 && flasks(after) >= 2 && (after.cooldowns[bossSpot.id] ?? 0) <= clock;
+    const ready = bossSpot && !bossKnown(after, bossSpot.id) && after.level >= bossLevel - 1 + (failed[top] ?? 0) && after.hp >= s.maxHp * 0.7 && flasks(after) >= 2 && (after.cooldowns[bossSpot.id] ?? 0) <= clock;
     const worn = Object.values(after.equipment).filter((g): g is GearItem => !!g);
     const tier = state.board.areas[top]?.tier ?? 1;
     void worn;
     // A shop is worth the walk only if what it sells here is better and affordable, and not again straight away.
     const couldBuy = clock > shopWait && SLOTS.some((slot) => { const piece = plainGear('x', slot, tier, LINE[classId], classId); return piece.price <= after.gold * 0.7 && score(wearing(after, piece)) > score(after) + 3; });
-    if (after.hp < s.maxHp * 0.4 || after.mana < s.maxMana * 0.15) goal = (id) => ['town', 'church', 'potion'].includes(state.board.spaces[id]!.kind);
+    if (after.hp < s.maxHp * 0.4 || (classId === 'mage' && after.mana < s.maxMana * 0.15)) goal = (id) => ['town', 'church'].includes(state.board.spaces[id]!.kind);
     else if (here.area !== top) goal = (id) => inLand(state.board.spaces[id]!);
     else if (flasks(after) < 2 && after.gold > 60 * tier) goal = (id) => { const sp = state.board.spaces[id]!; return sp.area === top && sp.kind === 'town'; };
-    else if (couldBuy) goal = (id) => { const sp = state.board.spaces[id]!; return sp.area === top && sp.kind === 'shop'; };
+    else if (couldBuy) goal = (id) => { const sp = state.board.spaces[id]!; const stock = sp.stock ?? 'arms'; return sp.area === top && sp.kind === 'shop' && (LINE[classId] === 'magic' ? stock === 'magic' : stock === 'arms'); };
     else if (ready) goal = (id) => id === bossSpot!.id;
     else {
       // Hunt in the ground that fits the level.
@@ -281,7 +279,7 @@ for (const classId of Object.keys(CLASS_DATA) as ClassId[]) {
     if (!QUIET) console.log(`  total ${(total / 3600).toFixed(1)} hours`);
   }
 }
-console.log(`\n${WALK ? 'Bosses walked to' : 'Bosses tapped from anywhere'}. ${RUNS} runs a build, ${unfinished} unfinished.`);
+console.log(`\n${RUNS} runs a build, ${unfinished} unfinished.`);
 console.log('land          minutes  rolls fights deaths boss tries  level in-out      gold  rank rare+');
 let grand = 0;
 for (const land of LANDS) {

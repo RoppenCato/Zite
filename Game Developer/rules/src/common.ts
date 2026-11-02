@@ -71,6 +71,17 @@ export function addLoot(c: Character, gear: GearItem, action: Action, events: Ga
 }
 
 /** The level a total of `xp` gives, from the progression table: 1 at 0 xp, the table's length at most. */
+/** What a win pays, for a level against a creature's and the land's top (Robin, 2026-11-02: softcap by zone, so you want higher enemies). Gold takes only the cut. */
+export function softcap(level: number, enemyLevel: number, landTop: number, boss: boolean): { xp: number; gold: number } {
+  const s = PROGRESSION.softcap;
+  if (enemyLevel >= level) return { xp: Math.min(s.aboveMax, 1 + (enemyLevel - level) * s.above), gold: 1 };
+  const below = Math.max(s.floor, 1 - (level - enemyLevel) * s.below);
+  // A land's boss asks a level past its top, so one level past it is not yet outgrown.
+  const cut = below * (!boss && level > landTop + 1 ? s.outgrownLand : 1);
+  const share = Math.max(s.floor, cut);
+  return { xp: share, gold: share };
+}
+
 export function levelFor(xp: number): number {
   const table = PROGRESSION.xpForLevel;
   let level = 1;

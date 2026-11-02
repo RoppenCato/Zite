@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 28;
+export const STATE_VERSION = 29;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -240,6 +240,10 @@ export interface Character {
   /** Times each boss space's boss was beaten. */
   bossKills: Record<string, number>;
   offer: Offer | null;
+  /** The bosses you have walked to: only those can be gone straight to (Robin, 2026-11-02). */
+  bossMet?: string[];
+  /** The day each smith's fine piece was last bought. */
+  dailyBought?: Record<string, number>;
   /** What you have heard: a mark on your map, paid off by walking onto it. */
   rumours?: Rumour[];
   /** The hidden spots you have found, and the ends whose first treasure you have had. */
@@ -455,7 +459,7 @@ export type Action =
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
   /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
-  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot }
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }

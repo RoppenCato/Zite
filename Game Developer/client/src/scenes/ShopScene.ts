@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -43,7 +43,7 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach';
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -88,6 +88,7 @@ export class ShopScene extends Phaser.Scene {
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
     const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : [])];
+    if (offer?.town?.rank) tabs.unshift(['fine', 'Fine']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
     this.message = this.add
@@ -143,6 +144,14 @@ export class ShopScene extends Phaser.Scene {
       const options = travelOptions(this.game_.state, me);
       if (!options.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'The coach goes to towns you have been to.\nNo other yet.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim, align: 'center' }).setOrigin(0.5, 0));
       options.slice(0, SHOP_LAYOUT.rows).forEach((o, i) => row(i, o.name, this.ink.text, 'Rest there on arrival.', `${o.price} g`, 'Go', () => (this.scene.get('board') as BoardScene).travelTo(o.id)));
+    } else if (tab === 'fine') {
+      // The smith's one fine piece of the day (Robin, 2026-11-02: something for gold to do).
+      const piece = dailyPiece(this.game_.state, me, this.game_.now());
+      if (piece) {
+        const sold = me.dailyBought?.[me.space] === calendarDay(this.game_.now());
+        this.rows.push(this.add.text(CENTRE, firstRowY - 34, sold ? 'Gone for today. Back tomorrow.' : 'One piece a day, and dear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
+        if (!sold) gearRow(0, piece, `${piece.price} g`, '', () => this.compare(piece, 'Buy', () => this.buy({ daily: true })));
+      }
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier, tab, me.classId);
@@ -218,7 +227,7 @@ export class ShopScene extends Phaser.Scene {
     this.comparing = [];
   }
 
-  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine }): void {
+  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean }): void {
     if (this.inFlight) return;
     this.inFlight = true;
     this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));

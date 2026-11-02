@@ -12,7 +12,7 @@ import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from '
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
-import type { Rng } from './rng.ts';
+import { hashSeed, makeRng, type Rng } from './rng.ts';
 import { buildBoard, withArenas, withDungeons, withSecrets } from './world.ts';
 import {
   SLOTS,
@@ -29,7 +29,7 @@ import {
   type Spawn,
   type Trace,
   type GearLine,
-  type ShopStock, type Rumour } from './types.ts';
+  type ShopStock, type Rumour, type GearItem } from './types.ts';
 
 export interface NewGameOptions {
   seed: string;
@@ -141,7 +141,7 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'fight':
       return fightRound(state, action, character, rng, now);
     case 'buy':
-      return buy(state, action, character);
+      return buy(state, action, character, now);
     case 'sell':
       return sell(state, action, character);
     case 'equip':
@@ -187,7 +187,7 @@ function challenge(state: GameState, action: ChallengeAction, c: Character, rng:
   const busy = boardBusy(c);
   if (busy) return reject(state, action, busy);
   const space = state.board.spaces[action.space];
-  if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || state.board.areas[space.area]?.dungeon || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
+  if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || state.board.areas[space.area]?.dungeon || !bossKnown(c, space.id) || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
   return begin(state, { ...c, space: space.id, steps: 0 }, space.boss, space.id, false, action, rng, []);
 }
 
@@ -358,6 +358,8 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   return { state: next, events };
 }
 
+/** A fine piece costs this many times what it would sell for by its rarity. */
+const DAILY_PRICE = 2;
 /** How near where a trail leaves the road you must stand to notice it, in world pixels. */
 const SECRET_NOTICE = 300;
 
@@ -367,6 +369,9 @@ function move(state: GameState, action: MoveAction, character: Character, rng: R
   if (character.steps === 0) return reject(state, action, 'roll first');
   const problem = checkPath(state.board, character.space, character.steps, action.path, walkable(character));
   if (problem) return reject(state, action, problem);
+  // A boss that is in stops the walk: you do not stroll past it (Robin, 2026-11-02).
+  const atBoss = action.path.findIndex((id, i) => i < action.path.length - 1 && state.board.spaces[id]?.kind === 'boss' && (character.cooldowns[id] ?? 0) <= now);
+  if (atBoss >= 0) return walkTo(state, character, action.path.slice(0, atBoss + 1), action, rng, now);
   // A rumour's mark stops the walk: it is what you came for (Robin, 2026-11-02).
   const heard = action.path.findIndex((id) => character.rumours?.some((r) => r.space === id));
   if (heard >= 0 && heard < action.path.length - 1) return walkTo(state, character, action.path.slice(0, heard + 1), action, rng, now);
@@ -388,6 +393,11 @@ function walkTo(state: GameState, character: Character, path: string[], action: 
   ];
   const noticed = noticeSecrets(state.board, { ...character, space: landing, steps: 0 }, space, action, events);
   return landWithRumour(state, noticed, space, action, rng, now, events);
+}
+
+/** A boss you can go straight to: one you have walked to, or beaten (Robin, 2026-11-02: the first visit is on foot). */
+export function bossKnown(c: Character, space: string): boolean {
+  return (c.bossKills[space] ?? 0) > 0 || !!c.bossMet?.includes(space);
 }
 
 /** The spots you can walk: open land, and hidden spots you have found. */
@@ -468,7 +478,7 @@ function landWithRumour(state: GameState, character: Character, space: Space, ac
   if (space.hidden && space.name && !space.mob && !(c.foundDone ?? []).includes(space.id)) {
     events.push({ type: 'secretTreasure', action: action.id, player: action.player, space: space.id, name: space.name });
     c = { ...c, foundDone: [...(c.foundDone ?? []), space.id] };
-    c = giveGold(c, tier * 60, action, events);
+    c = giveGold(c, tier * 30, action, events);
     const got = nextGearId(s);
     s = got.state;
     c = addLoot(c, rollGear(got.id, dropSlot(null, rng), tier, GEAR.rarityBoost.mini, rng, rollLine(rng), c.classId), action, events);
@@ -573,7 +583,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         events.push({ type: 'nothing', action: id, player, text: `${space.name} is quiet: the boss is not back yet.` });
         return { state: withCharacter(state, c), events };
       }
-      return begin(state, c, space.boss, space.id, false, action, rng, events);
+      return begin(state, { ...c, bossMet: [...new Set([...(c.bossMet ?? []), space.id])] }, space.boss, space.id, false, action, rng, events);
     }
     case 'normal': {
       // A hidden place's beast.
@@ -869,8 +879,33 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
   return { stock, lines, items, town, tier: tier + (town?.rank ?? 0), price };
 }
 
-function buy(state: GameState, action: BuyAction, character: Character): ApplyResult {
+/** A master smith's fine piece today, the same for everyone of a class, dear on purpose: something for gold to do (Robin, 2026-11-02). */
+export function dailyPiece(state: GameState, c: Character, now: number): GearItem | null {
+  const space = state.board.spaces[c.space];
+  const offer = shopOffer(state, c);
+  if (!space || !offer?.town?.rank) return null;
+  const rng = makeRng(hashSeed(`${state.seed}:${space.id}:${calendarDay(now)}:${c.classId}`));
+  const line = ({ warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' } as Record<string, GearLine>)[c.classId] ?? 'heavy';
+  const piece = rollGear('daily', SLOTS[rng.int(SLOTS.length) - 1]!, offer.tier, GEAR.rarityBoost.mini, rng, line, c.classId);
+  return { ...piece, price: piece.price * DAILY_PRICE };
+}
+
+function buyDaily(state: GameState, action: BuyAction, c: Character, now: number): ApplyResult {
+  const piece = dailyPiece(state, c, now);
+  if (!piece) return reject(state, action, 'not at a shop');
+  const day = calendarDay(now);
+  if (c.dailyBought?.[c.space] === day) return reject(state, action, 'not now');
+  if (c.gold < piece.price) return reject(state, action, 'not enough gold');
+  if (c.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
+  const got = nextGearId(state);
+  const gear = { ...piece, id: got.id };
+  const gold = c.gold - piece.price;
+  return { state: withCharacter(got.state, { ...c, gold, bag: [...c.bag, gear], dailyBought: { ...c.dailyBought, [c.space]: day } }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: piece.price, gold }] };
+}
+
+function buy(state: GameState, action: BuyAction, character: Character, now: number): ApplyResult {
   if (character.fight) return reject(state, action, 'finish the fight first');
+  if (action.daily) return buyDaily(state, action, character, now);
   const offer = shopOffer(state, character);
   if (!offer) return reject(state, action, 'not at a shop');
   if (action.item !== undefined) {
