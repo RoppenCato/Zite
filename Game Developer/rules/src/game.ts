@@ -48,6 +48,8 @@ type UnequipAction = Extract<Action, { type: 'unequip' }>;
 type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
+type StrollAction = Extract<Action, { type: 'stroll' }>;
+type HomeAction = Extract<Action, { type: 'home' }>;
 type DoorAction = Extract<Action, { type: 'door' }>;
 type ArenaAction = Extract<Action, { type: 'arena' }>;
 type SkillAction = Extract<Action, { type: 'skill' }>;
@@ -154,6 +156,10 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return useCard(state, action, character, rng, now);
     case 'gamble':
       return gamble(state, action, character, rng);
+    case 'stroll':
+      return stroll(state, action, character, rng, now);
+    case 'home':
+      return goHome(state, action, character, rng, now);
     case 'door':
       return door(state, action, character);
     case 'arena':
@@ -189,6 +195,60 @@ function challenge(state: GameState, action: ChallengeAction, c: Character, rng:
   const space = state.board.spaces[action.space];
   if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || state.board.areas[space.area]?.dungeon || !bossKnown(c, space.id) || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
   return begin(state, { ...c, space: space.id, steps: 0 }, space.boss, space.id, false, action, rng, []);
+}
+
+/** The spots of a city you can walk to from here, by its streets alone: its own area, all linked. */
+export function strollPath(state: GameState, from: string, to: string): string[] | null {
+  const board = state.board;
+  const area = board.spaces[from]?.area;
+  if (!area || !board.areas[area]?.city || board.spaces[to]?.area !== area || from === to) return null;
+  const before = new Map<string, string>([[from, from]]);
+  let ring = [from];
+  while (ring.length) {
+    const next: string[] = [];
+    for (const id of ring) {
+      for (const link of board.spaces[id]!.links) {
+        if (before.has(link) || board.spaces[link]?.area !== area) continue;
+        before.set(link, id);
+        if (link === to) {
+          const path = [to];
+          while (path[0] !== from) path.unshift(before.get(path[0]!)!);
+          return path.slice(1);
+        }
+        next.push(link);
+      }
+    }
+    ring = next;
+  }
+  return null;
+}
+
+/** Walking in the city: no die, no fights (Robin, 2026-11-02). */
+function stroll(state: GameState, action: StrollAction, c: Character, rng: Rng, now: number): ApplyResult {
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  if (c.steps > 0) return reject(state, action, 'finish your move first');
+  const path = strollPath(state, c.space, action.to);
+  if (!path) return reject(state, action, 'not now');
+  return walkTo(state, c, path, action, rng, now);
+}
+
+/** The hub of the world, if it has one and you have opened it. */
+export function hubOf(state: GameState, c: Character): string | null {
+  const hub = (WORLD_DATA as unknown as { hub?: string }).hub;
+  const space = hub ? state.board.spaces[hub] : undefined;
+  return space && c.opened.includes(space.area) ? space.id : null;
+}
+
+/** Back to the hub: free, from anywhere outside a fight, with a short wait between uses (Robin, 2026-11-02). */
+function goHome(state: GameState, action: HomeAction, c: Character, rng: Rng, now: number): ApplyResult {
+  if (c.fight) return reject(state, action, 'finish the fight first');
+  if (c.offer) return reject(state, action, 'answer first');
+  const hub = hubOf(state, c);
+  if (!hub || hub === c.space || (c.cooldowns.home ?? 0) > now) return reject(state, action, 'not now');
+  const events: GameEvent[] = [{ type: 'wentHome', action: action.id, player: action.player, from: c.space, to: hub }];
+  const next: Character = { ...c, steps: 0, space: hub, cooldowns: { ...c.cooldowns, home: now + PROGRESSION.homeWaitMs } };
+  return land(state, next, state.board.spaces[hub]!, action, rng, now, events);
 }
 
 /** Through the door you stand on; the land beyond is open to you from then on. */
@@ -333,6 +393,9 @@ function boardBusy(c: Character): 'finish the fight first' | 'answer first' | nu
 // ---- the board -------------------------------------------------------------------------------------------------------
 
 function roll(state: GameState, action: Action, character: Character, rng: Rng): ApplyResult {
+  // Inside a city you walk: the die is for the way out, from a spot that leads out.
+  const at = state.board.spaces[character.space];
+  if (at && state.board.areas[at.area]?.city && !at.links.some((l) => state.board.spaces[l]?.area !== at.area)) return reject(state, action, 'not now');
   const busy = boardBusy(character);
   if (busy) return reject(state, action, busy);
   if (character.steps > 0) return reject(state, action, 'finish your move first');
@@ -511,6 +574,8 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   const id = action.id;
   const player = action.player;
   const area = state.board.areas[space.area];
+  // A city's streets are only streets.
+  if (area?.city && space.kind === 'normal') return { state: withCharacter(state, c), events };
   const tier = area?.tier ?? 1;
   const kind = SPACE_KIND_DATA[space.kind];
   const onCooldown = (c.cooldowns[space.id] ?? 0) > now;

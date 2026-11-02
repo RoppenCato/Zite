@@ -323,6 +323,7 @@ export interface ProgressionData {
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
   spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number; elite: number };
+  homeWaitMs: number;
   softcap: { below: number; floor: number; above: number; aboveMax: number; outgrownLand: number };
   wanderer: { chancePerTick: number; lifeMs: number; moveChance: number; levelsOver: number; hp: number; attack: number; defense: number; xp: number; gold: number };
   /** The world boss (mine, 2026-11-01): how often a tick brings one when none is about, how long it stays, its HP against the area's boss, the least share a hitter gets. */

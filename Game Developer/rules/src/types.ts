@@ -106,6 +106,10 @@ export interface Place {
 
 /** An area of the map: a theme, a tier, the levels of what lives there, and which mobs and mini-bosses those are. */
 export interface Area {
+  /** A city (Robin, 2026-11-02): no die and no fights inside its walls; tap a spot to go there. */
+  city?: boolean;
+  /** Opens by itself when this land opens: a land with no gate of its own. */
+  openWith?: string;
   /** A dungeon: off the map, hidden until you stand in it, with no spawns and no boss to walk straight to. */
   dungeon?: boolean;
   id: string;
@@ -467,6 +471,10 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
+  /** Inside a city's walls: walk to a spot, no die. */
+  | { type: 'stroll'; id: string; player: string; to: string }
+  /** Back to the hub, from anywhere, outside a fight. */
+  | { type: 'home'; id: string; player: string }
   /** Through the door you stand on. */
   | { type: 'door'; id: string; player: string }
   /** The Arena: go in, go on to the next wave, take the pot; `test` opens it for this character. */
@@ -545,6 +553,7 @@ export type GameEvent =
   | { type: 'learned'; action: string; player: string; ability: string; rank: number }
   | { type: 'nothing'; action: string; player: string; text: string }
   | { type: 'offer'; action: string; player: string; offer: Offer }
+  | { type: 'wentHome'; action: string; player: string; from: string; to: string }
   | { type: 'rumour'; action: string; player: string; rumour: Rumour }
   | { type: 'rumourDone'; action: string; player: string; rumour: Rumour }
   | { type: 'secretFound'; action: string; player: string; space: string; name: string }

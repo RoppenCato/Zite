@@ -468,3 +468,7 @@ Bogglemire (tier 4, levels 12 to 16) and The Frostcrown (tier 5, 16 to 20) follo
 ## XP, gold and bosses after the climb check (Robin, 2026-11-02)
 
 `softcap` in `common.ts`, numbers in `progression.softcap`. `bossKnown`: a boss can be gone straight to only once walked to or beaten. A boss not on cooldown stops a walk. `dailyPiece`: a master smith's piece of the day, per town, class and day, bought with `buy { daily: true }`. Save version 29 keeps level and share of the level across the new curve. `tools/sim-journey.ts` is how the climb is checked: see `docs/playthrough-check.md`.
+
+## The hub's rules (Robin, 2026-11-02)
+
+Ready before the map lands. `Area.city`: `stroll { to }` walks its own streets with no die, its plain spots do nothing, and `roll` works only on a spot that leads out. `home`: to `world.hub` from anywhere outside a fight, once the hub is open, then a wait of `homeWaitMs`. A mini-boss on a `boss` spot with `opens` guards a gate like a boss. `Area.openWith`: a land with no gate opens when that land does. Bosses stop opening lands by the data: drop their `opens`.

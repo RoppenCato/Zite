@@ -935,7 +935,8 @@ function win(r: Round): ApplyResult {
     events.push({ type: 'keyFound', action: id, player, area: area.id });
   }
 
-  if (space?.kind === 'boss' && e.role === 'boss') {
+  // A land's boss, or a mini-boss guarding a land's gate.
+  if (space?.kind === 'boss' && (e.role === 'boss' || (e.role === 'mini' && space.opens))) {
     const until = now + (SPACE_KIND_DATA.boss.cooldownMs ?? 0);
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };
     events.push({ type: 'bossDown', action: id, player, space: f.space, until });
@@ -945,6 +946,12 @@ function win(r: Round): ApplyResult {
       // A region's boss beaten for the first time is worth a skill point (mine).
       next = { ...next, opened: [...next.opened, space.opens], bonusPoints: (next.bonusPoints ?? 0) + 1 };
       events.push({ type: 'opened', action: id, player, area: space.opens });
+      // The lands with no gate of their own open with it.
+      const withIt = Object.values(s.board.areas).filter((a) => a.openWith === space.opens && !next.opened.includes(a.id));
+      for (const a of withIt) {
+        next = { ...next, opened: [...next.opened, a.id] };
+        events.push({ type: 'opened', action: id, player, area: a.id });
+      }
       events.push({ type: 'skillPoints', action: id, player, gained: 1, free: pointsFree(next) });
     }
   }

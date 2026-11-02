@@ -40,6 +40,10 @@ export interface WorldRoad {
 }
 
 export interface WorldArea {
+  /** A city: no die and no fights inside its walls. */
+  city?: boolean;
+  /** Opens by itself when this land opens. */
+  openWith?: string;
   id: string;
   name: string;
   theme: string;
@@ -108,7 +112,7 @@ export function buildBoard(world: World): Board {
 /** Lay an area's hubs and roads into the board (the board is changed in place; pass a copy to keep the old one). */
 export function addArea(board: Board, area: WorldArea, worldName = 'world'): void {
   if (board.areas[area.id]) throw new Error(`world ${worldName}: duplicate area id "${area.id}"`);
-  board.areas[area.id] = { id: area.id, name: area.name, theme: area.theme, ...(area.kingdom ? { kingdom: area.kingdom } : {}), ...(area.grounds ? { grounds: area.grounds } : {}), ...(area.places ? { places: area.places } : {}), tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
+  board.areas[area.id] = { ...(area.city ? { city: true } : {}), ...(area.openWith ? { openWith: area.openWith } : {}), id: area.id, name: area.name, theme: area.theme, ...(area.kingdom ? { kingdom: area.kingdom } : {}), ...(area.grounds ? { grounds: area.grounds } : {}), ...(area.places ? { places: area.places } : {}), tier: area.tier, levels: area.levels, mobs: area.mobs, miniBosses: area.miniBosses, bounds: { x: 0, y: 0, width: 0, height: 0 } };
   for (const hub of area.hubs) {
     if (!KNOWN_KINDS.has(hub.kind)) throw new Error(`world ${worldName}: hub "${hub.id}" has unknown kind "${hub.kind}"`);
     if (hub.kind === 'boss' && !hub.boss) throw new Error(`world ${worldName}: boss spot "${hub.id}" names no boss`);
