@@ -5,6 +5,11 @@
 // little, so the clouds move.
 
 import Phaser from 'phaser';
+import cityCloudsPng from '../../assets/city_fight/clouds.png';
+import cityFarPng from '../../assets/city_fight/far.png';
+import cityGroundPng from '../../assets/city_fight/ground.png';
+import cityMidPng from '../../assets/city_fight/mid.png';
+import cityNearPng from '../../assets/city_fight/near.png';
 import cloudsPng from '../../assets/meadow_fight/clouds.png';
 import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
@@ -75,6 +80,19 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'meadow-ground', png: groundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
+  // Crownhaven's cobbled street, the avenue running back to the castle (Mitch, AD, 2026-11-02).
+  city: {
+    sky: { top: 0x7cc0ee, bottom: 0xfdf2d4 },
+    soil: 0xcfc3a6,
+    feet: 46,
+    strips: [
+      { key: 'city-clouds', png: cityCloudsPng, w: 512, h: 163, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'city-far', png: cityFarPng, w: 512, h: 392, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'city-mid', png: cityMidPng, w: 512, h: 297, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'city-near', png: cityNearPng, w: 512, h: 113, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'city-ground', png: cityGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
   forest: {
     sky: { top: 0x8ed2b4, bottom: 0xf0f6c8 },
     soil: 0x6fb478,
@@ -138,17 +156,14 @@ const BACKDROPS: Record<string, BackdropFiles> = {
 };
 
 /** Queue a theme's strips; the fight's preload calls it. */
-/** Crownhaven has no fight of its own painted yet: it borrows the road to the mill. */
-const drawn = (theme: string): string => (theme === 'city' ? 'meadow' : theme);
-
 export function preloadBackdrop(scene: Phaser.Scene, theme: string): void {
-  for (const s of BACKDROPS[drawn(theme)]?.strips ?? []) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
+  for (const s of BACKDROPS[theme]?.strips ?? []) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
 }
 
 /** Let go of every theme's strips but this one's. */
 export function releaseBackdrops(game: Phaser.Game, keep: string): void {
   for (const [theme, b] of Object.entries(BACKDROPS)) {
-    if (theme === drawn(keep)) continue;
+    if (theme === keep) continue;
     for (const s of b.strips) if (game.textures.exists(s.key)) game.textures.remove(s.key);
   }
 }
@@ -160,7 +175,7 @@ export class Backdrop {
   private readonly drifting: { sprite: Phaser.GameObjects.TileSprite; drift: number }[] = [];
 
   constructor(scene: Phaser.Scene, theme: string, groundY: number, bottom: number) {
-    const b = BACKDROPS[drawn(theme)];
+    const b = BACKDROPS[theme];
     const sky = scene.add.graphics();
     const top = b?.sky.top ?? 0x3a4a6a;
     const low = b?.sky.bottom ?? 0x8aa0b8;
