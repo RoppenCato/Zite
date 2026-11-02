@@ -7,6 +7,12 @@
 
 import Phaser from 'phaser';
 import type { Character, ClassId, GearItem, Slot } from '../../rules/src/index.ts';
+import archerOverJson from '../../assets/hero_classes/archer/gear_over.json?url';
+import archerOverPng from '../../assets/hero_classes/archer/gear_over.png';
+import clothArcherJson from '../../assets/gear_sets/cloth/cloth_archer.json?url';
+import clothArcherPng from '../../assets/gear_sets/cloth/cloth_archer.png';
+import leatherArcherJson from '../../assets/gear_sets/leather/leather_archer.json?url';
+import leatherArcherPng from '../../assets/gear_sets/leather/leather_archer.png';
 import clothJson from '../../assets/gear_sets/cloth/cloth.json?url';
 import clothPng from '../../assets/gear_sets/cloth/cloth.png';
 import setIconsJson from '../../assets/gear_sets/icons.json?url';
@@ -126,6 +132,12 @@ const SETS: Record<string, Tex> = {
   cloth: { key: 'set_cloth', png: clothPng, json: clothJson },
   wooden: { key: 'set_wooden', png: woodenPng, json: woodenJson },
 };
+/** The Archer's hands move their own way (Mitch, AD's corrected arm, 2026-11-02): these load only for an Archer. */
+const ARCHER_OVER: Tex = { key: 'hero_gear_over_archer', png: archerOverPng, json: archerOverJson };
+const ARCHER_SETS: Record<string, Tex> = {
+  set_leather: { key: 'set_leather_archer', png: leatherArcherPng, json: leatherArcherJson },
+  set_cloth: { key: 'set_cloth_archer', png: clothArcherPng, json: clothArcherJson },
+};
 const SET_ICONS: Tex = { key: 'set_icons', png: setIconsPng, json: setIconsJson };
 /** A later rank of a kind shows its first set until its own is drawn: Hide as Leather, Linen as Cloth. */
 const LINE_SET: Record<string, string> = { light: 'leather', magic: 'cloth' };
@@ -149,12 +161,13 @@ export function releaseClasses(game: Phaser.Game, keep: ClassId): void {
     if (id === keep) continue;
     for (const t of [art.body, art.weapon]) if (game.textures.exists(t.key)) game.textures.remove(t.key);
     if (art.icons !== TEX.icons && game.textures.exists(art.icons.key)) game.textures.remove(art.icons.key);
+    if (id === 'ranger' && game.textures.exists(ARCHER_OVER.key)) game.textures.remove(ARCHER_OVER.key);
   }
 }
 
 /** Queue the shared gear and these classes' own atlases; call from a scene's preload. */
 export function preloadHero(scene: Phaser.Scene, classes: readonly ClassId[]): void {
-  const art = [...new Set(classes)].flatMap((c) => [CLASS_ART[c].body, CLASS_ART[c].weapon, CLASS_ART[c].icons]);
+  const art = [...new Set(classes)].flatMap((c) => [CLASS_ART[c].body, CLASS_ART[c].weapon, CLASS_ART[c].icons, ...(c === 'ranger' ? [ARCHER_OVER] : [])]);
   for (const t of [...SHARED, ...art]) {
     if (!scene.textures.exists(t.key)) scene.load.atlas(t.key, t.png, t.json);
   }
@@ -162,7 +175,7 @@ export function preloadHero(scene: Phaser.Scene, classes: readonly ClassId[]): v
 
 export function heroReady(scene: Phaser.Scene, classId: ClassId): boolean {
   const art = CLASS_ART[classId];
-  return [...SHARED, art.body, art.weapon, art.icons].every((t) => scene.textures.exists(t.key));
+  return [...SHARED, art.body, art.weapon, art.icons, ...(classId === 'ranger' ? [ARCHER_OVER] : [])].every((t) => scene.textures.exists(t.key));
 }
 
 function has(scene: Phaser.Scene, key: string, frame: string): boolean {
@@ -194,6 +207,9 @@ function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): Layer | n
   return null;
 }
 
+/** An Archer with a bow, not a wooden weapon: their hands use their own frames. */
+const holdsBow = (c: Character): boolean => c.classId === 'ranger' && !!c.equipment.weapon && !woodenPiece(c.equipment.weapon);
+
 /** The sets this character wears that are not loaded yet. */
 function missingSets(scene: Phaser.Scene, c: Character): Tex[] {
   const out = new Set<Tex>();
@@ -202,6 +218,8 @@ function missingSets(scene: Phaser.Scene, c: Character): Tex[] {
     const word = woodenPiece(g) ? 'wooden' : artWords(g).find((w) => SETS[w]);
     const set = word ? SETS[word] : undefined;
     if (set && !scene.textures.exists(set.key)) out.add(set);
+    const own = set && holdsBow(c) ? ARCHER_SETS[set.key] : undefined;
+    if (own && !scene.textures.exists(own.key)) out.add(own);
   }
   return [...out];
 }
@@ -243,23 +261,40 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const hat = worn('helm');
   const sword = worn('weapon');
   const shield = worn('shield');
+  // What is held decides the arms (Mitch, AD's corrected arm, 2026-11-02). An Archer's shield hangs on the bow arm, with no change.
+  const archer = c.classId === 'ranger';
+  const shielded = !!shield && !archer;
+  const emptyHanded = !sword && !archer;
+  const woodenBow = archer && !!eq.weapon && !!woodenPiece(eq.weapon);
+  /** The first of these pieces the atlas has. */
+  const first = (key: string, ...pieces: string[]): Layer => ({ key, piece: pieces.find((p) => has(scene, key, `${p}/stand/0001`)) ?? pieces[pieces.length - 1]! });
   const layers: (Layer | null)[] = [
     cape,
+    shielded ? null : { key: body, piece: 'far_back' },
     { key: body, piece: 'body' },
     boots ?? { key: TEX.boots.key, piece: 'boots_base' },
     coat,
-    { key: body, piece: 'far_front' },
-    gloves ? { key: gloves.key, piece: `${gloves.piece}_far` } : null,
+    shielded ? first(body, 'far_front_shield', 'far_front') : { key: body, piece: 'far_front' },
+    gloves ? (shielded ? first(gloves.key, `${gloves.piece}_far_shield`, `${gloves.piece}_far`) : { key: gloves.key, piece: `${gloves.piece}_far` }) : null,
     charm,
     { key: body, piece: 'head' },
     hat ?? { key: body, piece: 'hair' },
     { key: body, piece: 'arm' },
     coat ? { key: coat.key, piece: `${coat.piece}_near` } : null,
     sword,
-    gloves ? { key: gloves.key, piece: `${gloves.piece}_near` } : { key: body, piece: 'hand' },
+    gloves
+      ? emptyHanded
+        ? first(gloves.key, `${gloves.piece}_near_open`, `${gloves.piece}_near`)
+        : { key: gloves.key, piece: `${gloves.piece}_near` }
+      : emptyHanded
+        ? first(body, 'hand_open', 'hand')
+        : woodenBow
+          ? first(body, 'hand_grip', 'hand')
+          : { key: body, piece: 'hand' },
     shield,
   ];
-  return layers.filter((l): l is Layer => !!l && has(scene, l.key, `${l.piece}/stand/0001`));
+  // far_back and far_front are empty in many frames, so their atlas may have no standing frame: they stay, and are hidden where they have none.
+  return layers.filter((l): l is Layer => !!l && (l.piece.startsWith('far_') || has(scene, l.key, `${l.piece}/stand/0001`)));
 }
 
 const OWN_ATTACK: Partial<Record<ClassId, string>> = { mage: 'attack1_wizard', ranger: 'attack1_archer' };
@@ -274,6 +309,7 @@ export class Hero {
   /** This class's own atlas: a frame found there overrides the shared one (the Wizard's and Archer's hands move differently). */
   private bodyKey = '';
   private classId: ClassId = 'warrior';
+  private bow = false;
   private character: Character | null = null;
   private clip: HeroAction = 'stand';
   private index = 0;
@@ -294,6 +330,7 @@ export class Hero {
   wear(character: Character): void {
     this.bodyKey = CLASS_ART[character.classId].body.key;
     this.classId = character.classId;
+    this.bow = holdsBow(character);
     this.character = character;
     const missing = missingSets(this.scene, character);
     if (missing.length) {
@@ -308,7 +345,7 @@ export class Hero {
     const same = wanted.length === this.layers.length && wanted.every((l, i) => l.piece === this.layers[i]!.piece && l.key === this.layers[i]!.key);
     if (same) return;
     for (const l of this.layers) l.sprite.destroy();
-    this.layers = wanted.map((l) => ({ ...l, sprite: this.scene.add.sprite(0, 0, l.key, `${l.piece}/stand/0001`) }));
+    this.layers = wanted.map((l) => ({ ...l, sprite: this.scene.add.sprite(0, 0, l.key, has(this.scene, l.key, `${l.piece}/stand/0001`) ? `${l.piece}/stand/0001` : undefined).setVisible(false) }));
     this.root.add(this.layers.map((l) => l.sprite));
     this.apply();
   }
@@ -359,16 +396,26 @@ export class Hero {
     this.apply();
   }
 
+  /** Where a layer's frame comes from, best first: a class's own frames, then the piece's. */
+  private frameFor(l: { key: string; piece: string }, plain: string, n: string): [string, string] {
+    if (this.classId === 'ranger') {
+      if (has(this.scene, ARCHER_OVER.key, plain)) return [ARCHER_OVER.key, plain];
+      const set = ARCHER_SETS[l.key];
+      const own = `${l.piece}/${this.clip}_archer/${n}`;
+      if (this.bow && set && has(this.scene, set.key, own)) return [set.key, own];
+    }
+    const attack = this.clip === 'attack1' && OWN_ATTACK[this.classId] ? `${l.piece}/${OWN_ATTACK[this.classId]}/${n}` : '';
+    if (attack && has(this.scene, l.key, attack)) return [l.key, attack];
+    return [has(this.scene, this.bodyKey, plain) ? this.bodyKey : l.key, plain];
+  }
+
   /** Every layer shows the current frame of its piece; the frame's fade, if any, is applied to the whole figure. */
   private apply(): void {
     const clip = CLIPS[this.clip];
     const frame = clip.frames[this.index]!;
     for (const l of this.layers) {
       const plain = `${l.piece}/${this.clip}/${frame.n}`;
-      // The Wizard's and Archer's hands move their own way: a set holds frames for them under their clip's name.
-      const own = this.clip === 'attack1' && OWN_ATTACK[this.classId] ? `${l.piece}/${OWN_ATTACK[this.classId]}/${frame.n}` : '';
-      const name = own && has(this.scene, l.key, own) ? own : plain;
-      const key = name === plain && has(this.scene, this.bodyKey, plain) ? this.bodyKey : l.key;
+      const [key, name] = this.frameFor(l, plain, frame.n);
       const ok = has(this.scene, key, name);
       l.sprite.setVisible(ok);
       if (ok && (l.sprite.frame.name !== name || l.sprite.texture.key !== key)) l.sprite.setTexture(key, name);
