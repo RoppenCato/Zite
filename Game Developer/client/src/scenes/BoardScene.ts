@@ -45,7 +45,7 @@ import { releaseBackdrops } from '../backdrop.ts';
 import { groundDepth, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
-import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero } from '../hero.ts';
+import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
@@ -547,7 +547,7 @@ export class BoardScene extends Phaser.Scene {
         hurt: { icon: 'mark_alert', title: 'Ouch!', color: 0xff7a5c },
         gold: { icon: 'item_gold', title: 'A lucky find', color: 0xe8b84a },
         mana: { icon: 'mark_drop', title: 'Refreshed', color: 0x5aa9ff },
-        flask: { icon: 'item_honey_tonic', title: 'A lucky find', color: 0xe8b84a },
+        flask: { icon: 'potion', title: 'A lucky find', color: 0xe8b84a },
         card: { icon: 'item_do_over', title: 'A lucky find', color: 0xc084fc },
       }[themed.kind];
       m.find(look.icon, look.title, themed.text, look.color);
@@ -929,6 +929,7 @@ export class BoardScene extends Phaser.Scene {
       this.children.getByName('bar-back')?.destroy();
     });
     preloadHero(this, Object.values(this.game_.state.characters).map((c) => c.classId));
+    preloadWornSets(this, Object.values(this.game_.state.characters));
     preloadLoot(this);
     // Every open area's kit and the next one's, which waits under the cloud.
     const { areas } = this.game_.state.board;

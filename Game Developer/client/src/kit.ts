@@ -4,6 +4,10 @@
 // that runs before the kit is loaded (nothing, once the first scene preloads it) falls back to the shapes in ui.ts.
 
 import Phaser from 'phaser';
+import bigDieJson from '../../assets/big_die/big_die.json?url';
+import bigDiePng from '../../assets/big_die/big_die.png';
+import flasksJson from '../../assets/flasks/flasks.json?url';
+import flasksPng from '../../assets/flasks/flasks.png';
 import uiData from '../../assets/ui/ui.json';
 import uiJson from '../../assets/ui/ui.json?url';
 import uiPng from '../../assets/ui/ui.png';
@@ -27,7 +31,13 @@ const NINE: Record<string, number> = Object.fromEntries(
     .map(([name, f]) => [name, f.nine!]),
 );
 
+/** The flasks' and the big die's atlases (Mitch, AD, 2026-11-02). */
+const FLASKS = 'flasks';
+export const BIG_DIE = 'big_die';
+
 export function preloadKit(scene: Phaser.Scene): void {
+  if (!scene.textures.exists(FLASKS)) scene.load.atlas(FLASKS, flasksPng, flasksJson);
+  if (!scene.textures.exists(BIG_DIE)) scene.load.atlas(BIG_DIE, bigDiePng, bigDieJson);
   if (!scene.textures.exists(KIT)) scene.load.atlas(KIT, uiPng, uiJson);
   if (!scene.textures.exists(KIT_SOFT)) scene.load.atlas(KIT_SOFT, softPng, softJson);
 }
@@ -49,17 +59,21 @@ export function resizePlate(p: Phaser.GameObjects.NineSlice, w: number, h: numbe
 
 /** An icon or mark of the kit at its design size. */
 export function icon(scene: Phaser.Scene, frame: string, x: number, y: number): Phaser.GameObjects.Image {
+  // A flask's icon lives in its own atlas, named by the item.
+  if (scene.textures.exists(FLASKS) && scene.textures.get(FLASKS).has(frame)) return scene.add.image(x, y, FLASKS, frame).setScale(SCALE);
   return scene.add.image(x, y, KIT, frame).setScale(SCALE);
 }
 
 /** True when the kit has this frame (an item icon may be missing for a new item). */
 export function hasFrame(scene: Phaser.Scene, frame: string): boolean {
+  if (scene.textures.exists(FLASKS) && scene.textures.get(FLASKS).has(frame)) return true;
   return kitReady(scene) && scene.textures.get(KIT).has(frame);
 }
 
 /** The kit's item icon for an item id, if there is one. */
 export function itemFrame(item: string): string {
-  return { potion: 'item_honey_tonic', 'potion-2': 'item_honey_tonic', 'potion-3': 'item_honey_tonic', 'mana-potion': 'item_moon_dew', 'mana-potion-2': 'item_moon_dew', 'mana-potion-3': 'item_moon_dew', 'elixir-vigor': 'mark_heart', 'elixir-arcana': 'mark_star', 'elixir-cure': 'mark_drop', reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', exact: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
+  if (item.startsWith('potion') || item.startsWith('mana-potion') || item.startsWith('elixir-')) return item;
+  return { reroll: 'item_do_over', 'plus-one': 'item_hop', 'minus-one': 'item_hold', exact: 'item_fairy_pick' }[item] ?? `item_${item.replace(/-/g, '_')}`;
 }
 
 /** A modal sheet over the world band (the shop, the bag, the atlas): the world dimmed, the kit's parchment in its wood frame. */

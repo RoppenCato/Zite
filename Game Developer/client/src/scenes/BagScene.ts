@@ -100,7 +100,7 @@ export class BagScene extends Phaser.Scene {
     const dim = kit ? INK_DIM : COLORS.dim;
     const s = stats(me);
     const extras = [s.crit > 0.1 ? `crit ${Math.round(s.crit * 100)}%` : '', s.dodge ? `dodge +${Math.round(s.dodge * 100)}%` : '', s.lifesteal ? `lifesteal ${Math.round(s.lifesteal * 100)}%` : '', s.thorns ? `thorns ${Math.round(s.thorns * 100)}%` : ''].filter(Boolean);
-    this.numbers.setText(`Attack ${s.attack} · Defense ${s.defense} · HP ${me.hp}/${s.maxHp} · Mana ${me.mana}/${s.maxMana}${extras.length ? ` · ${extras.join(' · ')}` : ''}`);
+    this.numbers.setText(`Attack ${s.attack}${s.magic ? ` · Magic ${s.magic}` : ""} · Defense ${s.defense} · HP ${me.hp}/${s.maxHp} · Mana ${me.mana}/${s.maxMana}${extras.length ? ` · ${extras.join(' · ')}` : ''}`);
     this.carriedLabel.setText(`Carried · ${me.bag.length} of ${GEAR.bagLimit}`);
 
     // The worn grid.

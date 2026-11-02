@@ -11,7 +11,7 @@ import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
 import { feel } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
-import { CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
+import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
 import { settings } from '../settings.ts';
 import { Bar, makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -36,8 +36,7 @@ const MESSAGE_W = 380;
 export const CHIPS_Y = 754;
 /** The die's place in the panel. */
 const DIE = { x: DESIGN_WIDTH - 48, y: HUD_HEIGHT / 2 } as const;
-/** The big die: how much larger than the corner's, where it stands, how long its number stays. */
-const BIG_DIE_SCALE = 2.6;
+/** The big die: where it stands, how long its number stays. */
 const BIG_DIE_Y = 390;
 const BIG_DIE_HOLD_MS = 620;
 
@@ -162,7 +161,7 @@ export class HudScene extends Phaser.Scene {
             spin += 1;
             const frame = spin % 2 ? 'die_blur' : `die_${1 + Math.floor(Math.random() * 6)}`;
             if (this.dieFace) this.dieFace.setFrame(frame).setAlpha(1).setAngle(spin * 37);
-            this.bigFace?.setFrame(frame);
+            this.bigFace?.setFrame(spin % 2 ? 'big_die_blur' : `big_die_${1 + Math.floor(Math.random() * 6)}`);
             this.dieText?.setText(String(1 + Math.floor(Math.random() * 6)));
           },
         });
@@ -209,9 +208,9 @@ export class HudScene extends Phaser.Scene {
 
   /** The die in the middle of the screen while it rolls (Robin, 2026-11-02). */
   private showBigDie(): void {
-    if (!this.kit || !this.dieFace) return;
+    if (!this.textures.exists(BIG_DIE)) return;
     this.bigDie?.destroy();
-    this.bigFace = this.add.image(0, 0, this.dieFace.texture.key, 'die_blur').setScale(this.dieFace.scale * BIG_DIE_SCALE);
+    this.bigFace = this.add.image(0, 0, BIG_DIE, 'big_die_blur').setScale(0.5);
     this.bigDie = this.add.container(DESIGN_WIDTH / 2, BIG_DIE_Y, [this.add.circle(0, 0, 92, 0x0a0c14, 0.28), this.bigFace]).setDepth(20);
     this.bigDie.setScale(0.4);
     this.tweens.add({ targets: this.bigDie, scale: 1, duration: 170, ease: 'Back.easeOut' });
@@ -223,7 +222,7 @@ export class HudScene extends Phaser.Scene {
     const die = this.bigDie!;
     const face = this.bigFace!;
     this.tweens.killTweensOf(face);
-    face.setAngle(0).setFrame(`die_${value}`);
+    face.setAngle(0).setFrame(`big_die_${value}`);
     this.tweens.killTweensOf(die);
     die.setScale(1.25);
     this.tweens.add({ targets: die, scale: 1, duration: 240, ease: 'Back.easeOut' });

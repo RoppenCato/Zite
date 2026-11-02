@@ -17,6 +17,7 @@ atlases. They are not screenshots of the game.
   shrine and church 56, the gate 120. Clean plates with the kind in the rim's colour and nothing on them (Robin, 2026-11-01).
 - **Props:** pivot at the foot, shadows baked in. Sort by the foot's y with the token in the same sort. Do not flip them: the
   shadow falls to the lower right on every piece. `clover`, `worn` and `hill` are flat: draw them before the roads.
+- **Board and apothecary:** `spot_board` (56, a teal rim), `quest_board` by `crossroads`, `apothecary` by `windy`, a green-thatched cottage (2026-11-02). `hedge_long` and `stile` are gone from the atlas: nothing placed them.
 - **The church:** `church` stands by `ravine`, Little Clover Church, on a `spot_church` plate with a rose rim (Robin, 2026-11-01: "a church somewhere on each map"). Placement has it, with the long hedge and the stile gone from that hub.
 - **Placement:** `placement_cloverfield.json` lists every prop as `{ name, x, y, hub? }` in world pixels, ready to load. It keeps
   each piece's whole body clear of the roads and spots and inside the area's bounds as the game reports them (x 140 to 1240,
@@ -49,7 +50,6 @@ The cliff and the rims were checked as repeats only.
 | `bush_a` | anywhere, at a tree's foot | 45 by 37 | 22, 29 |
 | `bush_b` | anywhere, at a tree's foot | 54 by 34 | 27, 25 |
 | `hedge_short` | Hedgerow, field edges | 114 by 30 | 64, 28 |
-| `hedge_long` | Hedgerow, field edges | 178 by 28 | 105, 27 |
 | `rock_a` | anywhere the ground breaks | 35 by 22 | 16, 15 |
 | `rock_b` | anywhere the ground breaks | 38 by 20 | 19, 13 |
 | `rock_c` | anywhere the ground breaks | 33 by 17 | 14, 10 |
@@ -70,11 +70,12 @@ The cliff and the rims were checked as repeats only.
 | `sack` | town hubs, Windmill Hill | 16 by 15 | 8, 13 |
 | `signpost_one` | wild ground | 29 by 42 | 6, 38 |
 | `signpost_three` | Clover Crossroads | 59 by 57 | 29, 51 |
-| `stile` | Hedgerow | 22 by 21 | 11, 18 |
 | `hill` | Windmill Hill, under the windmill; a flat piece, draw it before the roads; the windmill stands 40 design px above its foot | 167 by 85 | 77, 76 |
 | `windmill` | Windmill Hill | 129 by 161 | 70, 149 |
 | `old_mill` | Old Mill | 105 by 64 | 40, 57 |
 | `pond` | Duck Pond | 164 by 106 | 83, 92 |
+| `quest_board` | Clover Crossroads, the quest board | 68 by 65 | 34, 63 |
+| `apothecary` | Windmill Apothecary | 101 by 113 | 50, 108 |
 | `church` | Little Clover Church, one on each map, beside its church hub | 138 by 169 | 55, 162 |
 | `spring` | Abandoned Orchard, a spring spot | 82 by 61 | 39, 45 |
 | `shrine` | Forest Shrine, a shrine spot | 44 by 55 | 26, 52 |
@@ -86,6 +87,7 @@ The cliff and the rims were checked as repeats only.
 | `spot_chest` | a chest spot (t) | 61 by 36 | the centre, where the token stands |
 | `spot_spring` | a spring spot (p) | 61 by 36 | the centre, where the token stands |
 | `spot_shrine` | a shrine spot (s) | 61 by 36 | the centre, where the token stands |
+| `spot_board` | a quest board hub | 61 by 36 | the centre, where the token stands |
 | `spot_church` | a church hub, heals and clears poison | 61 by 36 | the centre, where the token stands |
 | `spot_gate` | the boss hub | 125 by 71 | the centre, where the token stands |
 

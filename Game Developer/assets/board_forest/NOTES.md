@@ -12,12 +12,16 @@ Mitch, AD, 2026-11-01. Designs mine, under Robin's permission of 2026-11-01 for 
 - **Placements:** `placement_wobblewood.json` under `thornwood`, in world pixels. Props stay clear of every road and spot and inside the area's bounds, which I worked out by your rule of the spots plus a margin of 60.
 - **Plates:** the same `spot_*` names as the meadows, all eight kinds, in `board_props`.
 
+## New on 2026-11-02
+
+`spot_board` (a teal rim), `quest_board` by `edge`, `apothecary` by `thicket`, a mushroom house with a flask sign. `fir_b` and `signpost_one` left the atlas to make room; placement no longer uses them.
+
 ## The landmarks
 
 | Hub | Piece |
 | --- | --- |
-| `edge` Wobblewood Edge | `signpost_three` |
-| `thicket` Fungal Ring | `fungal_ring` |
+| `edge` Wobblewood Board | `quest_board` |
+| `thicket` Fungal Apothecary | `apothecary`, with `fungal_ring` beside it |
 | `briar` Grumblebark's Glade | `glade_gate`, two old trees bent into a scowling arch |
 | `elder` Mossy Shrine | `shrine` |
 | `hollow` Oakshade Church | `church`, the same church under an oak, with moss and ivy |
@@ -40,7 +44,6 @@ Not seen in the game. The first map test used my own road curve, which follows t
 | `wobble_b` | wild ground, leaning left | 91 by 117 | 56, 112 |
 | `tall_a` | wild ground, old giants, few | 119 by 173 | 63, 167 |
 | `fir_a` | wild ground, dark corners | 73 by 86 | 46, 82 |
-| `fir_b` | wild ground, dark corners | 61 by 74 | 40, 71 |
 | `big_mush_a` | anywhere, magenta | 69 by 69 | 30, 65 |
 | `big_mush_b` | anywhere, teal | 72 by 80 | 43, 74 |
 | `big_mush_c` | anywhere, orange | 56 by 57 | 25, 53 |
@@ -64,19 +67,19 @@ Not seen in the game. The first map test used my own road curve, which follows t
 | `fence` | Tumbletree | 59 by 17 | 30, 14 |
 | `barrel` | Tumbletree, the shop | 18 by 20 | 8, 16 |
 | `sack` | Tumbletree, the shop | 16 by 15 | 8, 13 |
-| `signpost_one` | wild ground | 29 by 42 | 6, 38 |
-| `signpost_three` | Wobblewood Edge | 59 by 57 | 29, 51 |
+| `quest_board` | Wobblewood Board | 68 by 65 | 34, 63 |
+| `apothecary` | Fungal Apothecary | 93 by 81 | 46, 77 |
 | `tree_house_a` | Tumbletree Village | 87 by 112 | 44, 107 |
 | `tree_house_b` | Tumbletree Village | 87 by 112 | 44, 107 |
 | `tree_house_c` | Tumbletree Village | 87 by 112 | 44, 107 |
-| `tumbletree` | Tumbletree Village, its great tree | 219 by 259 | 72, 252 |
+| `tumbletree` | Tumbletree Village, its great tree | 192 by 227 | 63, 220 |
 | `hollow_log` | Hollow Log Shop | 188 by 73 | 91, 65 |
 | `upside_tree` | The Upside-Down Tree | 147 by 198 | 75, 177 |
 | `fungal_ring` | Fungal Ring | 120 by 75 | 62, 72 |
 | `root_bridge` | Root Bridge | 155 by 69 | 72, 56 |
 | `owl_tree` | Owl Hollow | 144 by 184 | 72, 177 |
 | `glade_gate` | Grumblebark's Glade | 173 by 192 | 81, 183 |
-| `church` | Oakshade Church, under its oak | 181 by 196 | 55, 189 |
+| `church` | Oakshade Church, under its oak | 164 by 178 | 50, 172 |
 | `shrine` | Mossy Shrine | 44 by 55 | 26, 52 |
 | `spring` | Dewdrop Pool | 82 by 61 | 39, 45 |
 | `spot_wild` | a wild spot | 61 by 36 | the centre, where the token stands |
@@ -85,5 +88,6 @@ Not seen in the game. The first map test used my own road curve, which follows t
 | `spot_chest` | a chest spot | 61 by 36 | the centre, where the token stands |
 | `spot_spring` | a spring spot | 61 by 36 | the centre, where the token stands |
 | `spot_shrine` | a shrine spot | 61 by 36 | the centre, where the token stands |
+| `spot_board` | a quest board hub | 61 by 36 | the centre, where the token stands |
 | `spot_church` | a church hub | 61 by 36 | the centre, where the token stands |
 | `spot_gate` | the boss hub | 125 by 71 | the centre, where the token stands |

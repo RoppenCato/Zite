@@ -10,7 +10,7 @@ import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RA
 import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
-import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
+import { hasFrame, icon, kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -115,7 +115,7 @@ export class ShopScene extends Phaser.Scene {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
       // The name and its line on one row each, cut to the room before the price (Robin, 2026-11-01: the shop's words overlapped).
-      const pic = ability ? abilityIcon(this, ability, 40, y, 34) : null;
+      const pic = ability ? (hasFrame(this, ability) ? icon(this, ability, 42, y).setScale(0.42) : abilityIcon(this, ability, 40, y, 34)) : null;
       if (pic) this.rows.push(pic);
       const textX = pic ? 62 : 26;
       const title = this.add.text(textX, y - 9, name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: nameColor }).setOrigin(0, 0.5);
@@ -155,7 +155,7 @@ export class ShopScene extends Phaser.Scene {
       sold.forEach((id, i) => {
         const item = ITEMS[id]!;
         const owned = me.items[id] ?? 0;
-        row(i, item.name, this.ink.text, `${item.text.split('. ')[0]!.replace(/.$/, '')}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '');
+        row(i, item.name, this.ink.text, `${item.text.split('. ')[0]!.replace(/.$/, '')}.`, `${item.price} g`, 'Buy', () => this.buy({ item: id }), owned ? `You have ${owned}` : '', item.dice ? '' : id);
       });
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);

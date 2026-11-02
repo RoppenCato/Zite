@@ -49,7 +49,8 @@ async function tick() {
     P.fighting = { role: e.role, name: e.name };
     if (e.role === 'boss') P.bossRounds[e.name] = (P.bossRounds[e.name] ?? 0) + 1;
     let move = { kind: 'attack' };
-    if (me.hp < st.maxHp * 0.35 && (me.items.potion ?? 0) > 0) move = { kind: 'item', item: 'potion' };
+    const heal = ['potion-3', 'potion-2', 'potion'].find((id) => (me.items[id] ?? 0) > 0);
+    if (me.hp < st.maxHp * 0.35 && heal) move = { kind: 'item', item: heal };
     else {
       const ids = Object.keys(me.abilities).filter((id) => { const a = r.ABILITIES[id]; return a && me.mana >= a.mana && (!a.meter || (me.fight.meter ?? 0) >= a.meter) && !(a.oncePerFight && me.fight.used?.includes(id)); });
       if (ids.length && Math.random() < 0.6) move = { kind: 'ability', ability: ids[Math.floor(Math.random() * ids.length)] };
@@ -62,10 +63,12 @@ async function tick() {
     const s = sm.getScene('shop');
     if (s.inFlight) return 'shop';
     const tier = g.state.board.areas[g.state.board.spaces[me.space]?.area]?.tier ?? 1;
-    const want = r.SLOTS.filter((x) => (me.equipment[x]?.rank ?? 0) < tier && me.equipment[x]?.rarity !== 'rare' && me.bag.length < 12).map((x) => [x, r.plainGear('p', x, tier).price]).filter(([, c]) => c <= me.gold);
-    // In the rules a higher plain piece goes on by itself.
-    if (want.length) { note(`L${me.level} buys rank ${tier} ${want[0][0]}`); s.buy({ slot: want[0][0] }); return 'buy'; }
-    if ((me.items.potion ?? 0) < 3 && me.gold >= 25) { s.buy({ item: 'potion' }); return 'buy'; }
+    const offer = r.shopOffer(g.state, me);
+    const line = offer?.lines.find((l) => l === { warrior: 'heavy', rogue: 'light', mage: 'magic', ranger: 'light' }[me.classId]) ?? offer?.lines[0];
+    const want = line ? r.SLOTS.filter((x) => (me.equipment[x]?.rank ?? 0) < tier && me.equipment[x]?.rarity !== 'rare' && me.bag.length < 12).map((x) => [x, r.plainGear('p', x, tier, line, me.classId).price]).filter(([, c]) => c <= me.gold) : [];
+    if (want.length) { note(`L${me.level} buys rank ${tier} ${line} ${want[0][0]}`); s.buy({ slot: want[0][0], line }); return 'buy'; }
+    const flask = ['potion', 'potion-2', 'potion-3'].find((id) => offer?.items.includes(id) && (tier === 1 ? id === 'potion' : id.endsWith(String(Math.min(tier, 3)))));
+    if (flask && (me.items[flask] ?? 0) < 3 && me.gold >= r.ITEMS[flask].price + 5) { s.buy({ item: flask }); return 'buy'; }
     b.shopLeft();
     return 'leftshop';
   }
@@ -86,7 +89,7 @@ async function tick() {
     const boss = bossSpace(g, me);
     let t;
     if (me.hp < st.maxHp * 0.5) t = nearest(['church', 'town']);
-    else if (me.bag.length < 12 && r.SLOTS.some((x) => (me.equipment[x]?.rank ?? 0) < tier && me.equipment[x]?.rarity === 'common') && me.gold > 90) t = nearest(['shop', 'town']);
+    else if (me.bag.length < 12 && r.SLOTS.some((x) => (me.equipment[x]?.rank ?? 0) < tier) && me.gold > 60) t = nearest(['shop']);
     else if (boss && me.level >= g.state.board.areas[boss.area].tier * 4) t = boss;
     else t = sp[opts[Math.floor(Math.random() * opts.length)]];
     b.onSpaceTap(opts.sort((a, c) => dist(sp[a], t) - dist(sp[c], t))[0]);
