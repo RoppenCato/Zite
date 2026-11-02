@@ -41,3 +41,7 @@ Bare, each class has its own colours, hair and iris. **A hat replaces the hair a
 ## Not tested
 
 Not seen in the game. A shield on a Wizard or Archer is drawn on the forearm like the Knight's, and I have not judged how often it will be seen. The Owl Friend, the Falling Star and the Bubble Shield come with the effects strip.
+
+## The Hunter's Wooden Bow (Mitch, AD, 2026-11-02)
+
+`wooden_bow` is in `archer/weapon` with all 26 frames, and in `archer/icons`. It is a bow in plain wood, drawn the same way as `tin_bow`, with the same far hand and near-hand draw. Treat it as a bow, not as a wooden weapon: so no `hand_grip`, and the Archer's `gear_over` frames apply.

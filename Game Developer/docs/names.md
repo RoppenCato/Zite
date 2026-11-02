@@ -7,7 +7,7 @@ the ids (`meadows`, `slime`, `warrior`) stay as they are and never show. Counts 
 The world's kinds of place, in order outward from the start: Cloverfield Meadows, Wobblewood Forest, Honeyhill Fields (laid by
 hand), then the nine grown archetypes Glimmerlake Shores, Moonwhisper Woods, Thunderstone Highlands, Sunfall Expanse,
 Frostveil Peaks, Thornhollow Wilds, Starfall Dominion, Embercrown Mountains, The Shattered Crown, round and round. Each has
-four creatures, a mini-boss and a boss. The four classes are the Warrior, the Magician, the Rogue and the Hunter (Robin, 2026-11-02), each with three paths.
+four creatures, a mini-boss and a boss. The four classes are the Warrior, the Magician, the Rogue and the Hunter (Robin, 2026-11-02), each with three trees.
 
 ## 1. The world and its areas (`world.json`)
 
@@ -84,10 +84,10 @@ Themed on 2026-11-01 (mine, at Robin's ask). The ids (`warrior`, `heavy-blow`, â
 
 | Class | One line | Meter (fills in a fight) |
 | --- | --- | --- |
-| Warrior | Blocks to build Valor, then hits hard. Paths: Paladin, Berserker, Knight. | Valor: builds when you Block. |
-| Magician | Mana Shield, weak staff, strong spells. Paths: Wizard, Cleric, Spellsword. | Arcana: builds a point every round. |
-| Rogue | Three quick hits, crits that build. Paths: Ninja, Shadow, Alchemist. | Mischief: builds each time you attack. |
-| Hunter | Bows only, strikes first, shoots back. Paths: Ranger, Beastmaster, Trapper. | Aim: builds when a blow misses you and when you crit. |
+| Warrior | Blocks to build Valor, then hits hard. Trees: Paladin, Berserker, Knight. | Valor: builds when you Block. |
+| Magician | Mana Shield, weak staff, strong spells. Trees: Wizard, Cleric, Spellsword. | Arcana: builds a point every round. |
+| Rogue | Three quick hits, crits that build. Trees: Ninja, Shadow, Alchemist. | Mischief: builds each time you attack. |
+| Hunter | Bows only, strikes first, shoots back. Trees: Ranger, Beastmaster, Trapper. | Aim: builds when a blow misses you and when you crit. |
 
 Six abilities a class; the first two are known from the start, the rest learnt at shrines, trainers and level picks.
 

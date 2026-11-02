@@ -500,4 +500,4 @@ All three first regions are painted. `world.json` gains `exit`, a third gate, an
 
 ## Skills (2026-11-02)
 
-`SkillsScene`, from Hero: the class's four and the path's three, points, carry, learn, reset. A first look with letters for the abilities with no icon. The fight's abilities page shows what is carried. Choosing a path also asks in a window when the level is reached.
+`SkillsScene`, from Hero, after Mitch, AD's design with three trees for his path board: the carried belt, the class's four, the trees read downwards, one card. The fight's abilities page shows what is carried. Settings has two testing rows, to go before an Alpha.

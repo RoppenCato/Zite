@@ -2,7 +2,7 @@
 // The state passed in is never changed; a new one comes back. `now` is the holder's clock in ms, for spots that give
 // again after a while and for spawns; the rules never read a clock themselves.
 
-import { canLearn, MAX_CARRIED, PATH_LEVEL, resetSkills, traitsOf } from './skills.ts';
+import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
@@ -92,7 +92,6 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     offer: null,
     quests: [],
     questsDone: [],
-    path: null,
     carried: [...c.kit],
     bonusPoints: 0,
     keys: {},
@@ -735,15 +734,28 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
   if (action.op === 'learn') {
     if (!canLearn(c, action.ability)) return reject(state, action, 'not now');
     const rank = (c.abilities[action.ability] ?? 0) + 1;
-    const carried = c.carried.includes(action.ability) || c.carried.length >= MAX_CARRIED ? c.carried : [...c.carried, action.ability];
+    const isRule = !!ABILITIES[action.ability]!.rule;
+    const carried = isRule || c.carried.includes(action.ability) || c.carried.length >= MAX_CARRIED ? c.carried : [...c.carried, action.ability];
     return done({ ...c, carried, abilities: { ...c.abilities, [action.ability]: rank } }, [{ type: 'learned', action: action.id, player: action.player, ability: action.ability, rank }]);
   }
-  if (action.op === 'path') {
-    if (c.path || c.level < PATH_LEVEL || !CLASS_DATA[c.classId]?.paths[action.path]) return reject(state, action, 'not now');
-    return done({ ...c, path: action.path }, [{ type: 'pathTaken', action: action.id, player: action.player, path: action.path }]);
+  if (action.op === 'testClass') {
+    if (!CLASS_DATA[action.classId]) return reject(state, action, 'not now');
+    const worn = c.equipment.weapon;
+    const weapon = worn ? plainGear(worn.id, 'weapon', worn.rank, 'heavy', action.classId) : null;
+    const numbers = baseNumbers(action.classId, c.level);
+    const next = resetSkills({ ...c, classId: action.classId, ...numbers, equipment: { ...c.equipment, weapon } });
+    const s = stats(next);
+    return done({ ...next, hp: s.maxHp, mana: s.maxMana });
+  }
+  if (action.op === 'testLevel') {
+    const level = c.level + 1;
+    const numbers = baseNumbers(c.classId, level);
+    const next = { ...c, level, xp: Math.max(c.xp, PROGRESSION.xpForLevel[level - 1] ?? c.xp), ...numbers };
+    const s = stats(next);
+    return done({ ...next, hp: s.maxHp, mana: s.maxMana });
   }
   if (action.op === 'carry') {
-    if (!c.abilities[action.ability]) return reject(state, action, 'no such ability');
+    if (!c.abilities[action.ability] || ABILITIES[action.ability]?.rule) return reject(state, action, 'no such ability');
     if (c.carried.includes(action.ability)) return done({ ...c, carried: c.carried.filter((a) => a !== action.ability) });
     if (c.carried.length >= MAX_CARRIED) return reject(state, action, 'not now');
     return done({ ...c, carried: [...c.carried, action.ability] });

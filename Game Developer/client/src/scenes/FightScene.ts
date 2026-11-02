@@ -526,7 +526,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'revived':
         sfx.play('fight/revive');
         this.heroBar.set(e.hp, s.maxHp);
-        this.say(e.by === 'phoenix' ? `The Phoenix Feather burns: you rise with ${e.hp} HP!` : `The Phoenix Helm pulls you back to ${e.hp} HP.`);
+        this.say(e.by === 'guardian' ? `The last light holds: you stand with ${e.hp} HP!` : e.by === 'phoenix' ? `The Phoenix Feather burns: you rise with ${e.hp} HP!` : `The Phoenix Helm pulls you back to ${e.hp} HP.`);
         break;
       case 'countered':
         this.hero?.play('attack1');
@@ -770,6 +770,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       f.infuse ? `${f.infuse.kind === 'ice' ? 'frost' : 'storm'} ${f.infuse.rounds}` : '',
       f.dance ? (f.dance.exposed ? 'open' : `shadow ${f.dance.rounds}`) : '',
       f.coat ? `coated ${f.coat.hits}` : '',
+      f.clone ? `clone ${f.clone.rounds}` : '',
+      f.guardian ? 'last light' : '',
       f.regen ? `healing ${f.regen.rounds}` : '',
       f.blockUp ? `bulwark ${f.blockUp.rounds}` : '',
       f.thornsUp ? `retort ${f.thornsUp.rounds}` : '',
@@ -791,6 +793,9 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     this.held.set('bubble_shield', !!f.barrier, heroChest.x, heroChest.y, 'bubble', 'bubble_pop');
     this.held.set('windup_tell', !!e.charged, foeHead.x, Math.max(foeHead.y - 14, FIGHT_LAYOUT.historyY + 34));
     this.held.set('poison_drip', !!e.poison, foeHead.x, foeHead.y + 20);
+    this.held.set('burn', !!e.burn, this.spot('enemy', 'chest').x, this.feetY - 10);
+    this.held.set('frost_edge', f.infuse?.kind === 'ice', heroChest.x + 26, heroChest.y + 6);
+    this.held.set('storm_edge', f.infuse?.kind === 'storm', heroChest.x + 26, heroChest.y + 6);
     this.held.set('weaken', !!e.weakened, foeChest.x, foeChest.y);
     this.held.set('chill', !!e.stunned, foeChest.x, foeChest.y);
     if (f.companion && !this.owl && this.game_.me.classId === 'ranger' && !settings.get().fewerEffects) this.owl = new Owl(this, FIGHT_LAYOUT.heroX + 84, this.feetY - 70);
@@ -819,6 +824,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         case 'poison': return `${n} is poisoned for ${rounds} rounds.`;
         case 'burn': return `${n} is burning for ${rounds} rounds.`;
         case 'sunder': return `${n} takes more damage for ${rounds} rounds.`;
+        case 'interrupt': return `You break ${n}'s wind-up!`;
         case 'armoured': return `${n} hardens: its hide is thicker for ${rounds} rounds.`;
         case 'evade': return `${n} fades: your next hit will miss.`;
         case 'mark': return `${n} is marked: your next ${rounds} hits land harder.`;
@@ -834,6 +840,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
       case 'companion': return `Your owl takes wing: it strikes at the end of every round for ${rounds} rounds.`;
       case 'windup': return `A star is called: it lands in ${rounds} rounds, whatever you do.`;
+      case 'clone': return `A copy of you joins in for ${rounds} rounds.`;
+      case 'guardian': return 'A last light stands over you.';
       case 'poison': return `You are poisoned for ${rounds} rounds.`;
       case 'weakened': return `You are weakened for ${rounds} rounds: your hits land softer.`;
       default: return '';

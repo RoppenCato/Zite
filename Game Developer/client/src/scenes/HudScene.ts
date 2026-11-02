@@ -4,7 +4,7 @@
 // call the board scene, and the board scene tells it what to show. Drawn from the UI kit (kit.ts, Mitch, AD, 2026-11-01).
 
 import Phaser from 'phaser';
-import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
+import { CLASS_DATA, WORLD_DATA, specialization } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -102,7 +102,7 @@ export class HudScene extends Phaser.Scene {
   /** The numbers under the name, and where you are. */
   setStats(n: HudNumbers, place: string): void {
     const me = this.game_.me;
-    this.name.setText(`${me.name} the ${CLASS_DATA[me.classId].name}`);
+    this.name.setText(`${me.name} the ${specialization(me) ?? CLASS_DATA[me.classId].name}`);
     this.levelText.setText(`Lv ${n.level}`);
     this.hpBar.set(n.hp, n.maxHp);
     this.mpBar.set(n.mana, n.maxMana);

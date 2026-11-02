@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 21;
+export const STATE_VERSION = 22;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
@@ -242,8 +242,6 @@ export interface Character {
   walking?: string[];
   /** Elixirs drunk: what they add and for how many more fights. */
   elixirs?: Partial<Record<'vigor' | 'arcana', { value: number; fights: number }>>;
-  /** The path taken at PATH_LEVEL, or none yet. */
-  path: string | null;
   /** The abilities brought into a fight, up to four. */
   carried: string[];
   /** Points from a first win over a region's boss, on top of the levels'. */
@@ -336,7 +334,7 @@ export interface Fight {
   /** A spell in the air (Meteor): it lands when `rounds` reaches 0. */
   windup: { name: string; power: number; rounds: number } | null;
   /** A companion striking at the end of each round. */
-  companion: { name: string; rounds: number; power: number } | null;
+  companion: { name: string; rounds: number; power: number; hits?: number } | null;
   /** The next `hits` player hits land `mult` times as hard. */
   mark: { hits: number; mult: number } | null;
   /** Enemy wind-ups that will fail. */
@@ -361,6 +359,11 @@ export interface Fight {
   thornsUp: { rounds: number; share: number } | null;
   counterUp: { rounds: number; chance: number } | null;
   spike: { rounds: number; power: number } | null;
+  clone: { rounds: number; power: number } | null;
+  /** Last Light: the next fatal blow leaves this share of HP. */
+  guardian: number;
+  /** All healed this fight (Judgement Day). */
+  healed: number;
 }
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
@@ -424,9 +427,11 @@ export type Action =
   /** A dice card while a roll is pending; `value` is the number for a Fairy Pick. */
   | { type: 'use'; id: string; player: string; item: string; value?: number }
   | { type: 'gamble'; id: string; player: string; choice: 'high' | 'low' | 'pass' }
-  /** The skill board: learn or raise an ability, take a path, carry or put down an ability, or reset in a town. */
+  /** The skill board: learn or raise an ability, carry or put down an ability, or reset in a town. */
   | { type: 'skill'; id: string; player: string; op: 'learn' | 'carry'; ability: string }
-  | { type: 'skill'; id: string; player: string; op: 'path'; path: string }
+  /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
+  | { type: 'skill'; id: string; player: string; op: 'testClass'; classId: ClassId }
+  | { type: 'skill'; id: string; player: string; op: 'testLevel' }
   | { type: 'skill'; id: string; player: string; op: 'reset' }
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
@@ -497,10 +502,9 @@ export type GameEvent =
   | { type: 'offer'; action: string; player: string; offer: Offer }
   | { type: 'gambled'; action: string; player: string; choice: 'high' | 'low'; roll: number; won: boolean; delta: number; gold: number }
   /** Levels crossed or a boss beaten brought skill points. */
-  | { type: 'skillPoints'; action: string; player: string; gained: number; free: number; pathReady: boolean }
+  | { type: 'skillPoints'; action: string; player: string; gained: number; free: number }
   /** Blood Price, Reckless Swing: HP spent. */
   | { type: 'selfHurt'; action: string; player: string; amount: number; hp: number }
-  | { type: 'pathTaken'; action: string; player: string; path: string }
   | { type: 'skillReset'; action: string; player: string }
   /** A town's errand taken or declined. */
   | { type: 'questTaken'; action: string; player: string; quest: Quest }
@@ -533,7 +537,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'sunder' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean }
   /** What the enemy will do next round. */
@@ -547,7 +551,7 @@ export type GameEvent =
   /** The enemy healed itself; `hp` is the new value. */
   | { type: 'enemyHealed'; action: string; player: string; amount: number; hp: number }
   /** A blow that would have felled you did not: a power caught you; `hp` is where it left you. */
-  | { type: 'revived'; action: string; player: string; by: 'secondWind' | 'phoenix'; hp: number }
+  | { type: 'revived'; action: string; player: string; by: 'guardian' | 'secondWind' | 'phoenix'; hp: number }
   /** The enemy drank mana from you. */
   | { type: 'drained'; action: string; player: string; mana: number; left: number }
   /** A free blow back after taking one (the counter guard, or thorns); `hp` is the enemy's. */

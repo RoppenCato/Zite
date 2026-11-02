@@ -6,7 +6,7 @@
 
 import { ABILITIES, apply, CLASS_DATA, makeRng, newGame, plainGear, PROGRESSION, startFight, stats, type ClassId, type GameState, type GearLine } from '../rules/src/index.ts';
 import type { Character } from '../rules/src/index.ts';
-import { abilitiesFor, pointsForLevel } from '../rules/src/skills.ts';
+import { pointsForLevel } from '../rules/src/skills.ts';
 
 const N = Number(process.argv[2]) || 300;
 const LINE: Record<ClassId, GearLine> = { warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' } as Record<ClassId, GearLine>;
@@ -42,7 +42,6 @@ function build(classId: ClassId, path: string | null, level: number, rank: numbe
     maxMana: cls.mana + cls.growth.mana * grown,
     attack: cls.attack + cls.growth.attack * grown,
     defense: cls.defense + cls.growth.defense * grown,
-    path: path && level >= 5 ? path : null,
     items: { [potion]: potions },
   };
   const equipment = { ...c.equipment };
@@ -51,14 +50,21 @@ function build(classId: ClassId, path: string | null, level: number, rank: numbe
     equipment[slot] = plainGear(`g${i}`, slot, rank, LINE[classId], classId);
   });
   c = { ...c, equipment };
-  // Points: every ability known first, then the path's raised, then the rest.
+  // Points: down the chosen tree first (first ranks), then the class's own, then raising the tree's and the class's.
   let points = pointsForLevel(level);
   const abilities: Record<string, number> = { ...c.abilities };
-  const order = abilitiesFor(c);
-  for (const id of order) if (!abilities[id] && points > 0 && level >= ABILITIES[id]!.level) (abilities[id] = 1), points--;
-  for (const id of [...order].reverse()) while (points > 0 && abilities[id] && abilities[id]! < 3) (abilities[id] = abilities[id]! + 1), points--;
-  const pathOnes = path && level >= 5 ? cls.paths[path]!.abilities.filter((id) => abilities[id]) : [];
-  const carried = [...new Set([...pathOnes, ...cls.kit, ...order.filter((id) => abilities[id])])].slice(0, 4);
+  const nodes = path ? cls.trees[path]!.nodes : [];
+  for (const id of nodes) {
+    if (points > 0 && level >= ABILITIES[id]!.level) {
+      abilities[id] = 1;
+      points--;
+    }
+  }
+  for (const id of cls.core) if (!abilities[id] && points > 0 && level >= ABILITIES[id]!.level) (abilities[id] = 1), points--;
+  for (const id of [...nodes].reverse()) while (points > 0 && abilities[id] && abilities[id]! < ABILITIES[id]!.ranks.length) (abilities[id] = abilities[id]! + 1), points--;
+  for (const id of cls.core) while (points > 0 && abilities[id] && abilities[id]! < 3) (abilities[id] = abilities[id]! + 1), points--;
+  const actives = nodes.filter((id) => abilities[id] && !ABILITIES[id]!.rule && !ABILITIES[id]!.ranks[0]!.flee).reverse();
+  const carried = [...new Set([...actives, ...cls.kit, ...cls.core.filter((id) => abilities[id])])].slice(0, 4);
   c = { ...c, abilities, carried };
   const s = stats(c);
   c = { ...c, hp: s.maxHp, mana: s.maxMana };
@@ -107,17 +113,21 @@ function choose(c: Character): { move: unknown; guard: string } {
     if (r.spike && !f.spike) return { move: { kind: 'ability', ability: id }, guard };
     if (r.companion && !f.companion) return { move: { kind: 'ability', ability: id }, guard };
     if (r.dance && !f.dance && hpShare > 0.5) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.guardian && !f.guardian && hpShare < 0.6) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.clone && !f.clone) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.consume && (r.consume.kind === 'burn' ? e.burn : e.poison) && (r.consume.kind === 'burn' ? e.burn : e.poison)!.damage * (r.consume.kind === 'burn' ? e.burn : e.poison)!.rounds * r.consume.mult > s.attack * 2) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.interrupt && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     if (r.sunder && !e.sunder) return { move: { kind: 'ability', ability: id }, guard };
     if (r.burn && !e.burn) return { move: { kind: 'ability', ability: id }, guard };
     if (r.weaken && !e.weakened && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     if (r.barrierShare && f.barrier === 0 && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     if (r.trap && !f.trap && e.next?.charge) return { move: { kind: 'ability', ability: id }, guard };
     if (r.manaPerMeter && c.mana < s.maxMana * 0.5 && f.meter >= 3) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.meterGain && f.meter <= 1 && hpShare > 0.5) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.meterGain && !f.attackUp && hpShare > 0.6) return { move: { kind: 'ability', ability: id }, guard };
   }
   // The hardest hit there is.
   // A Spellsword fights with the blade; its only spells are what it infuses it with.
-  const hitters = usable.filter((id) => rank(id).power && !rank(id).windup && (c.path !== 'spellsword' || rank(id).melee));
+  const hitters = usable.filter((id) => rank(id).power && !rank(id).windup && (!c.abilities['spellsword-bond'] || rank(id).melee));
   const windup = usable.find((id) => rank(id).windup && !f.windup);
   if (windup) return { move: { kind: 'ability', ability: windup }, guard };
   hitters.sort((a, b) => (rank(b).power ?? 0) - (rank(a).power ?? 0));
@@ -175,10 +185,9 @@ for (const region of REGIONS) {
   console.log(`${'build'.padEnd(20)} ${region.mobs.map((m) => m.slice(0, 9).padEnd(15)).join('')}${region.mini.slice(0, 12).padEnd(14)}${region.boss.slice(0, 12).padEnd(14)}`);
   const sums: string[] = [];
   for (const classId of Object.keys(CLASS_DATA) as ClassId[]) {
-    const paths = region.level >= 5 || region.bossLevel >= 5 ? Object.keys(CLASS_DATA[classId]!.paths) : [];
-    for (const path of paths.length ? paths : [null]) {
+    for (const path of Object.keys(CLASS_DATA[classId]!.trees)) {
       const cells = region.mobs.map((m) => {
-        const t = play(classId, region.level >= 5 ? path : null, region.level, region.rank, m, region.potion, 0, N);
+        const t = play(classId, path, region.level, region.rank, m, region.potion, 0, N);
         return `${pct(t.wins)}${num(t.rounds)}${pct(t.lost)}   `.padEnd(15);
       });
       const mini = play(classId, path, region.miniLevel, region.rank, region.mini, region.potion, region.potions, N);

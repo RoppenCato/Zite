@@ -6,12 +6,14 @@ Below: what was built, how it is balanced, and what is mine. The data is written
 
 ## What was built
 
-- **Four classes, three paths each** (see the brief). A path is an always-on rule and three abilities, taken at level 5.
-- **Abilities:** four for the class, two of them from the start, one of which spends the meter. Three ranks each.
-- **Points:** one each level to 10, then every second level; one more for a region's boss the first time (mine). A point learns or raises an ability.
-- **Four carried into a fight;** the Skills screen, from Hero, chooses them. **Free reset** in any town or church. Mine, not yet judged by Robin.
+- **Four classes, each with its own four abilities and its own always-on rules.** Two abilities from the start, one of which spends the meter.
+- **Three trees for each class,** read downwards (Robin, 2026-11-02: "picking down three different trees"): an ability from level 3, the tree's always-on rule at 5, an ability at 8, a signature ability at 12. Each node opens the next. Mine: nothing locks a tree, there are too few points to fill them, so where they go is the specialization; the title follows the tree with the most points.
+- **Points:** one each level to 10, then every second level; one more for a region's boss the first time (mine). A point learns or raises an ability, three ranks each, or learns a rule.
+- **Four carried into a fight,** chosen on the Skills screen, from Hero. **Free reset** in any town or church. Mine.
+- **Abilities that change what you do, not only bigger numbers:** Mighty Swing grows with Valor held, so holding it fights spending it. Arcane Bolt grows with mana held, the same mana the shield needs. Shield Bonk breaks a boss's wind-up. Last Light stands you back up. Bloodbath is harder the nearer the end. Detonate and Bitter End cash in a burn or a poison. Judgement Day grows with all you healed. Shadow Clone doubles your attacks. Bullseye rewards reading a wind-up. Great Owl, Overwatch, Killing Ground.
 - **Gone:** random picks at levels, the trainer in town, shrines teaching. A shrine now restores mana and some HP. Everyone's save got its points back to spend.
-- **Mine, for Robin to change:** Beastmaster and Trapper for the Hunter; every ability beyond the ones he named; path at level 5.
+- **Mine, for Robin to change:** Beastmaster and Trapper for the Hunter; every ability beyond the ones he named.
+- **For testing, to go before an Alpha:** Settings has "Test: class" and "Test: level".
 
 ## How it is balanced
 
@@ -19,8 +21,7 @@ Below: what was built, how it is balanced, and what is mine. The data is written
 gear slots filled at the region's rank, two potions, heals when low, keeps buffs going, guards as its class wants. Targets (mine): no creature a danger at the region's level; a boss won
 most of the time, some builds sweating; a boss fight about 10 to 20 rounds; no path hopeless.
 
-Boss wins after tuning (of 150 fights), so far **not felt by anyone**: the Meadows' boss runs from about 65% (Berserker, Wizard, Shadow) to 100% (Paladin, Knight, Trapper); the Forest's and
-the Fields' are mostly 85% to 100%, the Wizard lowest at about 65% and 85%. The Spellsword's fights run long, 20 rounds and up, in the first two regions. The creatures' numbers were not changed. **Numbers are for Robin to feel.**
+The latest table is what running it prints. The sim fights with one tree taken; two half trees are not tested yet. The creatures' numbers were not changed. **Numbers are for Robin to feel.**
 
 ## Why a small board and not a tree (the reasoning, kept)
 

@@ -431,4 +431,4 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 
 ## Classes, paths and skills (2026-11-02)
 
-`rules/src/skills.ts` holds points, traits and resets; `classes.json` and `abilities.json` are written by `tools/class-data.mjs`; `tools/sim-classes.ts` is the balance table. State version 21 resets everyone to their class's start with points to spend. `plan-classes.md` says why.
+`rules/src/skills.ts` holds points, trees, traits and resets; `classes.json` and `abilities.json` are written by `tools/class-data.mjs`; `tools/sim-classes.ts` is the balance table. State version 22 resets everyone to their class's start with points to spend. `plan-classes.md` says why.

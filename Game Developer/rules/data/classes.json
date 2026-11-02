@@ -2,7 +2,7 @@
   "warrior": {
     "name": "Warrior",
     "style": "Blocks to build Valor, then hits hard.",
-    "about": "Blocks to build Valor, then spends it on hard hits and walls of steel.",
+    "about": "Blocks to build Valor, then spends it on hard hits and walls of steel, or holds it for a harder swing.",
     "hp": 120,
     "mana": 20,
     "attack": 12,
@@ -29,44 +29,33 @@
       "gain": "block",
       "text": "Valor builds when you Block a blow, more from a wound-up one."
     },
-    "paths": {
+    "trees": {
       "paladin": {
         "name": "Paladin",
         "text": "Heals as it fights and wears the enemy down.",
-        "passive": {
-          "blockHeal": 0.02
-        },
-        "passiveText": "Each blow you Block heals you a little.",
-        "abilities": [
+        "nodes": [
           "holy-strike",
+          "paladin-oath",
           "judgement",
-          "rally"
+          "last-light"
         ]
       },
       "berserker": {
         "name": "Berserker",
         "text": "Hits harder and takes more for it.",
-        "passive": {
-          "damageDealt": 1.15,
-          "damageTaken": 1.15
-        },
-        "passiveText": "You deal more damage, and take more.",
-        "abilities": [
+        "nodes": [
           "reckless",
-          "war-cry",
-          "blood-price"
+          "berserker-rage",
+          "blood-price",
+          "bloodbath"
         ]
       },
       "knight": {
         "name": "Knight",
         "text": "More defense, and what hits it gets hurt.",
-        "passive": {
-          "defenseMult": 1.2,
-          "thorns": 0.15
-        },
-        "passiveText": "A fifth more defense, and part of each blow goes back.",
-        "abilities": [
+        "nodes": [
           "shield-slam",
+          "knight-oath",
           "iron-retort",
           "bulwark"
         ]
@@ -76,7 +65,7 @@
   "mage": {
     "name": "Magician",
     "style": "Mana Shield, weak staff, strong spells.",
-    "about": "Block is a Mana Shield: half of each blow is paid in mana. Weak staff, strong magic.",
+    "about": "Block is a Mana Shield: half of each blow is paid in mana. Weak staff, strong magic, and mana is everything.",
     "hp": 90,
     "mana": 40,
     "attack": 7,
@@ -108,46 +97,33 @@
       "gain": "round",
       "text": "Arcana builds a point every round."
     },
-    "paths": {
+    "trees": {
       "wizard": {
         "name": "Wizard",
         "text": "Fire: huge hits that leave the target burning.",
-        "passive": {
-          "spellPower": 1.1
-        },
-        "passiveText": "Your spells hit harder.",
-        "abilities": [
+        "nodes": [
           "fireball",
-          "ember",
+          "wizard-flame",
+          "detonate",
           "meteor"
         ]
       },
       "cleric": {
         "name": "Cleric",
         "text": "Heals itself and strikes with holy light.",
-        "passive": {
-          "healPower": 1.25,
-          "defenseMult": 1.15
-        },
-        "passiveText": "Your healing is stronger, and so is your defense.",
-        "abilities": [
+        "nodes": [
           "smite",
+          "cleric-grace",
           "mend",
-          "renew"
+          "judgement-day"
         ]
       },
       "spellsword": {
         "name": "Spellsword",
         "text": "Ice or lightning in every melee hit.",
-        "passive": {
-          "plainMagic": true,
-          "hpMult": 1.25,
-          "defenseMult": 1.3,
-          "damageDealt": 1.4
-        },
-        "passiveText": "Your plain attacks use your magic too, and you are as sturdy as a fighter.",
-        "abilities": [
+        "nodes": [
           "frost-blade",
+          "spellsword-bond",
           "storm-blade",
           "arc-slash"
         ]
@@ -191,46 +167,35 @@
       "gain": "hit",
       "text": "Mischief builds each time you attack."
     },
-    "paths": {
+    "trees": {
       "ninja": {
         "name": "Ninja",
         "text": "Strikes first and can always get away.",
-        "passive": {
-          "firstStrike": true,
-          "dodge": 0.1
-        },
-        "passiveText": "You strike first in every fight, and dodge more.",
-        "abilities": [
+        "nodes": [
           "shuriken",
+          "ninja-step",
           "smoke-escape",
-          "smoke-bomb"
+          "clone"
         ]
       },
       "shadow": {
         "name": "Shadow",
         "text": "Takes one blow in full, then almost nothing can touch it.",
-        "passive": {
-          "dodgeCrit": true
-        },
-        "passiveText": "After you dodge a blow, your next hit is a sure crit.",
-        "abilities": [
+        "nodes": [
           "shadow-dance",
+          "shadow-pact",
           "ambush",
-          "night-veil"
+          "assassinate"
         ]
       },
       "alchemist": {
         "name": "Alchemist",
         "text": "Poison on the blade, and better potions.",
-        "passive": {
-          "poisonPower": 1.5,
-          "potionPower": 1.5
-        },
-        "passiveText": "Poison hurts half as much again, and potions do too.",
-        "abilities": [
+        "nodes": [
           "poison-coat",
-          "poison-blade",
-          "caustic-flask"
+          "alchemist-brew",
+          "caustic-flask",
+          "bitter-end"
         ]
       }
     }
@@ -238,7 +203,7 @@
   "ranger": {
     "name": "Hunter",
     "style": "Bows only, strikes first, shoots back.",
-    "about": "Bows only. Often shoots back when struck, and strikes first.",
+    "about": "Bows only. Often shoots back when struck, strikes first, and is at its best when it reads what comes next.",
     "hp": 100,
     "mana": 25,
     "attack": 10,
@@ -273,16 +238,13 @@
       "gain": "miss",
       "text": "Aim builds when a blow misses you and when you crit."
     },
-    "paths": {
+    "trees": {
       "ranger": {
         "name": "Ranger",
         "text": "Every counterattack is two arrows.",
-        "passive": {
-          "counterHits": 2
-        },
-        "passiveText": "Whenever you shoot back, you shoot twice.",
-        "abilities": [
+        "nodes": [
           "quick-reflex",
+          "ranger-eye",
           "rain-arrows",
           "return-fire"
         ]
@@ -290,25 +252,19 @@
       "beastmaster": {
         "name": "Beastmaster",
         "text": "Fights beside its owl.",
-        "passive": {
-          "companionPower": 1.3
-        },
-        "passiveText": "Your owl strikes harder.",
-        "abilities": [
+        "nodes": [
           "hawk",
+          "beast-bond",
           "owl-swoop",
-          "owl-watch"
+          "great-owl"
         ]
       },
       "trapper": {
         "name": "Trapper",
         "text": "Reads what comes next and has a trap waiting.",
-        "passive": {
-          "trapHit": 1.5
-        },
-        "passiveText": "An enemy caught in your tripwire takes a hard hit.",
-        "abilities": [
+        "nodes": [
           "trap",
+          "trapper-craft",
           "snare",
           "spike-trap"
         ]

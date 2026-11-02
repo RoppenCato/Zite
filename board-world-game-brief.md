@@ -59,8 +59,8 @@ Sent back to the nearest town, a fifth of the gold lost, gear kept (Robin, 2026-
 - **Classes have basic abilities that fit their style**, different enough that the play differs; **more skills and higher ranks are bought, found or earned** as you go. The abilities should be fun and make the classes feel different and exciting, not only bigger numbers (Robin, 2026-10-31).
 - Must be playable with one thumb on a phone: the play is making choices (buttons, or gestures).
 
-### Classes and paths (Robin, 2026-11-02: "I think the identities (and classes and paths) should be"; "I was merely giving ideas": the numbers and the balance are the Game Developer's)
-| Class | Identity | Paths |
+### Classes and trees (Robin, 2026-11-02: "I think the identities (and classes and paths) should be"; "I was merely giving ideas": the numbers and the balance are the Game Developer's. "The 4 main classes have their different things, and then you can specialize down into those sub classes"; "picking down three different trees")
+| Class | Identity | Trees |
 |---|---|---|
 | Warrior | Builds Valor by blocking; Valor goes on hard hits or defensive buffs | Paladin: self healing and debuffs. Berserker: harder attacks, more damage taken. Knight: more defense, returns damage on hit |
 | Magician | Defend is a protective shield, taking half the damage as mana | Wizard: stronger fire spells that leave the target burning. Cleric: healing spells, holy attacks. Spellsword: ice or electric damage in melee attacks |

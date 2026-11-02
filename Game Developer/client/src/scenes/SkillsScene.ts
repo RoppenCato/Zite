@@ -1,10 +1,10 @@
-// The skill board (Robin, 2026-11-02: the classes and their paths; the system is mine, in `rules/src/skills.ts`). One screen: the class's
-// four abilities, its path's three, what the path does, the points free. Tap an ability: a card says what it does and offers what applies,
-// Learn or Raise, Carry or Put down. Four are carried into a fight. In a town or a church, Reset gives every point back. Opened from the
-// Hero sheet; its look is a first one until Mitch, AD has designed it.
+// The skill board (Robin, 2026-11-02: "the 4 main classes have their different things, and then you can specialize down"; "picking down three
+// different trees"; the system is mine, in `rules/src/skills.ts`). After Mitch, AD's design: the four carried on a belt along the top, the
+// class's own four, then its three trees side by side, read downwards, each node opening the next. One card at the bottom says what the tapped
+// one does, with only the buttons that apply. In a town or a church, Reset gives every point back. Opened from the Hero sheet.
 
 import Phaser from 'phaser';
-import { ABILITIES, abilitiesFor, canLearn, CLASS_DATA, MAX_CARRIED, PATH_LEVEL, pointsFree, type AbilityRank, type Action, type Character } from '../../../rules/src/index.ts';
+import { ABILITIES, canLearn, CLASS_DATA, isOpen, MAX_CARRIED, pointsFree, specialization, type AbilityRank, type Action, type Character } from '../../../rules/src/index.ts';
 import { abilityIcon, preloadAbilityIcons } from '../effects.ts';
 import { feel, sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -14,18 +14,32 @@ import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
 import { makeButton } from '../ui.ts';
 
 const WOOD_INK = '#3a2410';
-const SLOT = 58;
-const COLS = [28, 95, 162, 229, 296] as const;
+const RUST = '#a23c2c';
+const GOLD = 0xf4c14a;
+const CLASS_X = [66, 159, 252, 345] as const;
+const TREE_X = [80, 206, 332] as const;
+const TREE_Y = 358;
+const TREE_STEP = 47;
+const NODE = 40;
 
 /** The numbers worth showing on a rank. */
 function rankLine(r: AbilityRank): string {
   const bits: string[] = [];
   const pct = (x: number) => `${Math.round(x * 100)}%`;
   if (r.power) bits.push(`${pct(r.power)} power${r.hits ? ` in ${r.hits} hits` : ''}`);
+  if (r.perHeldMeter) bits.push(`+${pct(r.perHeldMeter)} a point held`);
+  if (r.perMeter) bits.push(`+${pct(r.perMeter)} a point spent`);
+  if (r.manaPower) bits.push(`up to +${pct(r.manaPower)} with full mana`);
+  if (r.missingPower) bits.push(`up to +${pct(r.missingPower)} near the end`);
+  if (r.windupBonus) bits.push(`${pct(r.windupBonus)} on a wind-up`);
+  if (r.executePower) bits.push(`${pct(r.executePower)} when it is low`);
+  if (r.healedPower) bits.push(`+${pct(r.healedPower)} of all healed`);
   if (r.healShare) bits.push(`heals ${pct(r.healShare)} of HP`);
   if (r.healDealt) bits.push(`heals ${pct(r.healDealt)} of the damage`);
   if (r.barrierShare) bits.push(`barrier of ${pct(r.barrierShare)} of HP`);
   if (r.selfHurt) bits.push(`costs ${pct(r.selfHurt)} of HP`);
+  if (r.guardian) bits.push(`stand up with ${pct(r.guardian)} of HP`);
+  if (r.consume) bits.push(`${pct(r.consume.mult)} of what is left`);
   if (r.stun) bits.push(`stuns ${r.stun}`);
   if (r.evade) bits.push(`${r.evade} blows miss`);
   if (r.skip) bits.push(`${r.skip} turns lost`);
@@ -34,6 +48,7 @@ function rankLine(r: AbilityRank): string {
   if (r.infuse) bits.push(`${pct(r.infuse.power)} harder for ${r.infuse.rounds} rounds`);
   if (r.dance) bits.push(`${pct(r.dance.chance)} dodge for ${r.dance.rounds} rounds`);
   if (r.coat) bits.push(`${r.coat.hits} poisoned hits`);
+  if (r.clone) bits.push(`${pct(r.clone.power)} again for ${r.clone.rounds} rounds`);
   if (r.companion) bits.push(`${r.companion.rounds} rounds of owl`);
   if (r.mark) bits.push(`next ${r.mark.hits} hits ${pct(r.mark.mult - 1)} harder`);
   if (r.counterUp) bits.push(`${pct(r.counterUp.chance)} more counters for ${r.counterUp.rounds} rounds`);
@@ -48,7 +63,6 @@ export class SkillsScene extends Phaser.Scene {
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
   private picked: string | null = null;
-  private pathPick: string | null = null;
   private note = '';
   private inFlight = false;
 
@@ -64,7 +78,6 @@ export class SkillsScene extends Phaser.Scene {
 
   create(): void {
     this.picked = null;
-    this.pathPick = null;
     this.note = '';
     this.rows = [];
     sheet(this);
@@ -72,18 +85,29 @@ export class SkillsScene extends Phaser.Scene {
     this.log.note('skills open');
   }
 
-  private board(x: number, y: number, w: number, h: number): Phaser.GameObjects.GameObject {
-    const b = kitReady(this) ? plate(this, 'board_plain', x, y, w, h).setOrigin(0, 0) : this.add.rectangle(x, y, w, h, COLORS.panel, 1).setOrigin(0, 0);
-    this.rows.push(b);
-    return b;
+  private board(x: number, y: number, w: number, h: number): void {
+    this.rows.push(kitReady(this) ? plate(this, 'board_plain', x, y, w, h).setOrigin(0, 0) : this.add.rectangle(x, y, w, h, COLORS.panel, 1).setOrigin(0, 0));
   }
 
-  private text(x: number, y: number, s: string, size: number, wood = true, wrap = 0): Phaser.GameObjects.Text {
-    const t = this.add.text(x, y, s, wood
-      ? { fontFamily: FONT_DISPLAY, fontSize: `${size}px`, fontStyle: 'bold', color: CREAM, stroke: WOOD_INK, strokeThickness: Math.min(4, size / 4), wordWrap: wrap ? { width: wrap } : undefined }
-      : { fontFamily: FONT, fontSize: `${size}px`, color: WOOD_INK, wordWrap: wrap ? { width: wrap } : undefined });
+  private wood(x: number, y: number, s: string, size: number, wrap = 0): Phaser.GameObjects.Text {
+    const t = this.add.text(x, y, s, { fontFamily: FONT_DISPLAY, fontSize: `${size}px`, fontStyle: 'bold', color: CREAM, stroke: WOOD_INK, strokeThickness: Math.min(3.5, size / 4), wordWrap: wrap ? { width: wrap } : undefined });
     this.rows.push(t);
     return t;
+  }
+
+  /** The icon of an ability; a rule shows the star, and anything without art its first letter. */
+  private icon(id: string, x: number, y: number, size: number, alpha: number): void {
+    const pic = abilityIcon(this, id, x, y, size);
+    if (pic) {
+      this.rows.push(pic.setAlpha(alpha));
+      return;
+    }
+    if (ABILITIES[id]?.rule && kitReady(this)) {
+      const star = this.add.image(x, y, KIT, 'mark_star').setAlpha(alpha);
+      this.rows.push(star.setScale((size * 0.8) / star.width));
+      return;
+    }
+    this.rows.push(this.add.text(x, y, ABILITIES[id]?.name.charAt(0) ?? '?', { fontFamily: FONT_DISPLAY, fontSize: `${Math.round(size * 0.6)}px`, fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5).setAlpha(alpha));
   }
 
   private refresh(): void {
@@ -92,131 +116,152 @@ export class SkillsScene extends Phaser.Scene {
     const me = this.game_.me;
     const cls = CLASS_DATA[me.classId]!;
     const free = pointsFree(me);
-    const path = me.path ? cls.paths[me.path] : null;
+    const title = specialization(me);
 
-    // The header.
+    // The header: the title, the points, the way back.
     this.board(18, 116, 376, 44);
-    this.text(32, 138, path ? `${cls.name} · ${path.name}` : cls.name, 18).setOrigin(0, 0.5);
-    this.rows.push(makeButton(this, 346, 137, 76, 36, 'Back', COLORS.log, '15px', () => this.back()).button);
-    this.text(258, 138, free === 1 ? '1 point' : `${free} points`, 14).setOrigin(0.5).setColor(free > 0 ? '#ffd166' : CREAM);
+    this.wood(32, 138, title ? `${cls.name} · ${title}` : cls.name, 16).setOrigin(0, 0.5);
+    const pill = this.add.graphics();
+    pill.fillStyle(free > 0 ? GOLD : 0x3a2410, 1).fillRoundedRect(226, 125, 78, 26, 13);
+    this.rows.push(pill);
+    this.rows.push(this.add.text(265, 138, free === 1 ? '1 point' : `${free} points`, { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: free > 0 ? WOOD_INK : CREAM }).setOrigin(0.5));
+    this.rows.push(makeButton(this, 350, 138, 76, 36, 'Back', COLORS.log, '15px', () => this.back()).button);
 
-    // The class's four.
-    this.board(18, 164, 376, 112);
-    this.text(32, 172, cls.name, 13);
-    this.text(380, 172, `carried ${me.carried.length} of ${MAX_CARRIED}`, 12).setOrigin(1, 0);
-    cls.core.forEach((id, i) => this.slot(id, COLS[i]!, 196, me));
-
-    // The path.
-    this.board(18, 280, 376, 136);
-    if (path) {
-      this.text(32, 288, path.name, 13);
-      this.text(32, 306, path.passiveText, 11, true, 348);
-      path.abilities.forEach((id, i) => this.slot(id, COLS[i]!, 336, me));
-    } else {
-      this.text(32, 288, me.level >= PATH_LEVEL ? 'Choose your path' : `Your path comes at level ${PATH_LEVEL}`, 13);
-      Object.entries(cls.paths).forEach(([id, p], i) => {
-        const y = 312 + i * 34;
-        const chosen = this.pathPick === id;
-        this.rows.push(plate(this, chosen ? 'chip_chosen' : 'chip_idle', 206, y + 13, 352, 30));
-        const name = this.add.text(42, y + 12, p.name, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0, 0.5);
-        this.rows.push(name);
-        this.rows.push(this.add.text(136, y + 12, p.text, { fontFamily: FONT, fontSize: '11px', color: WOOD_INK, wordWrap: { width: 244 } }).setOrigin(0, 0.5));
-        const zone = this.add.zone(206, y + 13, 352, 32).setInteractive({ useHandCursor: true });
-        zone.on('pointerup', () => {
-          this.pathPick = id;
-          this.picked = null;
-          this.note = '';
-          sfx.play('ui/chip');
-          this.refresh();
-        });
+    // The belt: what goes into a fight.
+    this.board(18, 164, 376, 62);
+    this.wood(30, 176, `Carried\n${me.carried.length} of ${MAX_CARRIED}`, 11);
+    for (let i = 0; i < MAX_CARRIED; i++) {
+      const id = me.carried[i];
+      const x = 137 + i * 68;
+      if (kitReady(this)) this.rows.push(this.add.image(x, 195, KIT, id ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46));
+      if (id) {
+        this.icon(id, x, 195, 36, 1);
+        const zone = this.add.zone(x, 195, 54, 54).setInteractive({ useHandCursor: true });
+        zone.on('pointerup', () => this.tap(id));
         this.rows.push(zone);
-      });
+      }
     }
+
+    // The class's own four.
+    this.board(18, 230, 376, 84);
+    this.wood(30, 234, cls.name, 11);
+    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 270, me));
+
+    // The three trees, read downwards.
+    this.board(18, 318, 376, 212);
+    const trees = Object.values(cls.trees);
+    const lines = this.add.graphics();
+    lines.lineStyle(3, 0x3a2410, 0.75);
+    this.rows.push(lines);
+    trees.forEach((tree, col) => {
+      const x = TREE_X[col]!;
+      this.wood(x, 322, tree.name, 12).setOrigin(0.5, 0);
+      lines.lineBetween(x, TREE_Y, x, TREE_Y + TREE_STEP * 3);
+      tree.nodes.forEach((id, row) => this.node(id, x, TREE_Y + row * TREE_STEP, me));
+    });
 
     this.card(me);
   }
 
-  /** An ability's slot: its icon, its rank's dots, a gold edge when carried, dim until known. */
-  private slot(id: string, x: number, y: number, me: Character): void {
+  /** A slot: its cubby and icon, its rank's dots, a ring when carried, a + when a point can go here, the level when it is out of reach. */
+  private node(id: string, cx: number, cy: number, me: Character): void {
     const a = ABILITIES[id]!;
     const rank = me.abilities[id] ?? 0;
-    const carried = me.carried.includes(id);
-    const cx = x + SLOT / 2;
-    const cy = y + 24;
-    if (kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46));
-    const pic = abilityIcon(this, id, cx, cy, 34);
-    if (pic) this.rows.push(pic.setAlpha(rank ? 1 : 0.45));
-    else this.rows.push(this.add.text(cx, cy, a.name.charAt(0), { fontFamily: FONT_DISPLAY, fontSize: '22px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5).setAlpha(rank ? 1 : 0.45));
-    if (carried && kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, 'cubby_chosen').setDisplaySize(50, 50).setTint(0xffe9a0));
-    if (this.picked === id && kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, 'cubby_chosen').setDisplaySize(52, 52));
-    for (let i = 0; i < a.ranks.length; i++) {
-      this.rows.push(this.add.image(cx - 12 + i * 12, cy + 30, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(10 / 24));
+    const open = isOpen(me, id);
+    const can = canLearn(me, id);
+    if (this.picked === id) {
+      const glow = this.add.graphics();
+      glow.fillStyle(GOLD, 1).fillRoundedRect(cx - NODE / 2 - 3, cy - NODE / 2 - 3, NODE + 6, NODE + 6, 9);
+      this.rows.push(glow);
     }
-    if (canLearn(me, id)) this.rows.push(this.text(cx + 20, cy - 26, '+', 16).setOrigin(0.5).setColor('#ffd166'));
-    const zone = this.add.zone(cx, cy + 4, SLOT + 6, 62).setInteractive({ useHandCursor: true });
-    zone.on('pointerup', () => {
-      this.picked = id;
-      this.pathPick = null;
-      this.note = '';
-      feel.buzz();
-      sfx.play('ui/chip');
-      this.refresh();
-    });
+    if (kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(NODE, NODE));
+    this.icon(id, cx, cy, 31, rank ? 1 : open ? 0.62 : 0.32);
+    if (me.carried.includes(id)) {
+      const ring = this.add.graphics();
+      ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - NODE / 2 + 2, cy - NODE / 2 + 2, NODE - 4, NODE - 4, 6);
+      this.rows.push(ring);
+    }
+    if (a.ranks.length > 1 && rank > 0 && kitReady(this)) {
+      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx - 8 + i * 8, cy + NODE / 2 + 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7 / 24));
+    }
+    if (can) {
+      const plus = this.add.graphics();
+      plus.fillStyle(GOLD, 1).fillCircle(cx + NODE / 2 - 2, cy + NODE / 2 - 4, 8).lineStyle(1.5, 0x3a2410, 1).strokeCircle(cx + NODE / 2 - 2, cy + NODE / 2 - 4, 8);
+      this.rows.push(plus);
+      this.rows.push(this.add.text(cx + NODE / 2 - 2, cy + NODE / 2 - 5, '+', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
+    }
+    if (!rank && me.level < a.level) {
+      this.rows.push(this.add.text(cx, cy + NODE / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
+    }
+    const zone = this.add.zone(cx, cy, 58, 48).setInteractive({ useHandCursor: true });
+    zone.on('pointerup', () => this.tap(id));
     this.rows.push(zone);
   }
 
+  private tap(id: string): void {
+    this.picked = id;
+    this.note = '';
+    feel.buzz();
+    sfx.play('ui/chip');
+    this.refresh();
+  }
+
   private card(me: Character): void {
-    const y = 420;
-    this.board(18, y, 376, 300);
+    const y = 534;
     const cls = CLASS_DATA[me.classId]!;
+    this.board(18, y, 376, 186);
     const slip = (top: number, h: number): void => {
-      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', 30, top, 352, h).setOrigin(0, 0));
+      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', 28, top, 356, h).setOrigin(0, 0));
     };
-    const reset = (): void => {
-      const kind = this.game_.state.board.spaces[me.space]?.kind;
-      if (kind === 'town' || kind === 'church') this.rows.push(makeButton(this, 332, y + 276, 100, 36, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
+    const words = (top: number, s: string, size = 13, color = WOOD_INK): Phaser.GameObjects.Text => {
+      const t = this.add.text(38, top, s, { fontFamily: FONT, fontSize: `${size}px`, color, wordWrap: { width: 336 } });
+      this.rows.push(t);
+      return t;
     };
-    if (this.pathPick) {
-      const p = cls.paths[this.pathPick]!;
-      this.text(34, y + 12, p.name, 18);
-      slip(y + 40, 188);
-      this.text(42, y + 50, `${p.text}\n\nAlways: ${p.passiveText}\n\n${p.abilities.map((id) => `${ABILITIES[id]!.name}, level ${ABILITIES[id]!.level}`).join('\n')}`, 13, false, 330);
-      if (me.level >= PATH_LEVEL) {
-        const id = this.pathPick;
-        this.rows.push(makeButton(this, 206, y + 256, 220, 44, `Be a ${p.name}`, COLORS.button, '17px', () => this.send({ type: 'skill', op: 'path', path: id } as never, `You walk the ${p.name}'s path.`)).button);
-      }
-      return;
-    }
     const id = this.picked;
     const a = id ? ABILITIES[id] : null;
     if (!id || !a) {
+      this.wood(30, y + 8, this.note ? 'Done' : 'Your skills', 15);
+      slip(y + 30, 148);
       const free = pointsFree(me);
-      this.text(34, y + 12, this.note ? 'Done' : 'Your skills', 18);
-      slip(y + 40, 188);
-      const lines = [this.note, cls.about, cls.meter ? cls.meter.text : '', free ? `You have ${free} to spend: a gold + marks what you can learn.` : 'Each level brings a point, every second level after ten, and a region\'s boss one more.', 'Tap an ability to see it.'].filter(Boolean);
-      this.text(42, y + 50, lines.join('\n\n'), 13, false, 330);
-      reset();
+      const line = free ? `You have ${free} to spend: a gold + marks where. Go down one tree, or a little down two.` : "Each level brings a point, every second level after ten, and a region's boss one more.";
+      words(y + 37, [this.note, cls.about, cls.meter?.text ?? '', line].filter(Boolean).join('\n'), 12);
+      const kind = this.game_.state.board.spaces[me.space]?.kind;
+      if (kind === 'town' || kind === 'church') this.rows.push(makeButton(this, 332, y + 156, 96, 34, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
       return;
     }
     const rank = me.abilities[id] ?? 0;
     const meter = cls.meter?.name ?? 'meter';
-    const cost = [a.mana ? `${a.mana} mana` : '', a.meterAll ? `all ${meter}` : a.meter ? `${a.meter} ${meter}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ') || 'free';
-    this.text(34, y + 12, a.name, 18);
-    this.text(380, y + 16, rank ? `rank ${rank} of ${a.ranks.length}` : `from level ${a.level}`, 12).setOrigin(1, 0);
-    slip(y + 40, 188);
-    const now = rank ? rankLine(a.ranks[rank - 1]!) : '';
-    const then = rank < a.ranks.length ? rankLine(a.ranks[rank]!) : '';
-    const lines = [this.note, a.text, `Costs ${cost}.`, now ? `Now: ${now}.` : '', then ? `${rank ? 'Next rank' : 'First rank'}: ${then}.` : ''].filter(Boolean);
-    this.text(42, y + 50, lines.join('\n\n'), 13, false, 330);
+    const cost = a.rule ? 'Always on' : [a.mana ? `${a.mana} mana` : '', a.meterAll ? `all ${meter}` : a.meter ? `${a.meter} ${meter}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ') || 'Free';
+    if (kitReady(this)) this.rows.push(this.add.image(53, y + 28, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46));
+    this.icon(id, 53, y + 28, 36, rank ? 1 : 0.62);
+    this.wood(86, y + 7, a.name, 15);
+    this.rows.push(this.add.text(86, y + 28, `${cost} · ${rank ? `rank ${rank} of ${a.ranks.length}` : `from level ${a.level}`}`, { fontFamily: FONT, fontSize: '11.5px', color: CREAM }));
+    slip(y + 54, 90);
+    const text = words(y + 60, a.text, 12.5);
+    const now = rank && !a.rule ? rankLine(a.ranks[rank - 1]!) : '';
+    const then = rank < a.ranks.length && !a.rule ? rankLine(a.ranks[rank]!) : '';
+    let at = y + 60 + text.height + 3;
+    const say = (label: string, line: string): void => {
+      this.rows.push(this.add.text(38, at, label, { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: RUST }));
+      this.rows.push(this.add.text(76, at, line, { fontFamily: FONT, fontSize: '11.5px', color: WOOD_INK, wordWrap: { width: 300 } }));
+      at += 15;
+    };
+    if (this.note) say('', this.note);
+    else {
+      if (now) say('Now', now);
+      if (then) say(rank ? 'Next' : 'First', then);
+      if (!isOpen(me, id) && me.level >= a.level) say('Needs', 'the one above it in its tree.');
+    }
     const can = canLearn(me, id);
     if (rank < a.ranks.length) {
-      const b = makeButton(this, 130, y + 256, 180, 44, rank ? 'Raise' : 'Learn', COLORS.button, '17px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
+      const b = makeButton(this, a.rule ? 206 : 121, y + 165, a.rule ? 220 : 186, 34, rank ? 'Raise' : 'Learn', can ? COLORS.button : COLORS.log, '15px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
       b.setEnabled(can && !this.inFlight);
       this.rows.push(b.button);
     }
-    if (rank) {
+    if (rank && !a.rule) {
       const carried = me.carried.includes(id);
-      const b = makeButton(this, 318, y + 256, 130, 44, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
+      const b = makeButton(this, 303, y + 165, 162, 34, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
       b.setEnabled((carried || me.carried.length < MAX_CARRIED) && !this.inFlight);
       this.rows.push(b.button);
     }
@@ -234,10 +279,7 @@ export class SkillsScene extends Phaser.Scene {
           this.note = done;
           sfx.play('ui/wear');
           feel.buzz();
-          if ('path' in intent || intent.op === 'reset') {
-            this.picked = null;
-            this.pathPick = null;
-          }
+          if (intent.op === 'reset') this.picked = null;
         }
         this.refresh();
       },

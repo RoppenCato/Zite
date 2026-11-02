@@ -41,8 +41,8 @@ export interface ClassData {
   traits?: ClassTraits;
   /** The abilities of the class, whatever its path. */
   core: string[];
-  /** Its three paths, taken at PATH_LEVEL. */
-  paths: Record<string, ClassPath>;
+  /** Its three trees, to specialize down. */
+  trees: Record<string, ClassTree>;
   /** The abilities known from the start, at rank 1. */
   kit: string[];
   /** The enemy does not strike back in the first round (the Archer). */
@@ -52,13 +52,11 @@ export interface ClassData {
   meter?: { name: string; gain: 'block' | 'hit' | 'round' | 'miss'; text: string };
 }
 
-/** A way to play a class (Robin, 2026-11-02): an always-on rule and three abilities. */
-export interface ClassPath {
+/** A way to specialize (Robin, 2026-11-02): an ability, an always-on rule, an ability, a signature ability, each opening the next. */
+export interface ClassTree {
   name: string;
   text: string;
-  passive: ClassTraits;
-  passiveText: string;
-  abilities: string[];
+  nodes: string[];
 }
 
 /** The always-on rules a class or a path can have; left out, none. */
@@ -97,6 +95,8 @@ export interface ClassTraits {
   dodgeCrit?: boolean;
   /** An enemy caught in a tripwire takes this times your attack. */
   trapHit?: number;
+  /** Healing past full becomes a barrier, this share of it. */
+  healOverflow?: number;
   /** Only bows may be worn. */
   rangedOnly?: boolean;
 }
@@ -132,7 +132,7 @@ export interface AbilityRank {
   windup?: number;
   /** Enemy wind-ups that will fail. */
   trap?: number;
-  companion?: { rounds: number; power: number };
+  companion?: { rounds: number; power: number; hits?: number };
   mark?: { hits: number; mult: number };
   /** Heal a share of the damage this hit dealt. */
   healDealt?: number;
@@ -164,9 +164,25 @@ export interface AbilityRank {
   thornsUp?: { rounds: number; share: number };
   counterUp?: { rounds: number; chance: number };
   spike?: { rounds: number; power: number };
-  /** Rounds added to a companion already out. */
-  companionMore?: number;
-  sureFirst?: boolean;
+  /** Power for each point of meter held, not spent. */
+  perHeldMeter?: number;
+  /** Power at full mana, less as it runs out. */
+  manaPower?: number;
+  /** Power times 1 + this times the share of HP missing. */
+  missingPower?: number;
+  /** This much harder on a foe winding up, or with the blade infused. */
+  windupBonus?: number;
+  infuseBonus?: number;
+  /** Power as a share of all healed this fight, against attack. */
+  healedPower?: number;
+  /** Breaks a wind-up the enemy has gathered. */
+  interrupt?: boolean;
+  /** All of a poison or a burn lands now, times this. */
+  consume?: { kind: 'burn' | 'poison'; mult: number };
+  /** The next blow that would fell you leaves you with this share of HP. */
+  guardian?: number;
+  /** For a few rounds each attack strikes again at this power. */
+  clone?: { rounds: number; power: number };
 }
 
 export interface AbilityData {
@@ -176,6 +192,8 @@ export interface AbilityData {
   mana: number;
   /** The level it can be learned from. */
   level: number;
+  /** A tree's always-on rule, not a move: no button, never carried. */
+  rule?: ClassTraits;
   /** Meter needed and spent; or all of it, with `perMeter` on the rank. */
   meter?: number;
   meterAll?: boolean;

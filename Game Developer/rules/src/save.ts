@@ -120,7 +120,7 @@ export function migrate(raw: unknown): GameState | null {
 }
 
 /**
- * 20 → 21 (Robin, 2026-11-02): the classes and paths. Everyone goes back to what their class starts with, with their numbers as
+ * To 22 (Robin, 2026-11-02): the classes and their trees. Everyone goes back to what their class starts with, with their numbers as
  * the class grows them now and every point theirs to spend on the skill board; nothing is lost but the old picks.
  */
 function toPaths(state: GameState): GameState {
@@ -132,7 +132,7 @@ function toPaths(state: GameState): GameState {
     const maxHp = cls.hp + cls.growth.hp * grown;
     const maxMana = cls.mana + cls.growth.mana * grown;
     const reset = resetSkills({ ...c, bonusPoints: Math.max(0, (c.opened?.length ?? 1) - 1), maxHp, maxMana, attack: cls.attack + cls.growth.attack * grown, defense: cls.defense + cls.growth.defense * grown });
-    const { picks: _old, ...kept } = reset as Character & { picks?: unknown };
+    const { picks: _old, path: _path, ...kept } = reset as Character & { picks?: unknown; path?: unknown };
     characters[id] = { ...kept, hp: Math.min(kept.hp, maxHp), mana: Math.min(kept.mana, maxMana) };
   }
   return { ...state, version: STATE_VERSION, characters };
@@ -142,7 +142,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

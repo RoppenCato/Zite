@@ -4,7 +4,7 @@
 // piece compares with what is worn, and holds only the buttons that apply. Equip, unequip, drop and use each send one intent.
 
 import Phaser from 'phaser';
-import { gearPowers, GEAR, ITEMS, pointsFree, PATH_LEVEL, SLOTS, stats, type Character, type GearItem, type Slot } from '../../../rules/src/index.ts';
+import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
 import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
@@ -104,7 +104,7 @@ export class BagScene extends Phaser.Scene {
     makeButton(this, 346, header.y + header.h / 2 - 1, 76, 36, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());
     // The skill board, its points on the button (mine, 2026-11-02).
     const free = pointsFree(me);
-    makeButton(this, 248, header.y + header.h / 2 - 1, 104, 36, free > 0 ? `Skills +${free}` : 'Skills', free > 0 || (!me.path && me.level >= PATH_LEVEL) ? 0x8e6ad9 : COLORS.log, '15px', () => {
+    makeButton(this, 248, header.y + header.h / 2 - 1, 104, 36, free > 0 ? `Skills +${free}` : 'Skills', free > 0 ? 0x8e6ad9 : COLORS.log, '15px', () => {
       this.scene.stop();
       this.scene.launch('skills');
     });

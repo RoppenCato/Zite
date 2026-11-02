@@ -43,3 +43,9 @@ About 55 CSS px tall, hovering about 26 above its pivot. `stand` is 4 frames, `a
 ## Not drawn
 
 Not seen in the game. The moves not named above (Net Toss, Tripwire, Nettle Knife and so on) can use these clips: `weaken` for a snare, `poison_drip` for the knife. Say if one wants its own.
+
+## New on 2026-11-02, for Robin's Spellsword
+
+`frost_edge` and `storm_edge`, 4 frames each, looping, 72 px: held at the hero's weapon hand while Frost Blade or Storm Blade lasts. Use them as `held` clips, like `charge_glow`. They run along a slant from lower left to upper right, about the Knight's blade at rest, not fixed to it. Not seen in the game.
+
+`burn` has been in this atlas all along, looping: use it for a burning enemy, as you use `poison_drip`.

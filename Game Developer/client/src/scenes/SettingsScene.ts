@@ -1,6 +1,7 @@
 // The settings (Robin, 2026-11-01: "you have to go into world map to reach settings"; it has its own button now): the guide,
 // sound, effects, text, vibration, the world, the log, starting over. Opened from the HUD's Settings button.
 
+import { CLASS_DATA, type ClassId } from '../../../rules/src/index.ts';
 import Phaser from 'phaser';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
@@ -20,11 +21,13 @@ export interface SettingsSceneDeps {
 
 const CENTRE = DESIGN_WIDTH / 2;
 /** Where things sit, in design pixels (the driver taps them here). */
+const TEST_CLASSES: ClassId[] = ['warrior', 'rogue', 'mage', 'ranger'];
+
 export const SETTINGS_LAYOUT = {
   close: { x: 344, y: 142, w: 84, h: 44 },
-  firstRowY: 196,
-  rowStep: 62,
-  go: { x: 344, w: 88, h: 44 },
+  firstRowY: 182,
+  rowStep: 49,
+  go: { x: 344, w: 88, h: 40 },
 } as const;
 
 export class SettingsScene extends Phaser.Scene {
@@ -107,6 +110,17 @@ export class SettingsScene extends Phaser.Scene {
         location.reload();
       });
     }
+    // For Robin's testing (2026-11-02), to go before an Alpha: another class at the same level, or a level more. The page loads again for its art.
+    const next = TEST_CLASSES[(TEST_CLASSES.indexOf(this.game_.me.classId) + 1) % TEST_CLASSES.length]!;
+    const row = rows.length + (code ? 5 : 4);
+    this.settingRow(row, 'Test: class', `Now ${CLASS_DATA[this.game_.me.classId]?.name}. Skills start over.`, CLASS_DATA[next]!.name, () => {
+      if (this.game_.me.fight) return;
+      void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+    });
+    this.settingRow(row + 1, 'Test: level', `Now level ${this.game_.me.level}.`, '+1 level', () => {
+      if (this.game_.me.fight) return;
+      void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+    });
     this.settingRow(rows.length + (code ? 3 : 2), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
     this.settingRow(rows.length + (code ? 4 : 3), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
       if (!window.confirm('Start over with a new character?')) return;

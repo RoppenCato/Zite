@@ -40,7 +40,6 @@ import {
   groundsOf,
   questLine,
   placeName,
-  PATH_LEVEL,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
@@ -192,8 +191,6 @@ export class BoardScene extends Phaser.Scene {
   private busy = false;
   /** The painted ground: what is near the camera, in memory. */
   private painted: PaintedGround | null = null;
-  /** The choice of a path was put off, for this sitting. */
-  private pathPutOff = false;
   /** The bridge and the pass, barred or open. */
   private readonly gates = new Map<WorldGate, Phaser.GameObjects.Image>();
   /** Roads of a land not open yet: where they run over painted ground no cover hides them. */
@@ -285,7 +282,7 @@ export class BoardScene extends Phaser.Scene {
     this.clearChoices();
     if (me.fight) {
       this.openFight();
-    } else if (me.offer || this.pathDue()) {
+    } else if (me.offer) {
       this.offerChoice();
     } else if (me.steps > 0) {
       this.setBusy(true);
@@ -563,8 +560,8 @@ export class BoardScene extends Phaser.Scene {
     this.log.note(`fight over: ${outcome.type}, ${me.hp}/${stats(me).maxHp} hp, ${me.gold} gold, level ${me.level}`);
     this.reveal(outcome.loot, `Dropped by ${outcome.enemy}`, () => {
       this.finish(outcome.summary);
-      // A level crossed in the fight may bring the choice of a path; a full bag asks about the loot.
-      if (this.game_.me.offer || this.pathDue()) this.offerChoice();
+      // A full bag asks about the loot.
+      if (this.game_.me.offer) this.offerChoice();
     });
   }
 
@@ -1449,7 +1446,6 @@ export class BoardScene extends Phaser.Scene {
     else if (offer?.kind === 'board') this.offerBoard();
     else if (offer?.kind === 'roll') this.offerRoll();
     else if (offer?.kind === 'loot') this.offerKeep();
-    else if (this.pathDue()) this.offerPath();
   }
 
   /** A question in its window (`AskScene`), once any card on show has gone. */
@@ -1473,43 +1469,6 @@ export class BoardScene extends Phaser.Scene {
     this.scene.stop('ask');
     this.overlayClosedAt = this.time.now;
     this.overlayClosedFrame = this.game.loop.frame;
-  }
-
-  /** The level for a path reached, none taken and not put off this sitting: the moment it asks. */
-  private pathDue(): boolean {
-    const me = this.game_.me;
-    return !me.path && me.level >= PATH_LEVEL && !this.pathPutOff && !me.fight;
-  }
-
-  /** Choosing a path (Robin, 2026-11-02): the three in a window; it can wait, and Hero's Skills holds it. */
-  private offerPath(): void {
-    const me = this.game_.me;
-    const cls = CLASS_DATA[me.classId]!;
-    this.setMessage(`Level ${me.level}: choose your path.`);
-    this.ask({
-      icon: 'mark_star',
-      color: 0xc084fc,
-      title: `Choose your path, ${cls.name}`,
-      text: 'A reset in any town lets you choose again.',
-      options: [
-        ...Object.entries(cls.paths).map(([id, p]) => ({ label: p.name, color: 0x8e6ad9, note: `${p.text} ${p.passiveText}`, onTap: () => this.answerPath(id) })),
-        { label: 'Later', color: COLORS.log, onTap: () => this.answerPath(null) },
-      ],
-    });
-  }
-
-  private answerPath(path: string | null): void {
-    this.closeAsk();
-    if (!path) {
-      this.pathPutOff = true;
-      this.finish('Your path can wait: Hero, then Skills.');
-      return;
-    }
-    this.send({ type: 'skill', op: 'path', player: this.game_.player, path } as never, () => {
-      const p = CLASS_DATA[this.game_.me.classId]!.paths[path]!;
-      moments(this)?.find('mark_star', p.name, p.passiveText, 0xc084fc);
-      this.finish(`You walk the ${p.name}'s path. Spend your points: Hero, then Skills.`);
-    });
   }
 
   /** The coach: the shop closes, you are there, rested. */
@@ -1761,7 +1720,7 @@ export class BoardScene extends Phaser.Scene {
           this.openFight();
           return;
         }
-        if (me.offer || this.pathDue()) {
+        if (me.offer) {
           this.setMessage(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
           this.offerChoice();
           return;
@@ -1835,7 +1794,7 @@ export class BoardScene extends Phaser.Scene {
     this.setBusy(false);
     // Another question still owed (a second pick, an offer behind it) asks now; left alone, Roll would only be refused.
     const me = this.game_.me;
-    if (!me.fight && (me.offer || this.pathDue())) this.offerChoice();
+    if (!me.fight && me.offer) this.offerChoice();
   }
 
   private setBusy(busy: boolean): void {
