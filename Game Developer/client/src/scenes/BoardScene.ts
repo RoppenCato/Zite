@@ -45,8 +45,9 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
+import secretData from '../../../assets/secrets/secrets.json';
 import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
-import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces } from '../boardkit.ts';
+import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -208,6 +209,7 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
+  private readonly secretsDrawn = new Set<string>();
   private rumourMarks: Phaser.GameObjects.Image[] = [];
   /** The painted regions whose board art is held now. */
   private readonly regions = new Set<string>();
@@ -1037,6 +1039,28 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** Whatever has spawned: a mini-boss prowling or a merchant camped, as a badge above the spot. */
+  /** The hidden trails you have found: a faint path off the road and what stands at its end. Unfound, nothing of them is drawn. */
+  private drawSecrets(): void {
+    const { board } = this.game_.state;
+    const found = new Set(this.game_.me.found ?? []);
+    for (const t of secretData.secrets) {
+      if (this.secretsDrawn.has(t.id) || !found.has(`${t.id}-1`) || !this.textures.exists(SECRET_PLACES)) continue;
+      const anchor = board.spaces[t.anchor];
+      if (!anchor) continue;
+      this.secretsDrawn.add(t.id);
+      const look = (secretData.trail as unknown as Record<string, { outer: [string, number, number]; inner: [string, number, number] } | undefined>)[t.area];
+      const g = this.add.graphics().setDepth(KIT_DEPTH.roads);
+      for (const stroke of look ? [look.outer, look.inner] : []) {
+        g.lineStyle(stroke[1], parseInt(stroke[0].slice(1), 16), stroke[2]);
+        g.beginPath();
+        g.moveTo(anchor.x, anchor.y);
+        for (const p of t.spots) g.lineTo(p.x, p.y);
+        g.strokePath();
+      }
+      this.add.image(t.propAt.x, t.propAt.y, SECRET_PLACES, t.prop).setScale(0.5).setDepth(standingDepth(t.propAt.y));
+    }
+  }
+
   /** The "?" of each rumour you carry. */
   private drawRumours(): void {
     for (const mark of this.rumourMarks) mark.destroy();
@@ -1054,6 +1078,7 @@ export class BoardScene extends Phaser.Scene {
   private drawSpawns(): void {
     this.drawArena();
     this.drawRumours();
+    this.drawSecrets();
     for (const mark of this.spawnMarks.values()) mark.destroy();
     this.spawnMarks.clear();
     const { board, spawns } = this.game_.state;
@@ -2241,6 +2266,7 @@ export class BoardScene extends Phaser.Scene {
         this.finish(`Rolled ${value}. Landed ${where}. ${story}`.trimEnd());
       };
       this.drawRumours();
+      this.drawSecrets();
       this.lastCull.count = -1;
       this.showMoments(moved);
       const chest = moved.some((e) => e.type === 'chest');

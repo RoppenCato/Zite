@@ -525,3 +525,7 @@ The Meadows' board atlases are always held: every spot's plate can borrow them. 
 ## The east on the map (Robin, 2026-11-02)
 
 World width 16600. `BAKED_ROADS`: Bogglemire's and The Frostcrown's roads are in the chunks, never stroked. The east's overview loads once Honeyhill is open. The map's bounds grow with sight: the west from the start, the swamp once Honeyhill is open, the mountains once the swamp is. Gates with a `theme` take their frames only from that region's atlas, as the names are shared. The east's Arena atlas loads when one of its Arenas is open to you.
+
+## Hidden places on the board (Robin, 2026-11-02)
+
+`drawSecrets`: a found trail's faint road and far-end sprite, in Mitch, AD's shared `secret_places` atlas, always held at about 2 MB. Unfound, its spots stay hidden in the cull and nothing else is drawn. The end's plate is `spot_secret`.

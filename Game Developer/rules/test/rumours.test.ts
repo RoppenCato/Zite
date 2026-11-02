@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { apply, legalPaths, makeRng, newGame, RUMOURS, walkable, type GameState, type Rumour } from '../src/index.ts';
+import { apply, legalPaths, makeRng, newGame, RUMOURS, SECRETS, walkable, type GameState, type Rumour } from '../src/index.ts';
+import { creature } from '../src/fight.ts';
 import { withSecrets } from '../src/world.ts';
 
 const P = 'p1';
@@ -88,6 +89,32 @@ describe('hidden places (Robin, 2026-11-02)', () => {
     const me = r.state.characters[P]!;
     const again = apply({ ...r.state, characters: { [P]: { ...me, offer: null, space: 'sec-test-1', steps: 1 } } }, { type: 'move', id: 'n', player: P, path: ['sec-test-2'] }, makeRng('u'), NOW + 1e9);
     expect(again.events.some((e) => e.type === 'secretTreasure')).toBe(false);
+  });
+  it('a lair gives a huge beast the first time, a plain one after', () => {
+    const lair = SECRETS.find((x) => x.spots.at(-1)!.mob)!;
+    const last = `${lair.id}-${lair.spots.length}`;
+    const s0 = start();
+    const before = lair.spots.length > 1 ? `${lair.id}-${lair.spots.length - 1}` : lair.anchor;
+    const me = s0.characters[P]!;
+    const on = (s: GameState) => apply({ ...s, characters: { [P]: { ...s.characters[P]!, fight: null, space: before, steps: 1, found: lair.spots.map((_, i) => `${lair.id}-${i + 1}`) } } }, { type: 'move', id: 'l', player: P, path: [last] }, makeRng('l'), NOW);
+    const r = on({ ...s0, characters: { [P]: me } });
+    expect(r.state.characters[P]!.fight!.enemy.name).toContain('Huge');
+    const again = on(r.state);
+    expect(again.state.characters[P]!.fight!.enemy.name).not.toContain('Huge');
+  });
+  it('the world holds every trail Mitch, AD laid, joined at its anchor, its creatures real', () => {
+    const { board } = base;
+    expect(SECRETS).toHaveLength(21);
+    for (const t of SECRETS) {
+      const anchor = board.spaces[t.anchor];
+      expect(anchor, t.anchor).toBeTruthy();
+      expect(anchor!.links).toContain(`${t.id}-1`);
+      expect(anchor!.area).toBe(t.area);
+      const end = board.spaces[`${t.id}-${t.spots.length}`]!;
+      expect(end.hidden).toBe(true);
+      expect(end.name).not.toBe('');
+      if (end.mob) expect(creature(end.mob, board.bestiary), end.mob).toBeTruthy();
+    }
   });
   it('a town can send you to one', () => {
     let saw = false;

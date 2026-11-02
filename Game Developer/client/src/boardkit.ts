@@ -4,6 +4,8 @@
 // theme with no kit keeps the board's shapes. Files are 2x, drawn at 0.5; sizes here are world pixels.
 
 import Phaser from 'phaser';
+import secretPlacesJson from '../../assets/secrets/secrets_atlas.json?url';
+import secretPlacesPng from '../../assets/secrets/secrets.png';
 import rootways from '../../assets/dungeon_meadows/rootways.json';
 import rootwaysPlacement from '../../assets/dungeon_meadows/placement.json';
 import rootwaysPlacesJson from '../../assets/dungeon_meadows/rootways_places.json?url';
@@ -85,12 +87,13 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, ROOTWAYS_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, ROOTWAYS_PLACES, SECRET_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 const ROOTWAYS_PLACES = 'rootways_places';
+export const SECRET_PLACES = 'secret_places';
 /** The painted world's pieces that belong to one region. */
 const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
   forest: { key: FOREST_PLACES, png: forestPlacesPng, json: forestPlacesJson },
@@ -183,6 +186,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   preloadArena(scene);
+  if (!scene.textures.exists(SECRET_PLACES)) scene.load.atlas(SECRET_PLACES, secretPlacesPng, secretPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   for (const theme of themes) {
     const places = THEME_PLACES[theme];
@@ -250,7 +254,7 @@ export function dressPlate(scene: Phaser.Scene, kit: Kit, space: Space, plate: P
 }
 
 function plateArt(scene: Phaser.Scene, kit: Kit, space: Space): { atlas: string; frame: string } {
-  const wanted = space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
+  const wanted = space.hidden && space.name ? 'spot_secret' : space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
   const props = scene.textures.exists(kit.props) ? kit.props : KITS.meadow!.props;
   if (scene.textures.get(props).has(wanted)) return { atlas: props, frame: wanted };
   const elsewhere = placesAtlas(scene, wanted);

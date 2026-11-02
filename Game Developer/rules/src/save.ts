@@ -4,7 +4,7 @@ import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
-import { GROWN, withArenas, withDungeons } from './world.ts';
+import { GROWN, withArenas, withDungeons, withSecrets } from './world.ts';
 import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
@@ -121,6 +121,8 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withEastOpen(before);
+  // 27 → 28: the hidden trails are laid.
+  if (version === 27) return withArena(up);
   if (version === 26) return withArena(up);
   if (version === 25) return withArena(up);
   // 24 → 25: the dungeons are laid.
@@ -155,7 +157,7 @@ function withoutStandIn(state: GameState): GameState {
 
 /** To 24 (Robin, 2026-11-02): the Arena's spots; anyone standing on one just stands at the Arena. */
 function withArena(state: GameState): GameState {
-  return { ...state, version: STATE_VERSION, board: withDungeons(withArenas(state.board)) };
+  return { ...state, version: STATE_VERSION, board: withSecrets(withDungeons(withArenas(state.board))) };
 }
 
 /**
@@ -186,7 +188,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

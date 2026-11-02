@@ -450,12 +450,22 @@ function hearRumour(state: GameState, c: Character, town: Space, action: Action,
   return { ...c, rumours: [...rumours, rumour], cooldowns: { ...c.cooldowns, [key]: now + RUMOURS.cooldownMs } };
 }
 
+/** A fight just begun, with its creature grown huge and rich, and a sure drop. */
+function grownBeast(met: ApplyResult, id: string): ApplyResult {
+  const me = met.state.characters[id]!;
+  const e = me.fight!.enemy;
+  const b = RUMOURS.beast;
+  const big = { ...e, name: `Huge ${e.name}`, role: 'mini' as const, wanderer: true, hp: Math.round(e.hp * b.hp), maxHp: Math.round(e.maxHp * b.hp), attack: Math.round(e.attack * b.attack), xp: Math.round(e.xp * b.xp), gold: Math.round(e.gold * b.gold) };
+  return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: big } }), events: met.events.map((ev) => (ev.type === 'fight' ? { ...ev, enemy: { ...big, moves: big.moves.map((m) => ({ ...m })) } } : ev)) };
+}
+
 /** Landing on what a rumour named pays it off, then the spot itself: a stash or a beast takes the place of what the spot would do. A hidden place's end gives its first treasure once. */
 function landWithRumour(state: GameState, character: Character, space: Space, action: Action, rng: Rng, now: number, events: GameEvent[]): ApplyResult {
   let c = character;
   let s = state;
   const tier = state.board.areas[space.area]?.tier ?? 1;
-  if (space.hidden && space.name && !(c.foundDone ?? []).includes(space.id)) {
+  // A lair's treasure is its beast's sure drop: see `land`.
+  if (space.hidden && space.name && !space.mob && !(c.foundDone ?? []).includes(space.id)) {
     events.push({ type: 'secretTreasure', action: action.id, player: action.player, space: space.id, name: space.name });
     c = { ...c, foundDone: [...(c.foundDone ?? []), space.id] };
     c = giveGold(c, tier * 60, action, events);
@@ -476,12 +486,7 @@ function landWithRumour(state: GameState, character: Character, space: Space, ac
     return { state: withCharacter(got.state, prize), events };
   }
   if (rumour.kind === 'beast' && rumour.mob) {
-    const met = begin(s, c, rumour.mob, space.id, false, action, rng, events);
-    const me = met.state.characters[c.id]!;
-    const e = me.fight!.enemy;
-    const b = RUMOURS.beast;
-    const big = { ...e, name: `Huge ${e.name}`, role: 'mini' as const, wanderer: true, hp: Math.round(e.hp * b.hp), maxHp: Math.round(e.maxHp * b.hp), attack: Math.round(e.attack * b.attack), xp: Math.round(e.xp * b.xp), gold: Math.round(e.gold * b.gold) };
-    return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: big } }), events: met.events.map((ev) => (ev.type === 'fight' ? { ...ev, enemy: { ...big, moves: big.moves.map((m) => ({ ...m })) } } : ev)) };
+    return grownBeast(begin(s, c, rumour.mob, space.id, false, action, rng, events), c.id);
   }
   return land(s, c, space, action, rng, now, events);
 }
@@ -572,7 +577,11 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'normal': {
       // A hidden place's beast.
-      if (space.mob && !onCooldown) return begin(state, cooled(c), space.mob, space.id, false, action, rng, events);
+      if (space.mob) {
+        const first = !(c.foundDone ?? []).includes(space.id);
+        const met = begin(state, first ? { ...c, foundDone: [...(c.foundDone ?? []), space.id] } : c, space.mob, space.id, false, action, rng, events);
+        return first ? grownBeast(met, c.id) : met;
+      }
       const spawn = state.spawns[space.id];
       if (spawn?.kind === 'worldboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events, spawn);
       if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);

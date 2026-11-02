@@ -298,7 +298,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(27);
+    expect(up.version).toBe(28);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();
@@ -381,7 +381,7 @@ describe('a road that wanders', () => {
 describe('Cloverfield Meadows on the painted land', () => {
   it('holds the spots Mitch, AD laid, where he laid them', () => {
     const data = JSON.parse(readFileSync('assets/world_meadows/meadows.json', 'utf8')) as { spots: { x: number; y: number }[] };
-    const own = Object.values(world().board.spaces).filter((s) => s.area === 'meadows');
+    const own = Object.values(world().board.spaces).filter((s) => s.area === 'meadows' && !s.hidden);
     expect(own).toHaveLength(data.spots.length);
     for (const s of own) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
   });
@@ -405,7 +405,7 @@ describe('Wobblewood on the painted land', () => {
   it('holds the spots Mitch, AD laid, where they laid them', () => {
     for (const p of data.spots) expect(own.some((s) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), `${p.x},${p.y}`).toBe(true);
     // The entry road's first two stand on the Meadows' side of the river, outside the forest's list.
-    for (const s of own.filter((x) => !['gate-edge-1', 'gate-edge-2'].includes(x.id))) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
+    for (const s of own.filter((x) => !x.hidden && !['gate-edge-1', 'gate-edge-2'].includes(x.id))) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
   });
 
   it('hunts in Owl Hollow, and not on a town street', () => {
@@ -427,7 +427,7 @@ describe('Honeyhill on the painted land', () => {
   it('holds the spots Mitch, AD laid, where they laid them', () => {
     for (const p of data.spots) expect(own.some((s) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), `${p.x},${p.y}`).toBe(true);
     // The entry road's first spots stand on the forest's side of y 3072, outside this list.
-    for (const s of own.filter((x) => x.y < 3072 && !x.id.includes('shoreend') && x.id !== 'shoreend')) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
+    for (const s of own.filter((x) => !x.hidden && x.y < 3072 && !x.id.includes('shoreend') && x.id !== 'shoreend')) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
   });
 
   it('hunts in Scarecrow Rows, and not on a town street', () => {
