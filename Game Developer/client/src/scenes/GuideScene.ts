@@ -178,6 +178,7 @@ export class GuideScene extends Phaser.Scene {
           { title: 'Charge', text: `Spend the round gathering power: your next hit lands ${PROGRESSION.charge} times as hard.` },
           { title: 'Abilities', text: 'Your special moves. They cost mana, and some cost your meter. The Abilities page says what each does.' },
           { title: 'Flee', text: `A ${pct(PROGRESSION.fleeChance)} chance to get away. If you fail, the enemy still gets its blow.` },
+          { title: 'Bosses', text: 'Each great boss has a trick of its own, told when the fight begins. Grumblebark regrows, Queen Bumble’s swarm grows. Plan for it.' },
           { title: 'Falling', text: `You wake in the nearest town with full HP and mana, a ${pct(PROGRESSION.deathGoldLoss)} share of your gold gone, your gear kept.` },
         ],
       },

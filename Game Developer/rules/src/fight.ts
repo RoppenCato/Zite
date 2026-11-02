@@ -63,6 +63,7 @@ export function makeEnemy(id: string, bestiary: Record<string, EnemyData> = {}):
     armoured: null,
     evade: 0,
     phase: 1,
+    ...(d.trick ? { trick: { ...d.trick } } : {}),
     phase2: d.phase2 ? { at: d.phase2.at, text: d.phase2.text, moves: d.phase2.moves.map((m) => ({ ...m })) } : null,
   };
 }
@@ -624,6 +625,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   f.round += 1;
   r.c = restoreMana(r.c, PROGRESSION.manaPerRound + (p.manaWell ?? 0) + (r.s.bonus.clarity ?? 0), action, events);
   f.enemy.next = pickMove(f.enemy, rng);
+  bossTrick(r);
   events.push(intentEvent(f.enemy, id, player));
   return { state: withCharacter(state, r.c), events };
 }
@@ -805,6 +807,62 @@ function phaseCheck(r: Round): void {
 }
 
 /** What an enemy's move does to the player besides its blow. Ironbrow shrugs off poison and weakening. */
+/** At a round's end, a boss's one trick (Robin, 2026-11-02: "each boss after the first boss should have some simple mechanic"). `f.round` is the round about to begin. Numbers mine. */
+function bossTrick(r: Round): void {
+  const { f, events, action } = r;
+  const e = f.enemy;
+  const t = e.trick;
+  if (!t || e.hp <= 0) return;
+  const done = f.round - 1;
+  const due = !!t.every && done % t.every === 0;
+  const say = (): void => void events.push({ type: 'trick', action: action.id, player: action.player, text: t.line });
+  switch (t.kind) {
+    case 'regrow': {
+      // Fire and poison stop it: something for those who have them.
+      if (e.burn || e.poison || e.hp >= e.maxHp) return;
+      const amount = Math.min(e.maxHp - e.hp, Math.max(1, Math.round(e.maxHp * (t.share ?? 0))));
+      e.hp += amount;
+      events.push({ type: 'enemyHealed', action: action.id, player: action.player, amount, hp: e.hp });
+      return;
+    }
+    case 'swarm': {
+      e.baseAttack ??= e.attack;
+      const grown = Math.min(t.max ?? 1, (t.share ?? 0) * done);
+      e.attack = Math.round(e.baseAttack * (1 + grown));
+      if (done % 3 === 0 && grown < (t.max ?? 1)) say();
+      return;
+    }
+    case 'fumes':
+      if (due) {
+        say();
+        enemyEffect(r, { name: t.line, power: 0, weight: 0, effect: 'poison' });
+      }
+      return;
+    case 'deathRoll':
+      if (due) {
+        say();
+        enemyEffect(r, { name: t.line, power: 0, weight: 0, effect: 'weaken' });
+      }
+      return;
+    case 'iceShell':
+      if (due) {
+        say();
+        e.armoured = { rounds: t.rounds ?? 2, mult: t.mult ?? 2 };
+        events.push({ type: 'effect', action: action.id, player: action.player, target: 'enemy', kind: 'armoured', rounds: t.rounds ?? 2 });
+      }
+      return;
+    case 'charger':
+      if (due && !e.charged) {
+        const windUp = e.moves.find((m) => m.charge);
+        if (windUp) {
+          e.next = windUp;
+          say();
+        }
+      }
+      return;
+  }
+}
+
 function enemyEffect(r: Round, mv: EnemyMove): void {
   const { f, s, events } = r;
   const id = r.action.id;

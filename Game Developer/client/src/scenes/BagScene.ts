@@ -336,13 +336,13 @@ export class BagScene extends Phaser.Scene {
     this.slip(30, card.y + 38, 352, 102, [{ text: this.note || 'Tap anything to see what it does.' }]);
   }
 
-  private slip(x: number, y: number, w: number, h: number, lines: { text: string; color?: string; bold?: boolean }[]): void {
+  private slip(x: number, y: number, w: number, h: number, lines: { text: string; color?: string; bold?: boolean; small?: boolean }[]): void {
     if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, y, w, h).setOrigin(0, 0));
-    let at = y + 9;
+    let at = y + (lines.some((l) => l.small) ? 5 : 9);
     for (const line of lines) {
-      const t = this.add.text(x + 10, at, line.text, { fontFamily: FONT, fontSize: '13px', fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
+      const t = this.add.text(x + 10, at, line.text, { fontFamily: FONT, fontSize: line.small ? '11px' : '13px', fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
       this.rows.push(t);
-      at += t.height + 4;
+      at += t.height + (line.small ? 1 : 4);
     }
   }
 
@@ -383,15 +383,15 @@ export class BagScene extends Phaser.Scene {
     this.rows.push(this.woodText(88, card.y + 16, g.name, 15).setOrigin(0, 0.5));
     const kind = g.name.toLowerCase() === g.base.toLowerCase() ? g.rarity : `${g.rarity} ${g.base}`;
     this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind} ${SLOT_NAMES[g.slot].toLowerCase()}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
-    const lines: { text: string; color?: string; bold?: boolean }[] = [{ text: gearPowers(g).join(' · ') || 'A plain piece.', bold: true }];
+    const lines: { text: string; color?: string; bold?: boolean; small?: boolean }[] = [{ text: gearPowers(g).filter((p) => !p.startsWith('Set: ')).join(' · ') || 'A plain piece.', bold: true }];
     const set = g.set ? SETS[g.set] : undefined;
     if (set) {
       const count = setsWorn(me)[g.set!] ?? 0;
-      lines.push({ text: `${set.name}: ${count} of ${set.slots.length} worn`, bold: true, color: '#7a4fb5' });
-      for (const [need, bonus] of Object.entries(set.bonuses)) lines.push({ text: `${need}: ${bonus.text}`, color: count >= Number(need) ? '#3c7a33' : '#8a7458' });
+      lines.push({ text: `${set.name}: ${count} of ${set.slots.length} worn`, bold: true, color: '#7a4fb5', small: true });
+      for (const [need, bonus] of Object.entries(set.bonuses)) lines.push({ text: `${need}: ${bonus.text}`, color: count >= Number(need) ? '#3c7a33' : '#8a7458', small: true });
     }
     if (this.note) lines.push({ text: this.note });
-    else if (!worn) lines.push(this.comparison(me, g));
+    else if (!worn && !set) lines.push(this.comparison(me, g));
     this.slip(88, card.y + 46, 296, 96, lines);
     const act = (y: number, text: string, color: number, onTap: () => void): void => {
       const b = makeButton(this, 53, y, 62, 36, text, color, '14px', onTap);

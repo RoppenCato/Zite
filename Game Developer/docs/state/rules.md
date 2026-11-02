@@ -487,3 +487,11 @@ Ready before the map lands. `Area.city`: `stroll { to }` walks its own streets w
 
 Save version 32 lays the board again. A city has no creatures, no spawns and no rumours. Its board sends you to the land that suits your level, and its shops stock the tier of the furthest land you have opened.
 
+## Sets, uniques and tricks (Robin, 2026-11-02)
+
+`rules/data/sets.json`: nine sets of five pieces, no weapons, tier 1 to 7 (the last two wait for their lands), a bonus at 2 and at 4. A piece has `set`; `rollSetPiece` makes one; `GEAR.setChance` says how often. A unique has either a `power` or `traits`. Bonuses and `traits` use the same words as talents, read in `traitsOf`, so no new rule is needed for a new set or unique. 46 uniques, all slots. Flasks climb to strength 5 (`flaskTier`).
+
+A boss's `trick` in `tools/enemy-base.json`, done at a round's end in `bossTrick`: Grumblebark regrows unless burning or poisoned, Queen Bumble's attack grows, Old Mother Murk's fumes poison, Frostbeard's ice shell, Bogsnapper's death roll weakens, Old Bighorn winds up. King Goo and Old Rootbeard have none: the first bosses stay plain.
+
+Waiting: Mitch, AD's signature weapons, each a unique with its own art.
+

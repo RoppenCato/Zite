@@ -16,7 +16,7 @@ for (const file of process.argv.slice(2)) {
     const b = /^  (.+?)\s+L\s*(\d+) beaten at L\s*([\d.]+) tries ([\d.]+) deaths ([\d.]+) rounds\s+(\d+) flasks (-?[\d.]+) at ([\d.]+)h/.exec(line);
     if (b) (bosses.get(b[1]) ?? bosses.set(b[1], []).get(b[1])).push({ cls, L: +b[2], at: +b[3], tries: +b[4], deaths: +b[5], rounds: +b[6], flasks: +b[7], h: +b[8] });
     if (/^  (1-10|11-20|21-30) /.test(line)) bands.push(line.trim().replace(/\s+/g, ' '));
-    if (/^Gold a run|^  +\d+  (hp|mana|carries|a Hunter|stat|enemy|points|stands)|^Stuck|^Actives|^Learned/.test(line)) other.push(`${cls}: ${line.trim().slice(0, 190)}`);
+    if (/^Loot a run|^Gold a run|^  +\d+  (hp|mana|carries|a Hunter|stat|enemy|points|stands)|^Stuck|^Actives|^Learned/.test(line)) other.push(`${cls}: ${line.trim().slice(0, 190)}`);
   }
 }
 console.log('build                         tactic   L  h10  h20  h30 die  fights left quests gold rank');

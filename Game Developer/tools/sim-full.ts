@@ -90,6 +90,7 @@ const broken = new Map<string, number>();
 const thrown = new Map<string, number>();
 const note = (map: Map<string, number>, key: string): void => void map.set(key, (map.get(key) ?? 0) + 1);
 const wants = new Map<string, number>();
+const loot = { sets: 0, uniques: 0, runs: 0, wornSets: 0, wornUniques: 0 };
 const killers = new Map<string, number>();
 const questTimes = new Map<string, number[]>();
 let questsDropped = 0;
@@ -222,6 +223,11 @@ function play(build: Build, seed: string): Result {
       if (e.type === 'sold') goldFrom.set('sold', (goldFrom.get('sold') ?? 0) + ((e as unknown as { price?: number }).price ?? 0));
       if (e.type === 'bought') goldTo.set('bought', (goldTo.get('bought') ?? 0) + ((e as unknown as { price?: number }).price ?? 0));
       if (e.type === 'rumourDone') r.rumours += 1;
+      if (e.type === 'loot') {
+        const g = (e as unknown as { gear: GearItem }).gear;
+        if (g.set) loot.sets += 1;
+        if (g.unique) loot.uniques += 1;
+      }
       if (e.type === 'found' && ITEMS[(e as unknown as { item: string }).item]?.heal) r.flasksFound += (e as unknown as { count: number }).count;
       if (e.type === 'secretFound') r.secrets += 1;
       if (e.type === 'questTaken') r.questsTaken += 1;
@@ -605,6 +611,9 @@ function play(build: Build, seed: string): Result {
   const c = me();
   r.hours = played / 3600;
   r.gold = c.gold;
+  loot.runs += 1;
+  loot.wornSets += Object.values(c.equipment).filter((g) => g?.set).length;
+  loot.wornUniques += Object.values(c.equipment).filter((g) => g?.unique).length;
   r.flasksEnd = flasks(c);
   r.bosses = [...log.values()].sort((a, b) => a.minutes - b.minutes);
   r.bossesLeft = allBosses().filter((b) => !(c.bossKills[b.id] ?? 0)).map((b) => b.id);
@@ -697,6 +706,7 @@ console.log(`Most pressed: ${[...used].sort((a, b) => b[1] - a[1]).slice(0, 12).
 console.log('\nHours by what it wanted (all builds, each):');
 console.log('  ' + [...wants].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(v / 3600 / results.length).toFixed(1)}`).join(', '));
 console.log(`\nGold a run, in: ${[...goldFrom].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${Math.round(v / results.length)}`).join(', ')}; out: ${[...goldTo].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${Math.round(v / results.length)}`).join(', ')}`);
+console.log(`\nLoot a run: ${(loot.sets / loot.runs).toFixed(1)} set pieces, ${(loot.uniques / loot.runs).toFixed(1)} uniques; worn at the end ${(loot.wornSets / loot.runs).toFixed(1)} and ${(loot.wornUniques / loot.runs).toFixed(1)}`);
 console.log('\nRefused actions:');
 for (const [k, v] of [...refused].sort((a, b) => b[1] - a[1])) console.log(`  ${String(v).padStart(7)}  ${k}   e.g. ${samples.get(k)}`);
 console.log(`\nBroken state: ${broken.size ? '' : 'none'}`);

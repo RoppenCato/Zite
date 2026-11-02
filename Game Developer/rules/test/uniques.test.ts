@@ -88,12 +88,12 @@ describe('what the fallen leave', () => {
     return rarities;
   };
 
-  it('a boss always drops, a unique about half the time and nothing under epic otherwise; a mini rare and up with a unique now and then; a mob no unique', () => {
+  it('a boss always drops, a unique about one time in four and nothing under epic otherwise; a mini rare and up with a unique now and then; a mob no unique', () => {
     const boss = dropsFrom('thornwood-warden', 60);
     expect(boss).toHaveLength(60);
     const uniques = boss.filter((r) => r === 'unique').length;
-    expect(uniques).toBeGreaterThan(18);
-    expect(uniques).toBeLessThan(42);
+    expect(uniques).toBeGreaterThan(5);
+    expect(uniques).toBeLessThan(28);
     for (const r of boss) expect(['unique', 'epic', 'legendary']).toContain(r);
     const mini = dropsFrom('wolf-alpha', 80);
     for (const r of mini) expect(['unique', 'rare', 'epic', 'legendary']).toContain(r);

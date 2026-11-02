@@ -628,8 +628,8 @@
   },
   "uniqueChance": {
     "mob": 0,
-    "mini": 0.1,
-    "boss": 0.5
+    "mini": 0.05,
+    "boss": 0.25
   },
   "consumableDrop": {
     "potion": 0.08,

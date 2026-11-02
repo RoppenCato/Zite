@@ -232,7 +232,7 @@ export class FightScene extends Phaser.Scene {
     this.manaBar = this.heroBoard.mana!;
 
     this.message = this.add
-      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: MESSAGE_BOX_W - 24 } })
+      .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : enemy.trick ? enemy.trick.text : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: MESSAGE_BOX_W - 24 } })
       .setOrigin(0.5);
     logButtons(this, L.messageY + 22);
     this.prompt = this.add.text(CENTRE, L.promptY, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5);
@@ -503,6 +503,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         }
         break;
       case 'intent':
+        this.refreshStatus();
+        break;
+      case 'trick':
+        this.say(e.text);
         this.refreshStatus();
         break;
       case 'phase':

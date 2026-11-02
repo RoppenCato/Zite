@@ -352,6 +352,12 @@
           "effect": "heal"
         }
       ]
+    },
+    "trick": {
+      "kind": "regrow",
+      "share": 0.015,
+      "text": "Grumblebark regrows each round, unless it burns or is poisoned.",
+      "line": "Grumblebark regrows."
     }
   },
   "ice-wolf": {
@@ -530,6 +536,13 @@
           "weight": 1
         }
       ]
+    },
+    "trick": {
+      "kind": "swarm",
+      "share": 0.04,
+      "max": 0.6,
+      "text": "Queen Bumble’s swarm grows each round: her stings land harder the longer it lasts.",
+      "line": "The swarm grows."
     }
   },
   "glowcap": {
@@ -696,7 +709,13 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "trick": {
+      "kind": "deathRoll",
+      "every": 3,
+      "text": "Every third round Bogsnapper rolls and drags you under: your hits go soft.",
+      "line": "The death roll: you are weakened."
+    }
   },
   "mother-murk": {
     "name": "Old Mother Murk",
@@ -742,6 +761,12 @@
           "effect": "poison"
         }
       ]
+    },
+    "trick": {
+      "kind": "fumes",
+      "every": 3,
+      "text": "Every third round the bog’s fumes poison you.",
+      "line": "The fumes rise: you are poisoned."
     }
   },
   "snow-goat": {
@@ -854,7 +879,13 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round Old Bighorn winds up to charge. Block it.",
+      "line": "Old Bighorn paws the ground."
+    }
   },
   "frostbeard": {
     "name": "Frostbeard",
@@ -900,6 +931,14 @@
           "effect": "weaken"
         }
       ]
+    },
+    "trick": {
+      "kind": "iceShell",
+      "every": 4,
+      "rounds": 2,
+      "mult": 2.5,
+      "text": "Every fourth round an ice shell forms: hits barely scratch him for two rounds.",
+      "line": "An ice shell forms. Wait it out."
     }
   },
   "city-outcast": {

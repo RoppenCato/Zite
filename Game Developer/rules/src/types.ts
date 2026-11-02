@@ -141,6 +141,22 @@ export interface EnemyData {
   gold: number;
   moves: EnemyMove[];
   phase2?: EnemyPhase;
+  /** A boss's one trick (Robin, 2026-11-02). */
+  trick?: BossTrick;
+}
+
+/** What makes a boss its own, and the words that say so. */
+export interface BossTrick {
+  kind: 'regrow' | 'swarm' | 'fumes' | 'iceShell' | 'deathRoll' | 'charger';
+  /** Said when the fight begins. */
+  text: string;
+  /** Said when it happens. */
+  line: string;
+  every?: number;
+  share?: number;
+  max?: number;
+  rounds?: number;
+  mult?: number;
 }
 
 /**
@@ -339,6 +355,9 @@ export interface Enemy {
   /** 1 until a boss's second phase begins, then 2. */
   phase: number;
   phase2: EnemyPhase | null;
+  trick?: BossTrick;
+  /** Its attack before a swarm grew it. */
+  baseAttack?: number;
 }
 
 export interface Fight {
@@ -607,6 +626,7 @@ export type GameEvent =
   | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
   /** A boss's second phase began. */
   | { type: 'phase'; action: string; player: string; text: string }
+  | { type: 'trick'; action: string; player: string; text: string }
   /** The class's meter moved; `name` is Valor, Mischief, Arcana or Aim. */
   | { type: 'meter'; action: string; player: string; name: string; value: number; max: number }
   /** Gold lifted from the enemy in the fight. */

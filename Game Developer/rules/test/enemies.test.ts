@@ -123,3 +123,40 @@ describe('a boss\'s second phase', () => {
     expect(queen.phase2!.moves.some((m) => m.effect === 'heal')).toBe(true);
   });
 });
+
+describe("the bosses' tricks (Robin, 2026-11-02)", () => {
+  const P = 'p1';
+  const NOW2 = 1_000_000;
+  const fightIn = (boss: string, rounds = 1): GameState => {
+    const s = newGame({ seed: 'tricks', player: P, name: 'Robin', classId: 'warrior' });
+    const c = startFight({ ...s.characters[P]!, attack: 1, hp: 90000, maxHp: 90000 }, boss, 'pass', false);
+    return { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, round: rounds, enemy: { ...c.fight!.enemy, hp: Math.round(c.fight!.enemy.maxHp / 2) } } } } };
+  };
+  const go = (s: GameState) => apply(s, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'block' } as never, makeRng('t'), NOW2);
+  it('every great boss after the first has one, and says so; King Goo does not', () => {
+    for (const id of ['briar-king', 'frost-matriarch', 'mother-murk', 'frostbeard', 'bogsnapper', 'old-bighorn']) expect(makeEnemy(id).trick?.text, id).toBeTruthy();
+    expect(makeEnemy('thornwood-warden').trick).toBeUndefined();
+  });
+  it('Grumblebark regrows, unless it burns', () => {
+    const r = go(fightIn('briar-king'));
+    expect(r.events.some((e) => e.type === 'enemyHealed')).toBe(true);
+    const s = fightIn('briar-king');
+    const c = s.characters[P]!;
+    const burning = { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, enemy: { ...c.fight!.enemy, burn: { rounds: 5, damage: 1 } } } } } };
+    expect(go(burning).events.some((e) => e.type === 'enemyHealed')).toBe(false);
+  });
+  it("Queen Bumble's stings grow with the rounds, up to a limit", () => {
+    const base = makeEnemy('frost-matriarch').attack;
+    expect(go(fightIn('frost-matriarch', 5)).state.characters[P]!.fight!.enemy.attack).toBeGreaterThan(base);
+    expect(go(fightIn('frost-matriarch', 90)).state.characters[P]!.fight!.enemy.attack).toBeLessThanOrEqual(Math.round(base * 1.6));
+  });
+  it('Old Mother Murk poisons, and Bogsnapper weakens, on their rounds only', () => {
+    expect(go(fightIn('mother-murk', 3)).state.characters[P]!.fight!.poisoned).toBeTruthy();
+    expect(go(fightIn('mother-murk', 2)).events.some((e) => e.type === 'trick')).toBe(false);
+    expect(go(fightIn('bogsnapper', 3)).state.characters[P]!.fight!.weak).toBeTruthy();
+  });
+  it('Frostbeard hardens on his round; Old Bighorn winds up on his', () => {
+    expect(go(fightIn('frostbeard', 4)).state.characters[P]!.fight!.enemy.armoured).toBeTruthy();
+    expect(go(fightIn('old-bighorn', 3)).state.characters[P]!.fight!.enemy.next?.charge).toBe(true);
+  });
+});

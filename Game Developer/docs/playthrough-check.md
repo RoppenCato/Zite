@@ -119,3 +119,7 @@ A creature at your level costs about 5% of your HP in 3 to 5 rounds. Bosses take
 - **A Magician who only taps Attack does not get through:** stuck at level 17 with six bosses left.
 - Not played by this: two players at once, and the screens at length. The pane saw character making, the board, the Hero sheet, the skill board, the Journal, the quest board, a shop, the Arena's door, a fight and its abilities list, the map.
 
+### With sets, more uniques and the bosses' tricks (one seed a build, to level 30)
+
+Level 20 takes 2.8 to 5.5 hours for most builds, about as before. Grumblebark is the hardest early boss: 21 to 28 rounds. By level 30 a player has found about 22 set pieces and 11 uniques; the sim wears few of them, because it judges gear by its plain numbers, so sets have not been felt in these runs. One build stands out: Warrior Berserker with Knight took 11.7 hours to level 20 and 35 to 30, not looked into yet.
+
