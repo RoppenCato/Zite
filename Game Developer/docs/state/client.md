@@ -481,3 +481,7 @@ The draw order gains `far_back` before `body`. What is held decides the arms in 
 ## Wobblewood painted (2026-11-02)
 
 `worldmap.ts` holds both regions: chunks merged by column and row (column 3 is both coasts), an overview crop per region, and only open land shows. A closed land's roads, spots and pieces stay hidden unless they stand on land already open. `world.json` has `pass` beside `bridge`: both are gates in `BoardScene.gates`. Honeyhill waits tiled at its real place north of the pass (mine); grown areas start at column 6, past the forest. A next region: add its chunks to `worldmap.ts`, its box to `PAINTED`, its `places` and roads to `world.json`, a version bump and relay.
+
+## The fight's name boards (Robin, 2026-11-02)
+
+`fightboard.ts`: a plank under each fighter with bars and pips, words on a slip that shows only when there are words, positions from Mitch, AD's `fight_boards` notes. Words pack by ` · `, then wrap; first lines kept (mine: greedy packing, so three short bits can fit in two lines). `Bar` takes `small` and `fontSize`; HUD bars unchanged.

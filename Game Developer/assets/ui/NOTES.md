@@ -14,6 +14,8 @@ nine-slice frame carries its corner as `nine` in `ui.json`, in file pixels.
   behind it, fading over about 400 ms.
 - **Bars:** `bar_lost` sits behind the fill at the old value and drains to the new one, with `fx_tick` above the bar.
 
+Banners: the ribbon's face is about 58 px tall inside the 80, from y 5 to y 63; centre the words at y 34.
+
 Text colours: cream `#f7efdc` on wood and on the coloured buttons, ink `#2a2030` on parchment and on cards.
 
 ## Not done
@@ -71,6 +73,11 @@ The rarity colours are read from the game's `layout.ts`: common #e8e4d8, uncommo
 | `bar_hp` | the HP fill | 24 by 10 | 5 px |
 | `bar_mp` | the MP fill | 24 by 10 | 5 px |
 | `bar_lost` | the part just lost, behind the fill, draining away | 24 by 10 | 5 px |
+| `board_plank` | the fight's name board under each fighter; stretch it to size | 64 by 48 | 12 px |
+| `board_slip` | the parchment slip on the name board; words in dark ink, no outline | 48 by 24 | 8 px |
+| `bar_frame_s` | the small bar frame, for MP on the name board, 11 tall | 48 by 11 | 5 px |
+| `bar_mp_s` | the MP fill for the small frame, 7 tall | 24 by 7 | 3 px |
+| `bar_lost_s` | the part just lost, for the small frame, 7 tall | 24 by 7 | 3 px |
 | `pip_empty` | the class meter, empty | 12 by 12 |  |
 | `pip_full` | the class meter, full | 12 by 12 |  |
 | `slot_weapon` | an empty weapon slot | 40 by 40 |  |

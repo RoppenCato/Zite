@@ -22,6 +22,7 @@ import { gearIn, type Prize } from '../loot.ts';
 import { rememberMessage } from '../messages.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
+import { ENEMY_BOARD, FightBoard, HERO_BOARD } from '../fightboard.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 import { moments } from './MomentScene.ts';
@@ -39,13 +40,11 @@ export const FIGHT_LAYOUT = {
   // Robin, 2026-11-01: "in battle you stand way too close to the enemy". The hero at the left edge, the enemy well to the right.
   heroX: 66,
   /** The hero's bars sit in from the edge, so they stay on the screen. */
-  heroBarX: 90,
   enemyX: 318,
   titleY: 122,
   historyY: 148,
   messageY: 650,
   promptY: 708,
-  barW: 150,
 } as const;
 
 /** Each class's meter has its own pip (Nigel, SD); the plain one is the Knight's. */
@@ -53,8 +52,8 @@ const METER_PIP: Partial<Record<ClassId, string>> = { rogue: 'fight/meter-pip-tr
 
 /** The title stops short of the ? at the top right. */
 const TITLE_X = 180;
-/** How far under the fighters' feet the first bar sits. */
-const BAR_BELOW = 20;
+/** How far under the fighters' feet the name boards start. */
+const BOARD_BELOW = 16;
 const TITLE_W = 340;
 
 /** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
@@ -72,7 +71,6 @@ const STEP_MS = 450; // between two events of a round
 /** The first fight's line, said once (tips.ts). */
 const TIP_FIGHT = 'Pick a move, then a guard. The orange line says what comes next.';
 const CENTRE = DESIGN_WIDTH / 2;
-const BAR_H = 16;
 
 const ENEMY_COLORS: Record<string, number> = {
   mob: 0x9a8f7a,
@@ -111,7 +109,7 @@ export class FightScene extends Phaser.Scene {
   /** The enemy drawn from the Art Director's atlas when it has one. */
   private enemy: Figure | null = null;
   private enemyBar!: Bar;
-  private enemyStatus!: Phaser.GameObjects.Text;
+  private enemyBoard!: FightBoard;
   private heroBody!: Body;
   /** The hero drawn from the atlas when a set is loaded. */
   private hero: Hero | null = null;
@@ -121,7 +119,7 @@ export class FightScene extends Phaser.Scene {
   private feetY = 0;
   private heroBar!: Bar;
   private manaBar!: Bar;
-  private heroStatus!: Phaser.GameObjects.Text;
+  private heroBoard!: FightBoard;
   private message!: Phaser.GameObjects.Text;
   /** The two lines before the message, dimmer, under the title: a round reads as a short log (mine, 2026-11-01). */
   private history!: Phaser.GameObjects.Text;
@@ -213,10 +211,9 @@ export class FightScene extends Phaser.Scene {
       this.enemyBody = this.add.circle(L.enemyX, feetY - 56, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
       this.add.text(L.enemyX, feetY - 56, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
     }
-    const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
     // Under the feet, on the ground (Robin, 2026-11-02: "healthbars etc should be under the characters... It can look a little messy and cluttery").
-    this.enemyBar = new Bar(this, enemyBarX, feetY + BAR_BELOW, L.barW, BAR_H, 0xd9534f);
-    this.enemyStatus = this.add.text(enemyBarX, feetY + BAR_BELOW + 14, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, 0);
+    this.enemyBoard = new FightBoard(this, ENEMY_BOARD(feetY + BOARD_BELOW));
+    this.enemyBar = this.enemyBoard.hp;
 
         if (heroReady(this, me.classId)) {
       this.hero = new Hero(this, me, L.heroX, feetY, HERO_FIGHT_SCALE);
@@ -227,9 +224,9 @@ export class FightScene extends Phaser.Scene {
       this.add.text(L.heroX, feetY - 26, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
     }
     // Health above mana (Robin, 2026-11-02).
-    this.heroBar = new Bar(this, L.heroBarX, feetY + BAR_BELOW, L.barW, BAR_H, COLORS.button);
-    this.manaBar = new Bar(this, L.heroBarX, feetY + BAR_BELOW + 18, L.barW, 12, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(L.heroBarX, feetY + BAR_BELOW + 28, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (L.heroBarX - 6) } }).setOrigin(0.5, 0);
+    this.heroBoard = new FightBoard(this, HERO_BOARD(feetY + BOARD_BELOW));
+    this.heroBar = this.heroBoard.hp;
+    this.manaBar = this.heroBoard.mana!;
 
     this.message = this.add
       .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
@@ -720,8 +717,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
   private refreshStatus(): void {
     const f = this.game_.me.fight;
     if (!f) {
-      this.enemyStatus.setText('');
-      this.heroStatus.setText('');
+      this.enemyBoard.setWords([]);
+      this.heroBoard.setWords([]);
       this.held.clear();
       this.owl?.destroy();
       this.owl = null;
@@ -737,7 +734,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       e.evade ? 'fading' : '',
       e.phase === 2 ? 'raging' : '',
     ].filter(Boolean);
-    this.enemyStatus.setText(enemyBits.join(' · '));
+    this.enemyBoard.setWords(enemyBits);
     // A wind-up held: the enemy reddens until it lands.
     if (this.enemyBody instanceof Phaser.GameObjects.Arc) {
       if (e.charged) this.enemyBody.setStrokeStyle(8, 0xff5a4a, 1);
@@ -747,8 +744,8 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       else this.enemyBody.clearTint();
     }
     const meter = CLASS_DATA[this.game_.me.classId].meter;
+    if (meter) this.heroBoard.setMeter(this, meter.name, f.meter ?? 0, PROGRESSION.meterMax);
     const heroBits = [
-      meter ? `${meter.name} ${'●'.repeat(f.meter ?? 0)}${'○'.repeat(Math.max(0, PROGRESSION.meterMax - (f.meter ?? 0)))}` : '',
       f.charged ? 'charged' : '',
       f.attackUp ? `hits harder ${f.attackUp.rounds}` : '',
       f.barrier ? `barrier ${f.barrier}` : '',
@@ -764,7 +761,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       this.game_.me.elixirs?.vigor ? 'vigor' : '',
       this.game_.me.elixirs?.arcana ? 'arcana' : '',
     ].filter(Boolean);
-    this.heroStatus.setText(heroBits.join(' · '));
+    this.heroBoard.setWords(heroBits);
     // What lasts is seen on the figure (Mitch, AD's clips). No clip of its own: burn; Firework hits as a plain hit for now.
     const heroChest = this.spot('hero', 'chest');
     const heroHead = this.spot('hero', 'head');

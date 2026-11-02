@@ -118,21 +118,25 @@ export class Bar {
   private readonly lost: Phaser.GameObjects.NineSlice | null;
   /** The fill's full width in design pixels, and its current share. */
   private readonly inner: number;
+  private fillH = 10;
   private share = { fill: 1, lost: 1 };
 
-  constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, color: number, depth = 0, label = 'HP') {
+  constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, color: number, depth = 0, label = 'HP', opts: { small?: boolean; fontSize?: number } = {}) {
     this.scene = scene;
     this.label = label;
     const kit = kitReady(scene);
     if (kit) {
       const mp = color === COLORS.mana || label === 'MP';
-      plate(scene, 'bar_frame', x, y, w, 14).setDepth(depth);
+      // The small frame is 11 tall with a 7 tall fill; the plain one 14 and 10.
+      const small = !!opts.small;
+      this.fillH = small ? 7 : 10;
+      plate(scene, small ? 'bar_frame_s' : 'bar_frame', x, y, w, small ? 11 : 14).setDepth(depth);
       this.inner = w - 4;
       const left = x - w / 2 + 2;
-      this.lost = plate(scene, 'bar_lost', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 1);
-      this.fill = plate(scene, mp ? 'bar_mp' : 'bar_hp', left, y, this.inner, 10).setOrigin(0, 0.5).setDepth(depth + 2);
+      this.lost = plate(scene, small ? 'bar_lost_s' : 'bar_lost', left, y, this.inner, this.fillH).setOrigin(0, 0.5).setDepth(depth + 1);
+      this.fill = plate(scene, mp ? (small ? 'bar_mp_s' : 'bar_mp') : 'bar_hp', left, y, this.inner, this.fillH).setOrigin(0, 0.5).setDepth(depth + 2);
       this.text = scene.add
-        .text(x, y, '', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: '#ffffff', stroke: INK, strokeThickness: 4 })
+        .text(x, y, '', { fontFamily: FONT_DISPLAY, fontSize: `${opts.fontSize ?? 13}px`, fontStyle: 'bold', color: '#ffffff', stroke: INK, strokeThickness: (opts.fontSize ?? 13) < 13 ? 3 : 4 })
         .setOrigin(0.5)
         .setDepth(depth + 3);
       return;
@@ -149,7 +153,7 @@ export class Bar {
 
   set(value: number, max: number, now = false): void {
     const target = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
-    const line = `${this.label} ${value}/${max}`;
+    const line = this.label ? `${this.label} ${value}/${max}` : `${value}/${max}`;
     if (this.text.text && this.text.text !== line && !now) feel.tick(this.scene, this.text);
     this.text.setText(line);
     this.scene.tweens.killTweensOf(this.share);
@@ -175,11 +179,11 @@ export class Bar {
     }
     const f = w(this.share.fill);
     this.fill.setVisible(f > 0);
-    if (f > 0) resizePlate(this.fill, f, 10);
+    if (f > 0) resizePlate(this.fill, f, this.fillH);
     if (this.lost) {
       const l = w(Math.max(this.share.lost, this.share.fill));
       this.lost.setVisible(l > 0);
-      if (l > 0) resizePlate(this.lost, l, 10);
+      if (l > 0) resizePlate(this.lost, l, this.fillH);
     }
   }
 }
