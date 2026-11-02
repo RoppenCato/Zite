@@ -75,6 +75,11 @@ export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): 
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 const ROOTWAYS_PLACES = 'rootways_places';
+/** The painted world's pieces that belong to one region. */
+const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
+  forest: { key: FOREST_PLACES, png: forestPlacesPng, json: forestPlacesJson },
+  harvest: { key: HARVEST_PLACES, png: harvestPlacesPng, json: harvestPlacesJson },
+};
 const ROOTWAYS_CLEARED = new Set(rootways.door.remove.map((p) => `${p.name}@${p.x},${p.y}`));
 /** A road's line from a colour written #rrggbb or rgba(r,g,b,a). */
 function roadLine(width: number, colour: string): { width: number; color: number; alpha: number } {
@@ -161,8 +166,10 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   preloadArena(scene);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
-  if (themes.includes('forest') && !scene.textures.exists(FOREST_PLACES)) scene.load.atlas(FOREST_PLACES, forestPlacesPng, forestPlacesJson);
-  if (themes.includes('harvest') && !scene.textures.exists(HARVEST_PLACES)) scene.load.atlas(HARVEST_PLACES, harvestPlacesPng, harvestPlacesJson);
+  for (const theme of themes) {
+    const places = THEME_PLACES[theme];
+    if (places && !scene.textures.exists(places.key)) scene.load.atlas(places.key, places.png, places.json);
+  }
   for (const theme of new Set(['meadow', ...themes])) {
     const k = KITS[theme];
     if (!k) continue;
@@ -176,8 +183,49 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
 KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };
 
 export function kitFor(scene: Phaser.Scene, theme: string): Kit | null {
+  // A far region's own atlases may not be held (`preloadRegion`): its roads need none, and its plates borrow the Meadows' until they are.
+  const shared = KITS.meadow!;
   const k = KITS[theme];
-  return k && scene.textures.exists(k.ground) && scene.textures.exists(k.props) ? k : null;
+  return k && scene.textures.exists(shared.ground) && scene.textures.exists(shared.props) ? k : null;
+}
+
+/** Queue a region's own atlases, for when you come near it (Robin, 2026-11-02: more land must not hold more memory). */
+export function preloadRegion(scene: Phaser.Scene, theme: string): void {
+  preloadBoardKits(scene, [theme]);
+}
+
+/** The atlas keys of a region's own pieces. */
+export function regionPlaces(theme: string): string[] {
+  const places = THEME_PLACES[theme];
+  return places ? [places.key] : [];
+}
+
+/** Whether a region's atlases are held. */
+export function regionHeld(scene: Phaser.Scene, theme: string): boolean {
+  const k = KITS[theme];
+  const places = THEME_PLACES[theme];
+  return !!k && scene.textures.exists(k.ground) && scene.textures.exists(k.props) && (!places || scene.textures.exists(places.key));
+}
+
+/** Let go of a region's atlases. Nothing may be drawn from them by now (`clearKitProps`, `dressPlate`). */
+export function freeRegion(scene: Phaser.Scene, theme: string): void {
+  const k = KITS[theme];
+  const keys = [k?.ground, k?.props, THEME_PLACES[theme]?.key].filter((key): key is string => !!key);
+  for (const key of keys) if (scene.textures.exists(key)) scene.textures.remove(key);
+}
+
+/** A spot's plate in its region's own art if that is held, or the Meadows' until it is. */
+export function dressPlate(scene: Phaser.Scene, kit: Kit, space: Space, plate: Phaser.GameObjects.Image): void {
+  const { atlas, frame } = plateArt(scene, kit, space);
+  plate.setTexture(atlas, frame);
+}
+
+function plateArt(scene: Phaser.Scene, kit: Kit, space: Space): { atlas: string; frame: string } {
+  const wanted = space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
+  const props = scene.textures.exists(kit.props) ? kit.props : KITS.meadow!.props;
+  if (scene.textures.get(props).has(wanted)) return { atlas: props, frame: wanted };
+  const elsewhere = placesAtlas(scene, wanted);
+  return elsewhere ? { atlas: elsewhere, frame: wanted } : { atlas: props, frame: PLATES.normal };
 }
 
 /** A small hash for a seeded choice per cell. */
@@ -269,10 +317,8 @@ export function drawKitRoads(scene: Phaser.Scene, kit: Kit, spaces: Space[], all
 export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phaser.GameObjects.Image {
   // A spot with no plate of its own yet takes the wilds' (the quest board's, until Mitch, AD's comes).
   // A magic shop is a shop in the rules, with its own plate on the map.
-  const wanted = space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
-  const own = scene.textures.get(kit.props).has(wanted);
-  const elsewhere = own ? null : placesAtlas(scene, wanted);
-  const plate = scene.add.image(space.x, space.y, elsewhere ?? kit.props, own || elsewhere ? wanted : PLATES.normal).setScale(SCALE).setDepth(KIT_DEPTH.plates);
+  const { atlas, frame } = plateArt(scene, kit, space);
+  const plate = scene.add.image(space.x, space.y, atlas, frame).setScale(SCALE).setDepth(KIT_DEPTH.plates);
   // A thumb is wider than a plate: the tap area reaches well past it, as it did round the old circles.
   const { width, height } = plate;
   plate.setInteractive(new Phaser.Geom.Rectangle(-30, -50, width + 60, height + 100), Phaser.Geom.Rectangle.Contains);
@@ -282,7 +328,7 @@ export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phase
 /** The hand-laid props of an area, if the kit has them: the flat ones under the roads, the rest sorted by their foot. */
 export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number {
   const list = kit.placements[area.id];
-  if (!list) return 0;
+  if (!list || !scene.textures.exists(kit.props)) return 0;
   for (const p of list) {
     if (ARENA_CLEARED.has(`${p.name}@${p.x},${p.y}`) || ROOTWAYS_CLEARED.has(`${p.name}@${p.x},${p.y}`)) continue;
     const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : placesAtlas(scene, p.name, area.theme);
@@ -313,6 +359,18 @@ export const allProps: Phaser.GameObjects.Image[] = [];
 
 /** Props that rise past their area's top, by area: once the area is open they stand over the next area's cloud (the glade's gate does). */
 const tall = new Map<string, Phaser.GameObjects.Image[]>();
+
+/** An area's props gone, before its atlases are freed. */
+export function clearKitProps(areaId: string): void {
+  for (let i = allProps.length - 1; i >= 0; i--) {
+    const sprite = allProps[i]!;
+    if (propArea.get(sprite) !== areaId) continue;
+    propArea.delete(sprite);
+    allProps.splice(i, 1);
+    sprite.destroy();
+  }
+  tall.delete(areaId);
+}
 
 export function raiseTallProps(areaId: string): void {
   for (const sprite of tall.get(areaId) ?? []) sprite.setDepth(KIT_DEPTH.cover + 0.5);

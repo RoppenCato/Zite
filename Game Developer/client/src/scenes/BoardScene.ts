@@ -46,7 +46,7 @@ import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
 import { drawArenaBuilding, type ArenaDrawn } from '../arena.ts';
-import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
+import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -111,6 +111,9 @@ const LIT = 0xfff27a;
 // The zooms are world pixels per CSS pixel; the camera draws at the device's density, so each is multiplied by DPR (hires.ts).
 const FOLLOW_ZOOM = 0.8 * DPR; // walking about
 const MAX_ZOOM = 1.4 * DPR; // the closest a pinch gets
+/** How near a region comes in and how far it goes out, in world pixels. */
+const REGION_NEAR = 900;
+const REGION_FAR = 1500;
 const HARD_MIN_ZOOM = 0.12 * DPR; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
 const ZOOM_FLOOR = 0.05 * DPR;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
@@ -205,6 +208,8 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
+  /** The painted regions whose board art is held now. */
+  private readonly regions = new Set<string>();
   private readonly dungeonFloors = new Map<string, Phaser.GameObjects.Rectangle>();
   private arenaParts: Phaser.GameObjects.GameObject[] = [];
   private arenaBuildings: ArenaDrawn[] = [];
@@ -713,12 +718,10 @@ export class BoardScene extends Phaser.Scene {
     for (const area of fresh) {
       const kit = kitFor(this, area.theme);
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
+      if (kit && PAINTED[area.id] && area.theme !== 'meadow' && regionHeld(this, area.theme)) this.regions.add(area.id);
     }
     for (const area of fresh) this.drawCover(area);
-    for (const gate of worldGates()) {
-      const atlas = placesAtlas(this, gate.barred);
-      if (atlas && !this.gates.has(gate)) this.gates.set(gate, this.add.image(gate.foot.x, gate.foot.y, atlas, gate.barred).setScale(0.5).setDepth(standingDepth(gate.foot.y)));
-    }
+    this.drawGates();
     // Past the areas' edges there is cloud, not a void (the map can be dragged there).
     if (this.textures.exists('board_cover') && !this.painted) {
       this.outside ??= this.add.tileSprite(0, 0, board.width, board.height, 'board_cover').setOrigin(0, 0).setTileScale(0.5).setDepth(-1).setTint(0x8a8fa8);
@@ -1109,6 +1112,7 @@ export class BoardScene extends Phaser.Scene {
     const now = this.game_.now();
     this.refreshLink();
     this.checkArena();
+    this.fitRegions();
     for (const [spaceId, label] of this.bossLabels) {
       const space = this.game_.state.board.spaces[spaceId]!;
       const boss = space.boss ? creature(space.boss, this.game_.state.board.bestiary) : undefined;
@@ -1135,9 +1139,11 @@ export class BoardScene extends Phaser.Scene {
     preloadLoot(this);
     // Every open area's kit and the next one's, which waits under the cloud.
     const { areas } = this.game_.state.board;
-    // Two tiers ahead: an area's kit must be here before it opens, and a player can beat two bosses in one sitting (mine).
+    // Two tiers ahead for a grown land, whose ground is drawn whole and at once: its kit must be here before it opens (mine).
+    // A painted region comes and goes with the camera (`fitRegions`); only the one you stand in comes now.
     const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 2;
-    preloadBoardKits(this, Object.values(areas).filter((a) => a.tier <= reach).map((a) => a.theme));
+    const here = areas[this.game_.state.board.spaces[this.game_.me.space]?.area ?? ''];
+    preloadBoardKits(this, [...Object.values(areas).filter((a) => a.tier <= reach && !PAINTED[a.id] && !a.dungeon).map((a) => a.theme), ...(here && PAINTED[here.id] ? [here.theme] : [])]);
     preloadKit(this);
     preloadAbilityIcons(this);
     // The fourth class's sounds only for those who play one; the forest's only once you are in it.
@@ -1266,6 +1272,89 @@ export class BoardScene extends Phaser.Scene {
     }
     for (const mark of marks) mark.setOrigin(0.5, 1).setDepth(KIT_DEPTH.names);
     this.closedMarks.set(area.id, marks);
+  }
+
+  private drawGates(): void {
+    const opened = new Set(this.game_.me.opened);
+    for (const gate of worldGates()) {
+      const atlas = placesAtlas(this, gate.barred);
+      if (atlas && !this.gates.has(gate)) this.gates.set(gate, this.add.image(gate.foot.x, gate.foot.y, atlas, opened.has(gate.opens) ? gate.open : gate.barred).setScale(0.5).setDepth(standingDepth(gate.foot.y)));
+    }
+  }
+
+  /**
+   * A painted region's board art is held only near you or near the camera (Robin, 2026-11-02: more land must not hold more memory), with room
+   * between coming and going so a border does not churn. Far off, its spots wear the Meadows' plates and its props are not drawn: the ground is baked.
+   */
+  private fitRegions(): void {
+    if (!this.token || !this.painted) return;
+    const cam = this.cameras.main;
+    const inside = !!this.dungeonHere();
+    const points = inside ? [] : [{ x: this.token.x, y: this.token.y }, ...(cam.zoom >= CHUNK_ZOOM ? [cam.midPoint] : [])];
+    const away = (land: { x: number; y: number; width: number; height: number }, p: { x: number; y: number }): number =>
+      Math.hypot(Math.max(land.x - p.x, 0, p.x - land.x - land.width), Math.max(land.y - p.y, 0, p.y - land.y - land.height));
+    const { areas } = this.game_.state.board;
+    for (const [id, land] of Object.entries(PAINTED)) {
+      const area = areas[id];
+      if (!area || area.theme === 'meadow') continue;
+      const nearest = Math.min(Infinity, ...points.map((p) => away(land, p)));
+      if (nearest < REGION_NEAR && !this.regions.has(id)) this.bringRegion(area);
+      else if (nearest > REGION_FAR && this.regions.has(id)) this.dropRegion(area);
+    }
+  }
+
+  private bringRegion(area: Area): void {
+    this.regions.add(area.id);
+    const ready = (): void => {
+      // Walked away while it loaded: dropRegion has freed what came.
+      if (!this.regions.has(area.id) || !regionHeld(this, area.theme)) return;
+      this.dressRegion(area);
+    };
+    if (regionHeld(this, area.theme)) {
+      ready();
+      return;
+    }
+    preloadRegion(this, area.theme);
+    this.load.once(Phaser.Loader.Events.COMPLETE, ready);
+    this.load.start();
+    this.log.note(`region art: loading ${area.name}`);
+  }
+
+  private dressRegion(area: Area): void {
+    const kit = kitFor(this, area.theme);
+    if (!kit) return;
+    clearKitProps(area.id);
+    drawKitProps(this, kit, area);
+    if (this.game_.me.opened.includes(area.id)) raiseTallProps(area.id);
+    this.dressPlates(area, kit);
+    this.drawGates();
+    this.lastCull.count = -1;
+  }
+
+  private dressPlates(area: Area, kit: NonNullable<ReturnType<typeof kitFor>>): void {
+    for (const space of Object.values(this.game_.state.board.spaces)) {
+      if (space.area !== area.id) continue;
+      const plate = this.circles.get(space.id);
+      if (plate instanceof Phaser.GameObjects.Image) dressPlate(this, kit, space, plate);
+    }
+  }
+
+  private dropRegion(area: Area): void {
+    this.regions.delete(area.id);
+    const kit = kitFor(this, area.theme);
+    if (!kit) return;
+    clearKitProps(area.id);
+    // What was drawn from these atlases lets go first.
+    const going = [kit.props, kit.ground, ...regionPlaces(area.theme)];
+    for (const [gate, image] of this.gates) {
+      if (!going.includes(image.texture.key)) continue;
+      image.destroy();
+      this.gates.delete(gate);
+    }
+    freeRegion(this, area.theme);
+    this.dressPlates(area, kit);
+    this.lastCull.count = -1;
+    this.log.note(`region art: freed ${area.name}`);
   }
 
   /** The dungeon you stand in, if any: the map is then only that. */

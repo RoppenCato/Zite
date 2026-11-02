@@ -517,3 +517,7 @@ A plank from `PLANK_TOP` 835, four small buttons with icons, Roll in the middle 
 ## Dungeons on the board (Robin, 2026-11-02)
 
 The board shows a dungeon only while you stand in it (`shownAreas`): its chunks, roads, spots and props, with the camera held to its `DUNGEON_LAND`. Its chunks have their own keys, because they share grid squares with the Forest's sea. Theme `dungeon` uses the Meadows' plates with its own roads.
+
+## Region art comes and goes (Robin, 2026-11-02)
+
+The Meadows' board atlases are always held: every spot's plate can borrow them. Any other painted region's ground, props and places atlases load when you or the camera come within `REGION_NEAR` and are freed past `REGION_FAR` (`fitRegions`, checked once a second). Its props are drawn then and destroyed before the free; its plates swap to the Meadows' while it is away, so far spots can still be tapped. Grown lands, not painted, still hold their kits. Worst case on the board: Meadows 16 MB and two regions at about 14 MB each.
