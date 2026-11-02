@@ -5,6 +5,8 @@
 import Phaser from 'phaser';
 import abilitiesJson from '../../assets/abilities/abilities.json?url';
 import abilitiesPng from '../../assets/abilities/abilities.png';
+import sealsJson from '../../assets/seals/seals.json?url';
+import sealsPng from '../../assets/seals/seals.png';
 import talentsJson from '../../assets/talents/talents.json?url';
 import talentsPng from '../../assets/talents/talents.png';
 import bubbleData from '../../assets/effects/bubble/bubble.json';
@@ -34,6 +36,12 @@ const TALENT_ICONS = 'talents';
 /** The ability icons, for the fight, the trainer and the guide; call from a scene's preload. */
 export function preloadAbilityIcons(scene: Phaser.Scene): void {
   if (!scene.textures.exists(ICONS)) scene.load.atlas(ICONS, abilitiesPng, abilitiesJson);
+}
+
+/** The Seals (Mitch, AD): `seal_<land>` and `seal_empty`. Small enough to keep, so the popup is always ready. */
+export const SEALS = 'seals';
+export function preloadSeals(scene: Phaser.Scene): void {
+  if (!scene.textures.exists(SEALS)) scene.load.atlas(SEALS, sealsPng, sealsJson);
 }
 
 /** The talents' icons, for the skill board. */

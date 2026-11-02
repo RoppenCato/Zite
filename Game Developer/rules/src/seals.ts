@@ -6,9 +6,9 @@ import { ENEMIES } from './data.ts';
 import type { Board, Character } from './types.ts';
 
 /** The lands with a Seal that are not in the world yet (Mitch, AD, 2026-11-02): off this list as each is laid. */
-export const SEALS_COMING: readonly { name: string; levels: [number, number] }[] = [
-  { name: 'The Pirate Isles', levels: [20, 24] },
-  { name: 'The Giants’ Land', levels: [24, 28] },
+export const SEALS_COMING: readonly { land: string; name: string; levels: [number, number] }[] = [
+  { land: 'pirateisles', name: 'The Pirate Isles', levels: [20, 24] },
+  { land: 'giantsland', name: 'The Giants’ Land', levels: [24, 28] },
 ];
 
 export interface Seal {

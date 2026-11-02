@@ -4,6 +4,7 @@
 // a row queue. Plates and text drawn by code until the UI kit's banners come (docs/art-demands.md, wave 1). Timings mine.
 
 import Phaser from 'phaser';
+import { SEALS } from '../effects.ts';
 import { audio } from '../audio.ts';
 import { feel } from '../feel.ts';
 import { hasFrame, icon, INK, INK_DIM, KIT_SOFT, kitReady, plate } from '../kit.ts';
@@ -22,6 +23,8 @@ interface Moment {
   kind: 'burst' | 'swell' | 'find';
   /** A find's picture, from the kit. */
   icon?: string;
+  /** The atlas of `icon`, when it is not the kit's. */
+  atlas?: string;
   shake?: boolean;
   /** The kit's banner for it, and whether its words are ink (on parchment) or cream. */
   banner: 'banner_level' | 'banner_boss' | 'banner_area';
@@ -61,6 +64,11 @@ export class MomentScene extends Phaser.Scene {
     this.push({ title: `${area} opens`, line: 'New ground to walk.', color: 0x6fcf7a, ink: '#d6f5da', sound: 'ui/area-opened', buzz: 20, kind: 'swell', banner: 'banner_area' });
   }
 
+  /** A land's Seal won: the seal itself on the card. */
+  seal(land: string, title: string, line: string): void {
+    this.push({ title, line, color: 0xf4c14a, ink: INK, sound: '', buzz: 30, kind: 'find', icon: `seal_${land}`, atlas: SEALS, banner: 'banner_area' });
+  }
+
   /** Something a spot gave: its icon popping over a glow, the words on a card under it. */
   find(iconFrame: string, title: string, line: string, color: number): void {
     this.push({ title, line, color, ink: INK, sound: '', buzz: 12, kind: 'find', icon: iconFrame, banner: 'banner_area' });
@@ -80,7 +88,7 @@ export class MomentScene extends Phaser.Scene {
     } else {
       parts.push(this.add.rectangle(0, 28, 300, 76, COLORS.panel, 0.95).setStrokeStyle(2, m.color));
     }
-    const pic = m.icon && hasFrame(this, m.icon) ? icon(this, m.icon, 0, -44).setScale(1.25) : null;
+    const pic = m.icon && m.atlas && this.textures.exists(m.atlas) ? this.add.image(0, -44, m.atlas, m.icon).setScale(0.75) : m.icon && hasFrame(this, m.icon) ? icon(this, m.icon, 0, -44).setScale(1.25) : null;
     if (pic) parts.push(pic);
     const title = this.add.text(0, 8, m.title, { fontFamily: FONT_DISPLAY, fontSize: '21px', fontStyle: 'bold', color: kit ? INK : COLORS.text }).setOrigin(0.5);
     for (let px = 21; px > 15 && title.width > 296; px--) title.setFontSize(`${px}px`);

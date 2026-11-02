@@ -627,7 +627,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         moments(this)?.bossDown(this.enemyName);
         break;
       case 'sealWon':
-        moments(this)?.find('mark_star', 'A Seal!', `${this.game_.state.board.areas[e.land]?.name ?? e.land}: ${e.won} of ${e.total} Seals.`, 0xf4c14a);
+        moments(this)?.seal(e.land, 'A Seal!', `${this.game_.state.board.areas[e.land]?.name ?? e.land}: ${e.won} of ${e.total} Seals.`);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} A Seal! ${e.won} of ${e.total}.` };
         break;
       case 'worldBossDown':

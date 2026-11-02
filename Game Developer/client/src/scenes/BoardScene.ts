@@ -51,7 +51,7 @@ import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGI
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
-import { preloadAbilityIcons } from '../effects.ts';
+import { preloadAbilityIcons, preloadSeals } from '../effects.ts';
 import { COMING_LANDS, FOG_FAR_PIECES, FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
@@ -1212,6 +1212,7 @@ export class BoardScene extends Phaser.Scene {
     preloadBoardKits(this, [...Object.values(areas).filter((a) => a.tier <= reach && !PAINTED[a.id] && !a.dungeon).map((a) => a.theme), ...(here && PAINTED[here.id] ? [here.theme] : [])]);
     preloadKit(this);
     preloadAbilityIcons(this);
+    preloadSeals(this);
     // The fourth class's sounds only for those who play one; the forest's only once you are in it.
     const me = this.game_.me;
     audio.preload(this, [...(me.classId === 'warrior' ? [] : ['fight-classes']), ...(me.opened.some((id) => areas[id]?.theme === 'forest') ? ['creatures-forest'] : [])]);

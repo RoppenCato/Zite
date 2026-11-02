@@ -6,15 +6,15 @@ import facesJson from '../../../assets/journal/journal_faces.json?url';
 import facesPng from '../../../assets/journal/journal_faces.png';
 import facesEastJson from '../../../assets/journal_east/journal_faces_east.json?url';
 import facesEastPng from '../../../assets/journal_east/journal_faces_east.png';
+import { preloadSeals, SEALS } from '../effects.ts';
 import type { GameHolder } from '../game-holder.ts';
-import { CREAM, KIT, kitReady, plate, sheet } from '../kit.ts';
+import { CREAM, kitReady, plate, sheet } from '../kit.ts';
 import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
 import { makeButton } from '../ui.ts';
 
 const WOOD_INK = '#3a2410';
 const DIM = '#8a7458';
 const RUST = '#a23c2c';
-const GOLD = 0xf4c14a;
 const FACES = 'journal_faces';
 const FACES_EAST = 'journal_faces_east';
 const ROW_H = 62;
@@ -28,6 +28,7 @@ export class SealsScene extends Phaser.Scene {
   }
 
   preload(): void {
+    preloadSeals(this);
     if (!this.textures.exists(FACES)) this.load.atlas(FACES, facesPng, facesJson);
     if (!this.textures.exists(FACES_EAST)) this.load.atlas(FACES_EAST, facesEastPng, facesEastJson);
   }
@@ -48,7 +49,7 @@ export class SealsScene extends Phaser.Scene {
     this.add.text(32, 172, 'Beat the greatest boss of each land to win its Seal. With every Seal, a way opens under Crownhaven, to the last fight of all.', { fontFamily: FONT, fontSize: '14px', color: WOOD_INK, wordWrap: { width: 348 } });
     let y = 258;
     for (const seal of sealsOf(board, me)) {
-      this.medal(seal.won, y);
+      this.medal(seal.won ? seal.land : null, y);
       const face = seal.open ? [FACES, FACES_EAST].find((key) => this.textures.exists(key) && this.textures.get(key).has(seal.boss)) : undefined;
       if (face) {
         const pic = this.add.image(370, y, face, seal.boss).setDisplaySize(44, 44);
@@ -60,7 +61,7 @@ export class SealsScene extends Phaser.Scene {
       y += ROW_H;
     }
     for (const land of SEALS_COMING) {
-      this.medal(false, y);
+      this.medal(null, y);
       this.add.text(78, y - 22, land.name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: DIM });
       this.add.text(78, y - 2, 'Still to come', { fontFamily: FONT, fontSize: '13.5px', color: DIM });
       this.add.text(78, y + 15, `Level ${land.levels[0]} to ${land.levels[1]}`, { fontFamily: FONT, fontSize: '12px', color: DIM });
@@ -69,12 +70,9 @@ export class SealsScene extends Phaser.Scene {
     if (all) this.add.text(32, y - 14, 'You hold every Seal. The way under Crownhaven is still being dug: it opens in a coming version.', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: RUST, wordWrap: { width: 348 } });
   }
 
-  private medal(won: boolean, y: number): void {
-    if (kitReady(this)) this.add.image(48, y, KIT, won ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46);
-    if (!kitReady(this)) return;
-    const star = this.add.image(48, y, KIT, 'mark_star');
-    star.setScale(34 / star.width);
-    if (won) star.setTint(GOLD);
-    else star.setTint(0x6a5a48).setAlpha(0.45);
+  /** A land's seal when won; the empty one when not. */
+  private medal(land: string | null, y: number): void {
+    if (!this.textures.exists(SEALS)) return;
+    this.add.image(46, y, SEALS, land ? `seal_${land}` : 'seal_empty').setScale(0.5);
   }
 }
