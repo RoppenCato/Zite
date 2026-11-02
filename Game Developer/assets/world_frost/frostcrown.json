@@ -57,7 +57,7 @@
     "y": 3960
    },
    {
-    "id": "hotspring",
+    "id": "frostcrown-hotspring",
     "kind": "potion",
     "name": "The Hot Spring",
     "x": 13680,
@@ -468,7 +468,7 @@
    },
    {
     "from": "herbhut",
-    "to": "hotspring",
+    "to": "frostcrown-hotspring",
     "kinds": "nnpnnn",
     "bow": 0,
     "via": [
@@ -511,7 +511,7 @@
     ]
    },
    {
-    "from": "hotspring",
+    "from": "frostcrown-hotspring",
     "to": "goatrocks",
     "kinds": "nnhnnn",
     "bow": 0,
@@ -731,7 +731,7 @@
     ]
    },
    {
-    "from": "hotspring",
+    "from": "frostcrown-hotspring",
     "to": "snowgate",
     "kinds": "nnnnn",
     "bow": 0,
@@ -776,7 +776,7 @@
    },
    {
     "from": "cragcamp",
-    "to": "hotspring",
+    "to": "frostcrown-hotspring",
     "kinds": "nnnn",
     "bow": 0,
     "via": [
@@ -2227,7 +2227,7 @@
    "x": 13680,
    "y": 3400,
    "kind": "spring",
-   "hub": "hotspring",
+   "hub": "frostcrown-hotspring",
    "place": null
   },
   {

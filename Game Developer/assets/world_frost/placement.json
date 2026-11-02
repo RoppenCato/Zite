@@ -231,7 +231,7 @@
 {"name":"tent_b","x":12804,"y":3291},
 {"name":"pine_a","x":15242,"y":3301},
 {"name":"arch_camp","x":13289,"y":3315},
-{"name":"hot_spring","x":13652,"y":3320,"hub":"hotspring"},
+{"name":"hot_spring","x":13652,"y":3320,"hub":"frostcrown-hotspring"},
 {"name":"pine_b","x":14654,"y":3323},
 {"name":"boulder_a","x":15466,"y":3337},
 {"name":"boulder_b","x":13979,"y":3356},

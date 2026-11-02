@@ -1354,6 +1354,47 @@
    }
   ]
  },
+ "shoreRoad": {
+  "from": "summit",
+  "to": "shoreend",
+  "area": "frostpeak",
+  "kinds": "nnnnnnnnnnnnnnn",
+  "bow": 0,
+  "via": [
+   {
+    "x": 4600,
+    "y": 330
+   },
+   {
+    "x": 5100,
+    "y": 300
+   },
+   {
+    "x": 5700,
+    "y": 270
+   },
+   {
+    "x": 6300,
+    "y": 260
+   },
+   {
+    "x": 6800,
+    "y": 300
+   },
+   {
+    "x": 7080,
+    "y": 330
+   }
+  ],
+  "stroked": true,
+  "hub": {
+   "id": "shoreend",
+   "kind": "normal",
+   "name": "Queen Bumble’s Shore",
+   "x": 7300,
+   "y": 360
+  }
+ },
  "exit": {
   "hub": "murkpool",
   "path": [
@@ -3304,46 +3345,5 @@
    "hub": null,
    "place": null
   }
- ],
- "shoreRoad": {
-  "from": "summit",
-  "to": "shoreend",
-  "area": "frostpeak",
-  "kinds": "nnnnnnnnnnnnnnn",
-  "bow": 0,
-  "via": [
-   {
-    "x": 4600,
-    "y": 330
-   },
-   {
-    "x": 5100,
-    "y": 300
-   },
-   {
-    "x": 5700,
-    "y": 270
-   },
-   {
-    "x": 6300,
-    "y": 260
-   },
-   {
-    "x": 6800,
-    "y": 300
-   },
-   {
-    "x": 7080,
-    "y": 330
-   }
-  ],
-  "stroked": true,
-  "hub": {
-   "id": "shoreend",
-   "kind": "normal",
-   "name": "Queen Bumble’s Shore",
-   "x": 7300,
-   "y": 360
-  }
- }
+ ]
 }
