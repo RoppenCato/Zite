@@ -149,7 +149,7 @@ export class ShopScene extends Phaser.Scene {
       const piece = dailyPiece(this.game_.state, me, this.game_.now());
       if (piece) {
         const sold = me.dailyBought?.[me.space] === calendarDay(this.game_.now());
-        this.rows.push(this.add.text(CENTRE, firstRowY - 34, sold ? 'Gone for today. Back tomorrow.' : 'One piece a day, and dear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
+        this.rows.push(this.add.text(CENTRE, sold ? firstRowY : firstRowY + rowStep, sold ? 'Gone for today. Back tomorrow.' : 'One piece a day, and dear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
         if (!sold) gearRow(0, piece, `${piece.price} g`, '', () => this.compare(piece, 'Buy', () => this.buy({ daily: true })));
       }
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
