@@ -70,3 +70,11 @@ the date, and comes off this list.
   holds every character today) when there are enough players to feel it.
 - **A screen for the server's address and the code** instead of the browser's prompt.
 - **Playing offline and online with one character**: the two are separate saves today.
+
+## Dungeons and arenas (Robin, 2026-11-02: "Oh maybe we can have dungeons. You enter them and walk around and theres a boss at the end. We could also have arenas where you fight several mobs in a row")
+
+Small dungeons are already a yes in the brief. Proposals, all mine until Robin confirms:
+
+- **Dungeon:** a door on the map leads to a short board of its own, 8 to 10 spots, with a boss at the end. You still roll to walk. The way out is the door or beating the boss. Needs a dark ground kit and a door from Mitch, AD for each kind.
+- **Arena:** a place on the map. Fights in a row with no walking, HP and mana carried over, and between fights you take the winnings or go on for more. Falling loses what is not yet taken. Needs a building on the map and a fight backdrop from Mitch, AD; it can run first on an existing backdrop.
+
