@@ -247,7 +247,7 @@ export class FightScene extends Phaser.Scene {
     this.showMoves();
     makeButton(this, 380, 124, 44, 44, '?', COLORS.log, '20px', () => {
       sfx.play('ui/sheet-open');
-      this.scene.launch('guide', { page: 0 });
+      this.scene.launch('guide', { page: 1 });
     });
     sfx.play('fight/begin');
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);

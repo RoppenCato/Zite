@@ -1,5 +1,6 @@
 // The guide (Robin, 2026-11-01: "its a bit hard to tell what skills etc do in combat. I think there needs to be some sort
-// of guide in the menu on what things do and how battle works."). Opened from Settings and from the ? in a fight;
+// of guide in the menu on what things do and how battle works."; 2026-11-02: "a button that shows a window with like how the game works and what the goal is. Where to find
+// talents, gear etc. How combat works."). Opened from the ? in the top bar, from Settings and from the ? in a fight;
 // it lies over everything and takes every touch until Close. The numbers are read from the rules' data, so a retune
 // shows here by itself.
 
@@ -36,8 +37,12 @@ export class GuideScene extends Phaser.Scene {
   private readonly game_: GameHolder;
   private page = 0;
   private start = 0;
-  private rows: Phaser.GameObjects.GameObject[] = [];
   private tabs: { label: Phaser.GameObjects.Text; index: number }[] = [];
+  private list!: Phaser.GameObjects.Container;
+  private room = 0;
+  private dragFrom: number | null = null;
+  private height = 0;
+  private entries: { top: number; height: number; parts: (Phaser.GameObjects.Text | Phaser.GameObjects.Image)[] }[] = [];
 
   constructor(deps: GuideSceneDeps) {
     super('guide');
@@ -66,10 +71,43 @@ export class GuideScene extends Phaser.Scene {
         this.page = i;
         this.showPage();
       });
+      label.setFontSize('12px');
       this.tabs.push({ label, index: i });
     });
+    // What does not fit is dragged up with a finger.
+    const listTop = HUD_HEIGHT + 118;
+    this.room = bottom - 16 - listTop;
+    this.list = this.add.container(0, 0);
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      this.dragFrom = p.y >= listTop ? p.y : null;
+    });
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (this.dragFrom === null || !p.isDown) return;
+      this.scrollBy(p.y - this.dragFrom);
+      this.dragFrom = p.y;
+    });
+    this.input.on('pointerup', () => {
+      this.dragFrom = null;
+    });
+    this.input.on('wheel', (_p: unknown, _o: unknown, _x: number, dy: number) => this.scrollBy(-dy));
     this.page = Math.min(this.start, pages.length - 1);
     this.showPage();
+  }
+
+  private scrollBy(dy: number): void {
+    const lowest = Math.min(0, this.room - this.height);
+    this.list.y = Math.max(lowest, Math.min(0, this.list.y + dy));
+    this.fit();
+  }
+
+  /** Only what lies whole inside the panel shows. */
+  private fit(): void {
+    const top = HUD_HEIGHT + 118 - 2;
+    for (const e of this.entries) {
+      const y = e.top + this.list.y;
+      const seen = y >= top && y + e.height <= top + this.room + 4;
+      for (const part of e.parts) part.setVisible(seen);
+    }
   }
 
   private close(): void {
@@ -78,8 +116,9 @@ export class GuideScene extends Phaser.Scene {
   }
 
   private showPage(): void {
-    for (const r of this.rows) r.destroy();
-    this.rows = [];
+    this.list.removeAll(true);
+    this.list.y = 0;
+    this.entries = [];
     const ink = kitReady(this) ? INK : COLORS.text;
     const dim = kitReady(this) ? INK_DIM : COLORS.dim;
     for (const t of this.tabs) t.label.setColor(t.index === this.page ? '#ffe9a8' : '#f7efdc');
@@ -87,15 +126,18 @@ export class GuideScene extends Phaser.Scene {
     for (const e of this.pages()[this.page]!.entries) {
       const pic = e.icon ? abilityIcon(this, e.icon, 44, y + 18, 32) : null;
       if (pic) {
-        this.rows.push(pic);
+        this.list.add(pic);
         if (e.dim) pic.setAlpha(0.55);
       }
       const textX = pic ? 68 : 28;
       const title = this.add.text(textX, y, e.title, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: e.dim ? dim : ink });
       const text = this.add.text(textX, y + 20, e.text, { fontFamily: FONT, fontSize: '14px', color: dim, wordWrap: { width: DESIGN_WIDTH - textX - 28 }, lineSpacing: 1 });
-      this.rows.push(title, text);
+      this.list.add([title, text]);
+      this.entries.push({ top: y, height: 20 + text.height, parts: pic ? [pic, title, text] : [title, text] });
       y += 20 + text.height + 10;
     }
+    this.height = y - (HUD_HEIGHT + 118);
+    this.fit();
   }
 
   private pages(): Page[] {
@@ -105,7 +147,6 @@ export class GuideScene extends Phaser.Scene {
     const meter = cls.meter;
     const mine = abilitiesFor(me).map((id): [string, (typeof ABILITIES)[string]] => [id, ABILITIES[id]!]);
     const known = mine.filter(([id]) => me.abilities[id]);
-    const others = mine.filter(([id]) => !me.abilities[id]);
     const line = (id: string): Entry => {
       const a = ABILITIES[id]!;
       const rank = me.abilities[id];
@@ -113,6 +154,21 @@ export class GuideScene extends Phaser.Scene {
       return { title: `${a.name}${rank ? ` · rank ${rank}` : ''}`, text: `${a.text}${cost ? ` Costs ${cost}.` : ''}`, dim: !rank, icon: id };
     };
     return [
+      {
+        name: 'Start',
+        entries: [
+          { title: 'The goal', text: 'Grow strong enough to beat the biggest boss of every land. Each boss you beat brings gear and opens the way on.' },
+          { title: 'Moving', text: 'Tap Roll, then tap a lit spot to walk there. Tap any spot to hear about it. Where you land decides what happens: a fight, a chest, a shop.' },
+          { title: 'Where to go', text: 'Next, in the top bar, says what to do now. Your first boss is King Goo, at the end of the Meadows: beat it and the Kingswood and the city of Crownhaven open, and the lands around them. Each land on the map shows the levels it suits.' },
+          { title: 'Home', text: 'Once the city is open, the Home button takes you back to it from anywhere, every few minutes. In the city you tap a place to walk there; the die works at its gates.' },
+          { title: 'Talents', text: 'Each level brings a point. Open Hero, then Skills. Your class has three trees: go mainly down one and take some from the others. Each tier asks for 3 more points in its tree, and a level. Tap a talent to see what it does. You carry four abilities into a fight, five from level 15. A town or a church gives every point back for free.' },
+          { title: 'Gear', text: 'Fights, chests, bosses and quests drop it, and shops sell it plain. Open Hero and tap a piece to wear it. Sell what you do not need at any shop. A master smith sells better gear, and one fine piece a day.' },
+          { title: 'Staying alive', text: 'A town heals you for free when you land on it. Carry flasks: shops sell them, and you can drink one in a fight or from Hero.' },
+          { title: 'Fights', text: 'Two taps a round: what you do, then how you take the blow. Watch the orange line over the enemy, and Block what it winds up. The Fights and Guards tabs say more.' },
+          { title: 'Quests', text: 'Walk to a board on the map to pick one. One at a time. It pays the moment it is done, with XP, gold and a chest.' },
+          { title: 'And more to find', text: 'A rumour in a town puts a ? on your map: treasure, a huge beast or a hidden path. Dungeons lie behind doors at a road\'s end. The Arena opens on some days only. Far too strong creatures, with their level over them, walk the roads: go round them, or come back later.' },
+        ],
+      },
       {
         name: 'Fights',
         entries: [
@@ -135,7 +191,7 @@ export class GuideScene extends Phaser.Scene {
           ...(meter ? [{ title: meter.name, text: `Your meter, the dots over your bars. ${meter.text}` }] : []),
         ],
       },
-      { name: 'Abilities', entries: [...known.map(([id]) => line(id)), ...others.map(([id]) => line(id)), { title: 'Learning more', text: 'A trainer in a town teaches and raises them for gold. A shrine teaches for free, now and then. A level sometimes offers a pick of two.' }] },
+      { name: 'Abilities', entries: [...known.map(([id]) => line(id)), { title: 'Learning more', text: 'A point comes with each level: spend it on the skill board, from Hero. All your talents are there, with what each one does.' }] },
       {
         name: 'Effects',
         entries: [

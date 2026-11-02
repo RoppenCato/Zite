@@ -411,6 +411,12 @@ export class HudScene extends Phaser.Scene {
       plate(this, 'board_slip', 12, 76, 184, 24).setOrigin(0, 0);
       plate(this, 'board_slip', 240, 76, 160, 24).setOrigin(0, 0);
     }
+    // How the game works, a tap away (Robin, 2026-11-02).
+    makeButton(this, 322, 50, 30, 26, '?', COLORS.log, '15px', () => {
+      sfx.play('ui/sheet-open');
+      this.scene.launch('guide', { page: 0 });
+      this.scene.bringToTop('guide');
+    }, { small: true });
     makeButton(this, 218, 89, 40, 26, 'Home', COLORS.log, '10.5px', () => (this.scene.get('board') as BoardScene).goHome(), { small: true });
     this.place = this.add.text(24, 88, '', { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
     this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);
