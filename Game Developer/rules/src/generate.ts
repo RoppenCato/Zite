@@ -4,6 +4,7 @@
 // re-dressed: a theme, names, which hub is the way in and which the boss on the way out, creatures scaled to its tier,
 // gear of its rank in its shop. The cells go east in a snake two cells tall; the board widens as they come.
 
+import LAID_SHAPES from '../data/shapes-laid.json';
 import { SHAPES, THEMES, WORLD_DATA } from './data.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import type { Board, EnemyData, Space, SpaceKind } from './types.ts';
@@ -68,8 +69,8 @@ let templateCache: Template[] | null = null;
 function templates(): Template[] {
   if (templateCache) return templateCache;
   const { width, height } = THEMES.cell;
-  // A painted area's shape is its own, too large and particular to repeat: grown areas keep the older shapes.
-  const laid: { hubs: WorldHub[]; roads: WorldRoad[] }[] = [...WORLD_DATA.areas.filter((a) => !a.places), ...SHAPES];
+  // A painted area's shape is its own, too large and particular to repeat: grown areas keep the older shapes, the forest's and Honeyhill's among them, as they were laid in their cells.
+  const laid: { hubs: WorldHub[]; roads: WorldRoad[] }[] = [...(LAID_SHAPES as unknown as { hubs: WorldHub[]; roads: WorldRoad[] }[]), ...SHAPES];
   templateCache = laid.map((a) => {
     const ox = Math.floor(Math.min(...a.hubs.map((h) => h.x)) / width) * width;
     const oy = Math.floor(Math.min(...a.hubs.map((h) => h.y)) / height) * height;

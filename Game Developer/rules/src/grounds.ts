@@ -51,6 +51,8 @@ export function placeName(board: Board, space: Space): string | null {
   if (!place) return null;
   const ground = groundsOf(board, space.area).find((g) => g.id === place);
   if (ground) return ground.name;
+  const named = board.areas[space.area]?.places?.find((p) => p.id === place)?.name;
+  if (named) return named;
   const towns = Object.values(board.spaces).filter((s) => s.area === space.area && s.kind === 'town');
   towns.sort((a, b) => Math.hypot(a.x - space.x, a.y - space.y) - Math.hypot(b.x - space.x, b.y - space.y));
   return towns[0]?.name ?? null;
@@ -59,7 +61,8 @@ export function placeName(board: Board, space: Space): string | null {
 /** A spot inside a town's walls: a place, but no ground. Nothing hunts there. */
 export function inTownWalls(board: Board, space: Space): boolean {
   const place = placeAt(board, space);
-  return !!place && !groundsOf(board, space.area).some((g) => g.id === place);
+  if (!place || board.areas[space.area]?.places?.find((p) => p.id === place)?.wild) return false;
+  return !groundsOf(board, space.area).some((g) => g.id === place);
 }
 
 /** The ground a spot lies in: the one it stands in, else the one whose named spot is nearest. */

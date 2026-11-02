@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 18;
+export const STATE_VERSION = 19;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
@@ -90,6 +90,14 @@ export interface Ground {
   levels?: [number, number];
 }
 
+/** The land of a place, as an outline: a ground's own id, a town's, or a `wild` place, named land where the nearest ground's creature still hunts. */
+export interface Place {
+  id: string;
+  shape: [number, number][];
+  wild?: boolean;
+  name?: string;
+}
+
 /** An area of the map: a theme, a tier, the levels of what lives there, and which mobs and mini-bosses those are. */
 export interface Area {
   id: string;
@@ -104,7 +112,7 @@ export interface Area {
   /** Its hunting grounds, where the data names them; `groundsOf` makes them for a grown area. */
   grounds?: Ground[];
   /** The land of its places, as outlines: a ground's own id, or a town's. */
-  places?: { id: string; shape: [number, number][] }[];
+  places?: Place[];
   /** The box round its spaces, with a margin, in world pixels: the camera's overview of what is open. */
   bounds: { x: number; y: number; width: number; height: number };
 }

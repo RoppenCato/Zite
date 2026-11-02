@@ -116,7 +116,7 @@ export function migrate(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));
@@ -211,7 +211,14 @@ function relay(state: GameState | null): GameState | null {
   const characters: Record<string, Character> = {};
   for (const [id, c] of Object.entries(state.characters)) {
     for (const areaId of c.opened ?? []) if (!board.areas[areaId]) board = growBoard(board, state.seed, areaId);
-    characters[id] = board.spaces[c.space] ? c : { ...c, space: board.start, steps: 0, fight: null };
+    if (board.spaces[c.space]) {
+      characters[id] = c;
+      continue;
+    }
+    // Its spot went when its land was repainted: back to that land's town, not to the start of the world.
+    const area = state.board.spaces[c.space]?.area;
+    const town = Object.values(board.spaces).find((s) => s.area === area && s.kind === 'town');
+    characters[id] = { ...c, space: town?.id ?? board.start, steps: 0, fight: null };
   }
   const spawns = Object.fromEntries(Object.entries(state.spawns ?? {}).filter(([space]) => board.spaces[space]));
   const traces = Object.fromEntries(Object.entries(state.traces ?? {}).filter(([space]) => board.spaces[space]));

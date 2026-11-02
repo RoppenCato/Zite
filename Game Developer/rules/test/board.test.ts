@@ -136,7 +136,7 @@ describe('the world', () => {
       ['frostpeak', 3],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
-    expect(spaces.length).toBeLessThanOrEqual(240);
+    expect(spaces.length).toBeLessThanOrEqual(400);
     expect(board).toMatchObject({ width: 7400, height: 9300 });
   });
 

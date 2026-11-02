@@ -1,0 +1,361 @@
+[
+ {
+  "hubs": [
+   {
+    "id": "edge",
+    "kind": "board",
+    "name": "Wobblewood Board",
+    "x": 4400,
+    "y": 6300
+   },
+   {
+    "id": "thicket",
+    "kind": "shop",
+    "name": "Fungal Apothecary",
+    "x": 4450,
+    "y": 5850,
+    "stock": "magic"
+   },
+   {
+    "id": "briar",
+    "kind": "boss",
+    "name": "Grumblebark's Glade",
+    "x": 4950,
+    "y": 5900,
+    "boss": "briar-king",
+    "opens": "frostpeak"
+   },
+   {
+    "id": "elder",
+    "kind": "spell",
+    "name": "Mossy Shrine",
+    "x": 5450,
+    "y": 6100
+   },
+   {
+    "id": "hollow",
+    "kind": "church",
+    "name": "Oakshade Church",
+    "x": 4950,
+    "y": 6550
+   },
+   {
+    "id": "pond",
+    "kind": "normal",
+    "name": "Root Bridge",
+    "x": 5500,
+    "y": 6650
+   },
+   {
+    "id": "mossy",
+    "kind": "shop",
+    "name": "Hollow Log Shop",
+    "x": 4450,
+    "y": 6850,
+    "stock": "arms"
+   },
+   {
+    "id": "weaver",
+    "kind": "chest",
+    "name": "The Upside-Down Tree",
+    "x": 5500,
+    "y": 7150
+   },
+   {
+    "id": "brambleford",
+    "kind": "town",
+    "name": "Tumbletree Village",
+    "x": 4950,
+    "y": 7200
+   },
+   {
+    "id": "dusk",
+    "kind": "potion",
+    "name": "Dewdrop Pool",
+    "x": 4450,
+    "y": 7400
+   },
+   {
+    "id": "barrow",
+    "kind": "normal",
+    "name": "Owl Hollow",
+    "x": 5450,
+    "y": 7500
+   }
+  ],
+  "roads": [
+   {
+    "from": "edge",
+    "to": "thicket",
+    "kinds": "nan",
+    "bow": 40
+   },
+   {
+    "from": "thicket",
+    "to": "briar",
+    "kinds": "ntn",
+    "bow": 40
+   },
+   {
+    "from": "briar",
+    "to": "elder",
+    "kinds": "nan",
+    "bow": 40
+   },
+   {
+    "from": "edge",
+    "to": "hollow",
+    "kinds": "nnnn",
+    "bow": 30
+   },
+   {
+    "from": "briar",
+    "to": "hollow",
+    "kinds": "nnnnn",
+    "bow": 0
+   },
+   {
+    "from": "elder",
+    "to": "pond",
+    "kinds": "npn",
+    "bow": 40
+   },
+   {
+    "from": "hollow",
+    "to": "pond",
+    "kinds": "nnn",
+    "bow": 30
+   },
+   {
+    "from": "edge",
+    "to": "mossy",
+    "kinds": "nnnn",
+    "bow": 40
+   },
+   {
+    "from": "mossy",
+    "to": "brambleford",
+    "kinds": "nnn",
+    "bow": 30
+   },
+   {
+    "from": "hollow",
+    "to": "brambleford",
+    "kinds": "nnnn",
+    "bow": 0
+   },
+   {
+    "from": "pond",
+    "to": "weaver",
+    "kinds": "ntn",
+    "bow": 40
+   },
+   {
+    "from": "weaver",
+    "to": "brambleford",
+    "kinds": "nnn",
+    "bow": 30
+   },
+   {
+    "from": "brambleford",
+    "to": "dusk",
+    "kinds": "nnn",
+    "bow": 40
+   },
+   {
+    "from": "mossy",
+    "to": "dusk",
+    "kinds": "npn",
+    "bow": 40
+   },
+   {
+    "from": "brambleford",
+    "to": "barrow",
+    "kinds": "nnn",
+    "bow": 30
+   },
+   {
+    "from": "weaver",
+    "to": "barrow",
+    "kinds": "nn",
+    "bow": 40
+   },
+   {
+    "from": "dusk",
+    "to": "barrow",
+    "kinds": "nnnnn",
+    "bow": 90
+   }
+  ]
+ },
+ {
+  "hubs": [
+   {
+    "id": "pass",
+    "kind": "board",
+    "name": "Honeyhill Board",
+    "x": 4950,
+    "y": 5650
+   },
+   {
+    "id": "frosthold",
+    "kind": "town",
+    "name": "Goldencomb Farm",
+    "x": 4950,
+    "y": 5300
+   },
+   {
+    "id": "trader",
+    "kind": "shop",
+    "name": "Harvest Market",
+    "x": 5450,
+    "y": 5500,
+    "stock": "arms"
+   },
+   {
+    "id": "icefall",
+    "kind": "shop",
+    "name": "Orchard Apothecary",
+    "x": 4400,
+    "y": 5150,
+    "stock": "magic"
+   },
+   {
+    "id": "glacier",
+    "kind": "normal",
+    "name": "Wheat Rows",
+    "x": 5500,
+    "y": 5050
+   },
+   {
+    "id": "hotspring",
+    "kind": "potion",
+    "name": "Cider Well",
+    "x": 4950,
+    "y": 4900
+   },
+   {
+    "id": "frozen",
+    "kind": "chest",
+    "name": "Windmill Cellar",
+    "x": 4400,
+    "y": 4600
+   },
+   {
+    "id": "aurora",
+    "kind": "spell",
+    "name": "Orchard Shrine",
+    "x": 5500,
+    "y": 4550
+   },
+   {
+    "id": "ridge",
+    "kind": "church",
+    "name": "Honeybell Church",
+    "x": 4950,
+    "y": 4400
+   },
+   {
+    "id": "summit",
+    "kind": "boss",
+    "name": "Queen Bumble's Hive",
+    "x": 5500,
+    "y": 4100,
+    "boss": "frost-matriarch",
+    "opens": "gen-1"
+   }
+  ],
+  "roads": [
+   {
+    "from": "pass",
+    "to": "frosthold",
+    "kinds": "nn",
+    "bow": 0
+   },
+   {
+    "from": "pass",
+    "to": "trader",
+    "kinds": "nan",
+    "bow": 40
+   },
+   {
+    "from": "frosthold",
+    "to": "trader",
+    "kinds": "nan",
+    "bow": 30
+   },
+   {
+    "from": "frosthold",
+    "to": "icefall",
+    "kinds": "nnn",
+    "bow": 30
+   },
+   {
+    "from": "frosthold",
+    "to": "hotspring",
+    "kinds": "nnn",
+    "bow": 0
+   },
+   {
+    "from": "trader",
+    "to": "glacier",
+    "kinds": "nnn",
+    "bow": 40
+   },
+   {
+    "from": "icefall",
+    "to": "frozen",
+    "kinds": "nnnn",
+    "bow": 50
+   },
+   {
+    "from": "hotspring",
+    "to": "glacier",
+    "kinds": "ntn",
+    "bow": 30
+   },
+   {
+    "from": "icefall",
+    "to": "hotspring",
+    "kinds": "npn",
+    "bow": 30
+   },
+   {
+    "from": "glacier",
+    "to": "aurora",
+    "kinds": "nnn",
+    "bow": 40
+   },
+   {
+    "from": "frozen",
+    "to": "ridge",
+    "kinds": "ntn",
+    "bow": 50
+   },
+   {
+    "from": "hotspring",
+    "to": "ridge",
+    "kinds": "nnn",
+    "bow": 0
+   },
+   {
+    "from": "aurora",
+    "to": "ridge",
+    "kinds": "npn",
+    "bow": 50
+   },
+   {
+    "from": "ridge",
+    "to": "summit",
+    "kinds": "nnnn",
+    "bow": 0
+   },
+   {
+    "from": "aurora",
+    "to": "summit",
+    "kinds": "nnn",
+    "bow": 0
+   }
+  ]
+ }
+]

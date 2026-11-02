@@ -2,7 +2,7 @@
 
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { apply, groundAt, groundsOf, inTownWalls, placeAt, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
+import { apply, groundAt, groundsOf, inTownWalls, placeAt, placeName, ITEMS, makeRng, migrate, newGame, plainGear, questLine, rollGear, shopOffer, startFight, stats } from '../src/index.ts';
 import { pointsAlong } from '../src/world.ts';
 import type { Action, Character, GameEvent, GameState, Quest } from '../src/types.ts';
 
@@ -298,7 +298,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(18);
+    expect(up.version).toBe(19);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();
@@ -394,5 +394,27 @@ describe('Cloverfield Meadows on the painted land', () => {
       expect(has(r.events, 'themeEvent')).toBe(true);
     }
     expect(placeAt(s.board, s.board.spaces.saltmarsh!)).toBe('jelly-shallows');
+  });
+});
+
+describe('Wobblewood on the painted land', () => {
+  const data = JSON.parse(readFileSync('assets/world_forest/wobblewood.json', 'utf8')) as { spots: { x: number; y: number; hub?: string }[] };
+  const own = Object.values(world().board.spaces).filter((s) => s.area === 'thornwood');
+
+  it('holds the spots Mitch, AD laid, where they laid them', () => {
+    for (const p of data.spots) expect(own.some((s) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), `${p.x},${p.y}`).toBe(true);
+    // The entry road's first two stand on the Meadows' side of the river, outside the forest's list.
+    for (const s of own.filter((x) => !['gate-edge-1', 'gate-edge-2'].includes(x.id))) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
+  });
+
+  it('hunts in Owl Hollow, and not on a town street', () => {
+    const s = world();
+    const owl = own.find((x) => x.kind === 'normal' && !x.name && placeAt(s.board, x) === 'owl-hollow')!;
+    expect(inTownWalls(s.board, owl)).toBe(false);
+    expect(placeName(s.board, owl)).toBe('Owl Hollow');
+    expect(groundAt(s.board, owl)).not.toBeNull();
+    const street = own.find((x) => x.kind === 'normal' && !x.name && placeAt(s.board, x) === 'oakshade')!;
+    expect(inTownWalls(s.board, street)).toBe(true);
+    expect(placeName(s.board, street)).toBe('Oakshade');
   });
 });

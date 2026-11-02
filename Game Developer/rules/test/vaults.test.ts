@@ -42,10 +42,10 @@ describe("the themes' events", () => {
     const picnic = findEvent('saltmarsh', wildBy('saltmarsh'), { hp: 50 });
     expect(picnic.ev).toMatchObject({ kind: 'heal', amount: 24 });
     expect(picnic.r.events).toContainEqual(expect.objectContaining({ type: 'healed', amount: 24, hp: 74 }));
-    const brambles = findEvent('brambleford', wildBy('brambleford'), { hp: 3 });
+    const brambles = findEvent('elder', wildBy('elder'), { hp: 3 });
     expect(brambles.ev).toMatchObject({ kind: 'hurt', amount: 2 }); // 6 percent of 120 would be 7; never the last point
     expect(me(brambles.r.state).hp).toBe(1);
-    const sound = findEvent('brambleford', wildBy('brambleford'), { hp: 120 });
+    const sound = findEvent('elder', wildBy('elder'), { hp: 120 });
     expect(sound.ev).toMatchObject({ kind: 'hurt', amount: 7 });
     expect(me(sound.r.state).hp).toBe(113);
   });
@@ -128,7 +128,7 @@ describe('a version-8 save', () => {
     delete c.keys;
     const v8 = { ...structuredClone(today), version: 8, characters: { [P]: c } };
     const s = migrate(structuredClone(v8));
-    expect(s!.version).toBe(18);
+    expect(s!.version).toBe(19);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).quests).toEqual([]);
   });

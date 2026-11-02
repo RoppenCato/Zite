@@ -434,9 +434,9 @@ describe('a fight', () => {
       return { state, last: rounds.at(-1)!.at(-1)! };
     };
     const closed = fallTo(['meadows', 'thornwood']);
-    expect(closed.last).toMatchObject({ type: 'died', town: 'brambleford' });
-    expect(me(closed.state).space).toBe('brambleford');
-    expect(fallTo(['meadows', 'thornwood', 'frostpeak']).last).toMatchObject({ type: 'died', town: 'frosthold' });
+    expect(closed.last).toMatchObject({ type: 'died', town: 'oakshade' });
+    expect(me(closed.state).space).toBe('oakshade');
+    expect(fallTo(['meadows', 'thornwood', 'frostpeak']).last).toMatchObject({ type: 'died', town: 'oakshade' });
   });
 
   it('a spawned mini-boss leaves the board when it falls', () => {

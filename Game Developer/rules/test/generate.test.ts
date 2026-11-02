@@ -38,11 +38,11 @@ describe('peeking at a grown area', () => {
 
 describe('the cells', () => {
   it('snake east from the third column, two cells tall: down the even columns, up the odd ones', () => {
-    expect(cellFor(1)).toEqual({ col: 4, row: 0, enterFrom: 'west', exitTo: 'south' });
-    expect(cellFor(2)).toEqual({ col: 4, row: 1, enterFrom: 'north', exitTo: 'east' });
-    expect(cellFor(3)).toEqual({ col: 5, row: 1, enterFrom: 'west', exitTo: 'north' });
-    expect(cellFor(4)).toEqual({ col: 5, row: 0, enterFrom: 'south', exitTo: 'east' });
-    expect(cellFor(5)).toEqual({ col: 6, row: 0, enterFrom: 'west', exitTo: 'south' });
+    expect(cellFor(1)).toEqual({ col: 6, row: 0, enterFrom: 'west', exitTo: 'south' });
+    expect(cellFor(2)).toEqual({ col: 6, row: 1, enterFrom: 'north', exitTo: 'east' });
+    expect(cellFor(3)).toEqual({ col: 7, row: 1, enterFrom: 'west', exitTo: 'north' });
+    expect(cellFor(4)).toEqual({ col: 7, row: 0, enterFrom: 'south', exitTo: 'east' });
+    expect(cellFor(5)).toEqual({ col: 8, row: 0, enterFrom: 'west', exitTo: 'south' });
   });
 
   it('never put two areas in one cell', () => {
@@ -69,21 +69,21 @@ describe('a grown area', () => {
     const { area, entry } = first;
     expect(area).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', theme: 'glimmerlake', tier: 4, levels: [12, 16] });
     for (const h of area.hubs) {
-      expect(h.x, h.id).toBeGreaterThanOrEqual(4 * CELL.width);
-      expect(h.x, h.id).toBeLessThan(5 * CELL.width);
+      expect(h.x, h.id).toBeGreaterThanOrEqual(6 * CELL.width);
+      expect(h.x, h.id).toBeLessThan(7 * CELL.width);
       expect(h.y, h.id).toBeGreaterThanOrEqual(0);
       expect(h.y, h.id).toBeLessThan(CELL.height);
       expect(h.id.startsWith('g1-')).toBe(true);
     }
     const pass = area.hubs.find((h) => h.name === 'Glimmerlake Shores Pass')!;
     expect(pass).toMatchObject({ id: entry, kind: 'normal' });
-    expect(pass.x - 4 * CELL.width).toBeLessThan(CELL.width / 2);
+    expect(pass.x - 6 * CELL.width).toBeLessThan(CELL.width / 2);
     expect(area.hubs.filter((h) => h.name.endsWith(' Pass'))).toHaveLength(1);
     const gates = area.hubs.filter((h) => h.kind === 'boss');
     expect(gates).toHaveLength(1);
     expect(gates[0]).toMatchObject({ boss: 'g1-boss', opens: 'gen-2' });
     expect(gates[0]!.name.endsWith(' Gate')).toBe(true);
-    expect(gates[0]!.x - 4 * CELL.width).toBeGreaterThan(CELL.width / 4);
+    expect(gates[0]!.x - 6 * CELL.width).toBeGreaterThan(CELL.width / 4);
     expect(gates[0]!.y).toBeGreaterThan(CELL.height / 2);
   });
 
@@ -147,7 +147,7 @@ describe('growing the board', () => {
     const frozen = structuredClone(before);
     const after = growBoard(before, 'ashford', 'gen-1');
     expect(before).toEqual(frozen);
-    expect(after.width).toBe(7400);
+    expect(after.width).toBe(9800);
     expect(after.height).toBe(9300);
     expect(after.areas['gen-1']).toMatchObject({ id: 'gen-1', name: 'Glimmerlake Shores', tier: 4 });
     expect(after.areas['gen-1']!.bounds.x).toBeGreaterThan(4000);
@@ -221,7 +221,7 @@ describe('in play', () => {
     expect(events.find((e) => e.type === 'opened')).toEqual({ type: 'opened', action: 'f1', player: P, area: 'gen-1' });
     expect(me(state).opened).toEqual(['meadows', 'thornwood', 'frostpeak', 'gen-1']);
     expect(state.board.areas['gen-1']).toMatchObject({ name: 'Glimmerlake Shores', tier: 4 });
-    expect(state.board.width).toBe(7400);
+    expect(state.board.width).toBe(9800);
     expect(state.board.bestiary['g1-boss']).toMatchObject({ name: 'Lord Ripplefin' });
     // The levels gained offer a pick of abilities, answered first; then it plays on from the Summit into the pass.
     expect(me(state).picks.length).toBeGreaterThan(0);

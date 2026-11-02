@@ -18,7 +18,9 @@ import forestGroundJson from '../../assets/board_forest/board_ground.json?url';
 import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
 import forestPropsPng from '../../assets/board_forest/board_props.png';
-import forestPlacementJson from '../../assets/board_forest/placement_wobblewood.json';
+import forestPlacementJson from '../../assets/world_forest/placement.json';
+import forestPlacesJson from '../../assets/world_forest/board_places.json?url';
+import forestPlacesPng from '../../assets/world_forest/board_places.png';
 
 export interface Placement {
   name: string;
@@ -49,6 +51,13 @@ interface Kit {
 const SCALE = 0.5;
 /** The new pieces of the painted world. */
 export const PLACES = 'board_places';
+const FOREST_PLACES = 'forest_places';
+
+/** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
+export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
+  const order = theme === 'forest' ? [FOREST_PLACES, PLACES] : [PLACES, FOREST_PLACES];
+  return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
+}
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 export const KIT_DEPTH = { ground: 0, flat: 1, roads: 2, plates: 3, props: 5, names: 6, cover: 8 } as const;
@@ -107,6 +116,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(shared.cover)) scene.load.image(shared.cover, coverPng);
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
+  if (themes.includes('forest') && !scene.textures.exists(FOREST_PLACES)) scene.load.atlas(FOREST_PLACES, forestPlacesPng, forestPlacesJson);
   for (const theme of new Set(['meadow', ...themes])) {
     const k = KITS[theme];
     if (!k) continue;
@@ -224,10 +234,11 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
   const list = kit.placements[area.id];
   if (!list) return 0;
   for (const p of list) {
-    const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : scene.textures.exists(PLACES) && scene.textures.get(PLACES).has(p.name) ? PLACES : null;
+    const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : placesAtlas(scene, p.name, area.theme);
     if (!atlas) continue;
     const sprite = scene.add.image(p.x, p.y, atlas, p.name).setScale(SCALE);
     allProps.push(sprite);
+    propArea.set(sprite, area.id);
     sprite.setDepth(kit.flat.has(p.name) ? KIT_DEPTH.flat : standingDepth(p.y));
     if (sprite.getBounds().top < area.bounds.y + TOP_MARGIN) tall.set(area.id, [...(tall.get(area.id) ?? []), sprite]);
   }
@@ -242,6 +253,9 @@ export function drawKitCover(scene: Phaser.Scene, kit: Kit, area: Area, bottom =
   const dark = scene.add.rectangle(0, 0, b.width, height, 0x0b0d14, 0.3);
   return scene.add.container(b.x + b.width / 2, b.y + height / 2, [cloud, dark]).setDepth(KIT_DEPTH.cover);
 }
+
+/** The area a prop stands in, for the cull: a closed land's pieces show only on land already open. */
+export const propArea = new Map<Phaser.GameObjects.Image, string>();
 
 /** Every prop on the map, for the camera's cull. */
 export const allProps: Phaser.GameObjects.Image[] = [];

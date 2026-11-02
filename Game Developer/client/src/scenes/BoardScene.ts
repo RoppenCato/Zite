@@ -44,7 +44,7 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
-import { allProps, groundDepth, PLACES, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
+import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -83,6 +83,12 @@ interface WorldBridge {
   opens: string;
 }
 const worldBridge = (): WorldBridge | undefined => (WORLD_DATA as unknown as { bridge?: WorldBridge }).bridge;
+type WorldGate = Pick<WorldBridge, 'foot' | 'barred' | 'open' | 'opens'>;
+/** What stands in the way between lands: the bridge, and the pass by Grumblebark's Glade. */
+const worldGates = (): WorldGate[] => {
+  const { bridge, pass } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate };
+  return [bridge, pass].filter((g): g is WorldGate => !!g);
+};
 /** Whether a point lies within `margin` of a line segment. */
 function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }, margin: number): boolean {
   const dx = b.x - a.x;
@@ -185,9 +191,11 @@ export class BoardScene extends Phaser.Scene {
   private busy = false;
   /** The painted ground: what is near the camera, in memory. */
   private painted: PaintedGround | null = null;
-  private bridge: Phaser.GameObjects.Image | null = null;
+  /** The bridge and the pass, barred or open. */
+  private readonly gates = new Map<WorldGate, Phaser.GameObjects.Image>();
   /** Roads of a land not open yet: where they run over painted ground no cover hides them. */
   private readonly closedRoads = new Map<string, Phaser.GameObjects.Graphics>();
+  private readonly crossed = new Set<object>();
   /** The other players' figures, by id: `others` holds their marks. */
   private readonly otherHeroes = new Map<string, Hero>();
   /** The area whose creatures and backdrop are kept in memory. */
@@ -677,9 +685,9 @@ export class BoardScene extends Phaser.Scene {
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
     }
     for (const area of fresh) this.drawCover(area);
-    const bridge = worldBridge();
-    if (bridge && !this.bridge && this.textures.exists(PLACES)) {
-      this.bridge = this.add.image(bridge.foot.x, bridge.foot.y, PLACES, bridge.barred).setScale(0.5).setDepth(standingDepth(bridge.foot.y));
+    for (const gate of worldGates()) {
+      const atlas = placesAtlas(this, gate.barred);
+      if (atlas && !this.gates.has(gate)) this.gates.set(gate, this.add.image(gate.foot.x, gate.foot.y, atlas, gate.barred).setScale(0.5).setDepth(standingDepth(gate.foot.y)));
     }
     // Past the areas' edges there is cloud, not a void (the map can be dragged there).
     if (this.textures.exists('board_cover') && !this.painted) {
@@ -733,7 +741,8 @@ export class BoardScene extends Phaser.Scene {
     }
     const g = this.add.graphics().setDepth(groundDepth(area.tier));
     g.fillStyle(THEME_COLORS[area.theme] ?? COLORS.ground, 1);
-    g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, area.bounds.height, 60);
+    // Never over painted land, where a road of this area may run.
+    g.fillRoundedRect(area.bounds.x, area.bounds.y, area.bounds.width, this.clearOfPainted(area) - area.bounds.y, 60);
     // The name sits in the margin above the area's top spots, faint, readable from the overview.
     this.add
       .text(area.bounds.x + area.bounds.width / 2, area.bounds.y + 6, `${area.name} · tier ${area.tier} · levels ${area.levels[0]} to ${area.levels[1]}`, { fontFamily: FONT, fontSize: '26px', fontStyle: 'bold', color: COLORS.text, resolution: 2 })
@@ -743,29 +752,54 @@ export class BoardScene extends Phaser.Scene {
   }
 
   /** The roads of the given spots: each link once, and a link to a spot drawn earlier (the passage from a boss into a grown area). */
-  /** The roads of a painted area, each as the line through its hubs and points. */
+  /** The roads of a painted area, each as the line through its hubs and points. Hidden while the land is closed. */
   private drawPaintedRoads(areaId: string): void {
     const data = WORLD_DATA.areas.find((a) => a.id === areaId);
     const area = this.game_.state.board.areas[areaId];
     const kit = area ? kitFor(this, area.theme) : null;
     if (!data || !kit) return;
-    const g = this.add.graphics().setDepth(KIT_DEPTH.roads);
     const hubs = new Map(data.hubs.map((h) => [h.id, h]));
+    const paths: { x: number; y: number }[][] = [];
+    for (const road of data.roads) {
+      const from = hubs.get(road.from);
+      const to = hubs.get(road.to);
+      if (from && to) paths.push([from, ...(road.via ?? []), to]);
+    }
+    this.closedRoads.set(areaId, this.strokePaths(kit, paths));
+  }
+
+  /** The roads between areas that cross painted land, in that land's colours: into the forest over the bridge, out of it through the pass. */
+  private drawCrossingRoads(all: Record<string, Space>): void {
+    const { areas } = this.game_.state.board;
+    for (const road of WORLD_DATA.roads) {
+      const from = all[road.from];
+      const to = all[road.to];
+      if (!from || !to || !road.via?.length || this.crossed.has(road)) continue;
+      const land = [road.area, from.area].find((id) => id && PAINTED[id]);
+      const kit = land ? kitFor(this, areas[land]?.theme ?? '') : null;
+      if (!kit || !road.area) continue;
+      this.crossed.add(road);
+      this.closedRoads.set(`road:${road.area}`, this.strokePaths(kit, [[from, ...road.via, to]]));
+    }
+  }
+
+  private strokePaths(kit: NonNullable<ReturnType<typeof kitFor>>, paths: { x: number; y: number }[][]): Phaser.GameObjects.Graphics {
+    const g = this.add.graphics().setDepth(KIT_DEPTH.roads);
+    const deck = worldBridge();
     for (const line of kit.road) {
       g.lineStyle(line.width, line.color, line.alpha);
       g.fillStyle(line.color, line.alpha);
-      for (const road of data.roads) {
-        const from = hubs.get(road.from);
-        const to = hubs.get(road.to);
-        if (!from || !to) continue;
-        const path = [from, ...(road.via ?? []), to];
+      for (const path of paths) {
         path.forEach((p, i) => {
-          g.fillCircle(p.x, p.y, line.width / 2);
           const next = path[i + 1];
-          if (next) g.lineBetween(p.x, p.y, next.x, next.y);
+          // No stroke on the bridge's painted deck.
+          const onDeck = !!deck && !!next && nearSegment((p.x + next.x) / 2, (p.y + next.y) / 2, deck.from, deck.to, 40);
+          if (!deck || !nearSegment(p.x, p.y, deck.from, deck.to, 5)) g.fillCircle(p.x, p.y, line.width / 2);
+          if (next && !onDeck) g.lineBetween(p.x, p.y, next.x, next.y);
         });
       }
     }
+    return g;
   }
 
   private drawLinks(spaces: Space[], all: Record<string, Space>): void {
@@ -775,11 +809,13 @@ export class BoardScene extends Phaser.Scene {
     // A painted area's roads follow their own points, unsmoothed, so they pass through their spots (Mitch, AD); no road on the bridge's painted deck.
     const paintedNow = new Set(kitted.filter((s) => PAINTED[s.area]).map((s) => s.area));
     for (const areaId of paintedNow) this.drawPaintedRoads(areaId);
-    const deck = worldBridge();
-    const onDeck = (a: Space, c: Space): boolean => !!deck && nearSegment((a.x + c.x) / 2, (a.y + c.y) / 2, deck.from, deck.to, 40);
+    this.drawCrossingRoads(all);
+    const onPainted = (x: number, y: number): boolean => Object.values(PAINTED).some((p) => x >= p.x && x < p.x + p.width && y >= p.y && y < p.y + p.height);
+    // A road running over painted land is stroked with that land's roads, never smoothed through its spots.
+    const onLand = (a: Space, c: Space): boolean => onPainted((a.x + c.x) / 2, (a.y + c.y) / 2);
     for (const [theme, kit] of kits) {
-      const own = kitted.filter((s) => areas[s.area]?.theme === theme && !PAINTED[s.area]);
-      if (own.length) this.closedRoads.set(own[0]!.area, drawKitRoads(this, kit, own, all, onDeck));
+      const own = kitted.filter((s) => areas[s.area]?.theme === theme && !PAINTED[s.area] && !onPainted(s.x, s.y));
+      if (own.length) this.closedRoads.set(own[0]!.area, drawKitRoads(this, kit, own, all, onLand));
     }
     spaces = spaces.filter((s) => !kitFor(this, areas[s.area]?.theme ?? ''));
     const fresh = new Set(spaces.map((s) => s.id));
@@ -788,6 +824,7 @@ export class BoardScene extends Phaser.Scene {
       for (const other of space.links) {
         if (!fresh.has(other) || space.id < other) {
           const b = all[other];
+          if (b && onLand(space, b)) continue;
           if (b) this.links.lineBetween(space.x, space.y, b.x, b.y);
         }
       }
@@ -879,15 +916,25 @@ export class BoardScene extends Phaser.Scene {
     const top = v.y - margin;
     const bottom = v.bottom + margin;
     const namesHidden = cam.zoom < NAME_ZOOM;
-    this.painted?.update(cam);
-    for (const p of allProps) p.setVisible(p.x >= left - 100 && p.x <= right + 100 && p.y >= top - 100 && p.y <= bottom + 200);
     const open = new Set(this.game_.me.opened);
+    this.painted?.update(cam, open);
+    const openLand = [...open].flatMap((id) => (PAINTED[id] ? [PAINTED[id]!] : []));
+    for (const p of allProps) {
+      const area = propArea.get(p) ?? '';
+      p.setVisible(p.x >= left - 100 && p.x <= right + 100 && p.y >= top - 100 && p.y <= bottom + 200 && (open.has(area) || !this.painted || openLand.some((l) => p.x >= l.x && p.x < l.x + l.width && p.y >= l.y && p.y < l.y + l.height)));
+    }
     for (const [id, spot] of this.spotParts) {
       // A closed land's spots stay hidden even where its road crosses painted ground.
       const inView = spot.x >= left && spot.x <= right && spot.y >= top && spot.y <= bottom && (!this.painted || open.has(this.game_.state.board.spaces[id]?.area ?? ''));
       for (const p of spot.parts) p.setVisible(inView);
       for (const n of spot.names) n.setVisible(inView && !namesHidden);
     }
+  }
+
+  /** Where an area's own ground must stop, going down, to stay off the painted land under it. */
+  private clearOfPainted(area: Area): number {
+    const b = area.bounds;
+    return Math.min(b.y + b.height, ...Object.values(PAINTED).filter((p) => p.y > b.y && p.x < b.x + b.width && p.x + p.width > b.x).map((p) => p.y));
   }
 
   /** A dark cover over an area, shown while it is not yet open: you can see there is more, not what. */
@@ -897,7 +944,7 @@ export class BoardScene extends Phaser.Scene {
       if (PAINTED[area.id]) return;
       const b = area.bounds;
       const under = Object.values(this.game_.state.board.areas).filter((a) => a.tier < area.tier && a.bounds.x < b.x + b.width && a.bounds.x + a.bounds.width > b.x && a.bounds.y > b.y && a.bounds.y < b.y + b.height);
-      const bottom = Math.min(b.y + b.height, ...under.map((a) => a.bounds.y + TOP_MARGIN));
+      const bottom = Math.min(this.clearOfPainted(area), ...under.map((a) => a.bounds.y + TOP_MARGIN));
       // It never lies over painted land, where its road's first spots may start.
       const left = Math.max(b.x, ...Object.values(PAINTED).filter((p) => p.y < bottom && p.y + p.height > b.y).map((p) => p.x + p.width));
       const right = Math.max(left, b.x + b.width);
@@ -922,10 +969,9 @@ export class BoardScene extends Phaser.Scene {
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
-    for (const [areaId, roads] of this.closedRoads) roads.setVisible(opened.has(areaId));
+    for (const [areaId, roads] of this.closedRoads) roads.setVisible(opened.has(areaId.replace('road:', '')));
     this.lastCull.count = -1;
-    const bridge = worldBridge();
-    if (bridge && this.bridge) this.bridge.setFrame(opened.has(bridge.opens) ? bridge.open : bridge.barred);
+    for (const [gate, image] of this.gates) image.setFrame(opened.has(gate.opens) ? gate.open : gate.barred);
     this.fitBounds();
   }
 

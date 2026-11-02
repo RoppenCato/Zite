@@ -3,7 +3,7 @@
 // into the Board the rules walk on; the generator (generate.ts) lays grown areas into it with the same functions.
 // Pure and deterministic: the same world always gives the same board.
 
-import type { Area, Board, Space, SpaceKind , Ground, ShopStock } from './types.ts';
+import type { Area, Board, Space, SpaceKind , Ground, ShopStock, Place } from './types.ts';
 
 /** A named spot at a fixed position: a town, a shrine, a fork, a boss on the board. */
 export interface WorldHub {
@@ -46,7 +46,7 @@ export interface WorldArea {
   levels: [number, number];
   mobs: string[];
   grounds?: Ground[];
-  places?: { id: string; shape: [number, number][] }[];
+  places?: Place[];
   miniBosses: string[];
   /** The kingdom or territory the area belongs to: a label for the atlas and the hints. */
   kingdom?: string;

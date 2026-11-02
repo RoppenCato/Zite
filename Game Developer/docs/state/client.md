@@ -477,3 +477,7 @@ The draw order gains `far_back` before `body`. What is held decides the arms in 
 ## Robin's phone notes (2026-11-02)
 
 **The screen:** the page's flex box and Phaser both centred the canvas, which pushed it to one side; now only the page does. `SCREEN_WIDTH` (`layout.ts`) widens the canvas to fill a phone with browser bars, up to 620; the 412 column stays centred by the camera, the board's view, panels, veils and backdrops take the full width. Read once at start. **The fight's bars** sit under the feet, health above mana; the words under them. **Town streets** give a small moment (`streets` in `events.json`). **Where you are** reads the place's name, or "The road".
+
+## Wobblewood painted (2026-11-02)
+
+`worldmap.ts` holds both regions: chunks merged by column and row (column 3 is both coasts), an overview crop per region, and only open land shows. A closed land's roads, spots and pieces stay hidden unless they stand on land already open. `world.json` has `pass` beside `bridge`: both are gates in `BoardScene.gates`. Honeyhill waits tiled at its real place north of the pass (mine); grown areas start at column 6, past the forest. A next region: add its chunks to `worldmap.ts`, its box to `PAINTED`, its `places` and roads to `world.json`, a version bump and relay.
