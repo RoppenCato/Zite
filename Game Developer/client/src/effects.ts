@@ -5,6 +5,8 @@
 import Phaser from 'phaser';
 import abilitiesJson from '../../assets/abilities/abilities.json?url';
 import abilitiesPng from '../../assets/abilities/abilities.png';
+import talentsJson from '../../assets/talents/talents.json?url';
+import talentsPng from '../../assets/talents/talents.png';
 import bubbleData from '../../assets/effects/bubble/bubble.json';
 import bubbleJson from '../../assets/effects/bubble/bubble.json?url';
 import bubblePng from '../../assets/effects/bubble/bubble.png';
@@ -26,16 +28,36 @@ const ATLASES = {
 type AtlasName = keyof typeof ATLASES;
 
 const ICONS = 'abilities';
+/** The talents to level 30 (Mitch, AD): 4 MB in memory, so held only while the skill board or a fight that carries one is up. */
+const TALENT_ICONS = 'talents';
 
 /** The ability icons, for the fight, the trainer and the guide; call from a scene's preload. */
 export function preloadAbilityIcons(scene: Phaser.Scene): void {
   if (!scene.textures.exists(ICONS)) scene.load.atlas(ICONS, abilitiesPng, abilitiesJson);
 }
 
+/** The talents' icons, for the skill board. */
+export function preloadTalentIcons(scene: Phaser.Scene): void {
+  if (!scene.textures.exists(TALENT_ICONS)) scene.load.atlas(TALENT_ICONS, talentsPng, talentsJson);
+}
+
+/** For a fight: only when something carried is drawn there. */
+export function preloadCarriedIcons(scene: Phaser.Scene, carried: string[]): void {
+  if (carried.some((id) => !scene.textures.exists(ICONS) || !scene.textures.get(ICONS).has(id))) preloadTalentIcons(scene);
+}
+
+/** Frees the talents' icons when this scene goes. */
+export function freeTalentIconsAfter(scene: Phaser.Scene): void {
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    if (scene.textures.exists(TALENT_ICONS)) scene.textures.remove(TALENT_ICONS);
+  });
+}
+
 /** An ability's icon at this size, or null when it has none. Its frame is the rules' ability id. */
 export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: number, size = 28): Phaser.GameObjects.Image | null {
-  if (!scene.textures.exists(ICONS) || !scene.textures.get(ICONS).has(ability)) return null;
-  const image = scene.add.image(x, y, ICONS, ability);
+  const atlas = [ICONS, TALENT_ICONS].find((key) => scene.textures.exists(key) && scene.textures.get(key).has(ability));
+  if (!atlas) return null;
+  const image = scene.add.image(x, y, atlas, ability);
   return image.setScale(size / image.width);
 }
 

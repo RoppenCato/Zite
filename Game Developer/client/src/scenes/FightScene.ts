@@ -12,7 +12,7 @@ import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
-import { abilityIcon, fly, HeldEffects, Owl, playOnce, preloadEffects } from '../effects.ts';
+import { abilityIcon, fly, freeTalentIconsAfter, HeldEffects, Owl, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate } from '../kit.ts';
@@ -150,10 +150,12 @@ export class FightScene extends Phaser.Scene {
     const board = this.game_.state.board;
     preloadCreature(this, me.fight.enemy.id);
     preloadEffects(this, me.classId === 'ranger');
+    preloadCarriedIcons(this, me.carried);
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
 
   create(): void {
+    freeTalentIconsAfter(this);
     const me = this.game_.me;
     const fight = me.fight;
     if (!fight) {

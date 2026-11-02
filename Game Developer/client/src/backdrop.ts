@@ -138,14 +138,17 @@ const BACKDROPS: Record<string, BackdropFiles> = {
 };
 
 /** Queue a theme's strips; the fight's preload calls it. */
+/** Crownhaven has no fight of its own painted yet: it borrows the road to the mill. */
+const drawn = (theme: string): string => (theme === 'city' ? 'meadow' : theme);
+
 export function preloadBackdrop(scene: Phaser.Scene, theme: string): void {
-  for (const s of BACKDROPS[theme]?.strips ?? []) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
+  for (const s of BACKDROPS[drawn(theme)]?.strips ?? []) if (!scene.textures.exists(s.key)) scene.load.image(s.key, s.png);
 }
 
 /** Let go of every theme's strips but this one's. */
 export function releaseBackdrops(game: Phaser.Game, keep: string): void {
   for (const [theme, b] of Object.entries(BACKDROPS)) {
-    if (theme === keep) continue;
+    if (theme === drawn(keep)) continue;
     for (const s of b.strips) if (game.textures.exists(s.key)) game.textures.remove(s.key);
   }
 }
@@ -157,7 +160,7 @@ export class Backdrop {
   private readonly drifting: { sprite: Phaser.GameObjects.TileSprite; drift: number }[] = [];
 
   constructor(scene: Phaser.Scene, theme: string, groundY: number, bottom: number) {
-    const b = BACKDROPS[theme];
+    const b = BACKDROPS[drawn(theme)];
     const sky = scene.add.graphics();
     const top = b?.sky.top ?? 0x3a4a6a;
     const low = b?.sky.bottom ?? 0x8aa0b8;

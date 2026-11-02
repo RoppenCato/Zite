@@ -4,7 +4,7 @@
 
 import Phaser from 'phaser';
 import { ABILITIES, canLearn, CLASS_DATA, isOpen, MAX_CARRIED, pointsFree, specialization, type AbilityRank, type Action, type Character, carriedLimit, needsFor, TIER_POINTS } from '../../../rules/src/index.ts';
-import { abilityIcon, preloadAbilityIcons } from '../effects.ts';
+import { abilityIcon, freeTalentIconsAfter, preloadAbilityIcons, preloadTalentIcons } from '../effects.ts';
 import { feel, sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
@@ -83,9 +83,11 @@ export class SkillsScene extends Phaser.Scene {
 
   preload(): void {
     preloadAbilityIcons(this);
+    preloadTalentIcons(this);
   }
 
   create(): void {
+    freeTalentIconsAfter(this);
     this.picked = null;
     this.note = '';
     this.rows = [];
