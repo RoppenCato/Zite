@@ -272,7 +272,7 @@ export function gearPowers(g: GearItem): string[] {
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
   for (const affix of g.affixes ?? []) {
     const def = GEAR.affixes[affix.kind];
-    parts.push(def?.flat ? `+${affix.value} ${def.text}` : `+${Math.round(affix.value * 1000) / 10}% ${def?.text ?? affix.kind}`);
+    parts.push(def?.flat ? `+${affix.value} ${def.text}` : `+${affix.value < 0.05 ? Math.round(affix.value * 1000) / 10 : Math.round(affix.value * 100)}% ${def?.text ?? affix.kind}`);
   }
   const u = g.unique ? UNIQUES[g.unique] : undefined;
   if (u) parts.push(u.text);
