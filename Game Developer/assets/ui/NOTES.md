@@ -74,6 +74,17 @@ The rarity colours are read from the game's `layout.ts`: common #e8e4d8, uncommo
 | `bar_mp` | the MP fill | 24 by 10 | 5 px |
 | `bar_lost` | the part just lost, behind the fill, draining away | 24 by 10 | 5 px |
 | `board_plank` | the fight's name board under each fighter; stretch it to size | 64 by 48 | 12 px |
+| `board_plain` | a plank with no grain, for wide boards where stretched grain would show | 64 by 48 | 12 px |
+| `cubby_plain` | a bag slot holding a flask or a card | 52 by 52 |  |
+| `cubby_empty` | an empty bag slot, 52 square; scale it for the worn slots at 46 | 52 by 52 |  |
+| `cubby_common` | a bag slot holding common gear | 52 by 52 |  |
+| `cubby_uncommon` | a bag slot holding uncommon gear | 52 by 52 |  |
+| `cubby_rare` | a bag slot holding rare gear | 52 by 52 |  |
+| `cubby_epic` | a bag slot holding epic gear | 52 by 52 |  |
+| `cubby_legendary` | a bag slot holding legendary gear | 52 by 52 |  |
+| `cubby_unique` | a bag slot holding unique gear | 52 by 52 |  |
+| `cubby_chosen` | the gold ring round the tapped slot, drawn over it | 58 by 58 |  |
+| `badge_count` | the count on a slot, words in cream at 10.5 px | 22 by 15 | 7 px |
 | `board_slip` | the parchment slip on the name board; words in dark ink, no outline | 48 by 24 | 8 px |
 | `bar_frame_s` | the small bar frame, for MP on the name board, 11 tall | 48 by 11 | 5 px |
 | `bar_mp_s` | the MP fill for the small frame, 7 tall | 24 by 7 | 3 px |

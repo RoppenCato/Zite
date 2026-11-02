@@ -65,6 +65,10 @@ export function icon(scene: Phaser.Scene, frame: string, x: number, y: number): 
 }
 
 /** True when the kit has this frame (an item icon may be missing for a new item). */
+/** The atlas that holds a frame: a flask's own, or the kit. */
+export function frameTexture(scene: Phaser.Scene, frame: string): string {
+  return scene.textures.exists(FLASKS) && scene.textures.get(FLASKS).has(frame) ? FLASKS : KIT;
+}
 export function hasFrame(scene: Phaser.Scene, frame: string): boolean {
   if (scene.textures.exists(FLASKS) && scene.textures.get(FLASKS).has(frame)) return true;
   return kitReady(scene) && scene.textures.get(KIT).has(frame);

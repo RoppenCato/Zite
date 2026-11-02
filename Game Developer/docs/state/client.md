@@ -489,3 +489,7 @@ The draw order gains `far_back` before `body`. What is held decides the arms in 
 ## The message box (Robin, 2026-11-02)
 
 The words are no longer a tap target. `logButtons` puts a small scroll button on each side of the box, on the board and in fights; the box is `MESSAGE_BOX_W` wide. The bag says what a flask or card does, whatever else it says.
+
+## The hero's sheet (Robin, 2026-11-02)
+
+`BagScene` rebuilt to Mitch, AD's option 2 with stats A: the hero over a window of the area's fight `background.jpg` (loaded for the current theme, plain sky for others), worn slots either side, all seven stats tappable, two tabs in cubbies, a card with only the buttons that apply. The comparison is real: `stats()` with the piece on against without. Past 12 kinds of flask and card, the last slot turns the page (mine). Stat words are from what `fight.ts` and `gear.ts` do.
