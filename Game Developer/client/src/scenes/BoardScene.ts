@@ -45,6 +45,7 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
+import { drawArenaBuilding, type ArenaDrawn } from '../arena.ts';
 import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
@@ -203,7 +204,10 @@ export class BoardScene extends Phaser.Scene {
   private readonly crossed = new Set<object>();
   private reachLabels: Phaser.GameObjects.Text[] = [];
   private wandererSeen = 0;
-  private arenaMarks: Phaser.GameObjects.Container[] = [];
+  private arenaParts: Phaser.GameObjects.GameObject[] = [];
+  private arenaBuildings: ArenaDrawn[] = [];
+  private arenaDrawnKey = '';
+  private arenaFar = false;
   private arenaWasOpen: boolean | null = null;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
@@ -951,6 +955,7 @@ export class BoardScene extends Phaser.Scene {
     const open = new Set(this.game_.me.opened);
     this.painted?.update(cam, open);
     const openLand = [...open].flatMap((id) => (PAINTED[id] ? [PAINTED[id]!] : []));
+    this.fitArena();
     for (const p of allProps) {
       const area = propArea.get(p) ?? '';
       p.setVisible(p.x >= left - 100 && p.x <= right + 100 && p.y >= top - 100 && p.y <= bottom + 200 && (open.has(area) || !this.painted || openLand.some((l) => p.x >= l.x && p.x < l.x + l.width && p.y >= l.y && p.y < l.y + l.height)));
@@ -1775,20 +1780,37 @@ export class BoardScene extends Phaser.Scene {
 
   /** The Arena's mark over its town while it is open, and the word when it opens or closes. */
   private drawArena(): void {
-    for (const mark of this.arenaMarks) mark.destroy();
-    this.arenaMarks = [];
     const me = this.game_.me;
     const { board } = this.game_.state;
     const open = arenaOpen(me, this.game_.now());
-    for (const area of me.opened) {
-      const space = board.spaces[arenaSpot(board, area) ?? ''];
-      if (!space) continue;
-      const parts: Phaser.GameObjects.GameObject[] = [];
-      if (open && hasFrame(this, 'mark_star')) parts.push(icon(this, 'mark_star', 0, 0).setDisplaySize(34, 34));
-      parts.push(this.add.text(0, -28, open ? 'Arena: open' : 'Arena: closed', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: open ? '#a23c2c' : '#6b6658', padding: { x: 6, y: 2 }, resolution: 2 }).setOrigin(0.5));
-      const mark = this.add.container(space.x, space.y - 70, parts).setDepth(9);
-      this.tweens.add({ targets: mark, y: mark.y - 6, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-      this.arenaMarks.push(mark);
+    const spots = me.opened.map((area) => arenaSpot(board, area)).filter((id): id is string => !!id);
+    const key = `${open}|${spots.join()}`;
+    if (key === this.arenaDrawnKey) return;
+    this.arenaDrawnKey = key;
+    for (const part of this.arenaParts) part.destroy();
+    this.arenaParts = [];
+    this.arenaBuildings = [];
+    for (const id of spots) {
+      const drawn = drawArenaBuilding(this, id, open);
+      const space = board.spaces[id]!;
+      const sign = this.add.text(drawn?.x ?? space.x, drawn ? drawn.top : space.y - 90, open ? 'Arena: open' : 'Arena: closed', { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: open ? '#a23c2c' : '#6b6658', padding: { x: 8, y: 3 }, resolution: 2 }).setOrigin(0.5).setDepth(9);
+      this.arenaParts.push(sign);
+      if (drawn) {
+        this.arenaParts.push(...drawn.near, drawn.far);
+        this.arenaBuildings.push(drawn);
+      }
+    }
+    this.fitArena();
+  }
+
+  /** Zoomed right out, the far frame stands in for the big one, which would sparkle. */
+  private fitArena(): void {
+    const far = this.cameras.main.zoom / DPR < 0.3;
+    if (far === this.arenaFar && this.arenaBuildings.every((b) => b.far.visible === far)) return;
+    this.arenaFar = far;
+    for (const b of this.arenaBuildings) {
+      b.far.setVisible(far);
+      for (const part of b.near) (part as Phaser.GameObjects.Image).setVisible(!far);
     }
   }
 

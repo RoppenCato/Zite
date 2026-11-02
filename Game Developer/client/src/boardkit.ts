@@ -4,6 +4,7 @@
 // theme with no kit keeps the board's shapes. Files are 2x, drawn at 0.5; sizes here are world pixels.
 
 import Phaser from 'phaser';
+import { ARENA_CLEARED, preloadArena } from './arena.ts';
 import type { Area, Space, SpaceKind } from '../../rules/src/index.ts';
 import bannerPng from '../../assets/board_meadows/area_banner.png';
 import groundJson from '../../assets/board_meadows/board_ground.json?url';
@@ -146,6 +147,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(shared.cover)) scene.load.image(shared.cover, coverPng);
   if (!scene.textures.exists(shared.banner)) scene.load.image(shared.banner, bannerPng);
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
+  preloadArena(scene);
   if (themes.includes('forest') && !scene.textures.exists(FOREST_PLACES)) scene.load.atlas(FOREST_PLACES, forestPlacesPng, forestPlacesJson);
   if (themes.includes('harvest') && !scene.textures.exists(HARVEST_PLACES)) scene.load.atlas(HARVEST_PLACES, harvestPlacesPng, harvestPlacesJson);
   for (const theme of new Set(['meadow', ...themes])) {
@@ -265,6 +267,7 @@ export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number 
   const list = kit.placements[area.id];
   if (!list) return 0;
   for (const p of list) {
+    if (ARENA_CLEARED.has(`${p.name}@${p.x},${p.y}`)) continue;
     const atlas = scene.textures.get(kit.props).has(p.name) ? kit.props : placesAtlas(scene, p.name, area.theme);
     if (!atlas) continue;
     const sprite = scene.add.image(p.x, p.y, atlas, p.name).setScale(SCALE);

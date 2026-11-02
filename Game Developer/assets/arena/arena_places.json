@@ -1,0 +1,175 @@
+{
+ "filePx": 1.5,
+ "scale": 0.6667,
+ "farScale": 3.3333,
+ "buildings": {
+  "meadows": {
+   "spot": "farrows",
+   "x": 3113,
+   "y": 6919,
+   "far": "arena_far_meadows",
+   "frame": "arena_meadows",
+   "doors": "arena_doors_meadows",
+   "flag": "arena_flag_meadows",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 3113,
+    "y": 6831
+   },
+   "footY": 6919,
+   "rx": 150,
+   "ry": 88,
+   "remove": [
+    {
+     "name": "pine_b",
+     "x": 3053,
+     "y": 6906
+    }
+   ],
+   "spotsInside": 0
+  },
+  "forest": {
+   "spot": "stumprise",
+   "x": 6920,
+   "y": 4900,
+   "far": "arena_far_forest",
+   "frame": "arena_forest",
+   "doors": "arena_doors_forest",
+   "flag": "arena_flag_forest",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 6920,
+    "y": 4812
+   },
+   "footY": 4900,
+   "rx": 150,
+   "ry": 88,
+   "remove": [
+    {
+     "name": "fir_a",
+     "x": 6809,
+     "y": 4866
+    },
+    {
+     "name": "stump",
+     "x": 6978,
+     "y": 4905
+    }
+   ],
+   "spotsInside": 0
+  },
+  "harvest": {
+   "spot": "oldpress",
+   "x": 1736,
+   "y": 2303,
+   "far": "arena_far_harvest",
+   "frame": "arena_harvest",
+   "doors": "arena_doors_harvest",
+   "flag": "arena_flag_harvest",
+   "flags": [
+    {
+     "x": -231,
+     "y": -195
+    },
+    {
+     "x": -178,
+     "y": -241
+    },
+    {
+     "x": -86,
+     "y": -260
+    },
+    {
+     "x": 6,
+     "y": -241
+    },
+    {
+     "x": -62,
+     "y": -145
+    },
+    {
+     "x": 62,
+     "y": -195
+    }
+   ],
+   "centre": {
+    "x": 1650,
+    "y": 2231
+   },
+   "footY": 2319,
+   "rx": 150,
+   "ry": 88,
+   "remove": [
+    {
+     "name": "barrel",
+     "x": 1789,
+     "y": 2304
+    },
+    {
+     "name": "sack",
+     "x": 1703,
+     "y": 2332
+    }
+   ],
+   "spotsInside": 0
+  }
+ }
+}
