@@ -465,7 +465,7 @@ function play(build: Build, seed: string): Result {
     const undone = bosses.filter((b) => !(c1.bossKills[b.id] ?? 0));
     // The next boss worth trying: its land open, near its level, more levels after each fall.
     const next = undone.find((b) => c1.opened.includes(b.area) || state.board.areas[b.area]?.dungeon);
-    const readyFor = (b: { id: string; level: number }): boolean => c1.level >= b.level - 1 + (failed[b.id] ?? 0) && c1.hp >= s1.maxHp * 0.7 && flasks(c1) >= 2 && (c1.cooldowns[b.id] ?? 0) <= clock;
+    const readyFor = (b: { id: string; level: number }): boolean => c1.level >= Math.min(TO, b.level - 1 + (failed[b.id] ?? 0)) && c1.hp >= s1.maxHp * 0.7 && flasks(c1) >= 2 && (c1.cooldowns[b.id] ?? 0) <= clock;
     if (c1.steps === 0) {
       if (clock > shopWait && shopOffer(state, c1)) {
         shopping();

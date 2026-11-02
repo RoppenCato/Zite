@@ -211,8 +211,8 @@ describe('the Buried Crown (Robin, 2026-11-02)', () => {
 });
 
 describe('a Magician with no spells (mine, 2026-11-02)', () => {
-  it('its plain Attack still uses half its magic', () => {
-    expect(CLASS_DATA.mage!.traits?.attackMagic).toBe(0.5);
+  it('its plain Attack still uses most of its magic', () => {
+    expect(CLASS_DATA.mage!.traits?.attackMagic).toBe(0.8);
   });
 });
 
@@ -224,5 +224,41 @@ describe('the far lands have all the others have (Mitch, AD, 2026-11-02)', () =>
     for (const id of ['sec-pirateisles-1', 'sec-pirateisles-2', 'sec-pirateisles-3', 'sec-giantsland-1', 'sec-giantsland-2', 'sec-giantsland-3']) {
       expect(board.spaces[`${id}-1`], id).toBeTruthy();
     }
+  });
+});
+
+describe('linking two players (the brief: Proximity)', () => {
+  const two = () => {
+    const a = newGame({ seed: 'link', player: P, name: 'Robin', classId: 'warrior' });
+    return apply(a, { type: 'join', id: 'j', player: 'p2', name: 'Friend', classId: 'mage' }, makeRng('j'), 0).state;
+  };
+  it('one shows a code, the other types it, and the link runs out', () => {
+    const shown = apply(two(), { type: 'link', id: 'o', player: P, op: 'offer' }, makeRng('o'), 1000);
+    const code = (shown.events[0] as { code: string }).code;
+    expect(code).toMatch(/^[A-Z]{6}$/);
+    const done = apply(shown.state, { type: 'link', id: 'a', player: 'p2', op: 'accept', code: code.toLowerCase() }, makeRng('a'), 2000);
+    expect(done.state.characters.p2!.link?.with).toBe(P);
+    expect(done.state.characters[P]!.link?.with).toBe('p2');
+    expect(done.state.characters[P]!.linkCode).toBeUndefined();
+  });
+  it('a code works for a minute, and never for yourself', () => {
+    const shown = apply(two(), { type: 'link', id: 'o', player: P, op: 'offer' }, makeRng('o'), 1000);
+    const code = (shown.events[0] as { code: string }).code;
+    expect(apply(shown.state, { type: 'link', id: 'a', player: 'p2', op: 'accept', code }, makeRng('a'), 62_000).events[0]).toMatchObject({ type: 'rejected' });
+    expect(apply(shown.state, { type: 'link', id: 'a', player: P, op: 'accept', code }, makeRng('a'), 2000).events[0]).toMatchObject({ type: 'rejected' });
+  });
+  it('a linked friend joins a world boss from anywhere, and only while linked', () => {
+    let s = two();
+    const spawn = { kind: 'worldboss', enemy: 'old-rootbeard', hp: 900, maxHp: 900, until: 9e12 };
+    const space = s.characters[P]!.space;
+    s = { ...s, spawns: { [space]: spawn } } as typeof s;
+    const f = startFight(s.characters[P]!, 'old-rootbeard', space, true);
+    s = { ...s, characters: { ...s.characters, [P]: { ...f, fight: { ...f.fight!, shared: true } } } };
+    expect(apply(s, { type: 'link', id: 'n', player: 'p2', op: 'join' }, makeRng('n'), 1000).events[0]).toMatchObject({ type: 'rejected' });
+    s = { ...s, characters: { ...s.characters, p2: { ...s.characters.p2!, link: { with: P, until: 5000 } } } };
+    const joined = apply(s, { type: 'link', id: 'y', player: 'p2', op: 'join' }, makeRng('y'), 1000);
+    expect(joined.state.characters.p2!.fight?.shared).toBe(true);
+    expect(joined.state.characters.p2!.fight?.enemy.hp).toBe(900);
+    expect(apply(s, { type: 'link', id: 'z', player: 'p2', op: 'join' }, makeRng('z'), 6000).events[0]).toMatchObject({ type: 'rejected' });
   });
 });

@@ -100,5 +100,9 @@
     "outgrownLand": 0.5
   },
   "_aboutSoftcap": "Robin, 2026-11-02: 'softcap exp by zone, so that you need more exp to level up, and so you want to kill higher enemies'. A creature below you pays less by `below` a level, down to `floor`; one above you pays more by `above` a level, up to `aboveMax`; past the top of a land's levels its plain creatures pay `outgrownLand` on top. Gold takes the cut, not the bonus.",
-  "homeWaitMs": 300000
+  "homeWaitMs": 300000,
+  "link": {
+    "codeSeconds": 60,
+    "linkMinutes": 30
+  }
 }

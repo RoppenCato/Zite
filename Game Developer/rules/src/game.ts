@@ -163,6 +163,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return goHome(state, action, character, rng, now);
     case 'door':
       return door(state, action, character);
+    case 'link':
+      return link(state, action, character, rng, now);
     case 'arena':
       return arena(state, action, character, rng, now);
     case 'skill':
@@ -250,6 +252,35 @@ function goHome(state: GameState, action: HomeAction, c: Character, rng: Rng, no
   const events: GameEvent[] = [{ type: 'wentHome', action: action.id, player: action.player, from: c.space, to: hub }];
   const next: Character = { ...c, steps: 0, space: hub, cooldowns: { ...c.cooldowns, home: now + PROGRESSION.homeWaitMs } };
   return land(state, next, state.board.spaces[hub]!, action, rng, now, events);
+}
+
+const LINK_LETTERS = 'ABCDEFGHJKMNPQRSTVWXYZ';
+
+/** Linking two players in the same room: one shows a code, the other types it (mine: the code first, QR and GPS need HTTPS and a phone). */
+function link(state: GameState, action: Extract<Action, { type: 'link' }>, c: Character, rng: Rng, now: number): ApplyResult {
+  const { codeSeconds, linkMinutes } = PROGRESSION.link;
+  if (action.op === 'offer') {
+    let code = '';
+    for (let i = 0; i < 6; i++) code += LINK_LETTERS[rng.int(LINK_LETTERS.length) - 1]!;
+    const until = now + codeSeconds * 1000;
+    return { state: withCharacter(state, { ...c, linkCode: { code, until } }), events: [{ type: 'linkOffered', action: action.id, player: action.player, code, until }] };
+  }
+  if (action.op === 'accept') {
+    const typed = action.code.trim().toUpperCase();
+    const friend = Object.values(state.characters).find((x) => x.id !== c.id && x.linkCode?.code === typed && x.linkCode.until > now);
+    if (!friend) return reject(state, action, 'not now');
+    const until = now + linkMinutes * 60_000;
+    const characters = { ...state.characters, [c.id]: { ...c, link: { with: friend.id, until } }, [friend.id]: { ...friend, linkCode: undefined, link: { with: c.id, until } } };
+    return { state: { ...state, characters }, events: [{ type: 'linked', action: action.id, player: action.player, with: friend.id, until }] };
+  }
+  // Join the world boss your friend is fighting, from anywhere on the board (the brief: "what a link gives").
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  const friend = c.link && c.link.until > now ? state.characters[c.link.with] : undefined;
+  const space = friend?.fight?.shared ? friend.fight.space : undefined;
+  const spawn = space ? state.spawns[space] : undefined;
+  if (!space || spawn?.kind !== 'worldboss' || !spawn.enemy) return reject(state, action, 'not now');
+  return begin(state, c, spawn.enemy, space, true, action, rng, [], spawn);
 }
 
 /** Through the door you stand on; the land beyond is open to you from then on. */

@@ -231,6 +231,10 @@ export interface Quest {
 export type Offer = { kind: 'arena'; mode: string; wave: number; total: number; gold: number; xp: number; gear: boolean } | { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[]; from?: string } | { kind: 'roll'; what: 'flask' | 'gear' | 'find'; need: number; slot?: Slot; text?: string } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
+  /** Linked with a friend, until a time (the brief: "a fixed time, e.g. 30 min, after the scan"). */
+  link?: Link;
+  /** The one-off code this player is showing. */
+  linkCode?: { code: string; until: number };
   id: string;
   name: string;
   classId: ClassId;
@@ -456,6 +460,12 @@ export interface Die {
   last: number | null;
 }
 
+/** Two players linked, standing together in the real world (the brief: Proximity). */
+export interface Link {
+  with: string;
+  until: number;
+}
+
 export interface GameState {
   version: typeof STATE_VERSION;
   seed: string;
@@ -505,6 +515,10 @@ export type Action =
   /** The skill board: learn or raise an ability, carry or put down an ability, or reset in a town. */
   | { type: 'skill'; id: string; player: string; op: 'learn' | 'carry'; ability: string }
   /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
+  /** Show a one-off code, type a friend's, or join the world boss a linked friend is fighting. */
+  | { type: 'link'; id: string; player: string; op: 'offer' }
+  | { type: 'link'; id: string; player: string; op: 'accept'; code: string }
+  | { type: 'link'; id: string; player: string; op: 'join' }
   | { type: 'skill'; id: string; player: string; op: 'testClass'; classId: ClassId }
   | { type: 'skill'; id: string; player: string; op: 'testLevel' }
   | { type: 'skill'; id: string; player: string; op: 'testLegend' }
@@ -583,6 +597,8 @@ export type GameEvent =
   | { type: 'secretFound'; action: string; player: string; space: string; name: string }
   | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
+  | { type: 'linkOffered'; action: string; player: string; code: string; until: number }
+  | { type: 'linked'; action: string; player: string; with: string; until: number }
   /** The last boss of all, beaten for the first time. */
   | { type: 'gameWon'; action: string; player: string }
   | { type: 'arenaTaken'; action: string; player: string; waves: number; gold: number; xp: number }

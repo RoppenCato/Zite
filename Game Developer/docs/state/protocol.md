@@ -123,3 +123,7 @@ The `try` intent answers the offer `roll`; it gives the event `tried`.
 The `travel` intent (`to`) gives the event `traveled`.
 
 The `pick` intent is gone (2026-11-02); `skill`, with `op` learn, carry, reset, or for testing testClass and testLevel, is new. Nothing else about the wire changed.
+
+## Links (2026-11-02)
+
+`link` is an ordinary action: `offer` gives a six-letter code good for 60 seconds, `accept` with a friend's code links both for 30 minutes, `join` enters the world boss a linked friend is fighting. It runs on the region's state, so the server rolls the code. QR and GPS come when the tunnel gives HTTPS. Live joint battles wait on Robin (the brief's open question 1).

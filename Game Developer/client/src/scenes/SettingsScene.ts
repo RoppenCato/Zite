@@ -54,6 +54,8 @@ export class SettingsScene extends Phaser.Scene {
     this.log.note('settings open');
   }
 
+  private testing = false;
+
   private refresh(): void {
     for (const r of this.rows) r.destroy();
     this.rows = [];
@@ -62,6 +64,10 @@ export class SettingsScene extends Phaser.Scene {
 
   /** The rows: the guide first, then the four toggles, the world, the log, the account, starting over. */
   private showSettings(): void {
+    if (this.testing) {
+      this.showTests();
+      return;
+    }
     const s = settings.get();
     const { firstRowY, rowStep, go } = SETTINGS_LAYOUT;
     const rows: { name: string; text: string; value: boolean; on: string; off: string; set: (v: boolean) => void }[] = [
@@ -116,11 +122,31 @@ export class SettingsScene extends Phaser.Scene {
       setFlow('choose');
       location.reload();
     });
-    // For Robin's testing (2026-11-02), to go before an Alpha: another class at the same level, or a level more. The page loads again for its art.
+    this.settingRow(rows.length + (code ? 4 : 3), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
+    this.settingRow(rows.length + (code ? 5 : 4), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
+      if (!window.confirm('Start over with a new character?')) return;
+      this.game_.reset();
+      setFlow('choose');
+      location.reload();
+    });
+    if (code) this.linkRow(rows.length + 6);
     // The public site has none of them (mine, for Robin's friends).
     if (/^(localhost|127\.|192\.168\.)/.test(location.hostname)) {
+      this.settingRow(rows.length + (code ? 7 : 5), 'Testing', 'Test rows: class, level, land, legend.', 'Open', () => {
+        this.testing = true;
+        this.refresh();
+      });
+    }
+  }
+
+  /** For Robin's testing (2026-11-02), to go before an Alpha: another class at the same level, or a level more. The page loads again for its art. */
+  private showTests(): void {
+    this.settingRow(0, 'Back', 'To the settings.', 'Back', () => {
+      this.testing = false;
+      this.refresh();
+    });
       const next = TEST_CLASSES[(TEST_CLASSES.indexOf(this.game_.me.classId) + 1) % TEST_CLASSES.length]!;
-      const row = rows.length + (code ? 6 : 5);
+      const row = 1;
       this.settingRow(row, 'Test: class', `Now ${CLASS_DATA[this.game_.me.classId]?.name}. Skills start over.`, CLASS_DATA[next]!.name, () => {
         if (this.game_.me.fight) return;
         void this.game_.act({ type: 'skill', op: 'testClass', classId: next, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
@@ -146,13 +172,29 @@ export class SettingsScene extends Phaser.Scene {
       this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
         void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
       });
-    }
-    this.settingRow(rows.length + (code ? 4 : 3), 'Log', 'A file of what happened, for bug reports.', 'Save', () => (this.scene.get('board') as BoardScene).downloadLog());
-    this.settingRow(rows.length + (code ? 5 : 4), 'Start over', code ? 'Your code still brings this character back.' : 'Throw this save away for good.', 'Start over', () => {
-      if (!window.confirm('Start over with a new character?')) return;
-      this.game_.reset();
-      setFlow('choose');
-      location.reload();
+  }
+
+  /** Linking a friend in the same room (the brief: Proximity; the code first). */
+  private linkRow(i: number): void {
+    const me = this.game_.me;
+    const now = this.game_.now();
+    const friend = me.link && me.link.until > now ? this.game_.state.characters[me.link.with] : undefined;
+    const atBoss = !!friend?.fight?.shared;
+    const left = friend ? Math.ceil((me.link!.until - now) / 60_000) : 0;
+    this.settingRow(i, 'Link', friend ? (atBoss ? `${friend.name} fights a world boss.` : `With ${friend.name}, ${left} min left.`) : 'Link with a friend beside you.', atBoss ? 'Join' : friend ? 'Again' : 'Link…', () => {
+      if (atBoss) {
+        void this.game_.act({ type: 'link', op: 'join', player: this.game_.player } as never);
+        return;
+      }
+      void this.game_.act({ type: 'link', op: 'offer', player: this.game_.player } as never).then((events) => {
+        const shown = events.find((e) => e.type === 'linkOffered');
+        const typed = window.prompt(`Your code: ${shown?.type === 'linkOffered' ? shown.code : '?'}. Your friend has a minute to type it. Or type theirs here:`);
+        if (!typed?.trim()) return;
+        void this.game_.act({ type: 'link', op: 'accept', code: typed.trim(), player: this.game_.player } as never).then((result) => {
+          window.alert(result.some((e) => e.type === 'linked') ? 'Linked!' : 'That code did not work. It may have run out.');
+          this.refresh();
+        });
+      });
     });
   }
 
