@@ -19,6 +19,8 @@ export interface Stats {
   dodge: number;
   lifesteal: number;
   thorns: number;
+  /** The other suffixes worn, added up by kind. */
+  bonus: Partial<Record<AffixKind, number>>;
   powers: Partial<Record<PowerKind, number>>;
 }
 
@@ -45,6 +47,7 @@ export function stats(c: Character): Stats {
   let lifesteal = 0;
   let thorns = 0;
   let vigor = 0;
+  const bonus: Partial<Record<AffixKind, number>> = {};
   for (const slot of SLOTS) {
     const g = c.equipment[slot];
     if (!g) continue;
@@ -70,6 +73,8 @@ export function stats(c: Character): Stats {
         case 'vigor':
           vigor += affix.value;
           break;
+        default:
+          bonus[affix.kind] = (bonus[affix.kind] ?? 0) + affix.value;
       }
     }
   }
@@ -82,6 +87,7 @@ export function stats(c: Character): Stats {
   dodge += traits.dodge ?? 0;
   thorns += traits.thorns ?? 0;
   if (traits.defenseMult) defense = Math.round(defense * traits.defenseMult);
+  if (bonus.turtle) defense = Math.round(defense * (1 + bonus.turtle));
   if (traits.hpMult) maxHp = Math.round(maxHp * traits.hpMult);
   const p = powers(c);
   if (p.bloodthirst) {
@@ -89,7 +95,7 @@ export function stats(c: Character): Stats {
     const missing = Math.min(1, Math.max(0, 1 - c.hp / Math.max(1, maxHp)));
     attack = Math.round(attack * (1 + p.bloodthirst * missing));
   }
-  return { attack, defense, maxHp, maxMana, magic, crit, dodge, lifesteal, thorns, powers: p };
+  return { attack, defense, maxHp, maxMana, magic, crit, dodge, lifesteal, thorns, bonus, powers: p };
 }
 
 /** A wardrobe with nothing in any slot. */
@@ -171,16 +177,23 @@ export function rollRarity(rng: Rng, boost: number): Rarity {
   return pool[pool.length - 1]!;
 }
 
-/** `count` affixes, all of different kinds, each with a value in its range. Two numbers from the stream each. */
-function rollAffixes(count: number, rng: Rng): Affix[] {
-  const kinds = Object.keys(GEAR.affixes) as AffixKind[];
-  const out: Affix[] = [];
+/** Suffixes for a slot, rolled at the piece's rank and rarity: the number grows with the rank, so an old piece is always outgrown. */
+function rollAffixes(count: number, slot: Slot, rank: number, rarityMult: number, rng: Rng): { affixes: Affix[]; words: string[]; stats: Partial<Record<GearStat, number>> } {
+  const kinds = (Object.keys(GEAR.affixes) as AffixKind[]).filter((k) => GEAR.affixes[k].slots.includes(slot));
+  const affixes: Affix[] = [];
+  const words: string[] = [];
+  const added: Partial<Record<GearStat, number>> = {};
   for (let i = 0; i < count && kinds.length; i++) {
     const kind = kinds.splice(rng.int(kinds.length) - 1, 1)[0]!;
-    const range = GEAR.affixes[kind];
-    out.push({ kind, value: Math.round((range.min + rng.next() * (range.max - range.min)) * 100) / 100 });
+    const def = GEAR.affixes[kind];
+    const atRank = Math.min(def.max, def.base + def.step * (rank - 1));
+    const raw = atRank * (1 + (rarityMult - 1) * 0.4) * (0.85 + rng.next() * 0.3);
+    const value = Math.min(def.max, raw);
+    words.push(def.suffix);
+    if (def.stat) added[def.stat] = (added[def.stat] ?? 0) + Math.max(1, Math.round(value));
+    else affixes.push({ kind, value: def.flat ? Math.max(1, Math.round(value)) : Math.round(value * 1000) / 1000 });
   }
-  return out;
+  return { affixes, words, stats: added };
 }
 
 /**
@@ -196,17 +209,31 @@ export function rollGear(id: string, slot: Slot, rank: number, boost: number, rn
   const numbers = lineNumbers(slot, r, line, rar.mult * swing);
   // A rolled bonus of the kind the line already carries adds to it.
   const affixes = [...numbers.affixes];
-  for (const a of rollAffixes(rar.affixes, rng)) {
+  const rolled = rollAffixes(rar.affixes, slot, r, rar.mult, rng);
+  for (const a of rolled.affixes) {
     const same = affixes.find((x) => x.kind === a.kind);
-    if (same) same.value = Math.round((same.value + a.value) * 100) / 100;
+    if (same) same.value = Math.round((same.value + a.value) * 1000) / 1000;
     else affixes.push(a);
   }
-  let name = plain;
+  const stats = { ...numbers.stats };
+  for (const [stat, n] of Object.entries(rolled.stats) as [GearStat, number][]) stats[stat] = (stats[stat] ?? 0) + n;
+  // The name says what it does (Robin, 2026-11-02): a prefix for a plain lift, a suffix for what it is good for.
+  let core = plain;
   if (rar.named) {
     const names = GEAR.names[slot];
-    name = names[rng.int(names.length) - 1]!;
+    core = names[rng.int(names.length) - 1]!;
   }
-  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats: numbers.stats, affixes, price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1) * rar.priceMult), ...(line === 'heavy' ? {} : { line }) };
+  let prefix = '';
+  if (rar.prefix) {
+    const pool = GEAR.prefixes.filter((p) => p.slots.includes(slot));
+    const p = pool[rng.int(pool.length) - 1];
+    if (p) {
+      prefix = `${p.word} `;
+      stats[p.stat] = (stats[p.stat] ?? 0) + p.perRank * r;
+    }
+  }
+  const name = `${prefix}${core}${rolled.words[0] ? ` ${rolled.words[0]}` : ''}`;
+  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats, affixes, price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1) * rar.priceMult), ...(line === 'heavy' ? {} : { line }) };
 }
 
 /** The uniques a tier's bosses carry: every unique from that tier or an earlier one. */
@@ -224,7 +251,7 @@ export function makeUnique(id: string, uniqueId: string, rank: number, rng: Rng)
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
   const value = Math.max(1, Math.round(rankStat(u.slot, r) * rar.mult * swing));
   const plain = `${rankName(r)} ${def.base}`;
-  return { id, slot: u.slot, rank: r, rarity: 'unique', name: u.name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes: rollAffixes(rar.affixes, rng), unique: uniqueId, price: Math.round(rankPrice(u.slot, r) * rar.priceMult) };
+  return { id, slot: u.slot, rank: r, rarity: 'unique', name: u.name, base: plain.toLowerCase(), stats: { [def.stat]: value }, affixes: rollAffixes(rar.affixes, u.slot, r, rar.mult, rng).affixes, unique: uniqueId, price: Math.round(rankPrice(u.slot, r) * rar.priceMult) };
 }
 
 /** One of the tier's uniques at `rank`, or null when the tier has none. */
@@ -243,7 +270,10 @@ export function describeGear(g: GearItem): string {
 export function gearPowers(g: GearItem): string[] {
   const parts: string[] = [];
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
-  for (const affix of g.affixes ?? []) parts.push(`+${Math.round(affix.value * 100)}% ${GEAR.affixes[affix.kind].text}`);
+  for (const affix of g.affixes ?? []) {
+    const def = GEAR.affixes[affix.kind];
+    parts.push(def?.flat ? `+${affix.value} ${def.text}` : `+${Math.round(affix.value * 1000) / 10}% ${def?.text ?? affix.kind}`);
+  }
   const u = g.unique ? UNIQUES[g.unique] : undefined;
   if (u) parts.push(u.text);
   return parts;

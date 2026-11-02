@@ -219,6 +219,9 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   if (character.steps > 0) return reject(state, action, 'finish your move first');
   const value = rng.int(state.die.sides);
   const events: GameEvent[] = [{ type: 'rolled', action: action.id, player: action.player, value }];
+  // Of the Road: a little back with each roll.
+  const road = stats(character).bonus.road;
+  if (road && character.hp < stats(character).maxHp) character = heal(character, Math.max(1, Math.round(stats(character).maxHp * road)), action, events);
   // Poison carried out of a fight stings on each roll; it never kills, and it wears off.
   const poison = character.ailments?.poison;
   if (poison) {
@@ -369,7 +372,10 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       }
       // Nothing hunts inside a town's walls (Robin, 2026-11-02: creatures only in their own place), and a street is never empty: "its weird with town spaces where nothing happens".
       if (inTownWalls(state.board, space)) return streetMoment(state, c, tier, action, rng, events);
-      const what = surprise(rng);
+      let what = surprise(rng);
+      // Of the Explorer: some fights turn out to be something else.
+      const explorer = stats(c).bonus.explorer;
+      if (what === 'fight' && explorer && rng.next() < explorer) what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
       if (what === 'event' && area && (EVENTS[area.theme] || ENCOUNTERS[area.theme])) return themeEvent(state, c, area.theme, tier, action, rng, events);
       const finds = area ? ENCOUNTERS[area.theme]?.finds : undefined;
@@ -447,7 +453,8 @@ function askRoll(state: GameState, c: Character, what: 'flask' | 'gear', action:
 function tryRoll(state: GameState, action: Action, character: Character, rng: Rng): ApplyResult {
   const offer = character.offer;
   if (!offer || offer.kind !== 'roll') return reject(state, action, 'nothing to answer');
-  const roll = rng.int(state.die.sides);
+  const luck = stats(character).bonus.luck;
+  const roll = Math.min(state.die.sides, rng.int(state.die.sides) + (luck && rng.next() < luck ? 1 : 0));
   const won = roll >= offer.need;
   const events: GameEvent[] = [{ type: 'tried', action: action.id, player: action.player, what: offer.what, roll, need: offer.need, won }];
   let next: Character = { ...character, offer: null };
@@ -728,8 +735,9 @@ function useCard(state: GameState, action: UseAction, character: Character, rng:
     if (!helps) return reject(state, action, 'not now');
     const events: GameEvent[] = [{ type: 'used', action: action.id, player: action.player, item: action.item }];
     let c = spend(character, action.item);
-    if (item.heal) c = heal(c, item.heal, action, events);
-    if (item.mana) c = restoreMana(c, item.mana, action, events);
+    const stronger = (traitsOf(character).potionPower ?? 1) * (1 + (s.bonus.plenty ?? 0));
+    if (item.heal) c = heal(c, Math.round(item.heal * stronger), action, events);
+    if (item.mana) c = restoreMana(c, Math.round(item.mana * stronger), action, events);
     if (item.elixir) c = { ...c, elixirs: { ...c.elixirs, [item.elixir.kind]: { value: item.elixir.value, fights: item.elixir.fights } } };
     if (item.cure) {
       events.push({ type: 'cured', action: action.id, player: action.player, ailments: Object.keys(c.ailments ?? {}) });

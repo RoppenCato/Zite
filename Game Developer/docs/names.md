@@ -157,3 +157,36 @@ line (Lv, HP, MP, Gold; the place "Area · Spot · with Name"); the buttons **Ro
 | Gear | 5 slot names, 10 ranks, 5 rarities, 25 proper names, 5 affixes, 23 uniques | `gear.json`, `uniques.json` |
 | Items | 6 | `items.json` |
 | Spot kinds, events, errands, notes | 7, 12, 4, 4 | `spaces.json`, `events.json`, `quests.json`, `traces.json` |
+
+## Suffixes and prefixes (Robin, 2026-11-02; words mine)
+
+- **of Sharpness**: crit chance. weapon.
+- **of the Leech**: of damage dealt back as HP. weapon.
+- **of Cruelty**: harder crits. weapon.
+- **of Haste**: chance to strike again. weapon.
+- **of Venom**: chance to poison. weapon.
+- **of Embers**: chance to burn. weapon.
+- **of Frost**: chance to weaken. weapon.
+- **of the Giant**: more damage to bosses and rare foes. weapon.
+- **of the Hunter**: more damage to ordinary foes. weapon.
+- **of Ruin**: of its defense ignored. weapon.
+- **of the Magus**: magic. weapon.
+- **of Focus**: less mana for abilities. weapon.
+- **of the Bear**: more HP. armour, shield, helm, gloves, boots, cape.
+- **of Thorns**: of damage taken dealt back. armour, shield, helm, gloves, boots, cape.
+- **of Evasion**: dodge chance. armour, shield, helm, gloves, boots, cape.
+- **of the Turtle**: more defense. armour, shield, helm, gloves, boots, cape.
+- **of the Wall**: more stopped by Block. armour, shield, helm, gloves, boots, cape.
+- **of Mending**: of HP back each round. armour, shield, helm, gloves, boots, cape.
+- **of Clarity**: mana back each round. armour, shield, helm, gloves, boots, cape.
+- **of Warding**: less from the first wind-up. armour, shield, helm, gloves, boots, cape.
+- **of Resolve**: chance of an extra meter point. armour, shield, helm, gloves, boots, cape.
+- **of Fortune**: more gold. boots, cape, trinket.
+- **of Wisdom**: more XP. boots, cape, trinket.
+- **of the Scavenger**: better chance of gear drops. boots, cape, trinket.
+- **of the Explorer**: more surprises on plain spots. boots, cape.
+- **of Luck**: chance of +1 on a roll for a prize. trinket.
+- **of the Road**: of HP back each time you roll. boots.
+- **of Plenty**: stronger potions. trinket.
+
+Prefixes, a plain lift that grows with rank: Fierce (attack), Arcane (magic), Sturdy (defense), Hearty (maxHp), Clever (maxMana).

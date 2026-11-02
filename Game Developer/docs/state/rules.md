@@ -432,3 +432,7 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 ## Classes, paths and skills (2026-11-02)
 
 `rules/src/skills.ts` holds points, trees, traits and resets; `classes.json` and `abilities.json` are written by `tools/class-data.mjs`; `tools/sim-classes.ts` is the balance table. State version 22 resets everyone to their class's start with points to spend. `plan-classes.md` says why.
+
+## Suffixes and prefixes (2026-11-02)
+
+`gear.json` `affixes` and `prefixes`. A suffix's number is base + step per rank, capped, so old gear is outgrown. Uncommon has a prefix, rare a suffix, epic both, legendary a prefix and two suffixes (the name shows the first). `stats().bonus` adds up the suffixes that are not stats; fight and board rules read it.

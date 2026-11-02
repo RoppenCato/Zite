@@ -131,70 +131,385 @@
       "weight": 60,
       "priceMult": 1,
       "affixes": 0,
-      "named": false
+      "named": false,
+      "prefix": false
     },
     "uncommon": {
       "mult": 1.2,
       "weight": 25,
       "priceMult": 1.6,
       "affixes": 0,
-      "named": false
+      "named": false,
+      "prefix": true
     },
     "rare": {
       "mult": 1.45,
       "weight": 10,
       "priceMult": 2.5,
       "affixes": 1,
-      "named": false
+      "named": false,
+      "prefix": false
     },
     "epic": {
       "mult": 1.75,
       "weight": 4,
       "priceMult": 4,
       "affixes": 1,
-      "named": true
+      "named": true,
+      "prefix": true
     },
     "legendary": {
       "mult": 2.2,
       "weight": 1,
       "priceMult": 7,
       "affixes": 2,
-      "named": true
+      "named": true,
+      "prefix": true
     },
     "unique": {
       "mult": 1.9,
       "weight": 0,
       "priceMult": 8,
       "affixes": 1,
-      "named": true
+      "named": true,
+      "prefix": false
     }
   },
   "roll": 0.15,
   "affixes": {
     "crit": {
+      "suffix": "of Sharpness",
       "text": "crit chance",
-      "min": 0.08,
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.05,
+      "step": 0.02,
       "max": 0.2
     },
     "lifesteal": {
+      "suffix": "of the Leech",
       "text": "of damage dealt back as HP",
-      "min": 0.1,
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.05,
+      "step": 0.02,
       "max": 0.25
     },
-    "dodge": {
-      "text": "dodge chance",
-      "min": 0.08,
-      "max": 0.2
+    "cruelty": {
+      "suffix": "of Cruelty",
+      "text": "harder crits",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.15,
+      "step": 0.05,
+      "max": 0.6
     },
-    "thorns": {
-      "text": "of damage taken dealt back",
-      "min": 0.15,
+    "haste": {
+      "suffix": "of Haste",
+      "text": "chance to strike again",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.05,
+      "step": 0.02,
+      "max": 0.25
+    },
+    "venom": {
+      "suffix": "of Venom",
+      "text": "chance to poison",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.1,
+      "step": 0.03,
+      "max": 0.4
+    },
+    "embers": {
+      "suffix": "of Embers",
+      "text": "chance to burn",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.1,
+      "step": 0.03,
+      "max": 0.4
+    },
+    "frost": {
+      "suffix": "of Frost",
+      "text": "chance to weaken",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.1,
+      "step": 0.03,
+      "max": 0.4
+    },
+    "giant": {
+      "suffix": "of the Giant",
+      "text": "more damage to bosses and rare foes",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.08,
+      "step": 0.03,
       "max": 0.35
     },
+    "hunter": {
+      "suffix": "of the Hunter",
+      "text": "more damage to ordinary foes",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.08,
+      "step": 0.03,
+      "max": 0.35
+    },
+    "ruin": {
+      "suffix": "of Ruin",
+      "text": "of its defense ignored",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.1,
+      "step": 0.04,
+      "max": 0.5
+    },
+    "magus": {
+      "suffix": "of the Magus",
+      "text": "magic",
+      "slots": [
+        "weapon"
+      ],
+      "base": 2,
+      "step": 2,
+      "max": 30,
+      "stat": "magic"
+    },
+    "focus": {
+      "suffix": "of Focus",
+      "text": "less mana for abilities",
+      "slots": [
+        "weapon"
+      ],
+      "base": 0.06,
+      "step": 0.02,
+      "max": 0.3
+    },
     "vigor": {
+      "suffix": "of the Bear",
       "text": "more HP",
-      "min": 0.1,
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.05,
+      "step": 0.02,
       "max": 0.25
+    },
+    "thorns": {
+      "suffix": "of Thorns",
+      "text": "of damage taken dealt back",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.08,
+      "step": 0.03,
+      "max": 0.35
+    },
+    "dodge": {
+      "suffix": "of Evasion",
+      "text": "dodge chance",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.04,
+      "step": 0.02,
+      "max": 0.2
+    },
+    "turtle": {
+      "suffix": "of the Turtle",
+      "text": "more defense",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.05,
+      "step": 0.02,
+      "max": 0.25
+    },
+    "wall": {
+      "suffix": "of the Wall",
+      "text": "more stopped by Block",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.05,
+      "step": 0.02,
+      "max": 0.2
+    },
+    "mending": {
+      "suffix": "of Mending",
+      "text": "of HP back each round",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.01,
+      "step": 0.005,
+      "max": 0.05
+    },
+    "clarity": {
+      "suffix": "of Clarity",
+      "text": "mana back each round",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 1,
+      "step": 1,
+      "max": 8,
+      "flat": true
+    },
+    "warding": {
+      "suffix": "of Warding",
+      "text": "less from the first wind-up",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.3,
+      "step": 0.05,
+      "max": 0.7
+    },
+    "resolve": {
+      "suffix": "of Resolve",
+      "text": "chance of an extra meter point",
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape"
+      ],
+      "base": 0.1,
+      "step": 0.03,
+      "max": 0.4
+    },
+    "fortune": {
+      "suffix": "of Fortune",
+      "text": "more gold",
+      "slots": [
+        "boots",
+        "cape",
+        "trinket"
+      ],
+      "base": 0.04,
+      "step": 0.03,
+      "max": 0.3
+    },
+    "wisdom": {
+      "suffix": "of Wisdom",
+      "text": "more XP",
+      "slots": [
+        "boots",
+        "cape",
+        "trinket"
+      ],
+      "base": 0.02,
+      "step": 0.02,
+      "max": 0.14
+    },
+    "scavenger": {
+      "suffix": "of the Scavenger",
+      "text": "better chance of gear drops",
+      "slots": [
+        "boots",
+        "cape",
+        "trinket"
+      ],
+      "base": 0.02,
+      "step": 0.015,
+      "max": 0.12
+    },
+    "explorer": {
+      "suffix": "of the Explorer",
+      "text": "more surprises on plain spots",
+      "slots": [
+        "boots",
+        "cape"
+      ],
+      "base": 0.03,
+      "step": 0.02,
+      "max": 0.15
+    },
+    "luck": {
+      "suffix": "of Luck",
+      "text": "chance of +1 on a roll for a prize",
+      "slots": [
+        "trinket"
+      ],
+      "base": 0.1,
+      "step": 0.08,
+      "max": 0.6
+    },
+    "road": {
+      "suffix": "of the Road",
+      "text": "of HP back each time you roll",
+      "slots": [
+        "boots"
+      ],
+      "base": 0.005,
+      "step": 0.005,
+      "max": 0.03
+    },
+    "plenty": {
+      "suffix": "of Plenty",
+      "text": "stronger potions",
+      "slots": [
+        "trinket"
+      ],
+      "base": 0.08,
+      "step": 0.04,
+      "max": 0.4
     }
   },
   "names": {
@@ -584,5 +899,65 @@
         }
       }
     }
-  }
+  },
+  "_aboutAffixes": "Suffixes (Robin, 2026-11-02). A piece's number grows with its rank, base + step for each rank above the first, up to max, so an old piece is always outgrown (Robin: 'It shouldnt be you run around with lvl 3 leather boots because they have 10% experience').",
+  "prefixes": [
+    {
+      "word": "Fierce",
+      "stat": "attack",
+      "perRank": 2,
+      "slots": [
+        "weapon",
+        "gloves",
+        "trinket"
+      ]
+    },
+    {
+      "word": "Arcane",
+      "stat": "magic",
+      "perRank": 2,
+      "slots": [
+        "weapon",
+        "trinket",
+        "helm"
+      ]
+    },
+    {
+      "word": "Sturdy",
+      "stat": "defense",
+      "perRank": 1,
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "boots",
+        "cape"
+      ]
+    },
+    {
+      "word": "Hearty",
+      "stat": "maxHp",
+      "perRank": 6,
+      "slots": [
+        "armour",
+        "shield",
+        "helm",
+        "gloves",
+        "boots",
+        "cape",
+        "trinket"
+      ]
+    },
+    {
+      "word": "Clever",
+      "stat": "maxMana",
+      "perRank": 3,
+      "slots": [
+        "helm",
+        "gloves",
+        "cape",
+        "trinket"
+      ]
+    }
+  ]
 }

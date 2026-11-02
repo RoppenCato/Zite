@@ -270,10 +270,11 @@ export interface GearData {
   groundDrop: number;
   /** The kinds of gear; heavy reads `slots`, the others their own numbers at the same prices times `priceMult`. */
   lines: Record<GearLine, { weight: number; words: string[]; weaponByClass?: Record<ClassId, string>; firstWeapon?: string; priceMult?: number; slots?: Record<Slot, LineSlot> }>;
-  rarities: Record<Rarity, { mult: number; weight: number; priceMult: number; affixes: number; named: boolean }>;
+  rarities: Record<Rarity, { mult: number; weight: number; priceMult: number; affixes: number; named: boolean; prefix: boolean }>;
   /** The spread of a roll round the rank's number, as a share. */
   roll: number;
-  affixes: Record<AffixKind, { text: string; min: number; max: number }>;
+  affixes: Record<AffixKind, { suffix: string; text: string; slots: Slot[]; base: number; step: number; max: number; flat?: boolean; stat?: GearStat }>;
+  prefixes: { word: string; stat: GearStat; perRank: number; slots: Slot[] }[];
   names: Record<Slot, string[]>;
   dropChance: Record<'mob' | 'mini' | 'boss', number>;
   rarityBoost: Record<'mob' | 'mini' | 'boss', number>;

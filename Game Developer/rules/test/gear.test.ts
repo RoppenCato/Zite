@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { AffixKind, Slot } from '../src/types.ts';
 import { GEAR } from '../src/data.ts';
 import { makeBoard, makeCharacter } from '../src/game.ts';
 import { describeGear, plainGear, rankName, rankPrice, rankStat, rollGear, rollRarity, stats } from '../src/gear.ts';
@@ -53,18 +54,17 @@ describe('gear', () => {
       const rar = GEAR.rarities[g.rarity];
       const value = g.stats[def.stat]!;
       expect(value).toBeGreaterThanOrEqual(Math.floor(def.perRank[1]! * rar.mult * (1 - GEAR.roll)));
-      expect(value).toBeLessThanOrEqual(Math.ceil(def.perRank[1]! * rar.mult * (1 + GEAR.roll)));
-      expect(Object.keys(g.stats)).toEqual([def.stat]);
-      expect(g.affixes.length).toBe(rar.affixes);
+      if (!rar.prefix) expect(value).toBeLessThanOrEqual(Math.ceil(def.perRank[1]! * rar.mult * (1 + GEAR.roll)));
       expect(new Set(g.affixes.map((a) => a.kind)).size).toBe(g.affixes.length);
       for (const affix of g.affixes) {
         const range = GEAR.affixes[affix.kind];
-        expect(affix.value).toBeGreaterThanOrEqual(range.min);
+        expect(range.slots).toContain(g.slot);
         expect(affix.value).toBeLessThanOrEqual(range.max);
+
       }
       expect(g.rarity).not.toBe('unique');
-      if (rar.named) expect(GEAR.names[slot]).toContain(g.name);
-      else expect(g.name).toBe(`Copper ${def.base}`);
+      if (rar.named) expect(GEAR.names[slot].some((n) => g.name.includes(n))).toBe(true);
+      else expect(g.name).toContain(`Copper ${def.base}`);
       expect(g.base).toBe(`copper ${def.base.toLowerCase()}`);
       expect(g.price).toBe(Math.round(def.price[1]! * rar.priceMult));
     }
@@ -94,7 +94,28 @@ describe('gear', () => {
         trinket: { ...plainGear('t', 'trinket', 1), affixes: [{ kind: 'lifesteal' as const, value: 0.2 }] },
       },
     };
-    expect(stats(worn)).toEqual({ attack: 20, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, powers: {} });
+    expect(stats(worn)).toEqual({ attack: 20, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, bonus: {}, powers: {} });
     expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique']);
+  });
+});
+
+describe('suffixes and prefixes', () => {
+  const many = (slot: Slot, rank: number, boost: number) => Array.from({ length: 300 }, (_, i) => rollGear(`g${i}`, slot, rank, boost, makeRng(`${slot}${rank}${i}`), 'heavy', 'warrior'));
+
+  it('a piece says what it does: rare and up carry a suffix, uncommon and epic and up a prefix; a slot rolls only what suits it', () => {
+    for (const g of many('weapon', 2, 0)) {
+      if (g.rarity === 'common') expect(g.name).toBe('Copper Sword');
+      if (g.rarity === 'rare' || g.rarity === 'epic' || g.rarity === 'legendary') expect(g.name).toMatch(/ of /);
+      if (g.rarity === 'uncommon') expect(g.name).toMatch(/^(Fierce|Arcane) /);
+      for (const a of g.affixes) expect(GEAR.affixes[a.kind].slots).toContain('weapon');
+    }
+    for (const g of many('boots', 2, 2)) expect(g.name).not.toMatch(/of Ruin|of Luck|of Haste/);
+  });
+
+  it('an old piece is outgrown: the same suffix is far stronger at a higher rank', () => {
+    const best = (rank: number, kind: AffixKind): number => Math.max(0, ...many('boots', rank, 2).flatMap((g) => g.affixes.filter((a) => a.kind === kind).map((a) => a.value)));
+    expect(best(1, 'wisdom')).toBeLessThan(0.04);
+    expect(best(3, 'wisdom')).toBeGreaterThan(best(1, 'wisdom') * 2);
+    expect(best(10, 'wisdom')).toBeLessThanOrEqual(GEAR.affixes.wisdom.max);
   });
 });

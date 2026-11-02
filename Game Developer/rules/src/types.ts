@@ -17,7 +17,7 @@ export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'un
 export const RARITIES: readonly Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique'];
 
 /** A named piece's special effect. */
-export type AffixKind = 'crit' | 'lifesteal' | 'dodge' | 'thorns' | 'vigor';
+export type AffixKind = 'crit' | 'lifesteal' | 'dodge' | 'thorns' | 'vigor' | 'cruelty' | 'haste' | 'venom' | 'embers' | 'frost' | 'giant' | 'hunter' | 'ruin' | 'magus' | 'focus' | 'turtle' | 'wall' | 'mending' | 'clarity' | 'warding' | 'resolve' | 'fortune' | 'wisdom' | 'scavenger' | 'explorer' | 'luck' | 'road' | 'plenty';
 export interface Affix {
   kind: AffixKind;
   value: number;

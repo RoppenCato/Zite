@@ -223,6 +223,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (p.twinStrike) strike(r, 'Attack', p.twinStrike, 2, r.s.crit);
       else if (traits.attackHits) strike(r, 'Attack', 1, traits.attackHits, r.s.crit, !!traits.plainMagic, { split: true, melee: true });
       else strike(r, 'Attack', 1, 1, r.s.crit, !!traits.plainMagic, { melee: true });
+      // Of Haste: now and then the whole attack again.
+      if (r.s.bonus.haste && f.enemy.hp > 0 && !r.done && rng.next() < r.s.bonus.haste) strike(r, 'Attack', 1, traits.attackHits ?? 1, r.s.crit, !!traits.plainMagic, { split: !!traits.attackHits, melee: true });
       if (f.clone && f.enemy.hp > 0 && !r.done) strike(r, 'Shadow Clone', f.clone.power, traits.attackHits ?? 1, r.s.crit, false, { split: !!traits.attackHits });
       break;
     }
@@ -240,7 +242,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (r.c.carried.length >= MAX_CARRIED && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
       const meterCost = ability.meterAll ? f.meter : (ability.meter ?? 0);
       if ((ability.meter && f.meter < ability.meter) || (ability.meterAll && f.meter <= 0)) return reject(state, action, 'not enough meter');
-      const manaCost = p.arcane ? Math.ceil(ability.mana * p.arcane) : ability.mana;
+      const manaCost = Math.ceil((p.arcane ? ability.mana * p.arcane : ability.mana) * (1 - (r.s.bonus.focus ?? 0)));
       if (r.c.mana < manaCost) return reject(state, action, 'not enough mana');
       if (manaCost > 0) {
         r.c = { ...r.c, mana: r.c.mana - manaCost };
@@ -405,8 +407,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (!item.heal && !item.mana) return reject(state, action, 'not now');
       r.c = spend(r.c, move.item);
       events.push({ type: 'used', action: id, player, item: move.item });
-      if (item.heal) r.c = heal(r.c, Math.round(item.heal * (traits.potionPower ?? 1)), action, events);
-      if (item.mana) r.c = restoreMana(r.c, Math.round(item.mana * (traits.potionPower ?? 1)), action, events);
+      const stronger = (traits.potionPower ?? 1) * (1 + (r.s.bonus.plenty ?? 0));
+      if (item.heal) r.c = heal(r.c, Math.round(item.heal * stronger), action, events);
+      if (item.mana) r.c = restoreMana(r.c, Math.round(item.mana * stronger), action, events);
       break;
     }
     case 'flee': {
@@ -473,7 +476,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (guard !== 'none') events.push({ type: 'guarded', action: id, player, guard });
       const name = f.enemy.charged ?? mv.name;
       const heavy = f.enemy.charged !== null;
-      const mult = mv.power * (heavy ? PROGRESSION.enemyCharge : 1) * (f.enemy.weakened ? f.enemy.weakened.mult : 1);
+      let mult = mv.power * (heavy ? PROGRESSION.enemyCharge : 1) * (f.enemy.weakened ? f.enemy.weakened.mult : 1);
+      if (heavy && r.s.bonus.warding && !f.used.includes('warding')) {
+        f.used.push('warding');
+        mult *= 1 - r.s.bonus.warding;
+      }
       f.enemy.charged = null;
       const b = blow(f.enemy.attack, mult, r.s.defense, PROGRESSION.baseCrit, rng);
       let landed = false;
@@ -516,7 +523,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
             events.push({ type: 'mana', action: id, player, delta: -paid, mana: r.c.mana });
             dealt -= paid;
           }
-        } else if (held === 'block') dealt = Math.ceil(dealt * (f.blockUp?.mult ?? PROGRESSION.guards.block));
+        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? PROGRESSION.guards.block) - (r.s.bonus.wall ?? 0)));
         if (held === 'brace') {
           dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
           r.c = restoreMana(r.c, Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
@@ -602,8 +609,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   if (f.dance) f.dance = f.dance.exposed ? { ...f.dance, exposed: false } : f.dance.rounds > 1 ? { ...f.dance, rounds: f.dance.rounds - 1 } : null;
   gainMeter(r, 'round', 1);
   if (p.regen) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * p.regen)), action, events);
+  if (r.s.bonus.mending) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * r.s.bonus.mending)), action, events);
   f.round += 1;
-  r.c = restoreMana(r.c, PROGRESSION.manaPerRound + (p.manaWell ?? 0), action, events);
+  r.c = restoreMana(r.c, PROGRESSION.manaPerRound + (p.manaWell ?? 0) + (r.s.bonus.clarity ?? 0), action, events);
   f.enemy.next = pickMove(f.enemy, rng);
   events.push(intentEvent(f.enemy, id, player));
   return { state: withCharacter(state, r.c), events };
@@ -620,7 +628,7 @@ function gainMeter(r: Round, gain: 'block' | 'hit' | 'round' | 'miss', n: number
   const meter = CLASS_DATA[r.c.classId].meter;
   if (!meter || meter.gain !== gain || n <= 0) return;
   let add = n;
-  const fury = r.s.powers.fury;
+  const fury = (r.s.powers.fury ?? 0) + (r.s.bonus.resolve ?? 0);
   if (fury && r.rng.next() < fury) add += 1;
   const before = r.f.meter;
   r.f.meter = Math.min(PROGRESSION.meterMax, r.f.meter + add);
@@ -661,6 +669,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
   }
   if (f.enemy.sunder) power *= f.enemy.sunder.mult;
   if (infused) power *= 1 + infused.power;
+  power *= 1 + ((f.enemy.role === 'mob' ? s.bonus.hunter : s.bonus.giant) ?? 0);
   const id = r.action.id;
   const player = r.action.player;
   const p = s.powers;
@@ -691,7 +700,8 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     } else if (p.thunder && f.strikes % p.thunder === 0) {
       chance = 1;
     }
-    const b = blow(s.attack + (spell ? s.magic : 0), hitPower, how.ignoreDefense ? 0 : enemyDefense(f.enemy), chance, rng);
+    const b = blow(s.attack + (spell ? s.magic : 0), hitPower, how.ignoreDefense ? 0 : Math.floor(enemyDefense(f.enemy) * (1 - (s.bonus.ruin ?? 0))), chance, rng);
+    if (b.crit && s.bonus.cruelty) b.damage = Math.round(b.damage * (1 + s.bonus.cruelty));
     // Split: the hits share one blow's power, so defense counts once, not on every small hit.
     if (how.split) b.damage = Math.max(1, Math.round(b.damage / hits));
     if (traits.critStreak) f.streak = b.crit ? 0 : f.streak + 1;
@@ -705,6 +715,18 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
         events.push({ type: 'healed', action: id, player, amount: hp - r.c.hp, hp });
         r.c = { ...r.c, hp };
       }
+    }
+    if (f.enemy.hp > 0 && s.bonus.venom && rng.next() < s.bonus.venom) {
+      f.enemy.poison = { rounds: 3, damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(s.attack * 0.2))) };
+      events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: 3 });
+    }
+    if (f.enemy.hp > 0 && s.bonus.embers && rng.next() < s.bonus.embers) {
+      f.enemy.burn = { rounds: 3, damage: Math.max(f.enemy.burn?.damage ?? 0, Math.max(1, Math.round((s.attack + s.magic) * 0.2))) };
+      events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'burn', rounds: 3 });
+    }
+    if (f.enemy.hp > 0 && s.bonus.frost && rng.next() < s.bonus.frost) {
+      f.enemy.weakened = { rounds: 2, mult: Math.min(f.enemy.weakened?.mult ?? 1, 0.8) };
+      events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: 2 });
     }
     if (f.enemy.hp > 0 && f.coat) {
       const damage = (f.enemy.poison?.damage ?? 0) + Math.max(1, Math.round(s.attack * f.coat.power * (traits.poisonPower ?? 1)));
@@ -863,6 +885,8 @@ function win(r: Round): ApplyResult {
     gold = Math.round(gold * p.greed);
     xp = Math.round(xp / p.greed);
   }
+  xp = Math.round(xp * (1 + (r.s.bonus.wisdom ?? 0)));
+  gold = Math.round(gold * (1 + (r.s.bonus.fortune ?? 0)));
   events.push({ type: 'won', action: id, player, xp, gold });
   let next: Character = { ...lingering(c, f), gold: c.gold + gold, fight: null };
   const levelBefore = next.level;
@@ -874,7 +898,7 @@ function win(r: Round): ApplyResult {
   next = noteBeaten(next, e.id, r.state.board, area?.id, action, events);
   const rank = area?.tier ?? 1;
   let s = r.state;
-  if (rng.next() < GEAR.dropChance[e.role]) {
+  if (rng.next() < GEAR.dropChance[e.role] + (r.s.bonus.scavenger ?? 0)) {
     const got = nextGearId(s);
     s = got.state;
     const unique = rng.next() < GEAR.uniqueChance[e.role] ? rollUnique(got.id, rank, rank, rng) : null;
