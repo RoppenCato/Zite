@@ -14,6 +14,10 @@ import spotsOgg from '../../assets/sound/ui-spots/ui-spots.ogg';
 import meadowsBoardOgg from '../../assets/sound/music/meadows-board.ogg';
 import creaturesMeadowsJson from '../../assets/sound/creatures-meadows/creatures-meadows.json?url';
 import creaturesMeadowsOgg from '../../assets/sound/creatures-meadows/creatures-meadows.ogg';
+import fightClassesJson from '../../assets/sound/fight-classes/fight-classes.json?url';
+import fightClassesOgg from '../../assets/sound/fight-classes/fight-classes.ogg';
+import creaturesForestJson from '../../assets/sound/creatures-forest/creatures-forest.json?url';
+import creaturesForestOgg from '../../assets/sound/creatures-forest/creatures-forest.ogg';
 import { settings } from './settings.ts';
 
 interface SpriteFile {
@@ -22,14 +26,18 @@ interface SpriteFile {
   ogg: string;
   /** The gain of this sprite against the others (Nigel, SD: the UI bus a touch under the fight bus). */
   volume: number;
+  /** Loaded only when asked for: the other classes' abilities, a later area's voices and steps. */
+  lazy?: boolean;
 }
 
 const SPRITES: SpriteFile[] = [
-  { key: 'ui', json: uiJson, ogg: uiOgg, volume: 0.8 },
+  { key: 'ui-sounds', json: uiJson, ogg: uiOgg, volume: 0.8 },
   { key: 'fight', json: fightJson, ogg: fightOgg, volume: 1 },
   { key: 'ui-spots', json: spotsJson, ogg: spotsOgg, volume: 0.8 },
   // The meadows' creature voices; an area's voices belong with its load once areas load their own (Nigel, SD).
   { key: 'creatures-meadows', json: creaturesMeadowsJson, ogg: creaturesMeadowsOgg, volume: 1 },
+  { key: 'fight-classes', json: fightClassesJson, ogg: fightClassesOgg, volume: 1, lazy: true },
+  { key: 'creatures-forest', json: creaturesForestJson, ogg: creaturesForestOgg, volume: 1, lazy: true },
 ];
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 // A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
@@ -82,6 +90,7 @@ class Audio {
   /** The piece asked for before the first tap unlocked audio, played on that tap. */
   private pendingMusic: string | null = null;
   private unlockHooked = false;
+  private readonly fetching = new Set<string>();
 
   /** Once, from the first scene: the game and the page's `?mute=1`. */
   init(game: Phaser.Game): void {
@@ -91,10 +100,19 @@ class Audio {
   }
 
   /** Queue the sprites; call from a scene's preload. */
-  preload(scene: Phaser.Scene): void {
+  preload(scene: Phaser.Scene, extra: readonly string[] = []): void {
     for (const s of SPRITES) {
-      if (!scene.cache.json.exists(s.key)) scene.load.audioSprite(s.key, s.json, s.ogg);
+      if ((!s.lazy || extra.includes(s.key)) && !scene.cache.json.exists(s.key)) scene.load.audioSprite(s.key, s.json, s.ogg);
     }
+  }
+
+  /** A lazy sprite fetched during play, when it first matters: walking into its area. */
+  ensure(scene: Phaser.Scene, key: string): void {
+    const s = SPRITES.find((x) => x.key === key);
+    if (!s || scene.cache.json.exists(key) || this.fetching.has(key)) return;
+    this.fetching.add(key);
+    scene.load.audioSprite(s.key, s.json, s.ogg);
+    scene.load.start();
   }
 
   /** True when nothing should sound: the page muted, the setting off, or no game yet. */

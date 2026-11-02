@@ -42,3 +42,7 @@ Still to come (chapter 1, step 7): the fight sprite loaded with the fight scene,
 crossfade on an area change and on a fight's start and end, ambience under it, the settings' mute and two volumes,
 `?mute=1` for test pages, the audio unlocked on the first tap. The settings already carry a sound toggle that does nothing
 yet, and the convention `?mute=1` is written down in `docs/state/pages.md`.
+
+## Nigel, SD's render of 2026-11-02
+
+New cuts of `ui`, `ui-spots` and `fight` (with the church's bell, the sting, the quest and log sounds, the dodge), and two new sprites loaded only when needed: `fight-classes` (the three classes' abilities and pips, for a class other than the Knight) and `creatures-forest` (the forest's six voices and steps, once it is open or entered). The borrowed names in `audio.ts` step aside by themselves. Robin's ear wanted on the phone: moss steps may nearly vanish, Grumblebark's death is 2.4 s on purpose. Held by Nigel, SD: the beds, and every theme including the forest's, until Robin has heard the meadows' board theme.

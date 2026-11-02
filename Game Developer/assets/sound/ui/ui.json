@@ -325,19 +325,44 @@
       "end": 26.8577,
       "loop": false
     },
-    "ui/level-up": {
+    "ui/stung": {
       "start": 26.9077,
-      "end": 28.4077,
+      "end": 27.0576,
+      "loop": false
+    },
+    "ui/board-open": {
+      "start": 27.1076,
+      "end": 27.4,
+      "loop": false
+    },
+    "ui/quest-done": {
+      "start": 27.45,
+      "end": 28.3084,
+      "loop": false
+    },
+    "ui/person-found": {
+      "start": 28.3584,
+      "end": 28.9913,
+      "loop": false
+    },
+    "ui/log-open": {
+      "start": 29.0413,
+      "end": 29.4048,
+      "loop": false
+    },
+    "ui/level-up": {
+      "start": 29.4548,
+      "end": 30.9548,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 28.4577,
-      "end": 30.3854,
+      "start": 31.0048,
+      "end": 32.9325,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 30.4354,
-      "end": 32.3499,
+      "start": 32.9825,
+      "end": 34.897,
       "loop": false
     }
   }

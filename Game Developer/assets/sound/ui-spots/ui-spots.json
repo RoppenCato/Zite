@@ -49,6 +49,11 @@
       "start": 6.0503,
       "end": 6.1202,
       "loop": false
+    },
+    "ui/arrive-church": {
+      "start": 6.1702,
+      "end": 7.5179,
+      "loop": false
     }
   }
 }

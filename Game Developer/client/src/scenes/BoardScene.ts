@@ -937,7 +937,9 @@ export class BoardScene extends Phaser.Scene {
     preloadBoardKits(this, Object.values(areas).filter((a) => a.tier <= reach).map((a) => a.theme));
     preloadKit(this);
     preloadAbilityIcons(this);
-    audio.preload(this);
+    // The fourth class's sounds only for those who play one; the forest's only once you are in it.
+    const me = this.game_.me;
+    audio.preload(this, [...(me.classId === 'warrior' ? [] : ['fight-classes']), ...(me.opened.some((id) => areas[id]?.theme === 'forest') ? ['creatures-forest'] : [])]);
   }
 
   private drawToken(): void {
@@ -1632,6 +1634,7 @@ export class BoardScene extends Phaser.Scene {
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
     if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
       this.artArea = area.id;
+      if (area.theme === 'forest') audio.ensure(this, 'creatures-forest');
       releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
       releaseBackdrops(this.game, area.theme);
     }
