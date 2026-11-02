@@ -1,4 +1,6 @@
-// The skill board (Robin, 2026-11-02: "think like how wow classic does it, where you mainly go down one tree, and take some in the others"; the system is in `rules/src/skills.ts`). What is carried along the top, then a tab for the class's own four and one for each of its three trees, with eight tiers read downwards. One card at the bottom says what the tapped one does, with only the buttons that apply. In a town or a church, Reset gives every point back. Opened from the Hero sheet.
+// The skill board (Robin, 2026-11-02: "the 4 main classes have their different things, and then you can specialize down"; "think like how wow classic does it, where you mainly go down one tree, and take some in the others"; "I liked the old talents trees, i just wanted more talents, abilities and longer talent trees"; the system is in `rules/src/skills.ts`). After Mitch, AD's design: the five carried on a belt along the top, the
+// class's own four, then its three trees side by side, read downwards, a branch through their tiers, gold as far as you have gone. One card at the bottom says what the tapped
+// one does, with only the buttons that apply. In a town or a church, Reset gives every point back. Opened from the Hero sheet.
 
 import Phaser from 'phaser';
 import { ABILITIES, canLearn, CLASS_DATA, isOpen, MAX_CARRIED, pointsFree, specialization, type AbilityRank, type Action, type Character, carriedLimit, needsFor, TIER_POINTS } from '../../../rules/src/index.ts';
@@ -13,6 +15,21 @@ import { makeButton } from '../ui.ts';
 const WOOD_INK = '#3a2410';
 const RUST = '#a23c2c';
 const GOLD = 0xf4c14a;
+const CLASS_X = [66, 159, 252, 345] as const;
+const TREE_X = [84, 206, 328] as const;
+const FIRST_TIER = 354;
+const TIER_H = 39;
+const COLUMN_W = 114;
+const COLUMN_TOP = 306;
+const COLUMN_H = 340;
+/** How far either side of its branch a talent stands. */
+const TWIG = 27;
+const NODE = 40;
+const TREE_NODE = 34;
+/** The capstone at a tree's foot stands larger. */
+const SIGNATURE = 40;
+/** The card, below the board. */
+const CARD_Y = 656;
 
 /** The numbers worth showing on a rank. */
 function rankLine(r: AbilityRank): string {
@@ -55,7 +72,6 @@ export class SkillsScene extends Phaser.Scene {
   private readonly log: GameLog;
   private rows: Phaser.GameObjects.GameObject[] = [];
   private picked: string | null = null;
-  private tab = '';
   private note = '';
   private inFlight = false;
 
@@ -71,7 +87,6 @@ export class SkillsScene extends Phaser.Scene {
 
   create(): void {
     this.picked = null;
-    this.tab = '';
     this.note = '';
     this.rows = [];
     sheet(this);
@@ -143,75 +158,68 @@ export class SkillsScene extends Phaser.Scene {
       }
     }
 
-    // Tabs: the class's own four, then its three trees, each with the points in it (Robin, 2026-11-02: mainly one tree, some in the others).
-    const trees = Object.entries(cls.trees);
-    if (!this.tab) {
-      const best = trees.map(([key, t]) => ({ key, points: t.nodes.reduce((sum, id) => sum + (me.abilities[id] ?? 0), 0) })).sort((a, b) => b.points - a.points)[0];
-      this.tab = best && best.points > 0 ? best.key : trees[0]![0];
-    }
-    const tabs: [string, string][] = [['own', 'Class'], ...trees.map(([key, t]): [string, string] => [key, `${t.name} ${t.nodes.reduce((sum, id) => sum + (me.abilities[id] ?? 0), 0)}`])];
-    const tabW = 376 / tabs.length;
-    tabs.forEach(([key, word], i) => {
-      const x = 18 + tabW * (i + 0.5);
-      if (kitReady(this)) this.rows.push(plate(this, key === this.tab ? 'chip_chosen' : 'chip_idle', x, 238, tabW - 4, 34));
-      this.rows.push(this.add.text(x, 237, word, { fontFamily: FONT_DISPLAY, fontSize: word.length > 12 ? '10.5px' : '12px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
-      const zone = this.add.zone(x, 238, tabW, 36).setInteractive({ useHandCursor: true });
-      zone.on('pointerup', () => {
-        this.tab = key;
-        sfx.play('ui/chip');
-        this.refresh();
-      });
-      this.rows.push(zone);
-    });
-    this.board(18, 258, 376, 292);
-    if (this.tab === 'own') {
-      cls.core.forEach((id, i) => this.node(id, 50, 292 + i * 62, me, 44));
-    } else {
-      const tree = cls.trees[this.tab]!;
+    // The class's own four.
+    this.board(18, 222, 376, 74);
+    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 257, me));
+
+    // The three trees, read downwards (Mitch, AD's layout): a dark column each, the name on a slip at its crown, a branch down through its
+    // tiers, gold as far as you have gone, with a leaf at each lit joint. Each tier stands either side of the branch, the capstone on it.
+    this.board(18, 300, 376, 350);
+    Object.values(cls.trees).forEach((tree, col) => {
+      const x = TREE_X[col]!;
       const spent = tree.nodes.reduce((sum, id) => sum + (me.abilities[id] ?? 0), 0);
+      const column = this.add.graphics();
+      column.fillStyle(0x7a5030, 1).fillRoundedRect(x - COLUMN_W / 2, COLUMN_TOP, COLUMN_W, COLUMN_H, 8).lineStyle(1.5, 0x6a4628, 1).strokeRoundedRect(x - COLUMN_W / 2, COLUMN_TOP, COLUMN_W, COLUMN_H, 8);
+      this.rows.push(column);
+      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, 321, 104, 22));
+      this.rows.push(this.add.text(x, 320, `${tree.name} ${spent}`, { fontFamily: FONT_DISPLAY, fontSize: tree.name.length > 9 ? '11px' : '12px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
+      const branch = this.add.graphics();
+      this.rows.push(branch);
+      // From the slip's foot down, each stretch bending a little to alternate sides; gold where the tier at its lower end is open.
       tree.tiers.forEach((row, tier) => {
-        const y = 277 + tier * 37;
-        const open = spent >= tier * TIER_POINTS;
-        if (tier > 0) {
-          const line = this.add.graphics();
-          line.lineStyle(1, open ? GOLD : 0x6a4630, open ? 0.8 : 0.5).lineBetween(28, y - 18, 384, y - 18);
-          this.rows.push(line);
-        }
-        row.forEach((id, col) => this.node(id, row.length === 1 ? 128 : 42 + col * 180, y, me, 30));
+        const from = tier === 0 ? 332 : FIRST_TIER + (tier - 1) * TIER_H;
+        const to = FIRST_TIER + tier * TIER_H;
+        const lit = spent >= tier * TIER_POINTS;
+        const bend = x + (tier % 2 ? 3 : -3);
+        const mid = (from + to) / 2;
+        const points = [new Phaser.Math.Vector2(x, from), new Phaser.Math.Vector2(bend, mid), new Phaser.Math.Vector2(x, to)];
+        branch.lineStyle(6.4, 0x2a1a0c, 1).strokePoints(points);
+        branch.lineStyle(3.6, lit ? GOLD : 0x6a4630, 1).strokePoints(points);
+        if (lit && tier > 0) branch.fillStyle(0x7ccf6a, 1).fillEllipse(bend + 6, mid, 9, 5);
       });
-    }
+      tree.tiers.forEach((row, tier) => row.forEach((id, i) => this.node(id, row.length === 1 ? x : x + (i ? TWIG : -TWIG), FIRST_TIER + tier * TIER_H, me, row.length === 1 ? SIGNATURE : TREE_NODE)));
+    });
 
     this.card(me);
   }
 
-  /** A talent: its icon and name, its rank, a ring when carried, a + when a point can go here, and dim while it is out of reach. */
-  private node(id: string, cx: number, cy: number, me: Character, size: number): void {
+  /** A slot: its cubby and icon, its rank's dots, a ring when carried, a + when a point can go here, the level when it is out of reach. */
+  private node(id: string, cx: number, cy: number, me: Character, size = NODE): void {
     const a = ABILITIES[id]!;
     const rank = me.abilities[id] ?? 0;
     const open = isOpen(me, id);
     const can = canLearn(me, id);
     if (this.picked === id) {
       const glow = this.add.graphics();
-      glow.fillStyle(GOLD, 0.55).fillRoundedRect(cx - size / 2 - 4, cy - size / 2 - 2, 172, size + 4, 8);
+      glow.fillStyle(GOLD, 1).fillRoundedRect(cx - size / 2 - 3, cy - size / 2 - 3, size + 6, size + 6, 9);
       this.rows.push(glow);
     }
-    if (kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(size, size));
-    this.icon(id, cx, cy, size - 6, rank ? 1 : open ? 0.8 : 0.4);
+    // A rule is a crest on the branch, not a slot: something you are, not something you press.
+    if (kitReady(this) && !a.rule) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(size, size));
+    this.icon(id, cx, cy, a.rule ? size + 2 : size - 8, rank ? 1 : open ? 0.76 : a.rule ? 0.58 : 0.4);
     if (me.carried.includes(id)) {
       const ring = this.add.graphics();
-      ring.lineStyle(2, GOLD, 1).strokeRoundedRect(cx - size / 2 + 1, cy - size / 2 + 1, size - 2, size - 2, 5);
+      ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4, 6);
       this.rows.push(ring);
     }
-    if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 3, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(13, 13));
-    const ink = rank ? CREAM : open ? '#f0e2c6' : '#b8a486';
-    const big = size > 36;
-    const name = this.add.text(cx + size / 2 + 6, cy - (big ? 10 : 7), a.name, { fontFamily: FONT, fontSize: big ? '14px' : '11.5px', fontStyle: 'bold', color: ink, stroke: WOOD_INK, strokeThickness: 2 }).setOrigin(0, 0.5);
-    for (let px = 11; name.width > 132 && px >= 9 && !big; px--) name.setFontSize(px);
-    this.rows.push(name);
-    const rule = a.rule ? 'passive' : '';
-    const line = rank ? `${rank} of ${a.ranks.length}` : `${a.ranks.length > 1 ? `${a.ranks.length} ranks` : '1 rank'}`;
-    this.rows.push(this.add.text(cx + size / 2 + 6, cy + (big ? 9 : 6), rule ? `${line} · ${rule}` : line, { fontFamily: FONT, fontSize: big ? '12px' : '9.5px', color: ink, stroke: WOOD_INK, strokeThickness: 1.5 }).setOrigin(0, 0.5));
-    const zone = this.add.zone(cx + 66, cy, 172, Math.max(34, size)).setInteractive({ useHandCursor: true });
+    if (a.ranks.length > 1 && rank > 0 && kitReady(this)) {
+      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx + (i - (a.ranks.length - 1) / 2) * 7, cy + size / 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7.5 / 24));
+    }
+    if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 2, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(17, 17));
+    if (!rank && me.level < a.level) {
+      this.rows.push(this.add.text(cx, cy + size / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
+    }
+    const zone = this.add.zone(cx, cy, size + 14, size + 5).setInteractive({ useHandCursor: true });
     zone.on('pointerup', () => this.tap(id));
     this.rows.push(zone);
   }
@@ -225,7 +233,7 @@ export class SkillsScene extends Phaser.Scene {
   }
 
   private card(me: Character): void {
-    const y = 556;
+    const y = CARD_Y;
     const cls = CLASS_DATA[me.classId]!;
     this.board(18, y, 376, 164);
     const slip = (top: number, h: number): void => {
