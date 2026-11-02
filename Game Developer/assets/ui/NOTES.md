@@ -85,6 +85,7 @@ The rarity colours are read from the game's `layout.ts`: common #e8e4d8, uncommo
 | `cubby_unique` | a bag slot holding unique gear | 52 by 52 |  |
 | `cubby_chosen` | the gold ring round the tapped slot, drawn over it | 58 by 58 |  |
 | `badge_count` | the count on a slot, words in cream at 10.5 px | 22 by 15 | 7 px |
+| `badge_plus` | a gold + on a skill that can be learned | 18 by 18 |  |
 | `board_slip` | the parchment slip on the name board; words in dark ink, no outline | 48 by 24 | 8 px |
 | `bar_frame_s` | the small bar frame, for MP on the name board, 11 tall | 48 by 11 | 5 px |
 | `bar_mp_s` | the MP fill for the small frame, 7 tall | 24 by 7 | 3 px |

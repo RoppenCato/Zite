@@ -17,10 +17,12 @@ const WOOD_INK = '#3a2410';
 const RUST = '#a23c2c';
 const GOLD = 0xf4c14a;
 const CLASS_X = [66, 159, 252, 345] as const;
-const TREE_X = [80, 206, 332] as const;
-const TREE_Y = 358;
-const TREE_STEP = 47;
+const TREE_X = [84, 206, 328] as const;
+const TREE_ROWS = [353, 403, 453, 509] as const;
+const COLUMN_W = 114;
 const NODE = 40;
+/** The signature at a tree's foot stands larger. */
+const SIGNATURE = 48;
 
 /** The numbers worth showing on a rank. */
 function rankLine(r: AbilityRank): string {
@@ -143,55 +145,61 @@ export class SkillsScene extends Phaser.Scene {
     }
 
     // The class's own four.
-    this.board(18, 230, 376, 84);
-    this.wood(30, 234, cls.name, 11);
-    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 270, me));
+    this.board(18, 226, 376, 70);
+    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 258, me));
 
-    // The three trees, read downwards.
-    this.board(18, 318, 376, 212);
-    const trees = Object.values(cls.trees);
-    const lines = this.add.graphics();
-    lines.lineStyle(3, 0x3a2410, 0.75);
-    this.rows.push(lines);
-    trees.forEach((tree, col) => {
+    // The three trees, read downwards (Mitch, AD's layout): a dark column each, the name on a slip at its crown, a branch down through its
+    // nodes, gold as far as you have gone, with a leaf at each lit joint.
+    this.board(18, 300, 376, 250);
+    Object.values(cls.trees).forEach((tree, col) => {
       const x = TREE_X[col]!;
-      this.wood(x, 322, tree.name, 12).setOrigin(0.5, 0);
-      lines.lineBetween(x, TREE_Y, x, TREE_Y + TREE_STEP * 3);
-      tree.nodes.forEach((id, row) => this.node(id, x, TREE_Y + row * TREE_STEP, me));
+      const column = this.add.graphics();
+      column.fillStyle(0x5e3d20, 0.55).fillRoundedRect(x - COLUMN_W / 2, 310, COLUMN_W, 232, 8);
+      this.rows.push(column);
+      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, 323, 100, 20));
+      this.rows.push(this.add.text(x, 322, tree.name, { fontFamily: FONT_DISPLAY, fontSize: '11.5px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
+      const branch = this.add.graphics();
+      this.rows.push(branch);
+      tree.nodes.forEach((id, row) => {
+        if (row === 0) return;
+        const lit = !!me.abilities[id];
+        const from = TREE_ROWS[row - 1]!;
+        const to = TREE_ROWS[row]!;
+        branch.lineStyle(5, 0x2a1a0c, 1).lineBetween(x, from, x, to);
+        branch.lineStyle(3, lit ? GOLD : 0x7a5a38, 1).lineBetween(x, from, x, to);
+        if (lit) branch.fillStyle(0x7ccf6a, 1).fillEllipse(x + 7, (from + to) / 2, 9, 5);
+      });
+      tree.nodes.forEach((id, row) => this.node(id, x, TREE_ROWS[row]!, me, row === tree.nodes.length - 1 ? SIGNATURE : NODE));
     });
 
     this.card(me);
   }
 
   /** A slot: its cubby and icon, its rank's dots, a ring when carried, a + when a point can go here, the level when it is out of reach. */
-  private node(id: string, cx: number, cy: number, me: Character): void {
+  private node(id: string, cx: number, cy: number, me: Character, size = NODE): void {
     const a = ABILITIES[id]!;
     const rank = me.abilities[id] ?? 0;
     const open = isOpen(me, id);
     const can = canLearn(me, id);
     if (this.picked === id) {
       const glow = this.add.graphics();
-      glow.fillStyle(GOLD, 1).fillRoundedRect(cx - NODE / 2 - 3, cy - NODE / 2 - 3, NODE + 6, NODE + 6, 9);
+      glow.fillStyle(GOLD, 1).fillRoundedRect(cx - size / 2 - 3, cy - size / 2 - 3, size + 6, size + 6, 9);
       this.rows.push(glow);
     }
-    if (kitReady(this)) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(NODE, NODE));
-    this.icon(id, cx, cy, 31, rank ? 1 : open ? 0.62 : 0.32);
+    // A rule is a crest on the branch, not a slot: something you are, not something you press.
+    if (kitReady(this) && !a.rule) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(size, size));
+    this.icon(id, cx, cy, a.rule ? size : size - 9, rank ? 1 : open ? 0.62 : 0.32);
     if (me.carried.includes(id)) {
       const ring = this.add.graphics();
-      ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - NODE / 2 + 2, cy - NODE / 2 + 2, NODE - 4, NODE - 4, 6);
+      ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4, 6);
       this.rows.push(ring);
     }
     if (a.ranks.length > 1 && rank > 0 && kitReady(this)) {
-      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx - 8 + i * 8, cy + NODE / 2 + 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7 / 24));
+      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx - 8 + i * 8, cy + size / 2 + 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7 / 24));
     }
-    if (can) {
-      const plus = this.add.graphics();
-      plus.fillStyle(GOLD, 1).fillCircle(cx + NODE / 2 - 2, cy + NODE / 2 - 4, 8).lineStyle(1.5, 0x3a2410, 1).strokeCircle(cx + NODE / 2 - 2, cy + NODE / 2 - 4, 8);
-      this.rows.push(plus);
-      this.rows.push(this.add.text(cx + NODE / 2 - 2, cy + NODE / 2 - 5, '+', { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
-    }
+    if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 2, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(17, 17));
     if (!rank && me.level < a.level) {
-      this.rows.push(this.add.text(cx, cy + NODE / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
+      this.rows.push(this.add.text(cx, cy + size / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
     }
     const zone = this.add.zone(cx, cy, 58, 48).setInteractive({ useHandCursor: true });
     zone.on('pointerup', () => this.tap(id));
@@ -207,9 +215,9 @@ export class SkillsScene extends Phaser.Scene {
   }
 
   private card(me: Character): void {
-    const y = 534;
+    const y = 556;
     const cls = CLASS_DATA[me.classId]!;
-    this.board(18, y, 376, 186);
+    this.board(18, y, 376, 164);
     const slip = (top: number, h: number): void => {
       if (kitReady(this)) this.rows.push(plate(this, 'board_slip', 28, top, 356, h).setOrigin(0, 0));
     };
@@ -222,12 +230,12 @@ export class SkillsScene extends Phaser.Scene {
     const a = id ? ABILITIES[id] : null;
     if (!id || !a) {
       this.wood(30, y + 8, this.note ? 'Done' : 'Your skills', 15);
-      slip(y + 30, 148);
+      slip(y + 28, 128);
       const free = pointsFree(me);
       const line = free ? `You have ${free} to spend: a gold + marks where. Go down one tree, or a little down two.` : "Each level brings a point, every second level after ten, and a region's boss one more.";
-      words(y + 37, [this.note, cls.about, cls.meter?.text ?? '', line].filter(Boolean).join('\n'), 12);
+      words(y + 33, [this.note, cls.about, cls.meter?.text ?? '', line].filter(Boolean).join('\n'), 12);
       const kind = this.game_.state.board.spaces[me.space]?.kind;
-      if (kind === 'town' || kind === 'church') this.rows.push(makeButton(this, 332, y + 156, 96, 34, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
+      if (kind === 'town' || kind === 'church') this.rows.push(makeButton(this, 332, y + 136, 96, 34, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
       return;
     }
     const rank = me.abilities[id] ?? 0;
@@ -237,11 +245,11 @@ export class SkillsScene extends Phaser.Scene {
     this.icon(id, 53, y + 28, 36, rank ? 1 : 0.62);
     this.wood(86, y + 7, a.name, 15);
     this.rows.push(this.add.text(86, y + 28, `${cost} · ${rank ? `rank ${rank} of ${a.ranks.length}` : `from level ${a.level}`}`, { fontFamily: FONT, fontSize: '11.5px', color: CREAM }));
-    slip(y + 54, 90);
-    const text = words(y + 60, a.text, 12.5);
+    slip(y + 52, 70);
+    const text = words(y + 56, a.text, 12);
     const now = rank && !a.rule ? rankLine(a.ranks[rank - 1]!) : '';
     const then = rank < a.ranks.length && !a.rule ? rankLine(a.ranks[rank]!) : '';
-    let at = y + 60 + text.height + 3;
+    let at = y + 56 + text.height + 2;
     const say = (label: string, line: string): void => {
       this.rows.push(this.add.text(38, at, label, { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: RUST }));
       this.rows.push(this.add.text(76, at, line, { fontFamily: FONT, fontSize: '11.5px', color: WOOD_INK, wordWrap: { width: 300 } }));
@@ -255,13 +263,13 @@ export class SkillsScene extends Phaser.Scene {
     }
     const can = canLearn(me, id);
     if (rank < a.ranks.length) {
-      const b = makeButton(this, a.rule ? 206 : 121, y + 165, a.rule ? 220 : 186, 34, rank ? 'Raise' : 'Learn', can ? COLORS.button : COLORS.log, '15px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
+      const b = makeButton(this, a.rule ? 206 : 121, y + 143, a.rule ? 220 : 186, 34, rank ? 'Raise' : 'Learn', can ? COLORS.button : COLORS.log, '15px', () => this.send({ type: 'skill', op: 'learn', ability: id } as never, ''));
       b.setEnabled(can && !this.inFlight);
       this.rows.push(b.button);
     }
     if (rank && !a.rule) {
       const carried = me.carried.includes(id);
-      const b = makeButton(this, 303, y + 165, 162, 34, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
+      const b = makeButton(this, 303, y + 143, 162, 34, carried ? 'Put down' : 'Carry', COLORS.log, '15px', () => this.send({ type: 'skill', op: 'carry', ability: id } as never, ''));
       b.setEnabled((carried || me.carried.length < MAX_CARRIED) && !this.inFlight);
       this.rows.push(b.button);
     }
