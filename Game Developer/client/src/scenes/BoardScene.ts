@@ -394,6 +394,8 @@ export class BoardScene extends Phaser.Scene {
           return `${name(e.player)} opened ${board.areas[e.area]?.name ?? e.area}!`;
         case 'bossDown':
           return `${name(e.player)} beat the boss at ${board.spaces[e.space]?.name ?? e.space}.`;
+        case 'sealWon':
+          return `${name(e.player)} won the Seal of ${board.areas[e.land]?.name ?? e.land}.`;
         case 'levelled':
           return `${name(e.player)} reached level ${e.level}.`;
         case 'died':

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
+import { apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, sealCount, sealsOf, SEALS_COMING, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
 import { migrate } from '../src/save.ts';
 import { WORLD_DATA } from '../src/data.ts';
 import { ringBoard } from './fixtures/ring.ts';
@@ -129,6 +129,34 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const s = made();
     const open: GameState = { ...s, characters: { [P]: { ...s.characters[P]!, opened: ['meadows', 'kingswood', 'crownhaven'], space: 'gate' } } };
     expect(apply(open, { type: 'home', id: 'h', player: P }, makeRng('h'), NOW).state.characters[P]!.space).toBe('city-square');
+  });
+});
+
+describe('the Seals (Robin, 2026-11-02)', () => {
+  const made = () => newGame({ seed: 'seals', player: P, name: 'Robin', classId: 'warrior' });
+  const beat = (s: GameState, space: string, boss: string): ReturnType<typeof apply> => {
+    const c = startFight({ ...s.characters[P]!, space, attack: 5000, opened: Object.keys(s.board.areas) }, boss, space, false);
+    c.fight!.enemy = { ...c.fight!.enemy, hp: 1 };
+    return apply({ ...s, characters: { [P]: c } }, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'none' } as never, makeRng('s'), NOW);
+  };
+  it("one for each land's greatest boss: no gate's mini-boss, no dungeon, no city", () => {
+    const s = made();
+    expect(sealsOf(s.board, s.characters[P]!).map((x) => x.space)).toEqual(['gate', 'briar', 'summit', 'murkpool', 'frostseat']);
+  });
+  it('is won the first time the boss falls, and only then', () => {
+    const first = beat(made(), 'summit', 'frost-matriarch');
+    expect(first.events).toContainEqual(expect.objectContaining({ type: 'sealWon', land: 'frostpeak', won: 1, total: 5 + SEALS_COMING.length }));
+    expect(sealCount(first.state.board, first.state.characters[P]!).won).toBe(1);
+    const again = beat(first.state, 'summit', 'frost-matriarch');
+    expect(again.events.some((e) => e.type === 'sealWon')).toBe(false);
+  });
+  it("a gate's mini-boss gives none", () => {
+    expect(beat(made(), 'gate-bogsnapper', 'bogsnapper').events.some((e) => e.type === 'sealWon')).toBe(false);
+  });
+  it('a character who beat the bosses before Seals existed already holds them', () => {
+    const s = made();
+    const c = { ...s.characters[P]!, bossKills: { gate: 3, frostseat: 1, 'gate-bighorn': 2 } };
+    expect(sealCount(s.board, c).won).toBe(2);
   });
 });
 

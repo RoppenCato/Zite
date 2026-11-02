@@ -15,6 +15,7 @@ import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
 import { dropSlot, groundAt, rollLine } from './grounds.ts';
 import { finishQuests, questProgress } from './quests.ts';
+import { sealAt, sealCount, SEALS_COMING } from './seals.ts';
 import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Spawn } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
@@ -964,6 +965,11 @@ function win(r: Round): ApplyResult {
     const until = now + (SPACE_KIND_DATA.boss.cooldownMs ?? 0);
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };
     events.push({ type: 'bossDown', action: id, player, space: f.space, until });
+    const sealLand = sealAt(s.board, f.space);
+    if (sealLand && next.bossKills[f.space] === 1) {
+      const held = sealCount(s.board, next);
+      events.push({ type: 'sealWon', action: id, player, land: sealLand, won: held.won, total: held.total + SEALS_COMING.length });
+    }
     if (space.opens && !next.opened.includes(space.opens)) {
       // An area not laid yet grows now, from the seed, the same for everyone.
       if (!s.board.areas[space.opens]) s = { ...s, board: growBoard(s.board, s.seed, space.opens) };

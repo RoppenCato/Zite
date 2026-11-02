@@ -626,6 +626,10 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         this.say(`${this.enemyName} falls. It will be back in five minutes.`);
         moments(this)?.bossDown(this.enemyName);
         break;
+      case 'sealWon':
+        moments(this)?.find('mark_star', 'A Seal!', `${this.game_.state.board.areas[e.land]?.name ?? e.land}: ${e.won} of ${e.total} Seals.`, 0xf4c14a);
+        if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} A Seal! ${e.won} of ${e.total}.` };
+        break;
       case 'worldBossDown':
         this.enemy?.play('die1');
         this.say(`${this.enemyName} falls to all of you! ${e.shares.length === 1 ? 'The reward is yours alone.' : `${e.shares.length} fighters share the reward.`}`);

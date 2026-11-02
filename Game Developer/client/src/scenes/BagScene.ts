@@ -4,7 +4,7 @@
 // piece compares with what is worn, and holds only the buttons that apply. Equip, unequip, drop and use each send one intent.
 
 import Phaser from 'phaser';
-import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot } from '../../../rules/src/index.ts';
+import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
 import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
@@ -114,6 +114,13 @@ export class BagScene extends Phaser.Scene {
     });
     this.board(block.x, block.y, block.w, block.h);
     this.drawPicture(me);
+    // How far from the end (Robin, 2026-11-02): on the picture, a tap away.
+    const seals = sealCount(this.game_.state.board, me);
+    const { picture } = BAG_LAYOUT;
+    makeButton(this, picture.x + picture.w / 2, picture.y + 16, 112, 26, `Seals ${seals.won} of ${seals.total + SEALS_COMING.length}`, COLORS.log, '12px', () => {
+      this.scene.stop();
+      this.scene.launch('seals');
+    }, { small: true });
     this.board(bars.x, bars.y, bars.w, bars.h);
     this.hpBar = new Bar(this, 128, 397, 200, 14, COLORS.button, 0, '', { fontSize: 11 });
     this.mpBar = new Bar(this, 311, 397, 146, 11, COLORS.mana, 0, '', { small: true, fontSize: 10 });

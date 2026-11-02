@@ -157,7 +157,7 @@ export class GuideScene extends Phaser.Scene {
       {
         name: 'Start',
         entries: [
-          { title: 'The goal', text: 'Grow strong enough to beat the biggest boss of every land. Each boss you beat brings gear and opens the way on.' },
+          { title: 'The goal', text: 'Beat the greatest boss of every land to win its Seal. With every Seal, a way opens under Crownhaven to the last fight of all. Open Hero and tap Seals to see how far you are.' },
           { title: 'Moving', text: 'Tap Roll, then tap a lit spot to walk there. Tap any spot to hear about it. Where you land decides what happens: a fight, a chest, a shop.' },
           { title: 'Where to go', text: 'Next, in the top bar, says what to do now. Your first boss is King Goo, at the end of the Meadows: beat it and the Kingswood and the city of Crownhaven open, and the lands around them. Each land on the map shows the levels it suits.' },
           { title: 'Home', text: 'Once the city is open, the Home button takes you back to it from anywhere, every few minutes. In the city you tap a place to walk there; the die works at its gates.' },

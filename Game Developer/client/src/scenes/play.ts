@@ -14,6 +14,7 @@ import { GuideScene } from './GuideScene.ts';
 import { HudScene } from './HudScene.ts';
 import { MomentScene } from './MomentScene.ts';
 import { RevealScene } from './RevealScene.ts';
+import { SealsScene } from './SealsScene.ts';
 import { LogScene } from './LogScene.ts';
 import { QuestScene } from './QuestScene.ts';
 import { SettingsScene } from './SettingsScene.ts';
@@ -28,6 +29,7 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'bag', scene: new BagScene({ game, log }) },
     { key: 'skills', scene: new SkillsScene({ game, log }) },
     { key: 'journal', scene: new JournalScene({ game }) },
+    { key: 'seals', scene: new SealsScene({ game }) },
     { key: 'settings', scene: new SettingsScene({ game, log }) },
     { key: 'quests', scene: new QuestScene({ game }) },
     { key: 'reveal', scene: new RevealScene({ log }) },

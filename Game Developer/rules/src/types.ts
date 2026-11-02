@@ -626,6 +626,8 @@ export type GameEvent =
   | { type: 'opened'; action: string; player: string; area: string }
   /** A boss beaten; `until` is when it is back. */
   | { type: 'bossDown'; action: string; player: string; space: string; until: number }
+  /** A land's greatest boss beaten for the first time: its Seal. */
+  | { type: 'sealWon'; action: string; player: string; land: string; won: number; total: number }
   | { type: 'bought'; action: string; player: string; item: string | null; gear: GearItem | null; price: number; gold: number }
   | { type: 'sold'; action: string; player: string; gear: GearItem; price: number; gold: number }
   | { type: 'equipped'; action: string; player: string; gear: GearItem; replaced: GearItem | null }
