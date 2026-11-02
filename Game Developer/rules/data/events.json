@@ -59,5 +59,37 @@
     "text": "A royal mirror repeats your last boast, and something behind it drinks your strength.",
     "kind": "hurt",
     "value": 0.1
-  }
+  },
+  "streets": [
+    {
+      "text": "A baker presses a warm bun on you.",
+      "kind": "heal",
+      "value": 0.12
+    },
+    {
+      "text": "An old soldier shares a story and a sip.",
+      "kind": "heal",
+      "value": 0.12
+    },
+    {
+      "text": "The well water is cold and clear.",
+      "kind": "mana",
+      "value": 0.2
+    },
+    {
+      "text": "A child hands back a coin you dropped.",
+      "kind": "gold",
+      "value": 3
+    },
+    {
+      "text": "A washerwoman mends your cloak and shoos you on.",
+      "kind": "heal",
+      "value": 0.08
+    },
+    {
+      "text": "A herb seller lets you breathe in the mint.",
+      "kind": "mana",
+      "value": 0.15
+    }
+  ]
 }

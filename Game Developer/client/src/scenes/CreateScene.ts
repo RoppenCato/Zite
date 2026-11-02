@@ -8,7 +8,7 @@ import { ABILITIES, CLASS_DATA, CLASS_IDS, MAX_NAME, plainGear, WORLD_DATA, type
 import { Hero, heroReady, preloadHero, releaseClasses } from '../hero.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import { feel, sfx } from '../feel.ts';
 import backdropJpg from '../../../assets/brand/character_backdrop.jpg';
 import wordmarkPng from '../../../assets/brand/wordmark.png';
@@ -77,7 +77,7 @@ export class CreateScene extends Phaser.Scene {
   }
 
   create(): void {
-    if (this.textures.exists('character-backdrop')) this.add.image(CENTRE, DESIGN_HEIGHT / 2, 'character-backdrop').setScale(0.5);
+    if (this.textures.exists('character-backdrop')) this.add.image(CENTRE, DESIGN_HEIGHT / 2, 'character-backdrop').setScale((0.5 * SCREEN_WIDTH) / DESIGN_WIDTH);
     if (this.textures.exists('wordmark')) this.add.image(CENTRE, 62, 'wordmark').setScale(210 / 627);
     else this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);
     this.add.text(CENTRE, 118, this.deps.where, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
@@ -112,8 +112,9 @@ export class CreateScene extends Phaser.Scene {
     const place = (): void => {
       const rect = this.game.canvas.getBoundingClientRect();
       const host = parent.getBoundingClientRect();
-      const s = rect.width / DESIGN_WIDTH;
-      this.nameField.style.left = `${rect.left - host.left + (input.x - input.w / 2) * s}px`;
+      const s = rect.width / SCREEN_WIDTH;
+      const inset = (SCREEN_WIDTH - DESIGN_WIDTH) / 2;
+      this.nameField.style.left = `${rect.left - host.left + (inset + input.x - input.w / 2) * s}px`;
       this.nameField.style.top = `${rect.top - host.top + (input.y - input.h / 2) * s}px`;
       this.nameField.style.width = `${input.w * s}px`;
       this.nameField.style.height = `${input.h * s}px`;

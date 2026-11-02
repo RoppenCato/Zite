@@ -13,7 +13,7 @@ import uiJson from '../../assets/ui/ui.json?url';
 import uiPng from '../../assets/ui/ui.png';
 import softJson from '../../assets/ui/ui_soft.json?url';
 import softPng from '../../assets/ui/ui_soft.png';
-import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT } from './layout.ts';
+import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from './layout.ts';
 
 export const KIT = 'ui';
 export const KIT_SOFT = 'ui_soft';
@@ -81,10 +81,10 @@ export function sheet(scene: Phaser.Scene): void {
   const x = DESIGN_WIDTH / 2;
   const y = HUD_HEIGHT + VIEW_HEIGHT / 2;
   if (!kitReady(scene)) {
-    scene.add.rectangle(x, y, DESIGN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
+    scene.add.rectangle(x, y, SCREEN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
     return;
   }
-  scene.add.rectangle(x, y, DESIGN_WIDTH, VIEW_HEIGHT, 0x0b0d14, 0.55).setInteractive();
+  scene.add.rectangle(x, y, SCREEN_WIDTH, VIEW_HEIGHT, 0x0b0d14, 0.55).setInteractive();
   plate(scene, 'panel_sheet', x, y, DESIGN_WIDTH - 20, VIEW_HEIGHT - 16);
 }
 

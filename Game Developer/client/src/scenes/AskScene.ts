@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { feel, sfx } from '../feel.ts';
 import { hasFrame, icon, INK, INK_DIM, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 
@@ -51,7 +51,7 @@ export class AskScene extends Phaser.Scene {
     const ink = kit ? INK : COLORS.text;
     const dim = kit ? INK_DIM : COLORS.dim;
     const quick = settings.get().fewerEffects;
-    const veil = this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, DESIGN_WIDTH, VIEW_HEIGHT, 0x0a0c14, quick ? 0.72 : 0).setInteractive();
+    const veil = this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, SCREEN_WIDTH, VIEW_HEIGHT, 0x0a0c14, quick ? 0.72 : 0).setInteractive();
     if (!quick) this.tweens.add({ targets: veil, fillAlpha: 0.72, duration: 160 });
 
     // Laid out from the top down, then centred in the band.

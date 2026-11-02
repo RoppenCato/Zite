@@ -1,6 +1,12 @@
 // The design size: an Android phone, portrait (mine, 2026-10-31). Phaser scales it to fit whatever screen it gets.
 export const DESIGN_WIDTH = 412;
 export const DESIGN_HEIGHT = 915;
+/**
+ * The canvas's width in design pixels (Robin, 2026-11-02: "why isnt the game centered and filling out the screen"). The game's
+ * column stays DESIGN_WIDTH wide, centred by the camera; a screen wider than the column, as a phone with a browser's bars is, sees
+ * more of the world and wider panels. Beyond the limit, such as on a computer, the rest is left dark.
+ */
+export const SCREEN_WIDTH = typeof window === 'undefined' ? DESIGN_WIDTH : Math.max(DESIGN_WIDTH, Math.min(620, Math.round((DESIGN_HEIGHT * window.innerWidth) / Math.max(1, window.innerHeight))));
 /** The device pixel ratio the canvas draws at (hires.ts): the phone's, capped at 2 for the fill rate; 1 where there is no window. */
 export const DPR = typeof window === 'undefined' ? 1 : Math.min(2, Math.max(1, Math.round((window.devicePixelRatio || 1) * 2) / 2));
 

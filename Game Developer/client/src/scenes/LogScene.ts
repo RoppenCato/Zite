@@ -4,7 +4,7 @@
 import Phaser from 'phaser';
 import { sfx } from '../feel.ts';
 import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import { lastMessages } from '../messages.ts';
 
 const CENTRE = DESIGN_WIDTH / 2;
@@ -19,7 +19,7 @@ export class LogScene extends Phaser.Scene {
     const kit = kitReady(this);
     const ink = kit ? INK : COLORS.text;
     const dim = kit ? INK_DIM : COLORS.dim;
-    this.add.rectangle(CENTRE, DESIGN_HEIGHT / 2, DESIGN_WIDTH, DESIGN_HEIGHT, 0x0a0c14, 0.6).setInteractive().on('pointerup', () => this.close());
+    this.add.rectangle(CENTRE, DESIGN_HEIGHT / 2, SCREEN_WIDTH, DESIGN_HEIGHT, 0x0a0c14, 0.6).setInteractive().on('pointerup', () => this.close());
     const lines = lastMessages(5);
     const parts: Phaser.GameObjects.GameObject[] = [];
     let y = 22;

@@ -15,7 +15,7 @@ import forestGroundPng from '../../assets/forest_fight/ground.png';
 import forestMidPng from '../../assets/forest_fight/mid.png';
 import forestMotesPng from '../../assets/forest_fight/motes.png';
 import forestNearPng from '../../assets/forest_fight/near.png';
-import { DESIGN_WIDTH, HUD_HEIGHT } from './layout.ts';
+import { DESIGN_WIDTH, HUD_HEIGHT, SCREEN_WIDTH } from './layout.ts';
 
 interface Strip {
   key: string;
@@ -94,8 +94,8 @@ export class Backdrop {
     const top = b?.sky.top ?? 0x3a4a6a;
     const low = b?.sky.bottom ?? 0x8aa0b8;
     sky.fillGradientStyle(top, top, low, low, 1);
-    sky.fillRect(0, HUD_HEIGHT, DESIGN_WIDTH, groundY - HUD_HEIGHT);
-    scene.add.rectangle(DESIGN_WIDTH / 2, (groundY + bottom) / 2, DESIGN_WIDTH, bottom - groundY, b?.soil ?? 0x3a3024, 1);
+    sky.fillRect((DESIGN_WIDTH - SCREEN_WIDTH) / 2, HUD_HEIGHT, SCREEN_WIDTH, groundY - HUD_HEIGHT);
+    scene.add.rectangle(DESIGN_WIDTH / 2, (groundY + bottom) / 2, SCREEN_WIDTH, bottom - groundY, b?.soil ?? 0x3a3024, 1);
     if (!b) {
       this.feetY = groundY;
       return;
@@ -108,8 +108,10 @@ export class Backdrop {
       const scale = s.tileScale ?? 0.5;
       // The camera holds a scroll for the screen's density; a strip that scrolls slower must start that much further along, or its right side falls short.
       const along = (s.scroll - 1) * scene.cameras.main.scrollX;
-      const sprite = scene.add.tileSprite(DESIGN_WIDTH / 2 + along, lowest - shown / 2, DESIGN_WIDTH, shown, s.key).setTileScale(scale).setScrollFactor(s.scroll, 1);
+      const sprite = scene.add.tileSprite(DESIGN_WIDTH / 2 + along, lowest - shown / 2, SCREEN_WIDTH, shown, s.key).setTileScale(scale).setScrollFactor(s.scroll, 1);
       sprite.tilePositionY = (s.h - shown) / scale;
+      // The strip is composed for the column: a wider screen shows more of it to each side, the column where it was.
+      sprite.tilePositionX = (DESIGN_WIDTH - SCREEN_WIDTH) / 2 / scale;
       if (s.drift) this.drifting.push({ sprite, drift: s.drift });
     }
     this.feetY = groundY + b.feet;

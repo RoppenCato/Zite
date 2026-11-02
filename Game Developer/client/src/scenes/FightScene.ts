@@ -16,7 +16,7 @@ import { abilityIcon, fly, HeldEffects, Owl, playOnce, preloadEffects } from '..
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
 import { rememberMessage } from '../messages.ts';
@@ -53,6 +53,8 @@ const METER_PIP: Partial<Record<ClassId, string>> = { rogue: 'fight/meter-pip-tr
 
 /** The title stops short of the ? at the top right. */
 const TITLE_X = 180;
+/** How far under the fighters' feet the first bar sits. */
+const BAR_BELOW = 20;
 const TITLE_W = 340;
 
 /** Where the buttons sit, in design pixels (the driver taps them here). Two rows of two, and a row for Flee or Back. */
@@ -117,8 +119,6 @@ export class FightScene extends Phaser.Scene {
   private held!: HeldEffects;
   private owl: Owl | null = null;
   private feetY = 0;
-  private tallEnemy = false;
-  private enemyBarY = 0;
   private heroBar!: Bar;
   private manaBar!: Bar;
   private heroStatus!: Phaser.GameObjects.Text;
@@ -177,13 +177,13 @@ export class FightScene extends Phaser.Scene {
     this.enemyMaxHp = enemy.maxHp;
 
     // The screen covers the band and the HUD's strip and takes every touch, so nothing reaches the board under it.
-    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_WIDTH * 0 + 915) / 2, DESIGN_WIDTH, 915 - HUD_HEIGHT, 0x151826, 1).setInteractive();
+    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_WIDTH * 0 + 915) / 2, SCREEN_WIDTH, 915 - HUD_HEIGHT, 0x151826, 1).setInteractive();
     const board = this.game_.state.board;
     const theme = board.areas[board.spaces[fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow';
     this.backdrop = new Backdrop(this, theme, L.groundY, L.stripY);
     const kit = kitReady(this);
     if (kit) {
-      plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, DESIGN_WIDTH, 915 - L.stripY);
+      plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, SCREEN_WIDTH, 915 - L.stripY);
       plate(this, 'panel_message', CENTRE, L.messageY + 22, 384, 56);
     }
     const feetY = this.backdrop.feetY;
@@ -201,7 +201,6 @@ export class FightScene extends Phaser.Scene {
     // The contact shadows, then the figures, so they stand on the ground.
     this.add.ellipse(L.heroX, feetY, 64, 16, 0x000000, 0.22);
     const enemyArt = creatureReady(this, enemy.id);
-    let enemyTop: number;
     if (enemyArt) {
       this.enemy = new Figure(this, enemy.id, L.enemyX, feetY);
       if (enemy.phase === 2) this.enemy.setPhase(2);
@@ -209,34 +208,28 @@ export class FightScene extends Phaser.Scene {
       this.add.ellipse(L.enemyX + shadow.dx, feetY, shadow.width, Math.max(14, shadow.width * 0.16), 0x000000, 0.22);
       this.enemy.sprite.setDepth(1);
       this.enemyBody = this.enemy.sprite;
-      enemyTop = feetY - this.enemy.headHeight();
     } else {
       this.add.ellipse(L.enemyX, feetY, 110, 20, 0x000000, 0.22);
       this.enemyBody = this.add.circle(L.enemyX, feetY - 56, 56, ENEMY_COLORS[enemy.role] ?? 0x8f2f3b, 1).setStrokeStyle(4, 0x101318, 1);
       this.add.text(L.enemyX, feetY - 56, enemy.name.charAt(0), { fontFamily: FONT, fontSize: '40px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
-      enemyTop = feetY - 112;
     }
     const enemyBarX = Math.min(L.enemyX, DESIGN_WIDTH - L.barW / 2 - 8);
-    this.enemyBar = new Bar(this, enemyBarX, enemyTop - 26, L.barW, BAR_H, 0xd9534f);
-    // A boss too tall for words over his bar has them under it, clear of the title (mine, 2026-11-02).
-    this.tallEnemy = enemyTop - 26 < L.historyY + 70;
-    this.enemyBarY = enemyTop - 26;
-    this.enemyStatus = this.add.text(enemyBarX, this.tallEnemy ? enemyTop - 12 : enemyTop - 48, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, this.tallEnemy ? 0 : 1);
+    // Under the feet, on the ground (Robin, 2026-11-02: "healthbars etc should be under the characters... It can look a little messy and cluttery").
+    this.enemyBar = new Bar(this, enemyBarX, feetY + BAR_BELOW, L.barW, BAR_H, 0xd9534f);
+    this.enemyStatus = this.add.text(enemyBarX, feetY + BAR_BELOW + 14, '', { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#ffd166', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (DESIGN_WIDTH - enemyBarX - 8) } }).setOrigin(0.5, 0);
 
-    let heroTop: number;
-    if (heroReady(this, me.classId)) {
+        if (heroReady(this, me.classId)) {
       this.hero = new Hero(this, me, L.heroX, feetY, HERO_FIGHT_SCALE);
       this.hero.face(true);
       this.heroBody = this.hero.root;
-      heroTop = feetY - 150;
     } else {
       this.heroBody = this.add.circle(L.heroX, feetY - 26, 26, CLASS_COLORS[me.classId] ?? 0xffffff, 1).setStrokeStyle(3, 0x101318, 1);
       this.add.text(L.heroX, feetY - 26, cls.name.charAt(0), { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
-      heroTop = feetY - 52;
     }
-    this.heroBar = new Bar(this, L.heroBarX, heroTop - 26, L.barW, BAR_H, COLORS.button);
-    this.manaBar = new Bar(this, L.heroBarX, heroTop - 44, L.barW, 12, COLORS.mana, 0, 'MP');
-    this.heroStatus = this.add.text(L.heroBarX, heroTop - 56, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (L.heroBarX - 6) } }).setOrigin(0.5, 1);
+    // Health above mana (Robin, 2026-11-02).
+    this.heroBar = new Bar(this, L.heroBarX, feetY + BAR_BELOW, L.barW, BAR_H, COLORS.button);
+    this.manaBar = new Bar(this, L.heroBarX, feetY + BAR_BELOW + 18, L.barW, 12, COLORS.mana, 0, 'MP');
+    this.heroStatus = this.add.text(L.heroBarX, feetY + BAR_BELOW + 28, '', { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#b8fff4', stroke: '#1a2030', strokeThickness: 4, align: 'center', wordWrap: { width: 2 * (L.heroBarX - 6) } }).setOrigin(0.5, 0);
 
     this.message = this.add
       .text(CENTRE, L.messageY + 22, fight.shared ? 'A world boss: all who land here fight the same beast and share the reward.' : `${enemy.name} blocks the way!${tips.take('fight') ? ` ${TIP_FIGHT}` : ''}`, { fontFamily: FONT, fontSize: settings.font(15), color: kit ? INK : COLORS.text, align: 'center', wordWrap: { width: 356 } })
@@ -781,9 +774,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     this.held.set('poison_drip', !!f.poisoned, heroHead.x, heroHead.y);
     this.held.set('weaken', !!f.weak, heroHead.x, heroHead.y);
     this.held.set('bubble_shield', !!f.barrier, heroChest.x, heroChest.y, 'bubble', 'bubble_pop');
-    // Beside the bar on a tall boss, where it is not under the words.
-    if (this.tallEnemy) this.held.set('windup_tell', !!e.charged, FIGHT_LAYOUT.enemyX - FIGHT_LAYOUT.barW / 2 - 14, this.enemyBarY + 6);
-    else this.held.set('windup_tell', !!e.charged, foeHead.x, foeHead.y - 14);
+    this.held.set('windup_tell', !!e.charged, foeHead.x, Math.max(foeHead.y - 14, FIGHT_LAYOUT.historyY + 34));
     this.held.set('poison_drip', !!e.poison, foeHead.x, foeHead.y + 20);
     this.held.set('weaken', !!e.weakened, foeChest.x, foeChest.y);
     this.held.set('chill', !!e.stunned, foeChest.x, foeChest.y);

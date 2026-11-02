@@ -4,7 +4,7 @@ import type { GameHolder } from './game-holder.ts';
 import { GameLog } from './game-log.ts';
 import { audio } from './audio.ts';
 import { HIRES_PLUGIN } from './hires.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, DPR } from './layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, SCREEN_WIDTH, DPR } from './layout.ts';
 import { LocalGame, TICK_MS } from './local-game.ts';
 import { ACCOUNT_KEY, RECOVER_KEY, RemoteGame, serverUrl, storedAccount, type Credentials } from './remote-game.ts';
 import { ConnectScene } from './scenes/ConnectScene.ts';
@@ -93,14 +93,15 @@ const phaser = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
   // The canvas at the phone's pixel density; the scenes still work in the design size (hires.ts).
-  width: DESIGN_WIDTH * DPR,
+  width: SCREEN_WIDTH * DPR,
   height: DESIGN_HEIGHT * DPR,
   backgroundColor: COLORS.background,
   banner: false,
   dom: { createContainer: true }, // the name field on the character screen
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    // The page's own flex box centres the canvas; Phaser's centring on top of it pushed the game to one side (Robin's picture).
+    autoCenter: Phaser.Scale.NO_CENTER,
   },
   scene: first,
   plugins: { scene: [HIRES_PLUGIN] },

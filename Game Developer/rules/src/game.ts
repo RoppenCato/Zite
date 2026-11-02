@@ -329,11 +329,8 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       if (quest?.kind === 'mini' && quest.area === space.area && quest.target && rng.next() < QUESTS.kinds.mini.spawnChance!) {
         return begin(state, c, quest.target, space.id, false, action, rng, events);
       }
-      // Nothing hunts inside a town's walls (mine, from Mitch, AD's map): a creature lives only in its own place (Robin, 2026-11-02).
-      if (inTownWalls(state.board, space)) {
-        events.push({ type: 'nothing', action: id, player, text: 'Safe inside the town walls.' });
-        return { state: withCharacter(state, c), events };
-      }
+      // Nothing hunts inside a town's walls (Robin, 2026-11-02: creatures only in their own place), and a street is never empty: "its weird with town spaces where nothing happens".
+      if (inTownWalls(state.board, space)) return streetMoment(state, c, tier, action, rng, events);
       const what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
       if (what === 'event' && area && EVENTS[area.theme]) return themeEvent(state, c, area.theme, tier, action, rng, events);
@@ -479,6 +476,17 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
     next = roll < 0.4 ? giveItem(next, flaskId('potion', tier), 1, action, events) : roll < 0.6 ? giveItem(next, flaskId('mana-potion', tier), 1, action, events) : giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
   return { state: withCharacter(s, next), events };
+}
+
+/** A moment on a town's street: a little kindness, drawn from the stream. */
+function streetMoment(state: GameState, c: Character, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+  const lines = (EVENTS as unknown as { streets: { text: string; kind: 'heal' | 'mana' | 'gold'; value: number }[] }).streets;
+  const ev = lines[rng.int(lines.length) - 1]!;
+  const s = stats(c);
+  const amount = ev.kind === 'gold' ? ev.value * tier : Math.max(1, Math.round((ev.kind === 'heal' ? s.maxHp : s.maxMana) * ev.value));
+  events.push({ type: 'themeEvent', action: action.id, player: action.player, text: ev.text, kind: ev.kind, amount });
+  const next = ev.kind === 'gold' ? giveGold(c, amount, action, events) : ev.kind === 'heal' ? heal(c, amount, action, events) : restoreMana(c, amount, action, events);
+  return { state: withCharacter(state, next), events };
 }
 
 /** The theme's event on a wild spot (mine, 2026-11-01): a share of HP or mana, gold by the tier, a flask or a card. */

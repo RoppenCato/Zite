@@ -473,3 +473,7 @@ The draw order gains `far_back` before `body`. What is held decides the arms in 
 ## The painted world (Robin, 2026-11-02: "yes build it")
 
 `worldmap.ts`: Mitch, AD's Meadows are baked ground. `PaintedGround` holds one overview picture, cropped to painted land, and loads a 1024-world-px chunk only when the camera is near and zoomed in past 0.6; it frees chunks 512 px beyond the view, and all of them zoomed out (about 4 MB each decoded; 4 to 9 at once at play zoom in the pane). `BoardScene` draws a painted area's roads through its `via` points, no road over the bridge's painted deck, the barred or open gate by `world.json`'s `bridge`, and culls props with the camera. Closed land past paint is sea, its roads and spots hidden; the camera stays over open land. Wobblewood and Honeyhill still draw from their old kits on tiles at their waiting positions (2800, 3800 from before) until they are painted; grown areas keep their old shapes from column 4.
+
+## Robin's phone notes (2026-11-02)
+
+**The screen:** the page's flex box and Phaser both centred the canvas, which pushed it to one side; now only the page does. `SCREEN_WIDTH` (`layout.ts`) widens the canvas to fill a phone with browser bars, up to 620; the 412 column stays centred by the camera, the board's view, panels, veils and backdrops take the full width. Read once at start. **The fight's bars** sit under the feet, health above mana; the words under them. **Town streets** give a small moment (`streets` in `events.json`). **Where you are** reads the place's name, or "The road".

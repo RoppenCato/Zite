@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { CLASS_DATA, WORLD_DATA } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
 import { feel } from '../feel.ts';
@@ -331,8 +331,8 @@ export class HudScene extends Phaser.Scene {
   private drawPanel(): void {
     const cream = this.kit ? CREAM : COLORS.text;
     const dim = this.kit ? '#fff8e8' : COLORS.dim;
-    if (this.kit) plate(this, 'panel_hud', DESIGN_WIDTH / 2, HUD_HEIGHT / 2, DESIGN_WIDTH, HUD_HEIGHT);
-    else this.add.rectangle(DESIGN_WIDTH / 2, HUD_HEIGHT / 2, DESIGN_WIDTH, HUD_HEIGHT, COLORS.panel, 1);
+    if (this.kit) plate(this, 'panel_hud', DESIGN_WIDTH / 2, HUD_HEIGHT / 2, SCREEN_WIDTH, HUD_HEIGHT);
+    else this.add.rectangle(DESIGN_WIDTH / 2, HUD_HEIGHT / 2, SCREEN_WIDTH, HUD_HEIGHT, COLORS.panel, 1);
     this.name = this.add.text(16, 10, '', { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 });
     this.levelText = this.add.text(DESIGN_WIDTH - 92, 14, '', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(1, 0);
 
@@ -368,8 +368,8 @@ export class HudScene extends Phaser.Scene {
   private drawControls(): void {
     // The band under the world: the chips, the message box and the buttons, so the world never shows through there.
     const stripTop = HUD_HEIGHT + VIEW_HEIGHT;
-    if (this.kit) plate(this, 'panel_bottom', DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, DESIGN_WIDTH, DESIGN_HEIGHT - stripTop);
-    else this.add.rectangle(DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, DESIGN_WIDTH, DESIGN_HEIGHT - stripTop, COLORS.panel, 1);
+    if (this.kit) plate(this, 'panel_bottom', DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, SCREEN_WIDTH, DESIGN_HEIGHT - stripTop);
+    else this.add.rectangle(DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, SCREEN_WIDTH, DESIGN_HEIGHT - stripTop, COLORS.panel, 1);
     this.chipRow = this.add.container(DESIGN_WIDTH / 2, CHIPS_Y);
 
     if (this.kit) this.messagePlate = plate(this, 'panel_message', DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, MESSAGE_W, 44);

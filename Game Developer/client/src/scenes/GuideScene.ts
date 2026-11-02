@@ -9,7 +9,7 @@ import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { INK, INK_DIM, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import { makeButton } from '../ui.ts';
 
 export interface GuideSceneDeps {
@@ -52,7 +52,7 @@ export class GuideScene extends Phaser.Scene {
   create(): void {
     const top = HUD_HEIGHT + 4;
     const bottom = DESIGN_HEIGHT - 6;
-    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_HEIGHT) / 2, DESIGN_WIDTH, DESIGN_HEIGHT - HUD_HEIGHT, 0x0b0d14, 0.6).setInteractive();
+    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_HEIGHT) / 2, SCREEN_WIDTH, DESIGN_HEIGHT - HUD_HEIGHT, 0x0b0d14, 0.6).setInteractive();
     if (kitReady(this)) plate(this, 'panel_sheet', CENTRE, (top + bottom) / 2, DESIGN_WIDTH - 16, bottom - top);
     const ink = kitReady(this) ? INK : COLORS.text;
     this.add.text(26, top + 14, 'Guide', { fontFamily: FONT_DISPLAY, fontSize: '26px', fontStyle: 'bold', color: ink });

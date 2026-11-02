@@ -10,7 +10,7 @@ export { stats, powers, plainGear, rollGear, rollRarity, rankName, rankStat, ran
 export { levelFor, sellPrice } from './common.ts';
 export { makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, pickOptions, offerPicks } from './fight.ts';
 export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts';
-export { groundsOf, groundAt, placeAt, inTownWalls } from './grounds.ts';
+export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';
 export { hintFor, countdown, traceLine } from './hints.ts';
 export { newGame, newWorld, apply, makeBoard, makeCharacter, shopOffer, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';

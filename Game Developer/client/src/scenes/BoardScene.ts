@@ -39,6 +39,7 @@ import {
   type SpaceKind,
   groundsOf,
   questLine,
+  placeName,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
@@ -51,7 +52,7 @@ import { preloadAbilityIcons } from '../effects.ts';
 import { PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
-import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
@@ -1114,7 +1115,7 @@ export class BoardScene extends Phaser.Scene {
     const cam = this.cameras.main;
     // The band between the HUD panel and the bottom controls; the HUD scene draws over the rest.
     // The band between the HUD and the strip, in canvas pixels (the canvas draws at DPR, hires.ts).
-    cam.setViewport(0, HUD_HEIGHT * DPR, DESIGN_WIDTH * DPR, VIEW_HEIGHT * DPR);
+    cam.setViewport(0, HUD_HEIGHT * DPR, SCREEN_WIDTH * DPR, VIEW_HEIGHT * DPR);
     this.fitBounds();
     cam.setRoundPixels(true);
     this.minZoom = this.overviewZoom();
@@ -1679,7 +1680,8 @@ export class BoardScene extends Phaser.Scene {
     this.walk(walked?.type === 'moved' ? walked.path : path, () => {
       const space = this.game_.state.board.spaces[landed.space]!;
       const kind = SPACE_KIND_DATA[space.kind].label.toLowerCase();
-      const where = space.name ? `on ${space.name} (${kind})` : space.kind === 'normal' ? 'in the wilds' : `on a ${kind}`;
+      const place = placeName(this.game_.state.board, space);
+      const where = space.name ? `on ${space.name} (${kind})` : place ? `in ${place}` : space.kind === 'normal' ? 'on the road' : `on a ${kind}`;
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
@@ -1785,7 +1787,7 @@ export class BoardScene extends Phaser.Scene {
     const s = stats(me);
     const space = this.game_.state.board.spaces[me.space];
     const area = space ? this.game_.state.board.areas[space.area] : undefined;
-    const where = space ? space.name || SPACE_KIND_DATA[space.kind].label : me.space;
+    const where = space ? space.name || placeName(this.game_.state.board, space) || (space.kind === 'normal' ? 'The road' : SPACE_KIND_DATA[space.kind].label) : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
     if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.

@@ -385,10 +385,14 @@ describe('Cloverfield Meadows on the painted land', () => {
     for (const s of own) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
   });
 
-  it('has no fights inside a town wall, and hunting grounds keep to their creature', () => {
+  it('has a small moment and no fights on a town street, and hunting grounds keep to their creature', () => {
     const s = world();
     const inTown = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && inTownWalls(s.board, x))!;
-    for (let seed = 0; seed < 30; seed++) expect(has(landOn(s, inTown.id, seed).events, 'fight')).toBe(false);
+    for (let seed = 0; seed < 30; seed++) {
+      const r = landOn(s, inTown.id, seed);
+      expect(has(r.events, 'fight')).toBe(false);
+      expect(has(r.events, 'themeEvent')).toBe(true);
+    }
     expect(placeAt(s.board, s.board.spaces.saltmarsh!)).toBe('jelly-shallows');
   });
 });
