@@ -13,6 +13,8 @@ export interface Button {
   label: Phaser.GameObjects.Text;
   /** Dim or wake the button (the kit's dim face; the shapes fade). A dim button does nothing but say no, unless `live`: Roll still answers "tap a lit spot". */
   setEnabled(on: boolean, live?: boolean): void;
+  /** The picture on the button, when it has one. */
+  icon?: Phaser.GameObjects.Image;
 }
 
 type ButtonKind = 'action' | 'plain' | 'danger';
@@ -50,25 +52,30 @@ export function makeButton(
   color: number,
   fontSize: string,
   onTap: () => void,
+  opts: { small?: boolean; labelY?: number; icon?: { frame: string; y: number; size: number } } = {},
 ): Button {
   if (!kitReady(scene)) return shapeButton(scene, x, y, w, h, text, color, fontSize, onTap);
   const { kind, tint } = kindOf(color);
-  const big = h >= 50;
+  const big = !opts.small && h >= 50;
+  const labelY = opts.labelY ?? 0;
   const corner = big ? 22 : 18;
   const height = Math.max(h, corner * 2);
   const width = Math.max(w, corner * 2);
   const frame = (state: 'idle' | 'pressed' | 'dim') => `btn_${kind}_${big ? 'big' : 'small'}_${state}`;
   const face = plate(scene, frame('idle'), 0, 0, width, height);
   if (tint !== null) face.setTint(tint);
-  const label = scene.add.text(0, -3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3, align: 'center' }).setOrigin(0.5);
+  const label = scene.add.text(0, labelY - 3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3, align: 'center' }).setOrigin(0.5);
   for (let px = parseInt(fontSize, 10); px > 13 && label.width > width - 14; px--) label.setFontSize(`${px}px`);
-  const button = scene.add.container(x, y, [face, label]).setSize(width, height);
+  const icon = opts.icon ? scene.add.image(0, opts.icon.y - 3, KIT, opts.icon.frame).setDisplaySize(opts.icon.size, opts.icon.size) : undefined;
+  const button = scene.add.container(x, y, icon ? [face, icon, label] : [face, label]).setSize(width, height);
   button.setInteractive({ useHandCursor: true });
   let enabled = true;
   let live = false;
   const show = (state: 'idle' | 'pressed' | 'dim') => {
     face.setFrame(frame(state));
-    label.setY(state === 'pressed' ? 3 : -3);
+    const shift = state === 'pressed' ? 3 : -3;
+    label.setY(labelY + shift);
+    if (icon && opts.icon) icon.setY(opts.icon.y + shift);
   };
   button.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
     if (enabled) show('pressed');
@@ -91,6 +98,7 @@ export function makeButton(
   return {
     button,
     label,
+    ...(icon ? { icon } : {}),
     setEnabled: (on: boolean, stays = false) => {
       enabled = on;
       live = stays;

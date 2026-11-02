@@ -505,3 +505,11 @@ All three first regions are painted. `world.json` gains `exit`, a third gate, an
 ## Adventure pass (Robin, 2026-11-02)
 
 XP bar and a next-goal line in the HUD (Mitch, AD redesigns the bar). Labels on reachable spots; words on the map only for towns, bosses and grounds. Tap a boss in open land to challenge it from anywhere. A plain spot: 70% fight; encounters and rare finds in `encounters.json`, strangers with a quest, elites on the map (`spawn.kind: 'elite'`). `JournalScene` and `journal.ts`. The next closed land shows dim on the map with what opens it. State version 23.
+
+## The slim top bar (Robin, 2026-11-02)
+
+A plank of `HUD_PLANK` 74 with two signs hanging to `HUD_HEIGHT` 100: the region's name, and `Next:` one short goal (a quest, a skill point, or XP to the level). The board's camera starts at 74. Sheets, windows and fights cover the signs from 74. Mitch, AD's numbers are in his `top_bar/NOTES.md`.
+
+## The bottom bar (Robin, 2026-11-02: bottom bar 1)
+
+A plank from `PLANK_TOP` 835, four small buttons with icons, Roll in the middle rising to `ROLL_TOP` 824 with the last roll's die on it. The message stands on a sign over the map with its foot at 814; it grows upward, and the log's scroll sits in it. Chips stand above the sign. The board's camera runs from 74 to 835. `HudScene.covers` says which taps are not the map's: the bars, the signs, Roll and the chips. Sheets stay where they were; `veil` in `kit.ts` dims from plank to plank, around Roll. Mitch, AD's numbers are in his `bottom_bar/NOTES.md`.

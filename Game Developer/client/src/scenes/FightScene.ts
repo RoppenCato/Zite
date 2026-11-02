@@ -16,7 +16,7 @@ import { abilityIcon, fly, HeldEffects, Owl, playOnce, preloadEffects } from '..
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY, SCREEN_WIDTH, HUD_PLANK } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
 import { rememberMessage } from '../messages.ts';
@@ -175,7 +175,7 @@ export class FightScene extends Phaser.Scene {
     this.enemyMaxHp = enemy.maxHp;
 
     // The screen covers the band and the HUD's strip and takes every touch, so nothing reaches the board under it.
-    this.add.rectangle(CENTRE, (HUD_HEIGHT + DESIGN_WIDTH * 0 + 915) / 2, SCREEN_WIDTH, 915 - HUD_HEIGHT, 0x151826, 1).setInteractive();
+    this.add.rectangle(CENTRE, (HUD_PLANK + 915) / 2, SCREEN_WIDTH, 915 - HUD_PLANK, 0x151826, 1).setInteractive();
     const board = this.game_.state.board;
     const theme = board.areas[board.spaces[fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow';
     this.backdrop = new Backdrop(this, theme, L.groundY, L.stripY);

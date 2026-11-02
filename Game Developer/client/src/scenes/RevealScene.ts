@@ -9,9 +9,10 @@
 import Phaser from 'phaser';
 import type { GameLog } from '../game-log.ts';
 import { feel, sfx } from '../feel.ts';
-import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_INK, RARITY_TINT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK } from '../layout.ts';
 import { CARD, cardWords, ensureLootClips, LOOT_KEYS, LOOT_SCALE, tierOf, type RevealRequest, type Tier } from '../loot.ts';
 import { gearIcon } from '../hero.ts';
+import { veil } from '../kit.ts';
 import { settings } from '../settings.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -66,7 +67,7 @@ export class RevealScene extends Phaser.Scene {
   private quick = false;
   private timer: Phaser.Time.TimerEvent | null = null;
 
-  private veil!: Phaser.GameObjects.Rectangle;
+  private veil: Phaser.GameObjects.Rectangle[] = [];
   private count!: Phaser.GameObjects.Text;
   private glow!: Phaser.GameObjects.Image;
   private chest!: Phaser.GameObjects.Sprite;
@@ -102,8 +103,8 @@ export class RevealScene extends Phaser.Scene {
   create(): void {
     ensureLootClips(this);
     const { titleY, cardY, chestY, mouthY, hintY } = REVEAL_LAYOUT;
-    this.veil = this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, SCREEN_WIDTH, VIEW_HEIGHT, 0x0a0c14, this.quick ? 0.88 : 0).setInteractive();
-    this.veil.on('pointerdown', () => this.tap());
+    this.veil = veil(this, 0x0a0c14, this.quick ? 0.88 : 0);
+    for (const v of this.veil) v.on('pointerdown', () => this.tap());
     if (!this.quick) this.tweens.add({ targets: this.veil, fillAlpha: 0.88, duration: 150 });
 
     this.add.text(CENTRE, titleY, this.request.title, { fontFamily: FONT, fontSize: settings.font(19), fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 4 }).setOrigin(0.5).setDepth(5);

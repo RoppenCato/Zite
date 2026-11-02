@@ -20,7 +20,7 @@ import harvestFarPng from '../../assets/harvest_fight/far.png';
 import harvestGroundPng from '../../assets/harvest_fight/ground.png';
 import harvestMidPng from '../../assets/harvest_fight/mid.png';
 import harvestNearPng from '../../assets/harvest_fight/near.png';
-import { DESIGN_WIDTH, HUD_HEIGHT, SCREEN_WIDTH } from './layout.ts';
+import { DESIGN_WIDTH, HUD_HEIGHT, SCREEN_WIDTH, HUD_PLANK } from './layout.ts';
 
 interface Strip {
   key: string;
@@ -111,7 +111,7 @@ export class Backdrop {
     const top = b?.sky.top ?? 0x3a4a6a;
     const low = b?.sky.bottom ?? 0x8aa0b8;
     sky.fillGradientStyle(top, top, low, low, 1);
-    sky.fillRect((DESIGN_WIDTH - SCREEN_WIDTH) / 2, HUD_HEIGHT, SCREEN_WIDTH, groundY - HUD_HEIGHT);
+    sky.fillRect((DESIGN_WIDTH - SCREEN_WIDTH) / 2, HUD_PLANK, SCREEN_WIDTH, groundY - HUD_PLANK);
     scene.add.rectangle(DESIGN_WIDTH / 2, (groundY + bottom) / 2, SCREEN_WIDTH, bottom - groundY, b?.soil ?? 0x3a3024, 1);
     if (!b) {
       this.feetY = groundY;

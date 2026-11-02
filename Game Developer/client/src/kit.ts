@@ -13,7 +13,7 @@ import uiJson from '../../assets/ui/ui.json?url';
 import uiPng from '../../assets/ui/ui.png';
 import softJson from '../../assets/ui/ui_soft.json?url';
 import softPng from '../../assets/ui/ui_soft.png';
-import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from './layout.ts';
+import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP, ROLL_TOP, ROLL_LEFT, ROLL_RIGHT } from './layout.ts';
 
 export const KIT = 'ui';
 export const KIT_SOFT = 'ui_soft';
@@ -81,6 +81,14 @@ export function itemFrame(item: string): string {
 }
 
 /** A modal sheet over the world band (the shop, the bag, the atlas): the world dimmed, the kit's parchment in its wood frame. */
+/** The dim over the map, from the top plank down to the bottom plank, around the top of Roll, which rises above it. The first piece is the big one. */
+export function veil(scene: Phaser.Scene, color: number, alpha: number): Phaser.GameObjects.Rectangle[] {
+  const left = (DESIGN_WIDTH - SCREEN_WIDTH) / 2;
+  const right = left + SCREEN_WIDTH;
+  const piece = (x0: number, y0: number, x1: number, y1: number) => scene.add.rectangle((x0 + x1) / 2, (y0 + y1) / 2, x1 - x0, y1 - y0, color, alpha).setInteractive();
+  return [piece(left, HUD_PLANK, right, ROLL_TOP), piece(left, ROLL_TOP, ROLL_LEFT, PLANK_TOP), piece(ROLL_RIGHT, ROLL_TOP, right, PLANK_TOP)];
+}
+
 export function sheet(scene: Phaser.Scene): void {
   const x = DESIGN_WIDTH / 2;
   const y = HUD_HEIGHT + VIEW_HEIGHT / 2;
@@ -88,7 +96,7 @@ export function sheet(scene: Phaser.Scene): void {
     scene.add.rectangle(x, y, SCREEN_WIDTH, VIEW_HEIGHT, 0x151826, 1).setInteractive();
     return;
   }
-  scene.add.rectangle(x, y, SCREEN_WIDTH, VIEW_HEIGHT, 0x0b0d14, 0.55).setInteractive();
+  veil(scene, 0x0b0d14, 0.55);
   plate(scene, 'panel_sheet', x, y, DESIGN_WIDTH - 20, VIEW_HEIGHT - 16);
 }
 

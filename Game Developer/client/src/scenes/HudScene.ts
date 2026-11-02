@@ -6,14 +6,14 @@
 import Phaser from 'phaser';
 import { CLASS_DATA, WORLD_DATA, specialization, PROGRESSION, creature, pointsFree } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
-import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
+import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP, ROLL_TOP, ROLL_LEFT, ROLL_RIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
-import { feel } from '../feel.ts';
+import { feel, sfx } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
 import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
 import { settings } from '../settings.ts';
-import { Bar, makeButton, type Button, logButtons, MESSAGE_BOX_W } from '../ui.ts';
+import { Bar, makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface HudSceneDeps {
@@ -23,19 +23,17 @@ export interface HudSceneDeps {
 
 /** Where the buttons sit, in design pixels (the pane's scripts tap them here). */
 export const BUTTONS = {
-  map: { x: 58, y: 830, w: 96, h: 48 },
-  hero: { x: 157, y: 830, w: 96, h: 48 },
-  quests: { x: 256, y: 830, w: 96, h: 48 },
-  settings: { x: 355, y: 830, w: 96, h: 48 },
-  roll: { x: 206, y: 885, w: 340, h: 58 },
+  map: { x: 40, y: 876, w: 64, h: 60 },
+  hero: { x: 108, y: 876, w: 64, h: 60 },
+  quests: { x: 304, y: 876, w: 64, h: 60 },
+  settings: { x: 372, y: 876, w: 64, h: 60 },
+  roll: { x: 206, y: 866, w: 120, h: 84 },
 } as const;
-/** The message box: its bottom edge stays here; it grows upward for a longer line. */
-const MESSAGE_BOTTOM = 802;
-const MESSAGE_W = MESSAGE_BOX_W;
-/** The row of chips, between the band and the message box. */
-export const CHIPS_Y = 754;
+/** The message's sign: it stands with its foot here and grows upward over the map, on two posts (Mitch, AD's numbers). */
+const SIGN = { x: 14, w: 384, foot: 814, one: 38, posts: [30, 382] } as const;
+const CHIP_H = 34;
 /** The die's place in the panel. */
-const DIE = { x: DESIGN_WIDTH - 48, y: HUD_HEIGHT / 2 } as const;
+const DIE = { x: 370, y: 30 } as const;
 /** The big die: where it stands, how long its number stays. */
 const BIG_DIE_Y = 390;
 const BIG_DIE_HOLD_MS = 620;
@@ -75,7 +73,13 @@ export class HudScene extends Phaser.Scene {
   private dieValue = '–';
   /** A roll under way: when it began, the tumble's sound, the faces flickering, what the die showed before. */
   private rolling: { started: number; tumble: LoopHandle | null; flicker: Phaser.Time.TimerEvent | null; was: string } | null = null;
+  private signPlate: Phaser.GameObjects.NineSlice | null = null;
   private messagePlate: Phaser.GameObjects.NineSlice | null = null;
+  private signPosts!: Phaser.GameObjects.Graphics;
+  private signZone!: Phaser.GameObjects.Zone;
+  private logMark: Phaser.GameObjects.Image | null = null;
+  private logZone!: Phaser.GameObjects.Zone;
+  private signTop = SIGN.foot - SIGN.one;
   private message!: Phaser.GameObjects.Text;
   private rollButton!: Button;
   private mapLabel!: Phaser.GameObjects.Text;
@@ -97,8 +101,18 @@ export class HudScene extends Phaser.Scene {
     this.log.note(`hud ready${this.kit ? ' (kit)' : ''}`);
   }
 
-  private xpFill!: Phaser.GameObjects.Rectangle;
+  private xpFill: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle | null = null;
+  private readonly xpShare = { value: 0 };
   private goal!: Phaser.GameObjects.Text;
+
+  private drawXp(): void {
+    const w = 384 * this.xpShare.value;
+    if (!this.xpFill) return;
+    this.xpFill.setVisible(w >= 6);
+    if (w < 6) return;
+    if (this.xpFill instanceof Phaser.GameObjects.NineSlice) resizePlate(this.xpFill, w, 6);
+    else this.xpFill.setSize(w, 6);
+  }
 
   // ---- what the board scene tells us ------------------------------------------------------------------------------
 
@@ -106,33 +120,31 @@ export class HudScene extends Phaser.Scene {
   setStats(n: HudNumbers, place: string): void {
     const me = this.game_.me;
     this.name.setText(`${me.name} the ${specialization(me) ?? CLASS_DATA[me.classId].name}`);
-    this.levelText.setText(`Lv ${n.level}`);
+    this.levelText.setText(String(n.level));
     this.hpBar.set(n.hp, n.maxHp);
     this.mpBar.set(n.mana, n.maxMana);
     if (this.goldText.text !== String(n.gold) && this.goldText.text) feel.tick(this, this.goldText);
     this.goldText.setText(String(n.gold));
-    this.place.setText(place);
+    // Only the region fits its sign.
+    this.place.setText(place.split(' · ')[0] ?? place);
     // The XP bar (Robin, 2026-11-02): how far to the next level, sliding as it fills.
     const table = PROGRESSION.xpForLevel;
     const from = table[me.level - 1] ?? 0;
     const to = table[me.level] ?? from + 1;
     const share = Math.max(0, Math.min(1, (me.xp - from) / Math.max(1, to - from)));
-    this.tweens.killTweensOf(this.xpFill);
-    this.tweens.add({ targets: this.xpFill, scaleX: share, duration: settings.ms(400), ease: 'Quad.easeOut' });
-    // What is next: pulls you on to the next roll (Robin, 2026-11-02).
-    const bits: string[] = [];
+    this.tweens.killTweensOf(this.xpShare);
+    this.tweens.add({ targets: this.xpShare, value: share, duration: settings.ms(400), ease: 'Quad.easeOut', onUpdate: () => this.drawXp() });
+    this.drawXp();
+    // What is next, one short thing on its sign (Robin, 2026-11-02): the quest, a point to spend, or the level.
     const q = me.quests[0];
+    const free = pointsFree(me);
+    let next = `${Math.max(0, to - me.xp)} XP to Lv ${me.level + 1}`;
     if (q) {
       const who = q.target ? (creature(q.target, this.game_.state.board.bestiary)?.name ?? q.target) : '';
-      if (q.kind === 'kill') bits.push(`${q.count - q.done} more ${who}${q.count - q.done === 1 ? '' : 's'}`);
-      else if (q.kind === 'loot') bits.push(`${q.count - q.done} more from ${who}s`);
-      else if (q.kind === 'mini') bits.push(`Hunt the ${who}`);
-      else bits.push('Find them');
-    }
-    bits.push(`${Math.max(0, to - me.xp)} XP to level ${me.level + 1}`);
-    const free = pointsFree(me);
-    if (free > 0) bits.push(free === 1 ? '1 skill point' : `${free} skill points`);
-    this.goal.setText(bits.join(' · '));
+      const left = q.count - q.done;
+      next = q.kind === 'kill' ? `${left} more ${who}${left === 1 ? '' : 's'}` : q.kind === 'loot' ? `${left} from ${who}s` : q.kind === 'mini' ? `Hunt ${who}` : 'Find them';
+    } else if (free > 0) next = free === 1 ? '1 skill point' : `${free} skill points`;
+    this.goal.setText(next).setFontSize(next.length > 18 ? 10 : 12);
   }
 
   /** What the die shows: a face, or a dash before the first roll. */
@@ -141,7 +153,10 @@ export class HudScene extends Phaser.Scene {
     const n = parseInt(text, 10);
     if (this.dieFace) {
       this.dieFace.setAngle(0);
-      if (n >= 1 && n <= 6) this.dieFace.setFrame(`die_${n}`).setAlpha(1);
+      if (n >= 1 && n <= 6) {
+        this.dieFace.setFrame(`die_${n}`).setAlpha(1);
+        this.rollButton.icon?.setFrame(`die_${n}`).setDisplaySize(34, 34);
+      }
       else this.dieFace.setFrame('die_1').setAlpha(0.45);
     }
     this.dieText?.setText(text);
@@ -292,20 +307,51 @@ export class HudScene extends Phaser.Scene {
     if (text && text !== this.message.text) audio.play('ui/message-tick', { volume: 0.6 });
     this.message.setFontSize(settings.font(15)).setText(text);
     if (this.message.height > 44) this.message.setFontSize(settings.font(13));
-    const h = Math.max(44, Math.ceil(this.message.height) + 14);
-    const y = MESSAGE_BOTTOM - h / 2;
+    this.layoutSign(Math.max(SIGN.one, Math.ceil(this.message.height) + 14));
+  }
+
+  /** The sign at this height, its foot where it stands; the posts, the scroll and the chips follow it. */
+  private layoutSign(height: number): void {
+    const top = SIGN.foot - height;
+    const y = top + height / 2;
+    this.signTop = top;
     this.message.setY(y);
-    // The chips stand clear above the box, however tall it grew.
-    this.chipRow.setY(MESSAGE_BOTTOM - h - 24);
-    if (this.messagePlate) {
-      resizePlate(this.messagePlate, MESSAGE_W, h);
+    if (this.signPlate && this.messagePlate) {
+      resizePlate(this.signPlate, SIGN.w, height);
+      this.signPlate.setY(y);
+      resizePlate(this.messagePlate, SIGN.w - 12, height - 10);
       this.messagePlate.setY(y);
     }
+    this.signPosts.clear();
+    for (const x of SIGN.posts) {
+      this.signPosts.fillStyle(0x2a2030, 1).fillRect(x - 4, top + 8, 8, 828 - top - 8);
+      this.signPosts.fillStyle(0x8a5a34, 1).fillRect(x - 2.5, top + 8, 5, 828 - top - 8);
+    }
+    this.signZone.setPosition(SIGN.x + SIGN.w / 2, y).setSize(SIGN.w, height);
+    this.signZone.input?.hitArea.setSize(SIGN.w, height);
+    this.logMark?.setY(y);
+    this.logZone.setPosition(36, y).setSize(36, height);
+    this.logZone.input?.hitArea.setSize(36, height);
+    this.chipRow.setY(top - 4 - CHIP_H / 2);
+  }
+
+  /** Whether a spot in the column is covered by the bars, the signs or the chips that stand over the map; a tap there is not the map's. */
+  covers(x: number, y: number): boolean {
+    if (y < HUD_PLANK || y >= PLANK_TOP) return true;
+    if (y < 100 && ((x >= 12 && x <= 196) || (x >= 240 && x <= 400))) return true;
+    if (y >= ROLL_TOP && x >= ROLL_LEFT && x <= ROLL_RIGHT) return true;
+    if (y >= this.signTop && y <= 828 && x >= SIGN.x && x <= SIGN.x + SIGN.w) return true;
+    if (this.chipRow.length > 0 && y >= this.signTop - 4 - CHIP_H && y < this.signTop) {
+      const half = this.chipRow.getBounds().width / 2;
+      return Math.abs(x - this.chipRow.x) <= half;
+    }
+    return false;
   }
 
   /** While the player is choosing, walking, fighting or shopping, the Roll button is dimmed. */
   setBusy(busy: boolean): void {
     this.rollButton.setEnabled(!busy, true);
+    this.rollButton.icon?.setAlpha(busy ? 0.55 : 1);
   }
 
   /** The Map button reads "Map" while the camera follows the character and "Back" when it has been moved away. */
@@ -332,9 +378,9 @@ export class HudScene extends Phaser.Scene {
         chip.onTap();
       };
       if (this.kit) {
-        const face = plate(this, 'chip_idle', 0, 0, w, 40);
+        const face = plate(this, 'chip_idle', 0, 0, w, CHIP_H);
         const label = this.add.text(0, 0, chip.text, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: INK }).setOrigin(0.5);
-        const button = this.add.container(cx, 0, [face, label]).setSize(w, 40).setInteractive({ useHandCursor: true });
+        const button = this.add.container(cx, 0, [face, label]).setSize(w, CHIP_H).setInteractive({ useHandCursor: true });
         button.on('pointerdown', () => {
           face.setFrame('chip_chosen');
           feel.press(this, button);
@@ -355,32 +401,40 @@ export class HudScene extends Phaser.Scene {
   private drawPanel(): void {
     const cream = this.kit ? CREAM : COLORS.text;
     const dim = this.kit ? '#fff8e8' : COLORS.dim;
-    if (this.kit) plate(this, 'panel_hud', DESIGN_WIDTH / 2, HUD_HEIGHT / 2, SCREEN_WIDTH, HUD_HEIGHT);
-    else this.add.rectangle(DESIGN_WIDTH / 2, HUD_HEIGHT / 2, SCREEN_WIDTH, HUD_HEIGHT, COLORS.panel, 1);
-    this.name = this.add.text(16, 10, '', { fontFamily: FONT_DISPLAY, fontSize: '20px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 });
-    this.levelText = this.add.text(DESIGN_WIDTH - 92, 14, '', { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(1, 0);
-
-    // The bars with their marks, the gold with its coin.
+    // The slim bar (Robin, 2026-11-02, Mitch, AD's numbers): a plank of 74, with two signs hanging over the map.
+    if (this.kit) plate(this, 'panel_hud', DESIGN_WIDTH / 2, HUD_PLANK / 2, SCREEN_WIDTH, HUD_PLANK);
+    else this.add.rectangle(DESIGN_WIDTH / 2, HUD_PLANK / 2, SCREEN_WIDTH, HUD_PLANK, COLORS.panel, 1);
+    const ropes = this.add.graphics();
+    ropes.lineStyle(2, 0x3a2410, 1);
+    for (const x of [34, 150, 262, 378]) ropes.lineBetween(x, 72, x, 80);
     if (this.kit) {
-      icon(this, 'mark_heart', 26, 48);
-      icon(this, 'mark_drop', 26, 70);
-      icon(this, 'item_gold', 236, 48).setScale(0.4);
-    } else {
-      this.add.text(16, 42, 'HP', { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(0, 0.5);
-      this.add.text(16, 64, 'MP', { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(0, 0.5);
-      this.add.text(222, 48, 'Gold', { fontFamily: FONT, fontSize: '11px', color: dim }).setOrigin(0, 0.5);
+      plate(this, 'board_slip', 12, 76, 184, 24).setOrigin(0, 0);
+      plate(this, 'board_slip', 240, 76, 160, 24).setOrigin(0, 0);
     }
-    this.hpBar = new Bar(this, 128, 48, 160, 14, COLORS.button, 0, 'HP');
-    this.mpBar = new Bar(this, 128, 70, 160, 14, COLORS.mana, 0, 'MP');
-    this.goldText = this.add.text(254, 48, '', { fontFamily: FONT_DISPLAY, fontSize: '18px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
-    this.add.rectangle(16, 83, 284, 5, 0x2a1a0c, 1).setOrigin(0, 0.5);
-    this.xpFill = this.add.rectangle(16, 83, 284, 3, 0xf4c14a, 1).setOrigin(0, 0.5).setScale(0, 1);
-    this.goal = this.add.text(DESIGN_WIDTH / 2, HUD_HEIGHT + 6, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: '#2a1a0ccc', padding: { x: 8, y: 2 } }).setOrigin(0.5, 0).setDepth(2);
-    this.place = this.add.text(16, HUD_HEIGHT - 5, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 1);
+    this.place = this.add.text(24, 88, '', { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
+    this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);
+    this.goal = this.add.text(284, 88, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
+    if (this.kit) this.add.image(34, 30, KIT, 'medal_level').setDisplaySize(48, 48);
+    this.add.text(34, 22, 'Lv', { fontFamily: FONT, fontSize: '9.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
+    this.levelText = this.add.text(34, 34, '', { fontFamily: FONT_DISPLAY, fontSize: '17px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0.5);
+    this.name = this.add.text(66, 13, '', { fontFamily: FONT_DISPLAY, fontSize: '14.5px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
+    this.hpBar = new Bar(this, 145, 30, 158, 14, COLORS.button, 0, '', { fontSize: 10.5 });
+    this.mpBar = new Bar(this, 145, 44, 158, 12, COLORS.mana, 0, '', { small: true, fontSize: 9.5 });
+    if (this.kit) {
+      const coin = this.add.image(240, 22, KIT, 'item_gold');
+      coin.setScale(18 / coin.width);
+    }
+    this.goldText = this.add.text(253, 22, '', { fontFamily: FONT_DISPLAY, fontSize: '15.5px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
+    if (this.kit) {
+      plate(this, 'bar_frame_xp', 12, 57, 388, 9).setOrigin(0, 0);
+      this.xpFill = plate(this, 'bar_xp', 14, 58.5, 6, 6).setOrigin(0, 0).setVisible(false);
+    } else this.xpFill = this.add.rectangle(14, 58.5, 6, 6, 0xf4c14a, 1).setOrigin(0, 0).setVisible(false);
 
     // The die.
     if (this.kit) {
-      this.dieFace = this.add.image(0, 0, KIT, 'die_1').setScale(0.5).setAlpha(0.45);
+      const well = this.add.graphics();
+      well.fillStyle(0x3a2410, 1).fillRoundedRect(344, 4, 52, 52, 8);
+      this.dieFace = this.add.image(0, 0, KIT, 'die_1').setScale(46 / 112).setAlpha(0.45);
       this.dieBox = this.add.container(DIE.x, DIE.y, [this.dieFace]);
     } else {
       const box = this.add.graphics();
@@ -389,35 +443,49 @@ export class HudScene extends Phaser.Scene {
       this.dieText = this.add.text(0, 0, '–', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       this.dieBox = this.add.container(DIE.x, DIE.y, [box, this.dieText]);
     }
-    this.linkText = this.add.text(DESIGN_WIDTH - 14, HUD_HEIGHT - 5, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(1, 1);
+    this.linkText = this.add.text(240, 44, '', { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 2.5 }).setOrigin(0, 0.5);
   }
 
   private drawControls(): void {
-    // The band under the world: the chips, the message box and the buttons, so the world never shows through there.
-    const stripTop = HUD_HEIGHT + VIEW_HEIGHT;
-    if (this.kit) plate(this, 'panel_bottom', DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, SCREEN_WIDTH, DESIGN_HEIGHT - stripTop);
-    else this.add.rectangle(DESIGN_WIDTH / 2, (stripTop + DESIGN_HEIGHT) / 2, SCREEN_WIDTH, DESIGN_HEIGHT - stripTop, COLORS.panel, 1);
-    this.chipRow = this.add.container(DESIGN_WIDTH / 2, CHIPS_Y);
+    // Bottom bar 1 (Robin, 2026-11-02: "Go for 1"; Mitch, AD's numbers): a plank of 80 with Roll rising from its middle, and the message on a sign over the map.
+    const plankH = DESIGN_HEIGHT - PLANK_TOP;
+    this.signPosts = this.add.graphics();
+    if (this.kit) plate(this, 'panel_bottom', DESIGN_WIDTH / 2, PLANK_TOP + plankH / 2, SCREEN_WIDTH, plankH);
+    else this.add.rectangle(DESIGN_WIDTH / 2, PLANK_TOP + plankH / 2, SCREEN_WIDTH, plankH, COLORS.panel, 1);
+    this.chipRow = this.add.container(DESIGN_WIDTH / 2, this.signTop - 4 - CHIP_H / 2);
 
-    if (this.kit) this.messagePlate = plate(this, 'panel_message', DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, MESSAGE_W, 44);
-    logButtons(this, MESSAGE_BOTTOM - 22);
+    // The sign takes its own taps, so none falls through to the map.
+    this.signZone = this.add.zone(SIGN.x + SIGN.w / 2, 0, SIGN.w, SIGN.one).setInteractive();
+    if (this.kit) {
+      this.signPlate = plate(this, 'board_plain', SIGN.x + SIGN.w / 2, 0, SIGN.w, SIGN.one);
+      this.messagePlate = plate(this, 'board_slip', SIGN.x + SIGN.w / 2, 0, SIGN.w - 12, SIGN.one - 10);
+      this.logMark = this.add.image(36, 0, KIT, 'mark_scroll').setDisplaySize(18, 18);
+    }
+    this.logZone = this.add.zone(36, 0, 36, SIGN.one).setInteractive({ useHandCursor: true });
+    this.logZone.on('pointerup', () => {
+      sfx.play('ui/tap');
+      this.scene.launch('log');
+    });
     this.message = this.add
-      .text(DESIGN_WIDTH / 2, MESSAGE_BOTTOM - 22, '', {
+      .text(212, 0, '', {
         fontFamily: FONT,
         fontSize: settings.font(15),
         color: this.kit ? INK : COLORS.text,
         align: 'center',
-        wordWrap: { width: MESSAGE_W - 28 },
+        wordWrap: { width: 324 },
       })
       .setOrigin(0.5);
+    this.layoutSign(SIGN.one);
 
     const board = (): BoardScene => this.scene.get('board') as BoardScene;
     const { map, hero, quests, settings: gear, roll } = BUTTONS;
-    this.mapLabel = makeButton(this, map.x, map.y, map.w, map.h, 'Map', COLORS.log, '18px', () => board().toggleMap()).label;
-    makeButton(this, hero.x, hero.y, hero.w, hero.h, 'Hero', COLORS.log, '18px', () => board().openBag());
-    makeButton(this, quests.x, quests.y, quests.w, quests.h, 'Quests', COLORS.log, '18px', () => board().openQuests());
-    makeButton(this, gear.x, gear.y, gear.w, gear.h, 'Settings', COLORS.log, '16px', () => board().openSettings());
-    this.rollButton = makeButton(this, roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '26px', () => board().roll());
+    const dock = (b: { x: number; y: number; w: number; h: number }, text: string, frame: string, onTap: () => void): Button =>
+      makeButton(this, b.x, b.y, b.w, b.h, text, COLORS.log, '10.5px', onTap, { small: true, labelY: 22, icon: { frame, y: -6, size: 31 } });
+    this.mapLabel = dock(map, 'Map', 'icon_map', () => board().toggleMap()).label;
+    dock(hero, 'Hero', 'icon_hero', () => board().openBag());
+    dock(quests, 'Quests', 'icon_quests', () => board().openQuests());
+    dock(gear, 'Settings', 'icon_settings', () => board().openSettings());
+    this.rollButton = makeButton(this, roll.x, roll.y, roll.w, roll.h, 'Roll', COLORS.button, '19px', () => board().roll(), { labelY: 24, icon: { frame: 'die_4', y: -14, size: 34 } });
     this.log.note(`build 0.2.0 · ${WORLD_DATA.name} · seed ${this.game_.state.seed.slice(0, 8)}`);
   }
 }

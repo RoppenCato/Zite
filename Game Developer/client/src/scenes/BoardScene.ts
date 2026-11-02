@@ -54,7 +54,7 @@ import { preloadAbilityIcons } from '../effects.ts';
 import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
-import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
 import type { GameHolder, Intent, WorldChange } from '../game-holder.ts';
 import { settings } from '../settings.ts';
 import { tips } from '../tips.ts';
@@ -114,6 +114,8 @@ const MAX_ZOOM = 1.4 * DPR; // the closest a pinch gets
 const HARD_MIN_ZOOM = 0.12 * DPR; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
 const ZOOM_FLOOR = 0.05 * DPR;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
+/** The lowest row of the screen that a framed spot may use: above the message's sign and its chips. */
+const FRAME_BOTTOM = 738;
 const CAMERA_MS = 350; // a pan or a zoom
 const FOLLOW_LERP = 0.12;
 const NAME_ZOOM = 0.45 * DPR; // below this the hub names are hidden
@@ -1186,7 +1188,7 @@ export class BoardScene extends Phaser.Scene {
     const cam = this.cameras.main;
     // The band between the HUD panel and the bottom controls; the HUD scene draws over the rest.
     // The band between the HUD and the strip, in canvas pixels (the canvas draws at DPR, hires.ts).
-    cam.setViewport(0, HUD_HEIGHT * DPR, SCREEN_WIDTH * DPR, VIEW_HEIGHT * DPR);
+    cam.setViewport(0, HUD_PLANK * DPR, SCREEN_WIDTH * DPR, (PLANK_TOP - HUD_PLANK) * DPR);
     this.fitBounds();
     cam.setRoundPixels(true);
     this.minZoom = this.overviewZoom();
@@ -1305,9 +1307,12 @@ export class BoardScene extends Phaser.Scene {
     minY -= FRAME_PAD;
     maxX += FRAME_PAD;
     maxY += FRAME_PAD;
-    const zoom = Phaser.Math.Clamp(Math.min(cam.width / (maxX - minX), cam.height / (maxY - minY)), this.minZoom, FOLLOW_ZOOM);
+    // The signs and chips stand over the map: frame the spots in what stays clear, from under the top signs to above the chips.
+    const clear = FRAME_BOTTOM - HUD_HEIGHT;
+    const zoom = Phaser.Math.Clamp(Math.min(cam.width / (maxX - minX), (clear * DPR) / (maxY - minY)), this.minZoom, FOLLOW_ZOOM);
+    const shift = ((PLANK_TOP + HUD_PLANK - FRAME_BOTTOM - HUD_HEIGHT) / 2) * DPR / zoom;
     this.unfollow();
-    cam.pan((minX + maxX) / 2, (minY + maxY) / 2, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
+    cam.pan((minX + maxX) / 2, (minY + maxY) / 2 + shift, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
     cam.zoomTo(zoom, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
   }
 
@@ -1329,8 +1334,8 @@ export class BoardScene extends Phaser.Scene {
   /** Inside the band the world is seen through; a touch on the HUD's panel or strip is not the world's. */
   private inView(p: Phaser.Input.Pointer): boolean {
     // The pointer is in canvas pixels, the band in design pixels (hires.ts).
-    const y = p.y / DPR;
-    return y >= HUD_HEIGHT && y < HUD_HEIGHT + VIEW_HEIGHT;
+    const hud = this.scene.get('hud') as HudScene;
+    return !hud.covers(p.x / DPR - (SCREEN_WIDTH - DESIGN_WIDTH) / 2, p.y / DPR);
   }
 
   private onPointerDown(p: Phaser.Input.Pointer): void {

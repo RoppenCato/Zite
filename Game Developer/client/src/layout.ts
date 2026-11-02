@@ -12,6 +12,14 @@ export const DPR = typeof window === 'undefined' ? 1 : Math.min(2, Math.max(1, M
 
 /** The HUD panel across the top: name, numbers, where you are, the die. The world is seen under it. */
 export const HUD_HEIGHT = 100;
+/** The top bar's plank (Robin, 2026-11-02: the slim bar, Mitch, AD's): its signs hang over the map down to HUD_HEIGHT. */
+export const HUD_PLANK = 74;
+/** The bottom bar's plank starts here (Robin, 2026-11-02: bottom bar 1, Mitch, AD's); the board's camera runs down to it. */
+export const PLANK_TOP = 835;
+/** Roll rises above the plank to here, this wide about the column's centre. */
+export const ROLL_TOP = 824;
+export const ROLL_LEFT = 146;
+export const ROLL_RIGHT = 266;
 /** The band the world camera looks through: from under the HUD panel to above the chips, the message and the buttons. */
 export const VIEW_HEIGHT = 640;
 

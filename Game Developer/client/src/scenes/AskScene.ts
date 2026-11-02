@@ -5,8 +5,8 @@
 
 import Phaser from 'phaser';
 import { feel, sfx } from '../feel.ts';
-import { hasFrame, icon, INK, INK_DIM, kitReady, plate } from '../kit.ts';
-import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
+import { hasFrame, icon, INK, INK_DIM, kitReady, plate, veil } from '../kit.ts';
+import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK } from '../layout.ts';
 import { settings } from '../settings.ts';
 import { makeButton } from '../ui.ts';
 
@@ -49,10 +49,10 @@ export class AskScene extends Phaser.Scene {
     const r = this.request;
     const kit = kitReady(this);
     const ink = kit ? INK : COLORS.text;
-    const dim = kit ? INK_DIM : COLORS.dim;
+    const inkDim = kit ? INK_DIM : COLORS.dim;
     const quick = settings.get().fewerEffects;
-    const veil = this.add.rectangle(CENTRE, HUD_HEIGHT + VIEW_HEIGHT / 2, SCREEN_WIDTH, VIEW_HEIGHT, 0x0a0c14, quick ? 0.72 : 0).setInteractive();
-    if (!quick) this.tweens.add({ targets: veil, fillAlpha: 0.72, duration: 160 });
+    const dim = veil(this, 0x0a0c14, quick ? 0.72 : 0);
+    if (!quick) this.tweens.add({ targets: dim, fillAlpha: 0.72, duration: 160 });
 
     // Laid out from the top down, then centred in the band.
     const parts: Phaser.GameObjects.GameObject[] = [];
@@ -74,7 +74,7 @@ export class AskScene extends Phaser.Scene {
     const buttons: Phaser.GameObjects.GameObject[] = [];
     for (const o of r.options) {
       if (o.note) {
-        const note = this.add.text(0, y, o.note, { fontFamily: FONT, fontSize: '14px', color: dim, align: 'center', wordWrap: { width: INNER } }).setOrigin(0.5, 0);
+        const note = this.add.text(0, y, o.note, { fontFamily: FONT, fontSize: '14px', color: inkDim, align: 'center', wordWrap: { width: INNER } }).setOrigin(0.5, 0);
         parts.push(note);
         y += note.height + 4;
       }
