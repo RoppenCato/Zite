@@ -15,6 +15,7 @@ import uniquesJson from '../data/uniques.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
 import shapesJson from '../data/shapes.json' with { type: 'json' };
 import eventsJson from '../data/events.json' with { type: 'json' };
+import encountersJson from '../data/encounters.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
 import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine } from './types.ts';
@@ -315,7 +316,7 @@ export interface ProgressionData {
   guards: { block: number; dodge: number; brace: number; braceMana: number; braceManaShare: number; counter: number };
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
-  spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number };
+  spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number; elite: number };
   /** The world boss (mine, 2026-11-01): how often a tick brings one when none is about, how long it stays, its HP against the area's boss, the least share a hitter gets. */
   worldBoss: { chancePerTick: number; lifeMs: number; hpMult: number; minShare: number };
   /** The notes left on spots: how many a spot keeps, how long one lasts. */
@@ -339,7 +340,9 @@ export const GEAR = gearJson as GearData;
 /** The notes a player may leave on a spot (mine, 2026-11-01: set lines, so nothing needs moderating). */
 export const TRACES: readonly string[] = (tracesJson as { texts: string[] }).texts;
 /** The odds of what a normal spot holds, as weights. */
-export const SURPRISES = surprisesJson as Record<'fight' | 'chest' | 'merchant' | 'gamble' | 'miniboss' | 'event', number>;
+export const SURPRISES = surprisesJson as Record<'fight' | 'chest' | 'merchant' | 'gamble' | 'miniboss' | 'event' | 'find' | 'stranger', number>;
+/** By theme: more that can happen on a plain spot, and the rare finds worth a roll. */
+export const ENCOUNTERS = encountersJson as unknown as Record<string, { events: { text: string; kind: 'heal' | 'hurt' | 'gold' | 'mana' | 'flask' | 'card'; value: number }[]; finds: { text: string; slot: Slot; need: number }[] }>;
 /** More shapes for the generator, laid inside one cell. */
 export const SHAPES = (shapesJson as unknown as { shapes: { id: string; hubs: WorldHub[]; roads: WorldRoad[] }[] }).shapes;
 /** What a wild spot does now and then besides a fight, by theme. */

@@ -102,6 +102,10 @@ export class BagScene extends Phaser.Scene {
     this.board(header.x, header.y, header.w, header.h);
     this.woodText(40, header.y + header.h / 2, 'Hero', 20).setOrigin(0, 0.5);
     makeButton(this, 346, header.y + header.h / 2 - 1, 76, 36, 'Close', COLORS.log, '15px', () => (this.scene.get('board') as BoardScene).bagClosed());
+    makeButton(this, 148, header.y + header.h / 2 - 1, 86, 36, 'Journal', COLORS.log, '13px', () => {
+      this.scene.stop();
+      this.scene.launch('journal');
+    });
     // The skill board, its points on the button (mine, 2026-11-02).
     const free = pointsFree(me);
     makeButton(this, 248, header.y + header.h / 2 - 1, 104, 36, free > 0 ? `Skills +${free}` : 'Skills', free > 0 ? 0x8e6ad9 : COLORS.log, '15px', () => {

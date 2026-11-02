@@ -116,7 +116,9 @@ interface OldCharacter {
 export function migrate(raw: unknown): GameState | null {
   const up = migrateOlder(raw);
   if (!up || (raw as { version?: unknown }).version === STATE_VERSION) return up;
-  return toPaths(up);
+  // 22 → 23: the journal starts empty; nothing else moves.
+  if ((raw as { version?: unknown }).version === 22) return withJournal(up);
+  return withJournal(toPaths(up));
 }
 
 /**
@@ -138,11 +140,16 @@ function toPaths(state: GameState): GameState {
   return { ...state, version: STATE_VERSION, characters };
 }
 
+function withJournal(state: GameState): GameState {
+  const characters = Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, { ...c, journal: c.journal ?? { beaten: {}, places: [], done: [] } }]));
+  return { ...state, version: STATE_VERSION, characters };
+}
+
 function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

@@ -2,6 +2,7 @@
 // the shop, the bag or the loot reveal over both when one begins; the moments scene sits over everything for its banners. main.ts starts them straight from a save; CreateScene adds them after
 // the character is made.
 
+import { JournalScene } from './JournalScene.ts';
 import { SkillsScene } from './SkillsScene.ts';
 import type { GameLog } from '../game-log.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -26,6 +27,7 @@ export function playScenes(game: GameHolder, log: GameLog): { key: string; scene
     { key: 'shop', scene: new ShopScene({ game, log }) },
     { key: 'bag', scene: new BagScene({ game, log }) },
     { key: 'skills', scene: new SkillsScene({ game, log }) },
+    { key: 'journal', scene: new JournalScene({ game }) },
     { key: 'settings', scene: new SettingsScene({ game, log }) },
     { key: 'quests', scene: new QuestScene({ game }) },
     { key: 'reveal', scene: new RevealScene({ log }) },

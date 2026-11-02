@@ -9,6 +9,12 @@ import meadowChunks from '../../assets/world_meadows/chunks.json';
 import westChunks from '../../assets/world_west/chunks.json';
 import overviewData from '../../assets/world_meadows/overview.json';
 import overviewJpg from '../../assets/world_meadows/overview.jpg';
+import fogForestJson from '../../assets/fog/fog_forest.json';
+import fogForestPng from '../../assets/fog/fog_forest.png';
+import fogHarvestJson from '../../assets/fog/fog_harvest.json';
+import fogHarvestPng from '../../assets/fog/fog_harvest.png';
+import fogPiecesJson from '../../assets/fog/fog_pieces.json?url';
+import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 
 const FILES = import.meta.glob('../../assets/world_{meadows,forest,harvest,west}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
@@ -31,7 +37,7 @@ export const PAINTED: Record<string, { x: number; y: number; width: number; heig
 const OVERVIEW_LAND: Record<string, { x: number; y: number; width: number; height: number }> = {
   meadows: PAINTED.meadows!,
   thornwood: { x: 0, y: forestChunks.y, width: forestChunks.x + forestChunks.width, height: 5328 },
-  frostpeak: { x: 0, y: 0, width: harvestChunks.x + harvestChunks.width, height: 3300 },
+  frostpeak: { x: 0, y: 0, width: harvestChunks.x + harvestChunks.width, height: 3072 },
 };
 
 /** Every chunk once, with the areas that show it: column 3 holds both coasts, so it belongs to both. */
@@ -59,8 +65,18 @@ const FREE_MARGIN = 512;
 const DEPTH = { overview: -3, chunk: -2 } as const;
 const OVERVIEW_KEY = 'world_overview';
 
+/** The mist over a closed land (Mitch, AD), cut to its coast. */
+const FOG: Record<string, { key: string; png: string; box: typeof fogForestJson }> = {
+  thornwood: { key: 'fog_forest', png: fogForestPng, box: fogForestJson },
+  frostpeak: { key: 'fog_harvest', png: fogHarvestPng, box: fogHarvestJson },
+};
+/** Silhouettes of bosses and the "?" of creatures not met. */
+export const FOG_PIECES = 'fog_pieces';
+
 export function preloadWorldMap(scene: Phaser.Scene): void {
   if (!scene.textures.exists(OVERVIEW_KEY)) scene.load.image(OVERVIEW_KEY, overviewJpg);
+  for (const fog of Object.values(FOG)) if (!scene.textures.exists(fog.key)) scene.load.image(fog.key, fog.png);
+  if (!scene.textures.exists(FOG_PIECES)) scene.load.atlas(FOG_PIECES, fogPiecesPng, fogPiecesJson);
 }
 
 const urlOf = (file: string): string | undefined => Object.entries(FILES).find(([path]) => path.endsWith(`/${file}`))?.[1];
@@ -70,6 +86,7 @@ export class PaintedGround {
   private readonly held = new Map<string, Phaser.GameObjects.Image>();
   private readonly loading = new Set<string>();
   private readonly overviews = new Map<string, Phaser.GameObjects.Image>();
+  private readonly veils = new Map<string, Phaser.GameObjects.Image>();
   /** The most chunks ever in memory at once, for the measure. */
   peak = 0;
 
@@ -87,11 +104,22 @@ export class PaintedGround {
         .setVisible(false);
       this.overviews.set(area, image);
     }
+    for (const [area, fog] of Object.entries(FOG)) {
+      if (!scene.textures.exists(fog.key)) continue;
+      const veil = scene.add.image(fog.box.worldX, fog.box.worldY, fog.key).setOrigin(0, 0).setDisplaySize(fog.box.worldW, fog.box.worldH).setDepth(DEPTH.overview + 0.5);
+      this.veils.set(area, veil);
+    }
   }
 
   /** From the camera's cull: load what is near on open land, free what has gone far. */
   update(cam: Phaser.Cameras.Scene2D.Camera, opened: ReadonlySet<string>): void {
-    for (const [area, image] of this.overviews) image.setVisible(opened.has(area));
+    // Closed land shows under its mist (Robin, 2026-11-02: what is ahead, not empty sea); the mist lifts when it opens.
+    for (const image of this.overviews.values()) image.setVisible(true);
+    for (const [area, veil] of this.veils) {
+      if (!opened.has(area)) continue;
+      this.veils.delete(area);
+      this.scene.tweens.add({ targets: veil, alpha: 0, duration: 1200, onComplete: () => veil.destroy() });
+    }
     // From the scroll and zoom as they are now: worldView lags a frame, and jumping from the map to close up would load every chunk it had in view.
     const midX = cam.scrollX + cam.width / 2;
     const midY = cam.scrollY + cam.height / 2;

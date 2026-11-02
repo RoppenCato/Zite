@@ -4,7 +4,7 @@
 // call the board scene, and the board scene tells it what to show. Drawn from the UI kit (kit.ts, Mitch, AD, 2026-11-01).
 
 import Phaser from 'phaser';
-import { CLASS_DATA, WORLD_DATA, specialization } from '../../../rules/src/index.ts';
+import { CLASS_DATA, WORLD_DATA, specialization, PROGRESSION, creature, pointsFree } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -97,6 +97,9 @@ export class HudScene extends Phaser.Scene {
     this.log.note(`hud ready${this.kit ? ' (kit)' : ''}`);
   }
 
+  private xpFill!: Phaser.GameObjects.Rectangle;
+  private goal!: Phaser.GameObjects.Text;
+
   // ---- what the board scene tells us ------------------------------------------------------------------------------
 
   /** The numbers under the name, and where you are. */
@@ -109,6 +112,27 @@ export class HudScene extends Phaser.Scene {
     if (this.goldText.text !== String(n.gold) && this.goldText.text) feel.tick(this, this.goldText);
     this.goldText.setText(String(n.gold));
     this.place.setText(place);
+    // The XP bar (Robin, 2026-11-02): how far to the next level, sliding as it fills.
+    const table = PROGRESSION.xpForLevel;
+    const from = table[me.level - 1] ?? 0;
+    const to = table[me.level] ?? from + 1;
+    const share = Math.max(0, Math.min(1, (me.xp - from) / Math.max(1, to - from)));
+    this.tweens.killTweensOf(this.xpFill);
+    this.tweens.add({ targets: this.xpFill, scaleX: share, duration: settings.ms(400), ease: 'Quad.easeOut' });
+    // What is next: pulls you on to the next roll (Robin, 2026-11-02).
+    const bits: string[] = [];
+    const q = me.quests[0];
+    if (q) {
+      const who = q.target ? (creature(q.target, this.game_.state.board.bestiary)?.name ?? q.target) : '';
+      if (q.kind === 'kill') bits.push(`${q.count - q.done} more ${who}${q.count - q.done === 1 ? '' : 's'}`);
+      else if (q.kind === 'loot') bits.push(`${q.count - q.done} more from ${who}s`);
+      else if (q.kind === 'mini') bits.push(`Hunt the ${who}`);
+      else bits.push('Find them');
+    }
+    bits.push(`${Math.max(0, to - me.xp)} XP to level ${me.level + 1}`);
+    const free = pointsFree(me);
+    if (free > 0) bits.push(free === 1 ? '1 skill point' : `${free} skill points`);
+    this.goal.setText(bits.join(' · '));
   }
 
   /** What the die shows: a face, or a dash before the first roll. */
@@ -349,6 +373,9 @@ export class HudScene extends Phaser.Scene {
     this.hpBar = new Bar(this, 128, 48, 160, 14, COLORS.button, 0, 'HP');
     this.mpBar = new Bar(this, 128, 70, 160, 14, COLORS.mana, 0, 'MP');
     this.goldText = this.add.text(254, 48, '', { fontFamily: FONT_DISPLAY, fontSize: '18px', fontStyle: 'bold', color: cream, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
+    this.add.rectangle(16, 83, 284, 5, 0x2a1a0c, 1).setOrigin(0, 0.5);
+    this.xpFill = this.add.rectangle(16, 83, 284, 3, 0xf4c14a, 1).setOrigin(0, 0.5).setScale(0, 1);
+    this.goal = this.add.text(DESIGN_WIDTH / 2, HUD_HEIGHT + 6, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: '#2a1a0ccc', padding: { x: 8, y: 2 } }).setOrigin(0.5, 0).setDepth(2);
     this.place = this.add.text(16, HUD_HEIGHT - 5, '', { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 1);
 
     // The die.

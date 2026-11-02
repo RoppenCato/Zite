@@ -501,3 +501,7 @@ All three first regions are painted. `world.json` gains `exit`, a third gate, an
 ## Skills (2026-11-02)
 
 `SkillsScene`, from Hero, after Mitch, AD's design with three trees for his path board: the carried belt, the class's four, the trees read downwards, one card. The fight's abilities page shows what is carried. Settings has two testing rows, to go before an Alpha.
+
+## Adventure pass (Robin, 2026-11-02)
+
+XP bar and a next-goal line in the HUD (Mitch, AD redesigns the bar). Labels on reachable spots; words on the map only for towns, bosses and grounds. Tap a boss in open land to challenge it from anywhere. A plain spot: 70% fight; encounters and rare finds in `encounters.json`, strangers with a quest, elites on the map (`spawn.kind: 'elite'`). `JournalScene` and `journal.ts`. The next closed land shows dim on the map with what opens it. State version 23.

@@ -3,7 +3,8 @@
 // again after a while and for spawns; the rules never read a clock themselves.
 
 import { baseNumbers, canLearn, MAX_CARRIED, resetSkills, traitsOf } from './skills.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
+import { notePlace } from './journal.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight } from './fight.ts';
 import { plainGear, powers, rollGear, rollUnique, stats, emptyEquipment } from './gear.ts';
@@ -48,6 +49,7 @@ type DropAction = Extract<Action, { type: 'drop' }>;
 type UseAction = Extract<Action, { type: 'use' }>;
 type GambleAction = Extract<Action, { type: 'gamble' }>;
 type SkillAction = Extract<Action, { type: 'skill' }>;
+type ChallengeAction = Extract<Action, { type: 'challenge' }> & { now?: number };
 type QuestAction = Extract<Action, { type: 'quest' }>;
 type KeepAction = Extract<Action, { type: 'keep' }>;
 type JoinAction = Extract<Action, { type: 'join' }>;
@@ -93,6 +95,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     quests: [],
     questsDone: [],
     carried: [...c.kit],
+    journal: { beaten: {}, places: [], done: [] },
     bonusPoints: 0,
     keys: {},
     ailments: {},
@@ -127,8 +130,12 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
   switch (action.type) {
     case 'roll':
       return roll(state, action, character, rng);
-    case 'move':
-      return move(state, action, character, rng, now);
+    case 'move': {
+      const moved = move(state, action, character, rng, now);
+      return discover(moved, action);
+    }
+    case 'challenge':
+      return challenge(state, { ...action, now }, character, rng);
     case 'fight':
       return fightRound(state, action, character, rng, now);
     case 'buy':
@@ -152,12 +159,30 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
     case 'try':
       return tryRoll(state, action, character, rng);
     case 'travel':
-      return travel(state, action, character, rng, now);
+      return discover(travel(state, action, character, rng, now), action);
     case 'keep':
       return keep(state, action, character);
     case 'trace':
       return trace(state, action, character, now);
   }
+}
+
+/** After a move: a place stood in for the first time goes in the journal. */
+function discover(r: ApplyResult, action: Action): ApplyResult {
+  const c = r.state.characters[action.player];
+  if (!c || r.events[0]?.type === 'rejected') return r;
+  const events = [...r.events];
+  const next = notePlace(c, r.state.board, action, events);
+  return next === c ? r : { state: withCharacter(r.state, next), events };
+}
+
+/** To a boss's spot, whenever you choose, in land you have opened (Robin, 2026-11-02: "you fight the boss by choosing to go to that spot at any time you want"). */
+function challenge(state: GameState, action: ChallengeAction, c: Character, rng: Rng): ApplyResult {
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  const space = state.board.spaces[action.space];
+  if (!space?.boss || space.kind !== 'boss' || !c.opened.includes(space.area) || c.steps > 0 || (c.cooldowns[space.id] ?? 0) > (action.now ?? 0)) return reject(state, action, 'not now');
+  return begin(state, { ...c, space: space.id, steps: 0 }, space.boss, space.id, false, action, rng, []);
 }
 
 /** A note on the spot you stand on (mine, 2026-11-01): one of the set lines, one a player a spot, newest first, a few a spot. */
@@ -321,6 +346,14 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       const spawn = state.spawns[space.id];
       if (spawn?.kind === 'worldboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events, spawn);
       if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);
+      if (spawn?.kind === 'elite' && spawn.enemy) {
+        // A creature grown big and mean, marked on the map, there to be taken on or walked round (Robin, 2026-11-02): worth a mini-boss's drop.
+        const met = begin(state, c, spawn.enemy, space.id, true, action, rng, events);
+        const me = met.state.characters[c.id]!;
+        const e = me.fight!.enemy;
+        const big = { ...e, name: `Elite ${e.name}`, role: 'mini' as const, hp: Math.round(e.hp * 2.5), maxHp: Math.round(e.maxHp * 2.5), attack: Math.round(e.attack * 1.2), xp: e.xp * 3, gold: e.gold * 3 };
+        return { state: withCharacter(met.state, { ...me, fight: { ...me.fight!, enemy: big } }), events };
+      }
       if (spawn?.kind === 'merchant') {
         events.push({ type: 'merchant', action: id, player });
         return { state: withCharacter(state, c), events };
@@ -338,7 +371,23 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
       if (inTownWalls(state.board, space)) return streetMoment(state, c, tier, action, rng, events);
       const what = surprise(rng);
       if (what === 'chest') return openChest(state, c, tier, space.area, action, rng, events);
-      if (what === 'event' && area && EVENTS[area.theme]) return themeEvent(state, c, area.theme, tier, action, rng, events);
+      if (what === 'event' && area && (EVENTS[area.theme] || ENCOUNTERS[area.theme])) return themeEvent(state, c, area.theme, tier, action, rng, events);
+      const finds = area ? ENCOUNTERS[area.theme]?.finds : undefined;
+      if (what === 'find' && finds?.length) {
+        const find = finds[rng.int(finds.length) - 1]!;
+        const offered: Character = { ...c, offer: { kind: 'roll', what: 'find', need: find.need, slot: find.slot, text: find.text } };
+        events.push({ type: 'offer', action: id, player, offer: offered.offer! });
+        return { state: withCharacter(state, offered), events };
+      }
+      if (what === 'stranger' && !c.quests.length) {
+        // Someone on the road with a job (Robin, 2026-11-02: "sometimes meet a questgiver"), a quest of the board's kind.
+        const quests = boardQuests(state, space, rng).slice(0, 1);
+        if (quests.length) {
+          const offered: Character = { ...c, offer: { kind: 'board', quests, from: QUESTS.people[rng.int(QUESTS.people.length) - 1]! } };
+          events.push({ type: 'offer', action: id, player, offer: offered.offer! });
+          return { state: withCharacter(state, offered), events };
+        }
+      }
       if (what === 'merchant') {
         // The merchant camps here for a while, so the shop he opens is a shop (Robin, 2026-11-01: nothing could be bought from one).
         events.push({ type: 'merchant', action: id, player });
@@ -406,6 +455,12 @@ function tryRoll(state: GameState, action: Action, character: Character, rng: Rn
   if (won) {
     const tier = s.board.areas[s.board.spaces[character.space]?.area ?? '']?.tier ?? 1;
     if (offer.what === 'flask') next = giveItem(next, flaskId(rng.next() < 0.5 ? 'potion' : 'mana-potion', tier), 1, action, events);
+    else if (offer.what === 'find') {
+      // Rare and worth it (Robin, 2026-11-02): never under uncommon, with a fair chance of better.
+      const got = nextGearId(s);
+      s = got.state;
+      next = addLoot(next, rollGear(got.id, offer.slot ?? dropSlot(null, rng), tier, 1, rng, rollLine(rng), character.classId), action, events);
+    }
     else {
       const got = nextGearId(s);
       s = got.state;
@@ -496,7 +551,8 @@ function streetMoment(state: GameState, c: Character, tier: number, action: Acti
 
 /** The theme's event on a wild spot (mine, 2026-11-01): a share of HP or mana, gold by the tier, a flask or a card. */
 function themeEvent(state: GameState, c: Character, theme: string, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
-  const ev = EVENTS[theme]!;
+  const pool = ENCOUNTERS[theme]?.events;
+  const ev = pool?.length ? pool[rng.int(pool.length) - 1]! : EVENTS[theme]!;
   const s = stats(c);
   let next = c;
   let amount = 0;
@@ -857,7 +913,10 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       const space = candidates[rng.int(candidates.length) - 1]!;
       const area = state.board.areas[state.board.spaces[space]!.area];
       const mini = rng.next() < settings.miniboss && area && area.miniBosses.length > 0;
-      const spawn: Spawn = mini ? { kind: 'miniboss', enemy: area.miniBosses[rng.int(area.miniBosses.length) - 1]!, until: now + settings.lifeMs } : { kind: 'merchant', enemy: null, until: now + settings.lifeMs };
+      // Otherwise an elite of the place, marked on the map, or a merchant (Robin, 2026-11-02).
+      const ground = groundAt(state.board, state.board.spaces[space]!);
+      const elite = !mini && ground && !inTownWalls(state.board, state.board.spaces[space]!) && rng.next() < settings.elite;
+      const spawn: Spawn = elite ? { kind: 'elite', enemy: ground.mob, until: now + settings.lifeMs } : mini ? { kind: 'miniboss', enemy: area.miniBosses[rng.int(area.miniBosses.length) - 1]!, until: now + settings.lifeMs } : { kind: 'merchant', enemy: null, until: now + settings.lifeMs };
       spawns[space] = spawn;
       changed = true;
       events.push({ type: 'spawned', action: action.id, player: action.player, space, spawn });

@@ -5,6 +5,7 @@ import { ABILITIES, CLASS_DATA, PROGRESSION } from '../src/data.ts';
 import { startFight } from '../src/fight.ts';
 import { apply, newGame } from '../src/game.ts';
 import { stats } from '../src/gear.ts';
+import { groundAt, inTownWalls, placeAt } from '../src/grounds.ts';
 import { makeRng } from '../src/rng.ts';
 import { MAX_CARRIED, pointsForLevel, pointsFree, specialization } from '../src/skills.ts';
 import type { Action, Character, ClassId, Enemy, EnemyMove, FightMove, GameEvent, GameState, Guard } from '../src/types.ts';
@@ -351,5 +352,84 @@ describe('the skill board', () => {
     const reset = apply({ ...spent, characters: { [P]: { ...me(spent), space: start } } }, skill({ op: 'reset' }), makeRng('a'), NOW);
     expect(me(reset.state)).toMatchObject({ abilities: { 'heavy-blow': 1, execute: 1 }, carried: ['heavy-blow', 'execute'] });
     expect(pointsFree(me(reset.state))).toBe(pointsForLevel(8));
+  });
+});
+
+describe('what a spot can hold', () => {
+  const near = (classId: ClassId = 'warrior'): GameState => {
+    const s = newGame({ seed: 'spot', player: P, name: 'Robin', classId });
+    const wild = Object.values(s.board.spaces).find((x) => x.area === 'meadows' && x.kind === 'normal' && !x.name && !inTownWalls(s.board, x) && groundAt(s.board, x))!;
+    return { ...s, characters: { [P]: { ...me(s), space: wild.links[0]!, steps: 1 } }, die: { ...s.die, last: 1 } };
+  };
+  const wildOf = (s: GameState) => Object.values(s.board.spaces).find((x) => x.area === 'meadows' && x.kind === 'normal' && !x.name && !inTownWalls(s.board, x) && groundAt(s.board, x))!.id;
+  const land = (s: GameState, seed: number) => apply(s, { type: 'move', id: 'm', player: P, path: [wildOf(s)] }, makeRng(seed), NOW);
+
+  it('is a fight about seven times in ten', () => {
+    const s = near();
+    let fights = 0;
+    for (let i = 0; i < 400; i++) if (land(s, i).events.some((e) => e.type === 'fight')) fights++;
+    expect(fights).toBeGreaterThan(230);
+    expect(fights).toBeLessThan(320);
+  });
+
+  it('now and then a find worth a roll: a piece one rarity up at least, in the slot it spoke of; a stranger with a quest', () => {
+    const s = near();
+    let find: GameState | null = null;
+    let stranger: GameState | null = null;
+    for (let i = 0; i < 900 && !(find && stranger); i++) {
+      const r = land(s, i);
+      const offer = me(r.state).offer;
+      if (offer?.kind === 'roll' && offer.what === 'find') find = r.state;
+      if (offer?.kind === 'board' && offer.from) stranger = r.state;
+    }
+    expect(find).not.toBeNull();
+    expect(stranger).not.toBeNull();
+    const offer = me(find!).offer as Extract<Character['offer'], { kind: 'roll' }>;
+    expect(offer.text!.length).toBeGreaterThan(10);
+    let won = false;
+    for (let i = 0; i < 80 && !won; i++) {
+      const r = apply(find!, { type: 'try', id: 't', player: P }, makeRng(i), NOW);
+      const tried = r.events.find((e) => e.type === 'tried');
+      if (tried?.type === 'tried' && tried.won) {
+        won = true;
+        const got = me(r.state).bag[0] ?? Object.values(me(r.state).equipment).find(Boolean);
+        expect(got?.slot).toBe(offer.slot);
+        expect(got?.rarity).not.toBe('common');
+      }
+    }
+    expect(won).toBe(true);
+    expect((me(stranger!).offer as Extract<Character['offer'], { kind: 'board' }>).quests).toHaveLength(1);
+  });
+
+  it('an elite is the place\'s creature, far tougher, worth a mini-boss\'s drop', () => {
+    const s = near();
+    const wild = wildOf(s);
+    const elite = { ...s, spawns: { [wild]: { kind: 'elite' as const, enemy: 'slime', until: NOW + 1000 } } };
+    const r = land(elite, 1);
+    expect(fight(r.state).enemy).toMatchObject({ id: 'slime', role: 'mini', name: 'Elite Jelly Slime', hp: 100 });
+  });
+
+  it('a boss can be challenged from anywhere in land you have opened, not closed land, not while it is away', () => {
+    const s = near();
+    const go = (state: GameState, space: string) => apply(state, { type: 'challenge', id: 'c', player: P, space }, makeRng(1), NOW);
+    const ready = { ...s, characters: { [P]: { ...me(s), steps: 0 } } };
+    const r = go(ready, 'gate');
+    expect(me(r.state)).toMatchObject({ space: 'gate' });
+    expect(fight(r.state).enemy.id).toBe('thornwood-warden');
+    expect(go(ready, 'briar').events[0]).toMatchObject({ type: 'rejected' });
+    expect(go({ ...ready, characters: { [P]: { ...me(ready), cooldowns: { gate: NOW + 5 } } } }, 'gate').events[0]).toMatchObject({ type: 'rejected' });
+  });
+
+  it('the journal: a creature\'s first defeat pays, a place\'s first visit pays, and a full region page is a skill point', () => {
+    const won = apply(versus('warrior', 'slime', {}, { hp: 1 }), turn(attack), makeRng('x'), NOW);
+    expect(me(won.state).journal.beaten.slime).toBe(1);
+    expect(won.events).toContainEqual(expect.objectContaining({ type: 'journal' }));
+    expect(me(won.state).xp).toBeGreaterThan(5);
+    const again = apply(versus('warrior', 'slime', { journal: me(won.state).journal }, { hp: 1 }), turn(attack), makeRng('x'), NOW);
+    expect(again.events.some((e) => e.type === 'journal')).toBe(false);
+    const s = near();
+    const named = Object.values(s.board.spaces).find((x) => x.area === 'meadows' && placeAt(s.board, x) && x.links.length)!;
+    const landed = apply({ ...s, characters: { [P]: { ...me(s), space: named.links[0]!, steps: 1 } } }, { type: 'move', id: 'm', player: P, path: [named.id] }, makeRng(7), NOW);
+    expect(me(landed.state).journal.places.length).toBe(1);
   });
 });

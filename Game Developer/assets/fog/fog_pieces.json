@@ -1,0 +1,111 @@
+{
+ "frames": {
+  "silhouette_goo": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 169,
+    "h": 209
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 209
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 209
+   },
+   "pivot": {
+    "x": 0.5478,
+    "y": 0.9156
+   }
+  },
+  "silhouette_grumblebark": {
+   "frame": {
+    "x": 175,
+    "y": 3,
+    "w": 162,
+    "h": 208
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 208
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 208
+   },
+   "pivot": {
+    "x": 0.6565,
+    "y": 0.9219
+   }
+  },
+  "silhouette_queen": {
+   "frame": {
+    "x": 3,
+    "y": 215,
+    "w": 172,
+    "h": 208
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 172,
+    "h": 208
+   },
+   "sourceSize": {
+    "w": 172,
+    "h": 208
+   },
+   "pivot": {
+    "x": 0.6086,
+    "y": 1.0827
+   }
+  },
+  "mark_unknown": {
+   "frame": {
+    "x": 178,
+    "y": 215,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "fog_pieces.png",
+  "size": {
+   "w": 512,
+   "h": 512
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/fog.js",
+  "filePx": 2
+ }
+}

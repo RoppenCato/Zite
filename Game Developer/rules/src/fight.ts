@@ -5,6 +5,7 @@
 // with effects the guard has to read, bosses with a second phase, and uniques whose powers bend the rules. The moves,
 // the guards and all the numbers are mine, first settings.
 
+import { noteBeaten } from './journal.ts';
 import { MAX_CARRIED, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter } from './common.ts';
@@ -870,6 +871,7 @@ function win(r: Round): ApplyResult {
 
   const space = r.state.board.spaces[f.space];
   const area = space ? r.state.board.areas[space.area] : undefined;
+  next = noteBeaten(next, e.id, r.state.board, area?.id, action, events);
   const rank = area?.tier ?? 1;
   let s = r.state;
   if (rng.next() < GEAR.dropChance[e.role]) {

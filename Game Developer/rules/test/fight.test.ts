@@ -27,7 +27,7 @@ const types = (events: GameEvent[]): string[] => events.filter(blows).map((e) =>
  */
 function begin(classId: ClassId, seed = 'ashford', patch: Partial<Character> = {}): { state: GameState; rng: Rng } {
   const s = newGame({ seed, player: P, name: 'Robin', classId, board: ringBoard() });
-  const ready = { ...s, characters: { [P]: { ...me(s), steps: 1, ...patch } }, die: { ...s.die, last: 1 } };
+  const ready = { ...s, characters: { [P]: { ...me(s), steps: 1, journal: { beaten: { slime: 1 }, places: ['s1'], done: [] }, ...patch } }, die: { ...s.die, last: 1 } };
   const state = apply(ready, { type: 'move', id: 'm', player: P, path: ['s1'] }, makeRng(seed), NOW).state;
   return { state, rng: makeRng(seed) };
 }
@@ -302,7 +302,7 @@ describe('a fight', () => {
   });
 
   it('winning gives xp and the levels the table says: more HP, mana, attack and defense, the gains healed', () => {
-    const almost = versus('warrior', 'slime', { xp: 26, hp: 100, mana: 10 }, { hp: 1 });
+    const almost = versus('warrior', 'slime', { xp: 26, hp: 100, mana: 10, journal: { beaten: { slime: 1 }, places: [], done: [] } }, { hp: 1 });
     const { state, events } = apply(almost, turn(attack, 'none'), makeRng('x'), NOW);
     expect(events[1]).toEqual({ type: 'won', action: 'f1', player: P, xp: 5, gold: 6 });
     expect(events[2]).toEqual({ type: 'levelled', action: 'f1', player: P, level: 2, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });

@@ -1,0 +1,57 @@
+{
+  "_about": "What a plain spot can hold besides a fight (Robin, 2026-11-02: 'it needs to be more interesting landing on spots... like roll a 6 to get a good piece of armor... rare and special, and tied to something that makes sense'). Words and numbers mine. A find is a single roll: `need` or better for a piece of `slot`, one rarity up at least.",
+  "meadow": {
+    "events": [
+      { "text": "A quiet picnic spot in the clover: you rest a while.", "kind": "heal", "value": 0.2 },
+      { "text": "A shepherd shares bread and cheese with you.", "kind": "heal", "value": 0.15 },
+      { "text": "You fall in a ditch full of nettles. Ouch.", "kind": "hurt", "value": 0.08 },
+      { "text": "Something glints under a mole hill: a lost purse.", "kind": "gold", "value": 12 },
+      { "text": "A farmer pays you to chase a goat off the barley.", "kind": "gold", "value": 8 },
+      { "text": "A warm breeze off the sea clears your head.", "kind": "mana", "value": 0.25 },
+      { "text": "A herb wife presses a little bottle into your hand.", "kind": "flask", "value": 1 },
+      { "text": "A card flutters down from a passing cart.", "kind": "card", "value": 1 }
+    ],
+    "finds": [
+      { "text": "A rusted cuirass sticks out of the river bank. Pull it free?", "slot": "armour", "need": 6 },
+      { "text": "A scarecrow wears a fine old helm. Knock it down?", "slot": "helm", "need": 6 },
+      { "text": "A blade lies under a fallen millstone. Heave it up?", "slot": "weapon", "need": 6 },
+      { "text": "A soldier's boots hang high in an old apple tree. Climb for them?", "slot": "boots", "need": 5 }
+    ]
+  },
+  "forest": {
+    "events": [
+      { "text": "A mossy hollow, soft as a bed: you doze a moment.", "kind": "heal", "value": 0.2 },
+      { "text": "Sweet sap drips from an old oak. You lick your fingers.", "kind": "heal", "value": 0.15 },
+      { "text": "Brambles close round you. You tear your way out.", "kind": "hurt", "value": 0.1 },
+      { "text": "A magpie's nest, full of stolen coins.", "kind": "gold", "value": 14 },
+      { "text": "A nutkin drops its purse and runs.", "kind": "gold", "value": 10 },
+      { "text": "Glowing motes drift through you, cool and bright.", "kind": "mana", "value": 0.3 },
+      { "text": "A flask sits on a stump with a note: for the brave.", "kind": "flask", "value": 1 },
+      { "text": "A fox trots up with a card in its teeth, drops it, and goes.", "kind": "card", "value": 1 }
+    ],
+    "finds": [
+      { "text": "Roots have grown through an old suit of armour. Tear it loose?", "slot": "armour", "need": 6 },
+      { "text": "A cloak hangs in a giant web, the spider long gone. Reach for it?", "slot": "cape", "need": 6 },
+      { "text": "A charm is sunk in a tree's bark, the wood healed round it. Dig it out?", "slot": "trinket", "need": 5 },
+      { "text": "A weapon stands in a stone, moss to the hilt. Try it?", "slot": "weapon", "need": 6 }
+    ]
+  },
+  "harvest": {
+    "events": [
+      { "text": "Harvesters wave you over for cider in the shade.", "kind": "heal", "value": 0.2 },
+      { "text": "You eat your fill of ripe plums.", "kind": "heal", "value": 0.15 },
+      { "text": "You put your hand in a wasp's nest. It was not empty.", "kind": "hurt", "value": 0.1 },
+      { "text": "A coin jar turns up in a haystack.", "kind": "gold", "value": 16 },
+      { "text": "A miller pays you to carry a sack to the road.", "kind": "gold", "value": 12 },
+      { "text": "Bees hum a low sweet note and your thoughts settle.", "kind": "mana", "value": 0.3 },
+      { "text": "A jar of honey tonic on a fence post: help yourself.", "kind": "flask", "value": 1 },
+      { "text": "A scarecrow's pocket holds a card.", "kind": "card", "value": 1 }
+    ],
+    "finds": [
+      { "text": "A scarecrow is wearing real plate under the straw. Pull it off?", "slot": "armour", "need": 6 },
+      { "text": "Something heavy is buried under the old press. Dig for it?", "slot": "shield", "need": 6 },
+      { "text": "A pair of fine gloves, stuck fast in a honeycomb. Work them free?", "slot": "gloves", "need": 5 },
+      { "text": "A blade in the barn rafters, out of reach. Jump for it?", "slot": "weapon", "need": 6 }
+    ]
+  }
+}

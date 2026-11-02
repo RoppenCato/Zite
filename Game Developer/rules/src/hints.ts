@@ -60,7 +60,9 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       const prowl =
         spawn?.kind === 'worldboss' && spawn.enemy
           ? ` A world boss, ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
-          : spawn?.kind === 'miniboss' && spawn.enemy
+          : spawn?.kind === 'elite' && spawn.enemy
+            ? ` An elite ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here: hard, and worth it.`
+            : spawn?.kind === 'miniboss' && spawn.enemy
             ? ` A ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy} prowls here!`
             : spawn?.kind === 'merchant'
               ? ' A wandering merchant has camped here.'

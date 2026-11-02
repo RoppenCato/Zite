@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 22;
+export const STATE_VERSION = 23;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
@@ -196,7 +196,7 @@ export interface Quest {
 }
 
 /** A pending question the character must answer before rolling again: the gambler's, a town's errand, or a piece that found no room in the bag. */
-export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[] } | { kind: 'roll'; what: 'flask' | 'gear'; need: number } | { kind: 'loot'; gear: GearItem };
+export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[]; from?: string } | { kind: 'roll'; what: 'flask' | 'gear' | 'find'; need: number; slot?: Slot; text?: string } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
   id: string;
@@ -246,6 +246,8 @@ export interface Character {
   carried: string[];
   /** Points from a first win over a region's boss, on top of the levels'. */
   bonusPoints: number;
+  /** What has been beaten and found (Robin, 2026-11-02). */
+  journal: { beaten: Record<string, number>; places: string[]; done: string[] };
   /** Keys to the locked chests, by area: a mini-boss of the area drops one. */
   keys: Record<string, number>;
   /** What a fight left on you (Robin, 2026-11-01): it stays until it wears off or a church cures it. */
@@ -368,7 +370,7 @@ export interface Fight {
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
 export interface Spawn {
-  kind: 'miniboss' | 'merchant' | 'worldboss';
+  kind: 'miniboss' | 'merchant' | 'worldboss' | 'elite';
   enemy: string | null;
   until: number;
   /** A world boss (mine, 2026-11-01): its HP, shared by everyone who fights it, and the damage each player dealt. */
@@ -415,6 +417,8 @@ export type FightMove =
 /** What a player wants. Every action carries a client-made id so a retry never acts twice. */
 export type Action =
   | { type: 'roll'; id: string; player: string }
+  /** Go straight to a boss's spot in land you have opened, and fight it (Robin, 2026-11-02). */
+  | { type: 'challenge'; id: string; player: string; space: string }
   | { type: 'move'; id: string; player: string; path: string[] }
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
@@ -504,6 +508,7 @@ export type GameEvent =
   /** Levels crossed or a boss beaten brought skill points. */
   | { type: 'skillPoints'; action: string; player: string; gained: number; free: number }
   /** Blood Price, Reckless Swing: HP spent. */
+  | { type: 'journal'; action: string; player: string; text: string }
   | { type: 'selfHurt'; action: string; player: string; amount: number; hp: number }
   | { type: 'skillReset'; action: string; player: string }
   /** A town's errand taken or declined. */
@@ -512,7 +517,7 @@ export type GameEvent =
   /** An errand moved along; `quest` is how it stands now. */
   | { type: 'questProgress'; action: string; player: string; quest: Quest }
   | { type: 'traveled'; action: string; player: string; from: string; to: string; price: number; gold: number }
-  | { type: 'tried'; action: string; player: string; what: 'flask' | 'gear'; roll: number; need: number; won: boolean }
+  | { type: 'tried'; action: string; player: string; what: 'flask' | 'gear' | 'find'; roll: number; need: number; won: boolean }
   | { type: 'personFound'; action: string; player: string; person: string; quest: Quest }
   /** An errand turned in; what it paid follows as gold, levels and maybe loot. */
   | { type: 'questDone'; action: string; player: string; quest: Quest }

@@ -40,6 +40,8 @@ import {
   groundsOf,
   questLine,
   placeName,
+  inTownWalls,
+  groundAt,
 } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
@@ -49,7 +51,7 @@ import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
-import { PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
+import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH } from '../layout.ts';
@@ -196,6 +198,9 @@ export class BoardScene extends Phaser.Scene {
   /** Roads of a land not open yet: where they run over painted ground no cover hides them. */
   private readonly closedRoads = new Map<string, Phaser.GameObjects.Graphics>();
   private readonly crossed = new Set<object>();
+  private reachLabels: Phaser.GameObjects.Text[] = [];
+  private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
+  private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
   /** The other players' figures, by id: `others` holds their marks. */
   private readonly otherHeroes = new Map<string, Hero>();
   /** The area whose creatures and backdrop are kept in memory. */
@@ -391,6 +396,14 @@ export class BoardScene extends Phaser.Scene {
   override update(_time: number, delta: number): void {
     this.log.frame(delta);
     this.hero?.update(delta);
+    // The labels keep one size on screen, whatever the zoom.
+    const cam = this.cameras.main;
+    for (const words of this.closedLabels.values()) words.setScale(DPR / cam.zoom);
+    for (const marks of this.closedMarks.values()) for (const mark of marks) mark.setScale((0.5 * DPR) / cam.zoom);
+    for (const label of this.reachLabels) {
+      const scale = DPR / cam.zoom;
+      label.setScale(scale).setX((label.getData('x') as number) + 24 * scale);
+    }
     for (const other of this.otherHeroes.values()) other.update(delta);
     this.lastZoom = this.cameras.main.zoom;
     if (this.kitted && this.token) this.token.setDepth(standingDepth(this.token.y + SPACE_RADIUS + 6));
@@ -712,9 +725,8 @@ export class BoardScene extends Phaser.Scene {
     for (const g of groundsOf(board, area.id)) {
       const hub = board.spaces[g.hub];
       if (!hub) continue;
-      const mob = creature(g.mob, board.bestiary)?.name ?? g.mob;
       this.add
-        .text(hub.x, hub.y - 62, `${g.name}\n${mob}s${g.levels ? ` · Lv ${g.levels[0]}-${g.levels[1]}` : ''}`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#fff4c8', stroke: '#2a2030', strokeThickness: 4, align: 'center', resolution: 2 })
+        .text(hub.x, hub.y - 62, `${g.name}${g.levels ? ` · Lv ${g.levels[0]}-${g.levels[1]}` : ''}`, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#fff4c8', stroke: '#2a2030', strokeThickness: 4, align: 'center', resolution: 2 })
         .setOrigin(0.5)
         .setAlpha(0.9)
         .setDepth(KIT_DEPTH.names);
@@ -726,6 +738,7 @@ export class BoardScene extends Phaser.Scene {
     this.drawGrounds(area);
     if (PAINTED[area.id]) {
       this.painted ??= new PaintedGround(this);
+      this.closedWords(area);
       this.cameras.main.setBackgroundColor(SEA);
       this.kitted = true;
       return;
@@ -889,14 +902,14 @@ export class BoardScene extends Phaser.Scene {
     if (space.name) {
       // Only hubs have names; the wilds of the road show their circle and nothing more.
       const name = this.add
-        .text(space.x, space.y + under, space.name, { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 5 })
+        .text(space.x, space.y + under, space.kind === 'town' ? space.name : '', { fontFamily: FONT, fontSize: '18px', fontStyle: 'bold', color: '#ffffff', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 5 })
         .setOrigin(0.5, 0)
         .setDepth(KIT_DEPTH.names);
       this.names.push(name);
       spotNames.push(name);
       if (space.kind === 'boss') {
         const label = this.add
-          .text(space.x, space.y + under + 22, '', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#fff4d6', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 4 })
+          .text(space.x, space.y + under, '', { fontFamily: FONT, fontSize: '16px', fontStyle: 'bold', color: '#fff4d6', align: 'center', resolution: 2, stroke: '#1c2612', strokeThickness: 4 })
           .setOrigin(0.5, 0)
           .setDepth(6);
         this.bossLabels.set(space.id, label);
@@ -976,6 +989,8 @@ export class BoardScene extends Phaser.Scene {
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
+    for (const [areaId, words] of this.closedLabels) words.setVisible(!opened.has(areaId));
+    for (const [areaId, marks] of this.closedMarks) for (const mark of marks) mark.setVisible(!opened.has(areaId));
     for (const [areaId, roads] of this.closedRoads) roads.setVisible(opened.has(areaId.replace('road:', '')));
     this.lastCull.count = -1;
     for (const [gate, image] of this.gates) image.setFrame(opened.has(gate.opens) ? gate.open : gate.barred);
@@ -1000,7 +1015,7 @@ export class BoardScene extends Phaser.Scene {
         this.spawnMarks.set(spaceId, mark);
         continue;
       }
-      const mini = spawn.kind === 'miniboss';
+      const mini = spawn.kind === 'miniboss' || spawn.kind === 'elite';
       const parts: Phaser.GameObjects.GameObject[] = [];
       if (hasFrame(this, mini ? 'mark_alert' : 'mark_dollar')) parts.push(icon(this, mini ? 'mark_alert' : 'mark_dollar', 0, 0));
       else {
@@ -1187,9 +1202,34 @@ export class BoardScene extends Phaser.Scene {
     this.cameras.main.setBounds(b.x, b.y, b.width, b.height);
   }
 
+  /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
+  private closedWords(area: Area): void {
+    const box = PAINTED[area.id]!;
+    const board = this.game_.state.board;
+    const gate = Object.values(board.spaces).find((s) => s.opens === area.id);
+    const keeper = gate?.boss ? (creature(gate.boss, board.bestiary)?.name ?? '') : '';
+    const words = this.add.text(box.x + box.width / 2, box.y + Math.min(box.height / 2, 1500), `${area.name}${keeper ? `\nBeat ${keeper}` : ''}`, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
+    this.closedLabels.set(area.id, words);
+    // What waits there: the boss's silhouette, and a "?" at each ground (Mitch, AD).
+    if (!this.textures.exists(FOG_PIECES)) return;
+    const marks: Phaser.GameObjects.Image[] = [];
+    const boss = Object.values(board.spaces).find((s) => s.area === area.id && s.kind === 'boss');
+    const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : null;
+    if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' ? 40 : 0), FOG_PIECES, shape));
+    for (const g of groundsOf(board, area.id)) {
+      const hub = board.spaces[g.hub];
+      if (hub) marks.push(this.add.image(hub.x, hub.y, FOG_PIECES, 'mark_unknown'));
+    }
+    for (const mark of marks) mark.setOrigin(0.5, 1).setDepth(KIT_DEPTH.names);
+    this.closedMarks.set(area.id, marks);
+  }
+
   /** The box round everything open, and the zoom that fits it in the band. */
   private openBounds(): { x: number; y: number; width: number; height: number } {
-    const areas = Object.values(this.game_.state.board.areas).filter((a) => this.game_.me.opened.includes(a.id));
+    // The next land too: dim, but there to look at (Robin, 2026-11-02).
+    const all = Object.values(this.game_.state.board.areas);
+    const reach = Math.max(...this.game_.me.opened.map((id) => this.game_.state.board.areas[id]?.tier ?? 1)) + 1;
+    const areas = all.filter((a) => this.game_.me.opened.includes(a.id) || (this.painted && a.tier === reach && PAINTED[a.id]));
     const list: Area[] = areas.length ? areas : Object.values(this.game_.state.board.areas);
     const boxes = list.map((a) => PAINTED[a.id] ?? a.bounds);
     const x = Math.min(...boxes.map((a) => a.x));
@@ -1400,6 +1440,9 @@ export class BoardScene extends Phaser.Scene {
     for (const o of options) {
       const ring = this.rings.get(o.space);
       if (ring) rings.push(ring.setVisible(true).setAlpha(1));
+      // What is there, beside it (Robin, 2026-11-02: "some tooltips next to those spots saying what it is").
+      const at = board.spaces[o.space]!;
+      this.reachLabels.push(this.add.text(at.x, at.y, this.spotWord(at), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', backgroundColor: '#2a1a0cdd', padding: { x: 5, y: 2 } }).setOrigin(0, 0.5).setDepth(9).setData('x', at.x));
     }
     this.tweens.add({ targets: rings, alpha: 0.25, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.frame([this.token, ...options.map((o) => board.spaces[o.space]!)]);
@@ -1471,6 +1514,19 @@ export class BoardScene extends Phaser.Scene {
     this.overlayClosedFrame = this.game.loop.frame;
   }
 
+  private answerChallenge(space: string): void {
+    this.closeAsk();
+    this.send({ type: 'challenge', player: this.game_.player, space }, (events) => {
+      if (!this.game_.me.fight) {
+        this.finish(this.describe(events));
+        return;
+      }
+      this.placeToken();
+      this.follow(true);
+      this.openFight();
+    });
+  }
+
   /** The coach: the shop closes, you are there, rested. */
   travelTo(to: string): void {
     this.send({ type: 'travel', player: this.game_.player, to }, (events) => {
@@ -1493,13 +1549,14 @@ export class BoardScene extends Phaser.Scene {
     const offer = this.game_.me.offer;
     if (!offer || offer.kind !== 'roll') return;
     const flask = offer.what === 'flask';
-    this.setMessage(flask ? 'A potion spot.' : 'A loot spot.');
+    const find = offer.what === 'find';
+    this.setMessage(find ? 'You found something!' : flask ? 'A potion spot.' : 'A loot spot.');
     this.refreshHud();
     this.ask({
-      icon: flask ? 'potion' : 'item_gold',
-      color: flask ? 0x5aa9ff : 0xc98a3c,
-      title: flask ? 'A potion spot' : 'A loot spot',
-      text: `Roll ${offer.need} or better for ${flask ? 'a free potion' : 'a piece of basic gear'}.`,
+      icon: flask ? 'potion' : find ? 'mark_star' : 'item_gold',
+      color: flask ? 0x5aa9ff : find ? 0xf4c14a : 0xc98a3c,
+      title: find ? 'A rare find' : flask ? 'A potion spot' : 'A loot spot',
+      text: find ? `${offer.text} Roll ${offer.need === 6 ? 'a 6' : `${offer.need} or better`}: one try.` : `Roll ${offer.need} or better for ${flask ? 'a free potion' : 'a piece of basic gear'}.`,
       options: [{ label: 'Roll', color: COLORS.button, onTap: () => this.answerRoll() }],
     });
   }
@@ -1515,7 +1572,7 @@ export class BoardScene extends Phaser.Scene {
         return;
       }
       const landed = () => {
-        if (!tried.won) moments(this)?.find('mark_alert', `You rolled ${tried.roll}`, `It needed ${tried.need}. Try again in five minutes.`, 0xff7a5c);
+        if (!tried.won) moments(this)?.find('mark_alert', `You rolled ${tried.roll}`, `It needed ${tried.need}.${tried.what === 'find' ? ' It stays out of reach.' : ' Try again in five minutes.'}`, 0xff7a5c);
         this.showFinds(events);
         this.reveal(prizesIn(events), 'You won!', () => this.finish(tried.won ? `You rolled ${tried.roll} and won it.` : `You rolled ${tried.roll}. No luck.`));
       };
@@ -1547,12 +1604,12 @@ export class BoardScene extends Phaser.Scene {
       });
       return;
     }
-    this.setMessage('The quest board.');
+    this.setMessage(offer.from ? `${offer.from} flags you down.` : 'The quest board.');
     const words = { kill: 'Hunt', loot: 'Gather', mini: 'Mini-boss', find: 'Find someone' };
     this.ask({
       color: 0xe8b84a,
-      title: 'Quest Board',
-      text: 'One at a time. It pays the moment you finish it, with a chest.',
+      title: offer.from ?? 'Quest Board',
+      text: offer.from ? `${offer.from} has a job for you, if you want it. It pays with a chest.` : 'One at a time. It pays the moment you finish it, with a chest.',
       options: [
         ...offer.quests.map((q, i) => ({ label: `${words[q.kind]}: ${q.xp} xp, ${q.gold} g`, color: COLORS.button, note: q.text, onTap: () => this.answerQuest(true, i) })),
         { label: 'Not now', color: COLORS.log, onTap: () => this.answerQuest(false) },
@@ -1645,6 +1702,24 @@ export class BoardScene extends Phaser.Scene {
         return;
       }
       this.flashHint(id);
+      // A boss in open land: fight it now, from anywhere (Robin, 2026-11-02).
+      if (space.kind === 'boss' && space.boss && !this.busy && !me.steps && !me.fight && me.opened.includes(space.area)) {
+        const away = (me.cooldowns[id] ?? 0) > this.game_.now();
+        const foe = creature(space.boss, this.game_.state.board.bestiary);
+        if (!away) {
+          this.ask({
+            icon: 'mark_alert',
+            color: 0xd9534f,
+            title: foe?.name ?? 'The boss',
+            text: `Level ${foe?.level ?? '?'}. Go there and fight it now?`,
+            options: [
+              { label: 'Challenge', color: 0xd9534f, onTap: () => this.answerChallenge(id) },
+              { label: 'Not yet', color: COLORS.log, onTap: () => this.finish('') },
+            ],
+          });
+          return;
+        }
+      }
       const bossTip = space.kind === 'boss' ? tips.take('boss') : null;
       const here = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === id).map((c) => c.name);
       const who = here.length ? ` ${here.join(' and ')} ${here.length > 1 ? 'are' : 'is'} here.` : '';
@@ -1670,7 +1745,42 @@ export class BoardScene extends Phaser.Scene {
     this.tweens.add({ targets: ring, alpha: 0, duration: 700, ease: 'Quad.easeOut', onComplete: () => ring.setVisible(false).setAlpha(1) });
   }
 
+  /** A word or two for what a spot holds: only what you need to choose. */
+  private spotWord(space: Space): string {
+    const { board, spawns } = this.game_.state;
+    const me = this.game_.me;
+    const spawn = spawns[space.id];
+    const name = (id: string | null | undefined) => (id ? (creature(id, board.bestiary)?.name ?? id) : '');
+    if (spawn?.kind === 'elite') return `Elite ${name(spawn.enemy)}`;
+    if (spawn?.kind === 'miniboss' || spawn?.kind === 'worldboss') return name(spawn.enemy);
+    if (spawn?.kind === 'merchant') return 'Merchant';
+    if ((me.cooldowns[space.id] ?? 0) > this.game_.now()) return 'Empty';
+    switch (space.kind) {
+      case 'normal':
+        if (inTownWalls(board, space)) return 'Street';
+        return name(groundAt(board, space)?.mob) || 'Wilds';
+      case 'town':
+        return space.name || 'Town';
+      case 'boss':
+        return name(space.boss);
+      case 'potion':
+        return 'Potion roll';
+      case 'gear':
+        return 'Loot roll';
+      case 'spell':
+        return 'Shrine: mana';
+      case 'church':
+        return 'Church: heal';
+      case 'board':
+        return 'Quests';
+      default:
+        return SPACE_KIND_DATA[space.kind].label;
+    }
+  }
+
   private clearChoices(): void {
+    for (const label of this.reachLabels) label.destroy();
+    this.reachLabels = [];
     if (!this.choices_) return;
     for (const id of this.choices_.keys()) {
       const ring = this.rings.get(id);
@@ -1855,6 +1965,9 @@ export class BoardScene extends Phaser.Scene {
           break;
         case 'learned':
           parts.push(`Learned ${ABILITIES[e.ability]?.name ?? e.ability}, rank ${e.rank}.`);
+          break;
+        case 'journal':
+          parts.push(e.text);
           break;
         case 'skillPoints':
           parts.push(e.gained === 1 ? 'A skill point: Hero, then Skills.' : `${e.gained} skill points: Hero, then Skills.`);

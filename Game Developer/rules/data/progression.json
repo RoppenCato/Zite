@@ -58,10 +58,11 @@
     "stakePerTier": 20
   },
   "spawns": {
-    "cap": 2,
+    "cap": 3,
     "chancePerTick": 0.5,
     "lifeMs": 600000,
-    "miniboss": 0.7
+    "miniboss": 0.7,
+    "elite": 0.5
   },
   "worldBoss": {
     "chancePerTick": 0.02,

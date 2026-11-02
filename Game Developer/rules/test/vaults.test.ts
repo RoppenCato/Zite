@@ -30,24 +30,25 @@ describe("the themes' events", () => {
     // A world state with a character stood a step from a wild spot of each theme: the meadows (heal) and Thornwood (hurt) are hand-laid.
     const s = newGame({ seed: 'ev', player: P, name: 'Robin', classId: 'warrior' });
     const near = (space: string, patch: Partial<Character> = {}) => ({ ...s, characters: { [P]: { ...me(s), space, steps: 1, opened: ['meadows', 'thornwood'], ...patch } }, die: { ...s.die, last: 1 } });
-    const findEvent = (from: string, to: string, patch: Partial<Character> = {}) => {
-      for (let i = 0; i < 400; i++) {
+    const findEvent = (from: string, to: string, patch: Partial<Character> = {}, kind = 'heal') => {
+      for (let i = 0; i < 900; i++) {
         const r = apply(near(from, patch), move([to]), makeRng(`ev-${i}`), NOW);
         const ev = r.events.find((e) => e.type === 'themeEvent');
-        if (ev?.type === 'themeEvent') return { r, ev };
+        if (ev?.type === 'themeEvent' && ev.kind === kind && ev.amount === (kind === 'heal' ? 24 : ev.amount)) return { r, ev };
       }
-      throw new Error('no event in 400 seeds');
+      throw new Error('no such event in 900 seeds');
     };
     const wildBy = (hub: string) => s.board.spaces[hub]!.links.find((l) => s.board.spaces[l]!.kind === 'normal')!;
     const picnic = findEvent('saltmarsh', wildBy('saltmarsh'), { hp: 50 });
     expect(picnic.ev).toMatchObject({ kind: 'heal', amount: 24 });
     expect(picnic.r.events).toContainEqual(expect.objectContaining({ type: 'healed', amount: 24, hp: 74 }));
-    const brambles = findEvent('elder', wildBy('elder'), { hp: 3 });
-    expect(brambles.ev).toMatchObject({ kind: 'hurt', amount: 2 }); // 6 percent of 120 would be 7; never the last point
+    // Never the last point.
+    const brambles = findEvent('elder', wildBy('elder'), { hp: 3 }, 'hurt');
+    expect(brambles.ev).toMatchObject({ kind: 'hurt', amount: 2 });
     expect(me(brambles.r.state).hp).toBe(1);
-    const sound = findEvent('elder', wildBy('elder'), { hp: 120 });
-    expect(sound.ev).toMatchObject({ kind: 'hurt', amount: 7 });
-    expect(me(sound.r.state).hp).toBe(113);
+    const sound = findEvent('elder', wildBy('elder'), { hp: 120 }, 'hurt');
+    expect(sound.ev).toMatchObject({ kind: 'hurt', amount: 12 });
+    expect(me(sound.r.state).hp).toBe(108);
   });
 });
 
@@ -128,7 +129,7 @@ describe('a version-8 save', () => {
     delete c.keys;
     const v8 = { ...structuredClone(today), version: 8, characters: { [P]: c } };
     const s = migrate(structuredClone(v8));
-    expect(s!.version).toBe(22);
+    expect(s!.version).toBe(23);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).quests).toEqual([]);
   });

@@ -1,8 +1,10 @@
 {
-  "fight": 82,
-  "chest": 3,
-  "merchant": 4,
-  "gamble": 4,
+  "fight": 70,
+  "chest": 4,
+  "merchant": 3,
+  "gamble": 3,
   "miniboss": 3,
-  "event": 4
+  "event": 10,
+  "find": 4,
+  "stranger": 3
 }
