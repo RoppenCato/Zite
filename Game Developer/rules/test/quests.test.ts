@@ -40,7 +40,7 @@ describe('hunting grounds', () => {
     expect(groundAt(board, board.spaces.cairn!)?.mob).toBe('bandit');
   });
 
-  it('send you mostly the ground\'s own creature', () => {
+  it('send you only the ground\'s own creature', () => {
     const s = world();
     const wild = Object.values(s.board.spaces).find((x) => x.kind === 'normal' && !x.name && groundAt(s.board, x)?.mob === 'slime')!;
     let own = 0;
@@ -52,7 +52,7 @@ describe('hunting grounds', () => {
       if (fight.enemy.id === 'slime') own += 1;
     }
     expect(fights).toBeGreaterThan(100);
-    expect(own / fights).toBeGreaterThan(0.65);
+    expect(own).toBe(fights);
   });
 });
 

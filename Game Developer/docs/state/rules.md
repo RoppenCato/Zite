@@ -422,3 +422,5 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 ## Robin's second set of notes (2026-11-02)
 
 **King Goo is 600 HP** (Robin). **Less loot and gold** (his: chests constantly, the whole leather set in a minute): a wild spot is a chest 3 times in 100 (was 10), a fight 82; chests give 6 to 18 gold a tier (was 15 to 40), gear a quarter of the time, and fill in ten minutes; first-tier gear costs about 1.6 times what it did; quest gold is down by about 40%. **Spots you roll for**: `potion` and the new `gear` ask for a roll (`offer` `roll`, intent `try`): 4 or better wins a flask of the tier, or a plain piece worth a fifth of its price so it cannot be farmed; five minutes, win or lose. Numbers mine.
+
+- **A creature lives only in its own hunting ground** (Robin, 2026-11-02); the 75% share is gone.

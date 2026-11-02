@@ -56,7 +56,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
     case 'normal': {
       // The hunting ground: what mostly roams here and what it tends to drop.
       const ground = groundAt(state.board, space);
-      const mobs = ground ? `${ground.name}: mostly ${creature(ground.mob, bestiary)?.name ?? ground.mob}, finds lean to ${ground.drops.join(' and ')}` : (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
+      const mobs = ground ? `${ground.name}: home of the ${creature(ground.mob, bestiary)?.name ?? ground.mob}, finds lean to ${ground.drops.join(' and ')}` : (area?.mobs ?? []).map((id) => creature(id, bestiary)?.name ?? id).join(', ');
       const prowl =
         spawn?.kind === 'worldboss' && spawn.enemy
           ? ` A world boss, ${creature(spawn.enemy, bestiary)?.name ?? spawn.enemy}, rages here: ${spawn.hp ?? '?'} of ${spawn.maxHp ?? '?'} HP left, gone in ${countdown(spawn.until - now)}. Everyone who lands here fights the same beast and shares the reward.`
