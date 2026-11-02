@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "buccaneer/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 212,
+    "h": 308
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 308
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 308
+   },
+   "pivot": {
+    "x": 0.2594,
+    "y": 0.9708
+   }
+  },
+  "buccaneer/move/0004": {
+   "frame": {
+    "x": 216,
+    "y": 2,
+    "w": 213,
+    "h": 297
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 297
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 297
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9899
+   }
+  },
+  "buccaneer/stand/0003": {
+   "frame": {
+    "x": 431,
+    "y": 2,
+    "w": 214,
+    "h": 296
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 296
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 296
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9899
+   }
+  },
+  "buccaneer/stand/0002": {
+   "frame": {
+    "x": 647,
+    "y": 2,
+    "w": 214,
+    "h": 295
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 295
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 295
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/stand/0004": {
+   "frame": {
+    "x": 2,
+    "y": 312,
+    "w": 214,
+    "h": 295
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 295
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 295
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/move/0001": {
+   "frame": {
+    "x": 218,
+    "y": 312,
+    "w": 213,
+    "h": 295
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 295
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 295
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9966
+   }
+  },
+  "buccaneer/hit1/0002": {
+   "frame": {
+    "x": 433,
+    "y": 312,
+    "w": 212,
+    "h": 294
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 294
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 294
+   },
+   "pivot": {
+    "x": 0.3915,
+    "y": 0.983
+   }
+  },
+  "buccaneer/die1/0001": {
+   "frame": {
+    "x": 647,
+    "y": 312,
+    "w": 210,
+    "h": 294
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 294
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 294
+   },
+   "pivot": {
+    "x": 0.3286,
+    "y": 0.9796
+   }
+  },
+  "buccaneer/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 609,
+    "w": 214,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/attack1/0001": {
+   "frame": {
+    "x": 218,
+    "y": 609,
+    "w": 214,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.514,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/attack1/0002": {
+   "frame": {
+    "x": 434,
+    "y": 609,
+    "w": 214,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/attack1/0003": {
+   "frame": {
+    "x": 650,
+    "y": 609,
+    "w": 214,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 214,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 214,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.5327,
+    "y": 0.9898
+   }
+  },
+  "buccaneer/move/0003": {
+   "frame": {
+    "x": 2,
+    "y": 904,
+    "w": 213,
+    "h": 292
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 292
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 292
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9897
+   }
+  },
+  "buccaneer/move/0005": {
+   "frame": {
+    "x": 217,
+    "y": 904,
+    "w": 213,
+    "h": 292
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 292
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 292
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9897
+   }
+  },
+  "buccaneer/attack1/0005": {
+   "frame": {
+    "x": 432,
+    "y": 904,
+    "w": 219,
+    "h": 292
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 219,
+    "h": 292
+   },
+   "sourceSize": {
+    "w": 219,
+    "h": 292
+   },
+   "pivot": {
+    "x": 0.6256,
+    "y": 0.9863
+   }
+  },
+  "buccaneer/attack1/0006": {
+   "frame": {
+    "x": 653,
+    "y": 904,
+    "w": 213,
+    "h": 292
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 292
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 292
+   },
+   "pivot": {
+    "x": 0.5728,
+    "y": 0.9897
+   }
+  },
+  "buccaneer/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1198,
+    "w": 213,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 290
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9966
+   }
+  },
+  "buccaneer/move/0006": {
+   "frame": {
+    "x": 217,
+    "y": 1198,
+    "w": 213,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 290
+   },
+   "pivot": {
+    "x": 0.5681,
+    "y": 0.9966
+   }
+  },
+  "buccaneer/attack1/0004": {
+   "frame": {
+    "x": 432,
+    "y": 1198,
+    "w": 232,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 232,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 232,
+    "h": 290
+   },
+   "pivot": {
+    "x": 0.6638,
+    "y": 0.9828
+   }
+  },
+  "buccaneer/die1/0002": {
+   "frame": {
+    "x": 666,
+    "y": 1198,
+    "w": 243,
+    "h": 284
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 243,
+    "h": 284
+   },
+   "sourceSize": {
+    "w": 243,
+    "h": 284
+   },
+   "pivot": {
+    "x": 0.2099,
+    "y": 0.9542
+   }
+  },
+  "buccaneer/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1490,
+    "w": 299,
+    "h": 234
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 299,
+    "h": 234
+   },
+   "sourceSize": {
+    "w": 299,
+    "h": 234
+   },
+   "pivot": {
+    "x": 0.0903,
+    "y": 1.0214
+   }
+  },
+  "buccaneer/die1/0004": {
+   "frame": {
+    "x": 303,
+    "y": 1490,
+    "w": 315,
+    "h": 198
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 315,
+    "h": 198
+   },
+   "sourceSize": {
+    "w": 315,
+    "h": 198
+   },
+   "pivot": {
+    "x": 0.0095,
+    "y": 0.8485
+   }
+  },
+  "buccaneer/die1/0005": {
+   "frame": {
+    "x": 620,
+    "y": 1490,
+    "w": 316,
+    "h": 193
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 316,
+    "h": 193
+   },
+   "sourceSize": {
+    "w": 316,
+    "h": 193
+   },
+   "pivot": {
+    "x": 0.0095,
+    "y": 0.7927
+   }
+  },
+  "buccaneer/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1726,
+    "w": 316,
+    "h": 193
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 316,
+    "h": 193
+   },
+   "sourceSize": {
+    "w": 316,
+    "h": 193
+   },
+   "pivot": {
+    "x": 0.0095,
+    "y": 0.7927
+   }
+  }
+ },
+ "meta": {
+  "image": "buccaneer.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "buccaneer/stand/0001",
+     "w": 214,
+     "h": 293,
+     "origin": {
+      "x": 114,
+      "y": 290
+     },
+     "delay": 150,
+     "lt": {
+      "x": -114,
+      "y": -290
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "buccaneer/stand/0002",
+     "w": 214,
+     "h": 295,
+     "origin": {
+      "x": 114,
+      "y": 292
+     },
+     "delay": 150,
+     "lt": {
+      "x": -114,
+      "y": -292
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -292
+     }
+    },
+    {
+     "name": "buccaneer/stand/0003",
+     "w": 214,
+     "h": 296,
+     "origin": {
+      "x": 114,
+      "y": 293
+     },
+     "delay": 150,
+     "lt": {
+      "x": -114,
+      "y": -293
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "buccaneer/stand/0004",
+     "w": 214,
+     "h": 295,
+     "origin": {
+      "x": 114,
+      "y": 292
+     },
+     "delay": 150,
+     "lt": {
+      "x": -114,
+      "y": -292
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -292
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "buccaneer/move/0001",
+     "w": 213,
+     "h": 295,
+     "origin": {
+      "x": 121,
+      "y": 294
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -294
+     },
+     "rb": {
+      "x": 92,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -294
+     }
+    },
+    {
+     "name": "buccaneer/move/0002",
+     "w": 213,
+     "h": 290,
+     "origin": {
+      "x": 121,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -289
+     },
+     "rb": {
+      "x": 92,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "buccaneer/move/0003",
+     "w": 213,
+     "h": 292,
+     "origin": {
+      "x": 121,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -289
+     },
+     "rb": {
+      "x": 92,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "buccaneer/move/0004",
+     "w": 213,
+     "h": 297,
+     "origin": {
+      "x": 121,
+      "y": 294
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -294
+     },
+     "rb": {
+      "x": 92,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -294
+     }
+    },
+    {
+     "name": "buccaneer/move/0005",
+     "w": 213,
+     "h": 292,
+     "origin": {
+      "x": 121,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -289
+     },
+     "rb": {
+      "x": 92,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "buccaneer/move/0006",
+     "w": 213,
+     "h": 290,
+     "origin": {
+      "x": 121,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -121,
+      "y": -289
+     },
+     "rb": {
+      "x": 92,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "buccaneer/attack1/0001",
+     "w": 214,
+     "h": 293,
+     "origin": {
+      "x": 110,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -110,
+      "y": -290
+     },
+     "rb": {
+      "x": 104,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "buccaneer/attack1/0002",
+     "w": 214,
+     "h": 293,
+     "origin": {
+      "x": 107,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -107,
+      "y": -290
+     },
+     "rb": {
+      "x": 107,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "buccaneer/attack1/0003",
+     "w": 214,
+     "h": 293,
+     "origin": {
+      "x": 114,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -114,
+      "y": -290
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "buccaneer/attack1/0004",
+     "w": 232,
+     "h": 290,
+     "origin": {
+      "x": 154,
+      "y": 285
+     },
+     "delay": 134,
+     "lt": {
+      "x": -154,
+      "y": -285
+     },
+     "rb": {
+      "x": 78,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -285
+     }
+    },
+    {
+     "name": "buccaneer/attack1/0005",
+     "w": 219,
+     "h": 292,
+     "origin": {
+      "x": 137,
+      "y": 288
+     },
+     "delay": 67,
+     "lt": {
+      "x": -137,
+      "y": -288
+     },
+     "rb": {
+      "x": 82,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -288
+     }
+    },
+    {
+     "name": "buccaneer/attack1/0006",
+     "w": 213,
+     "h": 292,
+     "origin": {
+      "x": 122,
+      "y": 289
+     },
+     "delay": 67,
+     "lt": {
+      "x": -122,
+      "y": -289
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "buccaneer/hit1/0001",
+     "w": 212,
+     "h": 308,
+     "origin": {
+      "x": 55,
+      "y": 299
+     },
+     "delay": 150,
+     "lt": {
+      "x": -55,
+      "y": -299
+     },
+     "rb": {
+      "x": 157,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -299
+     }
+    },
+    {
+     "name": "buccaneer/hit1/0002",
+     "w": 212,
+     "h": 294,
+     "origin": {
+      "x": 83,
+      "y": 289
+     },
+     "delay": 120,
+     "lt": {
+      "x": -83,
+      "y": -289
+     },
+     "rb": {
+      "x": 129,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "buccaneer/die1/0001",
+     "w": 210,
+     "h": 294,
+     "origin": {
+      "x": 69,
+      "y": 288
+     },
+     "delay": 90,
+     "lt": {
+      "x": -69,
+      "y": -288
+     },
+     "rb": {
+      "x": 141,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -288
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "buccaneer/die1/0002",
+     "w": 243,
+     "h": 284,
+     "origin": {
+      "x": 51,
+      "y": 271
+     },
+     "delay": 90,
+     "lt": {
+      "x": -51,
+      "y": -271
+     },
+     "rb": {
+      "x": 192,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -271
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "buccaneer/die1/0003",
+     "w": 299,
+     "h": 234,
+     "origin": {
+      "x": 27,
+      "y": 239
+     },
+     "delay": 90,
+     "lt": {
+      "x": -27,
+      "y": -239
+     },
+     "rb": {
+      "x": 272,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -239
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "buccaneer/die1/0004",
+     "w": 315,
+     "h": 198,
+     "origin": {
+      "x": 3,
+      "y": 168
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -168
+     },
+     "rb": {
+      "x": 312,
+      "y": 30
+     },
+     "head": {
+      "x": 0,
+      "y": -168
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "buccaneer/die1/0005",
+     "w": 316,
+     "h": 193,
+     "origin": {
+      "x": 3,
+      "y": 153
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -153
+     },
+     "rb": {
+      "x": 313,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -153
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "buccaneer/die1/0006",
+     "w": 316,
+     "h": 193,
+     "origin": {
+      "x": 3,
+      "y": 153
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -153
+     },
+     "rb": {
+      "x": 313,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -153
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

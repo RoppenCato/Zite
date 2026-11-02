@@ -11,6 +11,11 @@ import cityGroundPng from '../../assets/city_fight/ground.png';
 import cityMidPng from '../../assets/city_fight/mid.png';
 import cityNearPng from '../../assets/city_fight/near.png';
 import cloudsPng from '../../assets/meadow_fight/clouds.png';
+import piratesCloudsPng from '../../assets/pirates_fight/clouds.png';
+import piratesFarPng from '../../assets/pirates_fight/far.png';
+import piratesGroundPng from '../../assets/pirates_fight/ground.png';
+import piratesMidPng from '../../assets/pirates_fight/mid.png';
+import piratesNearPng from '../../assets/pirates_fight/near.png';
 import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
 import midPng from '../../assets/meadow_fight/mid.png';
@@ -91,6 +96,19 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'city-mid', png: cityMidPng, w: 512, h: 297, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'city-near', png: cityNearPng, w: 512, h: 113, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'city-ground', png: cityGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  // The isles' sandy path, the way back to the pier and a ship in the bay (Mitch, AD, 2026-11-02).
+  pirates: {
+    sky: { top: 0x62b4ec, bottom: 0xfdf2d4 },
+    soil: 0xecd8a0,
+    feet: 46,
+    strips: [
+      { key: 'pirates-clouds', png: piratesCloudsPng, w: 512, h: 170, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'pirates-far', png: piratesFarPng, w: 512, h: 216, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'pirates-mid', png: piratesMidPng, w: 512, h: 289, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'pirates-near', png: piratesNearPng, w: 512, h: 256, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'pirates-ground', png: piratesGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
   forest: {

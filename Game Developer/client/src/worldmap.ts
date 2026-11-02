@@ -64,7 +64,7 @@ export const PAINTED: Record<string, { x: number; y: number; width: number; heig
 );
 
 /** Lands whose roads are baked into the ground (Mitch, AD): stroking them would cover the planks, the snow and the city's streets. */
-export const BAKED_ROADS = new Set(['bogglemire', 'frostcrown', 'crownhaven']);
+export const BAKED_ROADS = new Set(['bogglemire', 'frostcrown', 'crownhaven', 'pirateisles']);
 
 /** One set of chunks for the world; a dungeon's lie on squares of the same grid, and only one set is ever wanted. */
 const CHUNKS = new Map<string, Chunk & { areas: string[] }>();

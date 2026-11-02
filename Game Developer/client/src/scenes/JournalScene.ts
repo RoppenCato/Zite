@@ -7,6 +7,8 @@ import facesJson from '../../../assets/journal/journal_faces.json?url';
 import facesPng from '../../../assets/journal/journal_faces.png';
 import facesEastJson from '../../../assets/journal_east/journal_faces_east.json?url';
 import facesEastPng from '../../../assets/journal_east/journal_faces_east.png';
+import facesPiratesJson from '../../../assets/journal_pirates/journal_faces_pirates.json?url';
+import facesPiratesPng from '../../../assets/journal_pirates/journal_faces_pirates.png';
 import { sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { CREAM, KIT, kitReady, plate, sheet } from '../kit.ts';
@@ -17,6 +19,7 @@ const WOOD_INK = '#3a2410';
 const DIM = '#8a7458';
 const FACES = 'journal_faces';
 const FACES_EAST = 'journal_faces_east';
+const FACES_PIRATES = 'journal_faces_pirates';
 const ROWS = 6;
 
 export class JournalScene extends Phaser.Scene {
@@ -33,6 +36,7 @@ export class JournalScene extends Phaser.Scene {
   preload(): void {
     if (!this.textures.exists(FACES)) this.load.atlas(FACES, facesPng, facesJson);
     if (!this.textures.exists(FACES_EAST)) this.load.atlas(FACES_EAST, facesEastPng, facesEastJson);
+    if (!this.textures.exists(FACES_PIRATES)) this.load.atlas(FACES_PIRATES, facesPiratesPng, facesPiratesJson);
   }
 
   create(): void {
@@ -141,7 +145,7 @@ export class JournalScene extends Phaser.Scene {
       this.rows.push(line);
     }
     if (kitReady(this)) this.rows.push(this.add.image(58, cy, KIT, special ? 'cubby_legendary' : seen ? 'cubby_plain' : 'cubby_empty').setDisplaySize(52, 52));
-    const faces = [FACES, FACES_EAST].find((key) => this.textures.exists(key) && this.textures.get(key).has(id));
+    const faces = [FACES, FACES_EAST, FACES_PIRATES].find((key) => this.textures.exists(key) && this.textures.get(key).has(id));
     const hasFace = !!faces;
     if (hasFace) {
       const face = this.add.image(58, cy, faces!, id).setDisplaySize(44, 44);

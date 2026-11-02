@@ -123,3 +123,8 @@ A creature at your level costs about 5% of your HP in 3 to 5 rounds. Bosses take
 
 Level 20 takes 2.8 to 5.5 hours for most builds, about as before. Grumblebark is the hardest early boss: 21 to 28 rounds. By level 30 a player has found about 22 set pieces and 11 uniques; the sim wears few of them, because it judges gear by its plain numbers, so sets have not been felt in these runs. One build stands out: Warrior Berserker with Knight took 11.7 hours to level 20 and 35 to 30, not looked into yet.
 
+
+
+### With the Pirate Isles (one seed a build)
+
+Level 30 now takes 7 to 13 hours for most builds, down from 12 to 15: the isles pay full XP from level 20 to 24. About 5 hours are spent there, since the Giants' Land is not in yet. Captain Saltjaw: 13 to 25 rounds, up to 3 tries.

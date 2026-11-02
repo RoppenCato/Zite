@@ -139,9 +139,10 @@ describe('the world', () => {
       ['bogglemire', 4],
       ['frostcrown', 5],
       ['kingswood', 2],
+      ['pirateisles', 6],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
-    expect(spaces.length).toBeLessThanOrEqual(1000);
+    expect(spaces.length).toBeLessThanOrEqual(1300);
     expect(board).toMatchObject({ width: 17600, height: 12700 });
   });
 
@@ -165,6 +166,7 @@ describe('the world', () => {
   it('opens from the first boss, and by mini-bosses at two gates; no other boss opens anything (Robin, 2026-11-02)', () => {
     expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'kingswood' });
     expect(board.spaces['gate-bogsnapper']).toMatchObject({ kind: 'boss', boss: 'bogsnapper', opens: 'bogglemire' });
+    expect(board.spaces['gate-redwake']).toMatchObject({ kind: 'boss', area: 'kingswood', boss: 'first-mate-redwake', opens: 'pirateisles' });
     expect(board.spaces['gate-bighorn']).toMatchObject({ kind: 'boss', boss: 'old-bighorn', opens: 'frostcrown' });
     for (const id of ['briar', 'summit', 'murkpool', 'frostseat']) expect(board.spaces[id]!.opens ?? null, id).toBeNull();
     const makes = makeBoard();

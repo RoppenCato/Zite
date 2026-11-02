@@ -1,0 +1,30 @@
+{
+ "spots": 124,
+ "hubs": 17,
+ "roads": 23,
+ "tooClose": [],
+ "crossings": [],
+ "offLand": [],
+ "grounds": {
+  "deckyards": 43,
+  "crab-sands": 19,
+  "parrot-grove": 27,
+  "buccaneer-fort": 35
+ },
+ "kinds": {
+  "board": 1,
+  "town": 2,
+  "shop": 1,
+  "shop_magic": 1,
+  "church": 1,
+  "wild": 102,
+  "spring": 5,
+  "chest": 3,
+  "shrine": 2,
+  "gate": 1,
+  "gear": 5
+ },
+ "sprites": 280,
+ "baked": 505,
+ "mostInAViewAt08": 38
+}

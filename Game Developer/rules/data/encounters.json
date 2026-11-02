@@ -340,5 +340,56 @@
         "need": 6
       }
     ]
+  },
+  "pirates": {
+    "events": [
+      {
+        "text": "A ship’s cook hands you a bowl of something hot.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A crab gets you by the toe. Ow.",
+        "kind": "hurt",
+        "value": 0.08
+      },
+      {
+        "text": "A purse washes up at your feet.",
+        "kind": "gold",
+        "value": 45
+      },
+      {
+        "text": "The sea breeze clears your head.",
+        "kind": "mana",
+        "value": 0.25
+      },
+      {
+        "text": "A sailor presses a stoppered bottle on you, for luck.",
+        "kind": "flask",
+        "value": 1
+      },
+      {
+        "text": "A card blows along the sand.",
+        "kind": "card",
+        "value": 1
+      }
+    ],
+    "finds": [
+      {
+        "text": "A chest’s rusty lid shows through the sand. Dig?",
+        "slot": "armour",
+        "need": 6
+      },
+      {
+        "text": "A hat hangs high up the rigging of a wreck. Climb?",
+        "slot": "helm",
+        "need": 5
+      },
+      {
+        "text": "A cutlass is wedged in a broken mast. Pull?",
+        "slot": "weapon",
+        "need": 6
+      }
+    ]
   }
 }

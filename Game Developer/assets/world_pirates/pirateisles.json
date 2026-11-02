@@ -1,0 +1,2890 @@
+{
+ "area": {
+  "id": "pirateisles",
+  "name": "The Pirate Isles",
+  "theme": "pirates",
+  "tier": 6,
+  "levels": [
+   20,
+   24
+  ],
+  "mobs": [
+   "deck-hand",
+   "scuttle-crab",
+   "cheeky-parrot",
+   "buccaneer"
+  ],
+  "miniBosses": [
+   "first-mate-redwake"
+  ],
+  "kingdom": "The Open Sea",
+  "hubs": [
+   {
+    "id": "dock-board",
+    "kind": "board",
+    "name": "Dockside Board",
+    "x": 2820,
+    "y": 10310
+   },
+   {
+    "id": "saltwick",
+    "kind": "town",
+    "name": "Saltwick",
+    "x": 1980,
+    "y": 10200
+   },
+   {
+    "id": "ropeandsail",
+    "kind": "shop",
+    "name": "Rope and Sail",
+    "x": 2600,
+    "y": 9860,
+    "stock": "arms"
+   },
+   {
+    "id": "oldsalts",
+    "kind": "shop",
+    "name": "Old Salt's Remedies",
+    "x": 1130,
+    "y": 9880,
+    "stock": "magic"
+   },
+   {
+    "id": "sailorschapel",
+    "kind": "church",
+    "name": "Sailors' Chapel",
+    "x": 1600,
+    "y": 10780
+   },
+   {
+    "id": "deckyards",
+    "kind": "normal",
+    "name": "The Deckyards",
+    "x": 2440,
+    "y": 10640
+   },
+   {
+    "id": "crabsands",
+    "kind": "normal",
+    "name": "Crab Sands",
+    "x": 700,
+    "y": 10400
+   },
+   {
+    "id": "lookout",
+    "kind": "normal",
+    "name": "The Crow's Nest",
+    "x": 1800,
+    "y": 9730
+   },
+   {
+    "id": "southpier",
+    "kind": "normal",
+    "name": "South Pier",
+    "x": 1120,
+    "y": 11560
+   },
+   {
+    "id": "parrotgrove",
+    "kind": "normal",
+    "name": "Parrot Grove",
+    "x": 830,
+    "y": 12060
+   },
+   {
+    "id": "sweetcove",
+    "kind": "potion",
+    "name": "Sweetwater Cove",
+    "x": 1780,
+    "y": 11640
+   },
+   {
+    "id": "wreck",
+    "kind": "chest",
+    "name": "The Old Wreck",
+    "x": 1660,
+    "y": 12220
+   },
+   {
+    "id": "anchorstone",
+    "kind": "spell",
+    "name": "Anchor Stone",
+    "x": 470,
+    "y": 11680
+   },
+   {
+    "id": "eastpier",
+    "kind": "normal",
+    "name": "East Pier",
+    "x": 2900,
+    "y": 11370
+   },
+   {
+    "id": "fort",
+    "kind": "normal",
+    "name": "Buccaneer Fort",
+    "x": 3350,
+    "y": 11250
+   },
+   {
+    "id": "rumcove",
+    "kind": "town",
+    "name": "Rum Cove",
+    "x": 3480,
+    "y": 11720
+   },
+   {
+    "id": "flagship",
+    "kind": "boss",
+    "name": "Saltjaw's Flagship",
+    "x": 3060,
+    "y": 11960,
+    "boss": "captain-saltjaw"
+   }
+  ],
+  "roads": [
+   {
+    "from": "dock-board",
+    "to": "saltwick",
+    "kinds": "npnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2737,
+      "y": 10294
+     },
+     {
+      "x": 2653,
+      "y": 10278
+     },
+     {
+      "x": 2570,
+      "y": 10259
+     },
+     {
+      "x": 2488,
+      "y": 10237
+     },
+     {
+      "x": 2405,
+      "y": 10215
+     },
+     {
+      "x": 2322,
+      "y": 10197
+     },
+     {
+      "x": 2238,
+      "y": 10185
+     },
+     {
+      "x": 2153,
+      "y": 10182
+     },
+     {
+      "x": 2067,
+      "y": 10187
+     }
+    ]
+   },
+   {
+    "from": "dock-board",
+    "to": "ropeandsail",
+    "kinds": "na",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2794,
+      "y": 10267
+     },
+     {
+      "x": 2769,
+      "y": 10223
+     },
+     {
+      "x": 2743,
+      "y": 10181
+     },
+     {
+      "x": 2716,
+      "y": 10138
+     },
+     {
+      "x": 2688,
+      "y": 10096
+     },
+     {
+      "x": 2663,
+      "y": 10052
+     },
+     {
+      "x": 2641,
+      "y": 10007
+     },
+     {
+      "x": 2623,
+      "y": 9960
+     },
+     {
+      "x": 2610,
+      "y": 9911
+     }
+    ]
+   },
+   {
+    "from": "dock-board",
+    "to": "deckyards",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2779,
+      "y": 10340
+     },
+     {
+      "x": 2739,
+      "y": 10370
+     },
+     {
+      "x": 2698,
+      "y": 10400
+     },
+     {
+      "x": 2656,
+      "y": 10428
+     },
+     {
+      "x": 2614,
+      "y": 10457
+     },
+     {
+      "x": 2574,
+      "y": 10487
+     },
+     {
+      "x": 2536,
+      "y": 10520
+     },
+     {
+      "x": 2501,
+      "y": 10557
+     },
+     {
+      "x": 2469,
+      "y": 10597
+     }
+    ]
+   },
+   {
+    "from": "saltwick",
+    "to": "ropeandsail",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2033,
+      "y": 10149
+     },
+     {
+      "x": 2087,
+      "y": 10101
+     },
+     {
+      "x": 2142,
+      "y": 10055
+     },
+     {
+      "x": 2199,
+      "y": 10010
+     },
+     {
+      "x": 2256,
+      "y": 9969
+     },
+     {
+      "x": 2317,
+      "y": 9932
+     },
+     {
+      "x": 2381,
+      "y": 9902
+     },
+     {
+      "x": 2450,
+      "y": 9880
+     },
+     {
+      "x": 2523,
+      "y": 9867
+     }
+    ]
+   },
+   {
+    "from": "saltwick",
+    "to": "lookout",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1958,
+      "y": 10154
+     },
+     {
+      "x": 1937,
+      "y": 10109
+     },
+     {
+      "x": 1914,
+      "y": 10063
+     },
+     {
+      "x": 1891,
+      "y": 10019
+     },
+     {
+      "x": 1868,
+      "y": 9974
+     },
+     {
+      "x": 1846,
+      "y": 9928
+     },
+     {
+      "x": 1828,
+      "y": 9881
+     },
+     {
+      "x": 1815,
+      "y": 9832
+     },
+     {
+      "x": 1806,
+      "y": 9782
+     }
+    ]
+   },
+   {
+    "from": "lookout",
+    "to": "oldsalts",
+    "kinds": "ntna",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1734,
+      "y": 9750
+     },
+     {
+      "x": 1668,
+      "y": 9769
+     },
+     {
+      "x": 1602,
+      "y": 9790
+     },
+     {
+      "x": 1537,
+      "y": 9812
+     },
+     {
+      "x": 1472,
+      "y": 9834
+     },
+     {
+      "x": 1406,
+      "y": 9854
+     },
+     {
+      "x": 1339,
+      "y": 9869
+     },
+     {
+      "x": 1270,
+      "y": 9878
+     },
+     {
+      "x": 1201,
+      "y": 9881
+     }
+    ]
+   },
+   {
+    "from": "oldsalts",
+    "to": "crabsands",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1090,
+      "y": 9934
+     },
+     {
+      "x": 1050,
+      "y": 9989
+     },
+     {
+      "x": 1012,
+      "y": 10045
+     },
+     {
+      "x": 975,
+      "y": 10102
+     },
+     {
+      "x": 938,
+      "y": 10159
+     },
+     {
+      "x": 900,
+      "y": 10215
+     },
+     {
+      "x": 857,
+      "y": 10267
+     },
+     {
+      "x": 810,
+      "y": 10316
+     },
+     {
+      "x": 757,
+      "y": 10359
+     }
+    ]
+   },
+   {
+    "from": "saltwick",
+    "to": "sailorschapel",
+    "kinds": "nhnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1945,
+      "y": 10260
+     },
+     {
+      "x": 1910,
+      "y": 10320
+     },
+     {
+      "x": 1876,
+      "y": 10381
+     },
+     {
+      "x": 1844,
+      "y": 10442
+     },
+     {
+      "x": 1812,
+      "y": 10504
+     },
+     {
+      "x": 1778,
+      "y": 10565
+     },
+     {
+      "x": 1740,
+      "y": 10623
+     },
+     {
+      "x": 1698,
+      "y": 10678
+     },
+     {
+      "x": 1651,
+      "y": 10730
+     }
+    ]
+   },
+   {
+    "from": "crabsands",
+    "to": "sailorschapel",
+    "kinds": "nnpnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 788,
+      "y": 10444
+     },
+     {
+      "x": 875,
+      "y": 10487
+     },
+     {
+      "x": 962,
+      "y": 10533
+     },
+     {
+      "x": 1048,
+      "y": 10580
+     },
+     {
+      "x": 1134,
+      "y": 10627
+     },
+     {
+      "x": 1222,
+      "y": 10671
+     },
+     {
+      "x": 1312,
+      "y": 10709
+     },
+     {
+      "x": 1405,
+      "y": 10740
+     },
+     {
+      "x": 1501,
+      "y": 10763
+     }
+    ]
+   },
+   {
+    "from": "sailorschapel",
+    "to": "deckyards",
+    "kinds": "nnann",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1683,
+      "y": 10762
+     },
+     {
+      "x": 1767,
+      "y": 10744
+     },
+     {
+      "x": 1850,
+      "y": 10724
+     },
+     {
+      "x": 1932,
+      "y": 10703
+     },
+     {
+      "x": 2015,
+      "y": 10680
+     },
+     {
+      "x": 2098,
+      "y": 10661
+     },
+     {
+      "x": 2182,
+      "y": 10646
+     },
+     {
+      "x": 2267,
+      "y": 10638
+     },
+     {
+      "x": 2353,
+      "y": 10636
+     }
+    ]
+   },
+   {
+    "from": "sailorschapel",
+    "to": "southpier",
+    "kinds": "nnnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1547,
+      "y": 10855
+     },
+     {
+      "x": 1495,
+      "y": 10931
+     },
+     {
+      "x": 1445,
+      "y": 11007
+     },
+     {
+      "x": 1395,
+      "y": 11084
+     },
+     {
+      "x": 1346,
+      "y": 11162
+     },
+     {
+      "x": 1299,
+      "y": 11240
+     },
+     {
+      "x": 1253,
+      "y": 11319
+     },
+     {
+      "x": 1207,
+      "y": 11399
+     },
+     {
+      "x": 1163,
+      "y": 11479
+     }
+    ]
+   },
+   {
+    "from": "deckyards",
+    "to": "eastpier",
+    "kinds": "nnnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2481,
+      "y": 10716
+     },
+     {
+      "x": 2523,
+      "y": 10791
+     },
+     {
+      "x": 2567,
+      "y": 10866
+     },
+     {
+      "x": 2611,
+      "y": 10940
+     },
+     {
+      "x": 2656,
+      "y": 11014
+     },
+     {
+      "x": 2703,
+      "y": 11086
+     },
+     {
+      "x": 2751,
+      "y": 11158
+     },
+     {
+      "x": 2799,
+      "y": 11229
+     },
+     {
+      "x": 2849,
+      "y": 11300
+     }
+    ]
+   },
+   {
+    "from": "southpier",
+    "to": "anchorstone",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1055,
+      "y": 11570
+     },
+     {
+      "x": 989,
+      "y": 11579
+     },
+     {
+      "x": 923,
+      "y": 11587
+     },
+     {
+      "x": 857,
+      "y": 11594
+     },
+     {
+      "x": 791,
+      "y": 11600
+     },
+     {
+      "x": 726,
+      "y": 11608
+     },
+     {
+      "x": 661,
+      "y": 11620
+     },
+     {
+      "x": 596,
+      "y": 11636
+     },
+     {
+      "x": 533,
+      "y": 11656
+     }
+    ]
+   },
+   {
+    "from": "southpier",
+    "to": "parrotgrove",
+    "kinds": "nan",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1093,
+      "y": 11611
+     },
+     {
+      "x": 1066,
+      "y": 11663
+     },
+     {
+      "x": 1041,
+      "y": 11715
+     },
+     {
+      "x": 1017,
+      "y": 11767
+     },
+     {
+      "x": 992,
+      "y": 11820
+     },
+     {
+      "x": 967,
+      "y": 11872
+     },
+     {
+      "x": 938,
+      "y": 11922
+     },
+     {
+      "x": 906,
+      "y": 11970
+     },
+     {
+      "x": 869,
+      "y": 12016
+     }
+    ]
+   },
+   {
+    "from": "southpier",
+    "to": "sweetcove",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1186,
+      "y": 11570
+     },
+     {
+      "x": 1251,
+      "y": 11581
+     },
+     {
+      "x": 1317,
+      "y": 11593
+     },
+     {
+      "x": 1382,
+      "y": 11606
+     },
+     {
+      "x": 1448,
+      "y": 11620
+     },
+     {
+      "x": 1513,
+      "y": 11632
+     },
+     {
+      "x": 1579,
+      "y": 11640
+     },
+     {
+      "x": 1646,
+      "y": 11644
+     },
+     {
+      "x": 1713,
+      "y": 11644
+     }
+    ]
+   },
+   {
+    "from": "anchorstone",
+    "to": "parrotgrove",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 507,
+      "y": 11717
+     },
+     {
+      "x": 544,
+      "y": 11754
+     },
+     {
+      "x": 582,
+      "y": 11790
+     },
+     {
+      "x": 621,
+      "y": 11825
+     },
+     {
+      "x": 660,
+      "y": 11860
+     },
+     {
+      "x": 698,
+      "y": 11896
+     },
+     {
+      "x": 735,
+      "y": 11934
+     },
+     {
+      "x": 769,
+      "y": 11974
+     },
+     {
+      "x": 800,
+      "y": 12016
+     }
+    ]
+   },
+   {
+    "from": "parrotgrove",
+    "to": "wreck",
+    "kinds": "nnpnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 912,
+      "y": 12080
+     },
+     {
+      "x": 995,
+      "y": 12100
+     },
+     {
+      "x": 1076,
+      "y": 12122
+     },
+     {
+      "x": 1158,
+      "y": 12145
+     },
+     {
+      "x": 1239,
+      "y": 12169
+     },
+     {
+      "x": 1321,
+      "y": 12191
+     },
+     {
+      "x": 1404,
+      "y": 12208
+     },
+     {
+      "x": 1488,
+      "y": 12218
+     },
+     {
+      "x": 1574,
+      "y": 12222
+     }
+    ]
+   },
+   {
+    "from": "sweetcove",
+    "to": "wreck",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1760,
+      "y": 11696
+     },
+     {
+      "x": 1742,
+      "y": 11753
+     },
+     {
+      "x": 1727,
+      "y": 11810
+     },
+     {
+      "x": 1715,
+      "y": 11869
+     },
+     {
+      "x": 1706,
+      "y": 11927
+     },
+     {
+      "x": 1698,
+      "y": 11986
+     },
+     {
+      "x": 1690,
+      "y": 12045
+     },
+     {
+      "x": 1681,
+      "y": 12103
+     },
+     {
+      "x": 1671,
+      "y": 12162
+     }
+    ]
+   },
+   {
+    "from": "sweetcove",
+    "to": "eastpier",
+    "kinds": "nntnnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1894,
+      "y": 11620
+     },
+     {
+      "x": 2007,
+      "y": 11598
+     },
+     {
+      "x": 2120,
+      "y": 11575
+     },
+     {
+      "x": 2232,
+      "y": 11551
+     },
+     {
+      "x": 2345,
+      "y": 11524
+     },
+     {
+      "x": 2456,
+      "y": 11497
+     },
+     {
+      "x": 2568,
+      "y": 11467
+     },
+     {
+      "x": 2679,
+      "y": 11436
+     },
+     {
+      "x": 2790,
+      "y": 11404
+     }
+    ]
+   },
+   {
+    "from": "eastpier",
+    "to": "fort",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2945,
+      "y": 11359
+     },
+     {
+      "x": 2991,
+      "y": 11349
+     },
+     {
+      "x": 3037,
+      "y": 11340
+     },
+     {
+      "x": 3083,
+      "y": 11332
+     },
+     {
+      "x": 3129,
+      "y": 11324
+     },
+     {
+      "x": 3174,
+      "y": 11314
+     },
+     {
+      "x": 3220,
+      "y": 11303
+     },
+     {
+      "x": 3264,
+      "y": 11288
+     },
+     {
+      "x": 3307,
+      "y": 11270
+     }
+    ]
+   },
+   {
+    "from": "eastpier",
+    "to": "flagship",
+    "kinds": "npn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2920,
+      "y": 11428
+     },
+     {
+      "x": 2939,
+      "y": 11486
+     },
+     {
+      "x": 2960,
+      "y": 11544
+     },
+     {
+      "x": 2982,
+      "y": 11601
+     },
+     {
+      "x": 3003,
+      "y": 11659
+     },
+     {
+      "x": 3023,
+      "y": 11717
+     },
+     {
+      "x": 3039,
+      "y": 11776
+     },
+     {
+      "x": 3050,
+      "y": 11836
+     },
+     {
+      "x": 3057,
+      "y": 11898
+     }
+    ]
+   },
+   {
+    "from": "fort",
+    "to": "rumcove",
+    "kinds": "na",
+    "bow": 0,
+    "via": [
+     {
+      "x": 3361,
+      "y": 11298
+     },
+     {
+      "x": 3371,
+      "y": 11345
+     },
+     {
+      "x": 3380,
+      "y": 11393
+     },
+     {
+      "x": 3388,
+      "y": 11442
+     },
+     {
+      "x": 3396,
+      "y": 11490
+     },
+     {
+      "x": 3405,
+      "y": 11538
+     },
+     {
+      "x": 3417,
+      "y": 11586
+     },
+     {
+      "x": 3434,
+      "y": 11631
+     },
+     {
+      "x": 3456,
+      "y": 11676
+     }
+    ]
+   },
+   {
+    "from": "rumcove",
+    "to": "flagship",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 3437,
+      "y": 11742
+     },
+     {
+      "x": 3393,
+      "y": 11763
+     },
+     {
+      "x": 3349,
+      "y": 11783
+     },
+     {
+      "x": 3303,
+      "y": 11801
+     },
+     {
+      "x": 3258,
+      "y": 11819
+     },
+     {
+      "x": 3214,
+      "y": 11839
+     },
+     {
+      "x": 3171,
+      "y": 11862
+     },
+     {
+      "x": 3132,
+      "y": 11890
+     },
+     {
+      "x": 3095,
+      "y": 11923
+     }
+    ]
+   }
+  ],
+  "grounds": [
+   {
+    "id": "deckyards",
+    "name": "The Deckyards",
+    "hub": "deckyards",
+    "mob": "deck-hand",
+    "trophy": "Tarred Rope",
+    "drops": [
+     "boots",
+     "cape"
+    ],
+    "levels": [
+     20,
+     21
+    ]
+   },
+   {
+    "id": "crab-sands",
+    "name": "Crab Sands",
+    "hub": "crabsands",
+    "mob": "scuttle-crab",
+    "trophy": "Crab Claws",
+    "drops": [
+     "weapon",
+     "armour"
+    ],
+    "levels": [
+     21,
+     22
+    ]
+   },
+   {
+    "id": "parrot-grove",
+    "name": "Parrot Grove",
+    "hub": "parrotgrove",
+    "mob": "cheeky-parrot",
+    "trophy": "Bright Feathers",
+    "drops": [
+     "gloves",
+     "helm"
+    ],
+    "levels": [
+     22,
+     23
+    ]
+   },
+   {
+    "id": "buccaneer-fort",
+    "name": "Buccaneer Fort",
+    "hub": "fort",
+    "mob": "buccaneer",
+    "trophy": "Gold Teeth",
+    "drops": [
+     "trinket",
+     "shield"
+    ],
+    "levels": [
+     23,
+     24
+    ]
+   }
+  ]
+ },
+ "bakedRoads": true,
+ "entryRoad": {
+  "from": "gate-redwake",
+  "to": "dock-board",
+  "kinds": "nnnnnnnnnnnnnnnnnnnnnnn",
+  "bow": 0,
+  "area": "pirateisles",
+  "via": [
+   {
+    "x": 5120,
+    "y": 8220
+   },
+   {
+    "x": 4980,
+    "y": 8680
+   },
+   {
+    "x": 4700,
+    "y": 9110
+   },
+   {
+    "x": 4340,
+    "y": 9480
+   },
+   {
+    "x": 3720,
+    "y": 9960
+   },
+   {
+    "x": 3160,
+    "y": 10260
+   }
+  ]
+ },
+ "gate": {
+  "hub": {
+   "id": "gate-redwake",
+   "kind": "boss",
+   "name": "Redwake’s Jetty",
+   "x": 5230,
+   "y": 7960,
+   "boss": "first-mate-redwake",
+   "opens": "pirateisles"
+  },
+  "area": "kingswood",
+  "road": {
+   "from": "kw-sw",
+   "to": "gate-redwake",
+   "area": "kingswood",
+   "stroked": true
+  },
+  "foot": {
+   "x": 5170,
+   "y": 8060
+  },
+  "barred": "gate_barred",
+  "open": "gate_open",
+  "opens": "pirateisles",
+  "boss": "first-mate-redwake",
+  "theme": "pirates"
+ },
+ "places": [
+  {
+   "id": "deckyards",
+   "hub": "deckyards",
+   "type": "yard",
+   "cx": 2440,
+   "cy": 10630,
+   "shape": [
+    [
+     2719,
+     10630
+    ],
+    [
+     2677,
+     10671
+    ],
+    [
+     2657,
+     10711
+    ],
+    [
+     2656,
+     10770
+    ],
+    [
+     2628,
+     10841
+    ],
+    [
+     2546,
+     10886
+    ],
+    [
+     2440,
+     10886
+    ],
+    [
+     2344,
+     10861
+    ],
+    [
+     2261,
+     10831
+    ],
+    [
+     2188,
+     10793
+    ],
+    [
+     2143,
+     10741
+    ],
+    [
+     2130,
+     10684
+    ],
+    [
+     2127,
+     10630
+    ],
+    [
+     2130,
+     10576
+    ],
+    [
+     2162,
+     10526
+    ],
+    [
+     2228,
+     10493
+    ],
+    [
+     2298,
+     10471
+    ],
+    [
+     2360,
+     10436
+    ],
+    [
+     2440,
+     10389
+    ],
+    [
+     2550,
+     10365
+    ],
+    [
+     2655,
+     10389
+    ],
+    [
+     2721,
+     10448
+    ],
+    [
+     2750,
+     10514
+    ],
+    [
+     2749,
+     10576
+    ]
+   ]
+  },
+  {
+   "id": "crab-sands",
+   "hub": "crabsands",
+   "type": "sands",
+   "cx": 700,
+   "cy": 10400,
+   "shape": [
+    [
+     1094,
+     10400
+    ],
+    [
+     1057,
+     10466
+    ],
+    [
+     1003,
+     10522
+    ],
+    [
+     940,
+     10566
+    ],
+    [
+     859,
+     10591
+    ],
+    [
+     774,
+     10591
+    ],
+    [
+     700,
+     10593
+    ],
+    [
+     616,
+     10618
+    ],
+    [
+     498,
+     10643
+    ],
+    [
+     375,
+     10626
+    ],
+    [
+     302,
+     10560
+    ],
+    [
+     293,
+     10476
+    ],
+    [
+     321,
+     10400
+    ],
+    [
+     370,
+     10339
+    ],
+    [
+     439,
+     10295
+    ],
+    [
+     508,
+     10267
+    ],
+    [
+     560,
+     10231
+    ],
+    [
+     614,
+     10176
+    ],
+    [
+     700,
+     10130
+    ],
+    [
+     805,
+     10129
+    ],
+    [
+     892,
+     10169
+    ],
+    [
+     962,
+     10218
+    ],
+    [
+     1031,
+     10267
+    ],
+    [
+     1087,
+     10328
+    ]
+   ]
+  },
+  {
+   "id": "parrot-grove",
+   "hub": "parrotgrove",
+   "type": "grove",
+   "cx": 830,
+   "cy": 12060,
+   "shape": [
+    [
+     1236,
+     12060
+    ],
+    [
+     1203,
+     12125
+    ],
+    [
+     1177,
+     12190
+    ],
+    [
+     1144,
+     12264
+    ],
+    [
+     1067,
+     12326
+    ],
+    [
+     950,
+     12350
+    ],
+    [
+     830,
+     12338
+    ],
+    [
+     728,
+     12308
+    ],
+    [
+     648,
+     12265
+    ],
+    [
+     602,
+     12208
+    ],
+    [
+     579,
+     12154
+    ],
+    [
+     533,
+     12112
+    ],
+    [
+     444,
+     12060
+    ],
+    [
+     371,
+     11980
+    ],
+    [
+     385,
+     11893
+    ],
+    [
+     482,
+     11834
+    ],
+    [
+     606,
+     11808
+    ],
+    [
+     723,
+     11801
+    ],
+    [
+     830,
+     11813
+    ],
+    [
+     919,
+     11845
+    ],
+    [
+     991,
+     11879
+    ],
+    [
+     1072,
+     11903
+    ],
+    [
+     1167,
+     11933
+    ],
+    [
+     1234,
+     11990
+    ]
+   ]
+  },
+  {
+   "id": "buccaneer-fort",
+   "hub": "fort",
+   "type": "fort",
+   "cx": 3350,
+   "cy": 11240,
+   "shape": [
+    [
+     3715,
+     11240
+    ],
+    [
+     3731,
+     11303
+    ],
+    [
+     3692,
+     11362
+    ],
+    [
+     3611,
+     11401
+    ],
+    [
+     3521,
+     11423
+    ],
+    [
+     3432,
+     11430
+    ],
+    [
+     3350,
+     11418
+    ],
+    [
+     3284,
+     11391
+    ],
+    [
+     3224,
+     11375
+    ],
+    [
+     3135,
+     11373
+    ],
+    [
+     3018,
+     11359
+    ],
+    [
+     2931,
+     11309
+    ],
+    [
+     2921,
+     11240
+    ],
+    [
+     2970,
+     11177
+    ],
+    [
+     3040,
+     11129
+    ],
+    [
+     3117,
+     11096
+    ],
+    [
+     3201,
+     11081
+    ],
+    [
+     3280,
+     11078
+    ],
+    [
+     3350,
+     11068
+    ],
+    [
+     3432,
+     11050
+    ],
+    [
+     3527,
+     11050
+    ],
+    [
+     3602,
+     11084
+    ],
+    [
+     3642,
+     11136
+    ],
+    [
+     3674,
+     11186
+    ]
+   ]
+  },
+  {
+   "id": "saltwick",
+   "hub": "saltwick",
+   "type": "town",
+   "cx": 1980,
+   "cy": 10190,
+   "shape": [
+    [
+     2340,
+     10190
+    ],
+    [
+     2376,
+     10256
+    ],
+    [
+     2347,
+     10323
+    ],
+    [
+     2265,
+     10368
+    ],
+    [
+     2176,
+     10402
+    ],
+    [
+     2088,
+     10443
+    ],
+    [
+     1980,
+     10476
+    ],
+    [
+     1859,
+     10472
+    ],
+    [
+     1759,
+     10429
+    ],
+    [
+     1691,
+     10371
+    ],
+    [
+     1649,
+     10309
+    ],
+    [
+     1643,
+     10247
+    ],
+    [
+     1672,
+     10190
+    ],
+    [
+     1698,
+     10143
+    ],
+    [
+     1688,
+     10085
+    ],
+    [
+     1677,
+     10001
+    ],
+    [
+     1729,
+     9919
+    ],
+    [
+     1847,
+     9881
+    ],
+    [
+     1980,
+     9893
+    ],
+    [
+     2092,
+     9930
+    ],
+    [
+     2178,
+     9976
+    ],
+    [
+     2234,
+     10031
+    ],
+    [
+     2261,
+     10089
+    ],
+    [
+     2289,
+     10138
+    ]
+   ]
+  },
+  {
+   "id": "rum-cove",
+   "hub": "rumcove",
+   "type": "town",
+   "cx": 3480,
+   "cy": 11720,
+   "shape": [
+    [
+     3796,
+     11720
+    ],
+    [
+     3790,
+     11776
+    ],
+    [
+     3743,
+     11823
+    ],
+    [
+     3680,
+     11856
+    ],
+    [
+     3613,
+     11877
+    ],
+    [
+     3544,
+     11882
+    ],
+    [
+     3480,
+     11869
+    ],
+    [
+     3426,
+     11856
+    ],
+    [
+     3361,
+     11859
+    ],
+    [
+     3268,
+     11864
+    ],
+    [
+     3176,
+     11839
+    ],
+    [
+     3132,
+     11783
+    ],
+    [
+     3146,
+     11720
+    ],
+    [
+     3188,
+     11667
+    ],
+    [
+     3241,
+     11627
+    ],
+    [
+     3305,
+     11601
+    ],
+    [
+     3369,
+     11590
+    ],
+    [
+     3423,
+     11576
+    ],
+    [
+     3480,
+     11550
+    ],
+    [
+     3555,
+     11530
+    ],
+    [
+     3632,
+     11542
+    ],
+    [
+     3685,
+     11581
+    ],
+    [
+     3722,
+     11625
+    ],
+    [
+     3763,
+     11668
+    ]
+   ]
+  },
+  {
+   "id": "flagship",
+   "hub": "flagship",
+   "type": "lagoon",
+   "cx": 3090,
+   "cy": 11800,
+   "shape": [
+    [
+     3373,
+     11800
+    ],
+    [
+     3362,
+     11841
+    ],
+    [
+     3321,
+     11876
+    ],
+    [
+     3262,
+     11898
+    ],
+    [
+     3213,
+     11921
+    ],
+    [
+     3165,
+     11960
+    ],
+    [
+     3090,
+     12000
+    ],
+    [
+     2990,
+     12011
+    ],
+    [
+     2903,
+     11983
+    ],
+    [
+     2850,
+     11936
+    ],
+    [
+     2827,
+     11886
+    ],
+    [
+     2829,
+     11840
+    ],
+    [
+     2855,
+     11800
+    ],
+    [
+     2881,
+     11768
+    ],
+    [
+     2882,
+     11732
+    ],
+    [
+     2881,
+     11682
+    ],
+    [
+     2919,
+     11632
+    ],
+    [
+     3000,
+     11609
+    ],
+    [
+     3090,
+     11614
+    ],
+    [
+     3172,
+     11627
+    ],
+    [
+     3250,
+     11643
+    ],
+    [
+     3318,
+     11671
+    ],
+    [
+     3357,
+     11713
+    ],
+    [
+     3370,
+     11758
+    ]
+   ]
+  }
+ ],
+ "spots": [
+  {
+   "x": 2820,
+   "y": 10310,
+   "kind": "board",
+   "hub": "dock-board",
+   "place": null
+  },
+  {
+   "x": 1980,
+   "y": 10200,
+   "kind": "town",
+   "hub": "saltwick",
+   "place": "saltwick"
+  },
+  {
+   "x": 2600,
+   "y": 9860,
+   "kind": "shop",
+   "hub": "ropeandsail",
+   "place": null
+  },
+  {
+   "x": 1130,
+   "y": 9880,
+   "kind": "shop_magic",
+   "hub": "oldsalts",
+   "place": null
+  },
+  {
+   "x": 1600,
+   "y": 10780,
+   "kind": "church",
+   "hub": "sailorschapel",
+   "place": null
+  },
+  {
+   "x": 2440,
+   "y": 10640,
+   "kind": "wild",
+   "hub": "deckyards",
+   "place": "deckyards"
+  },
+  {
+   "x": 700,
+   "y": 10400,
+   "kind": "wild",
+   "hub": "crabsands",
+   "place": "crab-sands"
+  },
+  {
+   "x": 1800,
+   "y": 9730,
+   "kind": "wild",
+   "hub": "lookout",
+   "place": null
+  },
+  {
+   "x": 1120,
+   "y": 11560,
+   "kind": "wild",
+   "hub": "southpier",
+   "place": null
+  },
+  {
+   "x": 830,
+   "y": 12060,
+   "kind": "wild",
+   "hub": "parrotgrove",
+   "place": "parrot-grove"
+  },
+  {
+   "x": 1780,
+   "y": 11640,
+   "kind": "spring",
+   "hub": "sweetcove",
+   "place": null
+  },
+  {
+   "x": 1660,
+   "y": 12220,
+   "kind": "chest",
+   "hub": "wreck",
+   "place": null
+  },
+  {
+   "x": 470,
+   "y": 11680,
+   "kind": "shrine",
+   "hub": "anchorstone",
+   "place": null
+  },
+  {
+   "x": 2900,
+   "y": 11370,
+   "kind": "wild",
+   "hub": "eastpier",
+   "place": null
+  },
+  {
+   "x": 3350,
+   "y": 11250,
+   "kind": "wild",
+   "hub": "fort",
+   "place": "buccaneer-fort"
+  },
+  {
+   "x": 3480,
+   "y": 11720,
+   "kind": "town",
+   "hub": "rumcove",
+   "place": "rum-cove"
+  },
+  {
+   "x": 3060,
+   "y": 11960,
+   "kind": "gate",
+   "hub": "flagship",
+   "place": "flagship"
+  },
+  {
+   "x": 2680,
+   "y": 10283,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2541,
+   "y": 10251,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2404,
+   "y": 10215,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2264,
+   "y": 10189,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 2121,
+   "y": 10184,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 2733,
+   "y": 10166,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2648,
+   "y": 10021,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2683,
+   "y": 10410,
+   "kind": "wild",
+   "hub": null,
+   "place": "deckyards"
+  },
+  {
+   "x": 2547,
+   "y": 10510,
+   "kind": "wild",
+   "hub": null,
+   "place": "deckyards"
+  },
+  {
+   "x": 2087,
+   "y": 10101,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 2199,
+   "y": 10010,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 2321,
+   "y": 9930,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2456,
+   "y": 9879,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1906,
+   "y": 10048,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 1833,
+   "y": 9895,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 1667,
+   "y": 9769,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1536,
+   "y": 9812,
+   "kind": "chest",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1404,
+   "y": 9854,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1268,
+   "y": 9878,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1050,
+   "y": 9990,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 974,
+   "y": 10103,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 899,
+   "y": 10216,
+   "kind": "wild",
+   "hub": null,
+   "place": "crab-sands"
+  },
+  {
+   "x": 808,
+   "y": 10318,
+   "kind": "wild",
+   "hub": null,
+   "place": "crab-sands"
+  },
+  {
+   "x": 1910,
+   "y": 10320,
+   "kind": "wild",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 1843,
+   "y": 10443,
+   "kind": "shrine",
+   "hub": null,
+   "place": "saltwick"
+  },
+  {
+   "x": 1777,
+   "y": 10566,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1697,
+   "y": 10680,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 826,
+   "y": 10463,
+   "kind": "wild",
+   "hub": null,
+   "place": "crab-sands"
+  },
+  {
+   "x": 951,
+   "y": 10527,
+   "kind": "wild",
+   "hub": null,
+   "place": "crab-sands"
+  },
+  {
+   "x": 1074,
+   "y": 10594,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1198,
+   "y": 10659,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1327,
+   "y": 10714,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1462,
+   "y": 10754,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1739,
+   "y": 10750,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1878,
+   "y": 10717,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2016,
+   "y": 10680,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2156,
+   "y": 10651,
+   "kind": "wild",
+   "hub": null,
+   "place": "deckyards"
+  },
+  {
+   "x": 2297,
+   "y": 10637,
+   "kind": "wild",
+   "hub": null,
+   "place": "deckyards"
+  },
+  {
+   "x": 1513,
+   "y": 10905,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1428,
+   "y": 11033,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1346,
+   "y": 11162,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1268,
+   "y": 11293,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1192,
+   "y": 11425,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2509,
+   "y": 10766,
+   "kind": "wild",
+   "hub": null,
+   "place": "deckyards"
+  },
+  {
+   "x": 2582,
+   "y": 10891,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2656,
+   "y": 11014,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2735,
+   "y": 11134,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2816,
+   "y": 11253,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 956,
+   "y": 11583,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 791,
+   "y": 11600,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 627,
+   "y": 11628,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1053,
+   "y": 11689,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 992,
+   "y": 11821,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 921,
+   "y": 11947,
+   "kind": "wild",
+   "hub": null,
+   "place": "parrot-grove"
+  },
+  {
+   "x": 1285,
+   "y": 11587,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1448,
+   "y": 11620,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1613,
+   "y": 11642,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 563,
+   "y": 11772,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 661,
+   "y": 11861,
+   "kind": "wild",
+   "hub": null,
+   "place": "parrot-grove"
+  },
+  {
+   "x": 752,
+   "y": 11954,
+   "kind": "wild",
+   "hub": null,
+   "place": "parrot-grove"
+  },
+  {
+   "x": 968,
+   "y": 12093,
+   "kind": "wild",
+   "hub": null,
+   "place": "parrot-grove"
+  },
+  {
+   "x": 1104,
+   "y": 12130,
+   "kind": "wild",
+   "hub": null,
+   "place": "parrot-grove"
+  },
+  {
+   "x": 1240,
+   "y": 12169,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1378,
+   "y": 12203,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1518,
+   "y": 12219,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1735,
+   "y": 11781,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1706,
+   "y": 11927,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1686,
+   "y": 12074,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1922,
+   "y": 11615,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2063,
+   "y": 11587,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2204,
+   "y": 11557,
+   "kind": "chest",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2345,
+   "y": 11524,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2484,
+   "y": 11489,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2624,
+   "y": 11451,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2762,
+   "y": 11412,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3052,
+   "y": 11337,
+   "kind": "wild",
+   "hub": null,
+   "place": "buccaneer-fort"
+  },
+  {
+   "x": 3205,
+   "y": 11307,
+   "kind": "wild",
+   "hub": null,
+   "place": "buccaneer-fort"
+  },
+  {
+   "x": 2950,
+   "y": 11515,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3003,
+   "y": 11660,
+   "kind": "spring",
+   "hub": null,
+   "place": "flagship"
+  },
+  {
+   "x": 3045,
+   "y": 11807,
+   "kind": "wild",
+   "hub": null,
+   "place": "flagship"
+  },
+  {
+   "x": 3383,
+   "y": 11410,
+   "kind": "wild",
+   "hub": null,
+   "place": "buccaneer-fort"
+  },
+  {
+   "x": 3413,
+   "y": 11571,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3333,
+   "y": 11789,
+   "kind": "wild",
+   "hub": null,
+   "place": "rum-cove"
+  },
+  {
+   "x": 3184,
+   "y": 11855,
+   "kind": "wild",
+   "hub": null,
+   "place": "flagship"
+  },
+  {
+   "x": 5172,
+   "y": 8096,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 5116,
+   "y": 8233,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 5073,
+   "y": 8375,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 5030,
+   "y": 8517,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4987,
+   "y": 8659,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4911,
+   "y": 8785,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4831,
+   "y": 8910,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4750,
+   "y": 9034,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4660,
+   "y": 9151,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4557,
+   "y": 9257,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4454,
+   "y": 9363,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4350,
+   "y": 9469,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4235,
+   "y": 9562,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4117,
+   "y": 9652,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 4000,
+   "y": 9743,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3883,
+   "y": 9834,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3766,
+   "y": 9924,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3641,
+   "y": 10003,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3510,
+   "y": 10072,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3379,
+   "y": 10142,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3249,
+   "y": 10212,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 3113,
+   "y": 10267,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2967,
+   "y": 10288,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  }
+ ]
+}

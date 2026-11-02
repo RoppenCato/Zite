@@ -495,3 +495,8 @@ A boss's `trick` in `tools/enemy-base.json`, done at a round's end in `bossTrick
 
 Waiting: Mitch, AD's signature weapons, each a unique with its own art.
 
+
+
+## The Pirate Isles (Mitch, AD, 2026-11-02)
+
+Area `pirateisles`, tier 6, levels 20 to 24, baked roads. `gate-redwake` stands in the Kingswood past `kw-camp-9`, opens it. Its `lookout` hub is `crowsnest` here, since the Rootways has a `lookout`. Boss `captain-saltjaw` at `flagship`, with a Seal. No Arena or hidden places yet.

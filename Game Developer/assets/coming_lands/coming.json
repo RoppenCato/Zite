@@ -50,57 +50,5 @@
    "x": 5300,
    "y": 5560
   }
- },
- "pirates": {
-  "id": "pirateisles",
-  "name": "The Pirate Isles",
-  "levels": [
-   20,
-   24
-  ],
-  "label": [
-   2000,
-   12590
-  ],
-  "boss": {
-   "id": "captain-saltjaw",
-   "name": "Captain Saltjaw",
-   "silhouette": "silhouette_captain",
-   "x": 3350,
-   "y": 11700
-  },
-  "marks": [
-   [
-    1000,
-    10000
-   ],
-   [
-    2300,
-    10150
-   ],
-   [
-    1500,
-    10700
-   ],
-   [
-    3200,
-    11250
-   ],
-   [
-    1000,
-    11850
-   ],
-   [
-    1750,
-    12150
-   ]
-  ],
-  "gate": {
-   "hub": "gate-redwake",
-   "boss": "first-mate-redwake",
-   "name": "First Mate Redwake",
-   "x": 5230,
-   "y": 7960
-  }
  }
 }

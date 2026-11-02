@@ -1349,7 +1349,9 @@ export class BoardScene extends Phaser.Scene {
     const middle = box.x + box.width / 2;
     const hang = middle < EDGE_WORDS ? 0 : middle > board.width - EDGE_WORDS ? 1 : 0.5;
     const wordX = hang === 0 ? EDGE_INSET : hang === 1 ? board.width - EDGE_INSET : middle;
-    const words = this.add.text(wordX, gated ? box.y + box.height + 30 : box.y + box.height / 2, this.landWords(area), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
+    // The words of a land with a city in its middle sit below the city's own.
+    const holdsCity = Object.values(board.areas).some((x) => x.city && x.openWith === area.id);
+    const words = this.add.text(wordX, gated ? box.y + box.height + 30 : box.y + box.height / 2 + (holdsCity ? 620 : 0), this.landWords(area), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
     words.setOrigin(hang, words.originY);
     this.closedLabels.set(area.id, words);
     // What waits there: the boss's silhouette, and a "?" at each ground (Mitch, AD).
@@ -1359,6 +1361,7 @@ export class BoardScene extends Phaser.Scene {
     const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : boss?.boss === 'mother-murk' ? 'silhouette_murk' : boss?.boss === 'frostbeard' ? 'silhouette_frostbeard' : null;
     const eastShape = shape === 'silhouette_murk' || shape === 'silhouette_frostbeard';
     if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' || eastShape ? 40 : 0), eastShape ? FOG_EAST_PIECES : FOG_PIECES, shape));
+    if (boss?.boss === 'captain-saltjaw' && this.textures.exists(FOG_FAR_PIECES)) marks.push(this.add.image(boss.x, boss.y, FOG_FAR_PIECES, 'silhouette_captain'));
     for (const g of area.openWith ? [] : groundsOf(board, area.id)) {
       const hub = board.spaces[g.hub];
       if (hub) marks.push(this.add.image(hub.x, hub.y, FOG_PIECES, 'mark_unknown'));

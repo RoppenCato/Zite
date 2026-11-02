@@ -32,6 +32,8 @@
     "city-smith": "smith",
     "city-coach": "cards",
     "city-potions": "herbalist",
-    "city-inn": "herbalist"
+    "city-inn": "herbalist",
+    "saltwick": "herbalist",
+    "rumcove": "smith"
   }
 }

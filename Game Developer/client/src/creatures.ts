@@ -57,6 +57,27 @@ import buzzbugPng from '../../assets/harvest/buzzbug/buzzbug.png';
 import appleMimicData from '../../assets/harvest/apple_mimic/apple_mimic.json';
 import appleMimicJson from '../../assets/harvest/apple_mimic/apple_mimic.json?url';
 import appleMimicPng from '../../assets/harvest/apple_mimic/apple_mimic.png';
+import deckHandData from '../../assets/creatures_pirates/deck_hand/deck_hand.json';
+import deckHandJson from '../../assets/creatures_pirates/deck_hand/deck_hand.json?url';
+import deckHandPng from '../../assets/creatures_pirates/deck_hand/deck_hand.png';
+import buccaneerData from '../../assets/creatures_pirates/buccaneer/buccaneer.json';
+import buccaneerJson from '../../assets/creatures_pirates/buccaneer/buccaneer.json?url';
+import buccaneerPng from '../../assets/creatures_pirates/buccaneer/buccaneer.png';
+import scuttleCrabData from '../../assets/creatures_pirates/scuttle_crab/scuttle_crab.json';
+import scuttleCrabJson from '../../assets/creatures_pirates/scuttle_crab/scuttle_crab.json?url';
+import scuttleCrabPng from '../../assets/creatures_pirates/scuttle_crab/scuttle_crab.png';
+import cheekyParrotData from '../../assets/creatures_pirates/cheeky_parrot/cheeky_parrot.json';
+import cheekyParrotJson from '../../assets/creatures_pirates/cheeky_parrot/cheeky_parrot.json?url';
+import cheekyParrotPng from '../../assets/creatures_pirates/cheeky_parrot/cheeky_parrot.png';
+import firstMateData from '../../assets/creatures_pirates/first_mate_redwake/first_mate_redwake.json';
+import firstMateJson from '../../assets/creatures_pirates/first_mate_redwake/first_mate_redwake.json?url';
+import firstMatePng from '../../assets/creatures_pirates/first_mate_redwake/first_mate_redwake.png';
+import saltjawData from '../../assets/creatures_pirates/captain_saltjaw/captain_saltjaw.json';
+import saltjawJson from '../../assets/creatures_pirates/captain_saltjaw/captain_saltjaw.json?url';
+import saltjawPng from '../../assets/creatures_pirates/captain_saltjaw/captain_saltjaw.png';
+import saltjaw2Data from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.json';
+import saltjaw2Json from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.json?url';
+import saltjaw2Png from '../../assets/creatures_pirates/captain_saltjaw2/captain_saltjaw2.png';
 import bogToadData from '../../assets/creatures_swamp/bog_toad/bog_toad.json';
 import bogToadJson from '../../assets/creatures_swamp/bog_toad/bog_toad.json?url';
 import bogToadPng from '../../assets/creatures_swamp/bog_toad/bog_toad.png';
@@ -159,6 +180,13 @@ const CREATURES: Record<string, CreatureFiles> = {
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },
   // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  // The Pirate Isles (Mitch, AD, 2026-11-02). The Captain at 1.1, not the atlas's 1.3333, to stay in the column, like the other bosses.
+  'deck-hand': { key: 'deck_hand', png: deckHandPng, json: deckHandJson, actions: actionsOf(deckHandData), scale: 0.5, blowFrame: 4 },
+  'buccaneer': { key: 'buccaneer', png: buccaneerPng, json: buccaneerJson, actions: actionsOf(buccaneerData), scale: 0.5714, blowFrame: 4 },
+  'scuttle-crab': { key: 'scuttle_crab', png: scuttleCrabPng, json: scuttleCrabJson, actions: actionsOf(scuttleCrabData), scale: 0.6154, blowFrame: 7 },
+  'cheeky-parrot': { key: 'cheeky_parrot', png: cheekyParrotPng, json: cheekyParrotJson, actions: actionsOf(cheekyParrotData), scale: 0.5, blowFrame: 7 },
+  'first-mate-redwake': { key: 'first_mate_redwake', png: firstMatePng, json: firstMateJson, actions: actionsOf(firstMateData), scale: 0.8, blowFrame: 4 },
+  'captain-saltjaw': { key: 'captain_saltjaw', png: saltjawPng, json: saltjawJson, actions: actionsOf(saltjawData), scale: 1.1, blowFrame: 5, phase2: { key: 'captain_saltjaw2', png: saltjaw2Png, json: saltjaw2Json, actions: actionsOf(saltjaw2Data) } },
   // Bogglemire and The Frostcrown (Mitch, AD, 2026-11-02). The bosses at 1.1, not the atlas's 1.3333, to stay in the column.
   'bog-toad': { key: 'bog_toad', png: bogToadPng, json: bogToadJson, actions: actionsOf(bogToadData), scale: 0.5714, blowFrame: 7 },
   'mudling': { key: 'mudling', png: mudlingPng, json: mudlingJson, actions: actionsOf(mudlingData), scale: 0.6667, blowFrame: 7 },

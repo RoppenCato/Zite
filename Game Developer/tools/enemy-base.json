@@ -963,5 +963,196 @@
         "effect": "weaken"
       }
     ]
+  },
+  "deck-hand": {
+    "name": "Deck Hand",
+    "level": 20,
+    "role": "mob",
+    "hp": 860,
+    "attack": 86,
+    "defense": 26,
+    "xp": 156,
+    "gold": 58,
+    "moves": [
+      {
+        "name": "Belaying Pin",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Heave Ho",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "scuttle-crab": {
+    "name": "Scuttle Crab",
+    "level": 21,
+    "role": "mob",
+    "hp": 1100,
+    "attack": 78,
+    "defense": 38,
+    "xp": 170,
+    "gold": 62,
+    "moves": [
+      {
+        "name": "Pinch",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Shell Up",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      },
+      {
+        "name": "Big Claw",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "cheeky-parrot": {
+    "name": "Cheeky Parrot",
+    "level": 22,
+    "role": "mob",
+    "hp": 800,
+    "attack": 104,
+    "defense": 24,
+    "xp": 186,
+    "gold": 66,
+    "moves": [
+      {
+        "name": "Peck",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Squawk",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      },
+      {
+        "name": "Flutter",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      }
+    ]
+  },
+  "buccaneer": {
+    "name": "Buccaneer",
+    "level": 23,
+    "role": "mob",
+    "hp": 1000,
+    "attack": 102,
+    "defense": 30,
+    "xp": 200,
+    "gold": 72,
+    "moves": [
+      {
+        "name": "Cutlass",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Dirty Knife",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "poison"
+      },
+      {
+        "name": "Boarding Swing",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "first-mate-redwake": {
+    "name": "First Mate Redwake",
+    "level": 21,
+    "role": "mini",
+    "hp": 1700,
+    "attack": 84,
+    "defense": 28,
+    "xp": 420,
+    "gold": 300,
+    "moves": [
+      {
+        "name": "Boarding Axe",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Keelhaul",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "trick": {
+      "kind": "deathRoll",
+      "every": 3,
+      "text": "Every third round First Mate Redwake throws sand in your eyes: your hits go soft.",
+      "line": "Sand in your eyes: you are weakened."
+    }
+  },
+  "captain-saltjaw": {
+    "name": "Captain Saltjaw",
+    "level": 25,
+    "role": "boss",
+    "hp": 3800,
+    "attack": 108,
+    "defense": 32,
+    "xp": 1500,
+    "gold": 620,
+    "moves": [
+      {
+        "name": "Cutlass Sweep",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Broadside",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Captain Saltjaw bellows: all guns!",
+      "moves": [
+        {
+          "name": "Cutlass Sweep",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Broadside",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Grapeshot",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round the Captain’s guns are loaded for a Broadside. Block it.",
+      "line": "The guns are loaded."
+    }
   }
 }

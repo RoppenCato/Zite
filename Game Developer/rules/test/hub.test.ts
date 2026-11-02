@@ -79,7 +79,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(32);
+    expect(up.version).toBe(33);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
@@ -141,11 +141,11 @@ describe('the Seals (Robin, 2026-11-02)', () => {
   };
   it("one for each land's greatest boss: no gate's mini-boss, no dungeon, no city", () => {
     const s = made();
-    expect(sealsOf(s.board, s.characters[P]!).map((x) => x.space)).toEqual(['gate', 'briar', 'summit', 'murkpool', 'frostseat']);
+    expect(sealsOf(s.board, s.characters[P]!).map((x) => x.space)).toEqual(['gate', 'briar', 'summit', 'murkpool', 'frostseat', 'flagship']);
   });
   it('is won the first time the boss falls, and only then', () => {
     const first = beat(made(), 'summit', 'frost-matriarch');
-    expect(first.events).toContainEqual(expect.objectContaining({ type: 'sealWon', land: 'frostpeak', won: 1, total: 5 + SEALS_COMING.length }));
+    expect(first.events).toContainEqual(expect.objectContaining({ type: 'sealWon', land: 'frostpeak', won: 1, total: 6 + SEALS_COMING.length }));
     expect(sealCount(first.state.board, first.state.characters[P]!).won).toBe(1);
     const again = beat(first.state, 'summit', 'frost-matriarch');
     expect(again.events.some((e) => e.type === 'sealWon')).toBe(false);

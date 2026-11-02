@@ -198,7 +198,7 @@ describe('a version-9 save', () => {
     const { traces: _t, ...v9 } = { ...s, version: 9 as const };
     const up = migrate(v9);
     expect(up).not.toBeNull();
-    expect(up!.version).toBe(32);
+    expect(up!.version).toBe(33);
     expect(up!.traces).toEqual({});
     expect(up!.characters).toEqual(s.characters);
   });
