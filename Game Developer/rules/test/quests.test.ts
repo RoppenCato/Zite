@@ -47,7 +47,8 @@ describe('hunting grounds', () => {
     let fights = 0;
     for (let seed = 0; seed < 300; seed++) {
       const fight = landOn(s, wild.id, seed).events.find((e) => e.type === 'fight');
-      if (fight?.type !== 'fight') continue;
+      // A mini-boss may roam anywhere in the area; the common creatures stay home.
+      if (fight?.type !== 'fight' || fight.enemy.role !== 'mob') continue;
       fights += 1;
       if (fight.enemy.id === 'slime') own += 1;
     }
