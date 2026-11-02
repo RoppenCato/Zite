@@ -57,6 +57,48 @@ import buzzbugPng from '../../assets/harvest/buzzbug/buzzbug.png';
 import appleMimicData from '../../assets/harvest/apple_mimic/apple_mimic.json';
 import appleMimicJson from '../../assets/harvest/apple_mimic/apple_mimic.json?url';
 import appleMimicPng from '../../assets/harvest/apple_mimic/apple_mimic.png';
+import bogToadData from '../../assets/creatures_swamp/bog_toad/bog_toad.json';
+import bogToadJson from '../../assets/creatures_swamp/bog_toad/bog_toad.json?url';
+import bogToadPng from '../../assets/creatures_swamp/bog_toad/bog_toad.png';
+import mudlingData from '../../assets/creatures_swamp/mudling/mudling.json';
+import mudlingJson from '../../assets/creatures_swamp/mudling/mudling.json?url';
+import mudlingPng from '../../assets/creatures_swamp/mudling/mudling.png';
+import lanternWispData from '../../assets/creatures_swamp/lantern_wisp/lantern_wisp.json';
+import lanternWispJson from '../../assets/creatures_swamp/lantern_wisp/lantern_wisp.json?url';
+import lanternWispPng from '../../assets/creatures_swamp/lantern_wisp/lantern_wisp.png';
+import reedWitchData from '../../assets/creatures_swamp/reed_witch/reed_witch.json';
+import reedWitchJson from '../../assets/creatures_swamp/reed_witch/reed_witch.json?url';
+import reedWitchPng from '../../assets/creatures_swamp/reed_witch/reed_witch.png';
+import bogsnapperData from '../../assets/creatures_swamp/bogsnapper/bogsnapper.json';
+import bogsnapperJson from '../../assets/creatures_swamp/bogsnapper/bogsnapper.json?url';
+import bogsnapperPng from '../../assets/creatures_swamp/bogsnapper/bogsnapper.png';
+import motherMurkData from '../../assets/creatures_swamp/mother_murk/mother_murk.json';
+import motherMurkJson from '../../assets/creatures_swamp/mother_murk/mother_murk.json?url';
+import motherMurkPng from '../../assets/creatures_swamp/mother_murk/mother_murk.png';
+import motherMurk2Data from '../../assets/creatures_swamp/mother_murk2/mother_murk2.json';
+import motherMurk2Json from '../../assets/creatures_swamp/mother_murk2/mother_murk2.json?url';
+import motherMurk2Png from '../../assets/creatures_swamp/mother_murk2/mother_murk2.png';
+import snowGoatData from '../../assets/creatures_frost/snow_goat/snow_goat.json';
+import snowGoatJson from '../../assets/creatures_frost/snow_goat/snow_goat.json?url';
+import snowGoatPng from '../../assets/creatures_frost/snow_goat/snow_goat.png';
+import cragGoblinData from '../../assets/creatures_frost/crag_goblin/crag_goblin.json';
+import cragGoblinJson from '../../assets/creatures_frost/crag_goblin/crag_goblin.json?url';
+import cragGoblinPng from '../../assets/creatures_frost/crag_goblin/crag_goblin.png';
+import pebbleGolemData from '../../assets/creatures_frost/pebble_golem/pebble_golem.json';
+import pebbleGolemJson from '../../assets/creatures_frost/pebble_golem/pebble_golem.json?url';
+import pebbleGolemPng from '../../assets/creatures_frost/pebble_golem/pebble_golem.png';
+import frostlingData from '../../assets/creatures_frost/frostling/frostling.json';
+import frostlingJson from '../../assets/creatures_frost/frostling/frostling.json?url';
+import frostlingPng from '../../assets/creatures_frost/frostling/frostling.png';
+import oldBighornData from '../../assets/creatures_frost/old_bighorn/old_bighorn.json';
+import oldBighornJson from '../../assets/creatures_frost/old_bighorn/old_bighorn.json?url';
+import oldBighornPng from '../../assets/creatures_frost/old_bighorn/old_bighorn.png';
+import frostbeardData from '../../assets/creatures_frost/frostbeard/frostbeard.json';
+import frostbeardJson from '../../assets/creatures_frost/frostbeard/frostbeard.json?url';
+import frostbeardPng from '../../assets/creatures_frost/frostbeard/frostbeard.png';
+import frostbeard2Data from '../../assets/creatures_frost/frostbeard2/frostbeard2.json';
+import frostbeard2Json from '../../assets/creatures_frost/frostbeard2/frostbeard2.json?url';
+import frostbeard2Png from '../../assets/creatures_frost/frostbeard2/frostbeard2.png';
 import glowcapData from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json';
 import glowcapJson from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json?url';
 import glowcapPng from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.png';
@@ -114,6 +156,19 @@ const CREATURES: Record<string, CreatureFiles> = {
     phase2: { key: 'goo2', png: goo2Png, json: goo2Json, actions: actionsOf(goo2Data) },
   },
   // Wobblewood (Mitch, AD, 2026-11-01): the rules' ids are the first names.
+  // Bogglemire and The Frostcrown (Mitch, AD, 2026-11-02). The bosses at 1.1, not the atlas's 1.3333, to stay in the column.
+  'bog-toad': { key: 'bog_toad', png: bogToadPng, json: bogToadJson, actions: actionsOf(bogToadData), scale: 0.5714, blowFrame: 7 },
+  'mudling': { key: 'mudling', png: mudlingPng, json: mudlingJson, actions: actionsOf(mudlingData), scale: 0.6667, blowFrame: 7 },
+  'lantern-wisp': { key: 'lantern_wisp', png: lanternWispPng, json: lanternWispJson, actions: actionsOf(lanternWispData), scale: 0.5714, blowFrame: 7 },
+  'reed-witch': { key: 'reed_witch', png: reedWitchPng, json: reedWitchJson, actions: actionsOf(reedWitchData), scale: 0.5714, blowFrame: 4 },
+  'bogsnapper': { key: 'bogsnapper', png: bogsnapperPng, json: bogsnapperJson, actions: actionsOf(bogsnapperData), scale: 1.1429, blowFrame: 7 },
+  'mother-murk': { key: 'mother_murk', png: motherMurkPng, json: motherMurkJson, actions: actionsOf(motherMurkData), scale: 1.1, blowFrame: 5, phase2: { key: 'mother_murk2', png: motherMurk2Png, json: motherMurk2Json, actions: actionsOf(motherMurk2Data) } },
+  'snow-goat': { key: 'snow_goat', png: snowGoatPng, json: snowGoatJson, actions: actionsOf(snowGoatData), scale: 0.7273, blowFrame: 7 },
+  'crag-goblin': { key: 'crag_goblin', png: cragGoblinPng, json: cragGoblinJson, actions: actionsOf(cragGoblinData), scale: 0.5333, blowFrame: 4 },
+  'pebble-golem': { key: 'pebble_golem', png: pebbleGolemPng, json: pebbleGolemJson, actions: actionsOf(pebbleGolemData), scale: 0.8, blowFrame: 7 },
+  'frostling': { key: 'frostling', png: frostlingPng, json: frostlingJson, actions: actionsOf(frostlingData), scale: 0.5, blowFrame: 7 },
+  'old-bighorn': { key: 'old_bighorn', png: oldBighornPng, json: oldBighornJson, actions: actionsOf(oldBighornData), scale: 1, blowFrame: 7 },
+  'frostbeard': { key: 'frostbeard', png: frostbeardPng, json: frostbeardJson, actions: actionsOf(frostbeardData), scale: 1.1, blowFrame: 5, phase2: { key: 'frostbeard2', png: frostbeard2Png, json: frostbeard2Json, actions: actionsOf(frostbeard2Data) } },
   // The Rootways (Mitch, AD, 2026-11-02). Old Rootbeard at his number, not the atlas's, which runs past the column.
   'glowcap': { key: 'glowcap', png: glowcapPng, json: glowcapJson, actions: actionsOf(glowcapData), scale: 0.5714, blowFrame: 7 },
   'old-rootbeard': { key: 'old_rootbeard', png: rootbeardPng, json: rootbeardJson, actions: actionsOf(rootbeardData), scale: 1.2, blowFrame: 5 },

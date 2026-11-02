@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "frostbeard2/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 253,
+    "h": 376
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 376
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 376
+   },
+   "pivot": {
+    "x": 0.4466,
+    "y": 0.9814
+   }
+  },
+  "frostbeard2/attack1/0002": {
+   "frame": {
+    "x": 257,
+    "y": 2,
+    "w": 248,
+    "h": 375
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 248,
+    "h": 375
+   },
+   "sourceSize": {
+    "w": 248,
+    "h": 375
+   },
+   "pivot": {
+    "x": 0.4556,
+    "y": 0.9787
+   }
+  },
+  "frostbeard2/attack1/0005": {
+   "frame": {
+    "x": 507,
+    "y": 2,
+    "w": 345,
+    "h": 360
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 345,
+    "h": 360
+   },
+   "sourceSize": {
+    "w": 345,
+    "h": 360
+   },
+   "pivot": {
+    "x": 0.7391,
+    "y": 0.9667
+   }
+  },
+  "frostbeard2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 380,
+    "w": 223,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 223,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.4753,
+    "y": 0.9804
+   }
+  },
+  "frostbeard2/attack1/0004": {
+   "frame": {
+    "x": 227,
+    "y": 380,
+    "w": 321,
+    "h": 349
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 321,
+    "h": 349
+   },
+   "sourceSize": {
+    "w": 321,
+    "h": 349
+   },
+   "pivot": {
+    "x": 0.6885,
+    "y": 0.9771
+   }
+  },
+  "frostbeard2/attack1/0006": {
+   "frame": {
+    "x": 550,
+    "y": 380,
+    "w": 351,
+    "h": 348
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 351,
+    "h": 348
+   },
+   "sourceSize": {
+    "w": 351,
+    "h": 348
+   },
+   "pivot": {
+    "x": 0.7208,
+    "y": 0.9741
+   }
+  },
+  "frostbeard2/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 740,
+    "w": 245,
+    "h": 337
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 337
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 337
+   },
+   "pivot": {
+    "x": 0.5592,
+    "y": 0.9822
+   }
+  },
+  "frostbeard2/stand/0001": {
+   "frame": {
+    "x": 249,
+    "y": 740,
+    "w": 250,
+    "h": 331
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 331
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 331
+   },
+   "pivot": {
+    "x": 0.56,
+    "y": 0.9819
+   }
+  },
+  "frostbeard2/attack1/0008": {
+   "frame": {
+    "x": 501,
+    "y": 740,
+    "w": 250,
+    "h": 331
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 331
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 331
+   },
+   "pivot": {
+    "x": 0.56,
+    "y": 0.9819
+   }
+  },
+  "frostbeard2/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 1079,
+    "w": 311,
+    "h": 327
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 311,
+    "h": 327
+   },
+   "sourceSize": {
+    "w": 311,
+    "h": 327
+   },
+   "pivot": {
+    "x": 0.6463,
+    "y": 0.9786
+   }
+  },
+  "frostbeard2/stand/0002": {
+   "frame": {
+    "x": 315,
+    "y": 1079,
+    "w": 254,
+    "h": 326
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 254,
+    "h": 326
+   },
+   "sourceSize": {
+    "w": 254,
+    "h": 326
+   },
+   "pivot": {
+    "x": 0.5591,
+    "y": 0.9816
+   }
+  }
+ },
+ "meta": {
+  "image": "frostbeard2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "frostbeard2/stand/0001",
+     "w": 250,
+     "h": 331,
+     "origin": {
+      "x": 140,
+      "y": 325
+     },
+     "delay": 120,
+     "lt": {
+      "x": -140,
+      "y": -325
+     },
+     "rb": {
+      "x": 110,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -325
+     }
+    },
+    {
+     "name": "frostbeard2/stand/0002",
+     "w": 254,
+     "h": 326,
+     "origin": {
+      "x": 142,
+      "y": 320
+     },
+     "delay": 120,
+     "lt": {
+      "x": -142,
+      "y": -320
+     },
+     "rb": {
+      "x": 112,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -320
+     }
+    },
+    {
+     "name": "frostbeard2/stand/0003",
+     "w": 245,
+     "h": 337,
+     "origin": {
+      "x": 137,
+      "y": 331
+     },
+     "delay": 120,
+     "lt": {
+      "x": -137,
+      "y": -331
+     },
+     "rb": {
+      "x": 108,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -331
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "frostbeard2/attack1/0001",
+     "w": 223,
+     "h": 358,
+     "origin": {
+      "x": 106,
+      "y": 351
+     },
+     "delay": 90,
+     "lt": {
+      "x": -106,
+      "y": -351
+     },
+     "rb": {
+      "x": 117,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -351
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0002",
+     "w": 248,
+     "h": 375,
+     "origin": {
+      "x": 113,
+      "y": 367
+     },
+     "delay": 110,
+     "lt": {
+      "x": -113,
+      "y": -367
+     },
+     "rb": {
+      "x": 135,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -367
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0003",
+     "w": 253,
+     "h": 376,
+     "origin": {
+      "x": 113,
+      "y": 369
+     },
+     "delay": 110,
+     "lt": {
+      "x": -113,
+      "y": -369
+     },
+     "rb": {
+      "x": 140,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -369
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0004",
+     "w": 321,
+     "h": 349,
+     "origin": {
+      "x": 221,
+      "y": 341
+     },
+     "delay": 60,
+     "lt": {
+      "x": -221,
+      "y": -341
+     },
+     "rb": {
+      "x": 100,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -341
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0005",
+     "w": 345,
+     "h": 360,
+     "origin": {
+      "x": 255,
+      "y": 348
+     },
+     "delay": 190,
+     "lt": {
+      "x": -255,
+      "y": -348
+     },
+     "rb": {
+      "x": 90,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -348
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0006",
+     "w": 351,
+     "h": 348,
+     "origin": {
+      "x": 253,
+      "y": 339
+     },
+     "delay": 80,
+     "lt": {
+      "x": -253,
+      "y": -339
+     },
+     "rb": {
+      "x": 98,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -339
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0007",
+     "w": 311,
+     "h": 327,
+     "origin": {
+      "x": 201,
+      "y": 320
+     },
+     "delay": 80,
+     "lt": {
+      "x": -201,
+      "y": -320
+     },
+     "rb": {
+      "x": 110,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -320
+     }
+    },
+    {
+     "name": "frostbeard2/attack1/0008",
+     "w": 250,
+     "h": 331,
+     "origin": {
+      "x": 140,
+      "y": 325
+     },
+     "delay": 80,
+     "lt": {
+      "x": -140,
+      "y": -325
+     },
+     "rb": {
+      "x": 110,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -325
+     }
+    }
+   ]
+  }
+ }
+}

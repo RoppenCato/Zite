@@ -7,6 +7,18 @@ import forestChunks from '../../assets/world_forest/chunks.json';
 import harvestChunks from '../../assets/world_harvest/chunks.json';
 import meadowChunks from '../../assets/world_meadows/chunks.json';
 import westChunks from '../../assets/world_west/chunks.json';
+import swampChunks from '../../assets/world_swamp/chunks.json';
+import swampLand from '../../assets/world_swamp/bogglemire.json';
+import frostChunks from '../../assets/world_frost/chunks.json';
+import frostLand from '../../assets/world_frost/frostcrown.json';
+import overviewEastData from '../../assets/overview_east/overview_east.json';
+import overviewEastJpg from '../../assets/overview_east/overview_east.jpg';
+import fogSwampJson from '../../assets/fog_east/fog_swamp.json';
+import fogSwampPng from '../../assets/fog_east/fog_swamp.png';
+import fogFrostJson from '../../assets/fog_east/fog_frost.json';
+import fogFrostPng from '../../assets/fog_east/fog_frost.png';
+import fogEastPiecesJson from '../../assets/fog_east/fog_east_pieces.json?url';
+import fogEastPiecesPng from '../../assets/fog_east/fog_east_pieces.png';
 import rootwaysChunks from '../../assets/dungeon_meadows/chunks.json';
 import rootways from '../../assets/dungeon_meadows/rootways.json';
 import overviewData from '../../assets/world_meadows/overview.json';
@@ -18,7 +30,7 @@ import fogHarvestPng from '../../assets/fog/fog_harvest.png';
 import fogPiecesJson from '../../assets/fog/fog_pieces.json?url';
 import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 
-const FILES = import.meta.glob('../../assets/{world_meadows,world_forest,world_harvest,world_west,dungeon_meadows}/{ground,rootways}_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FILES = import.meta.glob('../../assets/{world_meadows,world_forest,world_harvest,world_west,world_frost,world_swamp,dungeon_meadows}/{ground,rootways}_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 interface Chunk {
   file: string;
@@ -38,7 +50,12 @@ export const PAINTED: Record<string, { x: number; y: number; width: number; heig
   meadows: { x: meadowChunks.x, y: meadowChunks.y, width: meadowChunks.width, height: meadowChunks.height },
   thornwood: { x: forestChunks.x, y: forestChunks.y, width: forestChunks.width, height: 5328 },
   frostpeak: { x: harvestChunks.x, y: 0, width: harvestChunks.width, height: 3300 },
+  bogglemire: swampLand.camera,
+  frostcrown: frostLand.camera,
 };
+
+/** Lands whose roads are baked into the ground (Mitch, AD): stroking them would cover the planks and the snow. */
+export const BAKED_ROADS = new Set(['bogglemire', 'frostcrown']);
 
 /** What each area's open land shows on the zoomed-out map. The sea and coast west of the forest and Honeyhill come with them. */
 const OVERVIEW_LAND: Record<string, { x: number; y: number; width: number; height: number }> = {
@@ -49,8 +66,10 @@ const OVERVIEW_LAND: Record<string, { x: number; y: number; width: number; heigh
 
 /** Every chunk once, with the areas that show it: column 3 holds both coasts, so it belongs to both. */
 const CHUNKS = new Map<string, Chunk & { areas: string[] }>();
-for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunks], ['frostpeak', harvestChunks]] as const) {
-  for (const c of data.chunks as Chunk[]) {
+for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunks], ['frostpeak', harvestChunks], ['bogglemire', swampChunks], ['frostcrown', frostChunks]] as const) {
+  for (const c of data.chunks as (Chunk & { seaOnly?: boolean })[]) {
+    // Sea the swamp's list has for the Forest's column: it stays the Forest's.
+    if (c.seaOnly) continue;
     const key = `ground_${c.col}_${c.row}`;
     const known = CHUNKS.get(key);
     if (known) known.areas.push(area);
@@ -79,14 +98,19 @@ const OVERVIEW_KEY = 'world_overview';
 const FOG: Record<string, { key: string; png: string; box: typeof fogForestJson }> = {
   thornwood: { key: 'fog_forest', png: fogForestPng, box: fogForestJson },
   frostpeak: { key: 'fog_harvest', png: fogHarvestPng, box: fogHarvestJson },
+  bogglemire: { key: 'fog_swamp', png: fogSwampPng, box: fogSwampJson as typeof fogForestJson },
+  frostcrown: { key: 'fog_frost', png: fogFrostPng, box: fogFrostJson as typeof fogForestJson },
 };
 /** Silhouettes of bosses and the "?" of creatures not met. */
 export const FOG_PIECES = 'fog_pieces';
+export const FOG_EAST_PIECES = 'fog_east_pieces';
+const OVERVIEW_EAST_KEY = 'world_overview_east';
 
 export function preloadWorldMap(scene: Phaser.Scene): void {
   if (!scene.textures.exists(OVERVIEW_KEY)) scene.load.image(OVERVIEW_KEY, overviewJpg);
   for (const fog of Object.values(FOG)) if (!scene.textures.exists(fog.key)) scene.load.image(fog.key, fog.png);
   if (!scene.textures.exists(FOG_PIECES)) scene.load.atlas(FOG_PIECES, fogPiecesPng, fogPiecesJson);
+  if (!scene.textures.exists(FOG_EAST_PIECES)) scene.load.atlas(FOG_EAST_PIECES, fogEastPiecesPng, fogEastPiecesJson);
 }
 
 const urlOf = (file: string): string | undefined => Object.entries(FILES).find(([path]) => path.endsWith(`/${file}`))?.[1];
@@ -98,6 +122,8 @@ export class PaintedGround {
   private readonly overviews = new Map<string, Phaser.GameObjects.Image>();
   private readonly veils = new Map<string, Phaser.GameObjects.Image>();
   private readonly wanted = new Set<string>();
+  private east: Phaser.GameObjects.Image | null = null;
+  private eastLoading = false;
   /** The most chunks ever in memory at once, for the measure. */
   peak = 0;
 
@@ -122,8 +148,23 @@ export class PaintedGround {
     }
   }
 
+  /** The east's overview, about 11 MB, only once it can be seen: Honeyhill open shows the swamp ahead (Mitch, AD). */
+  private showEast(): void {
+    if (this.east) return;
+    if (this.scene.textures.exists(OVERVIEW_EAST_KEY)) {
+      this.east = this.scene.add.image(overviewEastData.worldX, overviewEastData.worldY, OVERVIEW_EAST_KEY).setOrigin(0, 0).setScale(1 / overviewEastData.filePxPerWorldPx).setDepth(DEPTH.overview);
+      return;
+    }
+    if (this.eastLoading) return;
+    this.eastLoading = true;
+    this.scene.load.image(OVERVIEW_EAST_KEY, overviewEastJpg);
+    this.scene.load.once(`filecomplete-image-${OVERVIEW_EAST_KEY}`, () => this.showEast());
+    this.scene.load.start();
+  }
+
   /** From the camera's cull: load what is near on open land, free what has gone far. */
   update(cam: Phaser.Cameras.Scene2D.Camera, opened: ReadonlySet<string>): void {
+    if (opened.has('frostpeak') || opened.has('bogglemire') || opened.has('frostcrown')) this.showEast();
     // Closed land shows under its mist (Robin, 2026-11-02: what is ahead, not empty sea); the mist lifts when it opens.
     for (const image of this.overviews.values()) image.setVisible(true);
     for (const [area, veil] of this.veils) {

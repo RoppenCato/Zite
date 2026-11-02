@@ -3,12 +3,16 @@
   "spots": {
     "meadows": "farrows",
     "thornwood": "stumprise",
-    "frostpeak": "oldpress"
+    "frostpeak": "oldpress",
+    "bogglemire": "mudarena",
+    "frostcrown": "stonering"
   },
   "fee": [
     30,
     90,
-    220
+    220,
+    420,
+    700
   ],
   "waves": [
     {

@@ -36,7 +36,8 @@ export function peekArea(seed: string, n: number): AreaPeek {
   const theme = order[(n - 1) % order.length]!;
   const names = THEMES.themes[theme]!.areas;
   const name = names[Math.floor((n - 1) / order.length) % names.length]!;
-  const tier = 3 + n;
+  // After the five hand-laid lands (Robin, 2026-11-02: Bogglemire and The Frostcrown).
+  const tier = 5 + n;
   return { id: `${GROWN_PREFIX}${n}`, name, theme, tier, levels: [4 * tier - 4, 4 * tier] };
 }
 

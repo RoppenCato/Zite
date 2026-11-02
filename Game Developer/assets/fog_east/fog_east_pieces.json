@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "silhouette_frostbeard": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 162,
+    "h": 209
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 209
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 209
+   },
+   "pivot": {
+    "x": 0.5507,
+    "y": 0.9403
+   }
+  },
+  "silhouette_murk": {
+   "frame": {
+    "x": 168,
+    "y": 3,
+    "w": 186,
+    "h": 208
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 186,
+    "h": 208
+   },
+   "sourceSize": {
+    "w": 186,
+    "h": 208
+   },
+   "pivot": {
+    "x": 0.4877,
+    "y": 0.918
+   }
+  }
+ },
+ "meta": {
+  "image": "fog_east_pieces.png",
+  "size": {
+   "w": 512,
+   "h": 256
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/bigland_extras.js",
+  "filePx": 2
+ }
+}

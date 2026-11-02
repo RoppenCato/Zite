@@ -949,6 +949,14 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
     const s = stats(next);
     return done({ ...next, hp: s.maxHp, mana: s.maxMana });
   }
+  if (action.op === 'testLand') {
+    // To a town of another land, every land before it opened, so a land can be looked at without walking there.
+    const to = state.board.spaces[action.to];
+    const land = to ? state.board.areas[to.area] : undefined;
+    if (!to || !land || to.kind !== 'town' || c.steps > 0) return reject(state, action, 'not now');
+    const opened = Object.values(state.board.areas).filter((a) => !a.dungeon && a.tier <= land.tier).map((a) => a.id);
+    return done({ ...c, space: to.id, opened: [...new Set([...c.opened, ...opened])] });
+  }
   if (action.op === 'testLevel') {
     const level = c.level + 1;
     const numbers = baseNumbers(c.classId, level);

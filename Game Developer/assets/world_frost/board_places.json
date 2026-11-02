@@ -1,0 +1,290 @@
+{
+ "frames": {
+  "gate_barred": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 402,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 402,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4527,
+    "y": 0.8699
+   },
+   "what": "place"
+  },
+  "gate_open": {
+   "frame": {
+    "x": 408,
+    "y": 3,
+    "w": 402,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 402,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4527,
+    "y": 0.8699
+   },
+   "what": "place"
+  },
+  "mob_old_bighorn": {
+   "frame": {
+    "x": 3,
+    "y": 275,
+    "w": 268,
+    "h": 186
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 268,
+    "h": 186
+   },
+   "sourceSize": {
+    "w": 268,
+    "h": 186
+   },
+   "pivot": {
+    "x": 0.6269,
+    "y": 0.9624
+   },
+   "what": "creature"
+  },
+  "arch_goats": {
+   "frame": {
+    "x": 274,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_camp": {
+   "frame": {
+    "x": 451,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_boulders": {
+   "frame": {
+    "x": 628,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_ice": {
+   "frame": {
+    "x": 805,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "mob_pebble_golem": {
+   "frame": {
+    "x": 3,
+    "y": 464,
+    "w": 148,
+    "h": 145
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 148,
+    "h": 145
+   },
+   "sourceSize": {
+    "w": 148,
+    "h": 145
+   },
+   "pivot": {
+    "x": 0.4932,
+    "y": 0.9517
+   },
+   "what": "creature"
+  },
+  "mob_crag_goblin": {
+   "frame": {
+    "x": 154,
+    "y": 464,
+    "w": 89,
+    "h": 139
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 89,
+    "h": 139
+   },
+   "sourceSize": {
+    "w": 89,
+    "h": 139
+   },
+   "pivot": {
+    "x": 0.5618,
+    "y": 0.9424
+   },
+   "what": "creature"
+  },
+  "mob_snow_goat": {
+   "frame": {
+    "x": 246,
+    "y": 464,
+    "w": 161,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 161,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 161,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5528,
+    "y": 0.9609
+   },
+   "what": "creature"
+  },
+  "mob_frostling": {
+   "frame": {
+    "x": 410,
+    "y": 464,
+    "w": 82,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 82,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 82,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9412
+   },
+   "what": "creature"
+  }
+ },
+ "meta": {
+  "image": "board_places.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/land_build.js",
+  "filePx": 2
+ }
+}

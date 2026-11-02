@@ -1,0 +1,30 @@
+{
+ "spots": 168,
+ "hubs": 19,
+ "roads": 25,
+ "tooClose": [],
+ "crossings": [],
+ "offLand": [],
+ "grounds": {
+  "toad-pools": 71,
+  "mudflats": 39,
+  "wisp-fen": 33,
+  "reed-beds": 25
+ },
+ "kinds": {
+  "board": 1,
+  "town": 2,
+  "shop": 1,
+  "shop_magic": 1,
+  "church": 1,
+  "spring": 6,
+  "shrine": 3,
+  "chest": 3,
+  "wild": 143,
+  "gate": 1,
+  "gear": 6
+ },
+ "sprites": 315,
+ "baked": 899,
+ "mostInAViewAt08": 31
+}

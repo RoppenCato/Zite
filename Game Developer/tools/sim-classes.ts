@@ -24,6 +24,8 @@ interface Region {
   potion: string;
 }
 const REGIONS: Region[] = [
+  { name: 'Bogglemire', level: 14, rank: 4, mobs: ['bog-toad', 'mudling', 'lantern-wisp', 'reed-witch'], miniLevel: 16, mini: 'bogsnapper', bossLevel: 17, boss: 'mother-murk', potions: 3, potion: 'potion-3' },
+  { name: 'Frostcrown', level: 18, rank: 5, mobs: ['snow-goat', 'crag-goblin', 'pebble-golem', 'frostling'], miniLevel: 20, mini: 'old-bighorn', bossLevel: 21, boss: 'frostbeard', potions: 3, potion: 'potion-3' },
   { name: 'Rootways', level: 5, rank: 1, mobs: ['wolf', 'glowcap'], miniLevel: 5, mini: 'wolf-alpha', bossLevel: 5, boss: 'old-rootbeard', potions: 3, potion: 'potion' },
   { name: 'Meadows', level: 3, rank: 1, mobs: ['slime', 'wolf', 'bandit', 'wisp'], miniLevel: 5, mini: 'wolf-alpha', bossLevel: 6, boss: 'thornwood-warden', potions: 2, potion: 'potion' },
   { name: 'Forest', level: 7, rank: 2, mobs: ['spider', 'treant', 'outlaw', 'wraith'], miniLevel: 8, mini: 'spider-queen', bossLevel: 9, boss: 'briar-king', potions: 2, potion: 'potion-2' },

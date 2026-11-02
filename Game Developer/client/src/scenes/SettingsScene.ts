@@ -26,7 +26,7 @@ const TEST_CLASSES: ClassId[] = ['warrior', 'rogue', 'mage', 'ranger'];
 export const SETTINGS_LAYOUT = {
   close: { x: 344, y: 142, w: 84, h: 44 },
   firstRowY: 182,
-  rowStep: 49,
+  rowStep: 45,
   go: { x: 344, w: 88, h: 40 },
 } as const;
 
@@ -121,6 +121,16 @@ export class SettingsScene extends Phaser.Scene {
       if (this.game_.me.fight) return;
       void this.game_.act({ type: 'skill', op: 'testLevel', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
     });
+    const { board } = this.game_.state;
+    const towns = Object.values(board.areas).filter((a) => !a.dungeon).sort((a, b) => a.tier - b.tier).map((a) => Object.values(board.spaces).find((s) => s.area === a.id && s.kind === 'town')).filter((s): s is NonNullable<typeof s> => !!s);
+    const hereTier = towns.findIndex((t) => t.area === board.spaces[this.game_.me.space]?.area);
+    const nextTown = towns[(hereTier + 1) % towns.length];
+    if (nextTown) {
+      this.settingRow(row + 3, 'Test: land', `Next: ${board.areas[nextTown.area]?.name}.`, 'Go', () => {
+        if (this.game_.me.fight) return;
+        void this.game_.act({ type: 'skill', op: 'testLand', to: nextTown.id, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+      });
+    }
     this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
       void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
     });

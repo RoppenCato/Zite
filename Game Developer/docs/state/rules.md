@@ -454,3 +454,7 @@ The Arena is a spot of its own at a road's end in each region, kind `arena` (`da
 `data/dungeons.json`: an area with `dungeon: true`, off the map, reached by a `door` spot at a road's end (`withDungeons`, save version 26). `door` moves you through and opens the land beyond. No spawns in it and no walking straight to its boss. Falling inside wakes in the town nearest its door. The Rootways are the first, under the Meadows, with Old Rootbeard at the far end.
 
 A road's end stops a walk, whatever is left of the roll (`legalPaths`, `checkPath`).
+
+## Five hand-laid lands (Robin, 2026-11-02)
+
+Bogglemire (tier 4, levels 12 to 16) and The Frostcrown (tier 5, 16 to 20) follow Honeyhill; Mitch, AD's layouts are in `world.json`, stats mine. Queen Bumble opens the swamp, Old Mother Murk the mountains, Frostbeard the first grown land, whose first column moves east to 12 and whose tiers start at 6. Save version 27: anyone already in a grown land has the two opened.

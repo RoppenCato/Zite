@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 26;
+export const STATE_VERSION = 27;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -454,6 +454,7 @@ export type Action =
   /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
   | { type: 'skill'; id: string; player: string; op: 'testClass'; classId: ClassId }
   | { type: 'skill'; id: string; player: string; op: 'testLevel' }
+  | { type: 'skill'; id: string; player: string; op: 'testLand'; to: string }
   | { type: 'skill'; id: string; player: string; op: 'reset' }
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }

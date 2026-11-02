@@ -127,7 +127,7 @@ describe('the world', () => {
   const board = surface(makeBoard());
   const spaces = Object.values(board.spaces);
 
-  it('is Zite: three areas by tier, about 180 spots, starting in the town Ashford in the meadows', () => {
+  it('is Zite: five areas by tier, starting in the town Ashford in the meadows', () => {
     expect(WORLD_DATA.name).toBe('Zite');
     expect(board.start).toBe('ashford');
     expect(board.spaces.ashford).toMatchObject({ kind: 'town', name: 'Puddlewick Village', area: 'meadows' });
@@ -135,10 +135,12 @@ describe('the world', () => {
       ['meadows', 1],
       ['thornwood', 2],
       ['frostpeak', 3],
+      ['bogglemire', 4],
+      ['frostcrown', 5],
     ]);
     expect(spaces.length).toBeGreaterThanOrEqual(150);
-    expect(spaces.length).toBeLessThanOrEqual(520);
-    expect(board).toMatchObject({ width: 7400, height: 9300 });
+    expect(spaces.length).toBeLessThanOrEqual(1000);
+    expect(board).toMatchObject({ width: 16600, height: 9300 });
   });
 
   it('keeps each area to its own mobs, every mob of the area within its levels', () => {
@@ -158,10 +160,12 @@ describe('the world', () => {
     }
   });
 
-  it('passes from area to area over a boss spot: the Copper Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit the first grown area', () => {
+  it('passes from area to area over a boss spot: the Copper Gate opens Thornwood, the Briar Gate opens Frostpeak, the Summit Bogglemire, Murk the Frostcrown, Frostbeard the first grown area', () => {
     expect(board.spaces.gate).toMatchObject({ kind: 'boss', area: 'meadows', boss: 'thornwood-warden', opens: 'thornwood' });
     expect(board.spaces.briar).toMatchObject({ kind: 'boss', area: 'thornwood', boss: 'briar-king', opens: 'frostpeak' });
-    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: 'gen-1' });
+    expect(board.spaces.summit).toMatchObject({ kind: 'boss', area: 'frostpeak', boss: 'frost-matriarch', opens: 'bogglemire' });
+    expect(board.spaces.murkpool).toMatchObject({ kind: 'boss', area: 'bogglemire', boss: 'mother-murk', opens: 'frostcrown' });
+    expect(board.spaces.frostseat).toMatchObject({ kind: 'boss', area: 'frostcrown', boss: 'frostbeard', opens: 'gen-1' });
     // The road beyond a gate belongs to the next area, so it is closed until the gate's boss falls.
     expect(board.spaces['gate-edge-1']).toMatchObject({ area: 'thornwood', kind: 'normal' });
     expect(board.spaces['briar-pass-1']).toMatchObject({ area: 'frostpeak' });

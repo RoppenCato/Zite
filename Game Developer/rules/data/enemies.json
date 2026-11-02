@@ -583,5 +583,323 @@
         "charge": true
       }
     ]
+  },
+  "bog-toad": {
+    "name": "Bog Toad",
+    "level": 12,
+    "role": "mob",
+    "hp": 470,
+    "attack": 52,
+    "defense": 15,
+    "xp": 66,
+    "gold": 75,
+    "moves": [
+      {
+        "name": "Long Tongue",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Belly Slam",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "mudling": {
+    "name": "Mudling",
+    "level": 13,
+    "role": "mob",
+    "hp": 560,
+    "attack": 54,
+    "defense": 20,
+    "xp": 74,
+    "gold": 82,
+    "moves": [
+      {
+        "name": "Mud Fist",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Clogging Muck",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "lantern-wisp": {
+    "name": "Lantern Wisp",
+    "level": 14,
+    "role": "mob",
+    "hp": 440,
+    "attack": 64,
+    "defense": 12,
+    "xp": 82,
+    "gold": 90,
+    "moves": [
+      {
+        "name": "Ember Spit",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Flare",
+        "power": 1.4,
+        "weight": 1
+      }
+    ],
+    "hovers": true
+  },
+  "reed-witch": {
+    "name": "Reed Witch",
+    "level": 15,
+    "role": "mob",
+    "hp": 600,
+    "attack": 64,
+    "defense": 20,
+    "xp": 92,
+    "gold": 100,
+    "moves": [
+      {
+        "name": "Dragonfly Hex",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Withering Hex",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "poison"
+      }
+    ]
+  },
+  "bogsnapper": {
+    "name": "Bogsnapper",
+    "level": 16,
+    "role": "mini",
+    "hp": 1200,
+    "attack": 66,
+    "defense": 22,
+    "xp": 280,
+    "gold": 300,
+    "moves": [
+      {
+        "name": "Snap",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Death Grip",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "mother-murk": {
+    "name": "Old Mother Murk",
+    "level": 17,
+    "role": "boss",
+    "hp": 1900,
+    "attack": 64,
+    "defense": 20,
+    "xp": 1100,
+    "gold": 900,
+    "moves": [
+      {
+        "name": "Ladle Slam",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Boiling Bog",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The bog boils around Old Mother Murk!",
+      "moves": [
+        {
+          "name": "Ladle Slam",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Boiling Bog",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Foul Steam",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    }
+  },
+  "snow-goat": {
+    "name": "Snow Goat",
+    "level": 16,
+    "role": "mob",
+    "hp": 680,
+    "attack": 72,
+    "defense": 22,
+    "xp": 104,
+    "gold": 112,
+    "moves": [
+      {
+        "name": "Horn Charge",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Hoof Stamp",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "crag-goblin": {
+    "name": "Crag Goblin",
+    "level": 17,
+    "role": "mob",
+    "hp": 740,
+    "attack": 74,
+    "defense": 26,
+    "xp": 116,
+    "gold": 124,
+    "moves": [
+      {
+        "name": "Pick Swing",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Rockfall",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "pebble-golem": {
+    "name": "Pebble Golem",
+    "level": 18,
+    "role": "mob",
+    "hp": 900,
+    "attack": 72,
+    "defense": 34,
+    "xp": 128,
+    "gold": 138,
+    "moves": [
+      {
+        "name": "Rock Fist",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Crushing Blow",
+        "power": 1.4,
+        "weight": 1
+      }
+    ]
+  },
+  "frostling": {
+    "name": "Frostling",
+    "level": 19,
+    "role": "mob",
+    "hp": 700,
+    "attack": 88,
+    "defense": 22,
+    "xp": 140,
+    "gold": 150,
+    "moves": [
+      {
+        "name": "Icicle Jab",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Numbing Touch",
+        "power": 0.9,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "old-bighorn": {
+    "name": "Old Bighorn",
+    "level": 20,
+    "role": "mini",
+    "hp": 1700,
+    "attack": 88,
+    "defense": 30,
+    "xp": 420,
+    "gold": 440,
+    "moves": [
+      {
+        "name": "Great Charge",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Avalanche Run",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "frostbeard": {
+    "name": "Frostbeard",
+    "level": 21,
+    "role": "boss",
+    "hp": 2700,
+    "attack": 86,
+    "defense": 28,
+    "xp": 1700,
+    "gold": 1400,
+    "moves": [
+      {
+        "name": "Hammer Fall",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Glacier Strike",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "The blizzard comes: Frostbeard roars!",
+      "moves": [
+        {
+          "name": "Hammer Fall",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Glacier Strike",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Freezing Gale",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    }
   }
 }

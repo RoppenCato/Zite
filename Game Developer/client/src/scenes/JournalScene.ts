@@ -5,6 +5,8 @@ import Phaser from 'phaser';
 import { creature, placeAt, regionCreatures, type Area } from '../../../rules/src/index.ts';
 import facesJson from '../../../assets/journal/journal_faces.json?url';
 import facesPng from '../../../assets/journal/journal_faces.png';
+import facesEastJson from '../../../assets/journal_east/journal_faces_east.json?url';
+import facesEastPng from '../../../assets/journal_east/journal_faces_east.png';
 import { sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { CREAM, KIT, kitReady, plate, sheet } from '../kit.ts';
@@ -14,6 +16,7 @@ import { makeButton } from '../ui.ts';
 const WOOD_INK = '#3a2410';
 const DIM = '#8a7458';
 const FACES = 'journal_faces';
+const FACES_EAST = 'journal_faces_east';
 const ROWS = 6;
 
 export class JournalScene extends Phaser.Scene {
@@ -29,6 +32,7 @@ export class JournalScene extends Phaser.Scene {
 
   preload(): void {
     if (!this.textures.exists(FACES)) this.load.atlas(FACES, facesPng, facesJson);
+    if (!this.textures.exists(FACES_EAST)) this.load.atlas(FACES_EAST, facesEastPng, facesEastJson);
   }
 
   create(): void {
@@ -137,9 +141,10 @@ export class JournalScene extends Phaser.Scene {
       this.rows.push(line);
     }
     if (kitReady(this)) this.rows.push(this.add.image(58, cy, KIT, special ? 'cubby_legendary' : seen ? 'cubby_plain' : 'cubby_empty').setDisplaySize(52, 52));
-    const hasFace = this.textures.exists(FACES) && this.textures.get(FACES).has(id);
+    const faces = [FACES, FACES_EAST].find((key) => this.textures.exists(key) && this.textures.get(key).has(id));
+    const hasFace = !!faces;
     if (hasFace) {
-      const face = this.add.image(58, cy, FACES, id).setDisplaySize(44, 44);
+      const face = this.add.image(58, cy, faces!, id).setDisplaySize(44, 44);
       if (!seen) face.setTint(0x2a2640);
       this.rows.push(face);
     }

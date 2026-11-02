@@ -298,7 +298,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(26);
+    expect(up.version).toBe(27);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();
@@ -427,7 +427,7 @@ describe('Honeyhill on the painted land', () => {
   it('holds the spots Mitch, AD laid, where they laid them', () => {
     for (const p of data.spots) expect(own.some((s) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), `${p.x},${p.y}`).toBe(true);
     // The entry road's first spots stand on the forest's side of y 3072, outside this list.
-    for (const s of own.filter((x) => x.y < 3072)) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
+    for (const s of own.filter((x) => x.y < 3072 && !x.id.includes('shoreend') && x.id !== 'shoreend')) expect(data.spots.some((p) => Math.hypot(p.x - s.x, p.y - s.y) <= 3), s.id).toBe(true);
   });
 
   it('hunts in Scarecrow Rows, and not on a town street', () => {

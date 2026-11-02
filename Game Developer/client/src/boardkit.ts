@@ -24,6 +24,20 @@ import forestGroundPng from '../../assets/board_forest/board_ground.png';
 import forestPropsJson from '../../assets/board_forest/board_props.json?url';
 import forestPropsPng from '../../assets/board_forest/board_props.png';
 import forestPlacementJson from '../../assets/world_forest/placement.json';
+import swampGroundJson from '../../assets/board_swamp/board_ground.json?url';
+import swampGroundPng from '../../assets/board_swamp/board_ground.png';
+import swampPropsJson from '../../assets/board_swamp/board_props.json?url';
+import swampPropsPng from '../../assets/board_swamp/board_props.png';
+import swampPlacementJson from '../../assets/world_swamp/placement.json';
+import swampPlacesJson from '../../assets/world_swamp/board_places.json?url';
+import swampPlacesPng from '../../assets/world_swamp/board_places.png';
+import frostGroundJson from '../../assets/board_frost/board_ground.json?url';
+import frostGroundPng from '../../assets/board_frost/board_ground.png';
+import frostPropsJson from '../../assets/board_frost/board_props.json?url';
+import frostPropsPng from '../../assets/board_frost/board_props.png';
+import frostPlacementJson from '../../assets/world_frost/placement.json';
+import frostPlacesJson from '../../assets/world_frost/board_places.json?url';
+import frostPlacesPng from '../../assets/world_frost/board_places.png';
 import harvestGroundJson from '../../assets/board_harvest/board_ground.json?url';
 import harvestGroundPng from '../../assets/board_harvest/board_ground.png';
 import harvestPropsJson from '../../assets/board_harvest/board_props.json?url';
@@ -65,11 +79,13 @@ const SCALE = 0.5;
 export const PLACES = 'board_places';
 const FOREST_PLACES = 'forest_places';
 const HARVEST_PLACES = 'harvest_places';
+const SWAMP_PLACES = 'swamp_places';
+const FROST_PLACES = 'frost_places';
 
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
-  const own = theme === 'forest' ? FOREST_PLACES : theme === 'harvest' ? HARVEST_PLACES : PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, ROOTWAYS_PLACES];
+  const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, ROOTWAYS_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
@@ -79,6 +95,8 @@ const ROOTWAYS_PLACES = 'rootways_places';
 const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
   forest: { key: FOREST_PLACES, png: forestPlacesPng, json: forestPlacesJson },
   harvest: { key: HARVEST_PLACES, png: harvestPlacesPng, json: harvestPlacesJson },
+  swamp: { key: SWAMP_PLACES, png: swampPlacesPng, json: swampPlacesJson },
+  mountain: { key: FROST_PLACES, png: frostPlacesPng, json: frostPlacesJson },
 };
 const ROOTWAYS_CLEARED = new Set(rootways.door.remove.map((p) => `${p.name}@${p.x},${p.y}`));
 /** A road's line from a colour written #rrggbb or rgba(r,g,b,a). */
@@ -179,6 +197,11 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
 }
 
 /** The kit for a theme, when its atlases are loaded; null keeps the shapes. */
+/** Bogglemire and The Frostcrown (Mitch, AD, 2026-11-02): their roads are baked into the ground, so `road` is only for what is stroked from them. */
+const landKit = (id: string, area: string, placement: Placement[], files: Kit['files']): Kit => ({ ...KITS.harvest!, ground: `${id}_ground`, props: `${id}_props`, placements: { [area]: placement }, flat: new Set<string>(), files });
+KITS.swamp = landKit('swamp', 'bogglemire', swampPlacementJson as Placement[], { groundPng: swampGroundPng, groundJson: swampGroundJson, propsPng: swampPropsPng, propsJson: swampPropsJson });
+KITS.mountain = landKit('mountain', 'frostcrown', frostPlacementJson as Placement[], { groundPng: frostGroundPng, groundJson: frostGroundJson, propsPng: frostPropsPng, propsJson: frostPropsJson });
+
 /** A dungeon uses the Meadows' plates, with its own roads and pieces. */
 KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };
 
@@ -195,6 +218,12 @@ export function preloadRegion(scene: Phaser.Scene, theme: string): void {
 }
 
 /** The atlas keys of a region's own pieces. */
+/** A gate of one region's own art: its frame names are shared with others, so only that atlas will do. */
+export function themedPlaces(scene: Phaser.Scene, theme: string): string | null {
+  const key = THEME_PLACES[theme]?.key;
+  return key && scene.textures.exists(key) ? key : null;
+}
+
 export function regionPlaces(theme: string): string[] {
   const places = THEME_PLACES[theme];
   return places ? [places.key] : [];

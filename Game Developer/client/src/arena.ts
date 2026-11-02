@@ -3,9 +3,13 @@ import Phaser from 'phaser';
 import pngUrl from '../../assets/arena/arena.png';
 import jsonUrl from '../../assets/arena/arena.json?url';
 import places from '../../assets/arena/arena_places.json';
+import eastPngUrl from '../../assets/arena_east/arena.png';
+import eastJsonUrl from '../../assets/arena_east/arena.json?url';
+import eastPlaces from '../../assets/arena_east/arena_places.json';
 import { standingDepth } from './boardkit.ts';
 
 export const ARENA_ATLAS = 'arena_buildings';
+const EAST_ATLAS = 'arena_buildings_east';
 
 interface Building {
   spot: string;
@@ -19,7 +23,10 @@ interface Building {
   footY: number;
   remove?: { name: string; x: number; y: number }[];
 }
-const BUILDINGS = Object.values((places as unknown as { buildings: Record<string, Building> }).buildings);
+const WEST = Object.values((places as unknown as { buildings: Record<string, Building> }).buildings);
+const EAST = Object.values((eastPlaces as unknown as { buildings: Record<string, Building> }).buildings);
+const BUILDINGS = [...WEST, ...EAST];
+const atlasOf = (b: Building): string => (EAST.includes(b) ? EAST_ATLAS : ARENA_ATLAS);
 const SCALE = places.scale;
 const FAR_SCALE = places.farScale;
 
@@ -38,19 +45,28 @@ export interface ArenaDrawn {
   x: number;
 }
 
+/** Whether a spot's building still has to load: the east's atlas comes only once one of its Arenas is open to you. */
+export function loadArenaFor(scene: Phaser.Scene, spot: string): boolean {
+  const b = BUILDINGS.find((x) => x.spot === spot);
+  if (!b || atlasOf(b) !== EAST_ATLAS || scene.textures.exists(EAST_ATLAS)) return false;
+  scene.load.atlas(EAST_ATLAS, eastPngUrl, eastJsonUrl);
+  return true;
+}
+
 export function drawArenaBuilding(scene: Phaser.Scene, spot: string, open: boolean): ArenaDrawn | null {
   const b = BUILDINGS.find((x) => x.spot === spot);
-  if (!b || !scene.textures.exists(ARENA_ATLAS)) return null;
+  const ARENA_ATLAS_B = b ? atlasOf(b) : '';
+  if (!b || !scene.textures.exists(ARENA_ATLAS_B)) return null;
   const depth = standingDepth(b.footY);
-  const body = scene.add.image(b.x, b.y, ARENA_ATLAS, b.frame).setScale(SCALE).setDepth(depth);
+  const body = scene.add.image(b.x, b.y, ARENA_ATLAS_B, b.frame).setScale(SCALE).setDepth(depth);
   const near: Phaser.GameObjects.GameObject[] = [body];
   if (open) {
     b.flags.forEach((f, i) => {
-      const flag = scene.add.image(b.x + f.x, b.y + f.y, ARENA_ATLAS, b.flag).setScale(SCALE).setDepth(depth + 0.0001);
+      const flag = scene.add.image(b.x + f.x, b.y + f.y, ARENA_ATLAS_B, b.flag).setScale(SCALE).setDepth(depth + 0.0001);
       scene.tweens.add({ targets: flag, scaleX: SCALE * 0.82, duration: 620 + i * 70, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       near.push(flag);
     });
-  } else near.push(scene.add.image(b.x, b.y, ARENA_ATLAS, b.doors).setScale(SCALE).setDepth(depth + 0.0001));
-  const far = scene.add.image(b.x, b.y, ARENA_ATLAS, b.far).setScale(FAR_SCALE).setDepth(depth).setVisible(false);
+  } else near.push(scene.add.image(b.x, b.y, ARENA_ATLAS_B, b.doors).setScale(SCALE).setDepth(depth + 0.0001));
+  const far = scene.add.image(b.x, b.y, ARENA_ATLAS_B, b.far).setScale(FAR_SCALE).setDepth(depth).setVisible(false);
   return { near, far, top: b.y - 300, x: b.x };
 }

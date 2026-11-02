@@ -1,0 +1,1582 @@
+{
+ "frames": {
+  "old_bighorn/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 302,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 302,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 302,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.5563,
+    "y": 0.9167
+   }
+  },
+  "old_bighorn/die1/0002": {
+   "frame": {
+    "x": 306,
+    "y": 2,
+    "w": 279,
+    "h": 215
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 279,
+    "h": 215
+   },
+   "sourceSize": {
+    "w": 279,
+    "h": 215
+   },
+   "pivot": {
+    "x": 0.5986,
+    "y": 0.9535
+   }
+  },
+  "old_bighorn/move/0002": {
+   "frame": {
+    "x": 587,
+    "y": 2,
+    "w": 272,
+    "h": 188
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 272,
+    "h": 188
+   },
+   "sourceSize": {
+    "w": 272,
+    "h": 188
+   },
+   "pivot": {
+    "x": 0.6103,
+    "y": 0.9628
+   }
+  },
+  "old_bighorn/move/0003": {
+   "frame": {
+    "x": 2,
+    "y": 232,
+    "w": 272,
+    "h": 188
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 272,
+    "h": 188
+   },
+   "sourceSize": {
+    "w": 272,
+    "h": 188
+   },
+   "pivot": {
+    "x": 0.6103,
+    "y": 0.9628
+   }
+  },
+  "old_bighorn/stand/0005": {
+   "frame": {
+    "x": 276,
+    "y": 232,
+    "w": 261,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 261,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 261,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.6284,
+    "y": 0.9679
+   }
+  },
+  "old_bighorn/stand/0006": {
+   "frame": {
+    "x": 539,
+    "y": 232,
+    "w": 261,
+    "h": 187
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 261,
+    "h": 187
+   },
+   "sourceSize": {
+    "w": 261,
+    "h": 187
+   },
+   "pivot": {
+    "x": 0.6284,
+    "y": 0.9679
+   }
+  },
+  "old_bighorn/attack1/0011": {
+   "frame": {
+    "x": 2,
+    "y": 422,
+    "w": 262,
+    "h": 186
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 262,
+    "h": 186
+   },
+   "sourceSize": {
+    "w": 262,
+    "h": 186
+   },
+   "pivot": {
+    "x": 0.6298,
+    "y": 0.9677
+   }
+  },
+  "old_bighorn/stand/0001": {
+   "frame": {
+    "x": 266,
+    "y": 422,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9674
+   }
+  },
+  "old_bighorn/stand/0004": {
+   "frame": {
+    "x": 534,
+    "y": 422,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9674
+   }
+  },
+  "old_bighorn/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 610,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9891
+   }
+  },
+  "old_bighorn/move/0004": {
+   "frame": {
+    "x": 270,
+    "y": 610,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9891
+   }
+  },
+  "old_bighorn/attack1/0012": {
+   "frame": {
+    "x": 538,
+    "y": 610,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9674
+   }
+  },
+  "old_bighorn/die1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 796,
+    "w": 266,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.6278,
+    "y": 0.9674
+   }
+  },
+  "old_bighorn/die1/0003": {
+   "frame": {
+    "x": 270,
+    "y": 796,
+    "w": 291,
+    "h": 184
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 291,
+    "h": 184
+   },
+   "sourceSize": {
+    "w": 291,
+    "h": 184
+   },
+   "pivot": {
+    "x": 0.5739,
+    "y": 0.9185
+   }
+  },
+  "old_bighorn/stand/0002": {
+   "frame": {
+    "x": 563,
+    "y": 796,
+    "w": 270,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 270,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 270,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.6296,
+    "y": 0.9669
+   }
+  },
+  "old_bighorn/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 982,
+    "w": 270,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 270,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 270,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.6296,
+    "y": 0.9669
+   }
+  },
+  "old_bighorn/move/0005": {
+   "frame": {
+    "x": 274,
+    "y": 982,
+    "w": 273,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.6484,
+    "y": 0.9613
+   }
+  },
+  "old_bighorn/move/0006": {
+   "frame": {
+    "x": 549,
+    "y": 982,
+    "w": 273,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.6484,
+    "y": 0.9613
+   }
+  },
+  "old_bighorn/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1165,
+    "w": 276,
+    "h": 181
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 276,
+    "h": 181
+   },
+   "sourceSize": {
+    "w": 276,
+    "h": 181
+   },
+   "pivot": {
+    "x": 0.6196,
+    "y": 0.9613
+   }
+  },
+  "old_bighorn/attack1/0005": {
+   "frame": {
+    "x": 280,
+    "y": 1165,
+    "w": 259,
+    "h": 180
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 180
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 180
+   },
+   "pivot": {
+    "x": 0.6757,
+    "y": 0.9778
+   }
+  },
+  "old_bighorn/attack1/0002": {
+   "frame": {
+    "x": 541,
+    "y": 1165,
+    "w": 291,
+    "h": 175
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 291,
+    "h": 175
+   },
+   "sourceSize": {
+    "w": 291,
+    "h": 175
+   },
+   "pivot": {
+    "x": 0.6117,
+    "y": 0.9543
+   }
+  },
+  "old_bighorn/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1348,
+    "w": 302,
+    "h": 174
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 302,
+    "h": 174
+   },
+   "sourceSize": {
+    "w": 302,
+    "h": 174
+   },
+   "pivot": {
+    "x": 0.6026,
+    "y": 0.9425
+   }
+  },
+  "old_bighorn/attack1/0006": {
+   "frame": {
+    "x": 306,
+    "y": 1348,
+    "w": 253,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.7075,
+    "y": 0.9827
+   }
+  },
+  "old_bighorn/attack1/0004": {
+   "frame": {
+    "x": 561,
+    "y": 1348,
+    "w": 308,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 308,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 308,
+    "h": 172
+   },
+   "pivot": {
+    "x": 0.6039,
+    "y": 0.936
+   }
+  },
+  "old_bighorn/attack1/0010": {
+   "frame": {
+    "x": 2,
+    "y": 1524,
+    "w": 285,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 285,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 285,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.6351,
+    "y": 0.9645
+   }
+  },
+  "old_bighorn/attack1/0007": {
+   "frame": {
+    "x": 289,
+    "y": 1524,
+    "w": 261,
+    "h": 166
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 261,
+    "h": 166
+   },
+   "sourceSize": {
+    "w": 261,
+    "h": 166
+   },
+   "pivot": {
+    "x": 0.7126,
+    "y": 0.9639
+   }
+  },
+  "old_bighorn/attack1/0008": {
+   "frame": {
+    "x": 552,
+    "y": 1524,
+    "w": 274,
+    "h": 165
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 274,
+    "h": 165
+   },
+   "sourceSize": {
+    "w": 274,
+    "h": 165
+   },
+   "pivot": {
+    "x": 0.6861,
+    "y": 0.9576
+   }
+  },
+  "old_bighorn/attack1/0009": {
+   "frame": {
+    "x": 2,
+    "y": 1695,
+    "w": 300,
+    "h": 156
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 156
+   },
+   "sourceSize": {
+    "w": 300,
+    "h": 156
+   },
+   "pivot": {
+    "x": 0.6567,
+    "y": 0.9551
+   }
+  },
+  "old_bighorn/die1/0004": {
+   "frame": {
+    "x": 304,
+    "y": 1695,
+    "w": 307,
+    "h": 146
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 307,
+    "h": 146
+   },
+   "sourceSize": {
+    "w": 307,
+    "h": 146
+   },
+   "pivot": {
+    "x": 0.5928,
+    "y": 0.9041
+   }
+  },
+  "old_bighorn/die1/0005": {
+   "frame": {
+    "x": 613,
+    "y": 1695,
+    "w": 323,
+    "h": 114
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 323,
+    "h": 114
+   },
+   "sourceSize": {
+    "w": 323,
+    "h": 114
+   },
+   "pivot": {
+    "x": 0.6068,
+    "y": 0.8772
+   }
+  },
+  "old_bighorn/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1853,
+    "w": 244,
+    "h": 54
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 244,
+    "h": 54
+   },
+   "sourceSize": {
+    "w": 244,
+    "h": 54
+   },
+   "pivot": {
+    "x": 0.4672,
+    "y": 0.8889
+   }
+  },
+  "old_bighorn/die1/0007": {
+   "frame": {
+    "x": 248,
+    "y": 1853,
+    "w": 242,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 242,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 242,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.4752,
+    "y": 0.7826
+   }
+  },
+  "old_bighorn/die1/0008": {
+   "frame": {
+    "x": 492,
+    "y": 1853,
+    "w": 241,
+    "h": 39
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 241,
+    "h": 39
+   },
+   "sourceSize": {
+    "w": 241,
+    "h": 39
+   },
+   "pivot": {
+    "x": 0.4813,
+    "y": 0.6154
+   }
+  }
+ },
+ "meta": {
+  "image": "old_bighorn.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1
+ },
+ "actions": {
+  "stand": {
+   "delay": 130,
+   "loop": true,
+   "frames": [
+    {
+     "name": "old_bighorn/stand/0001",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 178
+     },
+     "delay": 130,
+     "lt": {
+      "x": -167,
+      "y": -178
+     },
+     "rb": {
+      "x": 99,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -178
+     }
+    },
+    {
+     "name": "old_bighorn/stand/0002",
+     "w": 270,
+     "h": 181,
+     "origin": {
+      "x": 170,
+      "y": 175
+     },
+     "delay": 130,
+     "lt": {
+      "x": -170,
+      "y": -175
+     },
+     "rb": {
+      "x": 100,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -175
+     }
+    },
+    {
+     "name": "old_bighorn/stand/0003",
+     "w": 270,
+     "h": 181,
+     "origin": {
+      "x": 170,
+      "y": 175
+     },
+     "delay": 130,
+     "lt": {
+      "x": -170,
+      "y": -175
+     },
+     "rb": {
+      "x": 100,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -175
+     }
+    },
+    {
+     "name": "old_bighorn/stand/0004",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 178
+     },
+     "delay": 130,
+     "lt": {
+      "x": -167,
+      "y": -178
+     },
+     "rb": {
+      "x": 99,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -178
+     }
+    },
+    {
+     "name": "old_bighorn/stand/0005",
+     "w": 261,
+     "h": 187,
+     "origin": {
+      "x": 164,
+      "y": 181
+     },
+     "delay": 130,
+     "lt": {
+      "x": -164,
+      "y": -181
+     },
+     "rb": {
+      "x": 97,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     }
+    },
+    {
+     "name": "old_bighorn/stand/0006",
+     "w": 261,
+     "h": 187,
+     "origin": {
+      "x": 164,
+      "y": 181
+     },
+     "delay": 130,
+     "lt": {
+      "x": -164,
+      "y": -181
+     },
+     "rb": {
+      "x": 97,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "old_bighorn/move/0001",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 182
+     },
+     "delay": 100,
+     "lt": {
+      "x": -167,
+      "y": -182
+     },
+     "rb": {
+      "x": 99,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -182
+     }
+    },
+    {
+     "name": "old_bighorn/move/0002",
+     "w": 272,
+     "h": 188,
+     "origin": {
+      "x": 166,
+      "y": 181
+     },
+     "delay": 100,
+     "lt": {
+      "x": -166,
+      "y": -181
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     }
+    },
+    {
+     "name": "old_bighorn/move/0003",
+     "w": 272,
+     "h": 188,
+     "origin": {
+      "x": 166,
+      "y": 181
+     },
+     "delay": 100,
+     "lt": {
+      "x": -166,
+      "y": -181
+     },
+     "rb": {
+      "x": 106,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -181
+     }
+    },
+    {
+     "name": "old_bighorn/move/0004",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 182
+     },
+     "delay": 100,
+     "lt": {
+      "x": -167,
+      "y": -182
+     },
+     "rb": {
+      "x": 99,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -182
+     }
+    },
+    {
+     "name": "old_bighorn/move/0005",
+     "w": 273,
+     "h": 181,
+     "origin": {
+      "x": 177,
+      "y": 174
+     },
+     "delay": 100,
+     "lt": {
+      "x": -177,
+      "y": -174
+     },
+     "rb": {
+      "x": 96,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -174
+     }
+    },
+    {
+     "name": "old_bighorn/move/0006",
+     "w": 273,
+     "h": 181,
+     "origin": {
+      "x": 177,
+      "y": 174
+     },
+     "delay": 100,
+     "lt": {
+      "x": -177,
+      "y": -174
+     },
+     "rb": {
+      "x": 96,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -174
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_bighorn/attack1/0001",
+     "w": 276,
+     "h": 181,
+     "origin": {
+      "x": 171,
+      "y": 174
+     },
+     "delay": 67,
+     "lt": {
+      "x": -171,
+      "y": -174
+     },
+     "rb": {
+      "x": 105,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -174
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0002",
+     "w": 291,
+     "h": 175,
+     "origin": {
+      "x": 178,
+      "y": 167
+     },
+     "delay": 67,
+     "lt": {
+      "x": -178,
+      "y": -167
+     },
+     "rb": {
+      "x": 113,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -167
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0003",
+     "w": 302,
+     "h": 174,
+     "origin": {
+      "x": 182,
+      "y": 164
+     },
+     "delay": 67,
+     "lt": {
+      "x": -182,
+      "y": -164
+     },
+     "rb": {
+      "x": 120,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -164
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0004",
+     "w": 308,
+     "h": 172,
+     "origin": {
+      "x": 186,
+      "y": 161
+     },
+     "delay": 100,
+     "lt": {
+      "x": -186,
+      "y": -161
+     },
+     "rb": {
+      "x": 122,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -161
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0005",
+     "w": 259,
+     "h": 180,
+     "origin": {
+      "x": 175,
+      "y": 176
+     },
+     "delay": 67,
+     "lt": {
+      "x": -175,
+      "y": -176
+     },
+     "rb": {
+      "x": 84,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -176
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0006",
+     "w": 253,
+     "h": 173,
+     "origin": {
+      "x": 179,
+      "y": 170
+     },
+     "delay": 50,
+     "lt": {
+      "x": -179,
+      "y": -170
+     },
+     "rb": {
+      "x": 74,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -170
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0007",
+     "w": 261,
+     "h": 166,
+     "origin": {
+      "x": 186,
+      "y": 160
+     },
+     "delay": 134,
+     "lt": {
+      "x": -186,
+      "y": -160
+     },
+     "rb": {
+      "x": 75,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -160
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0008",
+     "w": 274,
+     "h": 165,
+     "origin": {
+      "x": 188,
+      "y": 158
+     },
+     "delay": 67,
+     "lt": {
+      "x": -188,
+      "y": -158
+     },
+     "rb": {
+      "x": 86,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -158
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0009",
+     "w": 300,
+     "h": 156,
+     "origin": {
+      "x": 197,
+      "y": 149
+     },
+     "delay": 67,
+     "lt": {
+      "x": -197,
+      "y": -149
+     },
+     "rb": {
+      "x": 103,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -149
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0010",
+     "w": 285,
+     "h": 169,
+     "origin": {
+      "x": 181,
+      "y": 163
+     },
+     "delay": 67,
+     "lt": {
+      "x": -181,
+      "y": -163
+     },
+     "rb": {
+      "x": 104,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -163
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0011",
+     "w": 262,
+     "h": 186,
+     "origin": {
+      "x": 165,
+      "y": 180
+     },
+     "delay": 67,
+     "lt": {
+      "x": -165,
+      "y": -180
+     },
+     "rb": {
+      "x": 97,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -180
+     }
+    },
+    {
+     "name": "old_bighorn/attack1/0012",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 178
+     },
+     "delay": 67,
+     "lt": {
+      "x": -167,
+      "y": -178
+     },
+     "rb": {
+      "x": 99,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -178
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_bighorn/hit1/0001",
+     "w": 302,
+     "h": 228,
+     "origin": {
+      "x": 168,
+      "y": 209
+     },
+     "delay": 600,
+     "lt": {
+      "x": -168,
+      "y": -209
+     },
+     "rb": {
+      "x": 134,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -209
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 83,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_bighorn/die1/0001",
+     "w": 266,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 178
+     },
+     "delay": 83,
+     "lt": {
+      "x": -167,
+      "y": -178
+     },
+     "rb": {
+      "x": 99,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -178
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_bighorn/die1/0002",
+     "w": 279,
+     "h": 215,
+     "origin": {
+      "x": 167,
+      "y": 205
+     },
+     "delay": 83,
+     "lt": {
+      "x": -167,
+      "y": -205
+     },
+     "rb": {
+      "x": 112,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -205
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_bighorn/die1/0003",
+     "w": 291,
+     "h": 184,
+     "origin": {
+      "x": 167,
+      "y": 169
+     },
+     "delay": 83,
+     "lt": {
+      "x": -167,
+      "y": -169
+     },
+     "rb": {
+      "x": 124,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -169
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_bighorn/die1/0004",
+     "w": 307,
+     "h": 146,
+     "origin": {
+      "x": 182,
+      "y": 132
+     },
+     "delay": 83,
+     "lt": {
+      "x": -182,
+      "y": -132
+     },
+     "rb": {
+      "x": 125,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -132
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_bighorn/die1/0005",
+     "w": 323,
+     "h": 114,
+     "origin": {
+      "x": 196,
+      "y": 100
+     },
+     "delay": 83,
+     "lt": {
+      "x": -196,
+      "y": -100
+     },
+     "rb": {
+      "x": 127,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -100
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_bighorn/die1/0006",
+     "w": 244,
+     "h": 54,
+     "origin": {
+      "x": 114,
+      "y": 48
+     },
+     "delay": 83,
+     "lt": {
+      "x": -114,
+      "y": -48
+     },
+     "rb": {
+      "x": 130,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -48
+     },
+     "a0": 255,
+     "a1": 170
+    },
+    {
+     "name": "old_bighorn/die1/0007",
+     "w": 242,
+     "h": 46,
+     "origin": {
+      "x": 115,
+      "y": 36
+     },
+     "delay": 83,
+     "lt": {
+      "x": -115,
+      "y": -36
+     },
+     "rb": {
+      "x": 127,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -36
+     },
+     "a0": 170,
+     "a1": 80
+    },
+    {
+     "name": "old_bighorn/die1/0008",
+     "w": 241,
+     "h": 39,
+     "origin": {
+      "x": 116,
+      "y": 24
+     },
+     "delay": 83,
+     "lt": {
+      "x": -116,
+      "y": -24
+     },
+     "rb": {
+      "x": 125,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -24
+     },
+     "a0": 80,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

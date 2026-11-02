@@ -521,3 +521,7 @@ The board shows a dungeon only while you stand in it (`shownAreas`): its chunks,
 ## Region art comes and goes (Robin, 2026-11-02)
 
 The Meadows' board atlases are always held: every spot's plate can borrow them. Any other painted region's ground, props and places atlases load when you or the camera come within `REGION_NEAR` and are freed past `REGION_FAR` (`fitRegions`, checked once a second). Its props are drawn then and destroyed before the free; its plates swap to the Meadows' while it is away, so far spots can still be tapped. Grown lands, not painted, still hold their kits. Worst case on the board: Meadows 16 MB and two regions at about 14 MB each.
+
+## The east on the map (Robin, 2026-11-02)
+
+World width 16600. `BAKED_ROADS`: Bogglemire's and The Frostcrown's roads are in the chunks, never stroked. The east's overview loads once Honeyhill is open. The map's bounds grow with sight: the west from the start, the swamp once Honeyhill is open, the mountains once the swamp is. Gates with a `theme` take their frames only from that region's atlas, as the names are shared. The east's Arena atlas loads when one of its Arenas is open to you.

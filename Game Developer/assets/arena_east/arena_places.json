@@ -1,0 +1,130 @@
+{
+ "filePx": 1.5,
+ "scale": 0.6667,
+ "farScale": 3.3333,
+ "buildings": {
+  "swamp": {
+   "spot": "mudarena",
+   "x": 11370,
+   "y": 1170,
+   "far": "arena_far_swamp",
+   "frame": "arena_swamp",
+   "doors": "arena_doors_swamp",
+   "flag": "arena_flag_swamp",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 11370,
+    "y": 1082
+   },
+   "footY": 1170,
+   "rx": 150,
+   "ry": 88,
+   "remove": [
+    {
+     "name": "cypress_b",
+     "x": 11407,
+     "y": 1101
+    },
+    {
+     "name": "reeds_a",
+     "x": 11318,
+     "y": 1163
+    },
+    {
+     "name": "reeds_b",
+     "x": 11290,
+     "y": 1228
+    }
+   ],
+   "spotsInside": 0
+  },
+  "frost": {
+   "spot": "stonering",
+   "x": 15620,
+   "y": 4320,
+   "far": "arena_far_frost",
+   "frame": "arena_frost",
+   "doors": "arena_doors_frost",
+   "flag": "arena_flag_frost",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 15620,
+    "y": 4232
+   },
+   "footY": 4320,
+   "rx": 150,
+   "ry": 88,
+   "remove": [
+    {
+     "name": "boulder_b",
+     "x": 15614,
+     "y": 4267
+    },
+    {
+     "name": "pine_b",
+     "x": 15552,
+     "y": 4333
+    }
+   ],
+   "spotsInside": 0
+  }
+ }
+}

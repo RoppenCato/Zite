@@ -45,13 +45,13 @@ import {
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
-import { drawArenaBuilding, type ArenaDrawn } from '../arena.ts';
-import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces } from '../boardkit.ts';
+import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
+import { allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
-import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND } from '../worldmap.ts';
+import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
@@ -86,11 +86,11 @@ interface WorldBridge {
   opens: string;
 }
 const worldBridge = (): WorldBridge | undefined => (WORLD_DATA as unknown as { bridge?: WorldBridge }).bridge;
-type WorldGate = Pick<WorldBridge, 'foot' | 'barred' | 'open' | 'opens'>;
+type WorldGate = Pick<WorldBridge, 'foot' | 'barred' | 'open' | 'opens'> & { theme?: string };
 /** What stands in the way between lands: the bridge, the pass by Grumblebark's Glade, and the gate on the north shore. */
 const worldGates = (): WorldGate[] => {
-  const { bridge, pass, exit } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate; exit?: WorldGate };
-  return [bridge, pass, exit].filter((g): g is WorldGate => !!g);
+  const { bridge, pass, exit, gates } = WORLD_DATA as unknown as { bridge?: WorldGate; pass?: WorldGate; exit?: WorldGate; gates?: WorldGate[] };
+  return [bridge, pass, ...(gates ?? []), exit].filter((g): g is WorldGate => !!g);
 };
 /** Whether a point lies within `margin` of a line segment. */
 function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: number; y: number }, margin: number): boolean {
@@ -115,7 +115,7 @@ const MAX_ZOOM = 1.4 * DPR; // the closest a pinch gets
 const REGION_NEAR = 900;
 const REGION_FAR = 1500;
 const HARD_MIN_ZOOM = 0.12 * DPR; // the overview of the hand-laid world; a world grown wider may go lower, to the floor
-const ZOOM_FLOOR = 0.05 * DPR;
+const ZOOM_FLOOR = 0.025 * DPR;
 const FRAME_PAD = 80; // world pixels round the token and the lit spaces when a roll is framed
 /** The lowest row of the screen that a framed spot may use: above the message's sign and its chips. */
 const FRAME_BOTTOM = 738;
@@ -817,7 +817,7 @@ export class BoardScene extends Phaser.Scene {
       if (!from || !to || !road.via?.length || this.crossed.has(road)) continue;
       const land = [road.area, from.area].find((id) => id && PAINTED[id]);
       const kit = land ? kitFor(this, areas[land]?.theme ?? '') : null;
-      if (!kit || !road.area) continue;
+      if (!kit || !road.area || BAKED_ROADS.has(road.area)) continue;
       this.crossed.add(road);
       this.closedRoads.set(`road:${road.area}`, this.strokePaths(kit, [[from, ...road.via, to]]));
     }
@@ -856,7 +856,7 @@ export class BoardScene extends Phaser.Scene {
     const kits = new Map(kitted.map((s) => [areas[s.area]!.theme, kitFor(this, areas[s.area]!.theme)!]));
     // A painted area's roads follow their own points, unsmoothed, so they pass through their spots (Mitch, AD); no road on the bridge's painted deck.
     const paintedNow = new Set(kitted.filter((s) => PAINTED[s.area] || areas[s.area]?.dungeon).map((s) => s.area));
-    for (const areaId of paintedNow) this.drawPaintedRoads(areaId);
+    for (const areaId of paintedNow) if (!BAKED_ROADS.has(areaId)) this.drawPaintedRoads(areaId);
     this.drawCrossingRoads(all);
     const onPainted = (x: number, y: number): boolean => Object.values(PAINTED).some((p) => x >= p.x && x < p.x + p.width && y >= p.y && y < p.y + p.height);
     // A road running over painted land is stroked with that land's roads, never smoothed through its spots.
@@ -1264,8 +1264,9 @@ export class BoardScene extends Phaser.Scene {
     if (!this.textures.exists(FOG_PIECES)) return;
     const marks: Phaser.GameObjects.Image[] = [];
     const boss = Object.values(board.spaces).find((s) => s.area === area.id && s.kind === 'boss');
-    const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : null;
-    if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' ? 40 : 0), FOG_PIECES, shape));
+    const shape = boss?.boss === 'briar-king' ? 'silhouette_grumblebark' : boss?.boss === 'frost-matriarch' ? 'silhouette_queen' : boss?.boss === 'mother-murk' ? 'silhouette_murk' : boss?.boss === 'frostbeard' ? 'silhouette_frostbeard' : null;
+    const eastShape = shape === 'silhouette_murk' || shape === 'silhouette_frostbeard';
+    if (boss && shape) marks.push(this.add.image(boss.x, boss.y + (shape === 'silhouette_queen' || eastShape ? 40 : 0), eastShape ? FOG_EAST_PIECES : FOG_PIECES, shape));
     for (const g of groundsOf(board, area.id)) {
       const hub = board.spaces[g.hub];
       if (hub) marks.push(this.add.image(hub.x, hub.y, FOG_PIECES, 'mark_unknown'));
@@ -1277,7 +1278,7 @@ export class BoardScene extends Phaser.Scene {
   private drawGates(): void {
     const opened = new Set(this.game_.me.opened);
     for (const gate of worldGates()) {
-      const atlas = placesAtlas(this, gate.barred);
+      const atlas = gate.theme ? themedPlaces(this, gate.theme) : placesAtlas(this, gate.barred);
       if (atlas && !this.gates.has(gate)) this.gates.set(gate, this.add.image(gate.foot.x, gate.foot.y, atlas, opened.has(gate.opens) ? gate.open : gate.barred).setScale(0.5).setDepth(standingDepth(gate.foot.y)));
     }
   }
@@ -1378,7 +1379,10 @@ export class BoardScene extends Phaser.Scene {
     // All the painted land, closed or not: what lies ahead is there to look at (Robin, 2026-11-02).
     const all = Object.values(this.game_.state.board.areas);
     const inside = this.dungeonHere();
-    const areas = all.filter((a) => !a.dungeon && (this.game_.me.opened.includes(a.id) || (this.painted && PAINTED[a.id])));
+    // The west is there to look at from the start; each land in the east once the land before it is open.
+    const opened = this.game_.me.opened;
+    const inSight = (a: Area): boolean => a.id === 'bogglemire' ? opened.includes('frostpeak') || opened.includes('bogglemire') : a.id === 'frostcrown' ? opened.includes('bogglemire') : !!PAINTED[a.id];
+    const areas = all.filter((a) => !a.dungeon && (opened.includes(a.id) || (this.painted && inSight(a))));
     const list: Area[] = inside ? [inside] : areas.length ? areas : all.filter((a) => !a.dungeon);
     const boxes = list.map((a) => DUNGEON_LAND[a.id] ?? PAINTED[a.id] ?? a.bounds);
     const x = Math.min(...boxes.map((a) => a.x));
@@ -1401,6 +1405,7 @@ export class BoardScene extends Phaser.Scene {
   private follow(snap: boolean): void {
     const cam = this.cameras.main;
     cam.panEffect.reset();
+    this.fitBounds();
     const { scrollX, scrollY } = cam;
     cam.startFollow(this.token, true, FOLLOW_LERP, FOLLOW_LERP);
     if (snap) {
@@ -1430,6 +1435,9 @@ export class BoardScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const b = this.openBounds();
     this.minZoom = this.overviewZoom();
+    // A world wider than it is tall sits in the middle of the band, not stuck to its top.
+    const spare = Math.max(0, (cam.height / this.minZoom - b.height) / 2);
+    cam.setBounds(b.x, b.y - spare, b.width, b.height + spare * 2);
     this.unfollow();
     cam.pan(b.x + b.width / 2, b.y + b.height / 2, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
     cam.zoomTo(this.minZoom, settings.ms(CAMERA_MS), 'Sine.easeInOut', true);
@@ -1945,6 +1953,13 @@ export class BoardScene extends Phaser.Scene {
     const { board } = this.game_.state;
     const open = arenaOpen(me, this.game_.now());
     const spots = me.opened.map((area) => arenaSpot(board, area)).filter((id): id is string => !!id);
+    if (spots.map((id) => loadArenaFor(this, id)).some(Boolean)) {
+      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        this.arenaDrawnKey = '';
+        this.drawArena();
+      });
+      this.load.start();
+    }
     const key = `${open}|${spots.join()}`;
     if (key === this.arenaDrawnKey) return;
     this.arenaDrawnKey = key;

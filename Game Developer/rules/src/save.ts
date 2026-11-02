@@ -4,7 +4,7 @@ import { CLASS_DATA, DICE_DATA } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
-import { withArenas, withDungeons } from './world.ts';
+import { GROWN, withArenas, withDungeons } from './world.ts';
 import { STATE_VERSION, type Board, type Character, type Enemy, type Fight, type GameState, type GearItem, type Offer } from './types.ts';
 
 /** The older shapes, as far as the migrations need them. */
@@ -117,8 +117,11 @@ interface OldCharacter {
 export function migrate(raw: unknown): GameState | null {
   const version = (raw as { version?: unknown } | null)?.version;
   // 25 → 26: a stand-in cave gives way to the Rootways, before the board is laid again.
-  const up = migrateOlder(version === 25 ? withoutStandIn(raw as GameState) : raw);
-  if (!up || version === STATE_VERSION) return up;
+  const before = migrateOlder(version === 25 ? withoutStandIn(raw as GameState) : raw);
+  if (!before || version === STATE_VERSION) return before;
+  // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
+  const up = withEastOpen(before);
+  if (version === 26) return withArena(up);
   if (version === 25) return withArena(up);
   // 24 → 25: the dungeons are laid.
   if (version === 24) return withArena(up);
@@ -127,6 +130,13 @@ export function migrate(raw: unknown): GameState | null {
   // 22 → 23: the journal starts empty; nothing else moves.
   if (version === 22) return withArena(withJournal(up));
   return withArena(withJournal(toPaths(up)));
+}
+
+function withEastOpen(state: GameState): GameState {
+  const characters = Object.fromEntries(
+    Object.entries(state.characters).map(([id, c]) => [id, c.opened.some((a) => GROWN.test(a)) ? { ...c, opened: [...new Set([...c.opened, 'bogglemire', 'frostcrown'])] } : c]),
+  );
+  return { ...state, characters };
 }
 
 /** A build on Robin's phone for a while had a stand-in cave, `grotto`: anyone in it comes out at its door, and the real one is laid. */
@@ -176,7 +186,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

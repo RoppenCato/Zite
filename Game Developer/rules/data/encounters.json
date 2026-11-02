@@ -238,5 +238,107 @@
         "need": 6
       }
     ]
+  },
+  "swamp": {
+    "events": [
+      {
+        "text": "A stilt-house keeper lets you dry off by the fire.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A leech gets you behind the knee. Ugh.",
+        "kind": "hurt",
+        "value": 0.08
+      },
+      {
+        "text": "A purse floats by on a lily pad.",
+        "kind": "gold",
+        "value": 60
+      },
+      {
+        "text": "A lantern over the water hums, and your head clears.",
+        "kind": "mana",
+        "value": 0.25
+      },
+      {
+        "text": "A marsh wife hands you a stoppered bottle.",
+        "kind": "flask",
+        "value": 1
+      },
+      {
+        "text": "A card drifts past on the black water.",
+        "kind": "card",
+        "value": 1
+      }
+    ],
+    "finds": [
+      {
+        "text": "A rusted helm sits on a sunk stump. Wade out for it?",
+        "slot": "helm",
+        "need": 6
+      },
+      {
+        "text": "Boots stick out of the mud, with nobody in them. Pull?",
+        "slot": "boots",
+        "need": 5
+      },
+      {
+        "text": "A cape is snagged high in a dead cypress. Climb?",
+        "slot": "cape",
+        "need": 6
+      }
+    ]
+  },
+  "mountain": {
+    "events": [
+      {
+        "text": "A herder shares hot soup by a sheltered fire.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A slide of loose stones catches you on the shin.",
+        "kind": "hurt",
+        "value": 0.08
+      },
+      {
+        "text": "Old coins lie frozen in a crack. You chip them free.",
+        "kind": "gold",
+        "value": 90
+      },
+      {
+        "text": "The thin clean air clears your head.",
+        "kind": "mana",
+        "value": 0.25
+      },
+      {
+        "text": "A climber left a flask on a cairn, for whoever comes next.",
+        "kind": "flask",
+        "value": 1
+      },
+      {
+        "text": "A card flutters out of a frozen pack.",
+        "kind": "card",
+        "value": 1
+      }
+    ],
+    "finds": [
+      {
+        "text": "A shield is frozen into a wall of ice. Hack it out?",
+        "slot": "shield",
+        "need": 6
+      },
+      {
+        "text": "Fine gloves on a frozen climber who no longer needs them. Take them?",
+        "slot": "gloves",
+        "need": 5
+      },
+      {
+        "text": "Something bright lies on a ledge above the drop. Reach for it?",
+        "slot": "trinket",
+        "need": 6
+      }
+    ]
   }
 }

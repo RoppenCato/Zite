@@ -10,6 +10,16 @@ import farPng from '../../assets/meadow_fight/far.png';
 import groundPng from '../../assets/meadow_fight/ground.png';
 import midPng from '../../assets/meadow_fight/mid.png';
 import nearPng from '../../assets/meadow_fight/near.png';
+import swampFarPng from '../../assets/swamp_fight/far.png';
+import swampMotesPng from '../../assets/swamp_fight/motes.png';
+import swampMidPng from '../../assets/swamp_fight/mid.png';
+import swampNearPng from '../../assets/swamp_fight/near.png';
+import swampGroundPng from '../../assets/swamp_fight/ground.png';
+import frostCloudsPng from '../../assets/frost_fight/clouds.png';
+import frostFarPng from '../../assets/frost_fight/far.png';
+import frostMidPng from '../../assets/frost_fight/mid.png';
+import frostNearPng from '../../assets/frost_fight/near.png';
+import frostGroundPng from '../../assets/frost_fight/ground.png';
 import dungeonFarPng from '../../assets/dungeon_meadows/fight/far.png';
 import dungeonGroundPng from '../../assets/dungeon_meadows/fight/ground.png';
 import dungeonMidPng from '../../assets/dungeon_meadows/fight/mid.png';
@@ -75,6 +85,30 @@ const BACKDROPS: Record<string, BackdropFiles> = {
       { key: 'forest-mid', png: forestMidPng, w: 512, h: 244, bottom: 10, scroll: 0.45, drift: 0 },
       { key: 'forest-near', png: forestNearPng, w: 512, h: 410, bottom: 10, scroll: 0.8, drift: 0 },
       { key: 'forest-ground', png: forestGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  swamp: {
+    sky: { top: 0x7fb4a4, bottom: 0xdcecc8 },
+    soil: 0x66884f,
+    feet: 46,
+    strips: [
+      { key: 'swamp-far', png: swampFarPng, w: 512, h: 378, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'swamp-motes', png: swampMotesPng, w: 512, h: 284, bottom: -20, scroll: 0.3, drift: 3, tileScale: 1 },
+      { key: 'swamp-mid', png: swampMidPng, w: 512, h: 296, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'swamp-near', png: swampNearPng, w: 512, h: 324, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'swamp-ground', png: swampGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
+    ],
+  },
+  mountain: {
+    sky: { top: 0x7fb0dc, bottom: 0xe8f2fa },
+    soil: 0xe8f0f6,
+    feet: 46,
+    strips: [
+      { key: 'mountain-clouds', png: frostCloudsPng, w: 512, h: 162, bottom: -190, scroll: 0.1, drift: 3, tileScale: 1 },
+      { key: 'mountain-far', png: frostFarPng, w: 512, h: 350, bottom: 10, scroll: 0.15, drift: 0, tileScale: 1 },
+      { key: 'mountain-mid', png: frostMidPng, w: 512, h: 256, bottom: 10, scroll: 0.45, drift: 0 },
+      { key: 'mountain-near', png: frostNearPng, w: 512, h: 174, bottom: 10, scroll: 0.8, drift: 0 },
+      { key: 'mountain-ground', png: frostGroundPng, w: 512, h: 200, bottom: 150, scroll: 1, drift: 0 },
     ],
   },
   dungeon: {
