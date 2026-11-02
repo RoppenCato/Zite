@@ -1,0 +1,103 @@
+{
+ "filePx": 1.5,
+ "scale": 0.6667,
+ "farScale": 3.3333,
+ "buildings": {
+  "pirates": {
+   "spot": "cutlassring",
+   "x": 620,
+   "y": 9910,
+   "far": "arena_far_pirates",
+   "frame": "arena_pirates",
+   "doors": "arena_doors_pirates",
+   "flag": "arena_flag_pirates",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 620,
+    "y": 9822
+   },
+   "footY": 9910,
+   "rx": 150,
+   "ry": 88,
+   "remove": [],
+   "spotsInside": 0
+  },
+  "giants": {
+   "spot": "icering",
+   "x": 1120,
+   "y": 1530,
+   "far": "arena_far_giants",
+   "frame": "arena_giants",
+   "doors": "arena_doors_giants",
+   "flag": "arena_flag_giants",
+   "flags": [
+    {
+     "x": -145,
+     "y": -211
+    },
+    {
+     "x": -92,
+     "y": -257
+    },
+    {
+     "x": 0,
+     "y": -276
+    },
+    {
+     "x": 92,
+     "y": -257
+    },
+    {
+     "x": 145,
+     "y": -211
+    },
+    {
+     "x": -67,
+     "y": -170
+    },
+    {
+     "x": 67,
+     "y": -170
+    }
+   ],
+   "centre": {
+    "x": 1120,
+    "y": 1442
+   },
+   "footY": 1530,
+   "rx": 150,
+   "ry": 88,
+   "remove": [],
+   "spotsInside": 0
+  }
+ }
+}

@@ -121,6 +121,8 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withHubOpen(withEastOpen(before));
+  // 35 → 36: Arenas and hidden places in the two far lands.
+  if (version === 35) return withArena(up);
   // 34 → 35: the Buried Crown is laid.
   if (version === 34) return withArena(up);
   // 33 → 34: the Giants’ Land is laid.
@@ -235,7 +237,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

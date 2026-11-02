@@ -507,6 +507,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         break;
       case 'trick':
         this.say(e.text);
+        if (this.game_.me.fight?.enemy.trick?.kind === 'storm') sfx.play('fight/storm-bite');
         this.refreshStatus();
         break;
       case 'phase':
@@ -631,6 +632,7 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         moments(this)?.bossDown(this.enemyName);
         break;
       case 'gameWon':
+        sfx.play('fight/ending-sting');
         moments(this)?.find('item_gold', 'The Hollow King falls', 'The flame goes out under the old crown. You have beaten the game. The world is still yours to walk.', 0xf4c14a);
         if (this.outcome) this.outcome = { ...this.outcome, summary: `${this.outcome.summary} The old kingdom sleeps at last.` };
         break;

@@ -120,6 +120,13 @@
     "y": 11370
    },
    {
+    "id": "cutlassring",
+    "kind": "normal",
+    "name": "The Cutlass Ring",
+    "x": 620,
+    "y": 9970
+   },
+   {
     "id": "fort",
     "kind": "normal",
     "name": "Buccaneer Fort",
@@ -448,6 +455,50 @@
      {
       "x": 757,
       "y": 10359
+     }
+    ]
+   },
+   {
+    "from": "crabsands",
+    "to": "cutlassring",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 701,
+      "y": 10355
+     },
+     {
+      "x": 700,
+      "y": 10311
+     },
+     {
+      "x": 695,
+      "y": 10267
+     },
+     {
+      "x": 687,
+      "y": 10225
+     },
+     {
+      "x": 676,
+      "y": 10182
+     },
+     {
+      "x": 664,
+      "y": 10140
+     },
+     {
+      "x": 652,
+      "y": 10098
+     },
+     {
+      "x": 640,
+      "y": 10055
+     },
+     {
+      "x": 630,
+      "y": 10013
      }
     ]
    },
@@ -2117,6 +2168,13 @@
    "place": null
   },
   {
+   "x": 620,
+   "y": 9970,
+   "kind": "wild",
+   "hub": "cutlassring",
+   "place": null
+  },
+  {
    "x": 3350,
    "y": 11250,
    "kind": "wild",
@@ -2297,6 +2355,20 @@
    "kind": "wild",
    "hub": null,
    "place": "crab-sands"
+  },
+  {
+   "x": 693,
+   "y": 10254,
+   "kind": "wild",
+   "hub": null,
+   "place": "crab-sands"
+  },
+  {
+   "x": 656,
+   "y": 10112,
+   "kind": "wild",
+   "hub": null,
+   "place": null
   },
   {
    "x": 1910,

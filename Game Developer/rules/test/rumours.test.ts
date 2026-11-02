@@ -104,7 +104,7 @@ describe('hidden places (Robin, 2026-11-02)', () => {
   });
   it('the world holds every trail Mitch, AD laid, joined at its anchor, its creatures real', () => {
     const { board } = base;
-    expect(SECRETS).toHaveLength(21);
+    expect(SECRETS).toHaveLength(27);
     for (const t of SECRETS) {
       const anchor = board.spaces[t.anchor];
       expect(anchor, t.anchor).toBeTruthy();

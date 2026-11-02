@@ -1077,7 +1077,7 @@ export class BoardScene extends Phaser.Scene {
         for (const p of t.spots) g.lineTo(p.x, p.y);
         g.strokePath();
       }
-      this.add.image(t.propAt.x, t.propAt.y, SECRET_PLACES, t.prop).setScale(0.5).setDepth(standingDepth(t.propAt.y));
+      this.add.image(t.propAt.x, t.propAt.y, placesAtlas(this, t.prop) ?? SECRET_PLACES, t.prop).setScale(0.5).setDepth(standingDepth(t.propAt.y));
     }
   }
 
@@ -2440,7 +2440,7 @@ export class BoardScene extends Phaser.Scene {
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
     if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
       this.artArea = area.id;
-      if (area.theme === 'forest') audio.ensure(this, 'creatures-forest');
+      if (area.theme === 'forest' || area.theme === 'pirates' || area.theme === 'giants' || area.theme === 'crown') audio.ensure(this, `creatures-${area.theme}`);
       releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
       releaseBackdrops(this.game, area.theme);
     }

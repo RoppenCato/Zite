@@ -126,6 +126,13 @@
     "name": "Wind Gap",
     "x": 2500,
     "y": 1250
+   },
+   {
+    "id": "icering",
+    "kind": "normal",
+    "name": "The Ice Ring",
+    "x": 1120,
+    "y": 1590
    }
   ],
   "roads": [
@@ -610,6 +617,50 @@
      {
       "x": 702,
       "y": 1808
+     }
+    ]
+   },
+   {
+    "from": "yetidens",
+    "to": "icering",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1380,
+      "y": 1972
+     },
+     {
+      "x": 1357,
+      "y": 1925
+     },
+     {
+      "x": 1332,
+      "y": 1881
+     },
+     {
+      "x": 1304,
+      "y": 1838
+     },
+     {
+      "x": 1273,
+      "y": 1796
+     },
+     {
+      "x": 1242,
+      "y": 1756
+     },
+     {
+      "x": 1210,
+      "y": 1715
+     },
+     {
+      "x": 1180,
+      "y": 1674
+     },
+     {
+      "x": 1150,
+      "y": 1632
      }
     ]
    },
@@ -1193,9 +1244,9 @@
  },
  "gate": {
   "hub": {
-   "id": "gate-redwake",
+   "id": "gate-snowshoulder",
    "kind": "boss",
-   "name": "Redwake’s Jetty",
+   "name": "Snowshoulder’s Jetty",
    "x": 5300,
    "y": 5560,
    "boss": "old-snowshoulder",
@@ -2062,6 +2113,13 @@
    "place": null
   },
   {
+   "x": 1120,
+   "y": 1590,
+   "kind": "wild",
+   "hub": "icering",
+   "place": null
+  },
+  {
    "x": 3202,
    "y": 2900,
    "kind": "wild",
@@ -2407,6 +2465,20 @@
   {
    "x": 781,
    "y": 1820,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1323,
+   "y": 1867,
+   "kind": "wild",
+   "hub": null,
+   "place": "yeti-dens"
+  },
+  {
+   "x": 1221,
+   "y": 1729,
    "kind": "wild",
    "hub": null,
    "place": null

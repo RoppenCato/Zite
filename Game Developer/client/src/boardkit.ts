@@ -10,6 +10,8 @@ import buriedCrown from '../../assets/dungeon_crown/buried_crown.json';
 import crownPlacement from '../../assets/dungeon_crown/placement.json';
 import crownPlacesJson from '../../assets/dungeon_crown/crown_places.json?url';
 import crownPlacesPng from '../../assets/dungeon_crown/crown_places.png';
+import farSecretsJson from '../../assets/places_far/far_secrets_atlas.json?url';
+import farSecretsPng from '../../assets/places_far/far_secrets.png';
 import rootways from '../../assets/world_moved/rootways.json';
 import rootwaysPlacement from '../../assets/world_moved/placement_rootways.json';
 import rootwaysPlacesJson from '../../assets/dungeon_meadows/rootways_places.json?url';
@@ -110,12 +112,13 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, KINGSWOOD_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, FAR_SECRETS, KINGSWOOD_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
 export const TOP_MARGIN = 20;
 const ROOTWAYS_PLACES = 'rootways_places';
+const FAR_SECRETS = 'far_secrets';
 export const CROWN_PLACES = 'crown_places';
 /** The door under Crownhaven: where it stands, barred or open. */
 export const CROWN_DOOR = buriedCrown.door;
@@ -216,6 +219,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(PLACES)) scene.load.atlas(PLACES, placesPng, placesJson);
   preloadArena(scene);
   if (!scene.textures.exists(SECRET_PLACES)) scene.load.atlas(SECRET_PLACES, secretPlacesPng, secretPlacesJson);
+  if (!scene.textures.exists(FAR_SECRETS)) scene.load.atlas(FAR_SECRETS, farSecretsPng, farSecretsJson);
   if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   if (!scene.textures.exists(CROWN_PLACES)) scene.load.atlas(CROWN_PLACES, crownPlacesPng, crownPlacesJson);

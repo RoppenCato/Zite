@@ -6,10 +6,14 @@ import places from '../../assets/world_moved/arena_places.json';
 import eastPngUrl from '../../assets/arena_east/arena.png';
 import eastJsonUrl from '../../assets/arena_east/arena.json?url';
 import eastPlaces from '../../assets/world_moved/arena_east_places.json';
+import farPngUrl from '../../assets/places_far/arena/arena.png';
+import farJsonUrl from '../../assets/places_far/arena/arena.json?url';
+import farPlaces from '../../assets/places_far/arena/arena_places.json';
 import { standingDepth } from './boardkit.ts';
 
 export const ARENA_ATLAS = 'arena_buildings';
 const EAST_ATLAS = 'arena_buildings_east';
+const FAR_ATLAS = 'arena_buildings_far';
 
 interface Building {
   spot: string;
@@ -25,8 +29,9 @@ interface Building {
 }
 const WEST = Object.values((places as unknown as { buildings: Record<string, Building> }).buildings);
 const EAST = Object.values((eastPlaces as unknown as { buildings: Record<string, Building> }).buildings);
-const BUILDINGS = [...WEST, ...EAST];
-const atlasOf = (b: Building): string => (EAST.includes(b) ? EAST_ATLAS : ARENA_ATLAS);
+const FAR = Object.values((farPlaces as unknown as { buildings: Record<string, Building> }).buildings);
+const BUILDINGS = [...WEST, ...EAST, ...FAR];
+const atlasOf = (b: Building): string => (EAST.includes(b) ? EAST_ATLAS : FAR.includes(b) ? FAR_ATLAS : ARENA_ATLAS);
 const SCALE = places.scale;
 const FAR_SCALE = places.farScale;
 
@@ -48,8 +53,9 @@ export interface ArenaDrawn {
 /** Whether a spot's building still has to load: the east's atlas comes only once one of its Arenas is open to you. */
 export function loadArenaFor(scene: Phaser.Scene, spot: string): boolean {
   const b = BUILDINGS.find((x) => x.spot === spot);
-  if (!b || atlasOf(b) !== EAST_ATLAS || scene.textures.exists(EAST_ATLAS)) return false;
-  scene.load.atlas(EAST_ATLAS, eastPngUrl, eastJsonUrl);
+  if (!b || atlasOf(b) === ARENA_ATLAS || scene.textures.exists(atlasOf(b))) return false;
+  if (atlasOf(b) === EAST_ATLAS) scene.load.atlas(EAST_ATLAS, eastPngUrl, eastJsonUrl);
+  else scene.load.atlas(FAR_ATLAS, farPngUrl, farJsonUrl);
   return true;
 }
 

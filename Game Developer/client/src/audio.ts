@@ -39,6 +39,14 @@ const SPRITES: SpriteFile[] = [
   { key: 'fight-classes', json: fightClassesJson, ogg: fightClassesOgg, volume: 1, lazy: true },
   { key: 'creatures-forest', json: creaturesForestJson, ogg: creaturesForestOgg, volume: 1, lazy: true },
 ];
+// The far lands' voices (Nigel, SD): a sprite in the folder is a sprite in the game, until then silence.
+const FAR_VOICES = import.meta.glob('../../assets/sound/creatures-{pirates,giants,crown}/*.{json,ogg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+for (const key of ['creatures-pirates', 'creatures-giants', 'creatures-crown']) {
+  const json = FAR_VOICES[`../../assets/sound/${key}/${key}.json`];
+  const ogg = FAR_VOICES[`../../assets/sound/${key}/${key}.ogg`];
+  if (json && ogg) SPRITES.push({ key, json, ogg, volume: 1, lazy: true });
+}
+
 /** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
 // A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
 const ALIASES: Record<string, string> = {

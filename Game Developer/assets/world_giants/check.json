@@ -1,7 +1,7 @@
 {
- "spots": 129,
- "hubs": 15,
- "roads": 22,
+ "spots": 132,
+ "hubs": 16,
+ "roads": 23,
  "tooClose": [
   [
    "ogreledge>yeticrown",
@@ -12,7 +12,7 @@
  "crossings": [],
  "offLand": [],
  "grounds": {
-  "yeti-dens": 31,
+  "yeti-dens": 34,
   "great-snowfield": 58,
   "icicle-caves": 24,
   "ogre-ledge": 16
@@ -26,11 +26,11 @@
   "spring": 5,
   "shrine": 3,
   "chest": 3,
-  "wild": 106,
+  "wild": 109,
   "gate": 1,
   "gear": 5
  },
- "sprites": 249,
- "baked": 658,
- "mostInAViewAt08": 33
+ "sprites": 242,
+ "baked": 632,
+ "mostInAViewAt08": 29
 }

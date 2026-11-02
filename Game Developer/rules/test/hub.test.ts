@@ -79,7 +79,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(35);
+    expect(up.version).toBe(36);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
@@ -213,5 +213,16 @@ describe('the Buried Crown (Robin, 2026-11-02)', () => {
 describe('a Magician with no spells (mine, 2026-11-02)', () => {
   it('its plain Attack still uses half its magic', () => {
     expect(CLASS_DATA.mage!.traits?.attackMagic).toBe(0.5);
+  });
+});
+
+describe('the far lands have all the others have (Mitch, AD, 2026-11-02)', () => {
+  it('an Arena each, and every hidden trail joined to the road', () => {
+    const board = newGame({ seed: 'far', player: P, name: 'Robin', classId: 'warrior' }).board;
+    expect(board.spaces.cutlassring).toMatchObject({ kind: 'arena', area: 'pirateisles' });
+    expect(board.spaces.icering).toMatchObject({ kind: 'arena', area: 'giantsland' });
+    for (const id of ['sec-pirateisles-1', 'sec-pirateisles-2', 'sec-pirateisles-3', 'sec-giantsland-1', 'sec-giantsland-2', 'sec-giantsland-3']) {
+      expect(board.spaces[`${id}-1`], id).toBeTruthy();
+    }
   });
 });
