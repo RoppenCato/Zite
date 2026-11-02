@@ -52,7 +52,7 @@ import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
 import { preloadAbilityIcons } from '../effects.ts';
-import { FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
+import { COMING_LANDS, FOG_FAR_PIECES, FOG_PIECES, PaintedGround, PAINTED, preloadWorldMap, SEA, CHUNK_ZOOM, DUNGEON_LAND, BAKED_ROADS, FOG_EAST_PIECES } from '../worldmap.ts';
 import { fx, hasFrame, icon, itemFrame, plate, preloadKit } from '../kit.ts';
 import { lootReady, preloadLoot, prizesIn, type Prize, type RevealRequest } from '../loot.ts';
 import { COLORS, DESIGN_WIDTH, DPR, FONT, HUD_HEIGHT, THEME_COLORS, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP } from '../layout.ts';
@@ -162,6 +162,10 @@ interface Pinch {
   zoom: number;
   distance: number;
 }
+
+/** A land's middle this near the map's edge: its words hang from the edge, so a phone shows them whole. */
+const EDGE_WORDS = 2500;
+const EDGE_INSET = 460;
 
 export class BoardScene extends Phaser.Scene {
   private readonly game_: GameHolder;
@@ -781,6 +785,7 @@ export class BoardScene extends Phaser.Scene {
     if (PAINTED[area.id]) {
       this.painted ??= new PaintedGround(this);
       this.closedWords(area);
+      if (!this.closedLabels.has(COMING_LANDS[0]!.id)) this.drawComing();
       this.cameras.main.setBackgroundColor(SEA);
       this.kitted = true;
       return;
@@ -1321,6 +1326,18 @@ export class BoardScene extends Phaser.Scene {
     return `${area.name}${area.city ? '' : `\nLevel ${area.levels[0]} to ${area.levels[1]}`}${keeper ? `\nBeat ${keeper}` : ''}`;
   }
 
+  /** The lands not in the world yet, closed on the map: a silhouette, marks, their name and levels (Robin, 2026-11-02). */
+  private drawComing(): void {
+    for (const land of COMING_LANDS) {
+      const words = this.add.text(EDGE_INSET, land.label[1]!, `${land.name}\nComing later`, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'left', stroke: '#2a2030', strokeThickness: 4 }).setOrigin(0, 0.5).setDepth(KIT_DEPTH.names);
+      this.closedLabels.set(land.id, words);
+      if (!this.textures.exists(FOG_FAR_PIECES) || !this.textures.exists(FOG_PIECES)) continue;
+      const marks = [this.add.image(land.boss.x, land.boss.y, FOG_FAR_PIECES, land.boss.silhouette), ...land.marks.map(([x, y]) => this.add.image(x!, y!, FOG_PIECES, 'mark_unknown'))];
+      for (const mark of marks) mark.setOrigin(0.5, 1).setDepth(KIT_DEPTH.names);
+      this.closedMarks.set(land.id, marks);
+    }
+  }
+
   /** Words over a closed land, read from the zoomed-out map: what opens it, and creatures you have not met. */
   private closedWords(area: Area): void {
     const box = PAINTED[area.id]!;
@@ -1328,7 +1345,11 @@ export class BoardScene extends Phaser.Scene {
     const gate = Object.values(board.spaces).find((s) => s.opens === area.id);
     // A land behind a gate wears its words under it: its middle has the silhouette and the marks.
     const gated = !!gate?.boss && !!(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id && g.opens !== 'kingswood');
-    const words = this.add.text(box.x + box.width / 2, gated ? box.y + box.height + 30 : box.y + box.height / 2, this.landWords(area), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
+    const middle = box.x + box.width / 2;
+    const hang = middle < EDGE_WORDS ? 0 : middle > board.width - EDGE_WORDS ? 1 : 0.5;
+    const wordX = hang === 0 ? EDGE_INSET : hang === 1 ? board.width - EDGE_INSET : middle;
+    const words = this.add.text(wordX, gated ? box.y + box.height + 30 : box.y + box.height / 2, this.landWords(area), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', align: 'center', stroke: '#1a2030', strokeThickness: 3 }).setOrigin(0.5).setDepth(KIT_DEPTH.names).setAlpha(0.85);
+    words.setOrigin(hang, words.originY);
     this.closedLabels.set(area.id, words);
     // What waits there: the boss's silhouette, and a "?" at each ground (Mitch, AD).
     if (!this.textures.exists(FOG_PIECES) || !gate?.boss || !(WORLD_DATA as unknown as { gates?: { opens: string }[] }).gates?.some((g) => g.opens === area.id)) return;

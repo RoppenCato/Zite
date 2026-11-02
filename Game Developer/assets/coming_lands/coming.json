@@ -1,0 +1,106 @@
+{
+ "giants": {
+  "id": "giantsland",
+  "name": "The Giants’ Land",
+  "levels": [
+   24,
+   28
+  ],
+  "label": [
+   2000,
+   3890
+  ],
+  "boss": {
+   "id": "yeti-king",
+   "name": "The Yeti King",
+   "silhouette": "silhouette_yeti_king",
+   "x": 2050,
+   "y": 1000
+  },
+  "marks": [
+   [
+    1000,
+    1300
+   ],
+   [
+    3050,
+    1250
+   ],
+   [
+    1750,
+    2050
+   ],
+   [
+    2950,
+    2350
+   ],
+   [
+    900,
+    2600
+   ],
+   [
+    2100,
+    3200
+   ]
+  ],
+  "gate": {
+   "hub": "gate-snowshoulder",
+   "boss": "old-snowshoulder",
+   "name": "Old Snowshoulder",
+   "x": 5300,
+   "y": 5560
+  }
+ },
+ "pirates": {
+  "id": "pirateisles",
+  "name": "The Pirate Isles",
+  "levels": [
+   20,
+   24
+  ],
+  "label": [
+   2000,
+   12590
+  ],
+  "boss": {
+   "id": "captain-saltjaw",
+   "name": "Captain Saltjaw",
+   "silhouette": "silhouette_captain",
+   "x": 3350,
+   "y": 11700
+  },
+  "marks": [
+   [
+    1000,
+    10000
+   ],
+   [
+    2300,
+    10150
+   ],
+   [
+    1500,
+    10700
+   ],
+   [
+    3200,
+    11250
+   ],
+   [
+    1000,
+    11850
+   ],
+   [
+    1750,
+    12150
+   ]
+  ],
+  "gate": {
+   "hub": "gate-redwake",
+   "boss": "first-mate-redwake",
+   "name": "First Mate Redwake",
+   "x": 5230,
+   "y": 7960
+  }
+ }
+}

@@ -15,6 +15,16 @@ import fogSwampJson from '../../assets/world_moved/fog_swamp.json';
 import fogSwampPng from '../../assets/fog_east/fog_swamp.png';
 import fogFrostJson from '../../assets/world_moved/fog_frost.json';
 import fogFrostPng from '../../assets/fog_east/fog_frost.png';
+import comingData from '../../assets/coming_lands/coming.json';
+import comingOverviews from '../../assets/coming_lands/overviews_coming.json';
+import overviewNorthwestJpg from '../../assets/coming_lands/overview_northwest.jpg';
+import overviewSouthwestJpg from '../../assets/coming_lands/overview_southwest.jpg';
+import fogFarPiecesJson from '../../assets/coming_lands/fog_far_pieces.json?url';
+import fogFarPiecesPng from '../../assets/coming_lands/fog_far_pieces.png';
+import fogGiantsJson from '../../assets/coming_lands/fog_giants.json';
+import fogGiantsPng from '../../assets/coming_lands/fog_giants.png';
+import fogPiratesJson from '../../assets/coming_lands/fog_pirates.json';
+import fogPiratesPng from '../../assets/coming_lands/fog_pirates.png';
 import fogPiecesJson from '../../assets/fog/fog_pieces.json?url';
 import fogPiecesPng from '../../assets/fog/fog_pieces.png';
 import fogEastPiecesJson from '../../assets/fog_east/fog_east_pieces.json?url';
@@ -72,13 +82,21 @@ const OVERVIEW_KEY = 'world_overview';
 const FOG: Record<string, { key: string; png: string; box: typeof fogSwampJson }> = {
   bogglemire: { key: 'fog_swamp', png: fogSwampPng, box: fogSwampJson },
   frostcrown: { key: 'fog_frost', png: fogFrostPng, box: fogFrostJson },
+  // Not in the world yet: they show closed until they are (Robin, 2026-11-02; Mitch, AD's first pass).
+  giantsland: { key: 'fog_giants', png: fogGiantsPng, box: fogGiantsJson },
+  pirateisles: { key: 'fog_pirates', png: fogPiratesPng, box: fogPiratesJson },
 };
 /** Silhouettes of bosses and the "?" of creatures not met. */
 export const FOG_PIECES = 'fog_pieces';
 export const FOG_EAST_PIECES = 'fog_east_pieces';
+export const FOG_FAR_PIECES = 'fog_far_pieces';
+/** The lands to come: what the map shows of them, from Mitch, AD's coming.json. */
+export const COMING_LANDS = Object.values(comingData);
 const OVERVIEWS: { key: string; jpg: string; box: typeof overviewsData.middle }[] = [
   { key: 'world_overview_west', jpg: overviewWestJpg, box: overviewsData.west },
   { key: 'world_overview_east', jpg: overviewEastJpg, box: overviewsData.east },
+  { key: 'world_overview_northwest', jpg: overviewNorthwestJpg, box: comingOverviews.northwest },
+  { key: 'world_overview_southwest', jpg: overviewSouthwestJpg, box: comingOverviews.southwest },
 ];
 
 export function preloadWorldMap(scene: Phaser.Scene): void {
@@ -86,6 +104,7 @@ export function preloadWorldMap(scene: Phaser.Scene): void {
   for (const fog of Object.values(FOG)) if (!scene.textures.exists(fog.key)) scene.load.image(fog.key, fog.png);
   if (!scene.textures.exists(FOG_PIECES)) scene.load.atlas(FOG_PIECES, fogPiecesPng, fogPiecesJson);
   if (!scene.textures.exists(FOG_EAST_PIECES)) scene.load.atlas(FOG_EAST_PIECES, fogEastPiecesPng, fogEastPiecesJson);
+  if (!scene.textures.exists(FOG_FAR_PIECES)) scene.load.atlas(FOG_FAR_PIECES, fogFarPiecesPng, fogFarPiecesJson);
 }
 
 const urlOf = (file: string): string | undefined => Object.entries(FILES).find(([path]) => path.endsWith(`/${file}`))?.[1];

@@ -544,3 +544,8 @@ One chunk set for the whole world (`assets/world_moved`), held by nearness; `PAI
 
 Tapping a class on the character screen opens its window: `tagline`, `story` and `showcase` in `tools/class-data.mjs`, three pressed talents for each tree.
 
+
+
+## The lands to come (2026-11-02)
+
+`assets/coming_lands/coming.json` (Mitch, AD) draws The Giants’ Land and The Pirate Isles closed on the map: overview, veil, silhouette, marks, words. They are not in `world.json` yet: no areas, no way there. `SEALS_COMING` in `rules/src/seals.ts` lists them on the Seals page. As each land is laid, take it off both lists.
