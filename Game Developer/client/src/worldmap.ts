@@ -6,10 +6,11 @@ import Phaser from 'phaser';
 import forestChunks from '../../assets/world_forest/chunks.json';
 import harvestChunks from '../../assets/world_harvest/chunks.json';
 import meadowChunks from '../../assets/world_meadows/chunks.json';
+import westChunks from '../../assets/world_west/chunks.json';
 import overviewData from '../../assets/world_meadows/overview.json';
 import overviewJpg from '../../assets/world_meadows/overview.jpg';
 
-const FILES = import.meta.glob('../../assets/world_{meadows,forest,harvest}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const FILES = import.meta.glob('../../assets/world_{meadows,forest,harvest,west}/ground_*.jpg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 interface Chunk {
   file: string;
@@ -26,6 +27,13 @@ export const PAINTED: Record<string, { x: number; y: number; width: number; heig
   frostpeak: { x: harvestChunks.x, y: 0, width: harvestChunks.width, height: 3300 },
 };
 
+/** What each area's open land shows on the zoomed-out map. The sea and coast west of the forest and Honeyhill come with them. */
+const OVERVIEW_LAND: Record<string, { x: number; y: number; width: number; height: number }> = {
+  meadows: PAINTED.meadows!,
+  thornwood: { x: 0, y: forestChunks.y, width: forestChunks.x + forestChunks.width, height: 5328 },
+  frostpeak: { x: 0, y: 0, width: harvestChunks.x + harvestChunks.width, height: 3300 },
+};
+
 /** Every chunk once, with the areas that show it: column 3 holds both coasts, so it belongs to both. */
 const CHUNKS = new Map<string, Chunk & { areas: string[] }>();
 for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunks], ['frostpeak', harvestChunks]] as const) {
@@ -36,6 +44,9 @@ for (const [area, data] of [['meadows', meadowChunks], ['thornwood', forestChunk
     else CHUNKS.set(key, { ...c, areas: [area] });
   }
 }
+// The sea west of the forest and Honeyhill (Mitch, AD): with Honeyhill's land, and rows 3 and 4 with the forest's too, so no coast is cut at the edge of a closed land.
+for (const c of westChunks.chunks as Chunk[]) CHUNKS.set(`ground_${c.col}_${c.row}`, { ...c, areas: ['frostpeak'] });
+for (const c of CHUNKS.values()) if (c.row >= 3 && c.row <= 4 && c.col <= 2 && !c.areas.includes('thornwood')) c.areas.push('thornwood');
 
 /** The sea, behind everything. */
 export const SEA = 0x2f7fc4;
@@ -66,7 +77,7 @@ export class PaintedGround {
     this.scene = scene;
     const scale = 1 / overviewData.filePxPerWorldPx;
     // Only what has been painted for real shows: the rest of the picture is still the concept, and its land is not the game's yet.
-    for (const [area, land] of Object.entries(PAINTED)) {
+    for (const [area, land] of Object.entries(OVERVIEW_LAND)) {
       const image = scene.add
         .image(0, 0, OVERVIEW_KEY)
         .setOrigin(0, 0)
