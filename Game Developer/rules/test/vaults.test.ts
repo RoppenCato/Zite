@@ -112,12 +112,12 @@ describe('the locked vaults', () => {
     expect(rich.events[2]).toMatchObject({ type: 'chest' });
     const gold = rich.events.find((e) => e.type === 'gold');
     expect(gold).toBeDefined();
-    if (gold?.type === 'gold') expect(gold.delta).toBeGreaterThanOrEqual(area.tier * 15 * 3);
+    if (gold?.type === 'gold') expect(gold.delta).toBeGreaterThanOrEqual(area.tier * 6 * 3);
     const loot = rich.events.find((e) => e.type === 'loot');
     expect(loot).toBeDefined();
     if (loot?.type === 'loot') expect(['epic', 'legendary', 'unique']).toContain(loot.gear.rarity);
     expect(me(rich.state).keys[areaId]).toBe(0);
-    expect(me(rich.state).cooldowns[vault!.id]).toBe(NOW + 300000);
+    expect(me(rich.state).cooldowns[vault!.id]).toBe(NOW + 600000);
   });
 });
 

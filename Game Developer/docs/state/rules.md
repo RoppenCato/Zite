@@ -418,3 +418,7 @@ State version 15. **Hunting grounds** (`grounds.ts`, `world.json`): each map has
 
 - **Walking past the quest board** with no quest stops the walk there to choose; the rest of the walk is kept in `Character.walking` and finished after the answer, whatever it is (Robin, 2026-11-02). With a quest under way you walk past undisturbed; landing exactly still asks to keep or drop it.
 - **King Goo's HP is 500, was 700** (Robin, 2026-11-02).
+
+## Robin's second set of notes (2026-11-02)
+
+**King Goo is 600 HP** (Robin). **Less loot and gold** (his: chests constantly, the whole leather set in a minute): a wild spot is a chest 3 times in 100 (was 10), a fight 82; chests give 6 to 18 gold a tier (was 15 to 40), gear a quarter of the time, and fill in ten minutes; first-tier gear costs about 1.6 times what it did; quest gold is down by about 40%. **Spots you roll for**: `potion` and the new `gear` ask for a roll (`offer` `roll`, intent `try`): 4 or better wins a flask of the tier, or a plain piece worth a fifth of its price so it cannot be farmed; five minutes, win or lose. Numbers mine.

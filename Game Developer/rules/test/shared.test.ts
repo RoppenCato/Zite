@@ -118,6 +118,7 @@ function botAction(state: GameState, player: string, rng: Rng, id: string): Acti
   if (me.offer?.kind === 'gamble') return { type: 'gamble', id, player, choice: 'high' };
   if (me.offer?.kind === 'board') return { type: 'quest', id, player, accept: me.offer.quests.length > 0 };
   if (me.offer?.kind === 'loot') return { type: 'keep', id, player, choice: 'sell' };
+  if (me.offer?.kind === 'roll') return { type: 'try', id, player };
   if (me.picks.length) return { type: 'pick', id, player, ability: me.picks[0]![0]! };
   if (me.steps > 0) {
     const ways = reachable(state.board, me.space, me.steps, new Set(me.opened));

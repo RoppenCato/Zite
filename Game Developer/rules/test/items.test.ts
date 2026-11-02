@@ -26,7 +26,7 @@ describe('the shop', () => {
     const sword = apply(state, buy({ slot: 'weapon' }, 'b2'), makeRng('x'), NOW);
     // The weapon's slot is empty: it goes straight on (Robin, 2026-11-01). A second one goes into the bag.
     expect(sword.events).toEqual([
-      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 30, gold: 150 },
+      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 50, gold: 130 },
       { type: 'equipped', action: 'b2', player: P, gear: plainGear('g1', 'weapon', 1), replaced: null },
     ]);
     expect(me(sword.state).bag).toEqual([]);

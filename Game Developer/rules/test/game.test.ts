@@ -169,22 +169,22 @@ describe('landing', () => {
     const first = apply(about('s4'), move(['s5']), makeRng('ashford'), NOW);
     expect(first.events[2]).toEqual({ type: 'chest', action: 'm1', player: P });
     expect(first.events[3]).toMatchObject({ type: 'gold', action: 'm1', player: P });
-    expect(me(first.state).cooldowns.s5).toBe(NOW + 300000);
+    expect(me(first.state).cooldowns.s5).toBe(NOW + 600000);
     const goldAfter = me(first.state).gold;
     expect(goldAfter).toBeGreaterThan(50);
     const back = { ...first.state, characters: { [P]: { ...me(first.state), space: 's4', steps: 1 } } };
     const soon = apply(back, move(['s5'], 'm2'), makeRng('ashford'), NOW + 1000);
-    expect(soon.events[2]).toEqual({ type: 'empty', action: 'm2', player: P, space: 's5', until: NOW + 300000 });
+    expect(soon.events[2]).toEqual({ type: 'empty', action: 'm2', player: P, space: 's5', until: NOW + 600000 });
     expect(me(soon.state).gold).toBe(goldAfter);
-    const later = apply(back, move(['s5'], 'm3'), makeRng('ashford'), NOW + 400000);
+    const later = apply(back, move(['s5'], 'm3'), makeRng('ashford'), NOW + 700000);
     expect(later.events[2]).toEqual({ type: 'chest', action: 'm3', player: P });
     expect(me(later.state).gold).toBeGreaterThan(goldAfter);
   });
 
-  it('at a spring fills a flask, once in a while', () => {
+  it('at a potion spot asks for a roll, once in a while', () => {
     const { state, events } = apply(about('s7'), move(['s8']), makeRng('x'), NOW);
-    expect(events[2]).toEqual({ type: 'found', action: 'm1', player: P, item: 'potion', count: 1 });
-    expect(me(state)).toMatchObject({ items: { potion: 1 }, cooldowns: { s8: NOW + 180000 } });
+    expect(events[2]).toMatchObject({ type: 'offer', offer: { kind: 'roll', what: 'flask' } });
+    expect(me(state)).toMatchObject({ cooldowns: { s8: NOW + 300000 } });
   });
 
   it('at a shrine teaches a new ability of the class, then improves one, then has nothing more', () => {
@@ -212,7 +212,7 @@ describe('landing', () => {
 
   it('on a boss spot starts the boss fight, unless the boss is away for its five minutes', () => {
     const { state, events } = apply(about('s9'), move(['s10']), makeRng('x'), NOW);
-    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 500 }) });
+    expect(events[2]).toMatchObject({ type: 'fight', space: 's10', enemy: expect.objectContaining({ id: 'thornwood-warden', role: 'boss', hp: 600 }) });
     expect(me(state).fight).toMatchObject({ space: 's10', spawn: false, round: 1 });
     const away = apply(about('s9', { cooldowns: { s10: NOW + 1000 } }), move(['s10']), makeRng('x'), NOW);
     expect(away.events[2]).toMatchObject({ type: 'nothing', text: expect.stringContaining('not back yet') });
@@ -247,7 +247,7 @@ describe('landing', () => {
       }
     }
     expect(counts.fight).toBeGreaterThan(160);
-    expect(counts.chest).toBeGreaterThan(10);
+    expect(counts.chest).toBeGreaterThan(2);
     expect(counts.offer).toBeGreaterThan(5);
     expect(counts.merchant).toBeGreaterThan(5);
     expect(counts.themeEvent).toBeGreaterThan(5);

@@ -246,7 +246,7 @@ function simulate(classId: ClassId, seed: string, turns: number): Run {
     }
     if (me.offer) {
       // The gambler is waved on, an errand taken, a piece with no room in the bag sold.
-      const answer: Action = me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'board' ? act('quest', { accept: me.offer.quests.length > 0 }) : act('keep', { choice: 'sell' });
+      const answer: Action = me.offer.kind === 'roll' ? act('try') : me.offer.kind === 'gamble' ? act('gamble', { choice: 'pass' }) : me.offer.kind === 'board' ? act('quest', { accept: me.offer.quests.length > 0 }) : act('keep', { choice: 'sell' });
       state = apply(state, answer, rng, now).state;
       continue;
     }

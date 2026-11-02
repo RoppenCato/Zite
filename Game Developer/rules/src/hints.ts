@@ -76,7 +76,11 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: gold, and maybe ${rank} gear.${again}`;
     }
     case 'potion':
-      return `${where}: a potion to take along.${again}`;
+    case 'gear': {
+      const until = me?.cooldowns[spaceId] ?? 0;
+      const wait = until > now ? ` Back in ${countdown(until - now)}.` : '';
+      return `${where}: roll a 4 or better for ${space.kind === 'gear' ? 'a piece of basic gear' : 'a free potion'}. Try again after five minutes.${wait}`;
+    }
     case 'spell':
       return `${where}: learn an ability of your class, or improve one you know.${again}`;
     case 'church':

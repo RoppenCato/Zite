@@ -3,7 +3,7 @@
 export const STATE_VERSION = 15;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -184,7 +184,7 @@ export interface Quest {
 }
 
 /** A pending question the character must answer before rolling again: the gambler's, a town's errand, or a piece that found no room in the bag. */
-export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[] } | { kind: 'loot'; gear: GearItem };
+export type Offer = { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[] } | { kind: 'roll'; what: 'flask' | 'gear'; need: number } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
   id: string;
@@ -394,6 +394,7 @@ export type Action =
   | { type: 'pick'; id: string; player: string; ability: string }
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
+  | { type: 'try'; id: string; player: string }
   /** The answer for a piece that found no room in the bag: sold on the spot, or left. */
   | { type: 'keep'; id: string; player: string; choice: 'sell' | 'drop' }
   /** The world moves: spawns come and go. Sent by whoever holds the state, now and then. */
@@ -467,6 +468,7 @@ export type GameEvent =
   | { type: 'questDeclined'; action: string; player: string; quest: Quest }
   /** An errand moved along; `quest` is how it stands now. */
   | { type: 'questProgress'; action: string; player: string; quest: Quest }
+  | { type: 'tried'; action: string; player: string; what: 'flask' | 'gear'; roll: number; need: number; won: boolean }
   | { type: 'personFound'; action: string; player: string; person: string; quest: Quest }
   /** An errand turned in; what it paid follows as gold, levels and maybe loot. */
   | { type: 'questDone'; action: string; player: string; quest: Quest }

@@ -95,6 +95,7 @@ const WHEEL_STEP = 1.1; // one notch of a mouse wheel
 
 // One colour and one letter per kind of spot (mine, 2026-10-31, placeholders until the art comes).
 const KIND_COLORS: Record<SpaceKind, number> = {
+  gear: 0xc98a3c,
   board: 0xe8b84a,
   town: 0x4fb06d,
   shop: 0xe8b84a,
@@ -105,7 +106,7 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   church: 0xf4f0e4,
   boss: 0x8f2f3b,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -1286,6 +1287,7 @@ export class BoardScene extends Phaser.Scene {
     const offer = me.offer;
     if (offer?.kind === 'gamble') this.offerGamble();
     else if (offer?.kind === 'board') this.offerBoard();
+    else if (offer?.kind === 'roll') this.offerRoll();
     else if (offer?.kind === 'loot') this.offerKeep();
     else if (me.picks.length) this.offerPick();
   }
@@ -1326,6 +1328,42 @@ export class BoardScene extends Phaser.Scene {
       title: `Level ${this.game_.me.level}: learn one`,
       text: 'You can only take one of these now.',
       options: options.map((id) => ({ label: known(id) ? `${name(id)}, rank ${known(id) + 1}` : name(id), color: 0x8e6ad9, note: ABILITIES[id]?.text, onTap: () => this.answerPick(id) })),
+    });
+  }
+
+  /** A potion or loot spot (Robin, 2026-11-02): a roll for it, seen on the big die. */
+  private offerRoll(): void {
+    const offer = this.game_.me.offer;
+    if (!offer || offer.kind !== 'roll') return;
+    const flask = offer.what === 'flask';
+    this.setMessage(flask ? 'A potion spot.' : 'A loot spot.');
+    this.refreshHud();
+    this.ask({
+      icon: flask ? 'potion' : 'item_gold',
+      color: flask ? 0x5aa9ff : 0xc98a3c,
+      title: flask ? 'A potion spot' : 'A loot spot',
+      text: `Roll ${offer.need} or better for ${flask ? 'a free potion' : 'a piece of basic gear'}.`,
+      options: [{ label: 'Roll', color: COLORS.button, onTap: () => this.answerRoll() }],
+    });
+  }
+
+  answerRoll(): void {
+    this.closeAsk();
+    this.hud?.startRoll();
+    this.send({ type: 'try', player: this.game_.player }, (events) => {
+      const tried = events.find((e) => e.type === 'tried');
+      if (tried?.type !== 'tried') {
+        this.hud?.cancelRoll();
+        this.finish(this.describe(events));
+        return;
+      }
+      const landed = () => {
+        if (!tried.won) moments(this)?.find('mark_alert', `You rolled ${tried.roll}`, `It needed ${tried.need}. Try again in five minutes.`, 0xff7a5c);
+        this.showFinds(events);
+        this.reveal(prizesIn(events), 'You won!', () => this.finish(tried.won ? `You rolled ${tried.roll} and won it.` : `You rolled ${tried.roll}. No luck.`));
+      };
+      if (this.hud) this.hud.landDie(tried.roll, landed);
+      else landed();
     });
   }
 
@@ -1526,7 +1564,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ board: 'board', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');

@@ -117,3 +117,5 @@ presence by place (the geohash cell) and QR tokens; push; deltas smaller than a 
 notes on spots travel inside the state (spawns and traces), with no message of their own.
 
 The `quest` intent gained `index` (which of the board's quests) and `drop` (drop the one under way); `buy` gained `line`. The offer `quest` became `board`. Events added: `personFound`.
+
+The `try` intent answers the offer `roll`; it gives the event `tried`.

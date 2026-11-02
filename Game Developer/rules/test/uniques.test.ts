@@ -212,7 +212,7 @@ describe('the powers', () => {
     expect(startFight(wearing('windstep'), 'slime', 's1', false).fight!.evade).toBe(1);
     const walker = { ...strider, characters: { [P]: { ...wearing('pathfinders'), space: 's4', steps: 1 } }, die: { ...strider.die, last: 1 } };
     const chest = apply(walker, { type: 'move', id: 'm', player: P, path: ['s5'] }, makeRng('c'), NOW);
-    expect(me(chest.state).cooldowns.s5).toBe(NOW + 150000);
+    expect(me(chest.state).cooldowns.s5).toBe(NOW + 300000);
     const charmed = { ...strider, characters: { [P]: { ...wearing('lucky-charm'), steps: 3 } } };
     const r = apply(charmed, { type: 'use', id: 'u', player: P, item: 'charm' }, makeRng('charm'), NOW);
     expect(r.events[0]).toMatchObject({ type: 'used', item: 'charm' });

@@ -147,6 +147,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return pick(state, action, character);
     case 'quest':
       return answerQuest(state, action, character, rng, now);
+    case 'try':
+      return tryRoll(state, action, character, rng);
     case 'keep':
       return keep(state, action, character);
     case 'trace':
@@ -282,7 +284,11 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
     case 'potion': {
       if (onCooldown) return empty();
-      return { state: withCharacter(state, giveItem(giveItem(cooled(c), flaskId('potion', tier), 1, action, events), flaskId('mana-potion', tier), 1, action, events)), events };
+      return askRoll(state, cooled(c), 'flask', action, events);
+    }
+    case 'gear': {
+      if (onCooldown) return empty();
+      return askRoll(state, cooled(c), 'gear', action, events);
     }
     case 'spell': {
       if (onCooldown) return empty();
@@ -348,6 +354,38 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     }
   }
 }
+
+/** A spot you roll for (Robin, 2026-11-02, from Dokapon): the timer starts on landing, win or lose. */
+function askRoll(state: GameState, c: Character, what: 'flask' | 'gear', action: Action, events: GameEvent[]): ApplyResult {
+  const offered: Character = { ...c, offer: { kind: 'roll', what, need: PROGRESSION.lootRoll.need } };
+  events.push({ type: 'offer', action: action.id, player: action.player, offer: offered.offer! });
+  return { state: withCharacter(state, offered), events };
+}
+
+/** The roll itself: a flask of the area's tier, or a plain piece worth little so it cannot be farmed for gold. */
+function tryRoll(state: GameState, action: Action, character: Character, rng: Rng): ApplyResult {
+  const offer = character.offer;
+  if (!offer || offer.kind !== 'roll') return reject(state, action, 'nothing to answer');
+  const roll = rng.int(state.die.sides);
+  const won = roll >= offer.need;
+  const events: GameEvent[] = [{ type: 'tried', action: action.id, player: action.player, what: offer.what, roll, need: offer.need, won }];
+  let next: Character = { ...character, offer: null };
+  let s = state;
+  if (won) {
+    const tier = s.board.areas[s.board.spaces[character.space]?.area ?? '']?.tier ?? 1;
+    if (offer.what === 'flask') next = giveItem(next, flaskId(rng.next() < 0.5 ? 'potion' : 'mana-potion', tier), 1, action, events);
+    else {
+      const got = nextGearId(s);
+      s = got.state;
+      const piece = plainGear(got.id, dropSlot(null, rng), tier, rollLine(rng), character.classId);
+      next = addLoot(next, { ...piece, price: Math.max(1, Math.round(piece.price * LOOT_SPOT_PRICE)) }, action, events);
+    }
+  }
+  return { state: withCharacter(s, next), events };
+}
+
+/** How much of its shop price a loot spot's piece is worth. */
+const LOOT_SPOT_PRICE = 0.2;
 
 /** How often a wild fight is the ground's own creature. */
 const GROUND_SHARE = 0.75;

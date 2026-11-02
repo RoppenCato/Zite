@@ -5,3 +5,4 @@ dev-dist/
 server/data/*.db
 server/data/*.db-*
 tools/out/
+docs/refs/

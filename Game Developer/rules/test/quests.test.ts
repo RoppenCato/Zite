@@ -301,3 +301,45 @@ describe('a save from before the board', () => {
     expect(up.board.spaces.windy).toMatchObject({ kind: 'shop', stock: 'magic' });
   });
 });
+
+describe('a spot you roll for', () => {
+  const spot = (s: GameState, kind: string) => Object.values(s.board.spaces).find((x) => x.kind === kind && x.area === 'meadows')!;
+
+  it('asks for a roll, and the timer runs whether you win or lose', () => {
+    const s = world();
+    const potion = spot(s, 'potion');
+    const landed = landOn(s, potion.id);
+    expect(me(landed.state).offer).toMatchObject({ kind: 'roll', what: 'flask', need: 4 });
+    expect(me(landed.state).cooldowns[potion.id]).toBe(NOW + 300000);
+    let won = 0;
+    for (let seed = 0; seed < 100; seed++) {
+      const r = act(landed.state, { type: 'try' }, seed);
+      const tried = r.events.find((e) => e.type === 'tried');
+      if (tried?.type !== 'tried') throw new Error('no roll');
+      expect(tried.won).toBe(tried.roll >= 4);
+      expect(has(r.events, 'found')).toBe(tried.won);
+      if (tried.won) won += 1;
+      expect(me(r.state).offer).toBeNull();
+    }
+    expect(won).toBeGreaterThan(30);
+    expect(won).toBeLessThan(70);
+  });
+
+  it('gives only plain gear worth little', () => {
+    const s = world();
+    const landed = landOn(s, spot(s, 'gear').id);
+    expect(me(landed.state).offer).toMatchObject({ kind: 'roll', what: 'gear' });
+    for (let seed = 0; seed < 40; seed++) {
+      const r = act(landed.state, { type: 'try' }, seed);
+      const loot = r.events.find((e) => e.type === 'loot');
+      if (loot?.type !== 'loot') continue;
+      expect(loot.gear.rarity).toBe('common');
+      expect(loot.gear.price).toBeLessThan(15);
+    }
+  });
+
+  it('stands on every hand-laid map', () => {
+    const s = world();
+    for (const area of ['meadows', 'thornwood', 'frostpeak']) expect(Object.values(s.board.spaces).some((x) => x.area === area && x.kind === 'gear')).toBe(true);
+  });
+});

@@ -64,6 +64,7 @@ export interface World {
 /** One letter per kind of spot, for writing roads by hand: "nnptnn" is wilds, wilds, spring, chest, wilds, wilds. */
 export const KIND_LETTERS: Record<string, SpaceKind> = { q: 'board',
   n: 'normal',
+  a: 'gear',
   t: 'chest',
   p: 'potion',
   h: 'spell',

@@ -22,7 +22,7 @@ describe('gear', () => {
 
   it('a plain piece is the common rank item of its slot, priced from the table', () => {
     expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Copper Sword', base: 'copper sword', stats: { attack: 8 }, affixes: [], price: 90 });
-    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 14 }, price: 20 });
+    expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 14 }, price: 32 });
     expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Iron Charm', stats: { maxHp: 34 } });
   });
 
