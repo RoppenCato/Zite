@@ -18,7 +18,7 @@ const RUST = '#a23c2c';
 const GOLD = 0xf4c14a;
 const CLASS_X = [66, 159, 252, 345] as const;
 const TREE_X = [84, 206, 328] as const;
-const TREE_ROWS = [353, 403, 453, 509] as const;
+const TREE_ROWS = [352, 402, 452, 508] as const;
 const COLUMN_W = 114;
 const NODE = 40;
 /** The signature at a tree's foot stands larger. */
@@ -101,7 +101,12 @@ export class SkillsScene extends Phaser.Scene {
   private icon(id: string, x: number, y: number, size: number, alpha: number): void {
     const pic = abilityIcon(this, id, x, y, size);
     if (pic) {
-      this.rows.push(pic.setAlpha(alpha));
+      // A crest has no cubby behind it: dimmed by tint, or the branch would show through.
+      if (ABILITIES[id]?.rule && alpha < 1) {
+        const v = Math.round(255 * alpha);
+        pic.setTint((v << 16) | (v << 8) | v);
+      } else pic.setAlpha(alpha);
+      this.rows.push(pic);
       return;
     }
     if (ABILITIES[id]?.rule && kitReady(this)) {
@@ -121,53 +126,55 @@ export class SkillsScene extends Phaser.Scene {
     const title = specialization(me);
 
     // The header: the title, the points, the way back.
-    this.board(18, 116, 376, 44);
-    this.wood(32, 138, title ? `${cls.name} · ${title}` : cls.name, 16).setOrigin(0, 0.5);
+    this.board(18, 116, 376, 40);
+    this.wood(32, 136, title ? `${cls.name} · ${title}` : cls.name, 16).setOrigin(0, 0.5);
     const pill = this.add.graphics();
-    pill.fillStyle(free > 0 ? GOLD : 0x3a2410, 1).fillRoundedRect(226, 125, 78, 26, 13);
+    pill.fillStyle(free > 0 ? GOLD : 0x3a2410, 1).fillRoundedRect(226, 123, 78, 26, 13);
     this.rows.push(pill);
-    this.rows.push(this.add.text(265, 138, free === 1 ? '1 point' : `${free} points`, { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: free > 0 ? WOOD_INK : CREAM }).setOrigin(0.5));
-    this.rows.push(makeButton(this, 350, 138, 76, 36, 'Back', COLORS.log, '15px', () => this.back()).button);
+    this.rows.push(this.add.text(265, 136, free === 1 ? '1 point' : `${free} points`, { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: free > 0 ? WOOD_INK : CREAM }).setOrigin(0.5));
+    this.rows.push(makeButton(this, 350, 136, 76, 36, 'Back', COLORS.log, '15px', () => this.back()).button);
 
     // The belt: what goes into a fight.
-    this.board(18, 164, 376, 62);
-    this.wood(30, 176, `Carried\n${me.carried.length} of ${MAX_CARRIED}`, 11);
+    this.board(18, 160, 376, 58);
+    this.wood(30, 172, `Carried\n${me.carried.length} of ${MAX_CARRIED}`, 11);
     for (let i = 0; i < MAX_CARRIED; i++) {
       const id = me.carried[i];
       const x = 137 + i * 68;
-      if (kitReady(this)) this.rows.push(this.add.image(x, 195, KIT, id ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46));
+      if (kitReady(this)) this.rows.push(this.add.image(x, 189, KIT, id ? 'cubby_plain' : 'cubby_empty').setDisplaySize(44, 44));
       if (id) {
-        this.icon(id, x, 195, 36, 1);
-        const zone = this.add.zone(x, 195, 54, 54).setInteractive({ useHandCursor: true });
+        this.icon(id, x, 189, 36, 1);
+        const zone = this.add.zone(x, 189, 54, 54).setInteractive({ useHandCursor: true });
         zone.on('pointerup', () => this.tap(id));
         this.rows.push(zone);
       }
     }
 
     // The class's own four.
-    this.board(18, 226, 376, 70);
-    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 258, me));
+    this.board(18, 222, 376, 74);
+    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 257, me));
 
     // The three trees, read downwards (Mitch, AD's layout): a dark column each, the name on a slip at its crown, a branch down through its
     // nodes, gold as far as you have gone, with a leaf at each lit joint.
-    this.board(18, 300, 376, 250);
+    this.board(18, 300, 376, 244);
     Object.values(cls.trees).forEach((tree, col) => {
       const x = TREE_X[col]!;
       const column = this.add.graphics();
-      column.fillStyle(0x5e3d20, 0.55).fillRoundedRect(x - COLUMN_W / 2, 310, COLUMN_W, 232, 8);
+      column.fillStyle(0x7a5030, 1).fillRoundedRect(x - COLUMN_W / 2, 306, COLUMN_W, 232, 8).lineStyle(1.5, 0x6a4628, 1).strokeRoundedRect(x - COLUMN_W / 2, 306, COLUMN_W, 232, 8);
       this.rows.push(column);
-      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, 323, 100, 20));
-      this.rows.push(this.add.text(x, 322, tree.name, { fontFamily: FONT_DISPLAY, fontSize: '11.5px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
+      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, 321, 104, 22));
+      this.rows.push(this.add.text(x, 320, tree.name, { fontFamily: FONT_DISPLAY, fontSize: tree.name.length > 10 ? '11px' : '12px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
       const branch = this.add.graphics();
       this.rows.push(branch);
-      tree.nodes.forEach((id, row) => {
-        if (row === 0) return;
-        const lit = !!me.abilities[id];
-        const from = TREE_ROWS[row - 1]!;
-        const to = TREE_ROWS[row]!;
-        branch.lineStyle(5, 0x2a1a0c, 1).lineBetween(x, from, x, to);
-        branch.lineStyle(3, lit ? GOLD : 0x7a5a38, 1).lineBetween(x, from, x, to);
-        if (lit) branch.fillStyle(0x7ccf6a, 1).fillEllipse(x + 7, (from + to) / 2, 9, 5);
+      // From the slip's foot to the first node, then node to node, each bending a little to alternate sides; gold where the node at its upper end is learned.
+      [332, ...TREE_ROWS].slice(0, -1).forEach((from, i) => {
+        const to = TREE_ROWS[i]!;
+        const lit = i === 0 || !!me.abilities[tree.nodes[i - 1]!];
+        const bend = x + (i % 2 ? 3 : -3);
+        const mid = (from + to) / 2;
+        const points = [new Phaser.Math.Vector2(x, from), new Phaser.Math.Vector2(bend, mid), new Phaser.Math.Vector2(x, to)];
+        branch.lineStyle(6.4, 0x2a1a0c, 1).strokePoints(points);
+        branch.lineStyle(3.6, lit ? GOLD : 0x6a4630, 1).strokePoints(points);
+        if (lit && i > 0) branch.fillStyle(0x7ccf6a, 1).fillEllipse(bend + 6, mid, 9, 5);
       });
       tree.nodes.forEach((id, row) => this.node(id, x, TREE_ROWS[row]!, me, row === tree.nodes.length - 1 ? SIGNATURE : NODE));
     });
@@ -188,14 +195,14 @@ export class SkillsScene extends Phaser.Scene {
     }
     // A rule is a crest on the branch, not a slot: something you are, not something you press.
     if (kitReady(this) && !a.rule) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(size, size));
-    this.icon(id, cx, cy, a.rule ? size : size - 9, rank ? 1 : open ? 0.62 : 0.32);
+    this.icon(id, cx, cy, a.rule ? 42 : size - 8, rank ? 1 : open ? 0.76 : a.rule ? 0.58 : 0.4);
     if (me.carried.includes(id)) {
       const ring = this.add.graphics();
       ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4, 6);
       this.rows.push(ring);
     }
     if (a.ranks.length > 1 && rank > 0 && kitReady(this)) {
-      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx - 8 + i * 8, cy + size / 2 + 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7 / 24));
+      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx - 8.5 + i * 8.5, cy + size / 2 + 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7.5 / 24));
     }
     if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 2, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(17, 17));
     if (!rank && me.level < a.level) {
