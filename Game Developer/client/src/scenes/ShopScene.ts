@@ -1,16 +1,16 @@
-// The shop: the plain gear of the area's rank for every slot, the potions and the dice cards, with a Buy button each;
-// a Sell side for what you carry; in a town a Train side too, the class's abilities from the trainer (Robin,
-// 2026-10-31: skills are bought, found or earned); your gold; Leave. Opened by the board when a walk ends on a shop or a town, when a
+// The shop: the plain gear of the area's rank for every slot, the potions and the dice cards; a Sell side for what you carry; your gold;
+// Leave. Tap a piece of gear: it stands beside what you wear in that slot, to compare for yourself, with its Buy or Sell (Robin, 2026-11-02). Opened by the board when a walk ends on a shop or a town, when a
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, describeGear, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
-import { hasFrame, icon, kitReady, plate, sheet, sheetInk } from '../kit.ts';
+import { gearIcon } from '../hero.ts';
+import { CREAM, hasFrame, icon, KIT, kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -22,13 +22,6 @@ export interface ShopSceneDeps {
 const CENTRE = DESIGN_WIDTH / 2;
 /** The tag's green. */
 const OWNED = 0x2f7d4f;
-
-/** What you wear in the slot now, by the same number, for a piece of another kind. */
-function compareWorn(g: GearItem, worn: GearItem | null): string {
-  if (!worn || worn.base === g.base) return '';
-  const stat = Object.keys(g.stats)[0] as keyof GearItem['stats'] | undefined;
-  return stat ? ` · you have +${worn.stats[stat] ?? 0}` : '';
-}
 
 /** How much of this kind of piece you own: "Worn", "Worn, 2 in bag", "1 in bag", or nothing. */
 export function ownedGear(worn: GearItem | null, bag: GearItem[], base: string): string {
@@ -63,6 +56,7 @@ export class ShopScene extends Phaser.Scene {
   private gold!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private rows: Phaser.GameObjects.GameObject[] = [];
+  private comparing: Phaser.GameObjects.GameObject[] = [];
   private tab: Tab = 'items';
   private merchant = false;
   private town = false;
@@ -75,6 +69,7 @@ export class ShopScene extends Phaser.Scene {
 
   create(data?: { merchant?: boolean }): void {
     this.merchant = !!data?.merchant;
+    this.comparing = [];
     this.tab = 'items';
     const me = this.game_.me;
     const space = this.game_.state.board.spaces[me.space];
@@ -111,6 +106,18 @@ export class ShopScene extends Phaser.Scene {
     this.gold.setText(`Gold ${me.gold}`);
     const { firstRowY, rowStep, button } = SHOP_LAYOUT;
     const tier = this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.tier ?? 1;
+    const gearRow = (i: number, g: GearItem, price: string, own: string, onTap: () => void): void => {
+      const y = firstRowY + i * rowStep;
+      if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
+      this.pieceIcon(g, 44, y, 34);
+      const title = this.add.text(70, y, g.name, { fontFamily: FONT_DISPLAY, fontSize: '16px', fontStyle: 'bold', color: g.rarity === 'common' ? this.ink.text : (this.rarity[g.rarity] ?? this.ink.text) }).setOrigin(0, 0.5);
+      this.rows.push(title);
+      if (own) this.rows.push(this.add.text(title.x + title.width + 10, y, own, { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#3f8a3a' }).setOrigin(0, 0.5));
+      this.rows.push(this.add.text(378, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
+      const zone = this.add.zone(CENTRE, y, DESIGN_WIDTH - 36, rowStep - 2).setInteractive({ useHandCursor: true });
+      zone.on('pointerup', onTap);
+      this.rows.push(zone);
+    };
     const row = (i: number, name: string, nameColor: string, detail: string, price: string, label: string, onTap: () => void, own = '', ability = ''): void => {
       const y = firstRowY + i * rowStep;
       if (kitReady(this)) this.rows.push(plate(this, 'row_shop_idle', CENTRE, y, DESIGN_WIDTH - 36, rowStep - 4));
@@ -139,7 +146,7 @@ export class ShopScene extends Phaser.Scene {
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
       SLOTS.forEach((slot, i) => {
         const g = plainGear('preview', slot, tier, tab, me.classId);
-        row(i, g.name, this.ink.text, `${describeGear(g).split(' · ').slice(2).join(' · ')}${compareWorn(g, me.equipment[slot])}`, `${g.price} g`, 'Buy', () => this.buy({ slot, line: tab }), ownedGear(me.equipment[slot], me.bag, g.base));
+        gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab })));
       });
     } else if (tab === 'items' || tab === 'cards') {
       const sold = (shopOffer(this.game_.state, me)?.items ?? []).filter((id) => !!ITEMS[id]!.dice === (tab === 'cards'));
@@ -151,10 +158,64 @@ export class ShopScene extends Phaser.Scene {
     } else {
       const bag = me.bag.slice(0, SHOP_LAYOUT.rows);
       if (!bag.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'Nothing to sell: your bag holds no gear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
-      bag.forEach((g, i) => row(i, g.name, this.rarity[g.rarity] ?? COLORS.text, describeGear(g).split(' · ').slice(1).join(' · '), `${sellPrice(g)} g`, 'Sell', () => this.sell(g)));
+      bag.forEach((g, i) => gearRow(i, g, `${sellPrice(g)} g`, '', () => this.compare(g, 'Sell', () => this.sell(g))));
       this.rows.push(this.add.text(24, firstRowY - 34, `Bag: ${me.bag.length} of ${GEAR.bagLimit}`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
       if (me.bag.length > bag.length) this.rows.push(this.add.text(CENTRE, firstRowY + bag.length * rowStep, `and ${me.bag.length - bag.length} more`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }).setOrigin(0.5));
     }
+  }
+
+  private pieceIcon(g: GearItem, x: number, y: number, size: number, list: Phaser.GameObjects.GameObject[] = this.rows): void {
+    const art = gearIcon(this, g, this.game_.me.classId);
+    if (kitReady(this)) list.push(this.add.image(x, y, KIT, `cubby_${g.rarity}`).setDisplaySize(size, size));
+    if (art && this.textures.get(art.texture).has(art.frame)) {
+      const img = this.add.image(x, y, art.texture, art.frame);
+      list.push(img.setScale((size * 0.76) / Math.max(img.width, img.height)));
+    } else if (kitReady(this) && hasFrame(this, `slot_${g.slot}`)) list.push(icon(this, `slot_${g.slot}`, x, y).setScale((size * 0.76) / 80));
+  }
+
+  /** The piece tapped beside what is worn in its slot, each with its own words: to compare for yourself (Robin, 2026-11-02). */
+  private compare(g: GearItem, verb: 'Buy' | 'Sell', act: () => void): void {
+    this.closeCompare();
+    const me = this.game_.me;
+    const worn = me.equipment[g.slot];
+    const parts = this.comparing;
+    const veil = this.add.rectangle(CENTRE, 400, 620, 800, 0x0b0d14, 0.6).setInteractive();
+    veil.on('pointerup', () => this.closeCompare());
+    parts.push(veil);
+    const top = 236;
+    const card = (x: number, w: number, head: string, piece: GearItem | null, note: string): void => {
+      if (kitReady(this)) parts.push(plate(this, 'board_plain', x, top, w, 300).setOrigin(0, 0));
+      else parts.push(this.add.rectangle(x, top, w, 300, COLORS.panel, 1).setOrigin(0, 0));
+      parts.push(this.add.text(x + w / 2, top + 10, head, { fontFamily: FONT_DISPLAY, fontSize: '14px', fontStyle: 'bold', color: CREAM, stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0.5, 0));
+      if (kitReady(this)) parts.push(plate(this, 'board_slip', x + 8, top + 34, w - 16, 256).setOrigin(0, 0));
+      if (!piece) {
+        parts.push(this.add.text(x + w / 2, top + 150, note, { fontFamily: FONT, fontSize: '14px', color: '#8a7458', align: 'center', wordWrap: { width: w - 32 } }).setOrigin(0.5));
+        return;
+      }
+      this.pieceIcon(piece, x + w / 2, top + 72, 52, parts);
+      const name = this.add.text(x + w / 2, top + 104, piece.name, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: '#3a2410', align: 'center', wordWrap: { width: w - 28 } }).setOrigin(0.5, 0);
+      parts.push(name);
+      const rare = this.add.text(x + w / 2, name.y + name.height + 2, piece.rarity, { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: piece.rarity === 'common' ? '#8a7458' : (RARITY_INK[piece.rarity] ?? '#8a7458') }).setOrigin(0.5, 0);
+      parts.push(rare);
+      parts.push(this.add.text(x + 16, rare.y + 24, gearPowers(piece).join('\n'), { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#3a2410', lineSpacing: 6, wordWrap: { width: w - 32 } }));
+    };
+    card(18, 186, verb === 'Buy' ? 'In the shop' : 'In your bag', g, '');
+    card(208, 186, 'You wear', worn, 'Nothing in this slot.');
+    const price = verb === 'Buy' ? g.price : sellPrice(g);
+    const can = verb === 'Sell' || me.gold >= price;
+    const go = makeButton(this, 112, top + 334, 186, 48, `${verb} · ${price} g`, verb === 'Sell' ? 0xb0643a : COLORS.button, '17px', () => {
+      this.closeCompare();
+      act();
+    });
+    go.setEnabled(can);
+    parts.push(go.button);
+    parts.push(makeButton(this, 300, top + 334, 186, 48, 'Back', COLORS.log, '17px', () => this.closeCompare()).button);
+    sfx.play('ui/chip');
+  }
+
+  private closeCompare(): void {
+    for (const p of this.comparing) p.destroy();
+    this.comparing = [];
   }
 
   private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine }): void {
