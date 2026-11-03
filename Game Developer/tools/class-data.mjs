@@ -108,9 +108,10 @@ const C = {
     },
   },
   mage: {
-    name: 'Magician', style: 'Mana Shield, weak staff, strong spells.', about: 'Block is a Mana Shield: half of each blow is paid in mana. Weak staff, strong magic, and mana is everything.',
+    name: 'Magician', style: 'Arcane Ward, Channel for mana, strong spells.', about: 'Block is an Arcane Ward: it stops part of a blow and costs no mana. Brace is Channel: take most of the blow and get half your mana back. Weak staff, strong spells.',
     hp: 90, mana: 40, attack: 7, magic: 6, defense: 4, gold: 50, growth: { hp: 9, mana: 4, attack: 1, magic: 1, defense: 1 },
-    traits: { shieldMana: 0.5, attackMagic: 0.8 },
+    // Ward and Channel (Robin, 2026-11-03): the guards cost no mana, and Channel gives half of it back.
+    traits: { ward: true, channel: 0.5, attackMagic: 0.8 },
     kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'time-warp'],
     meter: { name: 'Arcana', gain: 'round', text: 'Arcana builds a point every round.' },
     trees: {
@@ -399,7 +400,7 @@ const WORDS = {
   },
   "mage": {
     "tagline": "The strongest spells of all, and very little to stand on.",
-    "story": "Fragile, with a weak staff, but nothing hits harder than its spells. Mana is everything: it pays for your magic, and when you Block, a Mana Shield spends it to soak up the blow. Run dry and you are in trouble. For you if you like to plan ahead and end fights fast.",
+    "story": "Fragile, with a weak staff, but nothing hits harder than its spells. Mana is everything, and it all goes to your magic: your Ward stops blows for free, and when you run low, Channel takes the hit and gives you half your mana back. For you if you like to plan ahead and end fights fast.",
     "showcase": {
       "wizard": [
         "fireball",

@@ -76,7 +76,7 @@ No to: a map misted in open land, a second way past bosses, tap-to-set a destina
 | Class | Identity | Trees |
 |---|---|---|
 | Warrior | Builds Valor by blocking; Valor goes on hard hits or defensive buffs | Paladin: self healing and debuffs. Berserker: harder attacks, more damage taken. Knight: more defense, returns damage on hit |
-| Magician | Defend is a protective shield, taking half the damage as mana | Wizard: stronger fire spells that leave the target burning. Cleric: healing spells, holy attacks. Spellsword: ice or electric damage in melee attacks |
+| Magician | About casting spells, attacking in melee only when out of mana. Defend is an **Arcane Ward** that stops part of a blow and costs no mana; Brace is **Channel**, which takes most of the blow and gives back about half the mana (Robin, 2026-11-03, replacing the shield that took half the damage as mana: "Im running out of mana") | Wizard: stronger fire spells that leave the target burning. Cleric: healing spells, holy attacks. Spellsword: ice or electric damage in melee attacks |
 | Rogue | Quick and mobile, higher dodge and crit, takes more damage. Attack strikes three times for a third of the damage; every hit raises the crit chance by 5%, resetting after the first crit | Ninja: can always flee with a skill. Shadow: a skill that takes full damage one turn, then 90% dodge for two. Alchemist: poison coating on the weapon |
 | Hunter | Ranged weapons only, a higher chance of counterattacking | Ranger: every counterattack is two attacks. Beastmaster and Trapper are the Game Developer's, for Robin to change |
 

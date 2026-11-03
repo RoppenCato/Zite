@@ -224,7 +224,8 @@ export function offhandGuard(g: GearItem | null | undefined): { block: number; d
     mana: d.mana !== undefined ? Math.min(0.9, d.mana + lift) : null,
     mirror: d.mirror ?? 0,
     brace: d.brace ?? 1,
-    shield: d.block !== undefined,
+    // A shield, not an orb: shield skills ask for one (an orb wards since 2026-11-03).
+    shield: d.block !== undefined && !kind!.endsWith('_orb'),
   };
 }
 
@@ -233,7 +234,7 @@ export function guardOf(c: Character): ReturnType<typeof offhandGuard> {
   if (c.equipment.shield) return offhandGuard(c.equipment.shield);
   const w = kindData('weapon', gearKind(c.equipment.weapon));
   const bare = offhandGuard(null);
-  // A two-hander guards its own way: a great weapon dodges, a bow keeps its distance, a staff feeds the Mana Shield (2026-11-03).
+  // A two-hander guards its own way: a great weapon dodges, a bow keeps its distance, a staff wards like bare hands (2026-11-03).
   return w && (w.block !== undefined || w.dodge !== undefined || w.mana !== undefined) ? { ...bare, block: w.block ?? bare.block, dodge: w.dodge ?? bare.dodge, mana: w.mana ?? bare.mana } : bare;
 }
 
@@ -468,7 +469,7 @@ export function gearPowers(g: GearItem): string[] {
   }
   if (g.slot === 'shield' && kindData('shield', gearKind(g))) {
     const o = offhandGuard(g);
-    parts.push(o.shield ? `Block stops ${Math.round(o.block * 100)}%, Dodge ${Math.round(o.dodge * 100)}%` : `Mana Shield ${Math.round((o.mana ?? 0) * 100)}%, Dodge ${Math.round(o.dodge * 100)}%${o.mirror ? `, ${Math.round(o.mirror * 100)}% turned back` : ''}${o.brace > 1 ? ', Brace gives twice the mana' : ''}`);
+    parts.push(o.shield ? `Block stops ${Math.round(o.block * 100)}%, Dodge ${Math.round(o.dodge * 100)}%` : `Ward stops ${Math.round(o.block * 100)}%, Dodge ${Math.round(o.dodge * 100)}%${o.mirror ? `, ${Math.round(o.mirror * 100)}% of it turned back` : ''}${o.brace > 1 ? `, Channel gives ${Math.round((o.brace - 1) * 100)}% more mana` : ''}`);
   }
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
   for (const affix of g.affixes ?? []) {

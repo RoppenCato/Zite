@@ -5,7 +5,7 @@
 // shows here by itself.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS, abilitiesFor, fightOdds } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS, abilitiesFor, fightOdds, traitsOf } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
@@ -142,6 +142,8 @@ export class GuideScene extends Phaser.Scene {
 
   private pages(): Page[] {
     const odds = fightOdds(this.game_.me);
+    // A Magician's Block is a Ward and its Brace a Channel (Robin, 2026-11-03).
+    const ward = !!traitsOf(this.game_.me).ward;
     const me = this.game_.me;
     const cls = CLASS_DATA[me.classId];
     const g = PROGRESSION.guards;
@@ -188,9 +190,9 @@ export class GuideScene extends Phaser.Scene {
         entries: [
           // Your own numbers, as they stand now (Robin, 2026-11-03: "the actual % chance").
           { title: 'Your hits', text: `Attack strikes ${odds.hits === 1 ? 'once' : `${odds.hits} times`}. Each has a ${pct(odds.crit)} chance to crit, and a crit does ${Math.round(odds.critPower * 100)}% of a hit.${odds.autoCounter ? ` You shoot back at ${pct(odds.autoCounter)} of blows, whatever your guard.` : ''}${odds.taken !== 1 ? ` You take ${pct(odds.taken)} of what hits you.` : ''}` },
-          { title: odds.shieldMana ? 'Mana Shield' : 'Block', text: odds.shieldMana ? `Your Block is a Mana Shield: ${pct(odds.shieldMana)} of the blow is paid in mana while you have any.` : `You take ${pct(odds.block)} of the blow. The safe choice.` },
+          { title: ward ? 'Ward' : 'Block', text: ward ? `Your Arcane Ward: you take ${pct(odds.block)} of the blow, and it costs no mana.` : `You take ${pct(odds.block)} of the blow. The safe choice.` },
           { title: 'Dodge', text: `A ${pct(odds.dodge)} chance that it misses altogether; if not, you take it all.` },
-          { title: 'Brace', text: `You take ${pct(odds.brace)} of the blow and get ${odds.braceMana} mana back.` },
+          { title: ward ? 'Channel' : 'Brace', text: `You take ${pct(odds.brace)} of the blow and get ${odds.braceMana} mana back.` },
           { title: 'Counter', text: `You hit back${odds.counterHits > 1 ? ` ${odds.counterHits} times` : ''} for ${pct(odds.counter)} of a plain hit, and take the blow in full.` },
           ...(meter ? [{ title: meter.name, text: `Your meter, the dots over your bars. ${meter.text}` }] : []),
         ],

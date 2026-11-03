@@ -121,15 +121,16 @@ describe('the Warrior', () => {
 });
 
 describe('the Magician', () => {
-  it('Block is a Mana Shield: half the blow is paid in mana; without mana it all lands', () => {
-    const shield = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
+  it('Block is an Arcane Ward that costs no mana; Brace is Channel and gives half the mana back (Robin, 2026-11-03)', () => {
+    const ward = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
     const none = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack), makeRng('a'), NOW);
-    const taken = hits(shield.events, 'enemy')[0]!.damage;
-    const full = hits(none.events, 'enemy')[0]!.damage;
-    expect(taken).toBeLessThanOrEqual(Math.ceil(full / 2) + 3);
-    expect(shield.events.some((e) => e.type === 'mana' && e.delta < 0)).toBe(true);
-    const dry = apply(versus('mage', 'bandit', { mana: 0 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
-    expect(hits(dry.events, 'enemy')[0]!.damage).toBeGreaterThan(taken);
+    expect(hits(ward.events, 'enemy')[0]!.damage).toBeLessThan(hits(none.events, 'enemy')[0]!.damage * 0.7);
+    expect(ward.events.some((e) => e.type === 'mana' && e.delta < 0)).toBe(false);
+    const dry = { mana: 0 };
+    const channel = apply(versus('mage', 'bandit', dry, { ...tough, attack: 40 }), turn(attack, 'brace'), makeRng('a'), NOW);
+    const back = channel.events.find((e) => e.type === 'mana' && e.delta > 0);
+    expect(back).toBeTruthy();
+    expect(back!.type === 'mana' && back!.delta).toBe(Math.round(stats(me(channel.state)).maxMana * 0.5));
   });
 
   it('a staff is poor and a spell strong; Overflow turns Arcana into mana and the next spell harder', () => {

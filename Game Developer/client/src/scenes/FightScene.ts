@@ -358,9 +358,10 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     }
     this.prompt.setText('And when it strikes back?');
     this.setOptions([
-      { text: traitsOf(this.game_.me).shieldMana ? 'Mana Shield (half in mana)' : 'Block (half)', size: traitsOf(this.game_.me).shieldMana ? '14px' : undefined, color: COLORS.log, enabled: true, onTap: () => this.act('block') },
+      // A Magician wards and channels (Robin, 2026-11-03).
+      { text: traitsOf(this.game_.me).ward ? 'Ward (no mana)' : 'Block (half)', color: COLORS.log, enabled: true, onTap: () => this.act('block') },
       { text: 'Dodge (luck)', color: COLORS.log, enabled: true, onTap: () => this.act('dodge') },
-      { text: 'Brace (+mana)', color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
+      { text: traitsOf(this.game_.me).channel ? 'Channel (+half mana)' : 'Brace (+mana)', size: traitsOf(this.game_.me).channel ? '14px' : undefined, color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
       { text: 'Counter (hit back)', color: COLORS.log, enabled: true, onTap: () => this.act('counter') },
       { text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() },
     ]);

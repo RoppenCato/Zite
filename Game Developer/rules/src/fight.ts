@@ -108,6 +108,12 @@ function blow(attack: number, power: number, defense: number, critChance: number
   return { damage: Math.max(1, Math.round(plain * (crit ? PROGRESSION.critPower : 1))), base: plain, crit };
 }
 
+/** The mana a Brace gives back: a Magician's Channel half the mana (Robin, 2026-11-03: "Like 50%"), anyone else's a little. */
+function braceMana(maxMana: number, orb: number, channel: number | undefined): number {
+  const g = PROGRESSION.guards;
+  return Math.round(orb * (channel ? maxMana * channel : Math.max(g.braceMana, Math.round(maxMana * g.braceManaShare))));
+}
+
 /** This character's numbers in a fight, as the guards and a plain hit use them: for the guide (Robin, 2026-11-03: "the actual % chance"). */
 export function fightOdds(c: Character): { crit: number; critPower: number; hits: number; block: number; shieldMana: number; dodge: number; brace: number; braceMana: number; counter: number; counterHits: number; autoCounter: number; taken: number } {
   const s = stats(c);
@@ -122,7 +128,7 @@ export function fightOdds(c: Character): { crit: number; critPower: number; hits
     shieldMana: t.shieldMana && !o.shield ? (o.mana ?? t.shieldMana) : 0,
     dodge: Math.min(1, o.dodge + s.dodge),
     brace: g.brace,
-    braceMana: o.brace * Math.max(g.braceMana, Math.round(s.maxMana * g.braceManaShare)),
+    braceMana: braceMana(s.maxMana, o.brace, t.channel),
     counter: t.counterPower ?? g.counter,
     counterHits: t.counterHits ?? 1,
     autoCounter: t.counterChance ?? 0,
@@ -600,10 +606,17 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
               if (r.done) return r.done;
             }
           }
-        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? 1 - off.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
+        } else if (held === 'block') {
+          dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? 1 - off.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
+          // A Mirror Orb's ward sends part of what it stopped back (2026-11-03).
+          if (off.mirror > 0 && beforeGuard > dealt) {
+            hurtEnemy(r, Math.max(1, Math.round((beforeGuard - dealt) * off.mirror)));
+            if (r.done) return r.done;
+          }
+        }
         if (held === 'brace') {
           dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
-          r.c = restoreMana(r.c, off.brace * Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
+          r.c = restoreMana(r.c, braceMana(r.s.maxMana, off.brace, traits.channel), action, events);
         }
         let absorbed = 0;
         if (f.barrier > 0) {

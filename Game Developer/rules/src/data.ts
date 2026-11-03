@@ -91,8 +91,12 @@ export interface ClassTraits {
   attackHits?: number;
   /** Each hit adds this to the crit chance, until a crit. */
   critStreak?: number;
-  /** Block pays this share of a blow in mana instead of halving it. */
+  /** Block pays this share of a blow in mana instead of halving it (no class has it since 2026-11-03). */
   shieldMana?: number;
+  /** Block is an Arcane Ward: the same stop as a shield, said as a ward (the Magician, Robin, 2026-11-03). */
+  ward?: boolean;
+  /** Brace is Channel: this share of the mana comes back (Robin, 2026-11-03: "Like 50%"). */
+  channel?: number;
   /** A Block heals this share of max HP. */
   blockHeal?: number;
   /** Plain attacks use magic too. */

@@ -581,3 +581,7 @@ Text never goes under 13 px (Robin, 2026-11-01, `hires.ts`), so `BagScene.slip` 
 ## Trinkets on screen (Robin, 2026-11-03)
 
 No necklace on the hero: the trinket layer is off. `assets/trinkets` (Mitch, AD): `trinket_icons` (a frame per trinket id, and `slot_trinket`, the empty slot as a charm on a hook) and `fx_lightning` (clip `strike`, pivot on the foe's chest, drawn additively, loaded only for a fighter who can call lightning). The loot card and the hero sheet say "Trinket" and show its passive in one line. The shop shows no trinket rows. After a roll with a stride, the lit spots include the nearer and further ones (the roll's own first). A `Lightning` hit plays the strike (the bolt drawn in code, `FightScene.bolt`, only if it is not loaded) with Nigel, SD's `fight/lightning`. Settings, Testing, has Test: trinket. The Four-Leaf Clover's chip says Reroll.
+
+## Ward and Channel on screen (Robin, 2026-11-03)
+
+A Magician’s guard buttons say Ward (no mana) and Channel (+half mana); the fight guide names them and gives their numbers. An orb’s words: Ward stops X%, Dodge Y%.
