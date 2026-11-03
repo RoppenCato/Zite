@@ -9,6 +9,8 @@ import Phaser from 'phaser';
 import { UNIQUES, type Character, type ClassId, type GearItem, type Slot, gearKind } from '../../rules/src/index.ts';
 import legendIconsJson from '../../assets/legends/icons.json?url';
 import legendIconsPng from '../../assets/legends/icons.png';
+import legend2IconsJson from '../../assets/legends_2/icons.json?url';
+import legend2IconsPng from '../../assets/legends_2/icons.png';
 import archerOverJson from '../../assets/hero_classes/archer/gear_over.json?url';
 import archerOverPng from '../../assets/hero_classes/archer/gear_over.png';
 import clothArcherJson from '../../assets/gear_sets/cloth/cloth_archer.json?url';
@@ -136,9 +138,10 @@ const SETS: Record<string, Tex> = {
 };
 /** The Archer's hands move their own way (Mitch, AD's corrected arm, 2026-11-02): these load only for an Archer. */
 // The legendary weapons (Mitch, AD, 2026-11-02): an atlas each, loaded only while worn.
-const LEGEND_FILES = import.meta.glob('../../assets/legends/*/*.{png,json}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+// The second set (Mitch, AD, 2026-11-03) names its frames by the weapon's kind: bonecrusher_great, clockwork_wand.
+const LEGEND_FILES = import.meta.glob(['../../assets/legends/*/*.{png,json}', '../../assets/legends_2/*/*.{png,json}'], { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 for (const [path, url] of Object.entries(LEGEND_FILES)) {
-  const m = /legends\/(\w+)\/\w+\.(png|json)$/.exec(path);
+  const m = /legends(?:_2)?\/(\w+)\/\w+\.(png|json)$/.exec(path);
   if (!m) continue;
   const tex = (SETS[m[1]!] ??= { key: `legend_${m[1]!}`, png: '', json: '' });
   if (m[2] === 'png') tex.png = url;
@@ -187,11 +190,12 @@ const ARCHER_SETS: Record<string, Tex> = {
 };
 const SET_ICONS: Tex = { key: 'set_icons', png: setIconsPng, json: setIconsJson };
 const LEGEND_ICONS: Tex = { key: 'legend_icons', png: legendIconsPng, json: legendIconsJson };
+const LEGEND_ICONS_2: Tex = { key: 'legend_icons_2', png: legend2IconsPng, json: legend2IconsJson };
 /** A later rank of a kind shows its first set until its own is drawn: Hide as Leather, Linen as Cloth. */
 const LINE_SET: Record<string, string> = { light: 'leather', magic: 'cloth' };
 
 /** The atlases every class shares: the gear and its icons. */
-const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS, V2_ICONS];
+const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS, LEGEND_ICONS_2, V2_ICONS];
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
@@ -251,6 +255,8 @@ function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): Layer | n
   const kind = legend ? null : kindArt(g, classId);
   if (kind && has(scene, kind.tex.key, `${kind.piece}/stand/0001`)) return { key: kind.tex.key, piece: kind.piece };
   const part = partOf(g.slot, classId);
+  const own = legend && SETS[legend] ? `${legend}_${gearKind(g)}` : '';
+  if (own && has(scene, SETS[legend!]!.key, `${own}/stand/0001`)) return { key: SETS[legend!]!.key, piece: own };
   for (const word of artWords(g)) {
     const key = SETS[word]?.key ?? texOf(g.slot, classId);
     // Gloves come as a near and a far piece; some atlases hold no plain one.
@@ -288,7 +294,9 @@ export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { 
   if (wood && has(scene, SET_ICONS.key, wood)) return { texture: SET_ICONS.key, frame: wood };
   const part = partOf(g.slot, classId);
   const legend = g.unique ? UNIQUES[g.unique]?.art : undefined;
-  if (legend && has(scene, LEGEND_ICONS.key, `${legend}_${part}`)) return { texture: LEGEND_ICONS.key, frame: `${legend}_${part}` };
+  for (const atlas of legend ? [LEGEND_ICONS, LEGEND_ICONS_2] : []) {
+    for (const frame of [`${legend}_${gearKind(g)}`, `${legend}_${part}`]) if (has(scene, atlas.key, frame)) return { texture: atlas.key, frame };
+  }
   // A piece of a new kind by its look (Mitch, AD's icons, 2026-11-03).
   const kind = gearKind(g);
   const iconName = kind?.endsWith('_orb') ? kind : kind ? `${lookOf(g.rank)}_${kind}` : '';

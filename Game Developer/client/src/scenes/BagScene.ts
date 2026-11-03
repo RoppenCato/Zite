@@ -70,6 +70,8 @@ export class BagScene extends Phaser.Scene {
   private tab: Tab = 'gear';
   private itemPage = 0;
   private picked: Pick = null;
+  /** Which page of a card's words is shown, when they do not fit at once; the first again with every pick. */
+  private slipPage = 0;
   /** A line about the last thing done, on the card until the next tap. */
   private note = '';
 
@@ -340,21 +342,66 @@ export class BagScene extends Phaser.Scene {
 
   private slip(x: number, y: number, w: number, h: number, lines: { text: string; color?: string; bold?: boolean; small?: boolean }[]): void {
     if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, y, w, h).setOrigin(0, 0));
-    // Smaller words before words past the edge (Robin, 2026-11-03: "Cant read all the text in the item description").
-    for (let shrink = 0; shrink <= 4; shrink++) {
-      const made: Phaser.GameObjects.Text[] = [];
-      let at = y + (lines.some((l) => l.small) ? 5 : 9) - Math.min(shrink, 2);
-      for (const line of lines) {
-        const size = Math.max(line.small ? 9.5 : 10.5, (line.small ? 11 : 13) - shrink * 0.75);
-        const t = this.add.text(x + 10, at, line.text, { fontFamily: FONT, fontSize: `${size}px`, fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
-        made.push(t);
-        at += t.height + (line.small ? 1 : shrink ? 2 : 4);
-      }
-      if (at <= y + h - 3 || shrink === 4) {
-        this.rows.push(...made);
+    // No words under 13 px (Robin, 2026-11-01), so what does not fit goes on to a next page, a tap away (Robin, 2026-11-03:
+    // "Cant read all the text in the item description").
+    type Line = (typeof lines)[number];
+    const style = (line: Line): Phaser.Types.GameObjects.Text.TextStyle => ({ fontFamily: FONT, fontSize: line.small ? '11px' : '13px', fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
+    const heightOf = (line: Line): number => {
+      const t = this.add.text(0, 0, line.text, style(line));
+      const height = t.height;
+      t.destroy();
+      return height;
+    };
+    const gap = (line: Line): number => (line.small ? 1 : 3);
+    const top = y + (lines.some((l) => l.small) ? 5 : 8);
+    const fits = lines.reduce((at, line) => at + heightOf(line) + gap(line), top) <= y + h;
+    const pages: Line[][] = [];
+    let rest = [...lines];
+    while (rest.length && pages.length < 6) {
+      const page: Line[] = [];
+      const bottom = y + h - (fits ? 3 : 20);
+      let at = top;
+      while (rest.length) {
+        const line = rest[0]!;
+        const height = heightOf(line);
+        if (at + height <= bottom || !page.length && rest.length === 1 && fits) {
+          page.push(line);
+          at += height + gap(line);
+          rest = rest.slice(1);
+          continue;
+        }
+        // Cut the line at the last word that still fits; the rest starts the next page.
+        const words = line.text.split(' ');
+        let n = words.length - 1;
+        while (n > 0 && at + heightOf({ ...line, text: words.slice(0, n).join(' ') }) > bottom) n--;
+        if (n > 0) {
+          page.push({ ...line, text: words.slice(0, n).join(' ') });
+          rest = [{ ...line, text: words.slice(n).join(' ') }, ...rest.slice(1)];
+        } else if (!page.length) {
+          page.push(line);
+          rest = rest.slice(1);
+        }
         break;
       }
-      for (const t of made) t.destroy();
+      pages.push(page);
+    }
+    const shown = Math.min(this.slipPage, pages.length - 1);
+    let at = top;
+    for (const line of pages[shown] ?? []) {
+      const t = this.add.text(x + 10, at, line.text, style(line));
+      this.rows.push(t);
+      at += t.height + gap(line);
+    }
+    if (pages.length > 1) {
+      const last = shown === pages.length - 1;
+      this.rows.push(this.add.text(x + w - 10, y + h - 4, last ? 'Back to the start' : `More, ${shown + 1} of ${pages.length} ›`, { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#8a5a2b' }).setOrigin(1, 1));
+      const zone = this.add.zone(x, y, w, h).setOrigin(0, 0).setInteractive({ useHandCursor: true });
+      zone.on('pointerup', () => {
+        this.slipPage = last ? 0 : shown + 1;
+        sfx.play('ui/chip');
+        this.refresh();
+      });
+      this.rows.push(zone);
     }
   }
 
@@ -450,6 +497,7 @@ export class BagScene extends Phaser.Scene {
   private pick(p: Pick): void {
     this.note = '';
     this.picked = p;
+    this.slipPage = 0;
     feel.buzz();
     sfx.play('ui/chip');
     this.refresh();

@@ -511,7 +511,7 @@ Area `giantsland`, tier 7, levels 24 to 28, baked roads. `gate-snowshoulder` sta
 
 ## Legendary weapons (2026-11-02)
 
-Twelve `legend-<art>` entries in `uniques.json`, each with `classId`, `art`, `kind`, and sometimes `stat` and `affix`. `rollLegend` draws only for the character's class, up to the land's tier; never from `uniquePool`. `GEAR.legendChance`: mob 0.05%, mini-boss 1%, boss 5%, rich chest 2% (mine).
+Twenty-five `legend-<art>` entries in `uniques.json` (the second thirteen, Mitch, AD's looks of 2026-11-03, powers mine, made only of traits the rules already had; a legend's `kind` is its base, so a `great maul` is a great weapon), each with `classId`, `art`, `kind`, and sometimes `stat` and `affix`. `rollLegend` draws only for the character's class, up to the land's tier; never from `uniquePool`. `GEAR.legendChance`: mob 0.05%, mini-boss 1%, boss 5%, rich chest 2% (mine).
 
 ## The Pirate Isles (Mitch, AD, 2026-11-02)
 

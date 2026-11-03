@@ -1262,7 +1262,7 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
     const next = own[(at + 1) % own.length]!;
     const piece = makeUnique(got.id, next, UNIQUES[next]!.tier, makeRng(`${got.id}`));
     const old = c.equipment.weapon;
-    return { state: withCharacter(got.state, capped({ ...c, bag: old ? [...c.bag, old].slice(-GEAR.bagLimit) : c.bag, equipment: { ...c.equipment, weapon: piece } })), events: [] };
+    return { state: withCharacter(got.state, capped(handsFree({ ...c, bag: old ? [...c.bag, old].slice(-GEAR.bagLimit) : c.bag, equipment: { ...c.equipment, weapon: piece } }))), events: [] };
   }
   if (action.op === 'testLevel') {
     const level = c.level + 1;

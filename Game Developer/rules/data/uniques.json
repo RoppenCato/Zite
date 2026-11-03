@@ -595,5 +595,227 @@
     },
     "text": "15% more attack, 8% more crits, and they hit 40% harder.",
     "kind": "bow"
+  },
+  "legend-tidecaller": {
+    "name": "Tidecaller",
+    "slot": "weapon",
+    "tier": 3,
+    "legend": true,
+    "classId": "warrior",
+    "art": "tidecaller",
+    "traits": {
+      "hpRegen": 0.01,
+      "blockPower": 0.05
+    },
+    "text": "Sea water: you regain 1% of your HP each round, and a Block stops 5% more.",
+    "kind": "sword"
+  },
+  "legend-bonecrusher": {
+    "name": "Bonecrusher",
+    "slot": "weapon",
+    "tier": 4,
+    "legend": true,
+    "classId": "warrior",
+    "art": "bonecrusher",
+    "traits": {
+      "executeDamage": 1.2,
+      "winHeal": 0.05
+    },
+    "text": "Bone and ghost fire: 20% more to a foe under a third of its HP; each win heals 5% of your HP.",
+    "affix": {
+      "kind": "ruin",
+      "value": 0.2
+    },
+    "kind": "great maul"
+  },
+  "legend-crystal_cleaver": {
+    "name": "Crystal Cleaver",
+    "slot": "weapon",
+    "tier": 5,
+    "legend": true,
+    "classId": "warrior",
+    "art": "crystal_cleaver",
+    "traits": {
+      "crit": 0.06,
+      "critPower": 0.3
+    },
+    "text": "One great crystal: 6% more crits, and they hit 30% harder.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "legend-kingslayer": {
+    "name": "Kingslayer",
+    "slot": "weapon",
+    "tier": 7,
+    "legend": true,
+    "classId": "warrior",
+    "art": "kingslayer",
+    "traits": {
+      "attackMult": 1.15,
+      "executeDamage": 1.15
+    },
+    "text": "Made for kings: 15% more attack, 15% more to a foe under a third of its HP, more against bosses.",
+    "affix": {
+      "kind": "giant",
+      "value": 0.3
+    },
+    "kind": "great sword"
+  },
+  "legend-mothwing": {
+    "name": "Mothwing",
+    "slot": "weapon",
+    "tier": 3,
+    "legend": true,
+    "classId": "rogue",
+    "art": "mothwing",
+    "traits": {
+      "dodge": 0.05,
+      "firstRoundDamage": 1.25
+    },
+    "text": "Moth’s wings: 5% more dodge, and 25% more damage in the first round.",
+    "kind": "dagger"
+  },
+  "legend-serpents_kiss": {
+    "name": "Serpent’s Kiss",
+    "slot": "weapon",
+    "tier": 5,
+    "legend": true,
+    "classId": "rogue",
+    "art": "serpents_kiss",
+    "traits": {
+      "poisonedDamage": 1.15,
+      "poisonPower": 1.2
+    },
+    "text": "A snake’s bite: it poisons, the poison stings 20% harder, and a poisoned foe takes 15% more.",
+    "affix": {
+      "kind": "venom",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "legend-ghostblade": {
+    "name": "Ghostblade",
+    "slot": "weapon",
+    "tier": 7,
+    "legend": true,
+    "classId": "rogue",
+    "art": "ghostblade",
+    "traits": {
+      "attackMult": 1.15,
+      "dodge": 0.06,
+      "critHeal": 0.02
+    },
+    "text": "A ghost’s edge: 15% more attack, 6% more dodge, and each crit heals 2% of your HP.",
+    "affix": {
+      "kind": "haste",
+      "value": 0.15
+    },
+    "kind": "sword"
+  },
+  "legend-clockwork": {
+    "name": "The Clockwork Wand",
+    "slot": "weapon",
+    "tier": 4,
+    "legend": true,
+    "classId": "mage",
+    "art": "clockwork",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.1,
+      "critMana": 0.03
+    },
+    "text": "Ticking gears: spells 10% stronger, and each crit gives back 3% of your mana.",
+    "affix": {
+      "kind": "focus",
+      "value": 0.15
+    },
+    "kind": "wand"
+  },
+  "legend-prism_spire": {
+    "name": "Prism Spire",
+    "slot": "weapon",
+    "tier": 6,
+    "legend": true,
+    "classId": "mage",
+    "art": "prism_spire",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.18,
+      "crit": 0.05
+    },
+    "text": "Split light: spells 18% stronger, and 5% more crits.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "staff"
+  },
+  "legend-watchers_eye": {
+    "name": "The Watcher’s Eye",
+    "slot": "weapon",
+    "tier": 7,
+    "legend": true,
+    "classId": "mage",
+    "art": "watchers_eye",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.22,
+      "weakenedDamage": 1.15
+    },
+    "text": "It sees every weakness: spells 22% stronger; it weakens, and a weakened foe takes 15% more.",
+    "affix": {
+      "kind": "frost",
+      "value": 0.3
+    },
+    "kind": "staff"
+  },
+  "legend-blossomstring": {
+    "name": "Blossomstring",
+    "slot": "weapon",
+    "tier": 4,
+    "legend": true,
+    "classId": "ranger",
+    "art": "blossomstring",
+    "traits": {
+      "hpRegen": 0.01,
+      "firstRoundDamage": 1.15
+    },
+    "text": "Wood in flower: you regain 1% of your HP each round, and deal 15% more in the first round.",
+    "kind": "bow"
+  },
+  "legend-wolfs_fang": {
+    "name": "Wolf’s Fang",
+    "slot": "weapon",
+    "tier": 5,
+    "legend": true,
+    "classId": "ranger",
+    "art": "wolfs_fang",
+    "traits": {
+      "companionPower": 1.2,
+      "critPower": 0.3
+    },
+    "text": "The pack’s fang: your companion hits 20% harder, and crits hit 30% harder.",
+    "kind": "dagger"
+  },
+  "legend-dragonbone": {
+    "name": "Dragonbone",
+    "slot": "weapon",
+    "tier": 7,
+    "legend": true,
+    "classId": "ranger",
+    "art": "dragonbone",
+    "traits": {
+      "attackMult": 1.15,
+      "burningDamage": 1.15
+    },
+    "text": "Dragon fire: 15% more attack; it sets foes burning, and a burning foe takes 15% more.",
+    "affix": {
+      "kind": "embers",
+      "value": 0.3
+    },
+    "kind": "bow"
   }
 }

@@ -552,7 +552,7 @@ The Pirate Isles and The Giants’ Land are real areas now, closed under their v
 
 ## Legendary weapons (2026-11-02)
 
-`assets/legends/<id>/` (Mitch, AD): an atlas each, loaded only while worn. `hero.ts` adds each to `SETS`, and `artWords` and `gearIcon` look at `UNIQUES[g.unique].art` first. Settings has a home-only row, Test: legend.
+`assets/legends/<id>/` and `assets/legends_2/<id>/` (Mitch, AD): an atlas each, loaded only while worn. The second set names its frames by kind (`bonecrusher_great`), so `pieceFor` and `gearIcon` try `<art>_<kind>` before `<art>_<class part>`; its icons are `legend_icons_2`. `hero.ts` adds each to `SETS`, and `artWords` and `gearIcon` look at `UNIQUES[g.unique].art` first. Settings has a home-only row, Test: legend.
 
 ## Weapons on the hero (Robin, 2026-11-03)
 
@@ -569,3 +569,7 @@ The top bar says the day and the clock (`DAYNIGHT` icon, `linkText` right-aligne
 ## Walking along the streets (Robin, 2026-11-03)
 
 `routes.ts`: `bendsBetween(board, from, to)` follows the painted road's `via` points between two spots, so a walk keeps to the street and goes at an even speed (110 px a step), never cutting across houses.
+
+## Long words on the hero sheet (Robin, 2026-11-03)
+
+Text never goes under 13 px (Robin, 2026-11-01, `hires.ts`), so `BagScene.slip` does not shrink: words that do not fit go on to a next page, cut at a word, with "More, 1 of 2 ›" in the corner; a tap on the words turns the page, and a new pick starts at the first. The loot card still cuts its last parts with "…".
