@@ -20,7 +20,7 @@ const hits = (events: GameEvent[], by: 'player' | 'enemy') => events.filter((e):
 
 function versus(classId: ClassId, enemy: string, patch: Partial<Character> = {}, enemyPatch: Partial<Enemy> = {}, fightPatch: object = {}): GameState {
   const s = newGame({ seed: 'foe', player: P, name: 'Robin', classId, board: ringBoard() });
-  const c = startFight({ ...me(s), space: 's1', ...patch }, enemy, 's1', false);
+  const c = startFight({ ...me(s), equipment: held(me(s)), space: 's1', ...patch }, enemy, 's1', false);
   c.fight = { ...c.fight!, ...fightPatch, enemy: { ...c.fight!.enemy, ...enemyPatch } };
   return { ...s, characters: { [P]: c } };
 }
@@ -160,3 +160,8 @@ describe("the bosses' tricks (Robin, 2026-11-02)", () => {
     expect(go(fightIn('old-bighorn', 3)).state.characters[P]!.fight!.enemy.next?.charge).toBe(true);
   });
 });
+
+/** What the class holds at the start, its numbers taken off: the skills tied to a weapon work, the old sums still hold (2026-11-03). */
+function held(c: Character): Character['equipment'] {
+  return Object.fromEntries(Object.entries(c.equipment).map(([slot, g]) => [slot, g ? { ...g, stats: {}, affixes: [] } : null])) as Character['equipment'];
+}

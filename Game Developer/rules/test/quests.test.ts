@@ -240,10 +240,12 @@ describe('the shops', () => {
 
 describe('gear by kind', () => {
   it('first weapons are wood; heavy weapons follow the class', () => {
-    expect(plainGear('g', 'weapon', 1, 'light').name).toBe('Wooden Stick');
-    expect(plainGear('g', 'weapon', 1, 'magic').name).toBe('Wooden Staff');
+    // Each class's first weapon by its kind (Robin, 2026-11-03): wood for a bow, a staff, a wand.
+    expect(plainGear('g', 'weapon', 1, 'heavy', 'warrior').name).toBe('Tin Sword');
+    expect(plainGear('g', 'weapon', 1, 'heavy', 'mage').name).toBe('Wooden Staff');
     expect(plainGear('g', 'weapon', 1, 'heavy', 'rogue').name).toBe('Tin Dagger');
-    expect(plainGear('g', 'weapon', 1, 'heavy', 'ranger').name).toBe('Tin Bow');
+    expect(plainGear('g', 'weapon', 1, 'heavy', 'ranger').name).toBe('Wooden Bow');
+    expect(plainGear('g', 'weapon', 2, 'heavy', 'warrior', 'great').name).toBe('Copper Great Axe');
   });
 
   it('tin defends more, leather hits and crits more, cloth feeds magic', () => {

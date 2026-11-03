@@ -6,7 +6,7 @@ export type { SetData, ClassData, AbilityData, AbilityRank, SpaceKindData, Progr
 export { buildBoard, addArea, addRoad, setBounds, checkOpens, roadSpaceId, KIND_LETTERS, GROWN, type World, type WorldArea, type WorldHub, type WorldRoad } from './world.ts';
 export { peekArea, generateArea, growBoard, grownIndex, cellFor, entryName, GROWN_PREFIX, type AreaPeek, type GrownArea } from './generate.ts';
 export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type Reach } from './paths.ts';
-export { stats, powers, plainGear, rollLegend, rollSetPiece, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
+export { attackHitsOf, emptyEquipment, classKinds, gearKind, holdsFor, kindData, needsWords, offhandGuard, shopOffhand, twoHanded, stats, powers, plainGear, rollLegend, rollSetPiece, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
 export { levelFor, sellPrice } from './common.ts';
 export { fightOdds, makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, noteLevels } from './fight.ts';
 export { setsWorn, MAX_CARRIED, TIER_POINTS, carriedLimit, needsFor, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
@@ -17,7 +17,7 @@ export { regionCreatures } from './journal.ts';
 export { FINAL_BOSS, sealAt, sealCount, sealsAllWon, sealsOf, SEALS_COMING, type Seal } from './seals.ts';
 export { townKind, TOWNS, ARENA, DUNGEONS, RUMOURS, SECRETS, type TownKind, type ArenaMode } from './data.ts';
 export { CALENDAR, DAY_NAMES, calendarDay, isOn, nextDay, weekday } from './calendar.ts';
-export { newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
+export { startingGear, newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';
 export { migrate } from './save.ts';

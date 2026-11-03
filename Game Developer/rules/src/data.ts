@@ -24,7 +24,7 @@ import setsJson from '../data/sets.json' with { type: 'json' };
 import encountersJson from '../data/encounters.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
-import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine, Affix } from './types.ts';
+import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine, Affix  } from './types.ts';
 
 export interface ClassData {
   name: string;
@@ -226,6 +226,23 @@ export interface AbilityRank {
   clone?: { rounds: number; power: number };
 }
 
+/** A weapon's or an off-hand's type, from gear.json (Robin, 2026-11-03). */
+export interface KindData {
+  name: string;
+  hands?: number;
+  stat: GearStat;
+  mult: number;
+  extra?: { stat: GearStat; mult: number };
+  crit?: number;
+  price?: number;
+  block?: number;
+  dodge?: number;
+  mana?: number;
+  mirror?: number;
+  brace?: number;
+  classes: ClassId[];
+}
+
 export interface AbilityData {
   name: string;
   classId: ClassId;
@@ -239,6 +256,8 @@ export interface AbilityData {
   meter?: number;
   meterAll?: boolean;
   oncePerFight?: boolean;
+  /** What must be held to use it: a weapon kind, `shield` or `blade`; any one will do (Robin, 2026-11-03). */
+  needs?: string[];
   ranks: AbilityRank[];
 }
 
@@ -345,6 +364,17 @@ export interface GearData {
   uniqueChance: Record<'mob' | 'mini' | 'boss', number>;
   setChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   legendChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
+  kinds: {
+    weapon: Record<string, KindData>;
+    offhand: Record<string, KindData>;
+    bare: { block: number; dodge: number };
+    qualityStep: number;
+    rankStep: number;
+    ownShare: number;
+    orbWords: string[];
+    firstKinds: Partial<Record<ClassId, string[]>>;
+    shop: { shields: Record<string, string>; orbs: Record<string, string> };
+  };
   consumableDrop: { potion: number; card: number };
   sellShare: number;
   /** How many pieces the bag carries; one more asks to be sold or left. */
@@ -365,6 +395,8 @@ export interface ThemesData {
 }
 
 export interface ProgressionData {
+  /** The most a crit chance can be, a sure crit aside (Robin, 2026-11-03: crit capped at 60%). */
+  critCap: number;
   /** Total xp needed to be at level n + 1, by index; the last entry is the top level. */
   xpForLevel: number[];
   baseCrit: number;

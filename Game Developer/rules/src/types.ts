@@ -196,6 +196,8 @@ export interface GearItem {
   stats: Partial<Record<GearStat, number>>;
   /** Heavy when not said. */
   line?: GearLine;
+  /** A weapon's or an off-hand's type: sword, great, dagger, bow, staff, wand; buckler, round, kite, tower, and the orbs (Robin, 2026-11-03). Read from the name on older pieces. */
+  kind?: string;
   /** Rare and up carry one; a legendary two; a unique one beside its power. */
   affixes: Affix[];
   /** The id in uniques.json when the piece is a unique: its power is read from there. */
@@ -498,7 +500,7 @@ export type Action =
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
   /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
-  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean }
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean; kind?: string }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }
@@ -558,6 +560,8 @@ export type RejectReason =
   | 'not at a shop'
   | 'not in a town'
   | 'bag full'
+  | 'two hands'
+  | 'wrong weapon'
   | 'not enough gold'
   | 'no such item'
   | 'no such gear'

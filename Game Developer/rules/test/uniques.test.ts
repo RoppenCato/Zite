@@ -158,7 +158,9 @@ describe('the powers', () => {
     const blow = hits(mirror.events, 'enemy')[0]!;
     const back = mirror.events.find((e) => e.type === 'countered');
     expect(back).toBeDefined();
-    if (back?.type === 'countered') expect(back.damage).toBe(Math.max(1, Math.round((Math.ceil(blow.damage / 0.5) - blow.damage) * 0.5)));
+    // No shield: a Block stops the bare share (2026-11-03); half of what it stopped goes back, give or take the rounding.
+    const taken = 1 - GEAR.kinds.bare.block;
+    if (back?.type === 'countered') expect(Math.abs(back.damage - Math.round((blow.damage / taken - blow.damage) * 0.5))).toBeLessThanOrEqual(1);
     const hide = wearing('thornhide', 'warrior', { hp: 30 });
     const soft = hits(apply(versus(hide, 'wolf-alpha', { hp: 5000, attack: 40, next: bite }, { round: 2 }), turn(attack, 'none'), makeRng('x'), NOW).events, 'enemy')[0]!;
     const bare = hits(apply(versus({ ...hide, equipment: NO_GEAR }, 'wolf-alpha', { hp: 5000, attack: 40, next: bite }, { round: 2 }), turn(attack, 'none'), makeRng('x'), NOW).events, 'enemy')[0]!;

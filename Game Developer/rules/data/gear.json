@@ -1020,5 +1020,229 @@
     "mini": 0.01,
     "boss": 0.05,
     "chest": 0.02
+  },
+  "_aboutKinds": "Weapons and off-hands by class (Robin, 2026-11-03). A weapon's number is the slot's rank number times `mult`; two hands leave no hand for an off-hand. A shield's `block` is the share of a blow a Block stops and `dodge` the chance a Dodge misses (\"a buckler might make you dodge 50% of the time, but only block 30%\"); an orb's `mana` is the share a Magician's Mana Shield pays. Each step of rarity adds `qualityStep` to both, each rank `rankStep`. `bare` is no off-hand. Three in four dropped weapons and off-hands are your class's (`ownShare`). All numbers mine.",
+  "kinds": {
+    "weapon": {
+      "sword": {
+        "name": "Sword",
+        "hands": 1,
+        "stat": "attack",
+        "mult": 1,
+        "classes": [
+          "warrior",
+          "rogue"
+        ]
+      },
+      "great": {
+        "name": "Great Axe",
+        "hands": 2,
+        "stat": "attack",
+        "mult": 1.45,
+        "price": 1.2,
+        "classes": [
+          "warrior"
+        ]
+      },
+      "dagger": {
+        "name": "Dagger",
+        "hands": 1,
+        "stat": "attack",
+        "mult": 0.85,
+        "crit": 0.04,
+        "classes": [
+          "rogue",
+          "ranger"
+        ]
+      },
+      "bow": {
+        "name": "Bow",
+        "hands": 2,
+        "stat": "attack",
+        "mult": 1.1,
+        "classes": [
+          "ranger"
+        ]
+      },
+      "staff": {
+        "name": "Staff",
+        "hands": 2,
+        "stat": "magic",
+        "mult": 1.35,
+        "extra": {
+          "stat": "maxMana",
+          "mult": 2
+        },
+        "classes": [
+          "mage"
+        ]
+      },
+      "wand": {
+        "name": "Wand",
+        "hands": 1,
+        "stat": "magic",
+        "mult": 0.95,
+        "crit": 0.04,
+        "classes": [
+          "mage"
+        ]
+      }
+    },
+    "offhand": {
+      "buckler": {
+        "name": "Buckler",
+        "stat": "defense",
+        "mult": 0.6,
+        "block": 0.3,
+        "dodge": 0.5,
+        "classes": [
+          "warrior",
+          "rogue",
+          "ranger"
+        ]
+      },
+      "round": {
+        "name": "Round Shield",
+        "stat": "defense",
+        "mult": 0.9,
+        "block": 0.45,
+        "dodge": 0.38,
+        "classes": [
+          "warrior",
+          "rogue",
+          "ranger"
+        ]
+      },
+      "kite": {
+        "name": "Kite Shield",
+        "stat": "defense",
+        "mult": 1.15,
+        "block": 0.58,
+        "dodge": 0.27,
+        "classes": [
+          "warrior",
+          "rogue",
+          "ranger"
+        ]
+      },
+      "tower": {
+        "name": "Tower Shield",
+        "stat": "defense",
+        "mult": 1.45,
+        "block": 0.72,
+        "dodge": 0.15,
+        "price": 1.2,
+        "classes": [
+          "warrior"
+        ]
+      },
+      "ward_orb": {
+        "name": "Ward Orb",
+        "stat": "maxMana",
+        "mult": 3,
+        "extra": {
+          "stat": "magic",
+          "mult": 0.5
+        },
+        "mana": 0.7,
+        "dodge": 0.25,
+        "classes": [
+          "mage"
+        ]
+      },
+      "mirror_orb": {
+        "name": "Mirror Orb",
+        "stat": "maxMana",
+        "mult": 2.5,
+        "extra": {
+          "stat": "magic",
+          "mult": 0.6
+        },
+        "mana": 0.45,
+        "mirror": 0.3,
+        "dodge": 0.3,
+        "classes": [
+          "mage"
+        ]
+      },
+      "blink_orb": {
+        "name": "Blink Orb",
+        "stat": "maxMana",
+        "mult": 2.5,
+        "extra": {
+          "stat": "magic",
+          "mult": 0.6
+        },
+        "mana": 0.35,
+        "dodge": 0.5,
+        "classes": [
+          "mage"
+        ]
+      },
+      "storm_orb": {
+        "name": "Storm Orb",
+        "stat": "maxMana",
+        "mult": 2,
+        "extra": {
+          "stat": "magic",
+          "mult": 0.9
+        },
+        "mana": 0.5,
+        "dodge": 0.3,
+        "brace": 2,
+        "classes": [
+          "mage"
+        ]
+      }
+    },
+    "bare": {
+      "block": 0.35,
+      "dodge": 0.3
+    },
+    "qualityStep": 0.02,
+    "rankStep": 0.005,
+    "ownShare": 0.75,
+    "orbWords": [
+      "Glass",
+      "Quartz",
+      "Amber",
+      "Moonstone",
+      "Sunstone",
+      "Dragonstone",
+      "Starstone",
+      "Crownstone",
+      "Everstone",
+      "Everstone"
+    ],
+    "shop": {
+      "shields": {
+        "heavy": "kite",
+        "light": "buckler",
+        "magic": "round"
+      },
+      "orbs": {
+        "heavy": "ward_orb",
+        "light": "blink_orb",
+        "magic": "mirror_orb"
+      }
+    },
+    "firstKinds": {
+      "warrior": [
+        "sword",
+        "great"
+      ],
+      "rogue": [
+        "dagger",
+        "sword"
+      ],
+      "mage": [
+        "staff",
+        "wand"
+      ],
+      "ranger": [
+        "bow",
+        "dagger"
+      ]
+    }
   }
 }

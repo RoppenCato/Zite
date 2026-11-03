@@ -104,5 +104,6 @@
   "link": {
     "codeSeconds": 60,
     "linkMinutes": 30
-  }
+  },
+  "critCap": 0.6
 }

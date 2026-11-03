@@ -8,7 +8,7 @@ import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece } from './gear.ts';
+import { makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath } from './paths.ts';
@@ -68,6 +68,14 @@ export function makeBoard(): Board {
   return withSecrets(withDungeons(withArenas(buildBoard(WORLD_DATA))));
 }
 
+/** What a new character holds (Robin, 2026-11-03, with skills tied to weapons): the class's first weapon, and a Warrior's round shield. */
+export function startingGear(id: string, classId: ClassId): Character['equipment'] {
+  const gear = emptyEquipment();
+  gear.weapon = plainGear(`${id}-kit-weapon`, 'weapon', 1, 'heavy', classId);
+  if (classId === 'warrior') gear.shield = plainGear(`${id}-kit-shield`, 'shield', 1, 'heavy', classId, 'round');
+  return gear;
+}
+
 export function makeCharacter(id: string, name: string, classId: ClassId, board: Board): Character {
   const c = CLASS_DATA[classId];
   const start = board.spaces[board.start]!;
@@ -90,7 +98,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     steps: 0,
     fight: null,
     items: {},
-    equipment: emptyEquipment(),
+    equipment: startingGear(id, classId),
     bag: [],
     abilities,
     opened: [start.area],
@@ -1026,7 +1034,9 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
     const got = nextGearId(state);
     const line = action.line ?? (offer.lines.includes('heavy') ? 'heavy' : offer.lines[0]);
     if (!line || !offer.lines.includes(line)) return reject(state, action, 'not at a shop');
-    const gear = plainGear(got.id, action.slot, tier, line, character.classId);
+    // A weapon of the class's two kinds, an off-hand of the tab's kind (Robin, 2026-11-03).
+    const kind = action.slot === 'weapon' ? (action.kind && classKinds(character.classId, 'weapon').includes(action.kind) ? action.kind : classKinds(character.classId, 'weapon')[0]) : action.slot === 'shield' ? shopOffhand(character.classId, line) : undefined;
+    const gear = plainGear(got.id, action.slot, tier, line, character.classId, kind);
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
     const old = character.equipment[action.slot];
     const empty = !old;
@@ -1034,12 +1044,13 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
     const gold = character.gold - gear.price;
     // A plain piece replaces a plain one no higher, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
     if (old && old.rarity === 'common' && old.rank <= gear.rank) {
-      const worn = capped({ ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } });
+      if (action.slot === 'shield' && twoHanded(character.equipment.weapon)) return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
+      const worn = capped(handsFree({ ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } }));
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: old }] };
     }
     // A piece for an empty slot goes straight on (Robin, 2026-11-01).
-    if (empty) {
-      const worn = capped({ ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } });
+    if (empty && !(action.slot === 'shield' && twoHanded(character.equipment.weapon))) {
+      const worn = capped(handsFree({ ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } }));
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: null }] };
     }
     return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
@@ -1058,6 +1069,13 @@ function sell(state: GameState, action: SellAction, character: Character): Apply
   return { state: withCharacter(state, { ...character, gold, bag: character.bag.filter((g) => g.id !== gear.id) }), events: [{ type: 'sold', action: action.id, player: action.player, gear, price, gold }] };
 }
 
+/** A two-handed weapon leaves no hand for the off-hand: it goes to the bag (Robin, 2026-11-03). */
+function handsFree(c: Character): Character {
+  const off = c.equipment.shield;
+  if (!off || !twoHanded(c.equipment.weapon)) return c;
+  return { ...c, bag: [...c.bag, off], equipment: { ...c.equipment, shield: null } };
+}
+
 /** HP and mana never above the maximum after a change of gear. */
 function capped(c: Character): Character {
   const s = stats(c);
@@ -1068,12 +1086,13 @@ function equip(state: GameState, action: EquipAction, character: Character): App
   if (character.fight) return reject(state, action, 'finish the fight first');
   const gear = character.bag.find((g) => g.id === action.gear);
   if (!gear) return reject(state, action, 'no such gear');
-  // A Hunter uses bows only (Robin, 2026-11-02).
-  if (gear.slot === 'weapon' && traitsOf(character).rangedOnly && gear.rarity !== 'unique' && !/bow\b/i.test(gear.base)) return reject(state, action, 'not now');
+  // Any class wears anything (Robin, 2026-11-03); an off-hand needs a free hand.
+  if (gear.slot === 'shield' && twoHanded(character.equipment.weapon)) return reject(state, action, 'two hands');
   const replaced = character.equipment[gear.slot];
   const bag = character.bag.filter((g) => g.id !== gear.id);
   if (replaced) bag.push(replaced);
-  const next = capped({ ...character, bag, equipment: { ...character.equipment, [gear.slot]: gear } });
+  const next = capped(handsFree({ ...character, bag, equipment: { ...character.equipment, [gear.slot]: gear } }));
+  if (next.bag.length > GEAR.bagLimit) return reject(state, action, 'bag full');
   return { state: withCharacter(state, next), events: [{ type: 'equipped', action: action.id, player: action.player, gear, replaced }] };
 }
 

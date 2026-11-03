@@ -105,6 +105,21 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
   - Live joint battles with cross-class combo attacks
   - Possible extras: "camp" bonus aura, IRL-only trading and friendly duels (ideas, not decided)
 
+### Weapons and off-hands by class (Robin, 2026-11-03)
+- **Weapon types:** Warrior: sword with a shield, or a two-handed great weapon (heavy attacks, no shield). Rogue: dagger or sword. Magician: staff (two-handed) or wand. Hunter: bow (two-handed) or dagger.
+- **Off-hands:** Warriors, Rogues and Hunters can carry shields; Magicians carry orbs instead. "Shields should be balanced around their size, which corresponds to their amount of damage absorbed, and the different chances to defend": a bigger shield stops more of a blow when blocking but dodges less; "a buckler might make you dodge 50% of the time, but only block 30% of the damage when blocking". Balanced across shield types, level and quality. Orbs come in types too, which change blocking and dodging "in a more magic way".
+- **Weapons not meant for your class:** wearable, at full strength; only the skills tied to a weapon type stop working.
+- **Skills tied to a weapon** work only with it (poison with a dagger, a shield skill with a shield).
+
+### The Rogue (Robin, 2026-11-03)
+- Poison no longer grows every round; other skills gain from a poisoned target instead.
+- Shadow: daggers and crits, many small hits. Ninja: swords and daggers, no shuriken; its thing is **blood**, left on the blade by your hits and spent by other skills in the tree. Blood and poison combine for a player who puts points in both trees.
+- The core skills serve all three trees: Grand Finale changes with a passive in each tree (e.g. on a poisoned foe it adds poison damage per point of Mischief).
+- The numbers are the Game Developer's (`Game Developer/docs/proposal-weapons-and-rogue.md`), with crit capped at 60%.
+
+### Day and night (Robin, 2026-11-03)
+- The game has a day and a night counted in die rolls: **a day is 20 rolls, a night 10.** At night creatures are stronger and pay more, and some things happen only at night. Weekly events stay on real days. This replaces real-world time of day affecting monsters (below).
+
 ## Real-world flavor (light, optional)
 - Real weather and time of day affect monsters on the board (e.g. rain → water monsters, night → undead).
 - Later idea: real places (OpenStreetMap) as shrines giving dice cards when visited.

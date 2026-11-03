@@ -67,6 +67,9 @@
         "stun": 2,
         "interrupt": true
       }
+    ],
+    "needs": [
+      "shield"
     ]
   },
   "shield-wall": {
@@ -86,6 +89,9 @@
       {
         "barrierShare": 0.32
       }
+    ],
+    "needs": [
+      "shield"
     ]
   },
   "holy-strike": {
@@ -292,6 +298,9 @@
         "power": 1.1,
         "defensePower": 2
       }
+    ],
+    "needs": [
+      "shield"
     ]
   },
   "knight-oath": {
@@ -534,6 +543,9 @@
         "windup": 2,
         "power": 3.8
       }
+    ],
+    "needs": [
+      "staff"
     ]
   },
   "smite": {
@@ -645,6 +657,10 @@
           "mult": 0.7
         }
       }
+    ],
+    "needs": [
+      "wand",
+      "sword"
     ]
   },
   "spellsword-bond": {
@@ -694,6 +710,10 @@
           "chance": 0.4
         }
       }
+    ],
+    "needs": [
+      "wand",
+      "sword"
     ]
   },
   "arc-slash": {
@@ -724,6 +744,10 @@
         "melee": true,
         "infuseBonus": 1.3
       }
+    ],
+    "needs": [
+      "wand",
+      "sword"
     ]
   },
   "backstab": {
@@ -1005,6 +1029,9 @@
           "rounds": 4
         }
       }
+    ],
+    "needs": [
+      "dagger"
     ]
   },
   "alchemist-brew": {
@@ -1100,6 +1127,9 @@
         "hits": 3,
         "split": true
       }
+    ],
+    "needs": [
+      "bow"
     ]
   },
   "sure-shot": {
@@ -1143,6 +1173,9 @@
         "power": 1.8,
         "windupBonus": 1.8
       }
+    ],
+    "needs": [
+      "bow"
     ]
   },
   "mark": {
@@ -1234,6 +1267,9 @@
         "hits": 5,
         "split": true
       }
+    ],
+    "needs": [
+      "bow"
     ]
   },
   "return-fire": {
@@ -1419,6 +1455,9 @@
           "mult": 0.4
         }
       }
+    ],
+    "needs": [
+      "bow"
     ]
   },
   "spike-trap": {
@@ -1983,7 +2022,10 @@
       }
     ],
     "classId": "warrior",
-    "level": 21
+    "level": 21,
+    "needs": [
+      "shield"
+    ]
   },
   "kni-mail": {
     "name": "Layered Mail",
@@ -2029,7 +2071,10 @@
     ],
     "meter": 3,
     "classId": "warrior",
-    "level": 25
+    "level": 25,
+    "needs": [
+      "shield"
+    ]
   },
   "kni-riposte": {
     "name": "Riposte",
@@ -2239,7 +2284,10 @@
       }
     ],
     "classId": "mage",
-    "level": 25
+    "level": 25,
+    "needs": [
+      "staff"
+    ]
   },
   "wiz-heart": {
     "name": "Heart of Flame",
@@ -2529,7 +2577,11 @@
       }
     ],
     "classId": "mage",
-    "level": 13
+    "level": 13,
+    "needs": [
+      "wand",
+      "sword"
+    ]
   },
   "spl-flow": {
     "name": "Flow",
@@ -2586,7 +2638,11 @@
       }
     ],
     "classId": "mage",
-    "level": 21
+    "level": 21,
+    "needs": [
+      "wand",
+      "sword"
+    ]
   },
   "spl-surge": {
     "name": "Surge",
@@ -2630,7 +2686,11 @@
       }
     ],
     "classId": "mage",
-    "level": 25
+    "level": 25,
+    "needs": [
+      "wand",
+      "sword"
+    ]
   },
   "spl-hunger": {
     "name": "Hungry Blade",
@@ -3322,7 +3382,10 @@
       }
     ],
     "classId": "ranger",
-    "level": 13
+    "level": 13,
+    "needs": [
+      "bow"
+    ]
   },
   "ran-steady": {
     "name": "Steady Return",
@@ -3373,7 +3436,10 @@
       }
     ],
     "classId": "ranger",
-    "level": 21
+    "level": 21,
+    "needs": [
+      "bow"
+    ]
   },
   "ran-reflex": {
     "name": "Light Step",
@@ -3412,7 +3478,10 @@
       }
     ],
     "classId": "ranger",
-    "level": 25
+    "level": 25,
+    "needs": [
+      "bow"
+    ]
   },
   "ran-opening": {
     "name": "Opening Shot",

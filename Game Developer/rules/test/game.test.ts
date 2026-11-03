@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ABILITIES, ENEMIES, PROGRESSION } from '../src/data.ts';
+import { startingGear } from '../src/index.ts';
 import { apply, makeBoard, newGame } from '../src/game.ts';
 import { legalPaths, reachable } from '../src/paths.ts';
 import { makeRng } from '../src/rng.ts';
@@ -35,7 +36,7 @@ describe('a new game', () => {
     expect(s.nextItem).toBe(1);
   });
 
-  it('takes the small ring when a test asks: one warrior on the start, the kit known, nothing worn, an unrolled die', () => {
+  it('takes the small ring when a test asks: one warrior on the start, the kit known, a tin sword and a round shield held, an unrolled die', () => {
     const s = fresh();
     expect(s.version).toBe(37);
     expect(s.seed).toBe('ashford');
@@ -57,7 +58,7 @@ describe('a new game', () => {
       steps: 0,
       fight: null,
       items: {},
-      equipment: { weapon: null, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null },
+      equipment: startingGear(P, 'warrior'),
       bag: [],
       abilities: { 'heavy-blow': 1, execute: 1 },
       opened: ['ring'],
@@ -530,9 +531,9 @@ describe('a version-11 state (five gear slots)', () => {
     expect(up.characters[P]!.equipment.cape).toBeNull();
   });
 
-  it('a new character wears nothing in all eight slots, and the shop sells a plain piece for each', () => {
+  it('a new character holds its first weapon (a Warrior a shield too) and wears nothing else, in eight slots', () => {
     const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior' });
-    expect(Object.values(s.characters[P]!.equipment)).toEqual([null, null, null, null, null, null, null, null]);
+    expect(Object.values(s.characters[P]!.equipment).map((g) => g?.name ?? null)).toEqual(['Tin Sword', 'Tin Round Shield', null, null, null, null, null, null]);
     expect(Object.keys(s.characters[P]!.equipment)).toEqual(['weapon', 'shield', 'helm', 'armour', 'gloves', 'boots', 'cape', 'trinket']);
   });
 });

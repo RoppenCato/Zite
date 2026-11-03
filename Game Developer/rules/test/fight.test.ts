@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { makeEnemy, startFight } from '../src/fight.ts';
+import { offhandGuard } from '../src/index.ts';
 import { apply, newGame } from '../src/game.ts';
 import { plainGear } from '../src/gear.ts';
 import { makeRng, type Rng } from '../src/rng.ts';
@@ -27,7 +28,7 @@ const types = (events: GameEvent[]): string[] => events.filter(blows).map((e) =>
  */
 function begin(classId: ClassId, seed = 'ashford', patch: Partial<Character> = {}): { state: GameState; rng: Rng } {
   const s = newGame({ seed, player: P, name: 'Robin', classId, board: ringBoard() });
-  const ready = { ...s, characters: { [P]: { ...me(s), steps: 1, journal: { beaten: { slime: 1 }, places: ['s1'], done: [] }, ...patch } }, die: { ...s.die, last: 1 } };
+  const ready = { ...s, characters: { [P]: { ...me(s), equipment: held(me(s)), steps: 1, journal: { beaten: { slime: 1 }, places: ['s1'], done: [] }, ...patch } }, die: { ...s.die, last: 1 } };
   const state = apply(ready, { type: 'move', id: 'm', player: P, path: ['s1'] }, makeRng(seed), NOW).state;
   return { state, rng: makeRng(seed) };
 }
@@ -35,7 +36,7 @@ function begin(classId: ClassId, seed = 'ashford', patch: Partial<Character> = {
 /** A fight against a chosen enemy, set by hand, for the tests that need a particular foe or a near-dead one. */
 function versus(classId: ClassId, enemy: string, patch: Partial<Character> = {}, enemyPatch: Partial<Enemy> = {}, space = 's1', spawn = false, world = false): GameState {
   const s = world ? newGame({ seed: 'w', player: P, name: 'Robin', classId }) : newGame({ seed: 'x', player: P, name: 'Robin', classId, board: ringBoard() });
-  const c = startFight({ ...me(s), space, ...patch }, enemy, space, spawn);
+  const c = startFight({ ...me(s), equipment: held(me(s)), space, ...patch }, enemy, space, spawn);
   c.fight!.enemy = { ...c.fight!.enemy, ...enemyPatch };
   return { ...s, characters: { [P]: c } };
 }
@@ -105,7 +106,7 @@ describe('a fight', () => {
     expect(ra.state.characters[P]!.fight!.enemy).not.toBe(a.state.characters[P]!.fight!.enemy);
   });
 
-  it('Knight, Attack and Block: a hit is attack less half the defense swung two either way; a block halves the blow', () => {
+  it('Knight, Attack and Block: a hit is attack less half the defense swung two either way; a block stops what the round shield stops (2026-11-03)', () => {
     const { state, rng } = begin('warrior');
     const { state: end, rounds } = playOut(state, rng, [[attack, 'block']]);
     expect(rounds).toEqual([
@@ -117,14 +118,14 @@ describe('a fight', () => {
       [
         { type: 'hit', by: 'player', move: 'Attack', damage: 14, crit: false, hp: 4, absorbed: 0 },
         { type: 'guarded', guard: 'block' },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 3, crit: false, hp: 113, absorbed: 0 },
+        { type: 'hit', by: 'enemy', move: 'Splat', damage: 4, crit: false, hp: 112, absorbed: 0 },
       ],
       [
         { type: 'hit', by: 'player', move: 'Attack', damage: 11, crit: false, hp: 0, absorbed: 0 },
         { type: 'won', xp: 5, gold: 3 },
       ],
     ]);
-    expect(me(end)).toMatchObject({ hp: 113, mana: 20, gold: 53, xp: 5, level: 1, fight: null, space: 's1' });
+    expect(me(end)).toMatchObject({ hp: 112, mana: 20, gold: 53, xp: 5, level: 1, fight: null, space: 's1' });
   });
 
   it('Charge, then Mighty Swing: the charge doubles the next hit and is spent', () => {
@@ -181,7 +182,7 @@ describe('a fight', () => {
       { type: 'used', item: 'potion' },
       { type: 'healed', amount: 50, hp: 90 },
       { type: 'guarded', guard: 'block' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 85, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 6, crit: true, hp: 84, absorbed: 0 },
     ]);
     expect(rounds[2]).toEqual([{ type: 'rejected', reason: 'none left' }]);
     expect(apply(state, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'none left' });
@@ -190,7 +191,7 @@ describe('a fight', () => {
     expect(apply(card, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not now' });
   });
 
-  it('the guards: block halves, brace takes three quarters and gives mana, dodge misses a third of the time, counter strikes back', () => {
+  it('the guards: a block stops what the shield stops, brace takes three quarters and gives mana, dodge misses a third of the time, counter strikes back', () => {
     const tough = versus('warrior', 'slime', { mana: 10 }, { hp: 1000 });
     let misses = 0;
     for (let i = 0; i < 200; i++) {
@@ -201,7 +202,8 @@ describe('a fight', () => {
       const braced = brace.events.find((e) => e.type === 'hit' && e.by === 'enemy');
       const counter = apply(tough, turn(attack, 'counter'), makeRng(seed), NOW).events;
       if (none?.type === 'hit' && block?.type === 'hit' && braced?.type === 'hit') {
-        expect(block.damage).toBe(Math.ceil(none.damage / 2));
+        // What a Block stops is the off-hand's (Robin, 2026-11-03): a Warrior starts with a round shield.
+        expect(block.damage).toBe(Math.ceil(none.damage * (1 - offhandGuard(me(tough).equipment.shield).block)));
         expect(braced.damage).toBe(Math.ceil(none.damage * 0.75));
       }
       expect(brace.events.find((e) => e.type === 'mana')).toMatchObject({ delta: 10, mana: 20 });
@@ -389,3 +391,8 @@ describe('a fight', () => {
     expect(apply(fighting, { type: 'equip', id: 'e', player: P, gear: 'g1' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'finish the fight first' });
   });
 });
+
+/** What the class holds at the start, its numbers taken off: the skills tied to a weapon work, the old sums still hold (2026-11-03). */
+function held(c: Character): Character['equipment'] {
+  return Object.fromEntries(Object.entries(c.equipment).map(([slot, g]) => [slot, g ? { ...g, stats: {}, affixes: [] } : null])) as Character['equipment'];
+}

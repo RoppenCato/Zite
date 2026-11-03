@@ -9,7 +9,7 @@ import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
-import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece } from './gear.ts';
+import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, offhandGuard } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -113,15 +113,16 @@ export function fightOdds(c: Character): { crit: number; critPower: number; hits
   const s = stats(c);
   const t = traitsOf(c);
   const g = PROGRESSION.guards;
+  const o = offhandGuard(c.equipment.shield);
   return {
     crit: Math.min(1, s.crit),
     critPower: PROGRESSION.critPower * (1 + (t.critPower ?? 0)),
-    hits: t.attackHits ?? 1,
-    block: Math.max(0.15, g.block - (s.bonus.wall ?? 0) - (t.blockPower ?? 0)),
-    shieldMana: t.shieldMana ?? 0,
-    dodge: Math.min(1, g.dodge + s.dodge),
+    hits: attackHitsOf(c) ?? 1,
+    block: Math.max(0.15, 1 - o.block - (s.bonus.wall ?? 0) - (t.blockPower ?? 0)),
+    shieldMana: t.shieldMana && !o.shield ? (o.mana ?? t.shieldMana) : 0,
+    dodge: Math.min(1, o.dodge + s.dodge),
     brace: g.brace,
-    braceMana: Math.max(g.braceMana, Math.round(s.maxMana * g.braceManaShare)),
+    braceMana: o.brace * Math.max(g.braceMana, Math.round(s.maxMana * g.braceManaShare)),
     counter: t.counterPower ?? g.counter,
     counterHits: t.counterHits ?? 1,
     autoCounter: t.counterChance ?? 0,
@@ -241,17 +242,18 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   const move = action.move;
   switch (move.kind) {
     case 'attack': {
+      const hitsN = attackHitsOf(r.c);
       if (p.quickdraw && f.round === 1 && !f.used.includes('quickdraw')) {
         f.used.push('quickdraw');
         f.sureCrit += 1;
         quick = true;
       }
       if (p.twinStrike) strike(r, 'Attack', p.twinStrike, 2, r.s.crit);
-      else if (traits.attackHits) strike(r, 'Attack', 1, traits.attackHits, r.s.crit, !!traits.plainMagic, { split: true, melee: true });
+      else if (hitsN) strike(r, 'Attack', 1, hitsN, r.s.crit, !!traits.plainMagic, { split: true, melee: true });
       else strike(r, 'Attack', 1, 1, r.s.crit, !!traits.plainMagic, { melee: true });
       // Of Haste: now and then the whole attack again.
-      if (r.s.bonus.haste && f.enemy.hp > 0 && !r.done && rng.next() < r.s.bonus.haste) strike(r, 'Attack', 1, traits.attackHits ?? 1, r.s.crit, !!traits.plainMagic, { split: !!traits.attackHits, melee: true });
-      if (f.clone && f.enemy.hp > 0 && !r.done) strike(r, 'Shadow Clone', f.clone.power, traits.attackHits ?? 1, r.s.crit, false, { split: !!traits.attackHits });
+      if (r.s.bonus.haste && f.enemy.hp > 0 && !r.done && rng.next() < r.s.bonus.haste) strike(r, 'Attack', 1, hitsN ?? 1, r.s.crit, !!traits.plainMagic, { split: !!hitsN, melee: true });
+      if (f.clone && f.enemy.hp > 0 && !r.done) strike(r, 'Shadow Clone', f.clone.power, hitsN ?? 1, r.s.crit, false, { split: !!hitsN });
       break;
     }
     case 'charge':
@@ -263,6 +265,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       const ability = ABILITIES[move.ability];
       const rank = r.c.abilities[move.ability] ?? 0;
       if (!ability || rank <= 0) return reject(state, action, 'no such ability');
+      if (!holdsFor(r.c, ability.needs)) return reject(state, action, 'wrong weapon');
       if (ability.oncePerFight && f.used.includes(move.ability)) return reject(state, action, 'already used');
       // Four go into a fight; with fewer carried, nothing known is left behind.
       if (r.c.carried.length >= carriedLimit(r.c.level) && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
@@ -513,6 +516,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       const b = blow(f.enemy.attack, mult, r.s.defense, PROGRESSION.baseCrit, rng);
       let landed = false;
       const exposed = !!f.dance?.exposed;
+      // What the off-hand gives the guards (Robin, 2026-11-03).
+      const off = offhandGuard(r.c.equipment.shield);
       // Shadow Dance's first round: the blow in full, whatever the guard.
       const held: Guard = exposed ? 'none' : guard;
       if (f.spike) {
@@ -529,7 +534,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
         if (traits.dodgeCrit) f.sureCrit = Math.max(f.sureCrit, 1);
         if (traits.dodgeHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.dodgeHeal)));
-      } else if (held === 'dodge' && rng.next() < PROGRESSION.guards.dodge + r.s.dodge) {
+      } else if (held === 'dodge' && rng.next() < off.dodge + r.s.dodge) {
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
         if (traits.dodgeCrit) f.sureCrit = Math.max(f.sureCrit, 1);
         if (traits.dodgeHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.dodgeHeal)));
@@ -546,18 +551,23 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         if (traits.damageTaken) dealt = Math.ceil(dealt * traits.damageTaken);
         if (traits.lowHpTaken && r.c.hp < r.s.maxHp / 3) dealt = Math.ceil(dealt * traits.lowHpTaken);
         const beforeGuard = dealt;
-        if (held === 'block' && traits.shieldMana) {
-          // The Magician's Mana Shield (Robin, 2026-11-02): part of the blow is paid in mana while there is any.
-          const paid = Math.min(r.c.mana, Math.ceil(dealt * traits.shieldMana));
+        if (held === 'block' && traits.shieldMana && !off.shield) {
+          // The Magician's Mana Shield (Robin, 2026-11-02): part of the blow is paid in mana while there is any; an orb sets how much (2026-11-03).
+          const paid = Math.min(r.c.mana, Math.ceil(dealt * (off.mana ?? traits.shieldMana)));
           if (paid > 0) {
             r.c = { ...r.c, mana: r.c.mana - paid };
             events.push({ type: 'mana', action: id, player, delta: -paid, mana: r.c.mana });
             dealt -= paid;
+            // A Mirror Orb turns part of it back.
+            if (off.mirror > 0) {
+              hurtEnemy(r, Math.max(1, Math.round(paid * off.mirror)));
+              if (r.done) return r.done;
+            }
           }
-        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? PROGRESSION.guards.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
+        } else if (held === 'block') dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? 1 - off.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
         if (held === 'brace') {
           dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
-          r.c = restoreMana(r.c, Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
+          r.c = restoreMana(r.c, off.brace * Math.max(PROGRESSION.guards.braceMana, Math.round(r.s.maxMana * PROGRESSION.guards.braceManaShare)), action, events);
         }
         let absorbed = 0;
         if (f.barrier > 0) {
@@ -730,7 +740,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
       events.push({ type: 'missed', action: id, player, by: 'player', move });
       continue;
     }
-    let chance = crit + f.streak * (traits.critStreak ?? 0);
+    let chance = Math.min(PROGRESSION.critCap, crit + f.streak * (traits.critStreak ?? 0));
     let hitPower = power;
     if (f.mark) {
       hitPower *= f.mark.mult;

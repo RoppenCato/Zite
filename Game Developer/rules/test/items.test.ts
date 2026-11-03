@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ITEMS } from '../src/data.ts';
+import { emptyEquipment } from '../src/index.ts';
 import { apply, newGame } from '../src/game.ts';
 import { plainGear, stats } from '../src/gear.ts';
 import { legalPaths } from '../src/paths.ts';
@@ -12,7 +13,7 @@ const NOW = 1_000_000;
 // The ring: s0 town, s1 wilds, s2 Tinker Cart (shop), s3 wilds.
 function at(space: string, patch: Partial<Character> = {}, last: number | null = null): GameState {
   const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
-  return { ...s, characters: { [P]: { ...s.characters[P]!, space, ...patch } }, die: { ...s.die, last } };
+  return { ...s, characters: { [P]: { ...s.characters[P]!, equipment: emptyEquipment(), space, ...patch } }, die: { ...s.die, last } };
 }
 const buy = (what: { item?: string; slot?: Slot }, id = 'b1'): Action => ({ type: 'buy', id, player: P, ...what });
 const use = (item: string, value?: number, id = 'u1'): Action => ({ type: 'use', id, player: P, item, ...(value !== undefined ? { value } : {}) });

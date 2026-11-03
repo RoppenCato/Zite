@@ -3,7 +3,7 @@
 // evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
 import { traitsOf } from './skills.ts';
-import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, UNIQUE_IDS, UNIQUES } from './data.ts';
+import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, UNIQUE_IDS, UNIQUES, type KindData } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
 
@@ -84,6 +84,8 @@ export function stats(c: Character): Stats {
   const traits = traitsOf(c);
   magic += (cls?.magic ?? 0) + (cls?.growth.magic ?? 0) * (c.level - 1);
   crit += traits.crit ?? 0;
+  // Crit stops at 60% (Robin, 2026-11-03), a sure crit aside.
+  crit = Math.min(PROGRESSION.critCap, crit);
   dodge += traits.dodge ?? 0;
   thorns += traits.thorns ?? 0;
   if (traits.defenseMult) defense = Math.round(defense * traits.defenseMult);
@@ -132,13 +134,128 @@ function tableAt(table: number[], rank: number): number {
   return rank <= table.length ? table[rank - 1]! : Math.round(table[table.length - 1]! * Math.pow(GEAR.rankGrowth, rank - table.length));
 }
 
+/** A weapon's or an off-hand's type (Robin, 2026-11-03): the piece's own, or read from its name on pieces made before types. */
+export function gearKind(g: GearItem | null | undefined): string | null {
+  if (!g) return null;
+  if (g.kind) return g.kind;
+  const words = `${g.base} ${g.name}`.toLowerCase();
+  if (g.slot === 'weapon') {
+    if (/great|maul|halberd|\baxe\b/.test(words)) return 'great';
+    if (/dagger|knife|fang|kunai/.test(words)) return 'dagger';
+    if (/\bbow\b|shortbow/.test(words)) return 'bow';
+    if (/\bwand\b/.test(words)) return 'wand';
+    if (/staff/.test(words) || ((g.stats.magic ?? 0) > 0 && !g.stats.attack)) return 'staff';
+    return 'sword';
+  }
+  if (g.slot === 'shield') {
+    if (/buckler/.test(words)) return 'buckler';
+    if (/tower/.test(words)) return 'tower';
+    if (/kite/.test(words)) return 'kite';
+    if (/tome|orb/.test(words)) return /mirror/.test(words) ? 'mirror_orb' : /blink/.test(words) ? 'blink_orb' : /storm/.test(words) ? 'storm_orb' : 'ward_orb';
+    return 'round';
+  }
+  return null;
+}
+
+/** A kind's data, weapon or off-hand. */
+export function kindData(slot: Slot, kind: string | null | undefined): KindData | undefined {
+  if (!kind) return undefined;
+  return slot === 'weapon' ? GEAR.kinds.weapon[kind] : slot === 'shield' ? GEAR.kinds.offhand[kind] : undefined;
+}
+
+/** A weapon held in both hands: a great weapon, a bow, a staff. */
+export function twoHanded(g: GearItem | null | undefined): boolean {
+  return !!g && g.slot === 'weapon' && kindData('weapon', gearKind(g))?.hands === 2;
+}
+
+/** The kinds a class wields as its own: two weapons, its off-hands. */
+export function classKinds(classId: ClassId, slot: Slot): string[] {
+  const table = slot === 'weapon' ? GEAR.kinds.weapon : slot === 'shield' ? GEAR.kinds.offhand : {};
+  const own = Object.keys(table).filter((k) => table[k]!.classes.includes(classId));
+  // A class's main weapon first: a Hunter's bow before its dagger.
+  const first = slot === 'weapon' ? (GEAR.kinds.firstKinds[classId] ?? []) : [];
+  return [...first.filter((k) => own.includes(k)), ...own.filter((k) => !first.includes(k))];
+}
+
+/** A dropped piece's kind: three in four times the class's own, else another's to try or sell (mine). No stream: the first of the class's own. */
+export function pickKind(slot: Slot, classId: ClassId, rng?: Rng): string | undefined {
+  if (slot !== 'weapon' && slot !== 'shield') return undefined;
+  const own = classKinds(classId, slot);
+  if (!rng) return own[0];
+  const all = Object.keys(slot === 'weapon' ? GEAR.kinds.weapon : GEAR.kinds.offhand);
+  const others = all.filter((k) => !own.includes(k));
+  const pool = rng.next() < GEAR.kinds.ownShare || !others.length ? own : others;
+  return pool[rng.int(pool.length) - 1] ?? own[0];
+}
+
+/** The off-hand a shop's tab sells to this class. */
+export function shopOffhand(classId: ClassId, line: GearLine): string {
+  const orbs = classKinds(classId, 'shield').some((k) => k.endsWith('_orb'));
+  return (orbs ? GEAR.kinds.shop.orbs : GEAR.kinds.shop.shields)[line] ?? classKinds(classId, 'shield')[0]!;
+}
+
+/** A kind's plain name at a rank: Tin Sword, Wooden Bow, Glass Ward Orb. */
+function kindName(slot: Slot, rank: number, kind: string): string {
+  const k = kindData(slot, kind)!;
+  const word = kind.endsWith('_orb') ? (GEAR.kinds.orbWords[rank - 1] ?? `Rank ${rank}`) : rank === 1 && ['bow', 'staff', 'wand'].includes(kind) ? 'Wooden' : lineWord('heavy', rank);
+  return `${word} ${k.name}`;
+}
+
+/** What a kind adds at this rank, times `mult`, and the crit a quick weapon carries. */
+function kindNumbers(slot: Slot, rank: number, kind: string, mult: number): { stats: Partial<Record<GearStat, number>>; affixes: Affix[] } {
+  const k = kindData(slot, kind)!;
+  const base = rankStat(slot, rank);
+  const stats: Partial<Record<GearStat, number>> = { [k.stat]: Math.max(1, Math.round(base * k.mult * mult)) };
+  if (k.extra) stats[k.extra.stat] = (stats[k.extra.stat] ?? 0) + Math.max(1, Math.round(base * k.extra.mult * mult));
+  return { stats, affixes: k.crit ? [{ kind: 'crit', value: k.crit }] : [] };
+}
+
+/** What a shield or an orb gives the guards (Robin, 2026-11-03): a bigger shield stops more of a blow and dodges less; quality and rank add a little to both. */
+export function offhandGuard(g: GearItem | null | undefined): { block: number; dodge: number; mana: number | null; mirror: number; brace: number; shield: boolean } {
+  const bare = GEAR.kinds.bare;
+  const kind = gearKind(g);
+  const d = kindData('shield', kind);
+  if (!g || !d) return { block: bare.block, dodge: bare.dodge, mana: null, mirror: 0, brace: 1, shield: false };
+  const lift = GEAR.kinds.qualityStep * Math.min(4, RARITIES.indexOf(g.rarity)) + GEAR.kinds.rankStep * (g.rank - 1);
+  return {
+    block: d.block !== undefined ? Math.min(0.85, d.block + lift) : bare.block,
+    dodge: Math.min(0.75, (d.dodge ?? bare.dodge) + lift),
+    mana: d.mana !== undefined ? Math.min(0.9, d.mana + lift) : null,
+    mirror: d.mirror ?? 0,
+    brace: d.brace ?? 1,
+    shield: d.block !== undefined,
+  };
+}
+
+/** What is held allows this: any one of `needs`, a kind, `shield` (not an orb) or `blade` (a sword or a dagger). */
+export function holdsFor(c: Character, needs: readonly string[] | undefined): boolean {
+  if (!needs?.length) return true;
+  const w = gearKind(c.equipment.weapon);
+  const o = gearKind(c.equipment.shield);
+  return needs.some((n) => (n === 'shield' ? !!o && !o.endsWith('_orb') : n === 'blade' ? w === 'dagger' || w === 'sword' : n === w));
+}
+
+/** "a shield", "a bow", "a wand or a sword": for a skill that cannot be used with what is held. */
+export function needsWords(needs: readonly string[] | undefined): string {
+  return (needs ?? []).map((n) => `a ${n === 'great' ? 'great weapon' : n === 'blade' ? 'blade' : n}`).join(' or ');
+}
+
+/** How many times a plain Attack strikes: a Rogue's three only with a blade or bare hands (mine, from Robin's 2026-11-03 weapon choices). */
+export function attackHitsOf(c: Character): number | undefined {
+  const hits = traitsOf(c).attackHits;
+  if (!hits) return undefined;
+  const w = gearKind(c.equipment.weapon);
+  return !w || w === 'dagger' || w === 'sword' ? hits : undefined;
+}
+
 /** The piece's word for a line and rank: Tin, Leather, Cloth, and on up. */
 function lineWord(line: GearLine, rank: number): string {
   return GEAR.lines[line].words[rank - 1] ?? `Rank ${rank}`;
 }
 
 /** A piece's plain name: the weapon follows the class in heavy gear; the first light and magic weapons are wood. */
-function pieceName(slot: Slot, rank: number, line: GearLine, classId: ClassId): string {
+function pieceName(slot: Slot, rank: number, line: GearLine, classId: ClassId, kind?: string): string {
+  if (kind && kindData(slot, kind)) return kindName(slot, rank, kind);
   const data = GEAR.lines[line];
   // A Hunter's weapon is a bow on every line (Robin, 2026-11-02).
   if (slot === 'weapon' && classId === 'ranger') return rank === 1 && data.firstWeapon ? 'Wooden Bow' : line === 'heavy' ? `${lineWord(line, rank)} Bow` : `${lineWord(line, rank)} Shortbow`;
@@ -158,10 +275,12 @@ function lineNumbers(slot: Slot, rank: number, line: GearLine, mult: number): { 
 }
 
 /** A plain common piece of the rank and line: what a shop sells. */
-export function plainGear(id: string, slot: Slot, rank: number, line: GearLine = 'heavy', classId: ClassId = 'warrior'): GearItem {
+export function plainGear(id: string, slot: Slot, rank: number, line: GearLine = 'heavy', classId: ClassId = 'warrior', kind?: string): GearItem {
   const r = Math.max(1, Math.floor(rank));
-  const name = pieceName(slot, r, line, classId);
-  return { id, slot, rank: r, rarity: 'common', name, base: name.toLowerCase(), ...lineNumbers(slot, r, line, 1), price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1)), ...(line === 'heavy' ? {} : { line }) };
+  const k = kind ?? pickKind(slot, classId);
+  const name = pieceName(slot, r, line, classId, k);
+  const kd = kindData(slot, k);
+  return { id, slot, rank: r, rarity: 'common', name, base: name.toLowerCase(), ...(kd ? kindNumbers(slot, r, k!, 1) : lineNumbers(slot, r, line, 1)), ...(kd ? { kind: k } : {}), price: Math.round(rankPrice(slot, r) * (kd ? (kd.price ?? 1) : (GEAR.lines[line].priceMult ?? 1))), ...(line === 'heavy' ? {} : { line }) };
 }
 
 /**
@@ -202,13 +321,15 @@ function rollAffixes(count: number, slot: Slot, rank: number, rarityMult: number
  * A rolled piece: the rarity, the rank's number times the rarity's multiplier swung by `roll` either way, the rarity's
  * affixes (a legendary carries two), a proper name when it is named. Four to eight numbers from the stream.
  */
-export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng, line: GearLine = 'heavy', classId: ClassId = 'warrior'): GearItem {
+export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng, line: GearLine = 'heavy', classId: ClassId = 'warrior', kind?: string): GearItem {
   const r = Math.max(1, Math.floor(rank));
   const rarity = rollRarity(rng, boost);
   const rar = GEAR.rarities[rarity];
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
-  const plain = pieceName(slot, r, line, classId);
-  const numbers = lineNumbers(slot, r, line, rar.mult * swing);
+  const k = kind ?? pickKind(slot, classId, rng);
+  const kd = kindData(slot, k);
+  const plain = pieceName(slot, r, line, classId, k);
+  const numbers = kd ? kindNumbers(slot, r, k!, rar.mult * swing) : lineNumbers(slot, r, line, rar.mult * swing);
   // A rolled bonus of the kind the line already carries adds to it.
   const affixes = [...numbers.affixes];
   const rolled = rollAffixes(rar.affixes, slot, r, rar.mult, rng);
@@ -235,7 +356,7 @@ export function rollGear(id: string, slot: Slot, rank: number, boost: number, rn
     }
   }
   const name = `${prefix}${core}${rolled.words[0] ? ` ${rolled.words[0]}` : ''}`;
-  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats, affixes, price: Math.round(rankPrice(slot, r) * (GEAR.lines[line].priceMult ?? 1) * rar.priceMult), ...(line === 'heavy' ? {} : { line }) };
+  return { id, slot, rank: r, rarity, name, base: plain.toLowerCase(), stats, affixes, ...(kd ? { kind: k } : {}), price: Math.round(rankPrice(slot, r) * (kd ? (kd.price ?? 1) : (GEAR.lines[line].priceMult ?? 1)) * rar.priceMult), ...(line === 'heavy' ? {} : { line }) };
 }
 
 /** The uniques a tier's bosses carry: every unique from that tier or an earlier one. */
@@ -289,6 +410,12 @@ export function describeGear(g: GearItem): string {
 /** What a piece does, as short parts: "+3 attack", "+12% crits bleed", a unique's power. The loot card shows these under the name. */
 export function gearPowers(g: GearItem): string[] {
   const parts: string[] = [];
+  // What its kind means for the guards and the hands (Robin, 2026-11-03).
+  if (twoHanded(g)) parts.push('two-handed');
+  if (g.slot === 'shield' && kindData('shield', gearKind(g))) {
+    const o = offhandGuard(g);
+    parts.push(o.shield ? `Block stops ${Math.round(o.block * 100)}%, Dodge ${Math.round(o.dodge * 100)}%` : `Mana Shield ${Math.round((o.mana ?? 0) * 100)}%, Dodge ${Math.round(o.dodge * 100)}%${o.mirror ? `, ${Math.round(o.mirror * 100)}% turned back` : ''}${o.brace > 1 ? ', Brace gives twice the mana' : ''}`);
+  }
   for (const [stat, value] of Object.entries(g.stats)) parts.push(`+${value} ${STAT_WORDS[stat] ?? stat}`);
   for (const affix of g.affixes ?? []) {
     const def = GEAR.affixes[affix.kind];

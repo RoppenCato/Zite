@@ -23,7 +23,7 @@ const hits = (events: GameEvent[], by: 'player' | 'enemy') => events.filter((e):
 /** A character of the class squared up to the enemy on the ring's wilds, with the fight and the enemy patched by hand. */
 function versus(classId: ClassId, enemy: string, patch: Partial<Character> = {}, enemyPatch: Partial<Enemy> = {}, fightPatch: Partial<Character['fight'] & object> = {}): GameState {
   const s = newGame({ seed: 'kit', player: P, name: 'Robin', classId, board: ringBoard() });
-  const c = startFight({ ...me(s), space: 's1', ...patch }, enemy, 's1', false);
+  const c = startFight({ ...me(s), equipment: held(me(s)), space: 's1', ...patch }, enemy, 's1', false);
   c.fight = { ...c.fight!, ...fightPatch, enemy: { ...c.fight!.enemy, ...enemyPatch } };
   return { ...s, characters: { [P]: c } };
 }
@@ -143,7 +143,9 @@ describe('the Magician', () => {
     const fire = apply(versus('mage', 'slime', { abilities: { fireball: 1 } }, tough), turn(ability('fireball')), makeRng('a'), NOW);
     expect(fight(fire.state).enemy.burn).toBeTruthy();
     expect(fire.events.some((e) => e.type === 'poisoned' && e.burn)).toBe(true);
-    const sword = versus('mage', 'slime', { abilities: { 'frost-blade': 1, 'spellsword-bond': 1 } }, tough);
+    // A Spellsword's blade spells need a wand or a sword in hand (Robin, 2026-11-03).
+    const wand = { id: 'w', slot: 'weapon' as const, rank: 1, rarity: 'common' as const, name: 'Wooden Wand', base: 'wooden wand', kind: 'wand', stats: {}, affixes: [], price: 1 };
+    const sword = versus('mage', 'slime', { abilities: { 'frost-blade': 1, 'spellsword-bond': 1 }, equipment: { weapon: wand, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null } }, tough);
     const infused = apply(sword, turn(ability('frost-blade')), makeRng('a'), NOW);
     const cut = apply(infused.state, turn(attack, 'none', 'f2'), makeRng('a'), NOW);
     expect(fight(cut.state).enemy.weakened).toBeTruthy();
@@ -285,13 +287,15 @@ describe('the Hunter', () => {
     expect(r.events.some((e) => e.type === 'countered')).toBe(true);
   });
 
-  it('wears bows only', () => {
+  it('wears anything (Robin, 2026-11-03); a bow takes both hands, so a shield waits for a free hand', () => {
     const s = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'ranger', board: ringBoard() });
-    const sword = { id: 'x', slot: 'weapon', rank: 1, rarity: 'common', name: 'Old Sword', base: 'old sword', stats: { attack: 3 }, price: 5 };
-    const bow = { ...sword, id: 'y', name: 'Tin Bow', base: 'tin bow' };
-    const held = { ...s, characters: { [P]: { ...me(s), bag: [sword, bow] } } } as unknown as GameState;
-    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
-    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'y' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
+    const sword = { id: 'x', slot: 'weapon', rank: 1, rarity: 'common', name: 'Old Sword', base: 'old sword', stats: { attack: 3 }, affixes: [], price: 5 };
+    const shield = { ...sword, id: 'z', slot: 'shield', name: 'Tin Buckler', base: 'tin buckler', kind: 'buckler', stats: { defense: 1 } };
+    const held = { ...s, characters: { [P]: { ...me(s), bag: [sword, shield] } } } as unknown as GameState;
+    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
+    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'two hands' });
+    const swapped = apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).state;
+    expect(apply(swapped, { type: 'equip', id: 'e2', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
   });
 });
 
@@ -419,7 +423,7 @@ describe('what a spot can hold', () => {
       const tried = r.events.find((e) => e.type === 'tried');
       if (tried?.type === 'tried' && tried.won) {
         won = true;
-        const got = me(r.state).bag[0] ?? Object.values(me(r.state).equipment).find(Boolean);
+        const got = me(r.state).bag.find((g) => g.slot === offer.slot) ?? me(r.state).equipment[offer.slot!];
         expect(got?.slot).toBe(offer.slot);
         expect(got?.rarity).not.toBe('common');
       }
@@ -462,3 +466,8 @@ describe('what a spot can hold', () => {
     expect(me(landed.state).journal.places.length).toBe(1);
   });
 });
+
+/** What the class holds at the start, its numbers taken off: the skills tied to a weapon work, the old sums still hold (2026-11-03). */
+function held(c: Character): Character['equipment'] {
+  return Object.fromEntries(Object.entries(c.equipment).map(([slot, g]) => [slot, g ? { ...g, stats: {}, affixes: [] } : null])) as Character['equipment'];
+}

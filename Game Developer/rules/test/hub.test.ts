@@ -102,7 +102,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     expect(quests.length).toBeGreaterThan(0);
     for (const q of quests) expect(q.area).toBe('frostpeak');
   });
-  it('a Hunter can wield a rare bow, whose name has no "bow" in it, and a unique', () => {
+  it('a Hunter can wield a rare bow, whose name has no "bow" in it, a unique, and since 2026-11-03 a sword too', () => {
     const s = made();
     const hunter = newGame({ seed: 'bow', player: P, name: 'Robin', classId: 'ranger' });
     void s;
@@ -114,7 +114,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const wear = (gear: string) => apply(st, { type: 'equip', id: 'e', player: P, gear }, makeRng('e'), NOW).events[0]!.type;
     expect(wear('g1')).toBe('equipped');
     expect(wear('g3')).toBe('equipped');
-    expect(wear('g2')).toBe('rejected');
+    expect(wear('g2')).toBe('equipped');
   });
   it("the hub's shops keep up: the stock of the furthest land you have opened", () => {
     const s = made();
