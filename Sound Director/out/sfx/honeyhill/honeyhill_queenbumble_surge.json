@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_queenbumble_surge",
+  "category": "honeyhill",
+  "gain": 1,
+  "use": "Queen Bumble's hive answers, the swarm thickens: buzzes piling up and rising.",
+  "variations": [
+    {
+      "file": "honeyhill_queenbumble_surge_1.wav",
+      "seconds": 1.025,
+      "peak_dbfs": -1
+    }
+  ]
+}

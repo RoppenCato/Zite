@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostbeard_attack",
+  "category": "frostcrown",
+  "gain": 0.485,
+  "use": "frostbeard, attack (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostbeard_attack_1.wav",
+      "seconds": 0.692,
+      "peak_dbfs": -1
+    }
+  ]
+}

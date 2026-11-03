@@ -1,0 +1,78 @@
+[
+ {
+  "name": "creature/snow-goat/attack",
+  "src": "frostcrown_snowgoat_attack"
+ },
+ {
+  "name": "creature/snow-goat/hit",
+  "src": "frostcrown_snowgoat_hit"
+ },
+ {
+  "name": "creature/snow-goat/die",
+  "src": "frostcrown_snowgoat_die"
+ },
+ {
+  "name": "creature/crag-goblin/attack",
+  "src": "frostcrown_craggoblin_attack"
+ },
+ {
+  "name": "creature/crag-goblin/hit",
+  "src": "frostcrown_craggoblin_hit"
+ },
+ {
+  "name": "creature/crag-goblin/die",
+  "src": "frostcrown_craggoblin_die"
+ },
+ {
+  "name": "creature/pebble-golem/attack",
+  "src": "frostcrown_pebblegolem_attack"
+ },
+ {
+  "name": "creature/pebble-golem/hit",
+  "src": "frostcrown_pebblegolem_hit"
+ },
+ {
+  "name": "creature/pebble-golem/die",
+  "src": "frostcrown_pebblegolem_die"
+ },
+ {
+  "name": "creature/frostling/attack",
+  "src": "frostcrown_frostling_attack"
+ },
+ {
+  "name": "creature/frostling/hit",
+  "src": "frostcrown_frostling_hit"
+ },
+ {
+  "name": "creature/frostling/die",
+  "src": "frostcrown_frostling_die"
+ },
+ {
+  "name": "creature/old-bighorn/attack",
+  "src": "frostcrown_oldbighorn_attack"
+ },
+ {
+  "name": "creature/old-bighorn/hit",
+  "src": "frostcrown_oldbighorn_hit"
+ },
+ {
+  "name": "creature/old-bighorn/die",
+  "src": "frostcrown_oldbighorn_die"
+ },
+ {
+  "name": "creature/frostbeard/attack",
+  "src": "frostcrown_frostbeard_attack"
+ },
+ {
+  "name": "creature/frostbeard/hit",
+  "src": "frostcrown_frostbeard_hit"
+ },
+ {
+  "name": "creature/frostbeard/die",
+  "src": "frostcrown_frostbeard_die"
+ },
+ {
+  "name": "creature/frostbeard/surge",
+  "src": "frostcrown_frostbeard_surge"
+ }
+]

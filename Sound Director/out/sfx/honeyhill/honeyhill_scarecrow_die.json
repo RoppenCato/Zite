@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_scarecrow_die",
+  "category": "honeyhill",
+  "gain": 0.843,
+  "use": "yeti-elder, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_scarecrow_die_1.wav",
+      "seconds": 0.459,
+      "peak_dbfs": -1
+    }
+  ]
+}

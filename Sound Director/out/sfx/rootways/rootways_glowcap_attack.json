@@ -1,0 +1,13 @@
+{
+  "name": "rootways_glowcap_attack",
+  "category": "rootways",
+  "gain": 0.306,
+  "use": "glowcap, attack (rootways).",
+  "variations": [
+    {
+      "file": "rootways_glowcap_attack_1.wav",
+      "seconds": 0.23,
+      "peak_dbfs": -1
+    }
+  ]
+}

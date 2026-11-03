@@ -8,7 +8,7 @@ use_bpm 60
 C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
 W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
 S = "C:/dev/SG/Sound Director/out/sfx/"
-WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/"
+WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/"
 sample C + "c2_slime_02.wav", rate: 0.7, amp: 1.0
 sample C + "c1_burble_02.wav", rate: 0.9, amp: 0.4
 sleep 1.3

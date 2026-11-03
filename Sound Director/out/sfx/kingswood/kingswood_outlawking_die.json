@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_outlawking_die",
+  "category": "kingswood",
+  "gain": 0.514,
+  "use": "outlaw-king, die (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_outlawking_die_1.wav",
+      "seconds": 0.939,
+      "peak_dbfs": -1
+    }
+  ]
+}

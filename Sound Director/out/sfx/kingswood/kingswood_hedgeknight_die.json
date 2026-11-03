@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_hedgeknight_die",
+  "category": "kingswood",
+  "gain": 0.418,
+  "use": "hedge-knight, die (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_hedgeknight_die_1.wav",
+      "seconds": 0.651,
+      "peak_dbfs": -1
+    }
+  ]
+}

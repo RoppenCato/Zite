@@ -21,3 +21,6 @@
 | The new Rogue's blood and bleed tick; night falls, morning, sleep | `out/sfx/talents/`, `out/sfx/fight/`, `out/sfx/ui/`, in their sprites; `preview-rogue-day.mp3` | delivered 2026-11-03 | |
 | `fight/lightning` (the trinkets) | `out/sfx/fight/`, in `fight.ogg` | delivered 2026-11-03 | |
 | Magic Power; the spell impacts (arcane, fire, holy) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites | delivered 2026-11-03 | |
+| Robin's "fill the holes": the voices of 28 creatures in five lands, five surges (Grumblebark's in the forest), six effects, the quest board, steps on stone, planks, snow, mud, sand | `out/sfx/honeyhill/`, `bogglemire/`, `frostcrown/`, `rootways/`, `kingswood/`, sprites in `game/`; effects in `fight`, board in `ui-spots`, steps in `ui` | delivered 2026-11-03 | |
+| `music/meadows-fight` (E minor, 140, 0:55), `music/king-goo` (C minor 3/4, 132, 1:03), `music/title` (G, 108, 0:36), `music/dream` (D Lydian, 96, 1:20) | `out/music/<name>/` | delivered 2026-11-03, waiting for Robin's ear | the fight's seam measures 0.82 %FS on the war drum |
+| The Dream's sounds: `ui/ferry`, `ui/dreamgate`, `ui/wake`, `ui/dreamdust`, `ui/dreamdust-buy` | `out/sfx/ui/`, in `ui-spots` | delivered 2026-11-03 | |

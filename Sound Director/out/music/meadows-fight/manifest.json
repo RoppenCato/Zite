@@ -1,0 +1,20 @@
+{
+  "name": "meadows-fight",
+  "bpm": 140,
+  "bars": 32,
+  "beats": 4,
+  "loop_seconds": 54.857142857142854,
+  "sample_rate": 48000,
+  "loop_frames": 2633143,
+  "rendered": "2026-11-03T16:40:33.490Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -7.2,
+      "rms_dbfs": -20.3,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

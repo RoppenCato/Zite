@@ -268,5 +268,35 @@
     "target": 0,
     "max": 0.6,
     "use": "a holy spell lands: a bright major chord of bells, strings flaring for a moment, a clean crack. 0.5 s."
+  },
+  "effect_burn": {
+    "target": -4,
+    "max": 0.5,
+    "use": "burning: a flame catching, the recorded fire's crackle, 0.4 s."
+  },
+  "effect_bleed": {
+    "target": -4,
+    "max": 0.45,
+    "use": "bleeding: a thin wet cut and a drip, 0.35 s."
+  },
+  "effect_sunder": {
+    "target": -2,
+    "max": 0.6,
+    "use": "armour sundered: iron cracking, a plate knocked loose, 0.5 s."
+  },
+  "effect_interrupt": {
+    "target": -3,
+    "max": 0.5,
+    "use": "a wind-up broken: the Survival game's broken (a crack and a reel), quicker, 0.4 s."
+  },
+  "effect_guardian": {
+    "target": -3,
+    "max": 0.7,
+    "use": "a guardian steps in: a shield's wooden knock, an open chord of bells, a breath of strings, 0.6 s."
+  },
+  "effect_clone": {
+    "target": -3,
+    "max": 0.6,
+    "use": "a copy appears: the recorded shadowstep, its echo, a falling pair of bells, 0.5 s."
   }
 }

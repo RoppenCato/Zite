@@ -1,0 +1,13 @@
+{
+  "name": "effect_interrupt",
+  "category": "fight",
+  "gain": 0.67,
+  "use": "a wind-up broken: the Survival game's broken (a crack and a reel), quicker, 0.4 s.",
+  "variations": [
+    {
+      "file": "effect_interrupt_1.wav",
+      "seconds": 0.319,
+      "peak_dbfs": -1
+    }
+  ]
+}

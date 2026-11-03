@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_scarecrow_attack",
+  "category": "honeyhill",
+  "gain": 0.343,
+  "use": "yeti-elder, attack (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_scarecrow_attack_1.wav",
+      "seconds": 0.404,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_mothermurk_attack",
+  "category": "bogglemire",
+  "gain": 0.563,
+  "use": "mother-murk, attack (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_mothermurk_attack_1.wav",
+      "seconds": 0.8,
+      "peak_dbfs": -1
+    }
+  ]
+}

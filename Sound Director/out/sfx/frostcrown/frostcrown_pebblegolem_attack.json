@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_pebblegolem_attack",
+  "category": "frostcrown",
+  "gain": 0.893,
+  "use": "pebble-golem, attack (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_pebblegolem_attack_1.wav",
+      "seconds": 0.417,
+      "peak_dbfs": -1
+    }
+  ]
+}

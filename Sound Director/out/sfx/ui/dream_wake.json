@@ -1,0 +1,13 @@
+{
+  "name": "dream_wake",
+  "category": "ui",
+  "gain": 0.403,
+  "use": "waking up: bells falling slowly, a breath let out, a warm chord coming to rest. 1.5 s.",
+  "variations": [
+    {
+      "file": "dream_wake_1.wav",
+      "seconds": 1.586,
+      "peak_dbfs": -1
+    }
+  ]
+}

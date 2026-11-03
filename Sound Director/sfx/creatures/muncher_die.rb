@@ -8,7 +8,7 @@ use_bpm 60
 C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
 W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
 S = "C:/dev/SG/Sound Director/out/sfx/"
-WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/"
+WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/"
 sample S + "runes/shadowstep_a_1.wav", rate: 1.3, amp: 0.9
 sample C + "c1_eat_02.wav", rate: 0.9, amp: 0.5
 sleep 1.3

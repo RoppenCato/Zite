@@ -1,0 +1,84 @@
+{
+  "spritemap": {
+    "creature/city-outcast/attack": {
+      "start": 0,
+      "end": 0.4287,
+      "loop": false
+    },
+    "creature/city-outcast/hit": {
+      "start": 0.4787,
+      "end": 0.8,
+      "loop": false
+    },
+    "creature/city-outcast/die": {
+      "start": 0.85,
+      "end": 1.0334,
+      "loop": false
+    },
+    "creature/poacher/attack": {
+      "start": 1.0834,
+      "end": 1.4737,
+      "loop": false
+    },
+    "creature/poacher/hit": {
+      "start": 1.5237,
+      "end": 1.8181,
+      "loop": false
+    },
+    "creature/poacher/die": {
+      "start": 1.8681,
+      "end": 2.0897,
+      "loop": false
+    },
+    "creature/hedge-knight/attack": {
+      "start": 2.1397,
+      "end": 2.6378,
+      "loop": false
+    },
+    "creature/hedge-knight/hit": {
+      "start": 2.6878,
+      "end": 3.0619,
+      "loop": false
+    },
+    "creature/hedge-knight/die": {
+      "start": 3.1119,
+      "end": 3.7628,
+      "loop": false
+    },
+    "creature/tusker/attack": {
+      "start": 3.8127,
+      "end": 4.0093,
+      "loop": false
+    },
+    "creature/tusker/hit": {
+      "start": 4.0593,
+      "end": 4.246,
+      "loop": false
+    },
+    "creature/tusker/die": {
+      "start": 4.296,
+      "end": 4.779,
+      "loop": false
+    },
+    "creature/outlaw-king/attack": {
+      "start": 4.829,
+      "end": 5.5312,
+      "loop": false
+    },
+    "creature/outlaw-king/hit": {
+      "start": 5.5812,
+      "end": 6.0112,
+      "loop": false
+    },
+    "creature/outlaw-king/die": {
+      "start": 6.0612,
+      "end": 7,
+      "loop": false
+    },
+    "creature/outlaw-king/surge": {
+      "start": 7.05,
+      "end": 7.8631,
+      "loop": false
+    }
+  }
+}

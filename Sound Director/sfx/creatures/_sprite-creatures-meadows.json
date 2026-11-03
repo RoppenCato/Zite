@@ -17,7 +17,7 @@
   {
    "name": "creature/slime/die",
    "file": "out/sfx/creatures/slime_die_1.wav",
-   "gain": 0.743,
+   "gain": 0.368,
    "loop": false
   },
   {
@@ -107,7 +107,7 @@
   {
    "name": "creature/thornwood-warden/die",
    "file": "out/sfx/creatures/goo_die_1.wav",
-   "gain": 0.701,
+   "gain": 0.351,
    "loop": false
   },
   {

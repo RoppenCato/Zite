@@ -1,0 +1,97 @@
+{
+  "honeyhill_honeyblob_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "ice-wolf, attack (honeyhill)."
+  },
+  "honeyhill_honeyblob_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "ice-wolf, hit (honeyhill)."
+  },
+  "honeyhill_honeyblob_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "ice-wolf, die (honeyhill)."
+  },
+  "honeyhill_corngoblin_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "yeti, attack (honeyhill)."
+  },
+  "honeyhill_corngoblin_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "yeti, hit (honeyhill)."
+  },
+  "honeyhill_corngoblin_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "yeti, die (honeyhill)."
+  },
+  "honeyhill_buzzbug_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "frost-wisp, attack (honeyhill)."
+  },
+  "honeyhill_buzzbug_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "frost-wisp, hit (honeyhill)."
+  },
+  "honeyhill_buzzbug_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "frost-wisp, die (honeyhill)."
+  },
+  "honeyhill_applemimic_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "ice-golem, attack (honeyhill)."
+  },
+  "honeyhill_applemimic_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "ice-golem, hit (honeyhill)."
+  },
+  "honeyhill_applemimic_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "ice-golem, die (honeyhill)."
+  },
+  "honeyhill_scarecrow_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "yeti-elder, attack (honeyhill)."
+  },
+  "honeyhill_scarecrow_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "yeti-elder, hit (honeyhill)."
+  },
+  "honeyhill_scarecrow_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "yeti-elder, die (honeyhill)."
+  },
+  "honeyhill_queenbumble_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "frost-matriarch, attack (honeyhill)."
+  },
+  "honeyhill_queenbumble_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "frost-matriarch, hit (honeyhill)."
+  },
+  "honeyhill_queenbumble_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "frost-matriarch, die (honeyhill)."
+  },
+  "honeyhill_queenbumble_surge": {
+    "target": 2,
+    "max": 1.4,
+    "use": "Queen Bumble's hive answers, the swarm thickens: buzzes piling up and rising."
+  }
+}

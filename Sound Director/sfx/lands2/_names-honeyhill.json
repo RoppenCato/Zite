@@ -1,0 +1,78 @@
+[
+ {
+  "name": "creature/ice-wolf/attack",
+  "src": "honeyhill_honeyblob_attack"
+ },
+ {
+  "name": "creature/ice-wolf/hit",
+  "src": "honeyhill_honeyblob_hit"
+ },
+ {
+  "name": "creature/ice-wolf/die",
+  "src": "honeyhill_honeyblob_die"
+ },
+ {
+  "name": "creature/yeti/attack",
+  "src": "honeyhill_corngoblin_attack"
+ },
+ {
+  "name": "creature/yeti/hit",
+  "src": "honeyhill_corngoblin_hit"
+ },
+ {
+  "name": "creature/yeti/die",
+  "src": "honeyhill_corngoblin_die"
+ },
+ {
+  "name": "creature/frost-wisp/attack",
+  "src": "honeyhill_buzzbug_attack"
+ },
+ {
+  "name": "creature/frost-wisp/hit",
+  "src": "honeyhill_buzzbug_hit"
+ },
+ {
+  "name": "creature/frost-wisp/die",
+  "src": "honeyhill_buzzbug_die"
+ },
+ {
+  "name": "creature/ice-golem/attack",
+  "src": "honeyhill_applemimic_attack"
+ },
+ {
+  "name": "creature/ice-golem/hit",
+  "src": "honeyhill_applemimic_hit"
+ },
+ {
+  "name": "creature/ice-golem/die",
+  "src": "honeyhill_applemimic_die"
+ },
+ {
+  "name": "creature/yeti-elder/attack",
+  "src": "honeyhill_scarecrow_attack"
+ },
+ {
+  "name": "creature/yeti-elder/hit",
+  "src": "honeyhill_scarecrow_hit"
+ },
+ {
+  "name": "creature/yeti-elder/die",
+  "src": "honeyhill_scarecrow_die"
+ },
+ {
+  "name": "creature/frost-matriarch/attack",
+  "src": "honeyhill_queenbumble_attack"
+ },
+ {
+  "name": "creature/frost-matriarch/hit",
+  "src": "honeyhill_queenbumble_hit"
+ },
+ {
+  "name": "creature/frost-matriarch/die",
+  "src": "honeyhill_queenbumble_die"
+ },
+ {
+  "name": "creature/frost-matriarch/surge",
+  "src": "honeyhill_queenbumble_surge"
+ }
+]

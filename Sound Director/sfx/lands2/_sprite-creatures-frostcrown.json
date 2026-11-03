@@ -1,0 +1,120 @@
+{
+ "name": "creatures-frostcrown",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/snow-goat/attack",
+   "file": "out/sfx/frostcrown/frostcrown_snowgoat_attack_1.wav",
+   "gain": 0.313,
+   "loop": false
+  },
+  {
+   "name": "creature/snow-goat/hit",
+   "file": "out/sfx/frostcrown/frostcrown_snowgoat_hit_1.wav",
+   "gain": 0.235,
+   "loop": false
+  },
+  {
+   "name": "creature/snow-goat/die",
+   "file": "out/sfx/frostcrown/frostcrown_snowgoat_die_1.wav",
+   "gain": 0.364,
+   "loop": false
+  },
+  {
+   "name": "creature/crag-goblin/attack",
+   "file": "out/sfx/frostcrown/frostcrown_craggoblin_attack_1.wav",
+   "gain": 0.52,
+   "loop": false
+  },
+  {
+   "name": "creature/crag-goblin/hit",
+   "file": "out/sfx/frostcrown/frostcrown_craggoblin_hit_1.wav",
+   "gain": 0.508,
+   "loop": false
+  },
+  {
+   "name": "creature/crag-goblin/die",
+   "file": "out/sfx/frostcrown/frostcrown_craggoblin_die_1.wav",
+   "gain": 0.639,
+   "loop": false
+  },
+  {
+   "name": "creature/pebble-golem/attack",
+   "file": "out/sfx/frostcrown/frostcrown_pebblegolem_attack_1.wav",
+   "gain": 0.893,
+   "loop": false
+  },
+  {
+   "name": "creature/pebble-golem/hit",
+   "file": "out/sfx/frostcrown/frostcrown_pebblegolem_hit_1.wav",
+   "gain": 0.709,
+   "loop": false
+  },
+  {
+   "name": "creature/pebble-golem/die",
+   "file": "out/sfx/frostcrown/frostcrown_pebblegolem_die_1.wav",
+   "gain": 0.883,
+   "loop": false
+  },
+  {
+   "name": "creature/frostling/attack",
+   "file": "out/sfx/frostcrown/frostcrown_frostling_attack_1.wav",
+   "gain": 0.299,
+   "loop": false
+  },
+  {
+   "name": "creature/frostling/hit",
+   "file": "out/sfx/frostcrown/frostcrown_frostling_hit_1.wav",
+   "gain": 0.249,
+   "loop": false
+  },
+  {
+   "name": "creature/frostling/die",
+   "file": "out/sfx/frostcrown/frostcrown_frostling_die_1.wav",
+   "gain": 0.924,
+   "loop": false
+  },
+  {
+   "name": "creature/old-bighorn/attack",
+   "file": "out/sfx/frostcrown/frostcrown_oldbighorn_attack_1.wav",
+   "gain": 0.514,
+   "loop": false
+  },
+  {
+   "name": "creature/old-bighorn/hit",
+   "file": "out/sfx/frostcrown/frostcrown_oldbighorn_hit_1.wav",
+   "gain": 0.249,
+   "loop": false
+  },
+  {
+   "name": "creature/old-bighorn/die",
+   "file": "out/sfx/frostcrown/frostcrown_oldbighorn_die_1.wav",
+   "gain": 0.432,
+   "loop": false
+  },
+  {
+   "name": "creature/frostbeard/attack",
+   "file": "out/sfx/frostcrown/frostcrown_frostbeard_attack_1.wav",
+   "gain": 0.485,
+   "loop": false
+  },
+  {
+   "name": "creature/frostbeard/hit",
+   "file": "out/sfx/frostcrown/frostcrown_frostbeard_hit_1.wav",
+   "gain": 0.469,
+   "loop": false
+  },
+  {
+   "name": "creature/frostbeard/die",
+   "file": "out/sfx/frostcrown/frostcrown_frostbeard_die_1.wav",
+   "gain": 0.557,
+   "loop": false
+  },
+  {
+   "name": "creature/frostbeard/surge",
+   "file": "out/sfx/frostcrown/frostcrown_frostbeard_surge_1.wav",
+   "gain": 1,
+   "loop": false
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_reedwitch_die",
+  "category": "bogglemire",
+  "gain": 0.557,
+  "use": "reed-witch, die (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_reedwitch_die_1.wav",
+      "seconds": 0.576,
+      "peak_dbfs": -1
+    }
+  ]
+}

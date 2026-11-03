@@ -26,7 +26,7 @@ use_bpm 60
 C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
 W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
 S = "C:/dev/SG/Sound Director/out/sfx/"
-WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/"
+WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/"
 {body}
 sleep {gap}
 """

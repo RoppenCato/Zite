@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_poacher_hit",
+  "category": "kingswood",
+  "gain": 0.229,
+  "use": "poacher, hit (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_poacher_hit_1.wav",
+      "seconds": 0.294,
+      "peak_dbfs": -1
+    }
+  ]
+}

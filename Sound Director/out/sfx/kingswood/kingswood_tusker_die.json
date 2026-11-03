@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_tusker_die",
+  "category": "kingswood",
+  "gain": 0.814,
+  "use": "tusker, die (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_tusker_die_1.wav",
+      "seconds": 0.483,
+      "peak_dbfs": -1
+    }
+  ]
+}

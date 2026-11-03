@@ -1,0 +1,82 @@
+{
+  "kingswood_outcast_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "city-outcast, attack (kingswood)."
+  },
+  "kingswood_outcast_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "city-outcast, hit (kingswood)."
+  },
+  "kingswood_outcast_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "city-outcast, die (kingswood)."
+  },
+  "kingswood_poacher_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "poacher, attack (kingswood)."
+  },
+  "kingswood_poacher_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "poacher, hit (kingswood)."
+  },
+  "kingswood_poacher_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "poacher, die (kingswood)."
+  },
+  "kingswood_hedgeknight_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "hedge-knight, attack (kingswood)."
+  },
+  "kingswood_hedgeknight_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "hedge-knight, hit (kingswood)."
+  },
+  "kingswood_hedgeknight_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "hedge-knight, die (kingswood)."
+  },
+  "kingswood_tusker_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "tusker, attack (kingswood)."
+  },
+  "kingswood_tusker_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "tusker, hit (kingswood)."
+  },
+  "kingswood_tusker_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "tusker, die (kingswood)."
+  },
+  "kingswood_outlawking_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "outlaw-king, attack (kingswood)."
+  },
+  "kingswood_outlawking_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "outlaw-king, hit (kingswood)."
+  },
+  "kingswood_outlawking_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "outlaw-king, die (kingswood)."
+  },
+  "kingswood_outlawking_surge": {
+    "target": 2,
+    "max": 1.4,
+    "use": "the Outlaw King casts off his cloak, the gold blade is out: a shout, cloth thrown, a blade's long ring."
+  }
+}

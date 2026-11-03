@@ -1,0 +1,20 @@
+{
+  "name": "title",
+  "bpm": 108,
+  "bars": 16,
+  "beats": 4,
+  "loop_seconds": 35.55555555555556,
+  "sample_rate": 48000,
+  "loop_frames": 1706667,
+  "rendered": "2026-11-03T16:49:20.952Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -5,
+      "rms_dbfs": -19.5,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

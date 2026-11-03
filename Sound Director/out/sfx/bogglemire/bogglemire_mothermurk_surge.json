@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_mothermurk_surge",
+  "category": "bogglemire",
+  "gain": 0.968,
+  "use": "the bog boils around Old Mother Murk: bubbles rising faster and a groan under them.",
+  "variations": [
+    {
+      "file": "bogglemire_mothermurk_surge_1.wav",
+      "seconds": 1.063,
+      "peak_dbfs": -1
+    }
+  ]
+}

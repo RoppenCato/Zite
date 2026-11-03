@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootbeard_surge",
+  "category": "rootways",
+  "gain": 0.853,
+  "use": "the deep roots wake: a long creak, the earth splitting, a low groan.",
+  "variations": [
+    {
+      "file": "rootways_rootbeard_surge_1.wav",
+      "seconds": 0.71,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "about": "The bogglemire sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T16:38:53.350Z",
+  "sounds": {
+    "bogglemire_bogtoad_attack": {
+      "files": [
+        "bogglemire_bogtoad_attack_1.wav"
+      ],
+      "seconds": [
+        0.361
+      ],
+      "loud_db": -7.8,
+      "target_db": -4,
+      "use": "bog-toad, attack (bogglemire).",
+      "gain": 0.31,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_bogtoad_hit": {
+      "files": [
+        "bogglemire_bogtoad_hit_1.wav"
+      ],
+      "seconds": [
+        0.658
+      ],
+      "loud_db": -8.4,
+      "target_db": -5,
+      "use": "bog-toad, hit (bogglemire).",
+      "gain": 0.296,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_bogtoad_die": {
+      "files": [
+        "bogglemire_bogtoad_die_1.wav"
+      ],
+      "seconds": [
+        0.587
+      ],
+      "loud_db": -7.6,
+      "target_db": -2,
+      "use": "bog-toad, die (bogglemire).",
+      "gain": 0.381,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_mudling_attack": {
+      "files": [
+        "bogglemire_mudling_attack_1.wav"
+      ],
+      "seconds": [
+        0.464
+      ],
+      "loud_db": -17.2,
+      "target_db": -4,
+      "use": "mudling, attack (bogglemire).",
+      "gain": 0.914,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_mudling_hit": {
+      "files": [
+        "bogglemire_mudling_hit_1.wav"
+      ],
+      "seconds": [
+        0.346
+      ],
+      "loud_db": -11.2,
+      "target_db": -5,
+      "use": "mudling, hit (bogglemire).",
+      "gain": 0.408,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_mudling_die": {
+      "files": [
+        "bogglemire_mudling_die_1.wav"
+      ],
+      "seconds": [
+        0.556
+      ],
+      "loud_db": -14.8,
+      "target_db": -2,
+      "use": "mudling, die (bogglemire).",
+      "gain": 0.873,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_lanternwisp_attack": {
+      "files": [
+        "bogglemire_lanternwisp_attack_1.wav"
+      ],
+      "seconds": [
+        0.367
+      ],
+      "loud_db": -11.5,
+      "target_db": -4,
+      "use": "lantern-wisp, attack (bogglemire).",
+      "gain": 0.474,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_lanternwisp_hit": {
+      "files": [
+        "bogglemire_lanternwisp_hit_1.wav"
+      ],
+      "seconds": [
+        0.197
+      ],
+      "loud_db": -7.9,
+      "target_db": -5,
+      "use": "lantern-wisp, hit (bogglemire).",
+      "gain": 0.279,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_lanternwisp_die": {
+      "files": [
+        "bogglemire_lanternwisp_die_1.wav"
+      ],
+      "seconds": [
+        0.694
+      ],
+      "loud_db": -10.6,
+      "target_db": -2,
+      "use": "lantern-wisp, die (bogglemire).",
+      "gain": 0.538,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_reedwitch_attack": {
+      "files": [
+        "bogglemire_reedwitch_attack_1.wav"
+      ],
+      "seconds": [
+        0.288
+      ],
+      "loud_db": -12.6,
+      "target_db": -4,
+      "use": "reed-witch, attack (bogglemire).",
+      "gain": 0.538,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_reedwitch_hit": {
+      "files": [
+        "bogglemire_reedwitch_hit_1.wav"
+      ],
+      "seconds": [
+        0.52
+      ],
+      "loud_db": -7.7,
+      "target_db": -5,
+      "use": "reed-witch, hit (bogglemire).",
+      "gain": 0.273,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_reedwitch_die": {
+      "files": [
+        "bogglemire_reedwitch_die_1.wav"
+      ],
+      "seconds": [
+        0.576
+      ],
+      "loud_db": -10.9,
+      "target_db": -2,
+      "use": "reed-witch, die (bogglemire).",
+      "gain": 0.557,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_bogsnapper_attack": {
+      "files": [
+        "bogglemire_bogsnapper_attack_1.wav"
+      ],
+      "seconds": [
+        0.574
+      ],
+      "loud_db": -12.4,
+      "target_db": -4,
+      "use": "bogsnapper, attack (bogglemire).",
+      "gain": 0.526,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_bogsnapper_hit": {
+      "files": [
+        "bogglemire_bogsnapper_hit_1.wav"
+      ],
+      "seconds": [
+        0.459
+      ],
+      "loud_db": -14.4,
+      "target_db": -5,
+      "use": "bogsnapper, hit (bogglemire).",
+      "gain": 0.59,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_bogsnapper_die": {
+      "files": [
+        "bogglemire_bogsnapper_die_1.wav"
+      ],
+      "seconds": [
+        0.498
+      ],
+      "loud_db": -14.2,
+      "target_db": -2,
+      "use": "bogsnapper, die (bogglemire).",
+      "gain": 0.814,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_mothermurk_attack": {
+      "files": [
+        "bogglemire_mothermurk_attack_1.wav"
+      ],
+      "seconds": [
+        0.8
+      ],
+      "loud_db": -13,
+      "target_db": -4,
+      "use": "mother-murk, attack (bogglemire).",
+      "gain": 0.563,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bogglemire_mothermurk_hit": {
+      "files": [
+        "bogglemire_mothermurk_hit_1.wav"
+      ],
+      "seconds": [
+        0.761
+      ],
+      "loud_db": -12.4,
+      "target_db": -5,
+      "use": "mother-murk, hit (bogglemire).",
+      "gain": 0.469,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bogglemire_mothermurk_die": {
+      "files": [
+        "bogglemire_mothermurk_die_1.wav"
+      ],
+      "seconds": [
+        1.3
+      ],
+      "loud_db": -13,
+      "target_db": -2,
+      "use": "mother-murk, die (bogglemire).",
+      "gain": 0.709,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bogglemire_mothermurk_surge": {
+      "files": [
+        "bogglemire_mothermurk_surge_1.wav"
+      ],
+      "seconds": [
+        1.063
+      ],
+      "loud_db": -11.7,
+      "target_db": 2,
+      "use": "the bog boils around Old Mother Murk: bubbles rising faster and a groan under them.",
+      "gain": 0.968,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

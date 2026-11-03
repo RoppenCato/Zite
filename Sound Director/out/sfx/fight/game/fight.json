@@ -339,6 +339,36 @@
       "start": 36.2573,
       "end": 36.6671,
       "loop": false
+    },
+    "fight/effect-burn": {
+      "start": 36.7171,
+      "end": 37.0354,
+      "loop": false
+    },
+    "fight/effect-bleed": {
+      "start": 37.0854,
+      "end": 37.3035,
+      "loop": false
+    },
+    "fight/effect-sunder": {
+      "start": 37.3535,
+      "end": 37.8026,
+      "loop": false
+    },
+    "fight/effect-interrupt": {
+      "start": 37.8526,
+      "end": 38.1713,
+      "loop": false
+    },
+    "fight/effect-guardian": {
+      "start": 38.2213,
+      "end": 38.7406,
+      "loop": false
+    },
+    "fight/effect-clone": {
+      "start": 38.7906,
+      "end": 39.303,
+      "loop": false
     }
   }
 }

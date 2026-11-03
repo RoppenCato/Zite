@@ -1,12 +1,12 @@
 {
   "name": "goo_die",
   "category": "creatures",
-  "gain": 0.701,
+  "gain": 0.351,
   "use": "King Goo falls: a long burble, then a great splat and the crown's tiny ring.",
   "variations": [
     {
       "file": "goo_die_1.wav",
-      "seconds": 1.366,
+      "seconds": 1.8,
       "peak_dbfs": -1
     }
   ]

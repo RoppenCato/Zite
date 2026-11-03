@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-03T12:53:27.339Z",
+  "made": "2026-11-03T16:55:14.531Z",
   "sounds": {
     "die_land_b": {
       "files": [
@@ -143,9 +143,7 @@
       "loud_db": -11.8,
       "target_db": -8,
       "use": "the chest building, Z (Robin, 2026-11-03: \"Yes Z!\"): rising tremolo strings, a timpani roll, a harp into the lid",
-      "gain": 0.31,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -8 dB relative to it"
+      "gain": 0.31
     },
     "chest_burst_common": {
       "files": [
@@ -189,9 +187,7 @@
       "loud_db": -10.6,
       "target_db": 0,
       "use": "a rare chest: Z's reveal, a G major chord on horn, strings and bells",
-      "gain": 0.677,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+      "gain": 0.677
     },
     "chest_burst_epic": {
       "files": [
@@ -203,9 +199,7 @@
       "loud_db": -10.6,
       "target_db": 1.5,
       "use": "an epic chest: Z's reveal, a touch louder",
-      "gain": 0.805,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target 1.5 dB relative to it"
+      "gain": 0.805
     },
     "chest_burst_legendary": {
       "files": [
@@ -854,6 +848,168 @@
       "target_db": -5,
       "use": "the inn, a night's sleep: a sigh, then a music box's three falling notes and a soft low chord. 1.6 s.",
       "gain": 0.377
+    },
+    "arrive_board": {
+      "files": [
+        "arrive_board_1.wav"
+      ],
+      "seconds": [
+        0.469
+      ],
+      "loud_db": -15.9,
+      "target_db": -6,
+      "use": "arriving at a quest board: paper rustling, a pin's knock, one small bell.",
+      "gain": 0.625
+    },
+    "step_stone": {
+      "files": [
+        "step_stone_1.wav",
+        "step_stone_2.wav",
+        "step_stone_3.wav"
+      ],
+      "seconds": [
+        0.063,
+        0.062,
+        0.067
+      ],
+      "loud_db": -15.4,
+      "target_db": -9,
+      "use": "a step: stone",
+      "gain": 0.418
+    },
+    "step_wood": {
+      "files": [
+        "step_wood_1.wav",
+        "step_wood_2.wav",
+        "step_wood_3.wav"
+      ],
+      "seconds": [
+        0.085,
+        0.073,
+        0.081
+      ],
+      "loud_db": -12.6,
+      "target_db": -9,
+      "use": "a step: wood",
+      "gain": 0.303
+    },
+    "step_snow": {
+      "files": [
+        "step_snow_1.wav",
+        "step_snow_2.wav",
+        "step_snow_3.wav"
+      ],
+      "seconds": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "loud_db": -16.4,
+      "target_db": -9,
+      "use": "a step: snow",
+      "gain": 0.469
+    },
+    "step_mud": {
+      "files": [
+        "step_mud_1.wav",
+        "step_mud_2.wav",
+        "step_mud_3.wav"
+      ],
+      "seconds": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "loud_db": -14,
+      "target_db": -9,
+      "use": "a step: mud",
+      "gain": 0.355
+    },
+    "step_sand": {
+      "files": [
+        "step_sand_1.wav",
+        "step_sand_2.wav",
+        "step_sand_3.wav"
+      ],
+      "seconds": [
+        0.176,
+        0.207,
+        0.173
+      ],
+      "loud_db": -15.4,
+      "target_db": -10,
+      "use": "a step: sand",
+      "gain": 0.372
+    },
+    "dream_ferry": {
+      "files": [
+        "dream_ferry_1.wav"
+      ],
+      "seconds": [
+        1.313
+      ],
+      "loud_db": -12.8,
+      "target_db": -4,
+      "use": "the ferry leaving: Robin's hull creak and oar, a ship's bell twice, water against the side. 1.5 s.",
+      "gain": 0.551,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "dream_dreamgate": {
+      "files": [
+        "dream_dreamgate_1.wav"
+      ],
+      "seconds": [
+        1.243
+      ],
+      "loud_db": -10,
+      "target_db": -2,
+      "use": "stepping through the Dreamgate: a breath drawn backwards into the gate, bells climbing the Lydian scale, a soft low swell. 1.4 s.",
+      "gain": 0.502,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "dream_wake": {
+      "files": [
+        "dream_wake_1.wav"
+      ],
+      "seconds": [
+        1.586
+      ],
+      "loud_db": -10.1,
+      "target_db": -4,
+      "use": "waking up: bells falling slowly, a breath let out, a warm chord coming to rest. 1.5 s.",
+      "gain": 0.403,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "dream_dreamdust": {
+      "files": [
+        "dream_dreamdust_1.wav"
+      ],
+      "seconds": [
+        0.353
+      ],
+      "loud_db": -6.8,
+      "target_db": -6,
+      "use": "Dreamdust picked up: a soft sparkle, three high bells in the Lydian scale, a breath of glitter. 0.4 s.",
+      "gain": 0.219,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -6 dB relative to it"
+    },
+    "dream_dreamdust_buy": {
+      "files": [
+        "dream_dreamdust_buy_1.wav"
+      ],
+      "seconds": [
+        0.578
+      ],
+      "loud_db": -8.9,
+      "target_db": -4,
+      "use": "bought with Dreamdust: the sparkle poured out, a wooden knock on the counter, a small chord. 0.6 s.",
+      "gain": 0.351,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
     }
   }
 }

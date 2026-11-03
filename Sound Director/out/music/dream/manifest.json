@@ -1,0 +1,20 @@
+{
+  "name": "dream",
+  "bpm": 96,
+  "bars": 32,
+  "beats": 4,
+  "loop_seconds": 80,
+  "sample_rate": 48000,
+  "loop_frames": 3840000,
+  "rendered": "2026-11-03T16:55:14.331Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -4.2,
+      "rms_dbfs": -19.3,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

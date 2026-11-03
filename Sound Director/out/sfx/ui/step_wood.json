@@ -1,0 +1,23 @@
+{
+  "name": "step_wood",
+  "category": "ui",
+  "gain": 0.303,
+  "use": "a step: wood",
+  "variations": [
+    {
+      "file": "step_wood_1.wav",
+      "seconds": 0.085,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_wood_2.wav",
+      "seconds": 0.073,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_wood_3.wav",
+      "seconds": 0.081,
+      "peak_dbfs": -1
+    }
+  ]
+}

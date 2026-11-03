@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-03T12:06:56.509Z",
+  "made": "2026-11-03T16:39:05.620Z",
   "sounds": {
     "holy_hit": {
       "files": [
@@ -190,12 +190,14 @@
         "blood_1.wav"
       ],
       "seconds": [
-        0.295
+        0.685
       ],
-      "loud_db": -14.2,
+      "loud_db": -12.5,
       "target_db": 2,
       "use": "a wet slash, Crimson Arc and Bleed Out: the riposte's edge, Robin's slap and a wet splat, the drip after.",
-      "gain": 1
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
     },
     "magic_power": {
       "files": [
@@ -207,9 +209,7 @@
       "loud_db": -7.4,
       "target_db": -1,
       "use": "Magic Power: a rising, charging swell: strings climbing from low C, bells running up through two octaves faster and faster, the recorded rune waking at the top, a bright chord held. 1.3 s.",
-      "gain": 0.418,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+      "gain": 0.418
     }
   }
 }

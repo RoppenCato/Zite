@@ -1,0 +1,13 @@
+{
+  "name": "rootways_glowcap_die",
+  "category": "rootways",
+  "gain": 0.532,
+  "use": "glowcap, die (rootways).",
+  "variations": [
+    {
+      "file": "rootways_glowcap_die_1.wav",
+      "seconds": 0.365,
+      "peak_dbfs": -1
+    }
+  ]
+}

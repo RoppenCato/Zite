@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootgrub_attack",
+  "category": "rootways",
+  "gain": 0.514,
+  "use": "root-grub, attack (rootways).",
+  "variations": [
+    {
+      "file": "rootways_rootgrub_attack_1.wav",
+      "seconds": 0.338,
+      "peak_dbfs": -1
+    }
+  ]
+}

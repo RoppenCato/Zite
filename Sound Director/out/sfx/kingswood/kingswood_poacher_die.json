@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_poacher_die",
+  "category": "kingswood",
+  "gain": 0.437,
+  "use": "poacher, die (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_poacher_die_1.wav",
+      "seconds": 0.222,
+      "peak_dbfs": -1
+    }
+  ]
+}

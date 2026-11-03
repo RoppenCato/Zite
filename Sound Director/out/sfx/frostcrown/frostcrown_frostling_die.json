@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostling_die",
+  "category": "frostcrown",
+  "gain": 0.924,
+  "use": "frostling, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostling_die_1.wav",
+      "seconds": 0.494,
+      "peak_dbfs": -1
+    }
+  ]
+}

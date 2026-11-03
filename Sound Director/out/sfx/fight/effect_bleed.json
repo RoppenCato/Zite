@@ -1,0 +1,13 @@
+{
+  "name": "effect_bleed",
+  "category": "fight",
+  "gain": 0.385,
+  "use": "bleeding: a thin wet cut and a drip, 0.35 s.",
+  "variations": [
+    {
+      "file": "effect_bleed_1.wav",
+      "seconds": 0.218,
+      "peak_dbfs": -1
+    }
+  ]
+}

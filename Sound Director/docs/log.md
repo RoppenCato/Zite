@@ -27,3 +27,6 @@
 - 2026-11-03: `fight/lightning` for the trinkets: the library's lightning is a rumble on a phone (61 to 87 % low), so a recorded whip's crack leads; two renders (the first peaked late). In `fight.ogg`.
 - 2026-11-03: `fight/talent-magic-power` (Magic Power replaces the Pocket Watch; the map follows) and the spell impacts `fight/impact-arcane`, `-fire`, `-holy`, in their sprites.
 - 2026-11-03: Robin's answers: board theme kept (A, B, C to `out/_archive/meadows-candidates-2026-11-03/`); Z in the game's chest (old ones in `out/_archive/chest-before-z-2026-11-03/`); no ambience; the studio's work committed.
+- 2026-11-03: committed on main (Robin's yes), not pushed.
+- 2026-11-03: fill the holes (`sfx/lands2/`): 90 voices and surges, 9 effects, board and steps; nine rebuilt (too low, too high, too thin); a wrong path to the wet splats (`oga_wet_squish/files/impsplat/`) had silenced the splat in the slime's and King Goo's deaths and the blood slash: fixed and re-rendered. Packed by `sfx/lands2/_pack.js`. First load about 650 KB.
+- 2026-11-03: the music unblocked by Robin's keep: `meadows-fight`, `king-goo`, `title` (`music/meadows/`), and the Dream (`music/dream/dream.rb`) with its five sounds in ui-spots; all at -17 to -18 LUFS.

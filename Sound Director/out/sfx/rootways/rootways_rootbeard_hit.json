@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootbeard_hit",
+  "category": "rootways",
+  "gain": 0.437,
+  "use": "old-rootbeard, hit (rootways).",
+  "variations": [
+    {
+      "file": "rootways_rootbeard_hit_1.wav",
+      "seconds": 0.21,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_queenbumble_die",
+  "category": "honeyhill",
+  "gain": 0.805,
+  "use": "frost-matriarch, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_queenbumble_die_1.wav",
+      "seconds": 1.019,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "rootways_digby_attack",
+  "category": "rootways",
+  "gain": 0.447,
+  "use": "old-digby, attack (rootways).",
+  "variations": [
+    {
+      "file": "rootways_digby_attack_1.wav",
+      "seconds": 0.532,
+      "peak_dbfs": -1
+    }
+  ]
+}

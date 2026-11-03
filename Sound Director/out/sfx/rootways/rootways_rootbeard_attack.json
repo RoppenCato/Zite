@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootbeard_attack",
+  "category": "rootways",
+  "gain": 0.313,
+  "use": "old-rootbeard, attack (rootways).",
+  "variations": [
+    {
+      "file": "rootways_rootbeard_attack_1.wav",
+      "seconds": 0.662,
+      "peak_dbfs": -1
+    }
+  ]
+}

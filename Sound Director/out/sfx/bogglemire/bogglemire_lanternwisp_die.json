@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_lanternwisp_die",
+  "category": "bogglemire",
+  "gain": 0.538,
+  "use": "lantern-wisp, die (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_lanternwisp_die_1.wav",
+      "seconds": 0.694,
+      "peak_dbfs": -1
+    }
+  ]
+}

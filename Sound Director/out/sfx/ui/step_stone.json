@@ -1,0 +1,23 @@
+{
+  "name": "step_stone",
+  "category": "ui",
+  "gain": 0.418,
+  "use": "a step: stone",
+  "variations": [
+    {
+      "file": "step_stone_1.wav",
+      "seconds": 0.063,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_stone_2.wav",
+      "seconds": 0.062,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_stone_3.wav",
+      "seconds": 0.067,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_buzzbug_die",
+  "category": "honeyhill",
+  "gain": 0.769,
+  "use": "frost-wisp, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_buzzbug_die_1.wav",
+      "seconds": 0.644,
+      "peak_dbfs": -1
+    }
+  ]
+}

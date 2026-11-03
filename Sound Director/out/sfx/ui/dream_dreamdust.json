@@ -1,0 +1,13 @@
+{
+  "name": "dream_dreamdust",
+  "category": "ui",
+  "gain": 0.219,
+  "use": "Dreamdust picked up: a soft sparkle, three high bells in the Lydian scale, a breath of glitter. 0.4 s.",
+  "variations": [
+    {
+      "file": "dream_dreamdust_1.wav",
+      "seconds": 0.353,
+      "peak_dbfs": -1
+    }
+  ]
+}

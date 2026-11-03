@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_oldbighorn_die",
+  "category": "frostcrown",
+  "gain": 0.432,
+  "use": "old-bighorn, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_oldbighorn_die_1.wav",
+      "seconds": 0.717,
+      "peak_dbfs": -1
+    }
+  ]
+}

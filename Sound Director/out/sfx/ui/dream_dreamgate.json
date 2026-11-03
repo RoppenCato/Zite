@@ -1,0 +1,13 @@
+{
+  "name": "dream_dreamgate",
+  "category": "ui",
+  "gain": 0.502,
+  "use": "stepping through the Dreamgate: a breath drawn backwards into the gate, bells climbing the Lydian scale, a soft low swell. 1.4 s.",
+  "variations": [
+    {
+      "file": "dream_dreamgate_1.wav",
+      "seconds": 1.243,
+      "peak_dbfs": -1
+    }
+  ]
+}

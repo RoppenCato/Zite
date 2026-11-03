@@ -1,0 +1,233 @@
+{
+  "about": "The kingswood sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T16:38:55.949Z",
+  "sounds": {
+    "kingswood_outcast_attack": {
+      "files": [
+        "kingswood_outcast_attack_1.wav"
+      ],
+      "seconds": [
+        0.429
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "city-outcast, attack (kingswood).",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "kingswood_outcast_hit": {
+      "files": [
+        "kingswood_outcast_hit_1.wav"
+      ],
+      "seconds": [
+        0.321
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "city-outcast, hit (kingswood).",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "kingswood_outcast_die": {
+      "files": [
+        "kingswood_outcast_die_1.wav"
+      ],
+      "seconds": [
+        0.183
+      ],
+      "loud_db": -8.6,
+      "target_db": -2,
+      "use": "city-outcast, die (kingswood).",
+      "gain": 0.427,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "kingswood_poacher_attack": {
+      "files": [
+        "kingswood_poacher_attack_1.wav"
+      ],
+      "seconds": [
+        0.39
+      ],
+      "loud_db": -12.4,
+      "target_db": -4,
+      "use": "poacher, attack (kingswood).",
+      "gain": 0.526,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "kingswood_poacher_hit": {
+      "files": [
+        "kingswood_poacher_hit_1.wav"
+      ],
+      "seconds": [
+        0.294
+      ],
+      "loud_db": -6.2,
+      "target_db": -5,
+      "use": "poacher, hit (kingswood).",
+      "gain": 0.229,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "kingswood_poacher_die": {
+      "files": [
+        "kingswood_poacher_die_1.wav"
+      ],
+      "seconds": [
+        0.222
+      ],
+      "loud_db": -8.8,
+      "target_db": -2,
+      "use": "poacher, die (kingswood).",
+      "gain": 0.437,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "kingswood_hedgeknight_attack": {
+      "files": [
+        "kingswood_hedgeknight_attack_1.wav"
+      ],
+      "seconds": [
+        0.498
+      ],
+      "loud_db": -9.9,
+      "target_db": -4,
+      "use": "hedge-knight, attack (kingswood).",
+      "gain": 0.394,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "kingswood_hedgeknight_hit": {
+      "files": [
+        "kingswood_hedgeknight_hit_1.wav"
+      ],
+      "seconds": [
+        0.374
+      ],
+      "loud_db": -7.7,
+      "target_db": -5,
+      "use": "hedge-knight, hit (kingswood).",
+      "gain": 0.273,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "kingswood_hedgeknight_die": {
+      "files": [
+        "kingswood_hedgeknight_die_1.wav"
+      ],
+      "seconds": [
+        0.651
+      ],
+      "loud_db": -8.4,
+      "target_db": -2,
+      "use": "hedge-knight, die (kingswood).",
+      "gain": 0.418,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "kingswood_tusker_attack": {
+      "files": [
+        "kingswood_tusker_attack_1.wav"
+      ],
+      "seconds": [
+        0.197
+      ],
+      "loud_db": -11.3,
+      "target_db": -4,
+      "use": "tusker, attack (kingswood).",
+      "gain": 0.463,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "kingswood_tusker_hit": {
+      "files": [
+        "kingswood_tusker_hit_1.wav"
+      ],
+      "seconds": [
+        0.187
+      ],
+      "loud_db": -15.1,
+      "target_db": -5,
+      "use": "tusker, hit (kingswood).",
+      "gain": 0.639,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "kingswood_tusker_die": {
+      "files": [
+        "kingswood_tusker_die_1.wav"
+      ],
+      "seconds": [
+        0.483
+      ],
+      "loud_db": -14.2,
+      "target_db": -2,
+      "use": "tusker, die (kingswood).",
+      "gain": 0.814,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "kingswood_outlawking_attack": {
+      "files": [
+        "kingswood_outlawking_attack_1.wav"
+      ],
+      "seconds": [
+        0.702
+      ],
+      "loud_db": -10.4,
+      "target_db": -4,
+      "use": "outlaw-king, attack (kingswood).",
+      "gain": 0.418,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "kingswood_outlawking_hit": {
+      "files": [
+        "kingswood_outlawking_hit_1.wav"
+      ],
+      "seconds": [
+        0.43
+      ],
+      "loud_db": -6.5,
+      "target_db": -5,
+      "use": "outlaw-king, hit (kingswood).",
+      "gain": 0.238,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "kingswood_outlawking_die": {
+      "files": [
+        "kingswood_outlawking_die_1.wav"
+      ],
+      "seconds": [
+        0.939
+      ],
+      "loud_db": -10.2,
+      "target_db": -2,
+      "use": "outlaw-king, die (kingswood).",
+      "gain": 0.514,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "kingswood_outlawking_surge": {
+      "files": [
+        "kingswood_outlawking_surge_1.wav"
+      ],
+      "seconds": [
+        0.813
+      ],
+      "loud_db": -10.8,
+      "target_db": 2,
+      "use": "the Outlaw King casts off his cloak, the gold blade is out: a shout, cloth thrown, a blade's long ring.",
+      "gain": 0.873,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_applemimic_die",
+  "category": "honeyhill",
+  "gain": 0.496,
+  "use": "ice-golem, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_applemimic_die_1.wav",
+      "seconds": 1.255,
+      "peak_dbfs": -1
+    }
+  ]
+}

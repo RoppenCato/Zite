@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_honeyblob_attack",
+  "category": "honeyhill",
+  "gain": 0.372,
+  "use": "ice-wolf, attack (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_honeyblob_attack_1.wav",
+      "seconds": 0.507,
+      "peak_dbfs": -1
+    }
+  ]
+}

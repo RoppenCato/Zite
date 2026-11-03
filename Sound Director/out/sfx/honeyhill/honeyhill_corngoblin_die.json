@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_corngoblin_die",
+  "category": "honeyhill",
+  "gain": 0.59,
+  "use": "yeti, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_corngoblin_die_1.wav",
+      "seconds": 0.321,
+      "peak_dbfs": -1
+    }
+  ]
+}

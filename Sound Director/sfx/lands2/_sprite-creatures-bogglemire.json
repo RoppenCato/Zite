@@ -1,0 +1,120 @@
+{
+ "name": "creatures-bogglemire",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/bog-toad/attack",
+   "file": "out/sfx/bogglemire/bogglemire_bogtoad_attack_1.wav",
+   "gain": 0.31,
+   "loop": false
+  },
+  {
+   "name": "creature/bog-toad/hit",
+   "file": "out/sfx/bogglemire/bogglemire_bogtoad_hit_1.wav",
+   "gain": 0.296,
+   "loop": false
+  },
+  {
+   "name": "creature/bog-toad/die",
+   "file": "out/sfx/bogglemire/bogglemire_bogtoad_die_1.wav",
+   "gain": 0.381,
+   "loop": false
+  },
+  {
+   "name": "creature/mudling/attack",
+   "file": "out/sfx/bogglemire/bogglemire_mudling_attack_1.wav",
+   "gain": 0.914,
+   "loop": false
+  },
+  {
+   "name": "creature/mudling/hit",
+   "file": "out/sfx/bogglemire/bogglemire_mudling_hit_1.wav",
+   "gain": 0.408,
+   "loop": false
+  },
+  {
+   "name": "creature/mudling/die",
+   "file": "out/sfx/bogglemire/bogglemire_mudling_die_1.wav",
+   "gain": 0.873,
+   "loop": false
+  },
+  {
+   "name": "creature/lantern-wisp/attack",
+   "file": "out/sfx/bogglemire/bogglemire_lanternwisp_attack_1.wav",
+   "gain": 0.474,
+   "loop": false
+  },
+  {
+   "name": "creature/lantern-wisp/hit",
+   "file": "out/sfx/bogglemire/bogglemire_lanternwisp_hit_1.wav",
+   "gain": 0.279,
+   "loop": false
+  },
+  {
+   "name": "creature/lantern-wisp/die",
+   "file": "out/sfx/bogglemire/bogglemire_lanternwisp_die_1.wav",
+   "gain": 0.538,
+   "loop": false
+  },
+  {
+   "name": "creature/reed-witch/attack",
+   "file": "out/sfx/bogglemire/bogglemire_reedwitch_attack_1.wav",
+   "gain": 0.538,
+   "loop": false
+  },
+  {
+   "name": "creature/reed-witch/hit",
+   "file": "out/sfx/bogglemire/bogglemire_reedwitch_hit_1.wav",
+   "gain": 0.273,
+   "loop": false
+  },
+  {
+   "name": "creature/reed-witch/die",
+   "file": "out/sfx/bogglemire/bogglemire_reedwitch_die_1.wav",
+   "gain": 0.557,
+   "loop": false
+  },
+  {
+   "name": "creature/bogsnapper/attack",
+   "file": "out/sfx/bogglemire/bogglemire_bogsnapper_attack_1.wav",
+   "gain": 0.526,
+   "loop": false
+  },
+  {
+   "name": "creature/bogsnapper/hit",
+   "file": "out/sfx/bogglemire/bogglemire_bogsnapper_hit_1.wav",
+   "gain": 0.59,
+   "loop": false
+  },
+  {
+   "name": "creature/bogsnapper/die",
+   "file": "out/sfx/bogglemire/bogglemire_bogsnapper_die_1.wav",
+   "gain": 0.814,
+   "loop": false
+  },
+  {
+   "name": "creature/mother-murk/attack",
+   "file": "out/sfx/bogglemire/bogglemire_mothermurk_attack_1.wav",
+   "gain": 0.563,
+   "loop": false
+  },
+  {
+   "name": "creature/mother-murk/hit",
+   "file": "out/sfx/bogglemire/bogglemire_mothermurk_hit_1.wav",
+   "gain": 0.469,
+   "loop": false
+  },
+  {
+   "name": "creature/mother-murk/die",
+   "file": "out/sfx/bogglemire/bogglemire_mothermurk_die_1.wav",
+   "gain": 0.709,
+   "loop": false
+  },
+  {
+   "name": "creature/mother-murk/surge",
+   "file": "out/sfx/bogglemire/bogglemire_mothermurk_surge_1.wav",
+   "gain": 0.968,
+   "loop": false
+  }
+ ]
+}

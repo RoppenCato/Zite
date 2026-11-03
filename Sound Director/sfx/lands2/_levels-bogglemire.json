@@ -1,0 +1,97 @@
+{
+  "bogglemire_bogtoad_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "bog-toad, attack (bogglemire)."
+  },
+  "bogglemire_bogtoad_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "bog-toad, hit (bogglemire)."
+  },
+  "bogglemire_bogtoad_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "bog-toad, die (bogglemire)."
+  },
+  "bogglemire_mudling_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "mudling, attack (bogglemire)."
+  },
+  "bogglemire_mudling_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "mudling, hit (bogglemire)."
+  },
+  "bogglemire_mudling_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "mudling, die (bogglemire)."
+  },
+  "bogglemire_lanternwisp_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "lantern-wisp, attack (bogglemire)."
+  },
+  "bogglemire_lanternwisp_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "lantern-wisp, hit (bogglemire)."
+  },
+  "bogglemire_lanternwisp_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "lantern-wisp, die (bogglemire)."
+  },
+  "bogglemire_reedwitch_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "reed-witch, attack (bogglemire)."
+  },
+  "bogglemire_reedwitch_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "reed-witch, hit (bogglemire)."
+  },
+  "bogglemire_reedwitch_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "reed-witch, die (bogglemire)."
+  },
+  "bogglemire_bogsnapper_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "bogsnapper, attack (bogglemire)."
+  },
+  "bogglemire_bogsnapper_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "bogsnapper, hit (bogglemire)."
+  },
+  "bogglemire_bogsnapper_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "bogsnapper, die (bogglemire)."
+  },
+  "bogglemire_mothermurk_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "mother-murk, attack (bogglemire)."
+  },
+  "bogglemire_mothermurk_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "mother-murk, hit (bogglemire)."
+  },
+  "bogglemire_mothermurk_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "mother-murk, die (bogglemire)."
+  },
+  "bogglemire_mothermurk_surge": {
+    "target": 2,
+    "max": 1.4,
+    "use": "the bog boils around Old Mother Murk: bubbles rising faster and a groan under them."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "rootways_digby_hit",
+  "category": "rootways",
+  "gain": 0.306,
+  "use": "old-digby, hit (rootways).",
+  "variations": [
+    {
+      "file": "rootways_digby_hit_1.wav",
+      "seconds": 0.35,
+      "peak_dbfs": -1
+    }
+  ]
+}

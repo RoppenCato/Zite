@@ -323,5 +323,60 @@
     "target": -5,
     "max": 1.7,
     "use": "the inn, a night's sleep: a sigh, then a music box's three falling notes and a soft low chord. 1.6 s."
+  },
+  "arrive_board": {
+    "target": -6,
+    "max": 0.6,
+    "use": "arriving at a quest board: paper rustling, a pin's knock, one small bell."
+  },
+  "step_stone": {
+    "target": -9,
+    "max": 0.3,
+    "use": "a step: stone"
+  },
+  "step_wood": {
+    "target": -9,
+    "max": 0.3,
+    "use": "a step: wood"
+  },
+  "step_snow": {
+    "target": -9,
+    "max": 0.3,
+    "use": "a step: snow"
+  },
+  "step_mud": {
+    "target": -9,
+    "max": 0.3,
+    "use": "a step: mud"
+  },
+  "step_sand": {
+    "target": -10,
+    "max": 0.3,
+    "use": "a step: sand"
+  },
+  "dream_ferry": {
+    "target": -4,
+    "max": 1.6,
+    "use": "the ferry leaving: Robin's hull creak and oar, a ship's bell twice, water against the side. 1.5 s."
+  },
+  "dream_dreamgate": {
+    "target": -2,
+    "max": 1.5,
+    "use": "stepping through the Dreamgate: a breath drawn backwards into the gate, bells climbing the Lydian scale, a soft low swell. 1.4 s."
+  },
+  "dream_wake": {
+    "target": -4,
+    "max": 1.6,
+    "use": "waking up: bells falling slowly, a breath let out, a warm chord coming to rest. 1.5 s."
+  },
+  "dream_dreamdust": {
+    "target": -6,
+    "max": 0.5,
+    "use": "Dreamdust picked up: a soft sparkle, three high bells in the Lydian scale, a breath of glitter. 0.4 s."
+  },
+  "dream_dreamdust_buy": {
+    "target": -4,
+    "max": 0.7,
+    "use": "bought with Dreamdust: the sparkle poured out, a wooden knock on the counter, a small chord. 0.6 s."
   }
 }

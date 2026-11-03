@@ -1,0 +1,66 @@
+[
+ {
+  "name": "creature/city-outcast/attack",
+  "src": "kingswood_outcast_attack"
+ },
+ {
+  "name": "creature/city-outcast/hit",
+  "src": "kingswood_outcast_hit"
+ },
+ {
+  "name": "creature/city-outcast/die",
+  "src": "kingswood_outcast_die"
+ },
+ {
+  "name": "creature/poacher/attack",
+  "src": "kingswood_poacher_attack"
+ },
+ {
+  "name": "creature/poacher/hit",
+  "src": "kingswood_poacher_hit"
+ },
+ {
+  "name": "creature/poacher/die",
+  "src": "kingswood_poacher_die"
+ },
+ {
+  "name": "creature/hedge-knight/attack",
+  "src": "kingswood_hedgeknight_attack"
+ },
+ {
+  "name": "creature/hedge-knight/hit",
+  "src": "kingswood_hedgeknight_hit"
+ },
+ {
+  "name": "creature/hedge-knight/die",
+  "src": "kingswood_hedgeknight_die"
+ },
+ {
+  "name": "creature/tusker/attack",
+  "src": "kingswood_tusker_attack"
+ },
+ {
+  "name": "creature/tusker/hit",
+  "src": "kingswood_tusker_hit"
+ },
+ {
+  "name": "creature/tusker/die",
+  "src": "kingswood_tusker_die"
+ },
+ {
+  "name": "creature/outlaw-king/attack",
+  "src": "kingswood_outlawking_attack"
+ },
+ {
+  "name": "creature/outlaw-king/hit",
+  "src": "kingswood_outlawking_hit"
+ },
+ {
+  "name": "creature/outlaw-king/die",
+  "src": "kingswood_outlawking_die"
+ },
+ {
+  "name": "creature/outlaw-king/surge",
+  "src": "kingswood_outlawking_surge"
+ }
+]

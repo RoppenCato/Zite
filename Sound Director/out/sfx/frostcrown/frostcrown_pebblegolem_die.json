@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_pebblegolem_die",
+  "category": "frostcrown",
+  "gain": 0.883,
+  "use": "pebble-golem, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_pebblegolem_die_1.wav",
+      "seconds": 0.439,
+      "peak_dbfs": -1
+    }
+  ]
+}

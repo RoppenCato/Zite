@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootgrub_die",
+  "category": "rootways",
+  "gain": 0.463,
+  "use": "root-grub, die (rootways).",
+  "variations": [
+    {
+      "file": "rootways_rootgrub_die_1.wav",
+      "seconds": 0.92,
+      "peak_dbfs": -1
+    }
+  ]
+}

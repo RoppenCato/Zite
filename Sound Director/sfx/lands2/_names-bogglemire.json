@@ -1,0 +1,78 @@
+[
+ {
+  "name": "creature/bog-toad/attack",
+  "src": "bogglemire_bogtoad_attack"
+ },
+ {
+  "name": "creature/bog-toad/hit",
+  "src": "bogglemire_bogtoad_hit"
+ },
+ {
+  "name": "creature/bog-toad/die",
+  "src": "bogglemire_bogtoad_die"
+ },
+ {
+  "name": "creature/mudling/attack",
+  "src": "bogglemire_mudling_attack"
+ },
+ {
+  "name": "creature/mudling/hit",
+  "src": "bogglemire_mudling_hit"
+ },
+ {
+  "name": "creature/mudling/die",
+  "src": "bogglemire_mudling_die"
+ },
+ {
+  "name": "creature/lantern-wisp/attack",
+  "src": "bogglemire_lanternwisp_attack"
+ },
+ {
+  "name": "creature/lantern-wisp/hit",
+  "src": "bogglemire_lanternwisp_hit"
+ },
+ {
+  "name": "creature/lantern-wisp/die",
+  "src": "bogglemire_lanternwisp_die"
+ },
+ {
+  "name": "creature/reed-witch/attack",
+  "src": "bogglemire_reedwitch_attack"
+ },
+ {
+  "name": "creature/reed-witch/hit",
+  "src": "bogglemire_reedwitch_hit"
+ },
+ {
+  "name": "creature/reed-witch/die",
+  "src": "bogglemire_reedwitch_die"
+ },
+ {
+  "name": "creature/bogsnapper/attack",
+  "src": "bogglemire_bogsnapper_attack"
+ },
+ {
+  "name": "creature/bogsnapper/hit",
+  "src": "bogglemire_bogsnapper_hit"
+ },
+ {
+  "name": "creature/bogsnapper/die",
+  "src": "bogglemire_bogsnapper_die"
+ },
+ {
+  "name": "creature/mother-murk/attack",
+  "src": "bogglemire_mothermurk_attack"
+ },
+ {
+  "name": "creature/mother-murk/hit",
+  "src": "bogglemire_mothermurk_hit"
+ },
+ {
+  "name": "creature/mother-murk/die",
+  "src": "bogglemire_mothermurk_die"
+ },
+ {
+  "name": "creature/mother-murk/surge",
+  "src": "bogglemire_mothermurk_surge"
+ }
+]

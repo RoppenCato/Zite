@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_outlawking_attack",
+  "category": "kingswood",
+  "gain": 0.418,
+  "use": "outlaw-king, attack (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_outlawking_attack_1.wav",
+      "seconds": 0.702,
+      "peak_dbfs": -1
+    }
+  ]
+}

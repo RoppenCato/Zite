@@ -17,6 +17,6 @@ define :str do |n, a, s, rel, amp|
 end
 use_random_seed 8100
 sample S + "runes/riposte_a_1.wav", amp: 0.9
-at [0.03] do sample S + "flesh/hit_w_2.wav", amp: 0.9; sample "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/impactsplat03.mp3.flac", rate: 1.2, amp: 0.6 end
+at [0.03] do sample S + "flesh/hit_w_2.wav", amp: 0.9; sample "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/impactsplat03.mp3.flac", rate: 1.2, amp: 0.6 end
 at [0.12] do sample S + "runes/blood_drip_a_1.wav", rate: 1.2, amp: 0.5, attack: 0, sustain: 0.2, release: 0.15 end
 sleep 1.4

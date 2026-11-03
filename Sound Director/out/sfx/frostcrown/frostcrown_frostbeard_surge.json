@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostbeard_surge",
+  "category": "frostcrown",
+  "gain": 1,
+  "use": "the blizzard comes, Frostbeard roars: a roar, the gust rising, glass-high bells.",
+  "variations": [
+    {
+      "file": "frostcrown_frostbeard_surge_1.wav",
+      "seconds": 0.941,
+      "peak_dbfs": -1
+    }
+  ]
+}

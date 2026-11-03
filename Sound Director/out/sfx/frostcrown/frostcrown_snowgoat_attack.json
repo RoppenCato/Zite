@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_snowgoat_attack",
+  "category": "frostcrown",
+  "gain": 0.313,
+  "use": "snow-goat, attack (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_snowgoat_attack_1.wav",
+      "seconds": 0.281,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_mudling_die",
+  "category": "bogglemire",
+  "gain": 0.873,
+  "use": "mudling, die (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_mudling_die_1.wav",
+      "seconds": 0.556,
+      "peak_dbfs": -1
+    }
+  ]
+}

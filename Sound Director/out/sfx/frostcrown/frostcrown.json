@@ -1,0 +1,275 @@
+{
+  "about": "The frostcrown sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T16:38:54.287Z",
+  "sounds": {
+    "frostcrown_snowgoat_attack": {
+      "files": [
+        "frostcrown_snowgoat_attack_1.wav"
+      ],
+      "seconds": [
+        0.281
+      ],
+      "loud_db": -7.9,
+      "target_db": -4,
+      "use": "snow-goat, attack (frostcrown).",
+      "gain": 0.313,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_snowgoat_hit": {
+      "files": [
+        "frostcrown_snowgoat_hit_1.wav"
+      ],
+      "seconds": [
+        0.34
+      ],
+      "loud_db": -6.4,
+      "target_db": -5,
+      "use": "snow-goat, hit (frostcrown).",
+      "gain": 0.235,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_snowgoat_die": {
+      "files": [
+        "frostcrown_snowgoat_die_1.wav"
+      ],
+      "seconds": [
+        0.619
+      ],
+      "loud_db": -7.2,
+      "target_db": -2,
+      "use": "snow-goat, die (frostcrown).",
+      "gain": 0.364,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_craggoblin_attack": {
+      "files": [
+        "frostcrown_craggoblin_attack_1.wav"
+      ],
+      "seconds": [
+        0.403
+      ],
+      "loud_db": -12.3,
+      "target_db": -4,
+      "use": "crag-goblin, attack (frostcrown).",
+      "gain": 0.52,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_craggoblin_hit": {
+      "files": [
+        "frostcrown_craggoblin_hit_1.wav"
+      ],
+      "seconds": [
+        0.341
+      ],
+      "loud_db": -13.1,
+      "target_db": -5,
+      "use": "crag-goblin, hit (frostcrown).",
+      "gain": 0.508,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_craggoblin_die": {
+      "files": [
+        "frostcrown_craggoblin_die_1.wav"
+      ],
+      "seconds": [
+        0.422
+      ],
+      "loud_db": -12.1,
+      "target_db": -2,
+      "use": "crag-goblin, die (frostcrown).",
+      "gain": 0.639,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_pebblegolem_attack": {
+      "files": [
+        "frostcrown_pebblegolem_attack_1.wav"
+      ],
+      "seconds": [
+        0.417
+      ],
+      "loud_db": -17,
+      "target_db": -4,
+      "use": "pebble-golem, attack (frostcrown).",
+      "gain": 0.893,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_pebblegolem_hit": {
+      "files": [
+        "frostcrown_pebblegolem_hit_1.wav"
+      ],
+      "seconds": [
+        0.63
+      ],
+      "loud_db": -16,
+      "target_db": -5,
+      "use": "pebble-golem, hit (frostcrown).",
+      "gain": 0.709,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_pebblegolem_die": {
+      "files": [
+        "frostcrown_pebblegolem_die_1.wav"
+      ],
+      "seconds": [
+        0.439
+      ],
+      "loud_db": -14.9,
+      "target_db": -2,
+      "use": "pebble-golem, die (frostcrown).",
+      "gain": 0.883,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_frostling_attack": {
+      "files": [
+        "frostcrown_frostling_attack_1.wav"
+      ],
+      "seconds": [
+        0.321
+      ],
+      "loud_db": -7.5,
+      "target_db": -4,
+      "use": "frostling, attack (frostcrown).",
+      "gain": 0.299,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_frostling_hit": {
+      "files": [
+        "frostcrown_frostling_hit_1.wav"
+      ],
+      "seconds": [
+        0.368
+      ],
+      "loud_db": -6.9,
+      "target_db": -5,
+      "use": "frostling, hit (frostcrown).",
+      "gain": 0.249,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_frostling_die": {
+      "files": [
+        "frostcrown_frostling_die_1.wav"
+      ],
+      "seconds": [
+        0.494
+      ],
+      "loud_db": -15.3,
+      "target_db": -2,
+      "use": "frostling, die (frostcrown).",
+      "gain": 0.924,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_oldbighorn_attack": {
+      "files": [
+        "frostcrown_oldbighorn_attack_1.wav"
+      ],
+      "seconds": [
+        0.344
+      ],
+      "loud_db": -12.2,
+      "target_db": -4,
+      "use": "old-bighorn, attack (frostcrown).",
+      "gain": 0.514,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_oldbighorn_hit": {
+      "files": [
+        "frostcrown_oldbighorn_hit_1.wav"
+      ],
+      "seconds": [
+        0.367
+      ],
+      "loud_db": -6.9,
+      "target_db": -5,
+      "use": "old-bighorn, hit (frostcrown).",
+      "gain": 0.249,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_oldbighorn_die": {
+      "files": [
+        "frostcrown_oldbighorn_die_1.wav"
+      ],
+      "seconds": [
+        0.717
+      ],
+      "loud_db": -8.7,
+      "target_db": -2,
+      "use": "old-bighorn, die (frostcrown).",
+      "gain": 0.432,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_frostbeard_attack": {
+      "files": [
+        "frostcrown_frostbeard_attack_1.wav"
+      ],
+      "seconds": [
+        0.692
+      ],
+      "loud_db": -11.7,
+      "target_db": -4,
+      "use": "frostbeard, attack (frostcrown).",
+      "gain": 0.485,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "frostcrown_frostbeard_hit": {
+      "files": [
+        "frostcrown_frostbeard_hit_1.wav"
+      ],
+      "seconds": [
+        0.44
+      ],
+      "loud_db": -12.4,
+      "target_db": -5,
+      "use": "frostbeard, hit (frostcrown).",
+      "gain": 0.469,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "frostcrown_frostbeard_die": {
+      "files": [
+        "frostcrown_frostbeard_die_1.wav"
+      ],
+      "seconds": [
+        0.935
+      ],
+      "loud_db": -10.9,
+      "target_db": -2,
+      "use": "frostbeard, die (frostcrown).",
+      "gain": 0.557,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "frostcrown_frostbeard_surge": {
+      "files": [
+        "frostcrown_frostbeard_surge_1.wav"
+      ],
+      "seconds": [
+        0.941
+      ],
+      "loud_db": -12.6,
+      "target_db": 2,
+      "use": "the blizzard comes, Frostbeard roars: a roar, the gust rising, glass-high bells.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

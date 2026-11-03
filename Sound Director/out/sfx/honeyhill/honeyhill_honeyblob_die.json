@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_honeyblob_die",
+  "category": "honeyhill",
+  "gain": 0.611,
+  "use": "ice-wolf, die (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_honeyblob_die_1.wav",
+      "seconds": 0.958,
+      "peak_dbfs": -1
+    }
+  ]
+}

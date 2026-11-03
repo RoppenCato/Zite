@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_oldbighorn_hit",
+  "category": "frostcrown",
+  "gain": 0.249,
+  "use": "old-bighorn, hit (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_oldbighorn_hit_1.wav",
+      "seconds": 0.367,
+      "peak_dbfs": -1
+    }
+  ]
+}

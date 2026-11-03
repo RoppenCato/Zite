@@ -408,6 +408,96 @@
    "loop": false
   },
   {
+   "name": "ui/step-stone-1",
+   "file": "out/sfx/ui/step_stone_1.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "ui/step-stone-2",
+   "file": "out/sfx/ui/step_stone_2.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "ui/step-stone-3",
+   "file": "out/sfx/ui/step_stone_3.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "ui/step-wood-1",
+   "file": "out/sfx/ui/step_wood_1.wav",
+   "gain": 0.303,
+   "loop": false
+  },
+  {
+   "name": "ui/step-wood-2",
+   "file": "out/sfx/ui/step_wood_2.wav",
+   "gain": 0.303,
+   "loop": false
+  },
+  {
+   "name": "ui/step-wood-3",
+   "file": "out/sfx/ui/step_wood_3.wav",
+   "gain": 0.303,
+   "loop": false
+  },
+  {
+   "name": "ui/step-snow-1",
+   "file": "out/sfx/ui/step_snow_1.wav",
+   "gain": 0.469,
+   "loop": false
+  },
+  {
+   "name": "ui/step-snow-2",
+   "file": "out/sfx/ui/step_snow_2.wav",
+   "gain": 0.469,
+   "loop": false
+  },
+  {
+   "name": "ui/step-snow-3",
+   "file": "out/sfx/ui/step_snow_3.wav",
+   "gain": 0.469,
+   "loop": false
+  },
+  {
+   "name": "ui/step-mud-1",
+   "file": "out/sfx/ui/step_mud_1.wav",
+   "gain": 0.355,
+   "loop": false
+  },
+  {
+   "name": "ui/step-mud-2",
+   "file": "out/sfx/ui/step_mud_2.wav",
+   "gain": 0.355,
+   "loop": false
+  },
+  {
+   "name": "ui/step-mud-3",
+   "file": "out/sfx/ui/step_mud_3.wav",
+   "gain": 0.355,
+   "loop": false
+  },
+  {
+   "name": "ui/step-sand-1",
+   "file": "out/sfx/ui/step_sand_1.wav",
+   "gain": 0.372,
+   "loop": false
+  },
+  {
+   "name": "ui/step-sand-2",
+   "file": "out/sfx/ui/step_sand_2.wav",
+   "gain": 0.372,
+   "loop": false
+  },
+  {
+   "name": "ui/step-sand-3",
+   "file": "out/sfx/ui/step_sand_3.wav",
+   "gain": 0.372,
+   "loop": false
+  },
+  {
    "name": "ui/level-up",
    "file": "out/sfx/ui/level_up_1.wav",
    "gain": 0.485,

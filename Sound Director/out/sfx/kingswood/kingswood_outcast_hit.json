@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_outcast_hit",
+  "category": "kingswood",
+  "gain": 0.232,
+  "use": "city-outcast, hit (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_outcast_hit_1.wav",
+      "seconds": 0.321,
+      "peak_dbfs": -1
+    }
+  ]
+}

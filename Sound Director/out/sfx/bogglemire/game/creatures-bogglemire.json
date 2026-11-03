@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/bog-toad/attack": {
+      "start": 0,
+      "end": 0.3605,
+      "loop": false
+    },
+    "creature/bog-toad/hit": {
+      "start": 0.4105,
+      "end": 1.0687,
+      "loop": false
+    },
+    "creature/bog-toad/die": {
+      "start": 1.1187,
+      "end": 1.7052,
+      "loop": false
+    },
+    "creature/mudling/attack": {
+      "start": 1.7552,
+      "end": 2.219,
+      "loop": false
+    },
+    "creature/mudling/hit": {
+      "start": 2.269,
+      "end": 2.6146,
+      "loop": false
+    },
+    "creature/mudling/die": {
+      "start": 2.6646,
+      "end": 3.2209,
+      "loop": false
+    },
+    "creature/lantern-wisp/attack": {
+      "start": 3.2709,
+      "end": 3.6383,
+      "loop": false
+    },
+    "creature/lantern-wisp/hit": {
+      "start": 3.6883,
+      "end": 3.8855,
+      "loop": false
+    },
+    "creature/lantern-wisp/die": {
+      "start": 3.9355,
+      "end": 4.6299,
+      "loop": false
+    },
+    "creature/reed-witch/attack": {
+      "start": 4.6799,
+      "end": 4.9679,
+      "loop": false
+    },
+    "creature/reed-witch/hit": {
+      "start": 5.0179,
+      "end": 5.5376,
+      "loop": false
+    },
+    "creature/reed-witch/die": {
+      "start": 5.5876,
+      "end": 6.1632,
+      "loop": false
+    },
+    "creature/bogsnapper/attack": {
+      "start": 6.2132,
+      "end": 6.7869,
+      "loop": false
+    },
+    "creature/bogsnapper/hit": {
+      "start": 6.8369,
+      "end": 7.2956,
+      "loop": false
+    },
+    "creature/bogsnapper/die": {
+      "start": 7.3456,
+      "end": 7.8441,
+      "loop": false
+    },
+    "creature/mother-murk/attack": {
+      "start": 7.8941,
+      "end": 8.6941,
+      "loop": false
+    },
+    "creature/mother-murk/hit": {
+      "start": 8.7441,
+      "end": 9.5047,
+      "loop": false
+    },
+    "creature/mother-murk/die": {
+      "start": 9.5547,
+      "end": 10.8547,
+      "loop": false
+    },
+    "creature/mother-murk/surge": {
+      "start": 10.9047,
+      "end": 11.9672,
+      "loop": false
+    }
+  }
+}

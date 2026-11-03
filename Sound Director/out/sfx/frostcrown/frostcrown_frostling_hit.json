@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostling_hit",
+  "category": "frostcrown",
+  "gain": 0.249,
+  "use": "frostling, hit (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostling_hit_1.wav",
+      "seconds": 0.368,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "effect_sunder",
+  "category": "fight",
+  "gain": 0.557,
+  "use": "armour sundered: iron cracking, a plate knocked loose, 0.5 s.",
+  "variations": [
+    {
+      "file": "effect_sunder_1.wav",
+      "seconds": 0.449,
+      "peak_dbfs": -1
+    }
+  ]
+}

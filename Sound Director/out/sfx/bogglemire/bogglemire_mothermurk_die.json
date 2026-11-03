@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_mothermurk_die",
+  "category": "bogglemire",
+  "gain": 0.709,
+  "use": "mother-murk, die (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_mothermurk_die_1.wav",
+      "seconds": 1.3,
+      "peak_dbfs": -1
+    }
+  ]
+}

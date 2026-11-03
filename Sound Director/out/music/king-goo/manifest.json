@@ -1,0 +1,20 @@
+{
+  "name": "king-goo",
+  "bpm": 132,
+  "bars": 46,
+  "beats": 3,
+  "loop_seconds": 62.72727272727273,
+  "sample_rate": 48000,
+  "loop_frames": 3010909,
+  "rendered": "2026-11-03T16:46:57.983Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -4.7,
+      "rms_dbfs": -20.4,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

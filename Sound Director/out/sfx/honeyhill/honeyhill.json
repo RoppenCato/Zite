@@ -1,0 +1,275 @@
+{
+  "about": "The honeyhill sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T16:38:52.097Z",
+  "sounds": {
+    "honeyhill_honeyblob_attack": {
+      "files": [
+        "honeyhill_honeyblob_attack_1.wav"
+      ],
+      "seconds": [
+        0.507
+      ],
+      "loud_db": -9.4,
+      "target_db": -4,
+      "use": "ice-wolf, attack (honeyhill).",
+      "gain": 0.372,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_honeyblob_hit": {
+      "files": [
+        "honeyhill_honeyblob_hit_1.wav"
+      ],
+      "seconds": [
+        0.273
+      ],
+      "loud_db": -13.3,
+      "target_db": -5,
+      "use": "ice-wolf, hit (honeyhill).",
+      "gain": 0.52,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_honeyblob_die": {
+      "files": [
+        "honeyhill_honeyblob_die_1.wav"
+      ],
+      "seconds": [
+        0.958
+      ],
+      "loud_db": -11.7,
+      "target_db": -2,
+      "use": "ice-wolf, die (honeyhill).",
+      "gain": 0.611,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_corngoblin_attack": {
+      "files": [
+        "honeyhill_corngoblin_attack_1.wav"
+      ],
+      "seconds": [
+        0.312
+      ],
+      "loud_db": -12,
+      "target_db": -4,
+      "use": "yeti, attack (honeyhill).",
+      "gain": 0.502,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_corngoblin_hit": {
+      "files": [
+        "honeyhill_corngoblin_hit_1.wav"
+      ],
+      "seconds": [
+        0.265
+      ],
+      "loud_db": -12.6,
+      "target_db": -5,
+      "use": "yeti, hit (honeyhill).",
+      "gain": 0.479,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_corngoblin_die": {
+      "files": [
+        "honeyhill_corngoblin_die_1.wav"
+      ],
+      "seconds": [
+        0.321
+      ],
+      "loud_db": -11.4,
+      "target_db": -2,
+      "use": "yeti, die (honeyhill).",
+      "gain": 0.59,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_buzzbug_attack": {
+      "files": [
+        "honeyhill_buzzbug_attack_1.wav"
+      ],
+      "seconds": [
+        0.19
+      ],
+      "loud_db": -10,
+      "target_db": -4,
+      "use": "frost-wisp, attack (honeyhill).",
+      "gain": 0.399,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_buzzbug_hit": {
+      "files": [
+        "honeyhill_buzzbug_hit_1.wav"
+      ],
+      "seconds": [
+        0.094
+      ],
+      "loud_db": -14.7,
+      "target_db": -5,
+      "use": "frost-wisp, hit (honeyhill).",
+      "gain": 0.611,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_buzzbug_die": {
+      "files": [
+        "honeyhill_buzzbug_die_1.wav"
+      ],
+      "seconds": [
+        0.644
+      ],
+      "loud_db": -13.7,
+      "target_db": -2,
+      "use": "frost-wisp, die (honeyhill).",
+      "gain": 0.769,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_applemimic_attack": {
+      "files": [
+        "honeyhill_applemimic_attack_1.wav"
+      ],
+      "seconds": [
+        0.386
+      ],
+      "loud_db": -11.3,
+      "target_db": -4,
+      "use": "ice-golem, attack (honeyhill).",
+      "gain": 0.463,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_applemimic_hit": {
+      "files": [
+        "honeyhill_applemimic_hit_1.wav"
+      ],
+      "seconds": [
+        0.278
+      ],
+      "loud_db": -11.5,
+      "target_db": -5,
+      "use": "ice-golem, hit (honeyhill).",
+      "gain": 0.422,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_applemimic_die": {
+      "files": [
+        "honeyhill_applemimic_die_1.wav"
+      ],
+      "seconds": [
+        1.255
+      ],
+      "loud_db": -9.9,
+      "target_db": -2,
+      "use": "ice-golem, die (honeyhill).",
+      "gain": 0.496,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_scarecrow_attack": {
+      "files": [
+        "honeyhill_scarecrow_attack_1.wav"
+      ],
+      "seconds": [
+        0.404
+      ],
+      "loud_db": -8.7,
+      "target_db": -4,
+      "use": "yeti-elder, attack (honeyhill).",
+      "gain": 0.343,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_scarecrow_hit": {
+      "files": [
+        "honeyhill_scarecrow_hit_1.wav"
+      ],
+      "seconds": [
+        0.097
+      ],
+      "loud_db": -14.4,
+      "target_db": -5,
+      "use": "yeti-elder, hit (honeyhill).",
+      "gain": 0.59,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_scarecrow_die": {
+      "files": [
+        "honeyhill_scarecrow_die_1.wav"
+      ],
+      "seconds": [
+        0.459
+      ],
+      "loud_db": -14.5,
+      "target_db": -2,
+      "use": "yeti-elder, die (honeyhill).",
+      "gain": 0.843,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_queenbumble_attack": {
+      "files": [
+        "honeyhill_queenbumble_attack_1.wav"
+      ],
+      "seconds": [
+        0.465
+      ],
+      "loud_db": -12.8,
+      "target_db": -4,
+      "use": "frost-matriarch, attack (honeyhill).",
+      "gain": 0.551,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "honeyhill_queenbumble_hit": {
+      "files": [
+        "honeyhill_queenbumble_hit_1.wav"
+      ],
+      "seconds": [
+        0.266
+      ],
+      "loud_db": -12.3,
+      "target_db": -5,
+      "use": "frost-matriarch, hit (honeyhill).",
+      "gain": 0.463,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "honeyhill_queenbumble_die": {
+      "files": [
+        "honeyhill_queenbumble_die_1.wav"
+      ],
+      "seconds": [
+        1.019
+      ],
+      "loud_db": -14.1,
+      "target_db": -2,
+      "use": "frost-matriarch, die (honeyhill).",
+      "gain": 0.805,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "honeyhill_queenbumble_surge": {
+      "files": [
+        "honeyhill_queenbumble_surge_1.wav"
+      ],
+      "seconds": [
+        1.025
+      ],
+      "loud_db": -12.2,
+      "target_db": 2,
+      "use": "Queen Bumble's hive answers, the swarm thickens: buzzes piling up and rising.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "effect_guardian",
+  "category": "fight",
+  "gain": 0.442,
+  "use": "a guardian steps in: a shield's wooden knock, an open chord of bells, a breath of strings, 0.6 s.",
+  "variations": [
+    {
+      "file": "effect_guardian_1.wav",
+      "seconds": 0.519,
+      "peak_dbfs": -1
+    }
+  ]
+}

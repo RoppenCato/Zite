@@ -8,7 +8,7 @@ use_bpm 60
 C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
 W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
 S = "C:/dev/SG/Sound Director/out/sfx/"
-WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/"
+WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/"
 sample C + "c1_eat_02.wav", rate: 1.1, amp: 0.8
 sample W + "wood_hit_05.wav", rate: 0.9, amp: 0.7, attack: 0, sustain: 0.03, release: 0.06
 at [0.03] do sample C + "c1_hurt_04.wav", rate: 1.3, amp: 0.5 end

@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_craggoblin_die",
+  "category": "frostcrown",
+  "gain": 0.639,
+  "use": "crag-goblin, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_craggoblin_die_1.wav",
+      "seconds": 0.422,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+ "name": "creatures-kingswood",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/city-outcast/attack",
+   "file": "out/sfx/kingswood/kingswood_outcast_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/city-outcast/hit",
+   "file": "out/sfx/kingswood/kingswood_outcast_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/city-outcast/die",
+   "file": "out/sfx/kingswood/kingswood_outcast_die_1.wav",
+   "gain": 0.427,
+   "loop": false
+  },
+  {
+   "name": "creature/poacher/attack",
+   "file": "out/sfx/kingswood/kingswood_poacher_attack_1.wav",
+   "gain": 0.526,
+   "loop": false
+  },
+  {
+   "name": "creature/poacher/hit",
+   "file": "out/sfx/kingswood/kingswood_poacher_hit_1.wav",
+   "gain": 0.229,
+   "loop": false
+  },
+  {
+   "name": "creature/poacher/die",
+   "file": "out/sfx/kingswood/kingswood_poacher_die_1.wav",
+   "gain": 0.437,
+   "loop": false
+  },
+  {
+   "name": "creature/hedge-knight/attack",
+   "file": "out/sfx/kingswood/kingswood_hedgeknight_attack_1.wav",
+   "gain": 0.394,
+   "loop": false
+  },
+  {
+   "name": "creature/hedge-knight/hit",
+   "file": "out/sfx/kingswood/kingswood_hedgeknight_hit_1.wav",
+   "gain": 0.273,
+   "loop": false
+  },
+  {
+   "name": "creature/hedge-knight/die",
+   "file": "out/sfx/kingswood/kingswood_hedgeknight_die_1.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "creature/tusker/attack",
+   "file": "out/sfx/kingswood/kingswood_tusker_attack_1.wav",
+   "gain": 0.463,
+   "loop": false
+  },
+  {
+   "name": "creature/tusker/hit",
+   "file": "out/sfx/kingswood/kingswood_tusker_hit_1.wav",
+   "gain": 0.639,
+   "loop": false
+  },
+  {
+   "name": "creature/tusker/die",
+   "file": "out/sfx/kingswood/kingswood_tusker_die_1.wav",
+   "gain": 0.814,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw-king/attack",
+   "file": "out/sfx/kingswood/kingswood_outlawking_attack_1.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw-king/hit",
+   "file": "out/sfx/kingswood/kingswood_outlawking_hit_1.wav",
+   "gain": 0.238,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw-king/die",
+   "file": "out/sfx/kingswood/kingswood_outlawking_die_1.wav",
+   "gain": 0.514,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw-king/surge",
+   "file": "out/sfx/kingswood/kingswood_outlawking_surge_1.wav",
+   "gain": 0.873,
+   "loop": false
+  }
+ ]
+}

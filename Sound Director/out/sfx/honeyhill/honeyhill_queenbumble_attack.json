@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_queenbumble_attack",
+  "category": "honeyhill",
+  "gain": 0.551,
+  "use": "frost-matriarch, attack (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_queenbumble_attack_1.wav",
+      "seconds": 0.465,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_reedwitch_attack",
+  "category": "bogglemire",
+  "gain": 0.538,
+  "use": "reed-witch, attack (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_reedwitch_attack_1.wav",
+      "seconds": 0.288,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "step_snow",
+  "category": "ui",
+  "gain": 0.469,
+  "use": "a step: snow",
+  "variations": [
+    {
+      "file": "step_snow_1.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_snow_2.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_snow_3.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -67,6 +67,42 @@
    "file": "out/sfx/ui/arrive_church_1.wav",
    "gain": 0.273,
    "loop": false
+  },
+  {
+   "name": "ui/arrive-board",
+   "file": "out/sfx/ui/arrive_board_1.wav",
+   "gain": 0.625,
+   "loop": false
+  },
+  {
+   "name": "ui/ferry",
+   "file": "out/sfx/ui/dream_ferry_1.wav",
+   "gain": 0.551,
+   "loop": false
+  },
+  {
+   "name": "ui/dreamgate",
+   "file": "out/sfx/ui/dream_dreamgate_1.wav",
+   "gain": 0.502,
+   "loop": false
+  },
+  {
+   "name": "ui/wake",
+   "file": "out/sfx/ui/dream_wake_1.wav",
+   "gain": 0.403,
+   "loop": false
+  },
+  {
+   "name": "ui/dreamdust",
+   "file": "out/sfx/ui/dream_dreamdust_1.wav",
+   "gain": 0.219,
+   "loop": false
+  },
+  {
+   "name": "ui/dreamdust-buy",
+   "file": "out/sfx/ui/dream_dreamdust_buy_1.wav",
+   "gain": 0.351,
+   "loop": false
   }
  ]
 }

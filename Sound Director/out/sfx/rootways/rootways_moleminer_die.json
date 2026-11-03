@@ -1,0 +1,13 @@
+{
+  "name": "rootways_moleminer_die",
+  "category": "rootways",
+  "gain": 0.347,
+  "use": "mole-miner, die (rootways).",
+  "variations": [
+    {
+      "file": "rootways_moleminer_die_1.wav",
+      "seconds": 0.388,
+      "peak_dbfs": -1
+    }
+  ]
+}

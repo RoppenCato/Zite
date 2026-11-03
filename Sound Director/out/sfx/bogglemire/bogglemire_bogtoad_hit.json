@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_bogtoad_hit",
+  "category": "bogglemire",
+  "gain": 0.296,
+  "use": "bog-toad, hit (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_bogtoad_hit_1.wav",
+      "seconds": 0.658,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "grumblebark_surge",
+  "category": "forest",
+  "gain": 0.743,
+  "use": "Grumblebark's second phase, the whole forest shakes: a great creak, a groan, the wood knocking.",
+  "variations": [
+    {
+      "file": "grumblebark_surge_1.wav",
+      "seconds": 0.621,
+      "peak_dbfs": -1
+    }
+  ]
+}

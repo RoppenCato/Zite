@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_lanternwisp_attack",
+  "category": "bogglemire",
+  "gain": 0.474,
+  "use": "lantern-wisp, attack (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_lanternwisp_attack_1.wav",
+      "seconds": 0.367,
+      "peak_dbfs": -1
+    }
+  ]
+}

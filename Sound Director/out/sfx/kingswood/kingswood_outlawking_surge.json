@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_outlawking_surge",
+  "category": "kingswood",
+  "gain": 0.873,
+  "use": "the Outlaw King casts off his cloak, the gold blade is out: a shout, cloth thrown, a blade's long ring.",
+  "variations": [
+    {
+      "file": "kingswood_outlawking_surge_1.wav",
+      "seconds": 0.813,
+      "peak_dbfs": -1
+    }
+  ]
+}

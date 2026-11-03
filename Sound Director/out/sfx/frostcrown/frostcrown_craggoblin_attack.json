@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_craggoblin_attack",
+  "category": "frostcrown",
+  "gain": 0.52,
+  "use": "crag-goblin, attack (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_craggoblin_attack_1.wav",
+      "seconds": 0.403,
+      "peak_dbfs": -1
+    }
+  ]
+}

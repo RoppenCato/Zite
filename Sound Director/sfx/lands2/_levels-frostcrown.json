@@ -1,0 +1,97 @@
+{
+  "frostcrown_snowgoat_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "snow-goat, attack (frostcrown)."
+  },
+  "frostcrown_snowgoat_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "snow-goat, hit (frostcrown)."
+  },
+  "frostcrown_snowgoat_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "snow-goat, die (frostcrown)."
+  },
+  "frostcrown_craggoblin_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "crag-goblin, attack (frostcrown)."
+  },
+  "frostcrown_craggoblin_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "crag-goblin, hit (frostcrown)."
+  },
+  "frostcrown_craggoblin_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "crag-goblin, die (frostcrown)."
+  },
+  "frostcrown_pebblegolem_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "pebble-golem, attack (frostcrown)."
+  },
+  "frostcrown_pebblegolem_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "pebble-golem, hit (frostcrown)."
+  },
+  "frostcrown_pebblegolem_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "pebble-golem, die (frostcrown)."
+  },
+  "frostcrown_frostling_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "frostling, attack (frostcrown)."
+  },
+  "frostcrown_frostling_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "frostling, hit (frostcrown)."
+  },
+  "frostcrown_frostling_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "frostling, die (frostcrown)."
+  },
+  "frostcrown_oldbighorn_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "old-bighorn, attack (frostcrown)."
+  },
+  "frostcrown_oldbighorn_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "old-bighorn, hit (frostcrown)."
+  },
+  "frostcrown_oldbighorn_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "old-bighorn, die (frostcrown)."
+  },
+  "frostcrown_frostbeard_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "frostbeard, attack (frostcrown)."
+  },
+  "frostcrown_frostbeard_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "frostbeard, hit (frostcrown)."
+  },
+  "frostcrown_frostbeard_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "frostbeard, die (frostcrown)."
+  },
+  "frostcrown_frostbeard_surge": {
+    "target": 2,
+    "max": 1.4,
+    "use": "the blizzard comes, Frostbeard roars: a roar, the gust rising, glass-high bells."
+  }
+}

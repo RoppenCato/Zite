@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostbeard_die",
+  "category": "frostcrown",
+  "gain": 0.557,
+  "use": "frostbeard, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostbeard_die_1.wav",
+      "seconds": 0.935,
+      "peak_dbfs": -1
+    }
+  ]
+}

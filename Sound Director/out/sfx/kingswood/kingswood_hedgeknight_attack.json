@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_hedgeknight_attack",
+  "category": "kingswood",
+  "gain": 0.394,
+  "use": "hedge-knight, attack (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_hedgeknight_attack_1.wav",
+      "seconds": 0.498,
+      "peak_dbfs": -1
+    }
+  ]
+}

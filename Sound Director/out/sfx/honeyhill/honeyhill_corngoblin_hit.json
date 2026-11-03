@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_corngoblin_hit",
+  "category": "honeyhill",
+  "gain": 0.479,
+  "use": "yeti, hit (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_corngoblin_hit_1.wav",
+      "seconds": 0.265,
+      "peak_dbfs": -1
+    }
+  ]
+}

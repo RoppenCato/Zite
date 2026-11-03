@@ -1,0 +1,9 @@
+fight/effect_burn
+fight/effect_bleed
+fight/effect_sunder
+fight/effect_interrupt
+fight/effect_guardian
+fight/effect_clone
+ui/arrive_board
+ui/step_stone
+ui/step_wood

@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_snowgoat_die",
+  "category": "frostcrown",
+  "gain": 0.364,
+  "use": "snow-goat, die (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_snowgoat_die_1.wav",
+      "seconds": 0.619,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -8,7 +8,7 @@ use_bpm 60
 C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
 W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
 S = "C:/dev/SG/Sound Director/out/sfx/"
-WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_squish/files/"
+WET = "C:/dev/SG/Sound Director/sfx/flesh/ref/oga_wet_squish/files/impsplat/"
 sample C + "c2_slime_03.wav", rate: 0.95, amp: 0.8
 at [0.1] do sample WET + "impactsplat02.mp3.flac", rate: 1.1, amp: 0.9 end
 at [0.16] do sample C + "c2_slime_08.wav", rate: 0.9, amp: 0.6 end

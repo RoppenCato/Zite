@@ -1,0 +1,13 @@
+{
+  "name": "rootways_digby_die",
+  "category": "rootways",
+  "gain": 0.502,
+  "use": "old-digby, die (rootways).",
+  "variations": [
+    {
+      "file": "rootways_digby_die_1.wav",
+      "seconds": 0.779,
+      "peak_dbfs": -1
+    }
+  ]
+}

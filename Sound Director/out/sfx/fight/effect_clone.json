@@ -1,0 +1,13 @@
+{
+  "name": "effect_clone",
+  "category": "fight",
+  "gain": 0.422,
+  "use": "a copy appears: the recorded shadowstep, its echo, a falling pair of bells, 0.5 s.",
+  "variations": [
+    {
+      "file": "effect_clone_1.wav",
+      "seconds": 0.512,
+      "peak_dbfs": -1
+    }
+  ]
+}

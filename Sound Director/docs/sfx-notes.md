@@ -235,3 +235,7 @@ where no one recording does what the moment needs (the storm's gathering, a soun
 ## 15. Recorded roars on a phone (2026-11-03)
 
 - rubberduck's roars and BigSoundBank's groans are mostly under 250 Hz. High-pass them at 330 Hz (`:hpf, cutoff: 64`) before anything else; a high-pass at 196 Hz left Old Snowshoulder at 86 to 94 %. Some recordings stay low whatever is done (roar_01, roar_02): swap the recording.
+
+## 16. Check the paths before a render (2026-11-03)
+
+- Sonic Pi plays nothing and says nothing much when a sample path is wrong: the slime's and King Goo's deaths shipped without their splat for two days. Run a path check over every source before rendering (the studio's checks name each missing file).

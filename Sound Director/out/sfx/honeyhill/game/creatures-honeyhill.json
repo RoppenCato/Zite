@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/ice-wolf/attack": {
+      "start": 0,
+      "end": 0.5074,
+      "loop": false
+    },
+    "creature/ice-wolf/hit": {
+      "start": 0.5574,
+      "end": 0.8304,
+      "loop": false
+    },
+    "creature/ice-wolf/die": {
+      "start": 0.8804,
+      "end": 1.8385,
+      "loop": false
+    },
+    "creature/yeti/attack": {
+      "start": 1.8885,
+      "end": 2.2007,
+      "loop": false
+    },
+    "creature/yeti/hit": {
+      "start": 2.2507,
+      "end": 2.5155,
+      "loop": false
+    },
+    "creature/yeti/die": {
+      "start": 2.5655,
+      "end": 2.8865,
+      "loop": false
+    },
+    "creature/frost-wisp/attack": {
+      "start": 2.9365,
+      "end": 3.1265,
+      "loop": false
+    },
+    "creature/frost-wisp/hit": {
+      "start": 3.1765,
+      "end": 3.2703,
+      "loop": false
+    },
+    "creature/frost-wisp/die": {
+      "start": 3.3203,
+      "end": 3.964,
+      "loop": false
+    },
+    "creature/ice-golem/attack": {
+      "start": 4.014,
+      "end": 4.3999,
+      "loop": false
+    },
+    "creature/ice-golem/hit": {
+      "start": 4.4499,
+      "end": 4.728,
+      "loop": false
+    },
+    "creature/ice-golem/die": {
+      "start": 4.778,
+      "end": 6.0332,
+      "loop": false
+    },
+    "creature/yeti-elder/attack": {
+      "start": 6.0832,
+      "end": 6.4871,
+      "loop": false
+    },
+    "creature/yeti-elder/hit": {
+      "start": 6.5371,
+      "end": 6.6344,
+      "loop": false
+    },
+    "creature/yeti-elder/die": {
+      "start": 6.6844,
+      "end": 7.143,
+      "loop": false
+    },
+    "creature/frost-matriarch/attack": {
+      "start": 7.193,
+      "end": 7.6582,
+      "loop": false
+    },
+    "creature/frost-matriarch/hit": {
+      "start": 7.7082,
+      "end": 7.9746,
+      "loop": false
+    },
+    "creature/frost-matriarch/die": {
+      "start": 8.0246,
+      "end": 9.0439,
+      "loop": false
+    },
+    "creature/frost-matriarch/surge": {
+      "start": 9.0939,
+      "end": 10.1192,
+      "loop": false
+    }
+  }
+}

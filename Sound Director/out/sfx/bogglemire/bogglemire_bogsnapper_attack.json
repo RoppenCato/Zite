@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_bogsnapper_attack",
+  "category": "bogglemire",
+  "gain": 0.526,
+  "use": "bogsnapper, attack (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_bogsnapper_attack_1.wav",
+      "seconds": 0.574,
+      "peak_dbfs": -1
+    }
+  ]
+}

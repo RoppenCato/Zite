@@ -1,0 +1,13 @@
+{
+  "name": "dream_ferry",
+  "category": "ui",
+  "gain": 0.551,
+  "use": "the ferry leaving: Robin's hull creak and oar, a ship's bell twice, water against the side. 1.5 s.",
+  "variations": [
+    {
+      "file": "dream_ferry_1.wav",
+      "seconds": 1.313,
+      "peak_dbfs": -1
+    }
+  ]
+}

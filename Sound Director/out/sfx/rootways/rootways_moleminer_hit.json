@@ -1,0 +1,13 @@
+{
+  "name": "rootways_moleminer_hit",
+  "category": "rootways",
+  "gain": 0.249,
+  "use": "mole-miner, hit (rootways).",
+  "variations": [
+    {
+      "file": "rootways_moleminer_hit_1.wav",
+      "seconds": 0.427,
+      "peak_dbfs": -1
+    }
+  ]
+}

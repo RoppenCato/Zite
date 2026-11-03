@@ -1,12 +1,12 @@
 {
   "name": "slime_die",
   "category": "creatures",
-  "gain": 0.743,
+  "gain": 0.368,
   "use": "the Jelly Slime bursts: a squish and a splat falling apart.",
   "variations": [
     {
       "file": "slime_die_1.wav",
-      "seconds": 0.553,
+      "seconds": 0.7,
       "peak_dbfs": -1
     }
   ]

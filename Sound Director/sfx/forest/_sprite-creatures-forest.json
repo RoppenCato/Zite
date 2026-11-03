@@ -145,6 +145,12 @@
    "file": "out/sfx/forest/step_moss_3.wav",
    "gain": 0.27,
    "loop": false
+  },
+  {
+   "name": "creature/briar-king/surge",
+   "file": "out/sfx/forest/grumblebark_surge_1.wav",
+   "gain": 0.743,
+   "loop": false
   }
  ]
 }

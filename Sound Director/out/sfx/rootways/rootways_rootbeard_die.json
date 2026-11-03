@@ -1,0 +1,13 @@
+{
+  "name": "rootways_rootbeard_die",
+  "category": "rootways",
+  "gain": 0.662,
+  "use": "old-rootbeard, die (rootways).",
+  "variations": [
+    {
+      "file": "rootways_rootbeard_die_1.wav",
+      "seconds": 0.867,
+      "peak_dbfs": -1
+    }
+  ]
+}

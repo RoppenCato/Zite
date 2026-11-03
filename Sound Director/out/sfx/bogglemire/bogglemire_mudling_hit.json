@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_mudling_hit",
+  "category": "bogglemire",
+  "gain": 0.408,
+  "use": "mudling, hit (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_mudling_hit_1.wav",
+      "seconds": 0.346,
+      "peak_dbfs": -1
+    }
+  ]
+}

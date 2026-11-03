@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_buzzbug_hit",
+  "category": "honeyhill",
+  "gain": 0.611,
+  "use": "frost-wisp, hit (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_buzzbug_hit_1.wav",
+      "seconds": 0.094,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "honeyhill_applemimic_hit",
+  "category": "honeyhill",
+  "gain": 0.422,
+  "use": "ice-golem, hit (honeyhill).",
+  "variations": [
+    {
+      "file": "honeyhill_applemimic_hit_1.wav",
+      "seconds": 0.278,
+      "peak_dbfs": -1
+    }
+  ]
+}

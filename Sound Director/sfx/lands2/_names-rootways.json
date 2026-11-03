@@ -1,0 +1,66 @@
+[
+ {
+  "name": "creature/glowcap/attack",
+  "src": "rootways_glowcap_attack"
+ },
+ {
+  "name": "creature/glowcap/hit",
+  "src": "rootways_glowcap_hit"
+ },
+ {
+  "name": "creature/glowcap/die",
+  "src": "rootways_glowcap_die"
+ },
+ {
+  "name": "creature/old-rootbeard/attack",
+  "src": "rootways_rootbeard_attack"
+ },
+ {
+  "name": "creature/old-rootbeard/hit",
+  "src": "rootways_rootbeard_hit"
+ },
+ {
+  "name": "creature/old-rootbeard/die",
+  "src": "rootways_rootbeard_die"
+ },
+ {
+  "name": "creature/root-grub/attack",
+  "src": "rootways_rootgrub_attack"
+ },
+ {
+  "name": "creature/root-grub/hit",
+  "src": "rootways_rootgrub_hit"
+ },
+ {
+  "name": "creature/root-grub/die",
+  "src": "rootways_rootgrub_die"
+ },
+ {
+  "name": "creature/mole-miner/attack",
+  "src": "rootways_moleminer_attack"
+ },
+ {
+  "name": "creature/mole-miner/hit",
+  "src": "rootways_moleminer_hit"
+ },
+ {
+  "name": "creature/mole-miner/die",
+  "src": "rootways_moleminer_die"
+ },
+ {
+  "name": "creature/old-digby/attack",
+  "src": "rootways_digby_attack"
+ },
+ {
+  "name": "creature/old-digby/hit",
+  "src": "rootways_digby_hit"
+ },
+ {
+  "name": "creature/old-digby/die",
+  "src": "rootways_digby_die"
+ },
+ {
+  "name": "creature/old-rootbeard/surge",
+  "src": "rootways_rootbeard_surge"
+ }
+]

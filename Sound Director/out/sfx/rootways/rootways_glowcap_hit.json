@@ -1,0 +1,13 @@
+{
+  "name": "rootways_glowcap_hit",
+  "category": "rootways",
+  "gain": 0.27,
+  "use": "glowcap, hit (rootways).",
+  "variations": [
+    {
+      "file": "rootways_glowcap_hit_1.wav",
+      "seconds": 0.195,
+      "peak_dbfs": -1
+    }
+  ]
+}

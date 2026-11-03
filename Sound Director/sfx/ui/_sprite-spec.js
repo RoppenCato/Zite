@@ -24,6 +24,9 @@ const NAMES = {
   arrive_church: N('ui/arrive-church', 1, 'ui-spots'), stung: N('ui/stung', 1),
   board_open: N('ui/board-open', 1), quest_done: N('ui/quest-done', 1), person_found: N('ui/person-found', 1), log_open: N('ui/log-open', 1),
   night_falls: N('ui/night-falls', 1), morning: N('ui/morning', 1), sleep: N('ui/sleep', 1),
+  arrive_board: N('ui/arrive-board', 1, 'ui-spots'),
+  step_stone: N('ui/step-stone'), step_wood: N('ui/step-wood'), step_snow: N('ui/step-snow'), step_mud: N('ui/step-mud'), step_sand: N('ui/step-sand'),   // Robin's "fill the holes", 2026-11-03
+  dream_ferry: N('ui/ferry', 1, 'ui-spots'), dream_dreamgate: N('ui/dreamgate', 1, 'ui-spots'), dream_wake: N('ui/wake', 1, 'ui-spots'), dream_dreamdust: N('ui/dreamdust', 1, 'ui-spots'), dream_dreamdust_buy: N('ui/dreamdust-buy', 1, 'ui-spots'),   // the Dream, 2026-11-03
   level_up: N('ui/level-up', 1), boss_down: N('ui/boss-down', 1), area_opened: N('ui/area-opened', 1),
 };
 const specs = {};

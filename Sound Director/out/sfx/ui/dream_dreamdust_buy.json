@@ -1,0 +1,13 @@
+{
+  "name": "dream_dreamdust_buy",
+  "category": "ui",
+  "gain": 0.351,
+  "use": "bought with Dreamdust: the sparkle poured out, a wooden knock on the counter, a small chord. 0.6 s.",
+  "variations": [
+    {
+      "file": "dream_dreamdust_buy_1.wav",
+      "seconds": 0.578,
+      "peak_dbfs": -1
+    }
+  ]
+}

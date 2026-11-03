@@ -409,6 +409,42 @@
    "file": "out/sfx/fight/impact_holy_1.wav",
    "gain": 0.639,
    "loop": false
+  },
+  {
+   "name": "fight/effect-burn",
+   "file": "out/sfx/fight/effect_burn_1.wav",
+   "gain": 0.893,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-bleed",
+   "file": "out/sfx/fight/effect_bleed_1.wav",
+   "gain": 0.385,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-sunder",
+   "file": "out/sfx/fight/effect_sunder_1.wav",
+   "gain": 0.557,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-interrupt",
+   "file": "out/sfx/fight/effect_interrupt_1.wav",
+   "gain": 0.67,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-guardian",
+   "file": "out/sfx/fight/effect_guardian_1.wav",
+   "gain": 0.442,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-clone",
+   "file": "out/sfx/fight/effect_clone_1.wav",
+   "gain": 0.422,
+   "loop": false
   }
  ]
 }

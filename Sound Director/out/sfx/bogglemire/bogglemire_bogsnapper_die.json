@@ -1,0 +1,13 @@
+{
+  "name": "bogglemire_bogsnapper_die",
+  "category": "bogglemire",
+  "gain": 0.814,
+  "use": "bogsnapper, die (bogglemire).",
+  "variations": [
+    {
+      "file": "bogglemire_bogsnapper_die_1.wav",
+      "seconds": 0.498,
+      "peak_dbfs": -1
+    }
+  ]
+}

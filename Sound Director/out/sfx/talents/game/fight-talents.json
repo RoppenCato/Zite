@@ -77,12 +77,12 @@
     },
     "fight/talent-blood": {
       "start": 8.6779,
-      "end": 8.9725,
+      "end": 9.3626,
       "loop": false
     },
     "fight/talent-magic-power": {
-      "start": 9.0225,
-      "end": 10.4225,
+      "start": 9.4126,
+      "end": 10.8126,
       "loop": false
     }
   }

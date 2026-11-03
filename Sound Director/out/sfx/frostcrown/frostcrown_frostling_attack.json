@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostling_attack",
+  "category": "frostcrown",
+  "gain": 0.299,
+  "use": "frostling, attack (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostling_attack_1.wav",
+      "seconds": 0.321,
+      "peak_dbfs": -1
+    }
+  ]
+}

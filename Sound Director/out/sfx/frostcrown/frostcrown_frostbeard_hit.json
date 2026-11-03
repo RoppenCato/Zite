@@ -1,0 +1,13 @@
+{
+  "name": "frostcrown_frostbeard_hit",
+  "category": "frostcrown",
+  "gain": 0.469,
+  "use": "frostbeard, hit (frostcrown).",
+  "variations": [
+    {
+      "file": "frostcrown_frostbeard_hit_1.wav",
+      "seconds": 0.44,
+      "peak_dbfs": -1
+    }
+  ]
+}

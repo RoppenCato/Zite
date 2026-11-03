@@ -1,0 +1,23 @@
+{
+  "name": "step_sand",
+  "category": "ui",
+  "gain": 0.372,
+  "use": "a step: sand",
+  "variations": [
+    {
+      "file": "step_sand_1.wav",
+      "seconds": 0.176,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_sand_2.wav",
+      "seconds": 0.207,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_sand_3.wav",
+      "seconds": 0.173,
+      "peak_dbfs": -1
+    }
+  ]
+}

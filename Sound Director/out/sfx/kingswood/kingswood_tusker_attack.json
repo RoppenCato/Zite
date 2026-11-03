@@ -1,0 +1,13 @@
+{
+  "name": "kingswood_tusker_attack",
+  "category": "kingswood",
+  "gain": 0.463,
+  "use": "tusker, attack (kingswood).",
+  "variations": [
+    {
+      "file": "kingswood_tusker_attack_1.wav",
+      "seconds": 0.197,
+      "peak_dbfs": -1
+    }
+  ]
+}

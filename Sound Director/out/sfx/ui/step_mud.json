@@ -1,0 +1,23 @@
+{
+  "name": "step_mud",
+  "category": "ui",
+  "gain": 0.355,
+  "use": "a step: mud",
+  "variations": [
+    {
+      "file": "step_mud_1.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_mud_2.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_mud_3.wav",
+      "seconds": 0.3,
+      "peak_dbfs": -1
+    }
+  ]
+}

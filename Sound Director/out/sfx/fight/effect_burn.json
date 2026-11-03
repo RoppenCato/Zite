@@ -1,0 +1,13 @@
+{
+  "name": "effect_burn",
+  "category": "fight",
+  "gain": 0.893,
+  "use": "burning: a flame catching, the recorded fire's crackle, 0.4 s.",
+  "variations": [
+    {
+      "file": "effect_burn_1.wav",
+      "seconds": 0.318,
+      "peak_dbfs": -1
+    }
+  ]
+}
