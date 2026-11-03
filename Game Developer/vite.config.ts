@@ -25,11 +25,10 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Board World',
-        short_name: 'Board World',
-        description: "Robin's co-op board world game (working title to come).",
+        name: 'Zite',
+        short_name: 'Zite',
+        description: 'A co-op board world: roll, explore, fight together.',
         start_url: '/',
         scope: '/',
         display: 'standalone',

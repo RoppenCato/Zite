@@ -6,17 +6,28 @@ const KEY = 'boardworld.settings';
 
 export interface Settings {
   sound: boolean;
+  /** The music's and the sounds' loudness, 0 to 1 (2026-11-03). */
+  musicVolume: number;
+  soundVolume: number;
   fewerEffects: boolean;
   largeText: boolean;
   vibration: boolean;
 }
 
-const DEFAULTS: Settings = { sound: true, fewerEffects: false, largeText: false, vibration: true };
+const DEFAULTS: Settings = { sound: true, musicVolume: 1, soundVolume: 1, fewerEffects: false, largeText: false, vibration: true };
+/** The steps a volume row taps through: full, medium, low, off. */
+export const VOLUME_STEPS = [1, 0.6, 0.3, 0] as const;
+export const volumeWord = (v: number): string => (v >= 0.99 ? 'Full' : v >= 0.5 ? 'Medium' : v > 0 ? 'Low' : 'Off');
 
 function load(storage: Storage | null): Settings {
   try {
     const raw = storage?.getItem(KEY);
-    if (raw) return { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (raw) {
+      const stored = JSON.parse(raw) as Partial<Settings>;
+      // Sound turned off before the volumes came: both start off (2026-11-03).
+      const off = stored.sound === false && stored.musicVolume === undefined ? { musicVolume: 0, soundVolume: 0, sound: true } : {};
+      return { ...DEFAULTS, ...stored, ...off };
+    }
   } catch {
     // A broken value: the defaults.
   }

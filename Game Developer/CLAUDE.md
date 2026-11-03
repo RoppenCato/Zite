@@ -147,7 +147,7 @@ One npm project at this folder's root (Node 22.12 or newer; built with 24). `REA
 - `npm run server`: the Node server (ws://localhost:8787, SQLite in `server/data/world.db`); Node runs the TypeScript
   straight, no build.
 - `npm run typecheck`: TypeScript strict, `rules/tsconfig.json` (no DOM) then `tsconfig.json` (everything).
-- `npm run icons`: remakes the placeholder icons; `npm run tunnel`: cloudflared in front of the server (not used yet).
+- `npm run tunnel`: cloudflared in front of the server (not used yet). The app icons are Mitch, AD's brand art (`client/public`); the old placeholder maker is in `archive/`.
 
 ## Things to know before changing code
 

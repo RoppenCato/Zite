@@ -316,7 +316,8 @@ export class SkillsScene extends Phaser.Scene {
         if (rejected?.type === 'rejected') this.note = `Not now: ${rejected.reason}.`;
         else {
           this.note = done;
-          sfx.play('ui/wear');
+          // Learning or raising a skill is the trainer's sound; carrying one, the plain one.
+          sfx.play(intent.op === 'learn' ? 'ui/trainer' : 'ui/wear');
           feel.buzz();
           if (intent.op === 'reset') this.picked = null;
         }

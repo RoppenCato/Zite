@@ -73,7 +73,7 @@ export class GameLog {
     }
     const nav = typeof navigator === 'undefined' ? null : navigator;
     const header = [
-      `Board World log`,
+      `Zite log`,
       `started ${new Date(this.started).toISOString()}, running ${(this.elapsed / 1000).toFixed(1)} s`,
       `agent ${nav?.userAgent ?? '?'}`,
       `screen ${screen.width}x${screen.height} @${window.devicePixelRatio}, viewport ${window.innerWidth}x${window.innerHeight}`,

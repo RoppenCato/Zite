@@ -43,18 +43,23 @@ const SPRITES: SpriteFile[] = [
   { key: 'fight-classes', json: fightClassesJson, ogg: fightClassesOgg, volume: 1, lazy: true },
   { key: 'creatures-forest', json: creaturesForestJson, ogg: creaturesForestOgg, volume: 1, lazy: true },
 ];
-// The far lands' voices (Nigel, SD): a sprite in the folder is a sprite in the game, until then silence.
-const FAR_VOICES = import.meta.glob('../../assets/sound/creatures-{pirates,giants,crown}/*.{json,ogg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-for (const key of ['creatures-pirates', 'creatures-giants', 'creatures-crown']) {
-  const json = FAR_VOICES[`../../assets/sound/${key}/${key}.json`];
+// Every other land's voices (Nigel, SD): any creatures-<theme or land> folder is a sprite in the game, loaded when you walk
+// into that land; none, and its creatures are silent (2026-11-03: no code change for a new pack).
+const FAR_VOICES = import.meta.glob('../../assets/sound/creatures-*/*.{json,ogg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+for (const path of Object.keys(FAR_VOICES)) {
+  const m = /\/(creatures-[\w-]+)\/(creatures-[\w-]+)\.json$/.exec(path);
+  if (!m || m[1] !== m[2] || SPRITES.some((s) => s.key === m[1])) continue;
+  const key = m[1]!;
   const ogg = FAR_VOICES[`../../assets/sound/${key}/${key}.ogg`];
-  if (json && ogg) SPRITES.push({ key, json, ogg, volume: 1, lazy: true });
+  if (ogg) SPRITES.push({ key, json: FAR_VOICES[path]!, ogg, volume: 1, lazy: true });
 }
 
 // Robin picked the die's landing B (2026-11-03): it is `ui/die-land-1` to `-3` now, found as a family.
 // A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
 const ALIASES: Record<string, string> = {
   'ui/arrive-church': 'ui/arrive-shrine',
+  // Landing on a quest board sounds like opening one, until a sound of its own (2026-11-03).
+  'ui/arrive-board': 'ui/board-open',
   // Chapter 2's names (Nigel, SD), silent or borrowed until his drops land.
   'ui/board-open': 'ui/sheet-open',
   'ui/quest-done': 'ui/errand-done',
@@ -126,9 +131,19 @@ class Audio {
     scene.load.start();
   }
 
-  /** True when nothing should sound: the page muted, the setting off, or no game yet. */
+  /** True when no music should play: the page muted, the music set off, or no game yet. */
   private get quiet(): boolean {
-    return this.muted || !this.game || !settings.get().sound;
+    return this.muted || !this.game || !settings.get().sound || settings.get().musicVolume <= 0;
+  }
+
+  /** True when no short sound should play: the page muted, the sounds set off, or no game yet. */
+  private get hushed(): boolean {
+    return this.muted || !this.game || !settings.get().sound || settings.get().soundVolume <= 0;
+  }
+
+  /** The music's loudness now. */
+  private get musicLevel(): number {
+    return MUSIC_VOLUME * settings.get().musicVolume;
   }
 
   /** The sprite that holds `name`, and the name itself resolved from a family or an alias; null when none has it yet. */
@@ -194,8 +209,8 @@ class Audio {
     const start = Date.now();
     this.fadeTimer = setInterval(() => {
       const t = Math.min(1, (Date.now() - start) / CROSSFADE_MS);
-      if (out) out.volume = MUSIC_VOLUME * (1 - t);
-      if (this.track) this.track.el.volume = MUSIC_VOLUME * t;
+      if (out) out.volume = this.musicLevel * (1 - t);
+      if (this.track) this.track.el.volume = this.musicLevel * t;
       if (t >= 1) {
         if (this.fadeTimer) clearInterval(this.fadeTimer);
         this.fadeTimer = null;
@@ -220,6 +235,8 @@ class Audio {
       this.pendingMusic = null;
       this.music(name);
     }
+    // A new loudness takes hold at once, unless a fade is under way.
+    if (this.track && !this.fadeTimer) this.track.el.volume = this.musicLevel;
   }
 
   private hookUnlock(): void {
@@ -240,11 +257,11 @@ class Audio {
   }
 
   play(name: string, options: PlayOptions = {}): void {
-    if (this.quiet) return;
+    if (this.hushed) return;
     const found = this.find(name);
     if (!found) return;
     try {
-      this.game!.sound.playAudioSprite(found.sprite.key, found.name, { rate: options.rate ?? 1, volume: (options.volume ?? 1) * found.sprite.volume });
+      this.game!.sound.playAudioSprite(found.sprite.key, found.name, { rate: options.rate ?? 1, volume: (options.volume ?? 1) * found.sprite.volume * settings.get().soundVolume });
     } catch {
       // The browser has not unlocked audio yet, or the sprite failed to decode: silence is fine.
     }
@@ -253,12 +270,12 @@ class Audio {
   /** A looping sound until `stop()`: the die's tumble. */
   loop(name: string, options: PlayOptions = {}): LoopHandle {
     const none: LoopHandle = { stop: () => {} };
-    if (this.quiet) return none;
+    if (this.hushed) return none;
     const found = this.find(name);
     if (!found) return none;
     try {
       const sound = this.game!.sound.addAudioSprite(found.sprite.key);
-      sound.play(found.name, { loop: true, rate: options.rate ?? 1, volume: (options.volume ?? 1) * found.sprite.volume });
+      sound.play(found.name, { loop: true, rate: options.rate ?? 1, volume: (options.volume ?? 1) * found.sprite.volume * settings.get().soundVolume });
       return {
         stop: () => {
           sound.stop();

@@ -12,8 +12,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc -p rules/tsconfig.json && tsc -p tsconfig.json",
     "server": "node server/src/index.ts",
-    "tunnel": "cloudflared tunnel --url http://localhost:8787",
-    "icons": "node tools/make-icons.mjs"
+    "tunnel": "cloudflared tunnel --url http://localhost:8787"
   },
   "engines": {
     "node": ">=22.12.0"

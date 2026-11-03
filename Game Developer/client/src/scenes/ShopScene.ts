@@ -249,6 +249,7 @@ export class ShopScene extends Phaser.Scene {
     this.inFlight = false;
     const bought = events.find((e) => e.type === 'bought');
     if (bought && bought.type === 'bought') {
+      sfx.play('ui/buy');
       const name = bought.gear ? bought.gear.name : (ITEMS[bought.item ?? '']?.name ?? bought.item);
       this.message.setText(`Bought ${name} for ${bought.price} gold.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
       this.log.note(`bought ${name} for ${bought.price}`);
@@ -266,6 +267,7 @@ export class ShopScene extends Phaser.Scene {
       (events) => {
         this.inFlight = false;
         const sold = events.find((e) => e.type === 'sold');
+        if (sold) sfx.play('ui/sell');
         this.message.setText(sold?.type === 'sold' ? `Sold ${g.name} for ${sold.price} gold.` : this.describe(events));
         this.show(this.tab);
         (this.scene.get('board') as BoardScene).refreshHud();

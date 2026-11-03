@@ -154,7 +154,10 @@ export class CreateScene extends Phaser.Scene {
     this.select(this.chosen);
 
     this.status = this.add.text(CENTRE, 752, '', { fontFamily: FONT, fontSize: '13px', color: '#f0a030', align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } }).setOrigin(0.5);
-    makeButton(this, begin.x, begin.y, begin.w, begin.h, 'Begin', COLORS.button, '26px', () => this.begin());
+    makeButton(this, begin.x, begin.y, begin.w, begin.h, 'Begin', COLORS.button, '26px', () => {
+      sfx.play('ui/begin');
+      this.begin();
+    });
     if (this.deps.back) makeButton(this, 58, begin.y, 88, 44, 'Back', COLORS.log, '16px', () => this.deps.back!());
     if (this.deps.recover) makeButton(this, code.x, code.y, code.w, code.h, 'I have a code from another phone', COLORS.log, '12px', () => this.recoverWithCode());
     this.add

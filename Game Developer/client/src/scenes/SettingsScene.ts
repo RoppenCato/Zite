@@ -7,7 +7,7 @@ import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { RECOVER_KEY, SERVER_KEY } from '../remote-game.ts';
-import { settings } from '../settings.ts';
+import { settings, VOLUME_STEPS, volumeWord } from '../settings.ts';
 import { kitReady, plate, sheet, sheetInk } from '../kit.ts';
 import { audio } from '../audio.ts';
 import { sfx } from '../feel.ts';
@@ -70,9 +70,15 @@ export class SettingsScene extends Phaser.Scene {
     }
     const s = settings.get();
     const { firstRowY, rowStep, go } = SETTINGS_LAYOUT;
+    // The music and the sounds each tap through Full, Medium, Low and Off (2026-11-03).
+    const nextVolume = (v: number): number => VOLUME_STEPS[(VOLUME_STEPS.findIndex((x) => Math.abs(x - v) < 0.05) + 1) % VOLUME_STEPS.length] ?? 1;
     const rows: { name: string; text: string; value: boolean; on: string; off: string; set: (v: boolean) => void }[] = [
-      { name: 'Sound', text: 'The sounds and the music.', value: s.sound, on: 'On', off: 'Off', set: (v) => {
-          settings.set({ sound: v });
+      { name: 'Music', text: 'How loud the music plays.', value: s.musicVolume > 0, on: volumeWord(s.musicVolume), off: 'Off', set: () => {
+          settings.set({ musicVolume: nextVolume(s.musicVolume), sound: true });
+          audio.applySettings();
+        } },
+      { name: 'Sounds', text: 'Taps, blows, voices and chests.', value: s.soundVolume > 0, on: volumeWord(s.soundVolume), off: 'Off', set: () => {
+          settings.set({ soundVolume: nextVolume(s.soundVolume), sound: true });
           audio.applySettings();
         } },
       { name: 'Effects', text: 'Fewer is kinder to a slow phone.', value: !s.fewerEffects, on: 'Full', off: 'Fewer', set: (v) => settings.set({ fewerEffects: !v }) },

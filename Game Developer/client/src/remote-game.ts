@@ -15,6 +15,7 @@ import {
   type ServerMessage,
 } from '../../rules/src/index.ts';
 import type { GameHolder, Intent, Link } from './game-holder.ts';
+import { audio } from './audio.ts';
 import { tips } from './tips.ts';
 
 export const ACCOUNT_KEY = 'boardworld.account';
@@ -246,6 +247,8 @@ export class RemoteGame implements GameHolder {
   /** A fresh snapshot: the whole state, who we are, who is online. Replaces everything held. */
   private take(snap: Snapshot): void {
     const before = this.state as GameState | undefined;
+    // Back in the world after a drop (Nigel, SD's sound, 2026-11-03).
+    if (before && this.tries > 0) audio.play('ui/online-reconnect');
     this.state = snap.state;
     this.version = snap.version;
     this.player = snap.player;
@@ -303,6 +306,9 @@ export class RemoteGame implements GameHolder {
     let link = false;
     if (online) {
       link = online.join(',') !== this.online.join(',');
+      // A friend comes into the world or leaves it (Nigel, SD's sounds, 2026-11-03).
+      if (online.some((p) => p !== this.player && !this.online.includes(p))) audio.play('ui/online-join');
+      else if (this.online.some((p) => p !== this.player && !online.includes(p))) audio.play('ui/online-leave');
       this.online = online;
       others = others || link;
     }

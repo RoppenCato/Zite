@@ -565,6 +565,7 @@ export class BoardScene extends Phaser.Scene {
   /** A dice card from the HUD's row: change the pending roll and offer the new choices. */
   useCard(item: string, value?: number): void {
     if (!this.choices_) return;
+    sfx.play('ui/card');
     this.send({ type: 'use', player: this.game_.player, item, ...(value !== undefined ? { value } : {}) }, (events) => {
       const steps = events.find((e) => e.type === 'steps');
       if (!steps || steps.type !== 'steps') {
@@ -2229,6 +2230,7 @@ export class BoardScene extends Phaser.Scene {
       // Your own spot, free: the hint, and the notes you could leave as chips.
       if (!this.busy && id === me.space) {
         this.flashHint(id);
+        sfx.play('ui/hint');
         this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())} Leave a note here?`);
         this.hud?.setChips(TRACES.map((text) => ({ text, onTap: () => this.leaveNote(text) })));
         return;
@@ -2255,6 +2257,7 @@ export class BoardScene extends Phaser.Scene {
       const bossTip = space.kind === 'boss' ? tips.take('boss') : null;
       const here = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === id).map((c) => c.name);
       const who = here.length ? ` ${here.join(' and ')} ${here.length > 1 ? 'are' : 'is'} here.` : '';
+      sfx.play('ui/hint');
       this.setMessage(`${hintFor(this.game_.state, id, this.game_.player, this.game_.now())}${who}${bossTip ? ` ${bossTip}` : ''}`);
       return;
     }
@@ -2493,7 +2496,9 @@ export class BoardScene extends Phaser.Scene {
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
     if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
       this.artArea = area.id;
-      if (area.theme === 'forest' || area.theme === 'pirates' || area.theme === 'giants' || area.theme === 'crown') audio.ensure(this, `creatures-${area.theme}`);
+      // The land's voices, by its theme or its own name, whichever pack exists (2026-11-03).
+      audio.ensure(this, `creatures-${area.theme}`);
+      audio.ensure(this, `creatures-${area.id}`);
       releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
       releaseBackdrops(this.game, area.theme);
     }
