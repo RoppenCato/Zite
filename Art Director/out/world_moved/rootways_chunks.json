@@ -1,0 +1,37 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "rootways",
+ "x": 9216,
+ "y": 10240,
+ "width": 3072,
+ "height": 1024,
+ "chunks": [
+  {
+   "file": "rootways_4_8.jpg",
+   "col": 9,
+   "row": 10,
+   "x": 9215,
+   "y": 10239,
+   "kb": 35
+  },
+  {
+   "file": "rootways_5_8.jpg",
+   "col": 10,
+   "row": 10,
+   "x": 10239,
+   "y": 10239,
+   "kb": 74
+  },
+  {
+   "file": "rootways_6_8.jpg",
+   "col": 11,
+   "row": 10,
+   "x": 11263,
+   "y": 10239,
+   "kb": 41
+  }
+ ]
+}

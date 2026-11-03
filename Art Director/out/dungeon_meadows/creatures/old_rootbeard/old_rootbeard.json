@@ -1,0 +1,978 @@
+{
+ "frames": {
+  "old_rootbeard/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 352,
+    "h": 276
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 352,
+    "h": 276
+   },
+   "sourceSize": {
+    "w": 352,
+    "h": 276
+   },
+   "pivot": {
+    "x": 0.7216,
+    "y": 0.9203
+   }
+  },
+  "old_rootbeard/stand/0003": {
+   "frame": {
+    "x": 356,
+    "y": 2,
+    "w": 227,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 227,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 227,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.533,
+    "y": 0.9294
+   }
+  },
+  "old_rootbeard/attack1/0004": {
+   "frame": {
+    "x": 585,
+    "y": 2,
+    "w": 310,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 310,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 310,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.6645,
+    "y": 0.948
+   }
+  },
+  "old_rootbeard/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 280,
+    "w": 348,
+    "h": 266
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 348,
+    "h": 266
+   },
+   "sourceSize": {
+    "w": 348,
+    "h": 266
+   },
+   "pivot": {
+    "x": 0.704,
+    "y": 0.9436
+   }
+  },
+  "old_rootbeard/stand/0001": {
+   "frame": {
+    "x": 352,
+    "y": 280,
+    "w": 231,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5325,
+    "y": 0.9283
+   }
+  },
+  "old_rootbeard/move/0001": {
+   "frame": {
+    "x": 585,
+    "y": 280,
+    "w": 231,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5325,
+    "y": 0.9396
+   }
+  },
+  "old_rootbeard/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 548,
+    "w": 231,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5325,
+    "y": 0.9283
+   }
+  },
+  "old_rootbeard/die1/0001": {
+   "frame": {
+    "x": 235,
+    "y": 548,
+    "w": 231,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5325,
+    "y": 0.9283
+   }
+  },
+  "old_rootbeard/move/0003": {
+   "frame": {
+    "x": 468,
+    "y": 548,
+    "w": 242,
+    "h": 262
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 242,
+    "h": 262
+   },
+   "sourceSize": {
+    "w": 242,
+    "h": 262
+   },
+   "pivot": {
+    "x": 0.5455,
+    "y": 0.9198
+   }
+  },
+  "old_rootbeard/stand/0002": {
+   "frame": {
+    "x": 712,
+    "y": 548,
+    "w": 235,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.5319,
+    "y": 0.9308
+   }
+  },
+  "old_rootbeard/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 815,
+    "w": 293,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 293,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 293,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.6246,
+    "y": 0.9341
+   }
+  },
+  "old_rootbeard/attack1/0003": {
+   "frame": {
+    "x": 297,
+    "y": 815,
+    "w": 225,
+    "h": 257
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 225,
+    "h": 257
+   },
+   "sourceSize": {
+    "w": 225,
+    "h": 257
+   },
+   "pivot": {
+    "x": 0.48,
+    "y": 0.9416
+   }
+  },
+  "old_rootbeard/move/0002": {
+   "frame": {
+    "x": 524,
+    "y": 815,
+    "w": 234,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 234,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 234,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.5128,
+    "y": 0.9488
+   }
+  },
+  "old_rootbeard/attack1/0002": {
+   "frame": {
+    "x": 760,
+    "y": 815,
+    "w": 224,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.4821,
+    "y": 0.9449
+   }
+  },
+  "old_rootbeard/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1075,
+    "w": 218,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 250
+   },
+   "pivot": {
+    "x": 0.4862,
+    "y": 0.964
+   }
+  },
+  "old_rootbeard/hit1/0001": {
+   "frame": {
+    "x": 222,
+    "y": 1075,
+    "w": 238,
+    "h": 239
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 238,
+    "h": 239
+   },
+   "sourceSize": {
+    "w": 238,
+    "h": 239
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9414
+   }
+  },
+  "old_rootbeard/die1/0002": {
+   "frame": {
+    "x": 462,
+    "y": 1075,
+    "w": 258,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 258,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 258,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.5116,
+    "y": 0.9406
+   }
+  },
+  "old_rootbeard/die1/0003": {
+   "frame": {
+    "x": 722,
+    "y": 1075,
+    "w": 286,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 286,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 286,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.507,
+    "y": 0.85
+   }
+  },
+  "old_rootbeard/die1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1327,
+    "w": 227,
+    "h": 52
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 227,
+    "h": 52
+   },
+   "sourceSize": {
+    "w": 227,
+    "h": 52
+   },
+   "pivot": {
+    "x": 0.5595,
+    "y": 0.2308
+   }
+  },
+  "old_rootbeard/die1/0004": {
+   "frame": {
+    "x": 231,
+    "y": 1327,
+    "w": 230,
+    "h": 42
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 230,
+    "h": 42
+   },
+   "sourceSize": {
+    "w": 230,
+    "h": 42
+   },
+   "pivot": {
+    "x": 0.5391,
+    "y": 0.8571
+   }
+  }
+ },
+ "meta": {
+  "image": "old_rootbeard.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 220,
+   "loop": true,
+   "frames": [
+    {
+     "name": "old_rootbeard/stand/0001",
+     "w": 231,
+     "h": 265,
+     "origin": {
+      "x": 123,
+      "y": 246
+     },
+     "delay": 220,
+     "lt": {
+      "x": -123,
+      "y": -246
+     },
+     "rb": {
+      "x": 108,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -246
+     }
+    },
+    {
+     "name": "old_rootbeard/stand/0002",
+     "w": 235,
+     "h": 260,
+     "origin": {
+      "x": 125,
+      "y": 242
+     },
+     "delay": 220,
+     "lt": {
+      "x": -125,
+      "y": -242
+     },
+     "rb": {
+      "x": 110,
+      "y": 18
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "old_rootbeard/stand/0003",
+     "w": 227,
+     "h": 269,
+     "origin": {
+      "x": 121,
+      "y": 250
+     },
+     "delay": 220,
+     "lt": {
+      "x": -121,
+      "y": -250
+     },
+     "rb": {
+      "x": 106,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -250
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 160,
+   "loop": true,
+   "frames": [
+    {
+     "name": "old_rootbeard/move/0001",
+     "w": 231,
+     "h": 265,
+     "origin": {
+      "x": 123,
+      "y": 249
+     },
+     "delay": 160,
+     "lt": {
+      "x": -123,
+      "y": -249
+     },
+     "rb": {
+      "x": 108,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -249
+     }
+    },
+    {
+     "name": "old_rootbeard/move/0002",
+     "w": 234,
+     "h": 254,
+     "origin": {
+      "x": 120,
+      "y": 241
+     },
+     "delay": 160,
+     "lt": {
+      "x": -120,
+      "y": -241
+     },
+     "rb": {
+      "x": 114,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -241
+     }
+    },
+    {
+     "name": "old_rootbeard/move/0003",
+     "w": 242,
+     "h": 262,
+     "origin": {
+      "x": 132,
+      "y": 241
+     },
+     "delay": 160,
+     "lt": {
+      "x": -132,
+      "y": -241
+     },
+     "rb": {
+      "x": 110,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -241
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_rootbeard/attack1/0001",
+     "w": 218,
+     "h": 250,
+     "origin": {
+      "x": 106,
+      "y": 241
+     },
+     "delay": 120,
+     "lt": {
+      "x": -106,
+      "y": -241
+     },
+     "rb": {
+      "x": 112,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -241
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0002",
+     "w": 224,
+     "h": 254,
+     "origin": {
+      "x": 108,
+      "y": 240
+     },
+     "delay": 140,
+     "lt": {
+      "x": -108,
+      "y": -240
+     },
+     "rb": {
+      "x": 116,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -240
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0003",
+     "w": 225,
+     "h": 257,
+     "origin": {
+      "x": 108,
+      "y": 242
+     },
+     "delay": 150,
+     "lt": {
+      "x": -108,
+      "y": -242
+     },
+     "rb": {
+      "x": 117,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0004",
+     "w": 310,
+     "h": 269,
+     "origin": {
+      "x": 206,
+      "y": 255
+     },
+     "delay": 67,
+     "lt": {
+      "x": -206,
+      "y": -255
+     },
+     "rb": {
+      "x": 104,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -255
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0005",
+     "w": 352,
+     "h": 276,
+     "origin": {
+      "x": 254,
+      "y": 254
+     },
+     "delay": 220,
+     "lt": {
+      "x": -254,
+      "y": -254
+     },
+     "rb": {
+      "x": 98,
+      "y": 22
+     },
+     "head": {
+      "x": 0,
+      "y": -254
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0006",
+     "w": 348,
+     "h": 266,
+     "origin": {
+      "x": 245,
+      "y": 251
+     },
+     "delay": 90,
+     "lt": {
+      "x": -245,
+      "y": -251
+     },
+     "rb": {
+      "x": 103,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -251
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0007",
+     "w": 293,
+     "h": 258,
+     "origin": {
+      "x": 183,
+      "y": 241
+     },
+     "delay": 90,
+     "lt": {
+      "x": -183,
+      "y": -241
+     },
+     "rb": {
+      "x": 110,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -241
+     }
+    },
+    {
+     "name": "old_rootbeard/attack1/0008",
+     "w": 231,
+     "h": 265,
+     "origin": {
+      "x": 123,
+      "y": 246
+     },
+     "delay": 90,
+     "lt": {
+      "x": -123,
+      "y": -246
+     },
+     "rb": {
+      "x": 108,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -246
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_rootbeard/hit1/0001",
+     "w": 238,
+     "h": 239,
+     "origin": {
+      "x": 119,
+      "y": 225
+     },
+     "delay": 600,
+     "lt": {
+      "x": -119,
+      "y": -225
+     },
+     "rb": {
+      "x": 119,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -225
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 110,
+   "loop": false,
+   "frames": [
+    {
+     "name": "old_rootbeard/die1/0001",
+     "w": 231,
+     "h": 265,
+     "origin": {
+      "x": 123,
+      "y": 246
+     },
+     "delay": 110,
+     "lt": {
+      "x": -123,
+      "y": -246
+     },
+     "rb": {
+      "x": 108,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -246
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_rootbeard/die1/0002",
+     "w": 258,
+     "h": 202,
+     "origin": {
+      "x": 132,
+      "y": 190
+     },
+     "delay": 110,
+     "lt": {
+      "x": -132,
+      "y": -190
+     },
+     "rb": {
+      "x": 126,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -190
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_rootbeard/die1/0003",
+     "w": 286,
+     "h": 160,
+     "origin": {
+      "x": 145,
+      "y": 136
+     },
+     "delay": 110,
+     "lt": {
+      "x": -145,
+      "y": -136
+     },
+     "rb": {
+      "x": 141,
+      "y": 24
+     },
+     "head": {
+      "x": 0,
+      "y": -136
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "old_rootbeard/die1/0004",
+     "w": 230,
+     "h": 42,
+     "origin": {
+      "x": 124,
+      "y": 36
+     },
+     "delay": 110,
+     "lt": {
+      "x": -124,
+      "y": -36
+     },
+     "rb": {
+      "x": 106,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -36
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "old_rootbeard/die1/0005",
+     "w": 227,
+     "h": 52,
+     "origin": {
+      "x": 127,
+      "y": 12
+     },
+     "delay": 110,
+     "lt": {
+      "x": -127,
+      "y": -12
+     },
+     "rb": {
+      "x": 100,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -12
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

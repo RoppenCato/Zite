@@ -1,0 +1,351 @@
+{
+ "frames": {
+  "bog-toad": {
+   "frame": {
+    "x": 4,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "mudling": {
+   "frame": {
+    "x": 100,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "lantern-wisp": {
+   "frame": {
+    "x": 196,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "reed-witch": {
+   "frame": {
+    "x": 292,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "bogsnapper": {
+   "frame": {
+    "x": 388,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "mother-murk": {
+   "frame": {
+    "x": 4,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "snow-goat": {
+   "frame": {
+    "x": 100,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "crag-goblin": {
+   "frame": {
+    "x": 196,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "pebble-golem": {
+   "frame": {
+    "x": 292,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "frostling": {
+   "frame": {
+    "x": 388,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "old-bighorn": {
+   "frame": {
+    "x": 4,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "frostbeard": {
+   "frame": {
+    "x": 100,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "glowcap": {
+   "frame": {
+    "x": 196,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "old-rootbeard": {
+   "frame": {
+    "x": 292,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "journal_faces_east.png",
+  "size": {
+   "w": 512,
+   "h": 512
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2,
+  "app": "Art Director/tools/world/bigland_extras.js"
+ }
+}

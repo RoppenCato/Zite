@@ -1,0 +1,940 @@
+{
+ "frames": {
+  "cypress_a": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 252,
+    "h": 389
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 252,
+    "h": 389
+   },
+   "sourceSize": {
+    "w": 252,
+    "h": 389
+   },
+   "pivot": {
+    "x": 0.496,
+    "y": 0.9203
+   },
+   "what": "wild ground"
+  },
+  "witch_hut": {
+   "frame": {
+    "x": 258,
+    "y": 3,
+    "w": 278,
+    "h": 376
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 278,
+    "h": 376
+   },
+   "sourceSize": {
+    "w": 278,
+    "h": 376
+   },
+   "pivot": {
+    "x": 0.4353,
+    "y": 0.8963
+   },
+   "what": "Old Nell's Potions"
+  },
+  "church": {
+   "frame": {
+    "x": 539,
+    "y": 3,
+    "w": 275,
+    "h": 337
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 275,
+    "h": 337
+   },
+   "sourceSize": {
+    "w": 275,
+    "h": 337
+   },
+   "pivot": {
+    "x": 0.3964,
+    "y": 0.9585
+   },
+   "what": "Reed Chapel"
+  },
+  "murk_mound": {
+   "frame": {
+    "x": 3,
+    "y": 395,
+    "w": 602,
+    "h": 329
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 602,
+    "h": 329
+   },
+   "sourceSize": {
+    "w": 602,
+    "h": 329
+   },
+   "pivot": {
+    "x": 0.4701,
+    "y": 0.8298
+   },
+   "what": "Old Mother Murk's Pool"
+  },
+  "cypress_b": {
+   "frame": {
+    "x": 608,
+    "y": 395,
+    "w": 213,
+    "h": 328
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 213,
+    "h": 328
+   },
+   "sourceSize": {
+    "w": 213,
+    "h": 328
+   },
+   "pivot": {
+    "x": 0.493,
+    "y": 0.9177
+   },
+   "what": "wild ground"
+  },
+  "barge": {
+   "frame": {
+    "x": 3,
+    "y": 727,
+    "w": 380,
+    "h": 276
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 380,
+    "h": 276
+   },
+   "sourceSize": {
+    "w": 380,
+    "h": 276
+   },
+   "pivot": {
+    "x": 0.4737,
+    "y": 0.8514
+   },
+   "what": "The Sunken Barge"
+  },
+  "hut_a": {
+   "frame": {
+    "x": 386,
+    "y": 727,
+    "w": 253,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.4348,
+    "y": 0.8679
+   },
+   "what": "Stiltwick, Lanternhollow"
+  },
+  "hut_b": {
+   "frame": {
+    "x": 642,
+    "y": 727,
+    "w": 253,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.4348,
+    "y": 0.8679
+   },
+   "what": "Stiltwick, Lanternhollow"
+  },
+  "hut_c": {
+   "frame": {
+    "x": 3,
+    "y": 1006,
+    "w": 253,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 253,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 253,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.4348,
+    "y": 0.8679
+   },
+   "what": "Stiltwick, Lanternhollow"
+  },
+  "raft_market": {
+   "frame": {
+    "x": 259,
+    "y": 1006,
+    "w": 345,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 345,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 345,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.458,
+    "y": 0.8402
+   },
+   "what": "The Trading Raft"
+  },
+  "bell": {
+   "frame": {
+    "x": 607,
+    "y": 1006,
+    "w": 201,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.4428,
+    "y": 0.8636
+   },
+   "what": "The Drowned Bell"
+  },
+  "frog_shrine": {
+   "frame": {
+    "x": 811,
+    "y": 1006,
+    "w": 206,
+    "h": 217
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 206,
+    "h": 217
+   },
+   "sourceSize": {
+    "w": 206,
+    "h": 217
+   },
+   "pivot": {
+    "x": 0.432,
+    "y": 0.8433
+   },
+   "what": "Frogstone Shrine"
+  },
+  "ferry": {
+   "frame": {
+    "x": 3,
+    "y": 1274,
+    "w": 290,
+    "h": 216
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 290,
+    "h": 216
+   },
+   "sourceSize": {
+    "w": 290,
+    "h": 216
+   },
+   "pivot": {
+    "x": 0.4759,
+    "y": 0.8565
+   },
+   "what": "towns, the coach stop"
+  },
+  "snag": {
+   "frame": {
+    "x": 296,
+    "y": 1274,
+    "w": 109,
+    "h": 176
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 109,
+    "h": 176
+   },
+   "sourceSize": {
+    "w": 109,
+    "h": 176
+   },
+   "pivot": {
+    "x": 0.5321,
+    "y": 0.9261
+   },
+   "what": "wild ground"
+  },
+  "spot_gate": {
+   "frame": {
+    "x": 408,
+    "y": 1274,
+    "w": 250,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.492,
+    "y": 0.5838
+   },
+   "what": "spot"
+  },
+  "lantern": {
+   "frame": {
+    "x": 661,
+    "y": 1274,
+    "w": 138,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 138,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 138,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.2971,
+    "y": 0.9313
+   },
+   "what": "along the walks"
+  },
+  "spot_shop_magic": {
+   "frame": {
+    "x": 802,
+    "y": 1274,
+    "w": 190,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.6259
+   },
+   "what": "spot"
+  },
+  "heron": {
+   "frame": {
+    "x": 3,
+    "y": 1493,
+    "w": 97,
+    "h": 145
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 97,
+    "h": 145
+   },
+   "sourceSize": {
+    "w": 97,
+    "h": 145
+   },
+   "pivot": {
+    "x": 0.5567,
+    "y": 0.931
+   },
+   "what": "Heron Point, anywhere"
+  },
+  "spot_shop": {
+   "frame": {
+    "x": 103,
+    "y": 1493,
+    "w": 190,
+    "h": 145
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 145
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 145
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.6207
+   },
+   "what": "spot"
+  },
+  "quest_board": {
+   "frame": {
+    "x": 296,
+    "y": 1493,
+    "w": 136,
+    "h": 129
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 129
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 129
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.969
+   },
+   "what": "Mire Board"
+  },
+  "reeds_a": {
+   "frame": {
+    "x": 435,
+    "y": 1493,
+    "w": 86,
+    "h": 121
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 86,
+    "h": 121
+   },
+   "sourceSize": {
+    "w": 86,
+    "h": 121
+   },
+   "pivot": {
+    "x": 0.4535,
+    "y": 0.9587
+   },
+   "what": "water edges"
+  },
+  "sweet_spring": {
+   "frame": {
+    "x": 524,
+    "y": 1493,
+    "w": 266,
+    "h": 117
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 266,
+    "h": 117
+   },
+   "sourceSize": {
+    "w": 266,
+    "h": 117
+   },
+   "pivot": {
+    "x": 0.485,
+    "y": 0.5214
+   },
+   "what": "Sweetwater Spring"
+  },
+  "spot_town": {
+   "frame": {
+    "x": 793,
+    "y": 1493,
+    "w": 190,
+    "h": 114
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 114
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 114
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.5175
+   },
+   "what": "spot"
+  },
+  "reeds_b": {
+   "frame": {
+    "x": 3,
+    "y": 1641,
+    "w": 68,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 68,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 68,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.4559,
+    "y": 0.951
+   },
+   "what": "water edges"
+  },
+  "spot_spring": {
+   "frame": {
+    "x": 74,
+    "y": 1641,
+    "w": 122,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 84
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5595
+   },
+   "what": "spot"
+  },
+  "mud_a": {
+   "frame": {
+    "x": 199,
+    "y": 1641,
+    "w": 152,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 152,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 152,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.4934,
+    "y": 0.747
+   },
+   "what": "The Mudflats"
+  },
+  "spot_shrine": {
+   "frame": {
+    "x": 354,
+    "y": 1641,
+    "w": 122,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5542
+   },
+   "what": "spot"
+  },
+  "spot_church": {
+   "frame": {
+    "x": 479,
+    "y": 1641,
+    "w": 122,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5542
+   },
+   "what": "spot"
+  },
+  "spot_board": {
+   "frame": {
+    "x": 604,
+    "y": 1641,
+    "w": 122,
+    "h": 82
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 82
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 82
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5488
+   },
+   "what": "spot"
+  },
+  "spot_gear": {
+   "frame": {
+    "x": 729,
+    "y": 1641,
+    "w": 122,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 78
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5256
+   },
+   "what": "spot"
+  },
+  "spot_chest": {
+   "frame": {
+    "x": 854,
+    "y": 1641,
+    "w": 122,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 77
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5195
+   },
+   "what": "spot"
+  },
+  "log": {
+   "frame": {
+    "x": 3,
+    "y": 1746,
+    "w": 199,
+    "h": 73
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 199,
+    "h": 73
+   },
+   "sourceSize": {
+    "w": 199,
+    "h": 73
+   },
+   "pivot": {
+    "x": 0.4874,
+    "y": 0.6849
+   },
+   "what": "wild ground"
+  },
+  "spot_wild": {
+   "frame": {
+    "x": 205,
+    "y": 1746,
+    "w": 121,
+    "h": 71
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 121,
+    "h": 71
+   },
+   "sourceSize": {
+    "w": 121,
+    "h": 71
+   },
+   "pivot": {
+    "x": 0.4793,
+    "y": 0.4789
+   },
+   "what": "spot"
+  },
+  "chest": {
+   "frame": {
+    "x": 329,
+    "y": 1746,
+    "w": 78,
+    "h": 66
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 78,
+    "h": 66
+   },
+   "sourceSize": {
+    "w": 78,
+    "h": 66
+   },
+   "pivot": {
+    "x": 0.4872,
+    "y": 0.7424
+   },
+   "what": "chest spots"
+  },
+  "mud_b": {
+   "frame": {
+    "x": 410,
+    "y": 1746,
+    "w": 116,
+    "h": 65
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 116,
+    "h": 65
+   },
+   "sourceSize": {
+    "w": 116,
+    "h": 65
+   },
+   "pivot": {
+    "x": 0.4914,
+    "y": 0.7385
+   },
+   "what": "The Mudflats"
+  },
+  "rock_a": {
+   "frame": {
+    "x": 529,
+    "y": 1746,
+    "w": 69,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 69,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 69,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.4493,
+    "y": 0.6818
+   },
+   "what": "where the ground breaks"
+  },
+  "tuft_a": {
+   "frame": {
+    "x": 601,
+    "y": 1746,
+    "w": 56,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 56,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 56,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8864
+   },
+   "what": "ground detail"
+  }
+ },
+ "meta": {
+  "image": "board_props.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/land_build.js",
+  "filePx": 2
+ }
+}

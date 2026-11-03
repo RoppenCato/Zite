@@ -1,0 +1,62 @@
+{
+ "frames": {
+  "quest_board": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 136,
+    "h": 129
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 136,
+    "h": 129
+   },
+   "sourceSize": {
+    "w": 136,
+    "h": 129
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.969
+   }
+  },
+  "apothecary": {
+   "frame": {
+    "x": 153,
+    "y": 3,
+    "w": 276,
+    "h": 225
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 276,
+    "h": 225
+   },
+   "sourceSize": {
+    "w": 276,
+    "h": 225
+   },
+   "pivot": {
+    "x": 0.3623,
+    "y": 0.96
+   }
+  }
+ },
+ "meta": {
+  "image": "harvest_pieces.png",
+  "size": {
+   "w": 512,
+   "h": 256
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2
+ }
+}

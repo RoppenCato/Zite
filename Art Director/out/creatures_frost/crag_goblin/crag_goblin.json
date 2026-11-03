@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "crag_goblin/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 197,
+    "h": 333
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 333
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 333
+   },
+   "pivot": {
+    "x": 0.2741,
+    "y": 0.9309
+   }
+  },
+  "crag_goblin/move/0002": {
+   "frame": {
+    "x": 201,
+    "y": 2,
+    "w": 196,
+    "h": 309
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 309
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 309
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9353
+   }
+  },
+  "crag_goblin/move/0003": {
+   "frame": {
+    "x": 399,
+    "y": 2,
+    "w": 196,
+    "h": 309
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 309
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 309
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9353
+   }
+  },
+  "crag_goblin/stand/0001": {
+   "frame": {
+    "x": 597,
+    "y": 2,
+    "w": 195,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.559,
+    "y": 0.9446
+   }
+  },
+  "crag_goblin/stand/0002": {
+   "frame": {
+    "x": 794,
+    "y": 2,
+    "w": 195,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.559,
+    "y": 0.9511
+   }
+  },
+  "crag_goblin/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 337,
+    "w": 195,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.559,
+    "y": 0.9544
+   }
+  },
+  "crag_goblin/stand/0004": {
+   "frame": {
+    "x": 199,
+    "y": 337,
+    "w": 195,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.559,
+    "y": 0.9479
+   }
+  },
+  "crag_goblin/move/0001": {
+   "frame": {
+    "x": 396,
+    "y": 337,
+    "w": 196,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9544
+   }
+  },
+  "crag_goblin/move/0004": {
+   "frame": {
+    "x": 594,
+    "y": 337,
+    "w": 196,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9544
+   }
+  },
+  "crag_goblin/hit1/0002": {
+   "frame": {
+    "x": 792,
+    "y": 337,
+    "w": 194,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.4072,
+    "y": 0.9381
+   }
+  },
+  "crag_goblin/die1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 646,
+    "w": 193,
+    "h": 307
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 193,
+    "h": 307
+   },
+   "sourceSize": {
+    "w": 193,
+    "h": 307
+   },
+   "pivot": {
+    "x": 0.342,
+    "y": 0.9349
+   }
+  },
+  "crag_goblin/move/0005": {
+   "frame": {
+    "x": 197,
+    "y": 646,
+    "w": 196,
+    "h": 305
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 305
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 305
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9475
+   }
+  },
+  "crag_goblin/move/0006": {
+   "frame": {
+    "x": 395,
+    "y": 646,
+    "w": 196,
+    "h": 305
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 305
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 305
+   },
+   "pivot": {
+    "x": 0.5969,
+    "y": 0.9475
+   }
+  },
+  "crag_goblin/attack1/0006": {
+   "frame": {
+    "x": 593,
+    "y": 646,
+    "w": 195,
+    "h": 299
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 299
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 299
+   },
+   "pivot": {
+    "x": 0.6051,
+    "y": 0.9632
+   }
+  },
+  "crag_goblin/attack1/0001": {
+   "frame": {
+    "x": 790,
+    "y": 646,
+    "w": 195,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.5333,
+    "y": 0.9898
+   }
+  },
+  "crag_goblin/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 955,
+    "w": 224,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 224,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 224,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.4509,
+    "y": 0.9898
+   }
+  },
+  "crag_goblin/attack1/0003": {
+   "frame": {
+    "x": 228,
+    "y": 955,
+    "w": 195,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 195,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 195,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.559,
+    "y": 0.9898
+   }
+  },
+  "crag_goblin/attack1/0005": {
+   "frame": {
+    "x": 425,
+    "y": 955,
+    "w": 210,
+    "h": 291
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 291
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 291
+   },
+   "pivot": {
+    "x": 0.6762,
+    "y": 0.9863
+   }
+  },
+  "crag_goblin/die1/0002": {
+   "frame": {
+    "x": 637,
+    "y": 955,
+    "w": 225,
+    "h": 290
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 225,
+    "h": 290
+   },
+   "sourceSize": {
+    "w": 225,
+    "h": 290
+   },
+   "pivot": {
+    "x": 0.2089,
+    "y": 0.9172
+   }
+  },
+  "crag_goblin/attack1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1250,
+    "w": 219,
+    "h": 289
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 219,
+    "h": 289
+   },
+   "sourceSize": {
+    "w": 219,
+    "h": 289
+   },
+   "pivot": {
+    "x": 0.7123,
+    "y": 0.9862
+   }
+  },
+  "crag_goblin/die1/0003": {
+   "frame": {
+    "x": 223,
+    "y": 1250,
+    "w": 301,
+    "h": 215
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 301,
+    "h": 215
+   },
+   "sourceSize": {
+    "w": 301,
+    "h": 215
+   },
+   "pivot": {
+    "x": 0.0797,
+    "y": 1.0186
+   }
+  },
+  "crag_goblin/die1/0004": {
+   "frame": {
+    "x": 526,
+    "y": 1250,
+    "w": 350,
+    "h": 171
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 350,
+    "h": 171
+   },
+   "sourceSize": {
+    "w": 350,
+    "h": 171
+   },
+   "pivot": {
+    "x": 0.0543,
+    "y": 0.9181
+   }
+  },
+  "crag_goblin/die1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1541,
+    "w": 352,
+    "h": 171
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 352,
+    "h": 171
+   },
+   "sourceSize": {
+    "w": 352,
+    "h": 171
+   },
+   "pivot": {
+    "x": 0.0568,
+    "y": 0.8363
+   }
+  },
+  "crag_goblin/die1/0006": {
+   "frame": {
+    "x": 356,
+    "y": 1541,
+    "w": 352,
+    "h": 171
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 352,
+    "h": 171
+   },
+   "sourceSize": {
+    "w": 352,
+    "h": 171
+   },
+   "pivot": {
+    "x": 0.0568,
+    "y": 0.8363
+   }
+  }
+ },
+ "meta": {
+  "image": "crag_goblin.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "crag_goblin/stand/0001",
+     "w": 195,
+     "h": 307,
+     "origin": {
+      "x": 109,
+      "y": 290
+     },
+     "delay": 150,
+     "lt": {
+      "x": -109,
+      "y": -290
+     },
+     "rb": {
+      "x": 86,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "crag_goblin/stand/0002",
+     "w": 195,
+     "h": 307,
+     "origin": {
+      "x": 109,
+      "y": 292
+     },
+     "delay": 150,
+     "lt": {
+      "x": -109,
+      "y": -292
+     },
+     "rb": {
+      "x": 86,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -292
+     }
+    },
+    {
+     "name": "crag_goblin/stand/0003",
+     "w": 195,
+     "h": 307,
+     "origin": {
+      "x": 109,
+      "y": 293
+     },
+     "delay": 150,
+     "lt": {
+      "x": -109,
+      "y": -293
+     },
+     "rb": {
+      "x": 86,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "crag_goblin/stand/0004",
+     "w": 195,
+     "h": 307,
+     "origin": {
+      "x": 109,
+      "y": 291
+     },
+     "delay": 150,
+     "lt": {
+      "x": -109,
+      "y": -291
+     },
+     "rb": {
+      "x": 86,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -291
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "crag_goblin/move/0001",
+     "w": 196,
+     "h": 307,
+     "origin": {
+      "x": 117,
+      "y": 293
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -293
+     },
+     "rb": {
+      "x": 79,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "crag_goblin/move/0002",
+     "w": 196,
+     "h": 309,
+     "origin": {
+      "x": 117,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -289
+     },
+     "rb": {
+      "x": 79,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "crag_goblin/move/0003",
+     "w": 196,
+     "h": 309,
+     "origin": {
+      "x": 117,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -289
+     },
+     "rb": {
+      "x": 79,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "crag_goblin/move/0004",
+     "w": 196,
+     "h": 307,
+     "origin": {
+      "x": 117,
+      "y": 293
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -293
+     },
+     "rb": {
+      "x": 79,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "crag_goblin/move/0005",
+     "w": 196,
+     "h": 305,
+     "origin": {
+      "x": 117,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -289
+     },
+     "rb": {
+      "x": 79,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "crag_goblin/move/0006",
+     "w": 196,
+     "h": 305,
+     "origin": {
+      "x": 117,
+      "y": 289
+     },
+     "delay": 100,
+     "lt": {
+      "x": -117,
+      "y": -289
+     },
+     "rb": {
+      "x": 79,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "crag_goblin/attack1/0001",
+     "w": 195,
+     "h": 293,
+     "origin": {
+      "x": 104,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -104,
+      "y": -290
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "crag_goblin/attack1/0002",
+     "w": 224,
+     "h": 293,
+     "origin": {
+      "x": 101,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -101,
+      "y": -290
+     },
+     "rb": {
+      "x": 123,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "crag_goblin/attack1/0003",
+     "w": 195,
+     "h": 293,
+     "origin": {
+      "x": 109,
+      "y": 290
+     },
+     "delay": 67,
+     "lt": {
+      "x": -109,
+      "y": -290
+     },
+     "rb": {
+      "x": 86,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "crag_goblin/attack1/0004",
+     "w": 219,
+     "h": 289,
+     "origin": {
+      "x": 156,
+      "y": 285
+     },
+     "delay": 134,
+     "lt": {
+      "x": -156,
+      "y": -285
+     },
+     "rb": {
+      "x": 63,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -285
+     }
+    },
+    {
+     "name": "crag_goblin/attack1/0005",
+     "w": 210,
+     "h": 291,
+     "origin": {
+      "x": 142,
+      "y": 287
+     },
+     "delay": 67,
+     "lt": {
+      "x": -142,
+      "y": -287
+     },
+     "rb": {
+      "x": 68,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -287
+     }
+    },
+    {
+     "name": "crag_goblin/attack1/0006",
+     "w": 195,
+     "h": 299,
+     "origin": {
+      "x": 118,
+      "y": 288
+     },
+     "delay": 67,
+     "lt": {
+      "x": -118,
+      "y": -288
+     },
+     "rb": {
+      "x": 77,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -288
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "crag_goblin/hit1/0001",
+     "w": 197,
+     "h": 333,
+     "origin": {
+      "x": 54,
+      "y": 310
+     },
+     "delay": 150,
+     "lt": {
+      "x": -54,
+      "y": -310
+     },
+     "rb": {
+      "x": 143,
+      "y": 23
+     },
+     "head": {
+      "x": 0,
+      "y": -310
+     }
+    },
+    {
+     "name": "crag_goblin/hit1/0002",
+     "w": 194,
+     "h": 307,
+     "origin": {
+      "x": 79,
+      "y": 288
+     },
+     "delay": 120,
+     "lt": {
+      "x": -79,
+      "y": -288
+     },
+     "rb": {
+      "x": 115,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -288
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "crag_goblin/die1/0001",
+     "w": 193,
+     "h": 307,
+     "origin": {
+      "x": 66,
+      "y": 287
+     },
+     "delay": 90,
+     "lt": {
+      "x": -66,
+      "y": -287
+     },
+     "rb": {
+      "x": 127,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -287
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "crag_goblin/die1/0002",
+     "w": 225,
+     "h": 290,
+     "origin": {
+      "x": 47,
+      "y": 266
+     },
+     "delay": 90,
+     "lt": {
+      "x": -47,
+      "y": -266
+     },
+     "rb": {
+      "x": 178,
+      "y": 24
+     },
+     "head": {
+      "x": 0,
+      "y": -266
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "crag_goblin/die1/0003",
+     "w": 301,
+     "h": 215,
+     "origin": {
+      "x": 24,
+      "y": 219
+     },
+     "delay": 90,
+     "lt": {
+      "x": -24,
+      "y": -219
+     },
+     "rb": {
+      "x": 277,
+      "y": -4
+     },
+     "head": {
+      "x": 0,
+      "y": -219
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "crag_goblin/die1/0004",
+     "w": 350,
+     "h": 171,
+     "origin": {
+      "x": 19,
+      "y": 157
+     },
+     "delay": 90,
+     "lt": {
+      "x": -19,
+      "y": -157
+     },
+     "rb": {
+      "x": 331,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -157
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "crag_goblin/die1/0005",
+     "w": 352,
+     "h": 171,
+     "origin": {
+      "x": 20,
+      "y": 143
+     },
+     "delay": 90,
+     "lt": {
+      "x": -20,
+      "y": -143
+     },
+     "rb": {
+      "x": 332,
+      "y": 28
+     },
+     "head": {
+      "x": 0,
+      "y": -143
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "crag_goblin/die1/0006",
+     "w": 352,
+     "h": 171,
+     "origin": {
+      "x": 20,
+      "y": 143
+     },
+     "delay": 90,
+     "lt": {
+      "x": -20,
+      "y": -143
+     },
+     "rb": {
+      "x": 332,
+      "y": 28
+     },
+     "head": {
+      "x": 0,
+      "y": -143
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,10 @@
+// land_faces.js: journal faces for a land's creatures, the same crop as tools/world/bigland_extras.js makes (Mitch, AD, 2026-11-02).
+//   node tools/world/land_faces.js pirates  -> out/journal_pirates/
+const P = require('../paint.js'); const path = require('path'); const fs = require('fs');
+const ROOT = path.resolve(__dirname, '../..'), REG = process.argv[2] || 'pirates', OJ = path.join(ROOT, 'out/journal_' + REG), K = 0.11; fs.rmSync(OJ, { recursive: true, force: true }); fs.mkdirSync(OJ, { recursive: true });
+const load = async (d, n) => ({ J: JSON.parse(fs.readFileSync(path.join(d, n + '.json'), 'utf8')), im: await P.loadImage(path.join(d, n + '.png')) });
+const NAMES = { pirates: [['deck-hand', 'deck_hand'], ['buccaneer', 'buccaneer'], ['scuttle-crab', 'scuttle_crab'], ['cheeky-parrot', 'cheeky_parrot'], ['first-mate-redwake', 'first_mate_redwake'], ['captain-saltjaw', 'captain_saltjaw']], giants: [['young-yeti', 'young_yeti'], ['snow-monster', 'snow_monster'], ['frost-ogre', 'frost_ogre'], ['icicle-bat', 'icicle_bat'], ['old-snowshoulder', 'old_snowshoulder'], ['yeti-king', 'yeti_king']], crown: [['crypt-guard', 'crypt_guard'], ['gilded-wraith', 'gilded_wraith'], ['stone-gargoyle', 'stone_gargoyle'], ['gold-mimic', 'gold_mimic'], ['last-steward', 'last_steward'], ['hollow-king', 'hollow_king']] }[REG];
+const src = fs.readFileSync(path.join(__dirname, 'bigland_extras.js'), 'utf8').split('\n'), at = src.findIndex(l => l.includes("const LIST = [['bog-toad'")), one = src[at], two = [src[at + 1], src[at + 2]].join(String.fromCharCode(10)), rest = one.slice(one.lastIndexOf(']]') + 2);
+const list = NAMES.map(([id, n]) => [id, `out/creatures_${REG}/${n}`, n]);
+const AsyncFn = Object.getPrototypeOf(async function () {}).constructor;
+new AsyncFn('P', 'path', 'fs', 'ROOT', 'OJ', 'load', 'K', 'LIST', (rest.replace(/^\s*,/, 'const ') + '\n' + two).replace(/journal_faces_east/g, 'journal_faces_' + REG))(P, path, fs, ROOT, OJ, load, K, list).catch(e => { console.error(e); process.exit(1); });

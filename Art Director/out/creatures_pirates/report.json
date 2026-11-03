@@ -1,0 +1,132 @@
+[
+ {
+  "name": "deck_hand",
+  "id": "deck-hand",
+  "title": "Deck Hand",
+  "h": 145,
+  "px": 2,
+  "scale": 0.5,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 116
+ },
+ {
+  "name": "buccaneer",
+  "id": "buccaneer",
+  "title": "Buccaneer",
+  "h": 150,
+  "px": 1.75,
+  "scale": 0.5714,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 101
+ },
+ {
+  "name": "scuttle_crab",
+  "id": "scuttle-crab",
+  "title": "Scuttle Crab",
+  "h": 110,
+  "px": 1.625,
+  "scale": 0.6154,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 100
+ },
+ {
+  "name": "cheeky_parrot",
+  "id": "cheeky-parrot",
+  "title": "Cheeky Parrot",
+  "h": 120,
+  "px": 2,
+  "scale": 0.5,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 100
+ },
+ {
+  "name": "first_mate_redwake",
+  "id": "first-mate-redwake",
+  "title": "First Mate Redwake",
+  "h": 210,
+  "px": 1.25,
+  "scale": 0.8,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 117
+ },
+ {
+  "name": "captain_saltjaw",
+  "id": "captain-saltjaw",
+  "title": "Captain Saltjaw",
+  "h": 420,
+  "px": 0.75,
+  "scale": 1.3333,
+  "blow": 5,
+  "frames": 20,
+  "clips": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "hovers": false,
+  "kb": 109
+ },
+ {
+  "name": "captain_saltjaw2",
+  "id": "captain-saltjaw, second phase",
+  "title": "Captain Saltjaw, all guns",
+  "h": 420,
+  "px": 0.75,
+  "scale": 1.3333,
+  "blow": 5,
+  "frames": 11,
+  "clips": {
+   "stand": 3,
+   "attack1": 8
+  },
+  "hovers": false,
+  "kb": 88
+ }
+]

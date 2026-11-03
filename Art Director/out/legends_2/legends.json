@@ -1,0 +1,135 @@
+{
+ "tidecaller": {
+  "name": "Tidecaller",
+  "class": "warrior",
+  "tier": 3,
+  "part": "sword",
+  "prefix": "tidecaller_sword",
+  "atlas": "tidecaller/tidecaller",
+  "what": "A blade of living sea water on a coral hilt; the edge rolls like a wave and bubbles rise through it",
+  "png": "1024x1024"
+ },
+ "crystal_cleaver": {
+  "name": "Crystal Cleaver",
+  "class": "warrior",
+  "tier": 5,
+  "part": "sword",
+  "prefix": "crystal_cleaver_sword",
+  "atlas": "crystal_cleaver/crystal_cleaver",
+  "what": "A broad blade grown from one purple crystal, all facets, a prism glint running up it",
+  "png": "1024x1024"
+ },
+ "bonecrusher": {
+  "name": "Bonecrusher",
+  "class": "warrior",
+  "tier": 4,
+  "part": "great",
+  "prefix": "bonecrusher_great",
+  "atlas": "bonecrusher/bonecrusher",
+  "what": "A two-handed maul of bone, a giant’s skull for its head, green ghost fire in the eyes",
+  "png": "1024x2048",
+  "arm": "weapons_v2/great_arm"
+ },
+ "kingslayer": {
+  "name": "Kingslayer",
+  "class": "warrior",
+  "tier": 7,
+  "part": "great",
+  "prefix": "kingslayer_great",
+  "atlas": "kingslayer/kingslayer",
+  "what": "A black two-handed sword with a jagged edge, red runes that burn and fade, a chain round the grip",
+  "png": "1024x1024",
+  "arm": "weapons_v2/great_arm"
+ },
+ "mothwing": {
+  "name": "Mothwing",
+  "class": "trickster",
+  "tier": 3,
+  "part": "dagger",
+  "prefix": "mothwing_dagger",
+  "atlas": "mothwing/mothwing",
+  "what": "A pale lilac knife with a moth’s wings for a guard; they beat, and silver dust falls",
+  "png": "512x1024"
+ },
+ "serpents_kiss": {
+  "name": "Serpent’s Kiss",
+  "class": "trickster",
+  "tier": 5,
+  "part": "sword",
+  "prefix": "serpents_kiss_sword",
+  "atlas": "serpents_kiss/serpents_kiss",
+  "what": "A wavy green sword whose guard is a snake’s head; its tongue flicks",
+  "png": "1024x1024"
+ },
+ "ghostblade": {
+  "name": "Ghostblade",
+  "class": "trickster",
+  "tier": 7,
+  "part": "sword",
+  "prefix": "ghostblade_sword",
+  "atlas": "ghostblade/ghostblade",
+  "what": "A sword that is only a ghost of one: pale and hollow, wisps trailing from its edge",
+  "png": "1024x1024"
+ },
+ "clockwork": {
+  "name": "The Clockwork Wand",
+  "class": "wizard",
+  "tier": 4,
+  "part": "wand",
+  "prefix": "clockwork_wand",
+  "atlas": "clockwork/clockwork",
+  "what": "A brass wand with gears at its head that turn, and a little spring of sparks",
+  "png": "512x1024"
+ },
+ "prism_spire": {
+  "name": "Prism Spire",
+  "class": "wizard",
+  "tier": 6,
+  "part": "staff",
+  "prefix": "prism_spire_staff",
+  "atlas": "prism_spire/prism_spire",
+  "what": "A white staff; above it a prism turns in the air and throws a fan of rainbow light",
+  "png": "1024x2048"
+ },
+ "watchers_eye": {
+  "name": "The Watcher’s Eye",
+  "class": "wizard",
+  "tier": 7,
+  "part": "staff",
+  "prefix": "watchers_eye_staff",
+  "atlas": "watchers_eye/watchers_eye",
+  "what": "A gnarled black staff ending in a claw that holds a great eye; it looks about, and blinks",
+  "png": "1024x1024"
+ },
+ "dragonbone": {
+  "name": "Dragonbone",
+  "class": "archer",
+  "tier": 7,
+  "part": "bow",
+  "prefix": "dragonbone_bow",
+  "atlas": "dragonbone/dragonbone",
+  "what": "A bow of bone with a dragon’s skull at its top and its tail at the bottom; embers drift from the jaws",
+  "png": "1024x1024"
+ },
+ "blossomstring": {
+  "name": "Blossomstring",
+  "class": "archer",
+  "tier": 4,
+  "part": "bow",
+  "prefix": "blossomstring_bow",
+  "atlas": "blossomstring/blossomstring",
+  "what": "A bow of pink wood in flower; petals fall from it as it moves",
+  "png": "1024x1024"
+ },
+ "wolfs_fang": {
+  "name": "Wolf’s Fang",
+  "class": "archer",
+  "tier": 5,
+  "part": "dagger",
+  "prefix": "wolfs_fang_dagger",
+  "atlas": "wolfs_fang/wolfs_fang",
+  "what": "A great white fang for a blade, a grip of grey fur, a paw for a pommel",
+  "png": "512x1024",
+  "body": "weapons_v2/hunter_body"
+ }
+}

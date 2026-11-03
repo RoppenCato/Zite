@@ -1,0 +1,447 @@
+{
+ "frames": {
+  "slime": {
+   "frame": {
+    "x": 4,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "wolf": {
+   "frame": {
+    "x": 100,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "bandit": {
+   "frame": {
+    "x": 196,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "wisp": {
+   "frame": {
+    "x": 292,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "wolf-alpha": {
+   "frame": {
+    "x": 388,
+    "y": 4,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "thornwood-warden": {
+   "frame": {
+    "x": 4,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "spider": {
+   "frame": {
+    "x": 100,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "treant": {
+   "frame": {
+    "x": 196,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "outlaw": {
+   "frame": {
+    "x": 292,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "wraith": {
+   "frame": {
+    "x": 388,
+    "y": 100,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "spider-queen": {
+   "frame": {
+    "x": 4,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "briar-king": {
+   "frame": {
+    "x": 100,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "ice-wolf": {
+   "frame": {
+    "x": 196,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "yeti": {
+   "frame": {
+    "x": 292,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "frost-wisp": {
+   "frame": {
+    "x": 388,
+    "y": 196,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "ice-golem": {
+   "frame": {
+    "x": 4,
+    "y": 292,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "yeti-elder": {
+   "frame": {
+    "x": 100,
+    "y": 292,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "frost-matriarch": {
+   "frame": {
+    "x": 196,
+    "y": 292,
+    "w": 88,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "journal_faces.png",
+  "size": {
+   "w": 512,
+   "h": 512
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2,
+  "app": "Art Director/tools/kit/journal.js"
+ }
+}

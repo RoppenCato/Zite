@@ -1,0 +1,303 @@
+{
+ "frames": {
+  "arena_meadows": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 486,
+    "h": 443
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 486,
+    "h": 443
+   },
+   "sourceSize": {
+    "w": 486,
+    "h": 443
+   },
+   "pivot": {
+    "x": 0.4815,
+    "y": 0.9661
+   }
+  },
+  "arena_forest": {
+   "frame": {
+    "x": 492,
+    "y": 3,
+    "w": 485,
+    "h": 443
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 485,
+    "h": 443
+   },
+   "sourceSize": {
+    "w": 485,
+    "h": 443
+   },
+   "pivot": {
+    "x": 0.4804,
+    "y": 0.9661
+   }
+  },
+  "arena_harvest": {
+   "frame": {
+    "x": 3,
+    "y": 449,
+    "w": 494,
+    "h": 459
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 494,
+    "h": 459
+   },
+   "sourceSize": {
+    "w": 494,
+    "h": 459
+   },
+   "pivot": {
+    "x": 0.743,
+    "y": 0.8805
+   }
+  },
+  "arena_doors_harvest": {
+   "frame": {
+    "x": 500,
+    "y": 449,
+    "w": 101,
+    "h": 120
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 101,
+    "h": 120
+   },
+   "sourceSize": {
+    "w": 101,
+    "h": 120
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.875
+   }
+  },
+  "arena_doors_meadows": {
+   "frame": {
+    "x": 604,
+    "y": 449,
+    "w": 109,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 109,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 109,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9266
+   }
+  },
+  "arena_doors_forest": {
+   "frame": {
+    "x": 716,
+    "y": 449,
+    "w": 109,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 109,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 109,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9266
+   }
+  },
+  "arena_far_harvest": {
+   "frame": {
+    "x": 828,
+    "y": 449,
+    "w": 108,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 108,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 108,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.689,
+    "y": 0.8732
+   }
+  },
+  "arena_far_meadows": {
+   "frame": {
+    "x": 500,
+    "y": 572,
+    "w": 107,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 107,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 107,
+    "h": 92
+   },
+   "pivot": {
+    "x": 0.4467,
+    "y": 0.963
+   }
+  },
+  "arena_far_forest": {
+   "frame": {
+    "x": 610,
+    "y": 572,
+    "w": 106,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 106,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 106,
+    "h": 92
+   },
+   "pivot": {
+    "x": 0.4491,
+    "y": 0.963
+   }
+  },
+  "arena_flag_meadows": {
+   "frame": {
+    "x": 719,
+    "y": 572,
+    "w": 75,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 75,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 75,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.04,
+    "y": 0.5652
+   }
+  },
+  "arena_flag_forest": {
+   "frame": {
+    "x": 797,
+    "y": 572,
+    "w": 75,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 75,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 75,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.04,
+    "y": 0.5652
+   }
+  },
+  "arena_flag_harvest": {
+   "frame": {
+    "x": 875,
+    "y": 572,
+    "w": 75,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 75,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 75,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.04,
+    "y": 0.5652
+   }
+  }
+ },
+ "meta": {
+  "image": "arena.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/arena.js",
+  "filePx": 1.5
+ }
+}

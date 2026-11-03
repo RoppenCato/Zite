@@ -1,0 +1,207 @@
+{
+ "frames": {
+  "arena_swamp": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 485,
+    "h": 443
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 485,
+    "h": 443
+   },
+   "sourceSize": {
+    "w": 485,
+    "h": 443
+   },
+   "pivot": {
+    "x": 0.4804,
+    "y": 0.9661
+   }
+  },
+  "arena_frost": {
+   "frame": {
+    "x": 491,
+    "y": 3,
+    "w": 486,
+    "h": 443
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 486,
+    "h": 443
+   },
+   "sourceSize": {
+    "w": 486,
+    "h": 443
+   },
+   "pivot": {
+    "x": 0.4815,
+    "y": 0.9661
+   }
+  },
+  "arena_doors_swamp": {
+   "frame": {
+    "x": 3,
+    "y": 449,
+    "w": 109,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 109,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 109,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9266
+   }
+  },
+  "arena_doors_frost": {
+   "frame": {
+    "x": 115,
+    "y": 449,
+    "w": 109,
+    "h": 109
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 109,
+    "h": 109
+   },
+   "sourceSize": {
+    "w": 109,
+    "h": 109
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9266
+   }
+  },
+  "arena_far_swamp": {
+   "frame": {
+    "x": 227,
+    "y": 449,
+    "w": 106,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 106,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 106,
+    "h": 92
+   },
+   "pivot": {
+    "x": 0.4491,
+    "y": 0.963
+   }
+  },
+  "arena_far_frost": {
+   "frame": {
+    "x": 336,
+    "y": 449,
+    "w": 107,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 107,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 107,
+    "h": 92
+   },
+   "pivot": {
+    "x": 0.4467,
+    "y": 0.963
+   }
+  },
+  "arena_flag_swamp": {
+   "frame": {
+    "x": 446,
+    "y": 449,
+    "w": 75,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 75,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 75,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.04,
+    "y": 0.5652
+   }
+  },
+  "arena_flag_frost": {
+   "frame": {
+    "x": 524,
+    "y": 449,
+    "w": 75,
+    "h": 46
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 75,
+    "h": 46
+   },
+   "sourceSize": {
+    "w": 75,
+    "h": 46
+   },
+   "pivot": {
+    "x": 0.04,
+    "y": 0.5652
+   }
+  }
+ },
+ "meta": {
+  "image": "arena.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/arena.js",
+  "filePx": 1.5
+ }
+}

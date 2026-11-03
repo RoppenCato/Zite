@@ -1,0 +1,132 @@
+[
+ {
+  "name": "young_yeti",
+  "id": "young-yeti",
+  "title": "Young Yeti",
+  "h": 170,
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 129
+ },
+ {
+  "name": "snow_monster",
+  "id": "snow-monster",
+  "title": "Snow Monster",
+  "h": 160,
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 96
+ },
+ {
+  "name": "frost_ogre",
+  "id": "frost-ogre",
+  "title": "Frost Ogre",
+  "h": 170,
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 107
+ },
+ {
+  "name": "icicle_bat",
+  "id": "icicle-bat",
+  "title": "Icicle Bat",
+  "h": 120,
+  "px": 2,
+  "scale": 0.5,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 108
+ },
+ {
+  "name": "old_snowshoulder",
+  "id": "old-snowshoulder",
+  "title": "Old Snowshoulder",
+  "h": 230,
+  "px": 1,
+  "scale": 1,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 122
+ },
+ {
+  "name": "yeti_king",
+  "id": "yeti-king",
+  "title": "The Yeti King",
+  "h": 420,
+  "px": 0.75,
+  "scale": 1.3333,
+  "blow": 5,
+  "frames": 20,
+  "clips": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "hovers": false,
+  "kb": 120
+ },
+ {
+  "name": "yeti_king2",
+  "id": "yeti-king, second phase",
+  "title": "The Yeti King, the storm comes",
+  "h": 420,
+  "px": 0.75,
+  "scale": 1.3333,
+  "blow": 5,
+  "frames": 11,
+  "clips": {
+   "stand": 3,
+   "attack1": 8
+  },
+  "hovers": false,
+  "kb": 101
+ }
+]

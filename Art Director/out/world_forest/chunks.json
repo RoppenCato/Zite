@@ -1,0 +1,257 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "thornwood",
+ "x": 3072,
+ "y": 3072,
+ "width": 4328,
+ "height": 6144,
+ "world": {
+  "width": 7400,
+  "height": 9300
+ },
+ "chunks": [
+  {
+   "file": "ground_3_3.jpg",
+   "col": 3,
+   "row": 3,
+   "x": 3071,
+   "y": 3071,
+   "kb": 153
+  },
+  {
+   "file": "ground_3_4.jpg",
+   "col": 3,
+   "row": 4,
+   "x": 3071,
+   "y": 4095,
+   "kb": 131
+  },
+  {
+   "file": "ground_3_5.jpg",
+   "col": 3,
+   "row": 5,
+   "x": 3071,
+   "y": 5119,
+   "kb": 114
+  },
+  {
+   "file": "ground_3_6.jpg",
+   "col": 3,
+   "row": 6,
+   "x": 3071,
+   "y": 6143,
+   "kb": 134
+  },
+  {
+   "file": "ground_3_7.jpg",
+   "col": 3,
+   "row": 7,
+   "x": 3071,
+   "y": 7167,
+   "kb": 127
+  },
+  {
+   "file": "ground_3_8.jpg",
+   "col": 3,
+   "row": 8,
+   "x": 3071,
+   "y": 8191,
+   "kb": 18
+  },
+  {
+   "file": "ground_4_3.jpg",
+   "col": 4,
+   "row": 3,
+   "x": 4095,
+   "y": 3071,
+   "kb": 128
+  },
+  {
+   "file": "ground_4_4.jpg",
+   "col": 4,
+   "row": 4,
+   "x": 4095,
+   "y": 4095,
+   "kb": 126
+  },
+  {
+   "file": "ground_4_5.jpg",
+   "col": 4,
+   "row": 5,
+   "x": 4095,
+   "y": 5119,
+   "kb": 84
+  },
+  {
+   "file": "ground_4_6.jpg",
+   "col": 4,
+   "row": 6,
+   "x": 4095,
+   "y": 6143,
+   "kb": 118
+  },
+  {
+   "file": "ground_4_7.jpg",
+   "col": 4,
+   "row": 7,
+   "x": 4095,
+   "y": 7167,
+   "kb": 114
+  },
+  {
+   "file": "ground_4_8.jpg",
+   "col": 4,
+   "row": 8,
+   "x": 4095,
+   "y": 8191,
+   "kb": 12
+  },
+  {
+   "file": "ground_5_3.jpg",
+   "col": 5,
+   "row": 3,
+   "x": 5119,
+   "y": 3071,
+   "kb": 135
+  },
+  {
+   "file": "ground_5_4.jpg",
+   "col": 5,
+   "row": 4,
+   "x": 5119,
+   "y": 4095,
+   "kb": 96
+  },
+  {
+   "file": "ground_5_5.jpg",
+   "col": 5,
+   "row": 5,
+   "x": 5119,
+   "y": 5119,
+   "kb": 151
+  },
+  {
+   "file": "ground_5_6.jpg",
+   "col": 5,
+   "row": 6,
+   "x": 5119,
+   "y": 6143,
+   "kb": 96
+  },
+  {
+   "file": "ground_5_7.jpg",
+   "col": 5,
+   "row": 7,
+   "x": 5119,
+   "y": 7167,
+   "kb": 153
+  },
+  {
+   "file": "ground_5_8.jpg",
+   "col": 5,
+   "row": 8,
+   "x": 5119,
+   "y": 8191,
+   "kb": 14
+  },
+  {
+   "file": "ground_6_3.jpg",
+   "col": 6,
+   "row": 3,
+   "x": 6143,
+   "y": 3071,
+   "kb": 208
+  },
+  {
+   "file": "ground_6_4.jpg",
+   "col": 6,
+   "row": 4,
+   "x": 6143,
+   "y": 4095,
+   "kb": 164
+  },
+  {
+   "file": "ground_6_5.jpg",
+   "col": 6,
+   "row": 5,
+   "x": 6143,
+   "y": 5119,
+   "kb": 134
+  },
+  {
+   "file": "ground_6_6.jpg",
+   "col": 6,
+   "row": 6,
+   "x": 6143,
+   "y": 6143,
+   "kb": 139
+  },
+  {
+   "file": "ground_6_7.jpg",
+   "col": 6,
+   "row": 7,
+   "x": 6143,
+   "y": 7167,
+   "kb": 134
+  },
+  {
+   "file": "ground_6_8.jpg",
+   "col": 6,
+   "row": 8,
+   "x": 6143,
+   "y": 8191,
+   "kb": 38
+  },
+  {
+   "file": "ground_7_3.jpg",
+   "col": 7,
+   "row": 3,
+   "x": 7167,
+   "y": 3071,
+   "kb": 32
+  },
+  {
+   "file": "ground_7_4.jpg",
+   "col": 7,
+   "row": 4,
+   "x": 7167,
+   "y": 4095,
+   "kb": 44
+  },
+  {
+   "file": "ground_7_5.jpg",
+   "col": 7,
+   "row": 5,
+   "x": 7167,
+   "y": 5119,
+   "kb": 29
+  },
+  {
+   "file": "ground_7_6.jpg",
+   "col": 7,
+   "row": 6,
+   "x": 7167,
+   "y": 6143,
+   "kb": 38
+  },
+  {
+   "file": "ground_7_7.jpg",
+   "col": 7,
+   "row": 7,
+   "x": 7167,
+   "y": 7167,
+   "kb": 11
+  },
+  {
+   "file": "ground_7_8.jpg",
+   "col": 7,
+   "row": 8,
+   "x": 7167,
+   "y": 8191,
+   "kb": 12
+  }
+ ]
+}

@@ -1,0 +1,190 @@
+{
+ "plain_great": {
+  "class": "warrior",
+  "kind": "great",
+  "pieces": [
+   "plain_great"
+  ],
+  "shape": "greatsword",
+  "size": "1024x1024",
+  "frames": 26,
+  "unique": 22
+ },
+ "fine_great": {
+  "class": "warrior",
+  "kind": "great",
+  "pieces": [
+   "fine_great"
+  ],
+  "shape": "great axe",
+  "size": "1024x2048",
+  "frames": 26,
+  "unique": 22
+ },
+ "grand_great": {
+  "class": "warrior",
+  "kind": "great",
+  "pieces": [
+   "grand_great"
+  ],
+  "shape": "maul",
+  "size": "1024x2048",
+  "frames": 26,
+  "unique": 22
+ },
+ "great_arm": {
+  "class": "warrior",
+  "kind": "great",
+  "pieces": [
+   "far_front_great",
+   "tin_gloves_far_great",
+   "copper_gloves_far_great"
+  ],
+  "note": "with a great weapon: draw far_front_great in place of far_back and far_front",
+  "size": "512x1024",
+  "frames": 78,
+  "unique": 63
+ },
+ "rogue_plain_sword": {
+  "class": "trickster",
+  "kind": "sword",
+  "pieces": [
+   "plain_sword"
+  ],
+  "size": "512x1024",
+  "frames": 26,
+  "unique": 22
+ },
+ "rogue_fine_sword": {
+  "class": "trickster",
+  "kind": "sword",
+  "pieces": [
+   "fine_sword"
+  ],
+  "size": "512x1024",
+  "frames": 26,
+  "unique": 22
+ },
+ "rogue_grand_sword": {
+  "class": "trickster",
+  "kind": "sword",
+  "pieces": [
+   "grand_sword"
+  ],
+  "size": "512x1024",
+  "frames": 26,
+  "unique": 22
+ },
+ "wands": {
+  "class": "wizard",
+  "kind": "wand",
+  "pieces": [
+   "plain_wand",
+   "fine_wand",
+   "grand_wand"
+  ],
+  "size": "1024x1024",
+  "frames": 78,
+  "unique": 63
+ },
+ "hunter_daggers": {
+  "class": "archer",
+  "kind": "dagger",
+  "pieces": [
+   "tin_dagger",
+   "copper_dagger",
+   "plain_dagger",
+   "fine_dagger",
+   "grand_dagger"
+  ],
+  "note": "on the Warrior’s moves, with hunter_body",
+  "size": "1024x2048",
+  "frames": 130,
+  "unique": 105
+ },
+ "hunter_body": {
+  "class": "archer",
+  "kind": "dagger",
+  "pieces": [
+   "far_back",
+   "far_front_shield",
+   "hand_open",
+   "body",
+   "far_front",
+   "head",
+   "hair",
+   "arm",
+   "hand"
+  ],
+  "note": "the Hunter’s body on the Warrior’s moves, for a dagger or a shield; the same frame names as her bow body",
+  "size": "1024x2048",
+  "frames": 234,
+  "unique": 149
+ },
+ "shields_buckler": {
+  "class": "warrior, trickster, archer",
+  "kind": "buckler",
+  "pieces": [
+   "plain_buckler",
+   "fine_buckler",
+   "grand_buckler"
+  ],
+  "note": "with far_front_shield and gloves_far_shield, as today",
+  "size": "512x512",
+  "frames": 78,
+  "unique": 39
+ },
+ "shields_round": {
+  "class": "warrior, trickster, archer",
+  "kind": "round",
+  "pieces": [
+   "plain_round",
+   "fine_round",
+   "grand_round"
+  ],
+  "note": "with far_front_shield and gloves_far_shield, as today",
+  "size": "512x1024",
+  "frames": 78,
+  "unique": 39
+ },
+ "shields_kite": {
+  "class": "warrior, trickster, archer",
+  "kind": "kite",
+  "pieces": [
+   "plain_kite",
+   "fine_kite",
+   "grand_kite"
+  ],
+  "note": "with far_front_shield and gloves_far_shield, as today",
+  "size": "512x1024",
+  "frames": 78,
+  "unique": 39
+ },
+ "shields_tower": {
+  "class": "warrior, trickster, archer",
+  "kind": "tower",
+  "pieces": [
+   "plain_tower",
+   "fine_tower",
+   "grand_tower"
+  ],
+  "note": "with far_front_shield and gloves_far_shield, as today",
+  "size": "1024x1024",
+  "frames": 78,
+  "unique": 39
+ },
+ "orbs": {
+  "class": "wizard",
+  "kind": "orb",
+  "pieces": [
+   "ward_orb",
+   "mirror_orb",
+   "blink_orb",
+   "storm_orb"
+  ],
+  "note": "with the wizard’s far_front_shield and gloves_far_shield",
+  "size": "512x1024",
+  "frames": 104,
+  "unique": 104
+ }
+}

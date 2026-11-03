@@ -1,0 +1,978 @@
+{
+ "frames": {
+  "hollow_king/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 218,
+    "h": 382
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 218,
+    "h": 382
+   },
+   "sourceSize": {
+    "w": 218,
+    "h": 382
+   },
+   "pivot": {
+    "x": 0.3991,
+    "y": 0.9817
+   }
+  },
+  "hollow_king/attack1/0002": {
+   "frame": {
+    "x": 222,
+    "y": 2,
+    "w": 217,
+    "h": 381
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 217,
+    "h": 381
+   },
+   "sourceSize": {
+    "w": 217,
+    "h": 381
+   },
+   "pivot": {
+    "x": 0.4055,
+    "y": 0.979
+   }
+  },
+  "hollow_king/attack1/0001": {
+   "frame": {
+    "x": 441,
+    "y": 2,
+    "w": 212,
+    "h": 363
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 212,
+    "h": 363
+   },
+   "sourceSize": {
+    "w": 212,
+    "h": 363
+   },
+   "pivot": {
+    "x": 0.4292,
+    "y": 0.978
+   }
+  },
+  "hollow_king/attack1/0006": {
+   "frame": {
+    "x": 655,
+    "y": 2,
+    "w": 343,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 343,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 343,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.6997,
+    "y": 0.9706
+   }
+  },
+  "hollow_king/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 386,
+    "w": 346,
+    "h": 337
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 346,
+    "h": 337
+   },
+   "sourceSize": {
+    "w": 346,
+    "h": 337
+   },
+   "pivot": {
+    "x": 0.7283,
+    "y": 0.9614
+   }
+  },
+  "hollow_king/stand/0003": {
+   "frame": {
+    "x": 350,
+    "y": 386,
+    "w": 236,
+    "h": 333
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 236,
+    "h": 333
+   },
+   "sourceSize": {
+    "w": 236,
+    "h": 333
+   },
+   "pivot": {
+    "x": 0.5169,
+    "y": 0.979
+   }
+  },
+  "hollow_king/move/0003": {
+   "frame": {
+    "x": 588,
+    "y": 386,
+    "w": 247,
+    "h": 319
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 247,
+    "h": 319
+   },
+   "sourceSize": {
+    "w": 247,
+    "h": 319
+   },
+   "pivot": {
+    "x": 0.5304,
+    "y": 0.9812
+   }
+  },
+  "hollow_king/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 725,
+    "w": 240,
+    "h": 317
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 317
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 317
+   },
+   "pivot": {
+    "x": 0.5167,
+    "y": 0.9779
+   }
+  },
+  "hollow_king/attack1/0004": {
+   "frame": {
+    "x": 244,
+    "y": 725,
+    "w": 304,
+    "h": 317
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 304,
+    "h": 317
+   },
+   "sourceSize": {
+    "w": 304,
+    "h": 317
+   },
+   "pivot": {
+    "x": 0.6513,
+    "y": 0.9748
+   }
+  },
+  "hollow_king/die1/0001": {
+   "frame": {
+    "x": 550,
+    "y": 725,
+    "w": 240,
+    "h": 317
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 317
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 317
+   },
+   "pivot": {
+    "x": 0.5167,
+    "y": 0.9779
+   }
+  },
+  "hollow_king/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1044,
+    "w": 240,
+    "h": 316
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 316
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 316
+   },
+   "pivot": {
+    "x": 0.5167,
+    "y": 0.9873
+   }
+  },
+  "hollow_king/attack1/0007": {
+   "frame": {
+    "x": 244,
+    "y": 1044,
+    "w": 286,
+    "h": 310
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 286,
+    "h": 310
+   },
+   "sourceSize": {
+    "w": 286,
+    "h": 310
+   },
+   "pivot": {
+    "x": 0.5944,
+    "y": 0.9774
+   }
+  },
+  "hollow_king/attack1/0008": {
+   "frame": {
+    "x": 532,
+    "y": 1044,
+    "w": 240,
+    "h": 305
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 305
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 305
+   },
+   "pivot": {
+    "x": 0.5167,
+    "y": 0.977
+   }
+  },
+  "hollow_king/stand/0002": {
+   "frame": {
+    "x": 774,
+    "y": 1044,
+    "w": 244,
+    "h": 302
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 244,
+    "h": 302
+   },
+   "sourceSize": {
+    "w": 244,
+    "h": 302
+   },
+   "pivot": {
+    "x": 0.5164,
+    "y": 0.9768
+   }
+  },
+  "hollow_king/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1362,
+    "w": 245,
+    "h": 299
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 299
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 299
+   },
+   "pivot": {
+    "x": 0.502,
+    "y": 0.9799
+   }
+  },
+  "hollow_king/hit1/0001": {
+   "frame": {
+    "x": 249,
+    "y": 1362,
+    "w": 255,
+    "h": 294
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 255,
+    "h": 294
+   },
+   "sourceSize": {
+    "w": 255,
+    "h": 294
+   },
+   "pivot": {
+    "x": 0.4863,
+    "y": 0.9694
+   }
+  },
+  "hollow_king/die1/0002": {
+   "frame": {
+    "x": 506,
+    "y": 1362,
+    "w": 273,
+    "h": 249
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 249
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 249
+   },
+   "pivot": {
+    "x": 0.4982,
+    "y": 0.9679
+   }
+  },
+  "hollow_king/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1663,
+    "w": 306,
+    "h": 183
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 306,
+    "h": 183
+   },
+   "sourceSize": {
+    "w": 306,
+    "h": 183
+   },
+   "pivot": {
+    "x": 0.4935,
+    "y": 0.9344
+   }
+  },
+  "hollow_king/die1/0004": {
+   "frame": {
+    "x": 310,
+    "y": 1663,
+    "w": 248,
+    "h": 45
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 248,
+    "h": 45
+   },
+   "sourceSize": {
+    "w": 248,
+    "h": 45
+   },
+   "pivot": {
+    "x": 0.4879,
+    "y": 0.9556
+   }
+  },
+  "hollow_king/die1/0005": {
+   "frame": {
+    "x": 560,
+    "y": 1663,
+    "w": 240,
+    "h": 33
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 33
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 33
+   },
+   "pivot": {
+    "x": 0.5375,
+    "y": -0.2121
+   }
+  }
+ },
+ "meta": {
+  "image": "hollow_king.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.625
+ },
+ "actions": {
+  "stand": {
+   "delay": 220,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hollow_king/stand/0001",
+     "w": 240,
+     "h": 317,
+     "origin": {
+      "x": 124,
+      "y": 310
+     },
+     "delay": 220,
+     "lt": {
+      "x": -124,
+      "y": -310
+     },
+     "rb": {
+      "x": 116,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -310
+     }
+    },
+    {
+     "name": "hollow_king/stand/0002",
+     "w": 244,
+     "h": 302,
+     "origin": {
+      "x": 126,
+      "y": 295
+     },
+     "delay": 220,
+     "lt": {
+      "x": -126,
+      "y": -295
+     },
+     "rb": {
+      "x": 118,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -295
+     }
+    },
+    {
+     "name": "hollow_king/stand/0003",
+     "w": 236,
+     "h": 333,
+     "origin": {
+      "x": 122,
+      "y": 326
+     },
+     "delay": 220,
+     "lt": {
+      "x": -122,
+      "y": -326
+     },
+     "rb": {
+      "x": 114,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -326
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 160,
+   "loop": true,
+   "frames": [
+    {
+     "name": "hollow_king/move/0001",
+     "w": 240,
+     "h": 316,
+     "origin": {
+      "x": 124,
+      "y": 312
+     },
+     "delay": 160,
+     "lt": {
+      "x": -124,
+      "y": -312
+     },
+     "rb": {
+      "x": 116,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -312
+     }
+    },
+    {
+     "name": "hollow_king/move/0002",
+     "w": 245,
+     "h": 299,
+     "origin": {
+      "x": 123,
+      "y": 293
+     },
+     "delay": 160,
+     "lt": {
+      "x": -123,
+      "y": -293
+     },
+     "rb": {
+      "x": 122,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "hollow_king/move/0003",
+     "w": 247,
+     "h": 319,
+     "origin": {
+      "x": 131,
+      "y": 313
+     },
+     "delay": 160,
+     "lt": {
+      "x": -131,
+      "y": -313
+     },
+     "rb": {
+      "x": 116,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -313
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hollow_king/attack1/0001",
+     "w": 212,
+     "h": 363,
+     "origin": {
+      "x": 91,
+      "y": 355
+     },
+     "delay": 120,
+     "lt": {
+      "x": -91,
+      "y": -355
+     },
+     "rb": {
+      "x": 121,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -355
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0002",
+     "w": 217,
+     "h": 381,
+     "origin": {
+      "x": 88,
+      "y": 373
+     },
+     "delay": 140,
+     "lt": {
+      "x": -88,
+      "y": -373
+     },
+     "rb": {
+      "x": 129,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -373
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0003",
+     "w": 218,
+     "h": 382,
+     "origin": {
+      "x": 87,
+      "y": 375
+     },
+     "delay": 150,
+     "lt": {
+      "x": -87,
+      "y": -375
+     },
+     "rb": {
+      "x": 131,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -375
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0004",
+     "w": 304,
+     "h": 317,
+     "origin": {
+      "x": 198,
+      "y": 309
+     },
+     "delay": 67,
+     "lt": {
+      "x": -198,
+      "y": -309
+     },
+     "rb": {
+      "x": 106,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -309
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0005",
+     "w": 346,
+     "h": 337,
+     "origin": {
+      "x": 252,
+      "y": 324
+     },
+     "delay": 220,
+     "lt": {
+      "x": -252,
+      "y": -324
+     },
+     "rb": {
+      "x": 94,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -324
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0006",
+     "w": 343,
+     "h": 340,
+     "origin": {
+      "x": 240,
+      "y": 330
+     },
+     "delay": 90,
+     "lt": {
+      "x": -240,
+      "y": -330
+     },
+     "rb": {
+      "x": 103,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -330
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0007",
+     "w": 286,
+     "h": 310,
+     "origin": {
+      "x": 170,
+      "y": 303
+     },
+     "delay": 90,
+     "lt": {
+      "x": -170,
+      "y": -303
+     },
+     "rb": {
+      "x": 116,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -303
+     }
+    },
+    {
+     "name": "hollow_king/attack1/0008",
+     "w": 240,
+     "h": 305,
+     "origin": {
+      "x": 124,
+      "y": 298
+     },
+     "delay": 90,
+     "lt": {
+      "x": -124,
+      "y": -298
+     },
+     "rb": {
+      "x": 116,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -298
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hollow_king/hit1/0001",
+     "w": 255,
+     "h": 294,
+     "origin": {
+      "x": 124,
+      "y": 285
+     },
+     "delay": 600,
+     "lt": {
+      "x": -124,
+      "y": -285
+     },
+     "rb": {
+      "x": 131,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -285
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 110,
+   "loop": false,
+   "frames": [
+    {
+     "name": "hollow_king/die1/0001",
+     "w": 240,
+     "h": 317,
+     "origin": {
+      "x": 124,
+      "y": 310
+     },
+     "delay": 110,
+     "lt": {
+      "x": -124,
+      "y": -310
+     },
+     "rb": {
+      "x": 116,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -310
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hollow_king/die1/0002",
+     "w": 273,
+     "h": 249,
+     "origin": {
+      "x": 136,
+      "y": 241
+     },
+     "delay": 110,
+     "lt": {
+      "x": -136,
+      "y": -241
+     },
+     "rb": {
+      "x": 137,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -241
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hollow_king/die1/0003",
+     "w": 306,
+     "h": 183,
+     "origin": {
+      "x": 151,
+      "y": 171
+     },
+     "delay": 110,
+     "lt": {
+      "x": -151,
+      "y": -171
+     },
+     "rb": {
+      "x": 155,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -171
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "hollow_king/die1/0004",
+     "w": 248,
+     "h": 45,
+     "origin": {
+      "x": 121,
+      "y": 43
+     },
+     "delay": 110,
+     "lt": {
+      "x": -121,
+      "y": -43
+     },
+     "rb": {
+      "x": 127,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -43
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "hollow_king/die1/0005",
+     "w": 240,
+     "h": 33,
+     "origin": {
+      "x": 129,
+      "y": -7
+     },
+     "delay": 110,
+     "lt": {
+      "x": -129,
+      "y": 7
+     },
+     "rb": {
+      "x": 111,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": 7
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

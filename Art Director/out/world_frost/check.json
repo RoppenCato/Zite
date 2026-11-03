@@ -1,0 +1,30 @@
+{
+ "spots": 179,
+ "hubs": 19,
+ "roads": 26,
+ "tooClose": [],
+ "crossings": [],
+ "offLand": [],
+ "grounds": {
+  "goat-rocks": 58,
+  "crag-camp": 48,
+  "boulder-slope": 40,
+  "frostling-hollow": 33
+ },
+ "kinds": {
+  "board": 1,
+  "town": 2,
+  "shop": 1,
+  "shop_magic": 1,
+  "church": 1,
+  "spring": 6,
+  "shrine": 3,
+  "chest": 3,
+  "wild": 155,
+  "gate": 1,
+  "gear": 5
+ },
+ "sprites": 334,
+ "baked": 1153,
+ "mostInAViewAt08": 35
+}

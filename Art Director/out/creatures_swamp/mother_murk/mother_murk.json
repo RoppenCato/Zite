@@ -1,0 +1,978 @@
+{
+ "frames": {
+  "mother_murk/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 292,
+    "h": 338
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 292,
+    "h": 338
+   },
+   "sourceSize": {
+    "w": 292,
+    "h": 338
+   },
+   "pivot": {
+    "x": 0.4897,
+    "y": 0.9556
+   }
+  },
+  "mother_murk/attack1/0005": {
+   "frame": {
+    "x": 296,
+    "y": 2,
+    "w": 377,
+    "h": 336
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 377,
+    "h": 336
+   },
+   "sourceSize": {
+    "w": 377,
+    "h": 336
+   },
+   "pivot": {
+    "x": 0.6552,
+    "y": 0.9315
+   }
+  },
+  "mother_murk/attack1/0002": {
+   "frame": {
+    "x": 675,
+    "y": 2,
+    "w": 293,
+    "h": 335
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 293,
+    "h": 335
+   },
+   "sourceSize": {
+    "w": 293,
+    "h": 335
+   },
+   "pivot": {
+    "x": 0.4881,
+    "y": 0.9552
+   }
+  },
+  "mother_murk/attack1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 342,
+    "w": 339,
+    "h": 329
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 339,
+    "h": 329
+   },
+   "sourceSize": {
+    "w": 339,
+    "h": 329
+   },
+   "pivot": {
+    "x": 0.5959,
+    "y": 0.9514
+   }
+  },
+  "mother_murk/attack1/0006": {
+   "frame": {
+    "x": 343,
+    "y": 342,
+    "w": 374,
+    "h": 326
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 374,
+    "h": 326
+   },
+   "sourceSize": {
+    "w": 374,
+    "h": 326
+   },
+   "pivot": {
+    "x": 0.6364,
+    "y": 0.9479
+   }
+  },
+  "mother_murk/stand/0003": {
+   "frame": {
+    "x": 719,
+    "y": 342,
+    "w": 275,
+    "h": 323
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 275,
+    "h": 323
+   },
+   "sourceSize": {
+    "w": 275,
+    "h": 323
+   },
+   "pivot": {
+    "x": 0.4909,
+    "y": 0.9536
+   }
+  },
+  "mother_murk/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 673,
+    "w": 280,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 280,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.4893,
+    "y": 0.9528
+   }
+  },
+  "mother_murk/move/0001": {
+   "frame": {
+    "x": 284,
+    "y": 673,
+    "w": 280,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 280,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.4893,
+    "y": 0.9623
+   }
+  },
+  "mother_murk/attack1/0008": {
+   "frame": {
+    "x": 566,
+    "y": 673,
+    "w": 280,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 280,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.4893,
+    "y": 0.9528
+   }
+  },
+  "mother_murk/die1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 993,
+    "w": 280,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 280,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 280,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.4893,
+    "y": 0.9528
+   }
+  },
+  "mother_murk/attack1/0001": {
+   "frame": {
+    "x": 284,
+    "y": 993,
+    "w": 284,
+    "h": 316
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 316
+   },
+   "sourceSize": {
+    "w": 284,
+    "h": 316
+   },
+   "pivot": {
+    "x": 0.4894,
+    "y": 0.9525
+   }
+  },
+  "mother_murk/stand/0002": {
+   "frame": {
+    "x": 570,
+    "y": 993,
+    "w": 284,
+    "h": 313
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 313
+   },
+   "sourceSize": {
+    "w": 284,
+    "h": 313
+   },
+   "pivot": {
+    "x": 0.4894,
+    "y": 0.9521
+   }
+  },
+  "mother_murk/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1313,
+    "w": 286,
+    "h": 311
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 286,
+    "h": 311
+   },
+   "sourceSize": {
+    "w": 286,
+    "h": 311
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.9582
+   }
+  },
+  "mother_murk/attack1/0007": {
+   "frame": {
+    "x": 290,
+    "y": 1313,
+    "w": 325,
+    "h": 311
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 325,
+    "h": 311
+   },
+   "sourceSize": {
+    "w": 325,
+    "h": 311
+   },
+   "pivot": {
+    "x": 0.5538,
+    "y": 0.9518
+   }
+  },
+  "mother_murk/move/0003": {
+   "frame": {
+    "x": 617,
+    "y": 1313,
+    "w": 287,
+    "h": 309
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 287,
+    "h": 309
+   },
+   "sourceSize": {
+    "w": 287,
+    "h": 309
+   },
+   "pivot": {
+    "x": 0.4913,
+    "y": 0.9579
+   }
+  },
+  "mother_murk/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1626,
+    "w": 301,
+    "h": 297
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 301,
+    "h": 297
+   },
+   "sourceSize": {
+    "w": 301,
+    "h": 297
+   },
+   "pivot": {
+    "x": 0.4884,
+    "y": 0.9461
+   }
+  },
+  "mother_murk/die1/0002": {
+   "frame": {
+    "x": 305,
+    "y": 1626,
+    "w": 321,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 321,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 321,
+    "h": 250
+   },
+   "pivot": {
+    "x": 0.4891,
+    "y": 0.948
+   }
+  },
+  "mother_murk/die1/0003": {
+   "frame": {
+    "x": 628,
+    "y": 1626,
+    "w": 361,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 361,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 361,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.4903,
+    "y": 0.8906
+   }
+  },
+  "mother_murk/die1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1925,
+    "w": 361,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 361,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 361,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.4903,
+    "y": 0.4091
+   }
+  },
+  "mother_murk/die1/0004": {
+   "frame": {
+    "x": 365,
+    "y": 1925,
+    "w": 361,
+    "h": 40
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 361,
+    "h": 40
+   },
+   "sourceSize": {
+    "w": 361,
+    "h": 40
+   },
+   "pivot": {
+    "x": 0.4903,
+    "y": 0.525
+   }
+  }
+ },
+ "meta": {
+  "image": "mother_murk.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 220,
+   "loop": true,
+   "frames": [
+    {
+     "name": "mother_murk/stand/0001",
+     "w": 280,
+     "h": 318,
+     "origin": {
+      "x": 137,
+      "y": 303
+     },
+     "delay": 220,
+     "lt": {
+      "x": -137,
+      "y": -303
+     },
+     "rb": {
+      "x": 143,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -303
+     }
+    },
+    {
+     "name": "mother_murk/stand/0002",
+     "w": 284,
+     "h": 313,
+     "origin": {
+      "x": 139,
+      "y": 298
+     },
+     "delay": 220,
+     "lt": {
+      "x": -139,
+      "y": -298
+     },
+     "rb": {
+      "x": 145,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -298
+     }
+    },
+    {
+     "name": "mother_murk/stand/0003",
+     "w": 275,
+     "h": 323,
+     "origin": {
+      "x": 135,
+      "y": 308
+     },
+     "delay": 220,
+     "lt": {
+      "x": -135,
+      "y": -308
+     },
+     "rb": {
+      "x": 140,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -308
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 160,
+   "loop": true,
+   "frames": [
+    {
+     "name": "mother_murk/move/0001",
+     "w": 280,
+     "h": 318,
+     "origin": {
+      "x": 137,
+      "y": 306
+     },
+     "delay": 160,
+     "lt": {
+      "x": -137,
+      "y": -306
+     },
+     "rb": {
+      "x": 143,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -306
+     }
+    },
+    {
+     "name": "mother_murk/move/0002",
+     "w": 286,
+     "h": 311,
+     "origin": {
+      "x": 140,
+      "y": 298
+     },
+     "delay": 160,
+     "lt": {
+      "x": -140,
+      "y": -298
+     },
+     "rb": {
+      "x": 146,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -298
+     }
+    },
+    {
+     "name": "mother_murk/move/0003",
+     "w": 287,
+     "h": 309,
+     "origin": {
+      "x": 141,
+      "y": 296
+     },
+     "delay": 160,
+     "lt": {
+      "x": -141,
+      "y": -296
+     },
+     "rb": {
+      "x": 146,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -296
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "mother_murk/attack1/0001",
+     "w": 284,
+     "h": 316,
+     "origin": {
+      "x": 139,
+      "y": 301
+     },
+     "delay": 120,
+     "lt": {
+      "x": -139,
+      "y": -301
+     },
+     "rb": {
+      "x": 145,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -301
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0002",
+     "w": 293,
+     "h": 335,
+     "origin": {
+      "x": 143,
+      "y": 320
+     },
+     "delay": 140,
+     "lt": {
+      "x": -143,
+      "y": -320
+     },
+     "rb": {
+      "x": 150,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -320
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0003",
+     "w": 292,
+     "h": 338,
+     "origin": {
+      "x": 143,
+      "y": 323
+     },
+     "delay": 150,
+     "lt": {
+      "x": -143,
+      "y": -323
+     },
+     "rb": {
+      "x": 149,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -323
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0004",
+     "w": 339,
+     "h": 329,
+     "origin": {
+      "x": 202,
+      "y": 313
+     },
+     "delay": 67,
+     "lt": {
+      "x": -202,
+      "y": -313
+     },
+     "rb": {
+      "x": 137,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -313
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0005",
+     "w": 377,
+     "h": 336,
+     "origin": {
+      "x": 247,
+      "y": 313
+     },
+     "delay": 220,
+     "lt": {
+      "x": -247,
+      "y": -313
+     },
+     "rb": {
+      "x": 130,
+      "y": 23
+     },
+     "head": {
+      "x": 0,
+      "y": -313
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0006",
+     "w": 374,
+     "h": 326,
+     "origin": {
+      "x": 238,
+      "y": 309
+     },
+     "delay": 90,
+     "lt": {
+      "x": -238,
+      "y": -309
+     },
+     "rb": {
+      "x": 136,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -309
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0007",
+     "w": 325,
+     "h": 311,
+     "origin": {
+      "x": 180,
+      "y": 296
+     },
+     "delay": 90,
+     "lt": {
+      "x": -180,
+      "y": -296
+     },
+     "rb": {
+      "x": 145,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -296
+     }
+    },
+    {
+     "name": "mother_murk/attack1/0008",
+     "w": 280,
+     "h": 318,
+     "origin": {
+      "x": 137,
+      "y": 303
+     },
+     "delay": 90,
+     "lt": {
+      "x": -137,
+      "y": -303
+     },
+     "rb": {
+      "x": 143,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -303
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "mother_murk/hit1/0001",
+     "w": 301,
+     "h": 297,
+     "origin": {
+      "x": 147,
+      "y": 281
+     },
+     "delay": 600,
+     "lt": {
+      "x": -147,
+      "y": -281
+     },
+     "rb": {
+      "x": 154,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -281
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 110,
+   "loop": false,
+   "frames": [
+    {
+     "name": "mother_murk/die1/0001",
+     "w": 280,
+     "h": 318,
+     "origin": {
+      "x": 137,
+      "y": 303
+     },
+     "delay": 110,
+     "lt": {
+      "x": -137,
+      "y": -303
+     },
+     "rb": {
+      "x": 143,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -303
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "mother_murk/die1/0002",
+     "w": 321,
+     "h": 250,
+     "origin": {
+      "x": 157,
+      "y": 237
+     },
+     "delay": 110,
+     "lt": {
+      "x": -157,
+      "y": -237
+     },
+     "rb": {
+      "x": 164,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -237
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "mother_murk/die1/0003",
+     "w": 361,
+     "h": 192,
+     "origin": {
+      "x": 177,
+      "y": 171
+     },
+     "delay": 110,
+     "lt": {
+      "x": -177,
+      "y": -171
+     },
+     "rb": {
+      "x": 184,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -171
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "mother_murk/die1/0004",
+     "w": 361,
+     "h": 40,
+     "origin": {
+      "x": 177,
+      "y": 21
+     },
+     "delay": 110,
+     "lt": {
+      "x": -177,
+      "y": -21
+     },
+     "rb": {
+      "x": 184,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -21
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "mother_murk/die1/0005",
+     "w": 361,
+     "h": 44,
+     "origin": {
+      "x": 177,
+      "y": 18
+     },
+     "delay": 110,
+     "lt": {
+      "x": -177,
+      "y": -18
+     },
+     "rb": {
+      "x": 184,
+      "y": 26
+     },
+     "head": {
+      "x": 0,
+      "y": -18
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

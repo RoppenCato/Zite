@@ -1,0 +1,122 @@
+{
+ "greenheart": {
+  "name": "Greenheart",
+  "class": "warrior",
+  "tier": 2,
+  "part": "sword",
+  "prefix": "greenheart_sword",
+  "atlas": "greenheart/greenheart",
+  "what": "A blade of living wood, vines round it, leaves that stir",
+  "png": "1024x1024"
+ },
+ "emberbrand": {
+  "name": "Emberbrand",
+  "class": "warrior",
+  "tier": 3,
+  "part": "sword",
+  "prefix": "emberbrand_sword",
+  "atlas": "emberbrand/emberbrand",
+  "what": "A flaming sword: dark iron, a burning edge, flames that lick up it",
+  "png": "1024x1024"
+ },
+ "winters_edge": {
+  "name": "Winter’s Edge",
+  "class": "warrior",
+  "tier": 5,
+  "part": "sword",
+  "prefix": "winters_edge_sword",
+  "atlas": "winters_edge/winters_edge",
+  "what": "A long blade of old ice, shards on its back, a cold glitter",
+  "png": "1024x1024"
+ },
+ "dawnbreaker": {
+  "name": "Dawnbreaker",
+  "class": "warrior",
+  "tier": 7,
+  "part": "sword",
+  "prefix": "dawnbreaker_sword",
+  "atlas": "dawnbreaker/dawnbreaker",
+  "what": "A massive shining axe: a gold and white double head, rays turning over it",
+  "png": "1024x2048"
+ },
+ "viperfang": {
+  "name": "Viperfang",
+  "class": "trickster",
+  "tier": 2,
+  "part": "dagger",
+  "prefix": "viperfang_dagger",
+  "atlas": "viperfang/viperfang",
+  "what": "A curved green fang that drips",
+  "png": "512x1024"
+ },
+ "nightsong": {
+  "name": "Nightsong",
+  "class": "trickster",
+  "tier": 4,
+  "part": "dagger",
+  "prefix": "nightsong_dagger",
+  "atlas": "nightsong/nightsong",
+  "what": "A blade the colour of night, a moon at its guard, a slow glitter of stars",
+  "png": "512x1024"
+ },
+ "redtide": {
+  "name": "Redtide",
+  "class": "trickster",
+  "tier": 6,
+  "part": "dagger",
+  "prefix": "redtide_dagger",
+  "atlas": "redtide/redtide",
+  "what": "A wide pirate’s blade of red steel, a gold shell at the guard, a wake of red spray",
+  "png": "512x1024"
+ },
+ "sunspire": {
+  "name": "Sunspire",
+  "class": "wizard",
+  "tier": 3,
+  "part": "staff",
+  "prefix": "sunspire_staff",
+  "atlas": "sunspire/sunspire",
+  "what": "A white staff with a small sun at its head, its rays turning",
+  "png": "1024x2048"
+ },
+ "stormcaller": {
+  "name": "Stormcaller",
+  "class": "wizard",
+  "tier": 5,
+  "part": "staff",
+  "prefix": "stormcaller_staff",
+  "atlas": "stormcaller/stormcaller",
+  "what": "Black wood, a caged blue storm, lightning that never strikes the same way twice",
+  "png": "1024x2048"
+ },
+ "worldkindle": {
+  "name": "Worldkindle",
+  "class": "wizard",
+  "tier": 7,
+  "part": "staff",
+  "prefix": "worldkindle_staff",
+  "atlas": "worldkindle/worldkindle",
+  "what": "A gold ring on a dark staff, and in the ring, floating, the first flame",
+  "png": "1024x2048"
+ },
+ "galewhisper": {
+  "name": "Galewhisper",
+  "class": "archer",
+  "tier": 3,
+  "part": "bow",
+  "prefix": "galewhisper_bow",
+  "atlas": "galewhisper/galewhisper",
+  "what": "A green bow with white feathers on its tips, and the wind curling round them",
+  "png": "1024x1024"
+ },
+ "starfall": {
+  "name": "Starfall",
+  "class": "archer",
+  "tier": 7,
+  "part": "bow",
+  "prefix": "starfall_bow",
+  "atlas": "starfall/starfall",
+  "what": "A bow of gold and night, a star at each tip, stars falling from it",
+  "png": "1024x1024"
+ }
+}

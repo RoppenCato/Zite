@@ -1,0 +1,940 @@
+{
+ "frames": {
+  "flag_ship": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 614,
+    "h": 587
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 614,
+    "h": 587
+   },
+   "sourceSize": {
+    "w": 614,
+    "h": 587
+   },
+   "pivot": {
+    "x": 0.4463,
+    "y": 0.9063
+   },
+   "what": "Saltjaw"
+  },
+  "ship": {
+   "frame": {
+    "x": 3,
+    "y": 593,
+    "w": 459,
+    "h": 425
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 459,
+    "h": 425
+   },
+   "sourceSize": {
+    "w": 459,
+    "h": 425
+   },
+   "pivot": {
+    "x": 0.4336,
+    "y": 0.9059
+   },
+   "what": "the bay"
+  },
+  "palm_c": {
+   "frame": {
+    "x": 465,
+    "y": 593,
+    "w": 299,
+    "h": 369
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 299,
+    "h": 369
+   },
+   "sourceSize": {
+    "w": 299,
+    "h": 369
+   },
+   "pivot": {
+    "x": 0.4682,
+    "y": 0.9214
+   },
+   "what": "everywhere"
+  },
+  "lookout": {
+   "frame": {
+    "x": 767,
+    "y": 593,
+    "w": 139,
+    "h": 328
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 139,
+    "h": 328
+   },
+   "sourceSize": {
+    "w": 139,
+    "h": 328
+   },
+   "pivot": {
+    "x": 0.4317,
+    "y": 0.9238
+   },
+   "what": "the Crow’s Nest"
+  },
+  "palm_a": {
+   "frame": {
+    "x": 3,
+    "y": 1021,
+    "w": 272,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 272,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 272,
+    "h": 324
+   },
+   "pivot": {
+    "x": 0.5625,
+    "y": 0.9228
+   },
+   "what": "everywhere"
+  },
+  "palm_b": {
+   "frame": {
+    "x": 278,
+    "y": 1021,
+    "w": 225,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 225,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 225,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.5156,
+    "y": 0.9182
+   },
+   "what": "everywhere"
+  },
+  "shack_a": {
+   "frame": {
+    "x": 506,
+    "y": 1021,
+    "w": 235,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.8507
+   },
+   "what": "towns"
+  },
+  "shack_b": {
+   "frame": {
+    "x": 744,
+    "y": 1021,
+    "w": 235,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.8507
+   },
+   "what": "towns"
+  },
+  "shack_c": {
+   "frame": {
+    "x": 3,
+    "y": 1348,
+    "w": 235,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.8507
+   },
+   "what": "towns"
+  },
+  "apothecary": {
+   "frame": {
+    "x": 241,
+    "y": 1348,
+    "w": 235,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.4298,
+    "y": 0.8507
+   },
+   "what": "Old Salt’s Remedies"
+  },
+  "church": {
+   "frame": {
+    "x": 479,
+    "y": 1348,
+    "w": 156,
+    "h": 191
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 156,
+    "h": 191
+   },
+   "sourceSize": {
+    "w": 156,
+    "h": 191
+   },
+   "pivot": {
+    "x": 0.3974,
+    "y": 0.9529
+   },
+   "what": "Sailors’ Chapel"
+  },
+  "tent": {
+   "frame": {
+    "x": 638,
+    "y": 1348,
+    "w": 186,
+    "h": 186
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 186,
+    "h": 186
+   },
+   "sourceSize": {
+    "w": 186,
+    "h": 186
+   },
+   "pivot": {
+    "x": 0.4516,
+    "y": 0.8548
+   },
+   "what": "the yards"
+  },
+  "tent_r": {
+   "frame": {
+    "x": 827,
+    "y": 1348,
+    "w": 186,
+    "h": 186
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 186,
+    "h": 186
+   },
+   "sourceSize": {
+    "w": 186,
+    "h": 186
+   },
+   "pivot": {
+    "x": 0.4516,
+    "y": 0.8548
+   },
+   "what": "the yards"
+  },
+  "spot_gate": {
+   "frame": {
+    "x": 3,
+    "y": 1572,
+    "w": 250,
+    "h": 173
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 173
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 173
+   },
+   "pivot": {
+    "x": 0.492,
+    "y": 0.5838
+   },
+   "what": "spot"
+  },
+  "anchor_stone": {
+   "frame": {
+    "x": 256,
+    "y": 1572,
+    "w": 179,
+    "h": 156
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 179,
+    "h": 156
+   },
+   "sourceSize": {
+    "w": 179,
+    "h": 156
+   },
+   "pivot": {
+    "x": 0.4302,
+    "y": 0.8141
+   },
+   "what": "Anchor Stone"
+  },
+  "spot_shop_magic": {
+   "frame": {
+    "x": 438,
+    "y": 1572,
+    "w": 190,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.6259
+   },
+   "what": "spot"
+  },
+  "fort_wall": {
+   "frame": {
+    "x": 631,
+    "y": 1572,
+    "w": 246,
+    "h": 145
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 246,
+    "h": 145
+   },
+   "sourceSize": {
+    "w": 246,
+    "h": 145
+   },
+   "pivot": {
+    "x": 0.439,
+    "y": 0.8
+   },
+   "what": "the fort"
+  },
+  "spot_shop": {
+   "frame": {
+    "x": 3,
+    "y": 1748,
+    "w": 190,
+    "h": 145
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 145
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 145
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.6207
+   },
+   "what": "spot"
+  },
+  "spot_town": {
+   "frame": {
+    "x": 196,
+    "y": 1748,
+    "w": 190,
+    "h": 114
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 190,
+    "h": 114
+   },
+   "sourceSize": {
+    "w": 190,
+    "h": 114
+   },
+   "pivot": {
+    "x": 0.4895,
+    "y": 0.5175
+   },
+   "what": "spot"
+  },
+  "chest": {
+   "frame": {
+    "x": 389,
+    "y": 1748,
+    "w": 118,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 118,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 118,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.4831,
+    "y": 0.8137
+   },
+   "what": "the wreck"
+  },
+  "spot_spring": {
+   "frame": {
+    "x": 510,
+    "y": 1748,
+    "w": 122,
+    "h": 84
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 84
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 84
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5595
+   },
+   "what": "spot"
+  },
+  "spot_shrine": {
+   "frame": {
+    "x": 635,
+    "y": 1748,
+    "w": 122,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5542
+   },
+   "what": "spot"
+  },
+  "spot_church": {
+   "frame": {
+    "x": 760,
+    "y": 1748,
+    "w": 122,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5542
+   },
+   "what": "spot"
+  },
+  "quest_board": {
+   "frame": {
+    "x": 885,
+    "y": 1748,
+    "w": 86,
+    "h": 82
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 86,
+    "h": 82
+   },
+   "sourceSize": {
+    "w": 86,
+    "h": 82
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9634
+   },
+   "what": "Dockside Board"
+  },
+  "spot_board": {
+   "frame": {
+    "x": 3,
+    "y": 1896,
+    "w": 122,
+    "h": 82
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 82
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 82
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5488
+   },
+   "what": "spot"
+  },
+  "cannon": {
+   "frame": {
+    "x": 128,
+    "y": 1896,
+    "w": 141,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 141,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 141,
+    "h": 78
+   },
+   "pivot": {
+    "x": 0.4326,
+    "y": 0.7821
+   },
+   "what": "the fort"
+  },
+  "spot_gear": {
+   "frame": {
+    "x": 272,
+    "y": 1896,
+    "w": 122,
+    "h": 78
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 78
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 78
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5256
+   },
+   "what": "spot"
+  },
+  "spot_chest": {
+   "frame": {
+    "x": 397,
+    "y": 1896,
+    "w": 122,
+    "h": 77
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 122,
+    "h": 77
+   },
+   "sourceSize": {
+    "w": 122,
+    "h": 77
+   },
+   "pivot": {
+    "x": 0.4836,
+    "y": 0.5195
+   },
+   "what": "spot"
+  },
+  "spot_wild": {
+   "frame": {
+    "x": 522,
+    "y": 1896,
+    "w": 121,
+    "h": 71
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 121,
+    "h": 71
+   },
+   "sourceSize": {
+    "w": 121,
+    "h": 71
+   },
+   "pivot": {
+    "x": 0.4793,
+    "y": 0.4789
+   },
+   "what": "spot"
+  },
+  "spring": {
+   "frame": {
+    "x": 646,
+    "y": 1896,
+    "w": 86,
+    "h": 65
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 86,
+    "h": 65
+   },
+   "sourceSize": {
+    "w": 86,
+    "h": 65
+   },
+   "pivot": {
+    "x": 0.4767,
+    "y": 0.7385
+   },
+   "what": "Sweetwater Cove"
+  },
+  "crate": {
+   "frame": {
+    "x": 735,
+    "y": 1896,
+    "w": 65,
+    "h": 60
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 65,
+    "h": 60
+   },
+   "sourceSize": {
+    "w": 65,
+    "h": 60
+   },
+   "pivot": {
+    "x": 0.4462,
+    "y": 0.7833
+   },
+   "what": "docks"
+  },
+  "bush": {
+   "frame": {
+    "x": 803,
+    "y": 1896,
+    "w": 73,
+    "h": 57
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 73,
+    "h": 57
+   },
+   "sourceSize": {
+    "w": 73,
+    "h": 57
+   },
+   "pivot": {
+    "x": 0.4932,
+    "y": 0.7719
+   },
+   "what": "green"
+  },
+  "barrel": {
+   "frame": {
+    "x": 879,
+    "y": 1896,
+    "w": 63,
+    "h": 39
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 63,
+    "h": 39
+   },
+   "sourceSize": {
+    "w": 63,
+    "h": 39
+   },
+   "pivot": {
+    "x": 0.4286,
+    "y": 0.6667
+   },
+   "what": "docks"
+  },
+  "rock": {
+   "frame": {
+    "x": 945,
+    "y": 1896,
+    "w": 53,
+    "h": 35
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 53,
+    "h": 35
+   },
+   "sourceSize": {
+    "w": 53,
+    "h": 35
+   },
+   "pivot": {
+    "x": 0.4528,
+    "y": 0.6857
+   },
+   "what": "the sands"
+  },
+  "tuft": {
+   "frame": {
+    "x": 3,
+    "y": 1981,
+    "w": 36,
+    "h": 30
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 36,
+    "h": 30
+   },
+   "sourceSize": {
+    "w": 36,
+    "h": 30
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8667
+   },
+   "what": "green"
+  },
+  "shell": {
+   "frame": {
+    "x": 42,
+    "y": 1981,
+    "w": 38,
+    "h": 27
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 38,
+    "h": 27
+   },
+   "sourceSize": {
+    "w": 38,
+    "h": 27
+   },
+   "pivot": {
+    "x": 0.4737,
+    "y": 0.7407
+   },
+   "what": "the sands"
+  },
+  "flowers": {
+   "frame": {
+    "x": 83,
+    "y": 1981,
+    "w": 33,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.3636,
+    "y": 0.4348
+   },
+   "what": "green"
+  }
+ },
+ "meta": {
+  "image": "board_props.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/land_build.js",
+  "filePx": 2
+ }
+}

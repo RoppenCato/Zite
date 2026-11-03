@@ -15,17 +15,24 @@ const C = { skin: '#ffe2c2', skinShade: '#e8a888', hair: '#ff6b3a', hairShade: '
 const { form, line, spline, pathOf, fill } = I;
 
 // ---------------------------------------------------------------- the skeleton and its poses
-const BASE = { hip: [0, -32], neck: [3, -61], head: [3, -83], shF: [-9, -57], elF: [-12, -46], hF: [-5, -39], shB: [9, -57], elB: [13, -46], hB: [12, -35],
-               kneeF: [-5, -19], footF: [-3, -2], kneeB: [6, -19], footB: [8, -3], dir: [0.78, 0.62], dirStaff: [-0.12, -0.993], dirOff: [0, -1], pullLocal: [0, 0], footAF: 0, footAB: 0, glow: 0, cape: 0, rot: 0, drop: 0, draw: 0, freeFar: 0, face: 'ok' };
+const BASE = { hip: [0, -32], neck: [3, -61], head: [3, -83], shF: [-12, -56], elF: [-16, -45], hF: [-13, -33], shB: [10, -57], elB: [14, -46], hB: [15, -35],
+               kneeF: [-5, -19], footF: [-3, -2], kneeB: [6, -19], footB: [8, -3], dir: [0.72, 0.69], dirStaff: [-0.12, -0.993], dirOff: [0, -1], pullLocal: [0, 0], footAF: 0, footAB: 0, glow: 0, cape: 0, rot: 0, drop: 0, draw: 0, freeFar: 0, face: 'ok' };
 // the poses, all in the three-quarter view: the near arm (his right) raises beside the head on the near side, never across the face
 const vec = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
 function lerp(A, B, k) { const J = {}; for (const key of Object.keys(A)) { const a = A[key], b = B[key] === undefined ? a : B[key]; J[key] = Array.isArray(a) ? vec(a, b, k) : typeof a === 'number' ? a + (b - a) * k : (k < 0.5 ? a : b); } for (const d of ['dir', 'dirStaff']) { const L = Math.hypot(J[d][0], J[d][1]) || 1; J[d] = [J[d][0] / L, J[d][1] / L]; } return J; }
 const MAGE = { elF: [-14, -47], hF: [-13, -40] };
-function ik(sh, hd, L1 = 12, L2 = 11, bend = 1) {   // a two-bone arm: the elbow for a shoulder, a hand and two lengths, bent downward and outward
+const UPPER = 13, FORE = 12;   // the arm's two bones, one length for every class and pose (Robin, 2026-11-02: fix the source)
+function ik(sh, hd, L1 = UPPER, L2 = FORE, bend = 0) {   // a two-bone arm: the elbow for a shoulder, a hand and two lengths, bent downward and outward
   const dx = hd[0] - sh[0], dy = hd[1] - sh[1], L = Math.max(0.01, Math.min(L1 + L2 - 0.01, Math.hypot(dx, dy))), ux = dx / L, uy = dy / L;
   const a = (L1 * L1 - L2 * L2 + L * L) / (2 * L), h = Math.sqrt(Math.max(0, L1 * L1 - a * a));
-  return [sh[0] + ux * a - uy * h * bend, sh[1] + uy * a + ux * h * bend];
-}   // the mage carries the staff a little further out
+  const A = [sh[0] + ux * a - uy * h, sh[1] + uy * a + ux * h], B = [sh[0] + ux * a + uy * h, sh[1] + uy * a - ux * h];
+  if (bend) return bend > 0 ? A : B;
+  return (A[1] - A[0] * 0.7) >= (B[1] - B[0] * 0.7) ? A : B;   // back and down, never forward through the body
+}
+// the arm as the rig understands it: near is his right, at the torso's screen-left edge, drawn over the torso; far is his left, behind the torso unless the hand truly reaches forward or up
+const solveArms = J => ({ ...J, elF: ik(J.shF, J.hF), elB: ik(J.shB, J.hB) });
+const farInFront = J => (J.hB[0] > J.neck[0] + 15 && J.hB[1] < J.hip[1] - 7) || J.hB[1] < J.neck[1];
+const shieldArm = J => { const hB = [J.shB[0] + 15, J.shB[1] + 9]; return { ...J, hB, elB: ik(J.shB, hB), farGrip: 1 }; };   // the mage carries the staff a little further out
 const pose = (t, base = BASE) => ({ ...base, ...t });
 function keys(base) {
   const B = pose({}, base);
@@ -39,6 +46,7 @@ function keys(base) {
     base: B,
   };
 }
+const shiftShoulders = K0 => { for (const v of Object.values(K0)) if (v !== K0.base && v.shF) v.shF = [v.shF[0] - 3, v.shF[1] + 1]; return K0; };
 function walk(t, base = BASE) {   // one stride; the near foot forward at t = 0.25; forward is screen-right in this view
   const s = Math.sin(t * 2 * Math.PI), c = Math.cos(t * 2 * Math.PI), bob = -2.2 * (1 - Math.abs(s)) + 0.5;
   const liftF = -5 * Math.max(0, c), liftB = -5 * Math.max(0, -c), B = pose({}, base), up = (p, dx = 0, dy = 0) => [p[0] + dx, p[1] + bob + dy];
@@ -87,10 +95,23 @@ function cape(g, J) {   // hangs from the far shoulder round the back, which is 
   form(g, [[nk[0] - 12, nk[1] + 2], [nk[0] + 8, nk[1] + 2], [nk[0] + 4, nk[1] + 12], [mid[0] + 8, mid[1]], [hem[0] + 8, hem[1]], [hem[0] - 6, hem[1] - 2], [hem[0] - 10, hem[1] - 12], [mid[0] - 6, mid[1] - 2], [nk[0] - 17, nk[1] - 1]], C.cape, { inkW: w, shade: [[mid[0] - 4, mid[1] - 2], [mid[0] + 6, mid[1] + 2], [hem[0] + 4, hem[1]], [hem[0] - 10, hem[1] - 12]], shadeCol: C.capeShade, shadeA: 0.8 });
 }
 function neck(g, J) { const nk = J.neck; form(g, [[nk[0] - 4, nk[1] - 9], [nk[0] + 6, nk[1] - 9], [nk[0] + 6.5, nk[1] + 4], [nk[0] - 4, nk[1] + 4]], C.skinShade, { inkW: wi, shade: false }); }
-function farArm(g, J, wide) {   // his left arm, behind the torso's right side: the forearm and the fist show past the edge
-  const sb = J.shB, eb = J.elB, hb = J.hB, col = wide ? C.robeShade : C.tunicShade, r = wide ? 7 : 5.2;
-  form(g, [[sb[0] - 4, sb[1] - 2], [sb[0] + r, sb[1] - 1], [eb[0] + r, eb[1]], [hb[0] + r - 1, hb[1] - 3], [hb[0] - r + 1, hb[1] - 2], [eb[0] - r, eb[1]]], col, { inkW: w * 0.9, shade: [[eb[0] - r + 2, eb[1]], [eb[0] + r, eb[1]], [hb[0] + r - 1, hb[1] - 3], [hb[0] - r + 1, hb[1] - 2]], shadeCol: P.darken(col, 0.2) });
-  form(g, [[hb[0] - 5, hb[1] - 4], [hb[0] + 4, hb[1] - 5], [hb[0] + 6, hb[1] + 1], [hb[0] + 3, hb[1] + 6], [hb[0] - 4, hb[1] + 6], [hb[0] - 6, hb[1] + 1]], C.skinShade, { inkW: w * 0.9, shade: false });
+function armPts(sh, el, wr, k) {   // a limb round its joints: the shoulder's cap, the elbow, the wrist, each its own width, so it is one connected shape in any pose
+  const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; return [-dy / L, dx / L, dx / L, dy / L]; }, [n1x, n1y, u1x, u1y] = nrm(sh, el), [n2x, n2y] = nrm(el, wr), nx = (n1x + n2x) / 2, ny = (n1y + n2y) / 2, a = 5.6 * k, b = 4.9 * k, c = 3.8 * k;
+  return [[sh[0] - u1x * a * 0.8, sh[1] - u1y * a * 0.8], [sh[0] + n1x * a, sh[1] + n1y * a], [el[0] + nx * b, el[1] + ny * b], [wr[0] + n2x * c, wr[1] + n2y * c], [wr[0] - n2x * c, wr[1] - n2y * c], [el[0] - nx * b, el[1] - ny * b], [sh[0] - n1x * a, sh[1] - n1y * a]];
+}
+const wristOf = (hd, el) => { const L = Math.hypot(hd[0] - el[0], hd[1] - el[1]) || 1; return [hd[0] - (hd[0] - el[0]) / L * 3.2, hd[1] - (hd[1] - el[1]) / L * 3.2]; };
+function mitt(g, hd, el, col, shade, grip, inkW = w * 0.85) {   // a hand in the forearm's direction: a wrist that enters the sleeve, a palm, a thumb on the forward side; closed round a grip, or relaxed and a little longer
+  const a = Math.atan2(hd[1] - el[1], hd[0] - el[0]), side = Math.cos(a) * 1 >= 0 && Math.abs(Math.sin(a)) < 0.5 ? 1 : -1; g.save(); g.translate(hd[0], hd[1]); g.rotate(a);
+  form(g, [[-5.4, -2.8], [-2.4, -3], [-2.4, 3], [-5.4, 2.8]], shade, { ink: null, shade: false, n: 4 });
+  const pts = grip ? [[-3.4, -3.8], [1.6, -4.6], [4.6, -2.6], [4.8, 2], [1.8, 4.4], [-3.4, 3.8]] : [[-3.4, -3.5], [2.2, -3.9], [6.4, -2.2], [7.2, 1], [4.4, 3.6], [-3.4, 3.5]];
+  form(g, pts, col, { inkW, shade: [[-1, 0.6], [4.6, 0.4], [grip ? 4.6 : 6.6, 2], [1.8, 4], [-3.2, 3.5]], shadeCol: shade, shadeA: 0.7 });
+  form(g, [[-1.4, -3.6 * side], [2.2, -5.8 * side], [4.2, -4.8 * side], [2.8, -2.8 * side]], col, { inkW: inkW * 0.8, shade: false, n: 5 });
+  if (grip) line(g, [[3.4, -2], [2.6, 0.5], [3.4, 2.6]], wi * 0.7, INK, { taper: 0.3 }); else line(g, [[3.6, -1.4], [5.8, -0.6]], wi * 0.6, INK, { taper: 0.3 });
+  g.restore();
+}
+function farArm(g, J, wide) {   // his left arm: the same limb, one tone down; behind the torso unless it reaches
+  const sb = J.shB, eb = J.elB, hb = J.hB, wr = wristOf(hb, eb), col = wide ? C.robeShade : C.tunicShade, k = wide ? 1.3 : 0.92, S_0 = armPts(sb, eb, wr, k); form(g, S_0, col, { inkW: w * 0.9, shade: false });
+  mitt(g, hb, eb, C.skinShade, P.darken(C.skinShade, 0.12), !!J.farGrip);
 }
 function leg(g, J, far, col) {
   const knee = far ? J.kneeB : J.kneeF, foot = far ? J.footB : J.footF, hx = far ? J.hip[0] + 5 : J.hip[0] - 5, hy = J.hip[1] + 1;
@@ -120,16 +141,14 @@ function robe(g, J) {
   form(g, [[hp[0] - 13, hp[1] - 2], [hp[0] + 12, hp[1] - 3], [hp[0] + 12, hp[1] + 1.5], [hp[0] - 13, hp[1] + 2.5]], C.rope, { inkW: wi, shade: false });
   line(g, [[hp[0] + 3, hp[1] + 1], [hp[0] + 7, hp[1] + 9], [hp[0] + 5, hp[1] + 15]], wi, C.rope, { taper: 0.3 });
 }
-function nearSleeve(g, J, wide) {   // his right arm, in front of the torso's left side, hanging a little forward; inked all round but the shoulder's top
-  const sh = J.shF, el = J.elF, hd = J.hF, col = wide ? C.robe : C.tunic, r = wide ? 8 : 5.4;
-  const pts = [[sh[0] - 1, sh[1] - 3], [sh[0] + 6, sh[1] + 1], [el[0] + r, el[1] - 1], [hd[0] + 3, hd[1] - 4.5], [hd[0] - 3, hd[1] + 4], [el[0] - r, el[1] + 2], [sh[0] - 7, sh[1] + 2]];
-  formOpen(g, pts, col, 1, 7, { shade: [[el[0] - 1, el[1] - 1], [el[0] + r, el[1] - 1], [hd[0] + 3, hd[1] - 4], [hd[0] - 3, hd[1] + 4], [el[0] - 3, el[1] + 3]], shadeCol: wide ? C.robeShade : C.tunicShade });
+function nearSleeve(g, J, wide) {   // his right arm, hanging at the torso's near edge: the shoulder's top blends into the torso, the rest is inked all round
+  const sh = J.shF, el = J.elF, hd = J.hF, wr = wristOf(hd, el), col = wide ? C.robe : C.tunic, shd = wide ? C.robeShade : C.tunicShade, k = wide ? 1.35 : 1, pts = armPts(sh, el, wr, k), Sp = S_(pts, 10); fill(g, Sp, col);
+  g.save(); pathOf(g, Sp); g.clip(); const SS = S_([pts[2], pts[3], pts[4], [el[0], el[1]]], 6); fill(g, SS, shd); g.restore();
+  const n = Sp.length, from = Math.floor(n * 0.1), to = Math.floor(n * 0.98), rim = []; for (let i = from; i <= to; i++) rim.push(Sp[i % n]); g.beginPath(); rim.forEach((q, i) => i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1])); g.lineWidth = w * 0.95; g.lineJoin = 'round'; g.lineCap = 'round'; g.strokeStyle = INK; g.stroke();
+  line(g, [[pts[3][0], pts[3][1]], [pts[4][0], pts[4][1]]], wi * 0.9, shd, { taper: 0.1 });
 }
-function fist(g, hd, d) {
-  form(g, [[hd[0] - 5, hd[1] - 4.5], [hd[0] + 3, hd[1] - 5.5], [hd[0] + 6.5, hd[1] - 1], [hd[0] + 5, hd[1] + 4.5], [hd[0] - 3, hd[1] + 5], [hd[0] - 6.5, hd[1] + 1]], C.skin, { inkW: w * 0.9, shade: [[hd[0], hd[1] + 0.5], [hd[0] + 6.5, hd[1] - 1], [hd[0] + 5, hd[1] + 4.5], [hd[0] - 3, hd[1] + 5]], shadeCol: C.skinShade, shadeA: 0.7 });
-  line(g, [[hd[0] - 3.5, hd[1] + 2], [hd[0] + 1, hd[1] + 3], [hd[0] + 4, hd[1] + 1.5]], wi * 0.8, INK, { taper: 0.35 });
-}
-function hand(g, J) { fist(g, J.hF, J.dir); }
+function fist(g, hd, d, el, grip = true) { mitt(g, hd, el || [hd[0], hd[1] - 10], C.skin, C.skinShade, grip); }
+function hand(g, J) { fist(g, J.hF, J.dir, J.elF, !J.nearFree); }
 function sword(g, J) {   // carried in the near hand, down and forward, the tip clear of the ground
   const hd = J.hF, d = J.dir, px = -d[1], py = d[0], grip = [hd[0] + d[0] * 1.5, hd[1] + d[1] * 1.5];
   form(g, [[grip[0] - px * 2.3 - d[0] * 8, grip[1] - py * 2.3 - d[1] * 8], [grip[0] + px * 2.3 - d[0] * 8, grip[1] + py * 2.3 - d[1] * 8], [grip[0] + px * 2.1 + d[0] * 7, grip[1] + py * 2.1 + d[1] * 7], [grip[0] - px * 2.1 + d[0] * 7, grip[1] - py * 2.1 + d[1] * 7]], C.belt, { inkW: wi, shade: false });
@@ -279,11 +298,11 @@ const ITEMS = {
   shoe: { slot: 'boots', draw: (g, J, far) => bootLeather(g, J, far, C.shoe, P.darken(C.shoe, 0.3)) },
   plateBoots: { slot: 'boots', covers: ['boot'], draw: (g, J, far) => bootRaster(g, J, far) },
   cape: { slot: 'back', anchor: 'shoulders', layer: 'behind', draw: capeOn },
-  shield: { slot: 'offhand', anchor: 'farForearm', draw: shieldOn, restHand: [12, -35] },
-  sword: { slot: 'weapon', held: 'main', local: swordLocal, rest: [0.77, 0.64], restHand: [-5, -39], restElbow: [-12, -46], grip: 'fist', clip: 'cut' },
-  axe: { slot: 'weapon', held: 'main', local: axeLocal, rest: [0.77, 0.64], restHand: [-5, -39], restElbow: [-12, -46], grip: 'fist', clip: 'cut' },   // carried down and forward like the sword, the head turned round (Robin, 2026-11-01)
-  staff: { slot: 'weapon', held: 'main', local: staffLocal, rest: [-0.1, -0.995], restHand: [-18, -42], restElbow: [-16, -48], grip: 'fist', clip: 'cast' },
-  bow: { slot: 'weapon', held: 'off', local: bowLocal, rest: [0.3, -0.954], restHand: [17, -36], restElbow: [15, -46], grip: 'hold', clip: 'shoot', mainRest: [-7, -38], mainElbow: [-13, -46] },
+  shield: { slot: 'offhand', anchor: 'farForearm', draw: shieldOn, restHand: [25, -48] },
+  sword: { slot: 'weapon', held: 'main', local: swordLocal, rest: [0.72, 0.69], restHand: [-13, -33], restElbow: [-16, -45], grip: 'fist', clip: 'cut' },
+  axe: { slot: 'weapon', held: 'main', local: axeLocal, rest: [0.72, 0.69], restHand: [-13, -33], restElbow: [-16, -45], grip: 'fist', clip: 'cut' },   // carried down and forward like the sword, the head turned round (Robin, 2026-11-01)
+  staff: { slot: 'weapon', held: 'main', local: staffLocal, rest: [-0.4, -0.92], restHand: [-13, -35], restElbow: [-16, -45], grip: 'fist', clip: 'cast' },
+  bow: { slot: 'weapon', held: 'off', local: bowLocal, rest: [0.3, -0.954], restHand: [16, -36], restElbow: [14, -46], grip: 'hold', clip: 'shoot', mainRest: [-13, -33], mainElbow: [-16, -45] },
 };
 const OUTFITS = {
   tunic: { head: 'hair', torso: 'tunic', hands: 'bare', boots: 'leather', back: null, weapon: 'sword', offhand: null },
@@ -342,9 +361,10 @@ function diagnostic(g, name, J) {
 }
 
 // ---------------------------------------------------------------- the clips per weapon kind (unchanged in method; the rest pose now comes from the item)
-function clipsFor(O) {
+function clipsFor(O) { const C0 = clipsRaw(O); for (const A of Object.values(C0)) A.frames = A.frames.map(solveArms); return C0; }
+function clipsRaw(O) {
   const Wp = ITEMS[O.weapon] || ITEMS.sword, kind = Wp.clip, base = restPose(O);
-  const K = keys(base), B = K.base;
+  const K = shiftShoulders(keys(base)), B = K.base;
   const stand = [0, -1, -1.6, -0.8].map(dy => { const J = pose({}, base); for (const k of ['neck', 'head', 'shF', 'elF', 'hF', 'shB', 'elB', 'hB']) J[k] = [J[k][0], J[k][1] + dy]; return J; });
   const move = [0, 1, 2, 3, 4, 5].map(i => walk(i / 6, base));
   let attack1;
@@ -358,8 +378,8 @@ function clipsFor(O) {
   const brace = pose({ hip: [-2, -31], neck: [-1, -60], head: [-2, -82], shF: [-11, -56], elF: [-6, -50], hF: [4, -52], dir: kind === 'cast' ? base.dir : [0.95, -0.3], hB: [14, -50], elB: [16, -49], kneeF: [-7, -18], footF: [-6, -2], kneeB: [8, -18], footB: [10, -3], cape: 0.2 }, base);
   const defend = [lerp(B, brace, 0.5), brace];
   const hit1 = [pose({ rot: -14, drop: 1, face: 'hurt', cape: 0.6 }, base), pose({ rot: -7, face: 'hurt', cape: 0.3 }, base)];
-  const die1 = [pose({ rot: -10, face: 'hurt', cape: 0.5 }, base), pose({ rot: -24, drop: 7, face: 'hurt', kneeF: [-7, -14], kneeB: [5, -14], cape: 0.7 }, base), pose({ rot: -58, drop: 14, face: 'hurt', cape: 0.9 }, base),
-                pose({ rot: -88, drop: 6, face: 'dead', cape: 1 }, base), pose({ rot: -90, drop: 4, face: 'dead', cape: 1 }, base), pose({ rot: -90, drop: 4, face: 'dead', cape: 1 }, base)];
+  const die1 = [pose({ rot: -10, face: 'hurt', cape: 0.5 }, base), pose({ rot: -24, drop: 1, face: 'hurt', kneeF: [-7, -14], kneeB: [5, -14], cape: 0.7 }, base), pose({ rot: -58, drop: -12, face: 'hurt', cape: 0, lying: 0.5 }, base),
+                pose({ rot: -88, drop: -24, face: 'dead', cape: 0, lying: 1 }, base), pose({ rot: -90, drop: -21, face: 'dead', cape: 0, lying: 1 }, base), pose({ rot: -90, drop: -21, face: 'dead', cape: 0, lying: 1 }, base)];   // a negative drop lifts him: he turns about his feet, so lying flat he must rise by the head's radius to rest on the ground, not in it
   return { stand: { delay: 150, frames: stand }, move: { delay: 100, frames: move }, attack1: { delay: 67, frames: attack1, delays: [67, 67, 67, 134, 67, 67] }, defend: { delay: 100, frames: defend }, hit1: { delay: 150, frames: hit1, delays: [150, 120] }, die1: { delay: 90, frames: die1, fades: [[255, 255], [255, 255], [255, 255], [255, 255], [255, 140], [140, 0]] } };
 }
 function clips(kind) { return clipsFor(Object.values(OUTFITS).find(O => (ITEMS[O.weapon] || {}).clip === kind) || OUTFITS.tunic); }
@@ -382,5 +402,16 @@ async function build(set) {
   const out = path.join(WORK, 'out', set); fs.rmSync(out, { recursive: true, force: true });
   const r = spawnSync('node', [path.join(ROOT, 'tools/pack.js'), 'hero_' + set, dir, out], { stdio: 'inherit' }); if (r.status) throw new Error('pack failed for ' + set);
 }
-module.exports = { SETDEF, OUTFITS, ITEMS, WEAPONS, drawOutfit, restPose, diagnostic, clipsFor, clips, frame, loadMasters, BASE, walk, lerp, pose, UNIT, overlay };
+// the per-part layers (the alignment test): each draws one layer of an outfit from the same pose; drawn in this order they equal drawOutfit for a sword on the near hand
+const LAYERS = {
+  body: (g, J, O) => { const wide = !!ITEMS[O.torso].wideSleeves; const front = J.hB[0] > J.hip[0] + 6 || J.hB[1] < J.neck[1]; if (!front) farArm(g, J, wide); leg(g, J, true, C.trousers); ITEMS[O.boots].draw(g, J, true); leg(g, J, false, C.trousers); ITEMS[O.boots].draw(g, J, false); neck(g, J); torsoTunic(g, J); },
+  coat: (g, J) => { breastplateFit(g, J); put(g, 'pauldron', [J.shB[0] + 2, J.shB[1] - 1], 0.1, { scale: 0.8, darken: 0.15 }); },
+  far_front: (g, J, O) => { if (J.hB[0] > J.hip[0] + 6 || J.hB[1] < J.neck[1]) farArm(g, J, !!ITEMS[O.torso].wideSleeves); },   // the far arm crosses in front of the coat when it reaches forward or up; the frame decides, the layer is empty otherwise
+  head: (g, J) => headFace(g, J),
+  hat: (g, J) => { hair(g, J, true); hatFit(g, J); },
+  arm: (g, J) => { nearSleeve(g, J, false); put(g, 'pauldron', [J.shF[0] - 2, J.shF[1] - 2], -0.1); },
+  sword: (g, J) => { const hd = J.hF, d = J.dir; g.save(); g.translate(hd[0], hd[1]); g.rotate(Math.atan2(d[1], d[0]) + Math.PI / 2); swordLocal(g); g.restore(); },
+  hand: (g, J) => fist(g, J.hF, J.dir),
+};
+module.exports = { parts: { farArm, leg, neck, torsoTunic, belt, headFace, hair, nearSleeve, fist, mitt, solveArms, farInFront, shieldArm, armPts, wristOf, bootLeather, torsoPts, CL, form, line, C, ink: INK, vec, ang, ik }, LAYERS, SETDEF, OUTFITS, ITEMS, WEAPONS, drawOutfit, restPose, diagnostic, clipsFor, clips, frame, loadMasters, BASE, walk, lerp, pose, UNIT, overlay };
 if (require.main === module) (async () => { await loadMasters(); for (const s of SETS) await build(s); console.log('done', SETS.join(', ')); })();

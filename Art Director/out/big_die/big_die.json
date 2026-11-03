@@ -1,0 +1,182 @@
+{
+ "frames": {
+  "big_die_1": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_2": {
+   "frame": {
+    "x": 246,
+    "y": 2,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_3": {
+   "frame": {
+    "x": 490,
+    "y": 2,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_4": {
+   "frame": {
+    "x": 734,
+    "y": 2,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_5": {
+   "frame": {
+    "x": 2,
+    "y": 246,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_6": {
+   "frame": {
+    "x": 246,
+    "y": 246,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "big_die_blur": {
+   "frame": {
+    "x": 490,
+    "y": 246,
+    "w": 240,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "big_die.png",
+  "size": {
+   "w": 1024,
+   "h": 512
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "frames": {
+  "mob_outcast": {
+   "frame": {
+    "x": 4,
+    "y": 4,
+    "w": 71,
+    "h": 133
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 71,
+    "h": 133
+   },
+   "sourceSize": {
+    "w": 71,
+    "h": 133
+   },
+   "pivot": {
+    "x": 0.5634,
+    "y": 0.9248
+   }
+  }
+ },
+ "meta": {
+  "image": "kingswood_places.png",
+  "size": {
+   "w": 256,
+   "h": 256
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2,
+  "app": "Art Director/tools/world/hub_move.js"
+ }
+}

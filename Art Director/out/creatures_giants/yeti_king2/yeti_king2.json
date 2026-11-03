@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "yeti_king2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 355,
+    "h": 428
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 355,
+    "h": 428
+   },
+   "sourceSize": {
+    "w": 355,
+    "h": 428
+   },
+   "pivot": {
+    "x": 0.7352,
+    "y": 0.9673
+   }
+  },
+  "yeti_king2/attack1/0004": {
+   "frame": {
+    "x": 359,
+    "y": 2,
+    "w": 336,
+    "h": 388
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 336,
+    "h": 388
+   },
+   "sourceSize": {
+    "w": 336,
+    "h": 388
+   },
+   "pivot": {
+    "x": 0.6548,
+    "y": 0.9768
+   }
+  },
+  "yeti_king2/attack1/0008": {
+   "frame": {
+    "x": 697,
+    "y": 2,
+    "w": 278,
+    "h": 387
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 278,
+    "h": 387
+   },
+   "sourceSize": {
+    "w": 278,
+    "h": 387
+   },
+   "pivot": {
+    "x": 0.5144,
+    "y": 0.9819
+   }
+  },
+  "yeti_king2/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 432,
+    "w": 286,
+    "h": 381
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 286,
+    "h": 381
+   },
+   "sourceSize": {
+    "w": 286,
+    "h": 381
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9816
+   }
+  },
+  "yeti_king2/attack1/0001": {
+   "frame": {
+    "x": 290,
+    "y": 432,
+    "w": 295,
+    "h": 372
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 295,
+    "h": 372
+   },
+   "sourceSize": {
+    "w": 295,
+    "h": 372
+   },
+   "pivot": {
+    "x": 0.4746,
+    "y": 0.9785
+   }
+  },
+  "yeti_king2/attack1/0003": {
+   "frame": {
+    "x": 587,
+    "y": 432,
+    "w": 338,
+    "h": 368
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 338,
+    "h": 368
+   },
+   "sourceSize": {
+    "w": 338,
+    "h": 368
+   },
+   "pivot": {
+    "x": 0.4467,
+    "y": 0.981
+   }
+  },
+  "yeti_king2/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 815,
+    "w": 329,
+    "h": 367
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 329,
+    "h": 367
+   },
+   "sourceSize": {
+    "w": 329,
+    "h": 367
+   },
+   "pivot": {
+    "x": 0.4559,
+    "y": 0.9782
+   }
+  },
+  "yeti_king2/attack1/0007": {
+   "frame": {
+    "x": 333,
+    "y": 815,
+    "w": 329,
+    "h": 358
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 329,
+    "h": 358
+   },
+   "sourceSize": {
+    "w": 329,
+    "h": 358
+   },
+   "pivot": {
+    "x": 0.6079,
+    "y": 0.9777
+   }
+  },
+  "yeti_king2/stand/0003": {
+   "frame": {
+    "x": 664,
+    "y": 815,
+    "w": 267,
+    "h": 354
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 267,
+    "h": 354
+   },
+   "sourceSize": {
+    "w": 267,
+    "h": 354
+   },
+   "pivot": {
+    "x": 0.5281,
+    "y": 0.9802
+   }
+  },
+  "yeti_king2/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1184,
+    "w": 373,
+    "h": 354
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 373,
+    "h": 354
+   },
+   "sourceSize": {
+    "w": 373,
+    "h": 354
+   },
+   "pivot": {
+    "x": 0.681,
+    "y": 0.9718
+   }
+  },
+  "yeti_king2/stand/0002": {
+   "frame": {
+    "x": 377,
+    "y": 1184,
+    "w": 306,
+    "h": 351
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 306,
+    "h": 351
+   },
+   "sourceSize": {
+    "w": 306,
+    "h": 351
+   },
+   "pivot": {
+    "x": 0.5196,
+    "y": 0.9801
+   }
+  }
+ },
+ "meta": {
+  "image": "yeti_king2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "yeti_king2/stand/0001",
+     "w": 286,
+     "h": 381,
+     "origin": {
+      "x": 143,
+      "y": 374
+     },
+     "delay": 120,
+     "lt": {
+      "x": -143,
+      "y": -374
+     },
+     "rb": {
+      "x": 143,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -374
+     }
+    },
+    {
+     "name": "yeti_king2/stand/0002",
+     "w": 306,
+     "h": 351,
+     "origin": {
+      "x": 159,
+      "y": 344
+     },
+     "delay": 120,
+     "lt": {
+      "x": -159,
+      "y": -344
+     },
+     "rb": {
+      "x": 147,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -344
+     }
+    },
+    {
+     "name": "yeti_king2/stand/0003",
+     "w": 267,
+     "h": 354,
+     "origin": {
+      "x": 141,
+      "y": 347
+     },
+     "delay": 120,
+     "lt": {
+      "x": -141,
+      "y": -347
+     },
+     "rb": {
+      "x": 126,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -347
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "yeti_king2/attack1/0001",
+     "w": 295,
+     "h": 372,
+     "origin": {
+      "x": 140,
+      "y": 364
+     },
+     "delay": 90,
+     "lt": {
+      "x": -140,
+      "y": -364
+     },
+     "rb": {
+      "x": 155,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -364
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0002",
+     "w": 329,
+     "h": 367,
+     "origin": {
+      "x": 150,
+      "y": 359
+     },
+     "delay": 110,
+     "lt": {
+      "x": -150,
+      "y": -359
+     },
+     "rb": {
+      "x": 179,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -359
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0003",
+     "w": 338,
+     "h": 368,
+     "origin": {
+      "x": 151,
+      "y": 361
+     },
+     "delay": 110,
+     "lt": {
+      "x": -151,
+      "y": -361
+     },
+     "rb": {
+      "x": 187,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -361
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0004",
+     "w": 336,
+     "h": 388,
+     "origin": {
+      "x": 220,
+      "y": 379
+     },
+     "delay": 60,
+     "lt": {
+      "x": -220,
+      "y": -379
+     },
+     "rb": {
+      "x": 116,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -379
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0005",
+     "w": 355,
+     "h": 428,
+     "origin": {
+      "x": 261,
+      "y": 414
+     },
+     "delay": 190,
+     "lt": {
+      "x": -261,
+      "y": -414
+     },
+     "rb": {
+      "x": 94,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -414
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0006",
+     "w": 373,
+     "h": 354,
+     "origin": {
+      "x": 254,
+      "y": 344
+     },
+     "delay": 80,
+     "lt": {
+      "x": -254,
+      "y": -344
+     },
+     "rb": {
+      "x": 119,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -344
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0007",
+     "w": 329,
+     "h": 358,
+     "origin": {
+      "x": 200,
+      "y": 350
+     },
+     "delay": 80,
+     "lt": {
+      "x": -200,
+      "y": -350
+     },
+     "rb": {
+      "x": 129,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -350
+     }
+    },
+    {
+     "name": "yeti_king2/attack1/0008",
+     "w": 278,
+     "h": 387,
+     "origin": {
+      "x": 143,
+      "y": 380
+     },
+     "delay": 80,
+     "lt": {
+      "x": -143,
+      "y": -380
+     },
+     "rb": {
+      "x": 135,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -380
+     }
+    }
+   ]
+  }
+ }
+}

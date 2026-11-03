@@ -1,0 +1,57 @@
+[
+ {
+  "name": "glowcap",
+  "id": "glowcap",
+  "px": 1.75,
+  "scale": 0.5714,
+  "blow": 7,
+  "w": 1024,
+  "h": 2048,
+  "frames": 33,
+  "kb": 115
+ },
+ {
+  "name": "old_rootbeard",
+  "id": "old-rootbeard",
+  "px": 0.75,
+  "scale": 1.3333,
+  "blow": 5,
+  "w": 1024,
+  "h": 2048,
+  "frames": 20,
+  "kb": 123
+ },
+ {
+  "name": "root_grub",
+  "id": "root-grub",
+  "px": 2,
+  "scale": 0.5,
+  "blow": 7,
+  "w": 1024,
+  "h": 2048,
+  "frames": 33,
+  "kb": 90
+ },
+ {
+  "name": "mole_miner",
+  "id": "mole-miner",
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 7,
+  "w": 1024,
+  "h": 2048,
+  "frames": 33,
+  "kb": 105
+ },
+ {
+  "name": "old_digby",
+  "id": "old-digby",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blow": 7,
+  "w": 1024,
+  "h": 2048,
+  "frames": 33,
+  "kb": 128
+ }
+]

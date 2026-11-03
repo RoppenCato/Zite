@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "moss_goblin/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 209,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 209,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 209,
+    "h": 324
+   },
+   "pivot": {
+    "x": 0.2632,
+    "y": 0.9691
+   }
+  },
+  "moss_goblin/attack1/0003": {
+   "frame": {
+    "x": 213,
+    "y": 2,
+    "w": 207,
+    "h": 272
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 272
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 272
+   },
+   "pivot": {
+    "x": 0.5604,
+    "y": 0.989
+   }
+  },
+  "moss_goblin/stand/0003": {
+   "frame": {
+    "x": 422,
+    "y": 2,
+    "w": 207,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.5604,
+    "y": 0.9885
+   }
+  },
+  "moss_goblin/move/0004": {
+   "frame": {
+    "x": 631,
+    "y": 2,
+    "w": 207,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9885
+   }
+  },
+  "moss_goblin/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 328,
+    "w": 207,
+    "h": 259
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 259
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 259
+   },
+   "pivot": {
+    "x": 0.5604,
+    "y": 0.9884
+   }
+  },
+  "moss_goblin/stand/0004": {
+   "frame": {
+    "x": 211,
+    "y": 328,
+    "w": 207,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.5604,
+    "y": 0.9884
+   }
+  },
+  "moss_goblin/move/0001": {
+   "frame": {
+    "x": 420,
+    "y": 328,
+    "w": 207,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9961
+   }
+  },
+  "moss_goblin/hit1/0002": {
+   "frame": {
+    "x": 629,
+    "y": 328,
+    "w": 206,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 206,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 206,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.4029,
+    "y": 0.9806
+   }
+  },
+  "moss_goblin/die1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 589,
+    "w": 205,
+    "h": 258
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 205,
+    "h": 258
+   },
+   "sourceSize": {
+    "w": 205,
+    "h": 258
+   },
+   "pivot": {
+    "x": 0.3366,
+    "y": 0.9767
+   }
+  },
+  "moss_goblin/stand/0001": {
+   "frame": {
+    "x": 209,
+    "y": 589,
+    "w": 207,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.5604,
+    "y": 0.9883
+   }
+  },
+  "moss_goblin/move/0003": {
+   "frame": {
+    "x": 418,
+    "y": 589,
+    "w": 207,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9883
+   }
+  },
+  "moss_goblin/move/0005": {
+   "frame": {
+    "x": 627,
+    "y": 589,
+    "w": 207,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9883
+   }
+  },
+  "moss_goblin/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 849,
+    "w": 207,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.5362,
+    "y": 0.9883
+   }
+  },
+  "moss_goblin/attack1/0002": {
+   "frame": {
+    "x": 211,
+    "y": 849,
+    "w": 208,
+    "h": 256
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 256
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 256
+   },
+   "pivot": {
+    "x": 0.5192,
+    "y": 0.9883
+   }
+  },
+  "moss_goblin/attack1/0005": {
+   "frame": {
+    "x": 421,
+    "y": 849,
+    "w": 207,
+    "h": 255
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 255
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 255
+   },
+   "pivot": {
+    "x": 0.6522,
+    "y": 0.9843
+   }
+  },
+  "moss_goblin/attack1/0006": {
+   "frame": {
+    "x": 630,
+    "y": 849,
+    "w": 208,
+    "h": 255
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 208,
+    "h": 255
+   },
+   "sourceSize": {
+    "w": 208,
+    "h": 255
+   },
+   "pivot": {
+    "x": 0.6058,
+    "y": 0.9882
+   }
+  },
+  "moss_goblin/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1107,
+    "w": 243,
+    "h": 255
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 243,
+    "h": 255
+   },
+   "sourceSize": {
+    "w": 243,
+    "h": 255
+   },
+   "pivot": {
+    "x": 0.2058,
+    "y": 0.949
+   }
+  },
+  "moss_goblin/move/0002": {
+   "frame": {
+    "x": 247,
+    "y": 1107,
+    "w": 207,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9961
+   }
+  },
+  "moss_goblin/move/0006": {
+   "frame": {
+    "x": 456,
+    "y": 1107,
+    "w": 207,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 207,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 207,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.599,
+    "y": 0.9961
+   }
+  },
+  "moss_goblin/attack1/0004": {
+   "frame": {
+    "x": 665,
+    "y": 1107,
+    "w": 216,
+    "h": 254
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 216,
+    "h": 254
+   },
+   "sourceSize": {
+    "w": 216,
+    "h": 254
+   },
+   "pivot": {
+    "x": 0.6898,
+    "y": 0.9803
+   }
+  },
+  "moss_goblin/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1364,
+    "w": 303,
+    "h": 223
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 303,
+    "h": 223
+   },
+   "sourceSize": {
+    "w": 303,
+    "h": 223
+   },
+   "pivot": {
+    "x": 0.0858,
+    "y": 1.0224
+   }
+  },
+  "moss_goblin/die1/0004": {
+   "frame": {
+    "x": 307,
+    "y": 1364,
+    "w": 304,
+    "h": 174
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 304,
+    "h": 174
+   },
+   "sourceSize": {
+    "w": 304,
+    "h": 174
+   },
+   "pivot": {
+    "x": 0.0099,
+    "y": 0.9253
+   }
+  },
+  "moss_goblin/die1/0005": {
+   "frame": {
+    "x": 613,
+    "y": 1364,
+    "w": 305,
+    "h": 174
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 305,
+    "h": 174
+   },
+   "sourceSize": {
+    "w": 305,
+    "h": 174
+   },
+   "pivot": {
+    "x": 0.0098,
+    "y": 0.8391
+   }
+  },
+  "moss_goblin/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1589,
+    "w": 305,
+    "h": 174
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 305,
+    "h": 174
+   },
+   "sourceSize": {
+    "w": 305,
+    "h": 174
+   },
+   "pivot": {
+    "x": 0.0098,
+    "y": 0.8391
+   }
+  }
+ },
+ "meta": {
+  "image": "moss_goblin.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "moss_goblin/stand/0001",
+     "w": 207,
+     "h": 256,
+     "origin": {
+      "x": 116,
+      "y": 253
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -253
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/stand/0002",
+     "w": 207,
+     "h": 259,
+     "origin": {
+      "x": 116,
+      "y": 256
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -256
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -256
+     }
+    },
+    {
+     "name": "moss_goblin/stand/0003",
+     "w": 207,
+     "h": 260,
+     "origin": {
+      "x": 116,
+      "y": 257
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -257
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -257
+     }
+    },
+    {
+     "name": "moss_goblin/stand/0004",
+     "w": 207,
+     "h": 258,
+     "origin": {
+      "x": 116,
+      "y": 255
+     },
+     "delay": 150,
+     "lt": {
+      "x": -116,
+      "y": -255
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -255
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "moss_goblin/move/0001",
+     "w": 207,
+     "h": 258,
+     "origin": {
+      "x": 124,
+      "y": 257
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -257
+     },
+     "rb": {
+      "x": 83,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -257
+     }
+    },
+    {
+     "name": "moss_goblin/move/0002",
+     "w": 207,
+     "h": 254,
+     "origin": {
+      "x": 124,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -253
+     },
+     "rb": {
+      "x": 83,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/move/0003",
+     "w": 207,
+     "h": 256,
+     "origin": {
+      "x": 124,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -253
+     },
+     "rb": {
+      "x": 83,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/move/0004",
+     "w": 207,
+     "h": 260,
+     "origin": {
+      "x": 124,
+      "y": 257
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -257
+     },
+     "rb": {
+      "x": 83,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -257
+     }
+    },
+    {
+     "name": "moss_goblin/move/0005",
+     "w": 207,
+     "h": 256,
+     "origin": {
+      "x": 124,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -253
+     },
+     "rb": {
+      "x": 83,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/move/0006",
+     "w": 207,
+     "h": 254,
+     "origin": {
+      "x": 124,
+      "y": 253
+     },
+     "delay": 100,
+     "lt": {
+      "x": -124,
+      "y": -253
+     },
+     "rb": {
+      "x": 83,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "moss_goblin/attack1/0001",
+     "w": 207,
+     "h": 256,
+     "origin": {
+      "x": 111,
+      "y": 253
+     },
+     "delay": 67,
+     "lt": {
+      "x": -111,
+      "y": -253
+     },
+     "rb": {
+      "x": 96,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/attack1/0002",
+     "w": 208,
+     "h": 256,
+     "origin": {
+      "x": 108,
+      "y": 253
+     },
+     "delay": 67,
+     "lt": {
+      "x": -108,
+      "y": -253
+     },
+     "rb": {
+      "x": 100,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "moss_goblin/attack1/0003",
+     "w": 207,
+     "h": 272,
+     "origin": {
+      "x": 116,
+      "y": 269
+     },
+     "delay": 67,
+     "lt": {
+      "x": -116,
+      "y": -269
+     },
+     "rb": {
+      "x": 91,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -269
+     }
+    },
+    {
+     "name": "moss_goblin/attack1/0004",
+     "w": 216,
+     "h": 254,
+     "origin": {
+      "x": 149,
+      "y": 249
+     },
+     "delay": 134,
+     "lt": {
+      "x": -149,
+      "y": -249
+     },
+     "rb": {
+      "x": 67,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -249
+     }
+    },
+    {
+     "name": "moss_goblin/attack1/0005",
+     "w": 207,
+     "h": 255,
+     "origin": {
+      "x": 135,
+      "y": 251
+     },
+     "delay": 67,
+     "lt": {
+      "x": -135,
+      "y": -251
+     },
+     "rb": {
+      "x": 72,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -251
+     }
+    },
+    {
+     "name": "moss_goblin/attack1/0006",
+     "w": 208,
+     "h": 255,
+     "origin": {
+      "x": 126,
+      "y": 252
+     },
+     "delay": 67,
+     "lt": {
+      "x": -126,
+      "y": -252
+     },
+     "rb": {
+      "x": 82,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -252
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "moss_goblin/hit1/0001",
+     "w": 209,
+     "h": 324,
+     "origin": {
+      "x": 55,
+      "y": 314
+     },
+     "delay": 150,
+     "lt": {
+      "x": -55,
+      "y": -314
+     },
+     "rb": {
+      "x": 154,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -314
+     }
+    },
+    {
+     "name": "moss_goblin/hit1/0002",
+     "w": 206,
+     "h": 258,
+     "origin": {
+      "x": 83,
+      "y": 253
+     },
+     "delay": 120,
+     "lt": {
+      "x": -83,
+      "y": -253
+     },
+     "rb": {
+      "x": 123,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "moss_goblin/die1/0001",
+     "w": 205,
+     "h": 258,
+     "origin": {
+      "x": 69,
+      "y": 252
+     },
+     "delay": 90,
+     "lt": {
+      "x": -69,
+      "y": -252
+     },
+     "rb": {
+      "x": 136,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -252
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "moss_goblin/die1/0002",
+     "w": 243,
+     "h": 255,
+     "origin": {
+      "x": 50,
+      "y": 242
+     },
+     "delay": 90,
+     "lt": {
+      "x": -50,
+      "y": -242
+     },
+     "rb": {
+      "x": 193,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "moss_goblin/die1/0003",
+     "w": 303,
+     "h": 223,
+     "origin": {
+      "x": 26,
+      "y": 228
+     },
+     "delay": 90,
+     "lt": {
+      "x": -26,
+      "y": -228
+     },
+     "rb": {
+      "x": 277,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "moss_goblin/die1/0004",
+     "w": 304,
+     "h": 174,
+     "origin": {
+      "x": 3,
+      "y": 161
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -161
+     },
+     "rb": {
+      "x": 301,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -161
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "moss_goblin/die1/0005",
+     "w": 305,
+     "h": 174,
+     "origin": {
+      "x": 3,
+      "y": 146
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -146
+     },
+     "rb": {
+      "x": 302,
+      "y": 28
+     },
+     "head": {
+      "x": 0,
+      "y": -146
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "moss_goblin/die1/0006",
+     "w": 305,
+     "h": 174,
+     "origin": {
+      "x": 3,
+      "y": 146
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -146
+     },
+     "rb": {
+      "x": 302,
+      "y": 28
+     },
+     "head": {
+      "x": 0,
+      "y": -146
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

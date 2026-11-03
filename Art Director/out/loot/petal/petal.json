@@ -1,0 +1,300 @@
+{
+ "frames": {
+  "petal/play/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 20,
+    "h": 45
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 20,
+    "h": 45
+   },
+   "sourceSize": {
+    "w": 20,
+    "h": 45
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5111
+   }
+  },
+  "petal/play/0002": {
+   "frame": {
+    "x": 24,
+    "y": 2,
+    "w": 25,
+    "h": 40
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 25,
+    "h": 40
+   },
+   "sourceSize": {
+    "w": 25,
+    "h": 40
+   },
+   "pivot": {
+    "x": 0.48,
+    "y": 0.5
+   }
+  },
+  "petal/play/0006": {
+   "frame": {
+    "x": 51,
+    "y": 2,
+    "w": 25,
+    "h": 40
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 25,
+    "h": 40
+   },
+   "sourceSize": {
+    "w": 25,
+    "h": 40
+   },
+   "pivot": {
+    "x": 0.48,
+    "y": 0.5
+   }
+  },
+  "petal/play/0003": {
+   "frame": {
+    "x": 78,
+    "y": 2,
+    "w": 40,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 40,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 40,
+    "h": 24
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "petal/play/0005": {
+   "frame": {
+    "x": 120,
+    "y": 2,
+    "w": 40,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 40,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 40,
+    "h": 24
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "petal/play/0004": {
+   "frame": {
+    "x": 162,
+    "y": 2,
+    "w": 39,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 39,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 39,
+    "h": 6
+   },
+   "pivot": {
+    "x": 0.4615,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "petal.png",
+  "size": {
+   "w": 1024,
+   "h": 64
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "play": {
+   "delay": 70,
+   "loop": false,
+   "frames": [
+    {
+     "name": "petal/play/0001",
+     "w": 20,
+     "h": 45,
+     "origin": {
+      "x": 10,
+      "y": 23
+     },
+     "delay": 70,
+     "lt": {
+      "x": -10,
+      "y": -23
+     },
+     "rb": {
+      "x": 10,
+      "y": 22
+     },
+     "head": {
+      "x": 0,
+      "y": -23
+     }
+    },
+    {
+     "name": "petal/play/0002",
+     "w": 25,
+     "h": 40,
+     "origin": {
+      "x": 12,
+      "y": 20
+     },
+     "delay": 70,
+     "lt": {
+      "x": -12,
+      "y": -20
+     },
+     "rb": {
+      "x": 13,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -20
+     }
+    },
+    {
+     "name": "petal/play/0003",
+     "w": 40,
+     "h": 24,
+     "origin": {
+      "x": 20,
+      "y": 12
+     },
+     "delay": 70,
+     "lt": {
+      "x": -20,
+      "y": -12
+     },
+     "rb": {
+      "x": 20,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -12
+     }
+    },
+    {
+     "name": "petal/play/0004",
+     "w": 39,
+     "h": 6,
+     "origin": {
+      "x": 18,
+      "y": 3
+     },
+     "delay": 70,
+     "lt": {
+      "x": -18,
+      "y": -3
+     },
+     "rb": {
+      "x": 21,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -3
+     }
+    },
+    {
+     "name": "petal/play/0005",
+     "w": 40,
+     "h": 24,
+     "origin": {
+      "x": 20,
+      "y": 12
+     },
+     "delay": 70,
+     "lt": {
+      "x": -20,
+      "y": -12
+     },
+     "rb": {
+      "x": 20,
+      "y": 12
+     },
+     "head": {
+      "x": 0,
+      "y": -12
+     }
+    },
+    {
+     "name": "petal/play/0006",
+     "w": 25,
+     "h": 40,
+     "origin": {
+      "x": 12,
+      "y": 20
+     },
+     "delay": 70,
+     "lt": {
+      "x": -12,
+      "y": -20
+     },
+     "rb": {
+      "x": 13,
+      "y": 20
+     },
+     "head": {
+      "x": 0,
+      "y": -20
+     }
+    }
+   ]
+  }
+ }
+}

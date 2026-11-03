@@ -1,0 +1,132 @@
+[
+ {
+  "name": "crypt_guard",
+  "id": "crypt-guard",
+  "title": "Crypt Guard",
+  "h": 160,
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 83
+ },
+ {
+  "name": "gilded_wraith",
+  "id": "gilded-wraith",
+  "title": "Gilded Wraith",
+  "h": 140,
+  "px": 1.75,
+  "scale": 0.5714,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 116
+ },
+ {
+  "name": "stone_gargoyle",
+  "id": "stone-gargoyle",
+  "title": "Stone Gargoyle",
+  "h": 150,
+  "px": 1.375,
+  "scale": 0.7273,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 92
+ },
+ {
+  "name": "gold_mimic",
+  "id": "gold-mimic",
+  "title": "Gold Mimic",
+  "h": 120,
+  "px": 1.625,
+  "scale": 0.6154,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 126
+ },
+ {
+  "name": "last_steward",
+  "id": "last-steward",
+  "title": "The Last Steward",
+  "h": 220,
+  "px": 1.25,
+  "scale": 0.8,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 112
+ },
+ {
+  "name": "hollow_king",
+  "id": "hollow-king",
+  "title": "The Hollow King",
+  "h": 450,
+  "px": 0.625,
+  "scale": 1.6,
+  "blow": 5,
+  "frames": 20,
+  "clips": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "hovers": false,
+  "kb": 118
+ },
+ {
+  "name": "hollow_king2",
+  "id": "hollow-king, second phase",
+  "title": "The Hollow King, the crown burns",
+  "h": 450,
+  "px": 0.625,
+  "scale": 1.6,
+  "blow": 5,
+  "frames": 11,
+  "clips": {
+   "stand": 3,
+   "attack1": 8
+  },
+  "hovers": false,
+  "kb": 84
+ }
+]

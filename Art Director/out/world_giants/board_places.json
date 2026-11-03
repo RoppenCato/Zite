@@ -1,0 +1,290 @@
+{
+ "frames": {
+  "gate_barred": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 402,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 402,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4527,
+    "y": 0.8699
+   },
+   "what": "place"
+  },
+  "gate_open": {
+   "frame": {
+    "x": 408,
+    "y": 3,
+    "w": 402,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 402,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4527,
+    "y": 0.8699
+   },
+   "what": "place"
+  },
+  "mob_old_snowshoulder": {
+   "frame": {
+    "x": 813,
+    "y": 3,
+    "w": 169,
+    "h": 208
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 208
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 208
+   },
+   "pivot": {
+    "x": 0.5621,
+    "y": 0.9712
+   },
+   "what": "creature"
+  },
+  "mob_frost_ogre": {
+   "frame": {
+    "x": 3,
+    "y": 275,
+    "w": 96,
+    "h": 163
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 163
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 163
+   },
+   "pivot": {
+    "x": 0.5521,
+    "y": 0.865
+   },
+   "what": "creature"
+  },
+  "mob_young_yeti": {
+   "frame": {
+    "x": 102,
+    "y": 275,
+    "w": 114,
+    "h": 154
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 114,
+    "h": 154
+   },
+   "sourceSize": {
+    "w": 114,
+    "h": 154
+   },
+   "pivot": {
+    "x": 0.5175,
+    "y": 0.974
+   },
+   "what": "creature"
+  },
+  "arch_dens": {
+   "frame": {
+    "x": 219,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_field": {
+   "frame": {
+    "x": 396,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_caves": {
+   "frame": {
+    "x": 573,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "arch_ledge": {
+   "frame": {
+    "x": 750,
+    "y": 275,
+    "w": 174,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9932
+   },
+   "what": "place"
+  },
+  "mob_snow_monster": {
+   "frame": {
+    "x": 3,
+    "y": 441,
+    "w": 112,
+    "h": 138
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 112,
+    "h": 138
+   },
+   "sourceSize": {
+    "w": 112,
+    "h": 138
+   },
+   "pivot": {
+    "x": 0.3929,
+    "y": 0.971
+   },
+   "what": "creature"
+  },
+  "mob_icicle_bat": {
+   "frame": {
+    "x": 118,
+    "y": 441,
+    "w": 131,
+    "h": 74
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 131,
+    "h": 74
+   },
+   "sourceSize": {
+    "w": 131,
+    "h": 74
+   },
+   "pivot": {
+    "x": 0.5038,
+    "y": 1.4189
+   },
+   "what": "creature"
+  }
+ },
+ "meta": {
+  "image": "board_places.png",
+  "size": {
+   "w": 1024,
+   "h": 1024
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/land_build.js",
+  "filePx": 2
+ }
+}

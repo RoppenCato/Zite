@@ -1,0 +1,93 @@
+{
+ "spots": 162,
+ "hubs": 20,
+ "roads": 26,
+ "tooClose": [],
+ "crossings": [],
+ "grounds": {
+  "twig-hollow": {
+   "spots": 49,
+   "insideShape": 7,
+   "levels": [
+    4,
+    5
+   ]
+  },
+  "spore-ring": {
+   "spots": 28,
+   "insideShape": 5,
+   "levels": [
+    5,
+    6
+   ]
+  },
+  "mossy-reach": {
+   "spots": 33,
+   "insideShape": 8,
+   "levels": [
+    6,
+    7
+   ]
+  },
+  "nutkin-wood": {
+   "spots": 52,
+   "insideShape": 12,
+   "levels": [
+    7,
+    8
+   ]
+  }
+ },
+ "spotInsideShapeOfAnotherGround": 0,
+ "kinds": {
+  "board": 1,
+  "shop_magic": 1,
+  "gate": 1,
+  "shrine": 3,
+  "church": 1,
+  "wild": 136,
+  "shop": 1,
+  "chest": 3,
+  "town": 2,
+  "spring": 6,
+  "gear": 7
+ },
+ "spotsOnARiver": [
+  "pond",
+  "twigglen>fernway",
+  "dusk>fernway",
+  "pond>mossbog",
+  "pond>nutgrove",
+  "nutgrove>barrow",
+  "thornrise>briar"
+ ],
+ "sprites": 364,
+ "baked": 2252,
+ "mostInAViewAt08": {
+  "max": 35,
+  "at": [
+   3968,
+   4800
+  ]
+ },
+ "mostInAView600Wide": {
+  "max": 48,
+  "at": [
+   5824,
+   6208
+  ]
+ },
+ "decks": 6,
+ "spotsInAPlace": 57,
+ "spotsByPlace": {
+  "twig-hollow": 7,
+  "open road": 105,
+  "glade": 6,
+  "oakshade": 5,
+  "tumbletree": 9,
+  "owl-hollow": 5,
+  "spore-ring": 5,
+  "mossy-reach": 8,
+  "nutkin-wood": 12
+ }
+}

@@ -1,0 +1,490 @@
+{
+ "frames": {
+  "grumblebark2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 288,
+    "h": 351
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 288,
+    "h": 351
+   },
+   "sourceSize": {
+    "w": 288,
+    "h": 351
+   },
+   "pivot": {
+    "x": 0.7813,
+    "y": 0.9459
+   }
+  },
+  "grumblebark2/attack1/0004": {
+   "frame": {
+    "x": 292,
+    "y": 2,
+    "w": 257,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 257,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 257,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.716,
+    "y": 0.9535
+   }
+  },
+  "grumblebark2/attack1/0006": {
+   "frame": {
+    "x": 551,
+    "y": 2,
+    "w": 279,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 279,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 279,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.7276,
+    "y": 0.9503
+   }
+  },
+  "grumblebark2/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 355,
+    "w": 256,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.6641,
+    "y": 0.9559
+   }
+  },
+  "grumblebark2/stand/0001": {
+   "frame": {
+    "x": 260,
+    "y": 355,
+    "w": 256,
+    "h": 336
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 336
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 336
+   },
+   "pivot": {
+    "x": 0.6719,
+    "y": 0.9554
+   }
+  },
+  "grumblebark2/attack1/0007": {
+   "frame": {
+    "x": 518,
+    "y": 355,
+    "w": 256,
+    "h": 336
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 336
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 336
+   },
+   "pivot": {
+    "x": 0.6719,
+    "y": 0.9554
+   }
+  },
+  "grumblebark2/attack1/0003": {
+   "frame": {
+    "x": 776,
+    "y": 355,
+    "w": 245,
+    "h": 332
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 332
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 332
+   },
+   "pivot": {
+    "x": 0.5878,
+    "y": 0.9458
+   }
+  },
+  "grumblebark2/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 697,
+    "w": 256,
+    "h": 331
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 256,
+    "h": 331
+   },
+   "sourceSize": {
+    "w": 256,
+    "h": 331
+   },
+   "pivot": {
+    "x": 0.6797,
+    "y": 0.9547
+   }
+  },
+  "grumblebark2/attack1/0001": {
+   "frame": {
+    "x": 260,
+    "y": 697,
+    "w": 258,
+    "h": 331
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 258,
+    "h": 331
+   },
+   "sourceSize": {
+    "w": 258,
+    "h": 331
+   },
+   "pivot": {
+    "x": 0.6434,
+    "y": 0.9517
+   }
+  },
+  "grumblebark2/attack1/0002": {
+   "frame": {
+    "x": 520,
+    "y": 697,
+    "w": 258,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 258,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 258,
+    "h": 324
+   },
+   "pivot": {
+    "x": 0.593,
+    "y": 0.9475
+   }
+  }
+ },
+ "meta": {
+  "image": "grumblebark2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 140,
+   "loop": true,
+   "frames": [
+    {
+     "name": "grumblebark2/stand/0001",
+     "w": 256,
+     "h": 336,
+     "origin": {
+      "x": 172,
+      "y": 321
+     },
+     "delay": 140,
+     "lt": {
+      "x": -172,
+      "y": -321
+     },
+     "rb": {
+      "x": 84,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -321
+     }
+    },
+    {
+     "name": "grumblebark2/stand/0002",
+     "w": 256,
+     "h": 331,
+     "origin": {
+      "x": 174,
+      "y": 316
+     },
+     "delay": 140,
+     "lt": {
+      "x": -174,
+      "y": -316
+     },
+     "rb": {
+      "x": 82,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -316
+     }
+    },
+    {
+     "name": "grumblebark2/stand/0003",
+     "w": 256,
+     "h": 340,
+     "origin": {
+      "x": 170,
+      "y": 325
+     },
+     "delay": 140,
+     "lt": {
+      "x": -170,
+      "y": -325
+     },
+     "rb": {
+      "x": 86,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -325
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "grumblebark2/attack1/0001",
+     "w": 258,
+     "h": 331,
+     "origin": {
+      "x": 166,
+      "y": 315
+     },
+     "delay": 90,
+     "lt": {
+      "x": -166,
+      "y": -315
+     },
+     "rb": {
+      "x": 92,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -315
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0002",
+     "w": 258,
+     "h": 324,
+     "origin": {
+      "x": 153,
+      "y": 307
+     },
+     "delay": 110,
+     "lt": {
+      "x": -153,
+      "y": -307
+     },
+     "rb": {
+      "x": 105,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -307
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0003",
+     "w": 245,
+     "h": 332,
+     "origin": {
+      "x": 144,
+      "y": 314
+     },
+     "delay": 90,
+     "lt": {
+      "x": -144,
+      "y": -314
+     },
+     "rb": {
+      "x": 101,
+      "y": 18
+     },
+     "head": {
+      "x": 0,
+      "y": -314
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0004",
+     "w": 257,
+     "h": 344,
+     "origin": {
+      "x": 184,
+      "y": 328
+     },
+     "delay": 50,
+     "lt": {
+      "x": -184,
+      "y": -328
+     },
+     "rb": {
+      "x": 73,
+      "y": 16
+     },
+     "head": {
+      "x": 0,
+      "y": -328
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0005",
+     "w": 288,
+     "h": 351,
+     "origin": {
+      "x": 225,
+      "y": 332
+     },
+     "delay": 200,
+     "lt": {
+      "x": -225,
+      "y": -332
+     },
+     "rb": {
+      "x": 63,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -332
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0006",
+     "w": 279,
+     "h": 342,
+     "origin": {
+      "x": 203,
+      "y": 325
+     },
+     "delay": 90,
+     "lt": {
+      "x": -203,
+      "y": -325
+     },
+     "rb": {
+      "x": 76,
+      "y": 17
+     },
+     "head": {
+      "x": 0,
+      "y": -325
+     }
+    },
+    {
+     "name": "grumblebark2/attack1/0007",
+     "w": 256,
+     "h": 336,
+     "origin": {
+      "x": 172,
+      "y": 321
+     },
+     "delay": 80,
+     "lt": {
+      "x": -172,
+      "y": -321
+     },
+     "rb": {
+      "x": 84,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -321
+     }
+    }
+   ]
+  }
+ }
+}

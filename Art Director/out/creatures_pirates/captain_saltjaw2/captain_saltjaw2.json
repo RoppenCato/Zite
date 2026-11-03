@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "captain_saltjaw2/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 248,
+    "h": 398
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 248,
+    "h": 398
+   },
+   "sourceSize": {
+    "w": 248,
+    "h": 398
+   },
+   "pivot": {
+    "x": 0.4637,
+    "y": 0.9899
+   }
+  },
+  "captain_saltjaw2/attack1/0003": {
+   "frame": {
+    "x": 252,
+    "y": 2,
+    "w": 257,
+    "h": 398
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 257,
+    "h": 398
+   },
+   "sourceSize": {
+    "w": 257,
+    "h": 398
+   },
+   "pivot": {
+    "x": 0.4553,
+    "y": 0.995
+   }
+  },
+  "captain_saltjaw2/attack1/0001": {
+   "frame": {
+    "x": 511,
+    "y": 2,
+    "w": 250,
+    "h": 385
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 385
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 385
+   },
+   "pivot": {
+    "x": 0.504,
+    "y": 0.9818
+   }
+  },
+  "captain_saltjaw2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 402,
+    "w": 360,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 360,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 360,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.7722,
+    "y": 0.9593
+   }
+  },
+  "captain_saltjaw2/attack1/0004": {
+   "frame": {
+    "x": 364,
+    "y": 402,
+    "w": 320,
+    "h": 338
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 338
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 338
+   },
+   "pivot": {
+    "x": 0.6844,
+    "y": 0.9704
+   }
+  },
+  "captain_saltjaw2/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 748,
+    "w": 367,
+    "h": 335
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 367,
+    "h": 335
+   },
+   "sourceSize": {
+    "w": 367,
+    "h": 335
+   },
+   "pivot": {
+    "x": 0.7275,
+    "y": 0.9672
+   }
+  },
+  "captain_saltjaw2/stand/0003": {
+   "frame": {
+    "x": 371,
+    "y": 748,
+    "w": 252,
+    "h": 330
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 252,
+    "h": 330
+   },
+   "sourceSize": {
+    "w": 252,
+    "h": 330
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9758
+   }
+  },
+  "captain_saltjaw2/stand/0001": {
+   "frame": {
+    "x": 625,
+    "y": 748,
+    "w": 245,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 324
+   },
+   "pivot": {
+    "x": 0.5265,
+    "y": 0.9753
+   }
+  },
+  "captain_saltjaw2/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 1085,
+    "w": 255,
+    "h": 324
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 255,
+    "h": 324
+   },
+   "sourceSize": {
+    "w": 255,
+    "h": 324
+   },
+   "pivot": {
+    "x": 0.5216,
+    "y": 0.9753
+   }
+  },
+  "captain_saltjaw2/stand/0002": {
+   "frame": {
+    "x": 259,
+    "y": 1085,
+    "w": 244,
+    "h": 319
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 244,
+    "h": 319
+   },
+   "sourceSize": {
+    "w": 244,
+    "h": 319
+   },
+   "pivot": {
+    "x": 0.5123,
+    "y": 0.9749
+   }
+  },
+  "captain_saltjaw2/attack1/0007": {
+   "frame": {
+    "x": 505,
+    "y": 1085,
+    "w": 306,
+    "h": 319
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 306,
+    "h": 319
+   },
+   "sourceSize": {
+    "w": 306,
+    "h": 319
+   },
+   "pivot": {
+    "x": 0.6013,
+    "y": 0.9718
+   }
+  }
+ },
+ "meta": {
+  "image": "captain_saltjaw2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "captain_saltjaw2/stand/0001",
+     "w": 245,
+     "h": 324,
+     "origin": {
+      "x": 129,
+      "y": 316
+     },
+     "delay": 120,
+     "lt": {
+      "x": -129,
+      "y": -316
+     },
+     "rb": {
+      "x": 116,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -316
+     }
+    },
+    {
+     "name": "captain_saltjaw2/stand/0002",
+     "w": 244,
+     "h": 319,
+     "origin": {
+      "x": 125,
+      "y": 311
+     },
+     "delay": 120,
+     "lt": {
+      "x": -125,
+      "y": -311
+     },
+     "rb": {
+      "x": 119,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -311
+     }
+    },
+    {
+     "name": "captain_saltjaw2/stand/0003",
+     "w": 252,
+     "h": 330,
+     "origin": {
+      "x": 126,
+      "y": 322
+     },
+     "delay": 120,
+     "lt": {
+      "x": -126,
+      "y": -322
+     },
+     "rb": {
+      "x": 126,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -322
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "captain_saltjaw2/attack1/0001",
+     "w": 250,
+     "h": 385,
+     "origin": {
+      "x": 126,
+      "y": 378
+     },
+     "delay": 90,
+     "lt": {
+      "x": -126,
+      "y": -378
+     },
+     "rb": {
+      "x": 124,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -378
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0002",
+     "w": 248,
+     "h": 398,
+     "origin": {
+      "x": 115,
+      "y": 394
+     },
+     "delay": 110,
+     "lt": {
+      "x": -115,
+      "y": -394
+     },
+     "rb": {
+      "x": 133,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -394
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0003",
+     "w": 257,
+     "h": 398,
+     "origin": {
+      "x": 117,
+      "y": 396
+     },
+     "delay": 110,
+     "lt": {
+      "x": -117,
+      "y": -396
+     },
+     "rb": {
+      "x": 140,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -396
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0004",
+     "w": 320,
+     "h": 338,
+     "origin": {
+      "x": 219,
+      "y": 328
+     },
+     "delay": 60,
+     "lt": {
+      "x": -219,
+      "y": -328
+     },
+     "rb": {
+      "x": 101,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -328
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0005",
+     "w": 360,
+     "h": 344,
+     "origin": {
+      "x": 278,
+      "y": 330
+     },
+     "delay": 190,
+     "lt": {
+      "x": -278,
+      "y": -330
+     },
+     "rb": {
+      "x": 82,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -330
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0006",
+     "w": 367,
+     "h": 335,
+     "origin": {
+      "x": 267,
+      "y": 324
+     },
+     "delay": 80,
+     "lt": {
+      "x": -267,
+      "y": -324
+     },
+     "rb": {
+      "x": 100,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -324
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0007",
+     "w": 306,
+     "h": 319,
+     "origin": {
+      "x": 184,
+      "y": 310
+     },
+     "delay": 80,
+     "lt": {
+      "x": -184,
+      "y": -310
+     },
+     "rb": {
+      "x": 122,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -310
+     }
+    },
+    {
+     "name": "captain_saltjaw2/attack1/0008",
+     "w": 255,
+     "h": 324,
+     "origin": {
+      "x": 133,
+      "y": 316
+     },
+     "delay": 80,
+     "lt": {
+      "x": -133,
+      "y": -316
+     },
+     "rb": {
+      "x": 122,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -316
+     }
+    }
+   ]
+  }
+ }
+}

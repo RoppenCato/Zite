@@ -122,6 +122,23 @@ ground. Each layer has a scroll factor with clear gaps between layers (a layer i
 Far planes paler, hazier, less saturated, lower in contrast and detail, shifted toward the sky colour. Clouds drift. Keep
 strong detail out of the band where the fighters stand.
 
+**The fight backdrop's idea (Robin, 2026-11-02: "A, the road to the mill. Looks great! Apply the same idea to the others moving forward").** Every region's fight, the same way:
+
+- The fighters stand on the region's own road, in a worn clearing, with their feet 46 px into the ground. Never on a separate band of soil.
+- The way runs back to that region's landmark: the mill in the Meadows, Tumbletree in Wobblewood.
+- Sky about a third of the band at most. Far, mid and near get paler with distance, ink included, in flat shapes. A gradient only for the sky.
+- Framing at the screen's sides only; nothing tall near a fighter; the field edge behind them stays below their knees.
+- Foreground accents below their feet. One thin strip drifts, nothing else. Strips 512 wide, composed for x 0 to 412.
+- Tools: `tools/kit/meadow_battle.js` is the engine, `tools/kit/forest_battle.js` the model for a new region.
+
+**The fight's name board (Robin, 2026-11-02: short bars, then "1", from three concepts).** Under each fighter's feet, a wooden plank with HP, MP and the class meter on the upper part, and the words on a parchment slip below, dark with no outline. Details in `out/fight_boards/NOTES.md`.
+
+**The inventory (Robin, 2026-11-02: "2. the hero", then "A").** The hero in what they wear, with slots either side and all seven stats beside the picture, dimmed at 0. Flasks, cards and gear lie in slots with a wood recess; tapping says what a thing does; buttons only when they apply. Details in `out/bag_options/NOTES.md`.
+
+**The top bar (Robin, 2026-11-02: "The slim bar, 3").** A thin plank with a level medal, HP, MP, gold, the die and XP along its foot; place and goal hang under it as two small signs. Details in `out/top_bar/NOTES.md`.
+
+**The bottom bar (Robin, 2026-11-02: "Go for 1").** A thin plank, Roll in the middle rising above it, two icon buttons either side, the message on a sign standing above. Details in `out/bottom_bar/NOTES.md`.
+
 ## Before anything is handed over
 
 1. Put it next to our player for scale.

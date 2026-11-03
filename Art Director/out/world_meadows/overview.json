@@ -1,0 +1,10 @@
+{
+ "image": "overview.jpg",
+ "width": 1628,
+ "height": 2046,
+ "filePxPerWorldPx": 0.22,
+ "world": {
+  "width": 7400,
+  "height": 9300
+ }
+}

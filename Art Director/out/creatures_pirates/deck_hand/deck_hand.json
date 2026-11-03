@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "deck_hand/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 197,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 197,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 197,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.2944,
+    "y": 0.9706
+   }
+  },
+  "deck_hand/attack1/0003": {
+   "frame": {
+    "x": 201,
+    "y": 2,
+    "w": 170,
+    "h": 315
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 315
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 315
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9905
+   }
+  },
+  "deck_hand/attack1/0002": {
+   "frame": {
+    "x": 373,
+    "y": 2,
+    "w": 169,
+    "h": 296
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 296
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 296
+   },
+   "pivot": {
+    "x": 0.426,
+    "y": 0.9899
+   }
+  },
+  "deck_hand/stand/0003": {
+   "frame": {
+    "x": 544,
+    "y": 2,
+    "w": 170,
+    "h": 285
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 285
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 285
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9895
+   }
+  },
+  "deck_hand/move/0004": {
+   "frame": {
+    "x": 716,
+    "y": 2,
+    "w": 170,
+    "h": 285
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 285
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 285
+   },
+   "pivot": {
+    "x": 0.5176,
+    "y": 0.9895
+   }
+  },
+  "deck_hand/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 344,
+    "w": 170,
+    "h": 283
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 283
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 283
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9894
+   }
+  },
+  "deck_hand/stand/0004": {
+   "frame": {
+    "x": 174,
+    "y": 344,
+    "w": 170,
+    "h": 283
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 283
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 283
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9894
+   }
+  },
+  "deck_hand/move/0001": {
+   "frame": {
+    "x": 346,
+    "y": 344,
+    "w": 170,
+    "h": 283
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 283
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 283
+   },
+   "pivot": {
+    "x": 0.5176,
+    "y": 0.9965
+   }
+  },
+  "deck_hand/hit1/0002": {
+   "frame": {
+    "x": 518,
+    "y": 344,
+    "w": 175,
+    "h": 282
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 175,
+    "h": 282
+   },
+   "sourceSize": {
+    "w": 175,
+    "h": 282
+   },
+   "pivot": {
+    "x": 0.3429,
+    "y": 0.9823
+   }
+  },
+  "deck_hand/die1/0001": {
+   "frame": {
+    "x": 695,
+    "y": 344,
+    "w": 185,
+    "h": 282
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 185,
+    "h": 282
+   },
+   "sourceSize": {
+    "w": 185,
+    "h": 282
+   },
+   "pivot": {
+    "x": 0.3243,
+    "y": 0.9787
+   }
+  },
+  "deck_hand/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 629,
+    "w": 170,
+    "h": 281
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 281
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 281
+   },
+   "pivot": {
+    "x": 0.4706,
+    "y": 0.9893
+   }
+  },
+  "deck_hand/attack1/0001": {
+   "frame": {
+    "x": 174,
+    "y": 629,
+    "w": 169,
+    "h": 281
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 169,
+    "h": 281
+   },
+   "sourceSize": {
+    "w": 169,
+    "h": 281
+   },
+   "pivot": {
+    "x": 0.4438,
+    "y": 0.9893
+   }
+  },
+  "deck_hand/move/0003": {
+   "frame": {
+    "x": 345,
+    "y": 629,
+    "w": 174,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.5057,
+    "y": 0.9893
+   }
+  },
+  "deck_hand/move/0005": {
+   "frame": {
+    "x": 521,
+    "y": 629,
+    "w": 170,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.5176,
+    "y": 0.9893
+   }
+  },
+  "deck_hand/attack1/0005": {
+   "frame": {
+    "x": 693,
+    "y": 629,
+    "w": 217,
+    "h": 279
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 217,
+    "h": 279
+   },
+   "sourceSize": {
+    "w": 217,
+    "h": 279
+   },
+   "pivot": {
+    "x": 0.6728,
+    "y": 0.9857
+   }
+  },
+  "deck_hand/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 912,
+    "w": 184,
+    "h": 279
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 184,
+    "h": 279
+   },
+   "sourceSize": {
+    "w": 184,
+    "h": 279
+   },
+   "pivot": {
+    "x": 0.5652,
+    "y": 0.9892
+   }
+  },
+  "deck_hand/move/0002": {
+   "frame": {
+    "x": 188,
+    "y": 912,
+    "w": 174,
+    "h": 278
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 174,
+    "h": 278
+   },
+   "sourceSize": {
+    "w": 174,
+    "h": 278
+   },
+   "pivot": {
+    "x": 0.5057,
+    "y": 0.9964
+   }
+  },
+  "deck_hand/move/0006": {
+   "frame": {
+    "x": 364,
+    "y": 912,
+    "w": 170,
+    "h": 278
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 170,
+    "h": 278
+   },
+   "sourceSize": {
+    "w": 170,
+    "h": 278
+   },
+   "pivot": {
+    "x": 0.5176,
+    "y": 0.9964
+   }
+  },
+  "deck_hand/attack1/0004": {
+   "frame": {
+    "x": 536,
+    "y": 912,
+    "w": 230,
+    "h": 278
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 230,
+    "h": 278
+   },
+   "sourceSize": {
+    "w": 230,
+    "h": 278
+   },
+   "pivot": {
+    "x": 0.713,
+    "y": 0.982
+   }
+  },
+  "deck_hand/die1/0002": {
+   "frame": {
+    "x": 768,
+    "y": 912,
+    "w": 226,
+    "h": 275
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 226,
+    "h": 275
+   },
+   "sourceSize": {
+    "w": 226,
+    "h": 275
+   },
+   "pivot": {
+    "x": 0.2389,
+    "y": 0.9491
+   }
+  },
+  "deck_hand/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1193,
+    "w": 283,
+    "h": 214
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 283,
+    "h": 214
+   },
+   "sourceSize": {
+    "w": 283,
+    "h": 214
+   },
+   "pivot": {
+    "x": 0.1025,
+    "y": 1.0234
+   }
+  },
+  "deck_hand/die1/0004": {
+   "frame": {
+    "x": 287,
+    "y": 1193,
+    "w": 291,
+    "h": 164
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 291,
+    "h": 164
+   },
+   "sourceSize": {
+    "w": 291,
+    "h": 164
+   },
+   "pivot": {
+    "x": 0.0103,
+    "y": 0.8841
+   }
+  },
+  "deck_hand/die1/0005": {
+   "frame": {
+    "x": 580,
+    "y": 1193,
+    "w": 292,
+    "h": 164
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 292,
+    "h": 164
+   },
+   "sourceSize": {
+    "w": 292,
+    "h": 164
+   },
+   "pivot": {
+    "x": 0.0103,
+    "y": 0.7927
+   }
+  },
+  "deck_hand/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1409,
+    "w": 292,
+    "h": 164
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 292,
+    "h": 164
+   },
+   "sourceSize": {
+    "w": 292,
+    "h": 164
+   },
+   "pivot": {
+    "x": 0.0103,
+    "y": 0.7927
+   }
+  }
+ },
+ "meta": {
+  "image": "deck_hand.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "deck_hand/stand/0001",
+     "w": 170,
+     "h": 281,
+     "origin": {
+      "x": 80,
+      "y": 278
+     },
+     "delay": 150,
+     "lt": {
+      "x": -80,
+      "y": -278
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -278
+     }
+    },
+    {
+     "name": "deck_hand/stand/0002",
+     "w": 170,
+     "h": 283,
+     "origin": {
+      "x": 80,
+      "y": 280
+     },
+     "delay": 150,
+     "lt": {
+      "x": -80,
+      "y": -280
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -280
+     }
+    },
+    {
+     "name": "deck_hand/stand/0003",
+     "w": 170,
+     "h": 285,
+     "origin": {
+      "x": 80,
+      "y": 282
+     },
+     "delay": 150,
+     "lt": {
+      "x": -80,
+      "y": -282
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -282
+     }
+    },
+    {
+     "name": "deck_hand/stand/0004",
+     "w": 170,
+     "h": 283,
+     "origin": {
+      "x": 80,
+      "y": 280
+     },
+     "delay": 150,
+     "lt": {
+      "x": -80,
+      "y": -280
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -280
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "deck_hand/move/0001",
+     "w": 170,
+     "h": 283,
+     "origin": {
+      "x": 88,
+      "y": 282
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -282
+     },
+     "rb": {
+      "x": 82,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -282
+     }
+    },
+    {
+     "name": "deck_hand/move/0002",
+     "w": 174,
+     "h": 278,
+     "origin": {
+      "x": 88,
+      "y": 277
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -277
+     },
+     "rb": {
+      "x": 86,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -277
+     }
+    },
+    {
+     "name": "deck_hand/move/0003",
+     "w": 174,
+     "h": 280,
+     "origin": {
+      "x": 88,
+      "y": 277
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -277
+     },
+     "rb": {
+      "x": 86,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -277
+     }
+    },
+    {
+     "name": "deck_hand/move/0004",
+     "w": 170,
+     "h": 285,
+     "origin": {
+      "x": 88,
+      "y": 282
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -282
+     },
+     "rb": {
+      "x": 82,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -282
+     }
+    },
+    {
+     "name": "deck_hand/move/0005",
+     "w": 170,
+     "h": 280,
+     "origin": {
+      "x": 88,
+      "y": 277
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -277
+     },
+     "rb": {
+      "x": 82,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -277
+     }
+    },
+    {
+     "name": "deck_hand/move/0006",
+     "w": 170,
+     "h": 278,
+     "origin": {
+      "x": 88,
+      "y": 277
+     },
+     "delay": 100,
+     "lt": {
+      "x": -88,
+      "y": -277
+     },
+     "rb": {
+      "x": 82,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -277
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "deck_hand/attack1/0001",
+     "w": 169,
+     "h": 281,
+     "origin": {
+      "x": 75,
+      "y": 278
+     },
+     "delay": 67,
+     "lt": {
+      "x": -75,
+      "y": -278
+     },
+     "rb": {
+      "x": 94,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -278
+     }
+    },
+    {
+     "name": "deck_hand/attack1/0002",
+     "w": 169,
+     "h": 296,
+     "origin": {
+      "x": 72,
+      "y": 293
+     },
+     "delay": 67,
+     "lt": {
+      "x": -72,
+      "y": -293
+     },
+     "rb": {
+      "x": 97,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -293
+     }
+    },
+    {
+     "name": "deck_hand/attack1/0003",
+     "w": 170,
+     "h": 315,
+     "origin": {
+      "x": 80,
+      "y": 312
+     },
+     "delay": 67,
+     "lt": {
+      "x": -80,
+      "y": -312
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -312
+     }
+    },
+    {
+     "name": "deck_hand/attack1/0004",
+     "w": 230,
+     "h": 278,
+     "origin": {
+      "x": 164,
+      "y": 273
+     },
+     "delay": 134,
+     "lt": {
+      "x": -164,
+      "y": -273
+     },
+     "rb": {
+      "x": 66,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -273
+     }
+    },
+    {
+     "name": "deck_hand/attack1/0005",
+     "w": 217,
+     "h": 279,
+     "origin": {
+      "x": 146,
+      "y": 275
+     },
+     "delay": 67,
+     "lt": {
+      "x": -146,
+      "y": -275
+     },
+     "rb": {
+      "x": 71,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -275
+     }
+    },
+    {
+     "name": "deck_hand/attack1/0006",
+     "w": 184,
+     "h": 279,
+     "origin": {
+      "x": 104,
+      "y": 276
+     },
+     "delay": 67,
+     "lt": {
+      "x": -104,
+      "y": -276
+     },
+     "rb": {
+      "x": 80,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -276
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "deck_hand/hit1/0001",
+     "w": 197,
+     "h": 340,
+     "origin": {
+      "x": 58,
+      "y": 330
+     },
+     "delay": 150,
+     "lt": {
+      "x": -58,
+      "y": -330
+     },
+     "rb": {
+      "x": 139,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -330
+     }
+    },
+    {
+     "name": "deck_hand/hit1/0002",
+     "w": 175,
+     "h": 282,
+     "origin": {
+      "x": 60,
+      "y": 277
+     },
+     "delay": 120,
+     "lt": {
+      "x": -60,
+      "y": -277
+     },
+     "rb": {
+      "x": 115,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -277
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "deck_hand/die1/0001",
+     "w": 185,
+     "h": 282,
+     "origin": {
+      "x": 60,
+      "y": 276
+     },
+     "delay": 90,
+     "lt": {
+      "x": -60,
+      "y": -276
+     },
+     "rb": {
+      "x": 125,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -276
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "deck_hand/die1/0002",
+     "w": 226,
+     "h": 275,
+     "origin": {
+      "x": 54,
+      "y": 261
+     },
+     "delay": 90,
+     "lt": {
+      "x": -54,
+      "y": -261
+     },
+     "rb": {
+      "x": 172,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -261
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "deck_hand/die1/0003",
+     "w": 283,
+     "h": 214,
+     "origin": {
+      "x": 29,
+      "y": 219
+     },
+     "delay": 90,
+     "lt": {
+      "x": -29,
+      "y": -219
+     },
+     "rb": {
+      "x": 254,
+      "y": -5
+     },
+     "head": {
+      "x": 0,
+      "y": -219
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "deck_hand/die1/0004",
+     "w": 291,
+     "h": 164,
+     "origin": {
+      "x": 3,
+      "y": 145
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -145
+     },
+     "rb": {
+      "x": 288,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -145
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "deck_hand/die1/0005",
+     "w": 292,
+     "h": 164,
+     "origin": {
+      "x": 3,
+      "y": 130
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -130
+     },
+     "rb": {
+      "x": 289,
+      "y": 34
+     },
+     "head": {
+      "x": 0,
+      "y": -130
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "deck_hand/die1/0006",
+     "w": 292,
+     "h": 164,
+     "origin": {
+      "x": 3,
+      "y": 130
+     },
+     "delay": 90,
+     "lt": {
+      "x": -3,
+      "y": -130
+     },
+     "rb": {
+      "x": 289,
+      "y": 34
+     },
+     "head": {
+      "x": 0,
+      "y": -130
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,85 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "buried-crown",
+ "x": 13312,
+ "y": 8192,
+ "width": 3072,
+ "height": 3072,
+ "chunks": [
+  {
+   "file": "crown_13_8.jpg",
+   "col": 13,
+   "row": 8,
+   "x": 13311,
+   "y": 8191,
+   "kb": 24
+  },
+  {
+   "file": "crown_13_9.jpg",
+   "col": 13,
+   "row": 9,
+   "x": 13311,
+   "y": 9215,
+   "kb": 65
+  },
+  {
+   "file": "crown_13_10.jpg",
+   "col": 13,
+   "row": 10,
+   "x": 13311,
+   "y": 10239,
+   "kb": 60
+  },
+  {
+   "file": "crown_14_8.jpg",
+   "col": 14,
+   "row": 8,
+   "x": 14335,
+   "y": 8191,
+   "kb": 82
+  },
+  {
+   "file": "crown_14_9.jpg",
+   "col": 14,
+   "row": 9,
+   "x": 14335,
+   "y": 9215,
+   "kb": 61
+  },
+  {
+   "file": "crown_14_10.jpg",
+   "col": 14,
+   "row": 10,
+   "x": 14335,
+   "y": 10239,
+   "kb": 56
+  },
+  {
+   "file": "crown_15_8.jpg",
+   "col": 15,
+   "row": 8,
+   "x": 15359,
+   "y": 8191,
+   "kb": 33
+  },
+  {
+   "file": "crown_15_9.jpg",
+   "col": 15,
+   "row": 9,
+   "x": 15359,
+   "y": 9215,
+   "kb": 43
+  },
+  {
+   "file": "crown_15_10.jpg",
+   "col": 15,
+   "row": 10,
+   "x": 15359,
+   "y": 10239,
+   "kb": 51
+  }
+ ]
+}

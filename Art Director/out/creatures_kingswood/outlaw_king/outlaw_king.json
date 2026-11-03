@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "outlaw_king/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 228,
+    "h": 376
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 228,
+    "h": 376
+   },
+   "sourceSize": {
+    "w": 228,
+    "h": 376
+   },
+   "pivot": {
+    "x": 0.4474,
+    "y": 0.9229
+   }
+  },
+  "outlaw_king/move/0001": {
+   "frame": {
+    "x": 232,
+    "y": 2,
+    "w": 202,
+    "h": 271
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 271
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 271
+   },
+   "pivot": {
+    "x": 0.4802,
+    "y": 0.8524
+   }
+  },
+  "outlaw_king/move/0004": {
+   "frame": {
+    "x": 436,
+    "y": 2,
+    "w": 202,
+    "h": 271
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 271
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 271
+   },
+   "pivot": {
+    "x": 0.4802,
+    "y": 0.8524
+   }
+  },
+  "outlaw_king/stand/0003": {
+   "frame": {
+    "x": 640,
+    "y": 2,
+    "w": 191,
+    "h": 270
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 270
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 270
+   },
+   "pivot": {
+    "x": 0.4869,
+    "y": 0.8519
+   }
+  },
+  "outlaw_king/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 380,
+    "w": 191,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4869,
+    "y": 0.8513
+   }
+  },
+  "outlaw_king/stand/0004": {
+   "frame": {
+    "x": 195,
+    "y": 380,
+    "w": 191,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4869,
+    "y": 0.8513
+   }
+  },
+  "outlaw_king/hit1/0002": {
+   "frame": {
+    "x": 388,
+    "y": 380,
+    "w": 211,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 211,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 211,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.4645,
+    "y": 0.8625
+   }
+  },
+  "outlaw_king/stand/0001": {
+   "frame": {
+    "x": 601,
+    "y": 380,
+    "w": 191,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 268
+   },
+   "pivot": {
+    "x": 0.4869,
+    "y": 0.8507
+   }
+  },
+  "outlaw_king/move/0002": {
+   "frame": {
+    "x": 794,
+    "y": 380,
+    "w": 192,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 268
+   },
+   "pivot": {
+    "x": 0.4479,
+    "y": 0.8507
+   }
+  },
+  "outlaw_king/move/0003": {
+   "frame": {
+    "x": 2,
+    "y": 651,
+    "w": 192,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 268
+   },
+   "pivot": {
+    "x": 0.4479,
+    "y": 0.8507
+   }
+  },
+  "outlaw_king/move/0005": {
+   "frame": {
+    "x": 196,
+    "y": 651,
+    "w": 211,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 211,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 211,
+    "h": 268
+   },
+   "pivot": {
+    "x": 0.5118,
+    "y": 0.8507
+   }
+  },
+  "outlaw_king/move/0006": {
+   "frame": {
+    "x": 409,
+    "y": 651,
+    "w": 211,
+    "h": 268
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 211,
+    "h": 268
+   },
+   "sourceSize": {
+    "w": 211,
+    "h": 268
+   },
+   "pivot": {
+    "x": 0.5118,
+    "y": 0.8507
+   }
+  },
+  "outlaw_king/die1/0001": {
+   "frame": {
+    "x": 622,
+    "y": 651,
+    "w": 220,
+    "h": 266
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 220,
+    "h": 266
+   },
+   "sourceSize": {
+    "w": 220,
+    "h": 266
+   },
+   "pivot": {
+    "x": 0.4545,
+    "y": 0.8759
+   }
+  },
+  "outlaw_king/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 921,
+    "w": 182,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 182,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 182,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.3901,
+    "y": 0.9925
+   }
+  },
+  "outlaw_king/die1/0002": {
+   "frame": {
+    "x": 186,
+    "y": 921,
+    "w": 255,
+    "h": 261
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 255,
+    "h": 261
+   },
+   "sourceSize": {
+    "w": 255,
+    "h": 261
+   },
+   "pivot": {
+    "x": 0.4118,
+    "y": 0.8659
+   }
+  },
+  "outlaw_king/attack1/0006": {
+   "frame": {
+    "x": 443,
+    "y": 921,
+    "w": 234,
+    "h": 260
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 234,
+    "h": 260
+   },
+   "sourceSize": {
+    "w": 234,
+    "h": 260
+   },
+   "pivot": {
+    "x": 0.547,
+    "y": 0.8731
+   }
+  },
+  "outlaw_king/attack1/0002": {
+   "frame": {
+    "x": 679,
+    "y": 921,
+    "w": 155,
+    "h": 259
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 155,
+    "h": 259
+   },
+   "sourceSize": {
+    "w": 155,
+    "h": 259
+   },
+   "pivot": {
+    "x": 0.3097,
+    "y": 0.9923
+   }
+  },
+  "outlaw_king/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1188,
+    "w": 275,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 275,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 275,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.5891,
+    "y": 0.9262
+   }
+  },
+  "outlaw_king/attack1/0001": {
+   "frame": {
+    "x": 279,
+    "y": 1188,
+    "w": 154,
+    "h": 237
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 154,
+    "h": 237
+   },
+   "sourceSize": {
+    "w": 154,
+    "h": 237
+   },
+   "pivot": {
+    "x": 0.3312,
+    "y": 0.9916
+   }
+  },
+  "outlaw_king/attack1/0004": {
+   "frame": {
+    "x": 435,
+    "y": 1188,
+    "w": 300,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 300,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.6,
+    "y": 0.9825
+   }
+  },
+  "outlaw_king/die1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 1434,
+    "w": 330,
+    "h": 222
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 330,
+    "h": 222
+   },
+   "sourceSize": {
+    "w": 330,
+    "h": 222
+   },
+   "pivot": {
+    "x": 0.2758,
+    "y": 0.8198
+   }
+  },
+  "outlaw_king/die1/0004": {
+   "frame": {
+    "x": 334,
+    "y": 1434,
+    "w": 305,
+    "h": 164
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 305,
+    "h": 164
+   },
+   "sourceSize": {
+    "w": 305,
+    "h": 164
+   },
+   "pivot": {
+    "x": 0.177,
+    "y": 0.7561
+   }
+  },
+  "outlaw_king/die1/0005": {
+   "frame": {
+    "x": 641,
+    "y": 1434,
+    "w": 300,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 300,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.17,
+    "y": 0.75
+   }
+  },
+  "outlaw_king/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1658,
+    "w": 300,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 300,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 300,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.17,
+    "y": 0.75
+   }
+  }
+ },
+ "meta": {
+  "image": "outlaw_king.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.625
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "outlaw_king/stand/0001",
+     "w": 191,
+     "h": 268,
+     "origin": {
+      "x": 93,
+      "y": 228
+     },
+     "delay": 150,
+     "lt": {
+      "x": -93,
+      "y": -228
+     },
+     "rb": {
+      "x": 98,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "outlaw_king/stand/0002",
+     "w": 191,
+     "h": 269,
+     "origin": {
+      "x": 93,
+      "y": 229
+     },
+     "delay": 150,
+     "lt": {
+      "x": -93,
+      "y": -229
+     },
+     "rb": {
+      "x": 98,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     }
+    },
+    {
+     "name": "outlaw_king/stand/0003",
+     "w": 191,
+     "h": 270,
+     "origin": {
+      "x": 93,
+      "y": 230
+     },
+     "delay": 150,
+     "lt": {
+      "x": -93,
+      "y": -230
+     },
+     "rb": {
+      "x": 98,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -230
+     }
+    },
+    {
+     "name": "outlaw_king/stand/0004",
+     "w": 191,
+     "h": 269,
+     "origin": {
+      "x": 93,
+      "y": 229
+     },
+     "delay": 150,
+     "lt": {
+      "x": -93,
+      "y": -229
+     },
+     "rb": {
+      "x": 98,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "outlaw_king/move/0001",
+     "w": 202,
+     "h": 271,
+     "origin": {
+      "x": 97,
+      "y": 231
+     },
+     "delay": 100,
+     "lt": {
+      "x": -97,
+      "y": -231
+     },
+     "rb": {
+      "x": 105,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -231
+     }
+    },
+    {
+     "name": "outlaw_king/move/0002",
+     "w": 192,
+     "h": 268,
+     "origin": {
+      "x": 86,
+      "y": 228
+     },
+     "delay": 100,
+     "lt": {
+      "x": -86,
+      "y": -228
+     },
+     "rb": {
+      "x": 106,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "outlaw_king/move/0003",
+     "w": 192,
+     "h": 268,
+     "origin": {
+      "x": 86,
+      "y": 228
+     },
+     "delay": 100,
+     "lt": {
+      "x": -86,
+      "y": -228
+     },
+     "rb": {
+      "x": 106,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "outlaw_king/move/0004",
+     "w": 202,
+     "h": 271,
+     "origin": {
+      "x": 97,
+      "y": 231
+     },
+     "delay": 100,
+     "lt": {
+      "x": -97,
+      "y": -231
+     },
+     "rb": {
+      "x": 105,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -231
+     }
+    },
+    {
+     "name": "outlaw_king/move/0005",
+     "w": 211,
+     "h": 268,
+     "origin": {
+      "x": 108,
+      "y": 228
+     },
+     "delay": 100,
+     "lt": {
+      "x": -108,
+      "y": -228
+     },
+     "rb": {
+      "x": 103,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "outlaw_king/move/0006",
+     "w": 211,
+     "h": 268,
+     "origin": {
+      "x": 108,
+      "y": 228
+     },
+     "delay": 100,
+     "lt": {
+      "x": -108,
+      "y": -228
+     },
+     "rb": {
+      "x": 103,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "outlaw_king/attack1/0001",
+     "w": 154,
+     "h": 237,
+     "origin": {
+      "x": 51,
+      "y": 235
+     },
+     "delay": 67,
+     "lt": {
+      "x": -51,
+      "y": -235
+     },
+     "rb": {
+      "x": 103,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -235
+     }
+    },
+    {
+     "name": "outlaw_king/attack1/0002",
+     "w": 155,
+     "h": 259,
+     "origin": {
+      "x": 48,
+      "y": 257
+     },
+     "delay": 67,
+     "lt": {
+      "x": -48,
+      "y": -257
+     },
+     "rb": {
+      "x": 107,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -257
+     }
+    },
+    {
+     "name": "outlaw_king/attack1/0003",
+     "w": 182,
+     "h": 265,
+     "origin": {
+      "x": 71,
+      "y": 263
+     },
+     "delay": 67,
+     "lt": {
+      "x": -71,
+      "y": -263
+     },
+     "rb": {
+      "x": 111,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -263
+     }
+    },
+    {
+     "name": "outlaw_king/attack1/0004",
+     "w": 300,
+     "h": 228,
+     "origin": {
+      "x": 180,
+      "y": 224
+     },
+     "delay": 134,
+     "lt": {
+      "x": -180,
+      "y": -224
+     },
+     "rb": {
+      "x": 120,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    },
+    {
+     "name": "outlaw_king/attack1/0005",
+     "w": 275,
+     "h": 244,
+     "origin": {
+      "x": 162,
+      "y": 226
+     },
+     "delay": 67,
+     "lt": {
+      "x": -162,
+      "y": -226
+     },
+     "rb": {
+      "x": 113,
+      "y": 18
+     },
+     "head": {
+      "x": 0,
+      "y": -226
+     }
+    },
+    {
+     "name": "outlaw_king/attack1/0006",
+     "w": 234,
+     "h": 260,
+     "origin": {
+      "x": 128,
+      "y": 227
+     },
+     "delay": 67,
+     "lt": {
+      "x": -128,
+      "y": -227
+     },
+     "rb": {
+      "x": 106,
+      "y": 33
+     },
+     "head": {
+      "x": 0,
+      "y": -227
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "outlaw_king/hit1/0001",
+     "w": 228,
+     "h": 376,
+     "origin": {
+      "x": 102,
+      "y": 347
+     },
+     "delay": 150,
+     "lt": {
+      "x": -102,
+      "y": -347
+     },
+     "rb": {
+      "x": 126,
+      "y": 29
+     },
+     "head": {
+      "x": 0,
+      "y": -347
+     }
+    },
+    {
+     "name": "outlaw_king/hit1/0002",
+     "w": 211,
+     "h": 269,
+     "origin": {
+      "x": 98,
+      "y": 232
+     },
+     "delay": 120,
+     "lt": {
+      "x": -98,
+      "y": -232
+     },
+     "rb": {
+      "x": 113,
+      "y": 37
+     },
+     "head": {
+      "x": 0,
+      "y": -232
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "outlaw_king/die1/0001",
+     "w": 220,
+     "h": 266,
+     "origin": {
+      "x": 100,
+      "y": 233
+     },
+     "delay": 90,
+     "lt": {
+      "x": -100,
+      "y": -233
+     },
+     "rb": {
+      "x": 120,
+      "y": 33
+     },
+     "head": {
+      "x": 0,
+      "y": -233
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "outlaw_king/die1/0002",
+     "w": 255,
+     "h": 261,
+     "origin": {
+      "x": 105,
+      "y": 226
+     },
+     "delay": 90,
+     "lt": {
+      "x": -105,
+      "y": -226
+     },
+     "rb": {
+      "x": 150,
+      "y": 35
+     },
+     "head": {
+      "x": 0,
+      "y": -226
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "outlaw_king/die1/0003",
+     "w": 330,
+     "h": 222,
+     "origin": {
+      "x": 91,
+      "y": 182
+     },
+     "delay": 90,
+     "lt": {
+      "x": -91,
+      "y": -182
+     },
+     "rb": {
+      "x": 239,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -182
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "outlaw_king/die1/0004",
+     "w": 305,
+     "h": 164,
+     "origin": {
+      "x": 54,
+      "y": 124
+     },
+     "delay": 90,
+     "lt": {
+      "x": -54,
+      "y": -124
+     },
+     "rb": {
+      "x": 251,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -124
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "outlaw_king/die1/0005",
+     "w": 300,
+     "h": 160,
+     "origin": {
+      "x": 51,
+      "y": 120
+     },
+     "delay": 90,
+     "lt": {
+      "x": -51,
+      "y": -120
+     },
+     "rb": {
+      "x": 249,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -120
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "outlaw_king/die1/0006",
+     "w": 300,
+     "h": 160,
+     "origin": {
+      "x": 51,
+      "y": 120
+     },
+     "delay": 90,
+     "lt": {
+      "x": -51,
+      "y": -120
+     },
+     "rb": {
+      "x": 249,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -120
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

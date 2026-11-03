@@ -1,0 +1,752 @@
+{
+  "name": "Zite",
+  "width": 2800,
+  "height": 3800,
+  "start": "ashford",
+  "areas": [
+    {
+      "id": "meadows",
+      "name": "Cloverfield Meadows",
+      "theme": "meadow",
+      "tier": 1,
+      "levels": [
+        1,
+        4
+      ],
+      "mobs": [
+        "slime",
+        "wolf",
+        "bandit",
+        "wisp"
+      ],
+      "miniBosses": [
+        "wolf-alpha"
+      ],
+      "kingdom": "Verdant Kingdom",
+      "hubs": [
+        {
+          "id": "ashford",
+          "kind": "town",
+          "name": "Puddlewick Village",
+          "x": 700,
+          "y": 3510
+        },
+        {
+          "id": "millford",
+          "kind": "town",
+          "name": "Old Mill",
+          "x": 700,
+          "y": 2770
+        },
+        {
+          "id": "crossroads",
+          "kind": "board",
+          "name": "Clover Crossroads Board",
+          "x": 400,
+          "y": 3110
+        },
+        {
+          "id": "windy",
+          "kind": "shop",
+          "name": "Windmill Apothecary",
+          "x": 1000,
+          "y": 3110,
+          "stock": "magic"
+        },
+        {
+          "id": "tinker",
+          "kind": "shop",
+          "name": "Merchant Cart",
+          "x": 250,
+          "y": 2690,
+          "stock": "arms"
+        },
+        {
+          "id": "hermit",
+          "kind": "potion",
+          "name": "Abandoned Orchard",
+          "x": 1150,
+          "y": 2690
+        },
+        {
+          "id": "cairn",
+          "kind": "chest",
+          "name": "Slime Cave",
+          "x": 250,
+          "y": 2250
+        },
+        {
+          "id": "moon",
+          "kind": "spell",
+          "name": "Forest Shrine",
+          "x": 700,
+          "y": 2210
+        },
+        {
+          "id": "gate",
+          "kind": "boss",
+          "name": "King Goo's Gate",
+          "x": 1150,
+          "y": 2250,
+          "boss": "thornwood-warden",
+          "opens": "thornwood"
+        },
+        {
+          "id": "saltmarsh",
+          "kind": "normal",
+          "name": "Duck Pond",
+          "x": 250,
+          "y": 3450
+        },
+        {
+          "id": "ravine",
+          "kind": "church",
+          "name": "Little Clover Church",
+          "x": 1150,
+          "y": 3450
+        }
+      ],
+      "roads": [
+        {
+          "from": "ashford",
+          "to": "millford",
+          "kinds": "nnptnn",
+          "bow": 0
+        },
+        {
+          "from": "ashford",
+          "to": "saltmarsh",
+          "kinds": "ntn",
+          "bow": 50
+        },
+        {
+          "from": "ashford",
+          "to": "ravine",
+          "kinds": "nan",
+          "bow": 50
+        },
+        {
+          "from": "saltmarsh",
+          "to": "crossroads",
+          "kinds": "npn",
+          "bow": 50
+        },
+        {
+          "from": "ravine",
+          "to": "windy",
+          "kinds": "nnn",
+          "bow": 50
+        },
+        {
+          "from": "crossroads",
+          "to": "millford",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "windy",
+          "to": "millford",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "crossroads",
+          "to": "tinker",
+          "kinds": "nnn",
+          "bow": 50
+        },
+        {
+          "from": "windy",
+          "to": "hermit",
+          "kinds": "nsn",
+          "bow": 50
+        },
+        {
+          "from": "tinker",
+          "to": "cairn",
+          "kinds": "nan",
+          "bow": 50
+        },
+        {
+          "from": "hermit",
+          "to": "gate",
+          "kinds": "nnn",
+          "bow": 50
+        },
+        {
+          "from": "cairn",
+          "to": "moon",
+          "kinds": "ntn",
+          "bow": 50
+        },
+        {
+          "from": "moon",
+          "to": "gate",
+          "kinds": "nnn",
+          "bow": 50
+        },
+        {
+          "from": "millford",
+          "to": "moon",
+          "kinds": "nnnn",
+          "bow": 0
+        },
+        {
+          "from": "tinker",
+          "to": "millford",
+          "kinds": "nnn",
+          "bow": 40
+        }
+      ],
+      "grounds": [
+        {
+          "id": "jelly-shallows",
+          "name": "The Jelly Shallows",
+          "hub": "saltmarsh",
+          "mob": "slime",
+          "trophy": "Jelly Blobs",
+          "drops": [
+            "boots",
+            "cape"
+          ]
+        },
+        {
+          "id": "sprout-patch",
+          "name": "The Sprout Patch",
+          "hub": "ravine",
+          "mob": "wolf",
+          "trophy": "Sprout Roots",
+          "drops": [
+            "gloves",
+            "trinket"
+          ]
+        },
+        {
+          "id": "bandit-thicket",
+          "name": "Bandit Thicket",
+          "hub": "cairn",
+          "mob": "bandit",
+          "trophy": "Stolen Purses",
+          "drops": [
+            "weapon",
+            "helm"
+          ]
+        },
+        {
+          "id": "buzzing-orchard",
+          "name": "The Buzzing Orchard",
+          "hub": "hermit",
+          "mob": "wisp",
+          "trophy": "Bee Stingers",
+          "drops": [
+            "armour",
+            "shield"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thornwood",
+      "name": "Wobblewood Forest",
+      "theme": "forest",
+      "tier": 2,
+      "levels": [
+        4,
+        8
+      ],
+      "mobs": [
+        "spider",
+        "treant",
+        "outlaw",
+        "wraith"
+      ],
+      "miniBosses": [
+        "spider-queen"
+      ],
+      "kingdom": "Verdant Kingdom",
+      "hubs": [
+        {
+          "id": "edge",
+          "kind": "board",
+          "name": "Wobblewood Board",
+          "x": 1600,
+          "y": 2500
+        },
+        {
+          "id": "thicket",
+          "kind": "shop",
+          "name": "Fungal Apothecary",
+          "x": 1650,
+          "y": 2050,
+          "stock": "magic"
+        },
+        {
+          "id": "briar",
+          "kind": "boss",
+          "name": "Grumblebark's Glade",
+          "x": 2150,
+          "y": 2100,
+          "boss": "briar-king",
+          "opens": "frostpeak"
+        },
+        {
+          "id": "elder",
+          "kind": "spell",
+          "name": "Mossy Shrine",
+          "x": 2650,
+          "y": 2300
+        },
+        {
+          "id": "hollow",
+          "kind": "church",
+          "name": "Oakshade Church",
+          "x": 2150,
+          "y": 2750
+        },
+        {
+          "id": "pond",
+          "kind": "normal",
+          "name": "Root Bridge",
+          "x": 2700,
+          "y": 2850
+        },
+        {
+          "id": "mossy",
+          "kind": "shop",
+          "name": "Hollow Log Shop",
+          "x": 1650,
+          "y": 3050,
+          "stock": "arms"
+        },
+        {
+          "id": "weaver",
+          "kind": "chest",
+          "name": "The Upside-Down Tree",
+          "x": 2700,
+          "y": 3350
+        },
+        {
+          "id": "brambleford",
+          "kind": "town",
+          "name": "Tumbletree Village",
+          "x": 2150,
+          "y": 3400
+        },
+        {
+          "id": "dusk",
+          "kind": "potion",
+          "name": "Dewdrop Pool",
+          "x": 1650,
+          "y": 3600
+        },
+        {
+          "id": "barrow",
+          "kind": "normal",
+          "name": "Owl Hollow",
+          "x": 2650,
+          "y": 3700
+        }
+      ],
+      "roads": [
+        {
+          "from": "edge",
+          "to": "thicket",
+          "kinds": "nan",
+          "bow": 40
+        },
+        {
+          "from": "thicket",
+          "to": "briar",
+          "kinds": "ntn",
+          "bow": 40
+        },
+        {
+          "from": "briar",
+          "to": "elder",
+          "kinds": "nan",
+          "bow": 40
+        },
+        {
+          "from": "edge",
+          "to": "hollow",
+          "kinds": "nnnn",
+          "bow": 30
+        },
+        {
+          "from": "briar",
+          "to": "hollow",
+          "kinds": "nnnnn",
+          "bow": 0
+        },
+        {
+          "from": "elder",
+          "to": "pond",
+          "kinds": "npn",
+          "bow": 40
+        },
+        {
+          "from": "hollow",
+          "to": "pond",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "edge",
+          "to": "mossy",
+          "kinds": "nnnn",
+          "bow": 40
+        },
+        {
+          "from": "mossy",
+          "to": "brambleford",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "hollow",
+          "to": "brambleford",
+          "kinds": "nnnn",
+          "bow": 0
+        },
+        {
+          "from": "pond",
+          "to": "weaver",
+          "kinds": "ntn",
+          "bow": 40
+        },
+        {
+          "from": "weaver",
+          "to": "brambleford",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "brambleford",
+          "to": "dusk",
+          "kinds": "nnn",
+          "bow": 40
+        },
+        {
+          "from": "mossy",
+          "to": "dusk",
+          "kinds": "npn",
+          "bow": 40
+        },
+        {
+          "from": "brambleford",
+          "to": "barrow",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "weaver",
+          "to": "barrow",
+          "kinds": "nn",
+          "bow": 40
+        },
+        {
+          "from": "dusk",
+          "to": "barrow",
+          "kinds": "nnnnn",
+          "bow": 90
+        }
+      ],
+      "grounds": [
+        {
+          "id": "twig-hollow",
+          "name": "Twig Hollow",
+          "hub": "dusk",
+          "mob": "spider",
+          "trophy": "Bent Twigs",
+          "drops": [
+            "boots",
+            "weapon"
+          ]
+        },
+        {
+          "id": "mossy-reach",
+          "name": "The Mossy Reach",
+          "hub": "elder",
+          "mob": "treant",
+          "trophy": "Moss Tufts",
+          "drops": [
+            "armour",
+            "gloves"
+          ]
+        },
+        {
+          "id": "spore-ring",
+          "name": "The Spore Ring",
+          "hub": "thicket",
+          "mob": "outlaw",
+          "trophy": "Spore Caps",
+          "drops": [
+            "helm",
+            "trinket"
+          ]
+        },
+        {
+          "id": "nutkin-wood",
+          "name": "Nutkin Wood",
+          "hub": "barrow",
+          "mob": "wraith",
+          "trophy": "Stolen Acorns",
+          "drops": [
+            "cape",
+            "shield"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frostpeak",
+      "name": "Honeyhill Fields",
+      "theme": "harvest",
+      "tier": 3,
+      "levels": [
+        8,
+        12
+      ],
+      "mobs": [
+        "ice-wolf",
+        "yeti",
+        "frost-wisp",
+        "ice-golem"
+      ],
+      "miniBosses": [
+        "yeti-elder"
+      ],
+      "kingdom": "Verdant Kingdom",
+      "hubs": [
+        {
+          "id": "pass",
+          "kind": "board",
+          "name": "Honeyhill Board",
+          "x": 2150,
+          "y": 1850
+        },
+        {
+          "id": "frosthold",
+          "kind": "town",
+          "name": "Goldencomb Farm",
+          "x": 2150,
+          "y": 1500
+        },
+        {
+          "id": "trader",
+          "kind": "shop",
+          "name": "Harvest Market",
+          "x": 2650,
+          "y": 1700,
+          "stock": "arms"
+        },
+        {
+          "id": "icefall",
+          "kind": "shop",
+          "name": "Orchard Apothecary",
+          "x": 1600,
+          "y": 1350,
+          "stock": "magic"
+        },
+        {
+          "id": "glacier",
+          "kind": "normal",
+          "name": "Wheat Rows",
+          "x": 2700,
+          "y": 1250
+        },
+        {
+          "id": "hotspring",
+          "kind": "potion",
+          "name": "Cider Well",
+          "x": 2150,
+          "y": 1100
+        },
+        {
+          "id": "frozen",
+          "kind": "chest",
+          "name": "Windmill Cellar",
+          "x": 1600,
+          "y": 800
+        },
+        {
+          "id": "aurora",
+          "kind": "spell",
+          "name": "Orchard Shrine",
+          "x": 2700,
+          "y": 750
+        },
+        {
+          "id": "ridge",
+          "kind": "church",
+          "name": "Honeybell Church",
+          "x": 2150,
+          "y": 600
+        },
+        {
+          "id": "summit",
+          "kind": "boss",
+          "name": "Queen Bumble's Hive",
+          "x": 2700,
+          "y": 300,
+          "boss": "frost-matriarch",
+          "opens": "gen-1"
+        }
+      ],
+      "roads": [
+        {
+          "from": "pass",
+          "to": "frosthold",
+          "kinds": "nn",
+          "bow": 0
+        },
+        {
+          "from": "pass",
+          "to": "trader",
+          "kinds": "nan",
+          "bow": 40
+        },
+        {
+          "from": "frosthold",
+          "to": "trader",
+          "kinds": "nan",
+          "bow": 30
+        },
+        {
+          "from": "frosthold",
+          "to": "icefall",
+          "kinds": "nnn",
+          "bow": 30
+        },
+        {
+          "from": "frosthold",
+          "to": "hotspring",
+          "kinds": "nnn",
+          "bow": 0
+        },
+        {
+          "from": "trader",
+          "to": "glacier",
+          "kinds": "nnn",
+          "bow": 40
+        },
+        {
+          "from": "icefall",
+          "to": "frozen",
+          "kinds": "nnnn",
+          "bow": 50
+        },
+        {
+          "from": "hotspring",
+          "to": "glacier",
+          "kinds": "ntn",
+          "bow": 30
+        },
+        {
+          "from": "icefall",
+          "to": "hotspring",
+          "kinds": "npn",
+          "bow": 30
+        },
+        {
+          "from": "glacier",
+          "to": "aurora",
+          "kinds": "nnn",
+          "bow": 40
+        },
+        {
+          "from": "frozen",
+          "to": "ridge",
+          "kinds": "ntn",
+          "bow": 50
+        },
+        {
+          "from": "hotspring",
+          "to": "ridge",
+          "kinds": "nnn",
+          "bow": 0
+        },
+        {
+          "from": "aurora",
+          "to": "ridge",
+          "kinds": "npn",
+          "bow": 50
+        },
+        {
+          "from": "ridge",
+          "to": "summit",
+          "kinds": "nnnn",
+          "bow": 0
+        },
+        {
+          "from": "aurora",
+          "to": "summit",
+          "kinds": "nnn",
+          "bow": 0
+        }
+      ],
+      "grounds": [
+        {
+          "id": "honey-rows",
+          "name": "The Honey Rows",
+          "hub": "hotspring",
+          "mob": "ice-wolf",
+          "trophy": "Honey Globs",
+          "drops": [
+            "boots",
+            "cape"
+          ]
+        },
+        {
+          "id": "corn-field",
+          "name": "The Tall Corn",
+          "hub": "frozen",
+          "mob": "yeti",
+          "trophy": "Corn Cobs",
+          "drops": [
+            "weapon",
+            "armour"
+          ]
+        },
+        {
+          "id": "buzz-meadow",
+          "name": "Buzz Meadow",
+          "hub": "ridge",
+          "mob": "frost-wisp",
+          "trophy": "Buzzbug Wings",
+          "drops": [
+            "gloves",
+            "helm"
+          ]
+        },
+        {
+          "id": "mimic-orchard",
+          "name": "The Sly Orchard",
+          "hub": "glacier",
+          "mob": "ice-golem",
+          "trophy": "Bitten Apples",
+          "drops": [
+            "trinket",
+            "shield"
+          ]
+        }
+      ]
+    }
+  ],
+  "roads": [
+    {
+      "from": "gate",
+      "to": "edge",
+      "kinds": "nn",
+      "bow": 0,
+      "area": "thornwood"
+    },
+    {
+      "from": "briar",
+      "to": "pass",
+      "kinds": "n",
+      "bow": 0,
+      "area": "frostpeak"
+    }
+  ]
+}

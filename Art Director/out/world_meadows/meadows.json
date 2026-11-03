@@ -1,0 +1,2351 @@
+{
+ "area": {
+  "id": "meadows",
+  "name": "Cloverfield Meadows",
+  "theme": "meadow",
+  "tier": 1,
+  "levels": [
+   1,
+   4
+  ],
+  "mobs": [
+   "slime",
+   "wolf",
+   "bandit",
+   "wisp"
+  ],
+  "miniBosses": [
+   "wolf-alpha"
+  ],
+  "kingdom": "Verdant Kingdom",
+  "hubs": [
+   {
+    "id": "ashford",
+    "kind": "town",
+    "name": "Puddlewick Village",
+    "x": 2159,
+    "y": 7856
+   },
+   {
+    "id": "millford",
+    "kind": "town",
+    "name": "Old Mill",
+    "x": 2193,
+    "y": 6953
+   },
+   {
+    "id": "crossroads",
+    "kind": "board",
+    "name": "Clover Crossroads Board",
+    "x": 1565,
+    "y": 7160
+   },
+   {
+    "id": "windy",
+    "kind": "shop",
+    "name": "Windmill Apothecary",
+    "x": 2795,
+    "y": 6644,
+    "stock": "magic"
+   },
+   {
+    "id": "tinker",
+    "kind": "shop",
+    "name": "Merchant Cart",
+    "x": 1385,
+    "y": 6489,
+    "stock": "arms"
+   },
+   {
+    "id": "hermit",
+    "kind": "potion",
+    "name": "Abandoned Orchard",
+    "x": 2847,
+    "y": 6050
+   },
+   {
+    "id": "cairn",
+    "kind": "chest",
+    "name": "Slime Cave",
+    "x": 2124,
+    "y": 5629
+   },
+   {
+    "id": "moon",
+    "kind": "spell",
+    "name": "Forest Shrine",
+    "x": 2425,
+    "y": 6136
+   },
+   {
+    "id": "gate",
+    "kind": "boss",
+    "name": "King Goo's Gate",
+    "x": 3010,
+    "y": 5560,
+    "boss": "thornwood-warden",
+    "opens": "thornwood"
+   },
+   {
+    "id": "saltmarsh",
+    "kind": "normal",
+    "name": "Duck Pond",
+    "x": 1436,
+    "y": 7676
+   },
+   {
+    "id": "ravine",
+    "kind": "church",
+    "name": "Little Clover Church",
+    "x": 2941,
+    "y": 7710
+   },
+   {
+    "id": "sproutfield",
+    "kind": "normal",
+    "name": "The Sprout Patch",
+    "x": 2812,
+    "y": 7211
+   },
+   {
+    "id": "banditcamp",
+    "kind": "normal",
+    "name": "Bandit Thicket",
+    "x": 1608,
+    "y": 5904
+   },
+   {
+    "id": "reedbank",
+    "kind": "normal",
+    "name": "Reed Bank",
+    "x": 1109,
+    "y": 7848
+   },
+   {
+    "id": "farrows",
+    "kind": "normal",
+    "name": "Far Rows",
+    "x": 3113,
+    "y": 6979
+   },
+   {
+    "id": "lookout",
+    "kind": "normal",
+    "name": "Lookout Stump",
+    "x": 1299,
+    "y": 5749
+   },
+   {
+    "id": "beehives",
+    "kind": "normal",
+    "name": "The Old Hives",
+    "x": 3122,
+    "y": 6214
+   }
+  ],
+  "roads": [
+   {
+    "from": "ashford",
+    "to": "saltmarsh",
+    "kinds": "nnnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2084,
+      "y": 7848
+     },
+     {
+      "x": 2010,
+      "y": 7839
+     },
+     {
+      "x": 1934,
+      "y": 7835
+     },
+     {
+      "x": 1857,
+      "y": 7834
+     },
+     {
+      "x": 1781,
+      "y": 7834
+     },
+     {
+      "x": 1705,
+      "y": 7828
+     },
+     {
+      "x": 1633,
+      "y": 7811
+     },
+     {
+      "x": 1564,
+      "y": 7779
+     },
+     {
+      "x": 1499,
+      "y": 7733
+     }
+    ]
+   },
+   {
+    "from": "ashford",
+    "to": "ravine",
+    "kinds": "nnann",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2240,
+      "y": 7856
+     },
+     {
+      "x": 2321,
+      "y": 7855
+     },
+     {
+      "x": 2402,
+      "y": 7858
+     },
+     {
+      "x": 2484,
+      "y": 7865
+     },
+     {
+      "x": 2567,
+      "y": 7871
+     },
+     {
+      "x": 2647,
+      "y": 7871
+     },
+     {
+      "x": 2726,
+      "y": 7856
+     },
+     {
+      "x": 2800,
+      "y": 7824
+     },
+     {
+      "x": 2872,
+      "y": 7774
+     }
+    ]
+   },
+   {
+    "from": "ashford",
+    "to": "millford",
+    "kinds": "nnnpnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2215,
+      "y": 7768
+     },
+     {
+      "x": 2254,
+      "y": 7679
+     },
+     {
+      "x": 2272,
+      "y": 7589
+     },
+     {
+      "x": 2267,
+      "y": 7498
+     },
+     {
+      "x": 2246,
+      "y": 7407
+     },
+     {
+      "x": 2220,
+      "y": 7316
+     },
+     {
+      "x": 2198,
+      "y": 7224
+     },
+     {
+      "x": 2187,
+      "y": 7134
+     },
+     {
+      "x": 2188,
+      "y": 7043
+     }
+    ]
+   },
+   {
+    "from": "saltmarsh",
+    "to": "crossroads",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1455,
+      "y": 7626
+     },
+     {
+      "x": 1475,
+      "y": 7576
+     },
+     {
+      "x": 1500,
+      "y": 7527
+     },
+     {
+      "x": 1529,
+      "y": 7480
+     },
+     {
+      "x": 1559,
+      "y": 7433
+     },
+     {
+      "x": 1584,
+      "y": 7384
+     },
+     {
+      "x": 1599,
+      "y": 7333
+     },
+     {
+      "x": 1600,
+      "y": 7279
+     },
+     {
+      "x": 1588,
+      "y": 7221
+     }
+    ]
+   },
+   {
+    "from": "crossroads",
+    "to": "millford",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1627,
+      "y": 7136
+     },
+     {
+      "x": 1688,
+      "y": 7109
+     },
+     {
+      "x": 1747,
+      "y": 7077
+     },
+     {
+      "x": 1804,
+      "y": 7039
+     },
+     {
+      "x": 1860,
+      "y": 7000
+     },
+     {
+      "x": 1918,
+      "y": 6964
+     },
+     {
+      "x": 1980,
+      "y": 6940
+     },
+     {
+      "x": 2046,
+      "y": 6931
+     },
+     {
+      "x": 2118,
+      "y": 6936
+     }
+    ]
+   },
+   {
+    "from": "crossroads",
+    "to": "tinker",
+    "kinds": "nnpn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1541,
+      "y": 7094
+     },
+     {
+      "x": 1516,
+      "y": 7029
+     },
+     {
+      "x": 1485,
+      "y": 6966
+     },
+     {
+      "x": 1449,
+      "y": 6903
+     },
+     {
+      "x": 1411,
+      "y": 6842
+     },
+     {
+      "x": 1379,
+      "y": 6778
+     },
+     {
+      "x": 1358,
+      "y": 6712
+     },
+     {
+      "x": 1353,
+      "y": 6642
+     },
+     {
+      "x": 1363,
+      "y": 6567
+     }
+    ]
+   },
+   {
+    "from": "tinker",
+    "to": "banditcamp",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1436,
+      "y": 6442
+     },
+     {
+      "x": 1479,
+      "y": 6391
+     },
+     {
+      "x": 1510,
+      "y": 6335
+     },
+     {
+      "x": 1528,
+      "y": 6275
+     },
+     {
+      "x": 1538,
+      "y": 6212
+     },
+     {
+      "x": 1544,
+      "y": 6148
+     },
+     {
+      "x": 1553,
+      "y": 6084
+     },
+     {
+      "x": 1567,
+      "y": 6022
+     },
+     {
+      "x": 1586,
+      "y": 5963
+     }
+    ]
+   },
+   {
+    "from": "banditcamp",
+    "to": "cairn",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1655,
+      "y": 5868
+     },
+     {
+      "x": 1702,
+      "y": 5832
+     },
+     {
+      "x": 1748,
+      "y": 5794
+     },
+     {
+      "x": 1793,
+      "y": 5754
+     },
+     {
+      "x": 1838,
+      "y": 5714
+     },
+     {
+      "x": 1885,
+      "y": 5678
+     },
+     {
+      "x": 1937,
+      "y": 5650
+     },
+     {
+      "x": 1994,
+      "y": 5633
+     },
+     {
+      "x": 2057,
+      "y": 5627
+     }
+    ]
+   },
+   {
+    "from": "cairn",
+    "to": "moon",
+    "kinds": "nan",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2155,
+      "y": 5679
+     },
+     {
+      "x": 2188,
+      "y": 5728
+     },
+     {
+      "x": 2226,
+      "y": 5774
+     },
+     {
+      "x": 2269,
+      "y": 5817
+     },
+     {
+      "x": 2314,
+      "y": 5859
+     },
+     {
+      "x": 2356,
+      "y": 5903
+     },
+     {
+      "x": 2389,
+      "y": 5952
+     },
+     {
+      "x": 2411,
+      "y": 6007
+     },
+     {
+      "x": 2422,
+      "y": 6069
+     }
+    ]
+   },
+   {
+    "from": "moon",
+    "to": "millford",
+    "kinds": "nnntn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2391,
+      "y": 6215
+     },
+     {
+      "x": 2357,
+      "y": 6293
+     },
+     {
+      "x": 2318,
+      "y": 6371
+     },
+     {
+      "x": 2275,
+      "y": 6447
+     },
+     {
+      "x": 2232,
+      "y": 6523
+     },
+     {
+      "x": 2195,
+      "y": 6600
+     },
+     {
+      "x": 2171,
+      "y": 6682
+     },
+     {
+      "x": 2163,
+      "y": 6768
+     },
+     {
+      "x": 2172,
+      "y": 6859
+     }
+    ]
+   },
+   {
+    "from": "moon",
+    "to": "gate",
+    "kinds": "nnnhn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2478,
+      "y": 6073
+     },
+     {
+      "x": 2531,
+      "y": 6009
+     },
+     {
+      "x": 2579,
+      "y": 5942
+     },
+     {
+      "x": 2624,
+      "y": 5870
+     },
+     {
+      "x": 2668,
+      "y": 5798
+     },
+     {
+      "x": 2716,
+      "y": 5730
+     },
+     {
+      "x": 2773,
+      "y": 5671
+     },
+     {
+      "x": 2842,
+      "y": 5623
+     },
+     {
+      "x": 2921,
+      "y": 5587
+     }
+    ]
+   },
+   {
+    "from": "millford",
+    "to": "windy",
+    "kinds": "nnnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2248,
+      "y": 6912
+     },
+     {
+      "x": 2303,
+      "y": 6872
+     },
+     {
+      "x": 2357,
+      "y": 6827
+     },
+     {
+      "x": 2408,
+      "y": 6779
+     },
+     {
+      "x": 2459,
+      "y": 6731
+     },
+     {
+      "x": 2513,
+      "y": 6688
+     },
+     {
+      "x": 2573,
+      "y": 6656
+     },
+     {
+      "x": 2640,
+      "y": 6639
+     },
+     {
+      "x": 2715,
+      "y": 6636
+     }
+    ]
+   },
+   {
+    "from": "windy",
+    "to": "sproutfield",
+    "kinds": "npn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2793,
+      "y": 6701
+     },
+     {
+      "x": 2789,
+      "y": 6758
+     },
+     {
+      "x": 2782,
+      "y": 6815
+     },
+     {
+      "x": 2771,
+      "y": 6872
+     },
+     {
+      "x": 2760,
+      "y": 6929
+     },
+     {
+      "x": 2751,
+      "y": 6986
+     },
+     {
+      "x": 2751,
+      "y": 7043
+     },
+     {
+      "x": 2761,
+      "y": 7099
+     },
+     {
+      "x": 2783,
+      "y": 7155
+     }
+    ]
+   },
+   {
+    "from": "sproutfield",
+    "to": "ravine",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2798,
+      "y": 7268
+     },
+     {
+      "x": 2792,
+      "y": 7323
+     },
+     {
+      "x": 2797,
+      "y": 7375
+     },
+     {
+      "x": 2811,
+      "y": 7424
+     },
+     {
+      "x": 2834,
+      "y": 7472
+     },
+     {
+      "x": 2860,
+      "y": 7518
+     },
+     {
+      "x": 2885,
+      "y": 7565
+     },
+     {
+      "x": 2906,
+      "y": 7612
+     },
+     {
+      "x": 2924,
+      "y": 7661
+     }
+    ]
+   },
+   {
+    "from": "windy",
+    "to": "hermit",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2770,
+      "y": 6582
+     },
+     {
+      "x": 2753,
+      "y": 6521
+     },
+     {
+      "x": 2749,
+      "y": 6460
+     },
+     {
+      "x": 2758,
+      "y": 6401
+     },
+     {
+      "x": 2775,
+      "y": 6343
+     },
+     {
+      "x": 2796,
+      "y": 6285
+     },
+     {
+      "x": 2816,
+      "y": 6227
+     },
+     {
+      "x": 2830,
+      "y": 6168
+     },
+     {
+      "x": 2839,
+      "y": 6109
+     }
+    ]
+   },
+   {
+    "from": "hermit",
+    "to": "gate",
+    "kinds": "nnn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2866,
+      "y": 6002
+     },
+     {
+      "x": 2886,
+      "y": 5954
+     },
+     {
+      "x": 2910,
+      "y": 5908
+     },
+     {
+      "x": 2937,
+      "y": 5862
+     },
+     {
+      "x": 2966,
+      "y": 5818
+     },
+     {
+      "x": 2992,
+      "y": 5772
+     },
+     {
+      "x": 3011,
+      "y": 5724
+     },
+     {
+      "x": 3020,
+      "y": 5672
+     },
+     {
+      "x": 3019,
+      "y": 5617
+     }
+    ]
+   },
+   {
+    "from": "saltmarsh",
+    "to": "reedbank",
+    "kinds": "na",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1397,
+      "y": 7681
+     },
+     {
+      "x": 1360,
+      "y": 7690
+     },
+     {
+      "x": 1325,
+      "y": 7703
+     },
+     {
+      "x": 1292,
+      "y": 7720
+     },
+     {
+      "x": 1261,
+      "y": 7741
+     },
+     {
+      "x": 1231,
+      "y": 7763
+     },
+     {
+      "x": 1201,
+      "y": 7785
+     },
+     {
+      "x": 1171,
+      "y": 7807
+     },
+     {
+      "x": 1140,
+      "y": 7827
+     }
+    ]
+   },
+   {
+    "from": "sproutfield",
+    "to": "farrows",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2850,
+      "y": 7198
+     },
+     {
+      "x": 2886,
+      "y": 7183
+     },
+     {
+      "x": 2919,
+      "y": 7163
+     },
+     {
+      "x": 2949,
+      "y": 7140
+     },
+     {
+      "x": 2977,
+      "y": 7114
+     },
+     {
+      "x": 3004,
+      "y": 7086
+     },
+     {
+      "x": 3030,
+      "y": 7059
+     },
+     {
+      "x": 3058,
+      "y": 7032
+     },
+     {
+      "x": 3085,
+      "y": 7005
+     }
+    ]
+   },
+   {
+    "from": "banditcamp",
+    "to": "lookout",
+    "kinds": "nn",
+    "bow": 0,
+    "via": [
+     {
+      "x": 1576,
+      "y": 5891
+     },
+     {
+      "x": 1543,
+      "y": 5879
+     },
+     {
+      "x": 1510,
+      "y": 5867
+     },
+     {
+      "x": 1477,
+      "y": 5857
+     },
+     {
+      "x": 1444,
+      "y": 5846
+     },
+     {
+      "x": 1411,
+      "y": 5834
+     },
+     {
+      "x": 1380,
+      "y": 5819
+     },
+     {
+      "x": 1351,
+      "y": 5799
+     },
+     {
+      "x": 1324,
+      "y": 5776
+     }
+    ]
+   },
+   {
+    "from": "hermit",
+    "to": "beehives",
+    "kinds": "n",
+    "bow": 0,
+    "via": [
+     {
+      "x": 2868,
+      "y": 6078
+     },
+     {
+      "x": 2890,
+      "y": 6103
+     },
+     {
+      "x": 2915,
+      "y": 6123
+     },
+     {
+      "x": 2943,
+      "y": 6139
+     },
+     {
+      "x": 2972,
+      "y": 6153
+     },
+     {
+      "x": 3003,
+      "y": 6164
+     },
+     {
+      "x": 3033,
+      "y": 6176
+     },
+     {
+      "x": 3063,
+      "y": 6188
+     },
+     {
+      "x": 3092,
+      "y": 6201
+     }
+    ]
+   }
+  ],
+  "grounds": [
+   {
+    "id": "jelly-shallows",
+    "name": "The Jelly Shallows",
+    "hub": "saltmarsh",
+    "mob": "slime",
+    "trophy": "Jelly Blobs",
+    "drops": [
+     "boots",
+     "cape"
+    ],
+    "levels": [
+     1,
+     2
+    ]
+   },
+   {
+    "id": "sprout-patch",
+    "name": "The Sprout Patch",
+    "hub": "sproutfield",
+    "mob": "wolf",
+    "trophy": "Sprout Roots",
+    "drops": [
+     "gloves",
+     "trinket"
+    ],
+    "levels": [
+     2,
+     3
+    ]
+   },
+   {
+    "id": "bandit-thicket",
+    "name": "Bandit Thicket",
+    "hub": "banditcamp",
+    "mob": "bandit",
+    "trophy": "Stolen Purses",
+    "drops": [
+     "weapon",
+     "helm"
+    ],
+    "levels": [
+     3,
+     4
+    ]
+   },
+   {
+    "id": "buzzing-orchard",
+    "name": "The Buzzing Orchard",
+    "hub": "hermit",
+    "mob": "wisp",
+    "trophy": "Bee Stingers",
+    "drops": [
+     "armour",
+     "shield"
+    ],
+    "levels": [
+     3,
+     4
+    ]
+   }
+  ]
+ },
+ "places": [
+  {
+   "id": "jelly-shallows",
+   "hub": "saltmarsh",
+   "type": "marsh",
+   "cx": 1326,
+   "cy": 7746,
+   "shape": [
+    [
+     1638,
+     7746
+    ],
+    [
+     1643,
+     7803
+    ],
+    [
+     1674,
+     7882
+    ],
+    [
+     1665,
+     7975
+    ],
+    [
+     1579,
+     8041
+    ],
+    [
+     1451,
+     8060
+    ],
+    [
+     1326,
+     8053
+    ],
+    [
+     1208,
+     8043
+    ],
+    [
+     1096,
+     8015
+    ],
+    [
+     1011,
+     7958
+    ],
+    [
+     965,
+     7887
+    ],
+    [
+     935,
+     7817
+    ],
+    [
+     920,
+     7746
+    ],
+    [
+     947,
+     7678
+    ],
+    [
+     1015,
+     7625
+    ],
+    [
+     1080,
+     7580
+    ],
+    [
+     1127,
+     7514
+    ],
+    [
+     1200,
+     7430
+    ],
+    [
+     1326,
+     7377
+    ],
+    [
+     1467,
+     7391
+    ],
+    [
+     1575,
+     7455
+    ],
+    [
+     1642,
+     7533
+    ],
+    [
+     1672,
+     7611
+    ],
+    [
+     1662,
+     7685
+    ]
+   ]
+  },
+  {
+   "id": "sprout-patch",
+   "hub": "sproutfield",
+   "type": "patch",
+   "cx": 2922,
+   "cy": 7151,
+   "shape": [
+    [
+     3294,
+     7151
+    ],
+    [
+     3246,
+     7217
+    ],
+    [
+     3182,
+     7265
+    ],
+    [
+     3109,
+     7292
+    ],
+    [
+     3045,
+     7313
+    ],
+    [
+     2992,
+     7349
+    ],
+    [
+     2922,
+     7398
+    ],
+    [
+     2827,
+     7419
+    ],
+    [
+     2739,
+     7391
+    ],
+    [
+     2678,
+     7336
+    ],
+    [
+     2627,
+     7280
+    ],
+    [
+     2577,
+     7221
+    ],
+    [
+     2554,
+     7151
+    ],
+    [
+     2580,
+     7082
+    ],
+    [
+     2635,
+     7025
+    ],
+    [
+     2698,
+     6981
+    ],
+    [
+     2769,
+     6951
+    ],
+    [
+     2849,
+     6946
+    ],
+    [
+     2922,
+     6958
+    ],
+    [
+     2990,
+     6958
+    ],
+    [
+     3083,
+     6940
+    ],
+    [
+     3200,
+     6940
+    ],
+    [
+     3292,
+     6989
+    ],
+    [
+     3319,
+     7070
+    ]
+   ]
+  },
+  {
+   "id": "bandit-thicket",
+   "hub": "banditcamp",
+   "type": "camp",
+   "cx": 1478,
+   "cy": 5864,
+   "shape": [
+    [
+     1905,
+     5864
+    ],
+    [
+     1886,
+     5938
+    ],
+    [
+     1848,
+     6008
+    ],
+    [
+     1771,
+     6062
+    ],
+    [
+     1672,
+     6091
+    ],
+    [
+     1575,
+     6109
+    ],
+    [
+     1478,
+     6119
+    ],
+    [
+     1383,
+     6105
+    ],
+    [
+     1308,
+     6063
+    ],
+    [
+     1249,
+     6019
+    ],
+    [
+     1165,
+     5986
+    ],
+    [
+     1052,
+     5941
+    ],
+    [
+     974,
+     5864
+    ],
+    [
+     986,
+     5775
+    ],
+    [
+     1071,
+     5706
+    ],
+    [
+     1180,
+     5663
+    ],
+    [
+     1289,
+     5644
+    ],
+    [
+     1393,
+     5649
+    ],
+    [
+     1478,
+     5667
+    ],
+    [
+     1555,
+     5669
+    ],
+    [
+     1660,
+     5652
+    ],
+    [
+     1789,
+     5654
+    ],
+    [
+     1887,
+     5705
+    ],
+    [
+     1917,
+     5785
+    ]
+   ]
+  },
+  {
+   "id": "buzzing-orchard",
+   "hub": "hermit",
+   "type": "orchard",
+   "cx": 2957,
+   "cy": 6090,
+   "shape": [
+    [
+     3317,
+     6090
+    ],
+    [
+     3323,
+     6165
+    ],
+    [
+     3273,
+     6229
+    ],
+    [
+     3202,
+     6277
+    ],
+    [
+     3139,
+     6330
+    ],
+    [
+     3065,
+     6397
+    ],
+    [
+     2957,
+     6442
+    ],
+    [
+     2837,
+     6431
+    ],
+    [
+     2743,
+     6373
+    ],
+    [
+     2682,
+     6300
+    ],
+    [
+     2652,
+     6225
+    ],
+    [
+     2658,
+     6151
+    ],
+    [
+     2685,
+     6090
+    ],
+    [
+     2687,
+     6035
+    ],
+    [
+     2656,
+     5958
+    ],
+    [
+     2651,
+     5856
+    ],
+    [
+     2718,
+     5775
+    ],
+    [
+     2837,
+     5748
+    ],
+    [
+     2957,
+     5764
+    ],
+    [
+     3060,
+     5796
+    ],
+    [
+     3147,
+     5839
+    ],
+    [
+     3206,
+     5900
+    ],
+    [
+     3240,
+     5965
+    ],
+    [
+     3276,
+     6025
+    ]
+   ]
+  },
+  {
+   "id": "puddlewick",
+   "hub": "ashford",
+   "type": "town",
+   "cx": 2159,
+   "cy": 7836,
+   "shape": [
+    [
+     2587,
+     7836
+    ],
+    [
+     2556,
+     7898
+    ],
+    [
+     2497,
+     7950
+    ],
+    [
+     2409,
+     7981
+    ],
+    [
+     2322,
+     8000
+    ],
+    [
+     2251,
+     8036
+    ],
+    [
+     2159,
+     8094
+    ],
+    [
+     2022,
+     8134
+    ],
+    [
+     1881,
+     8116
+    ],
+    [
+     1789,
+     8051
+    ],
+    [
+     1750,
+     7973
+    ],
+    [
+     1747,
+     7900
+    ],
+    [
+     1779,
+     7836
+    ],
+    [
+     1835,
+     7786
+    ],
+    [
+     1878,
+     7742
+    ],
+    [
+     1897,
+     7684
+    ],
+    [
+     1938,
+     7614
+    ],
+    [
+     2035,
+     7566
+    ],
+    [
+     2159,
+     7564
+    ],
+    [
+     2274,
+     7587
+    ],
+    [
+     2383,
+     7611
+    ],
+    [
+     2493,
+     7642
+    ],
+    [
+     2575,
+     7696
+    ],
+    [
+     2600,
+     7767
+    ]
+   ]
+  },
+  {
+   "id": "oldmill",
+   "hub": "millford",
+   "type": "hamlet",
+   "cx": 2213,
+   "cy": 6943,
+   "shape": [
+    [
+     2547,
+     6943
+    ],
+    [
+     2508,
+     6995
+    ],
+    [
+     2458,
+     7036
+    ],
+    [
+     2394,
+     7062
+    ],
+    [
+     2331,
+     7077
+    ],
+    [
+     2275,
+     7095
+    ],
+    [
+     2213,
+     7121
+    ],
+    [
+     2135,
+     7133
+    ],
+    [
+     2063,
+     7113
+    ],
+    [
+     2013,
+     7074
+    ],
+    [
+     1967,
+     7036
+    ],
+    [
+     1912,
+     6996
+    ],
+    [
+     1873,
+     6943
+    ],
+    [
+     1884,
+     6885
+    ],
+    [
+     1937,
+     6839
+    ],
+    [
+     2006,
+     6807
+    ],
+    [
+     2077,
+     6789
+    ],
+    [
+     2150,
+     6789
+    ],
+    [
+     2213,
+     6803
+    ],
+    [
+     2268,
+     6808
+    ],
+    [
+     2343,
+     6796
+    ],
+    [
+     2444,
+     6791
+    ],
+    [
+     2533,
+     6822
+    ],
+    [
+     2565,
+     6881
+    ]
+   ]
+  }
+ ],
+ "bridge": {
+  "hub": "gate",
+  "from": {
+   "x": 3170,
+   "y": 5530
+  },
+  "to": {
+   "x": 3530,
+   "y": 5478
+  },
+  "foot": {
+   "x": 3214,
+   "y": 5556
+  },
+  "barred": "bridge_goo_barred",
+  "open": "bridge_goo_open"
+ },
+ "spots": [
+  {
+   "x": 2159,
+   "y": 7856,
+   "kind": "town",
+   "hub": "ashford",
+   "place": "puddlewick"
+  },
+  {
+   "x": 2193,
+   "y": 6953,
+   "kind": "town",
+   "hub": "millford",
+   "place": "oldmill"
+  },
+  {
+   "x": 1565,
+   "y": 7160,
+   "kind": "board",
+   "hub": "crossroads",
+   "place": null
+  },
+  {
+   "x": 2795,
+   "y": 6644,
+   "kind": "shop_magic",
+   "hub": "windy",
+   "place": null
+  },
+  {
+   "x": 1385,
+   "y": 6489,
+   "kind": "shop",
+   "hub": "tinker",
+   "place": null
+  },
+  {
+   "x": 2847,
+   "y": 6050,
+   "kind": "spring",
+   "hub": "hermit",
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 2124,
+   "y": 5629,
+   "kind": "chest",
+   "hub": "cairn",
+   "place": null
+  },
+  {
+   "x": 2425,
+   "y": 6136,
+   "kind": "shrine",
+   "hub": "moon",
+   "place": null
+  },
+  {
+   "x": 3010,
+   "y": 5560,
+   "kind": "gate",
+   "hub": "gate",
+   "place": null
+  },
+  {
+   "x": 1436,
+   "y": 7676,
+   "kind": "wild",
+   "hub": "saltmarsh",
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 2941,
+   "y": 7710,
+   "kind": "church",
+   "hub": "ravine",
+   "place": null
+  },
+  {
+   "x": 2812,
+   "y": 7211,
+   "kind": "wild",
+   "hub": "sproutfield",
+   "place": "sprout-patch"
+  },
+  {
+   "x": 1608,
+   "y": 5904,
+   "kind": "wild",
+   "hub": "banditcamp",
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 1109,
+   "y": 7848,
+   "kind": "wild",
+   "hub": "reedbank",
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 3113,
+   "y": 6979,
+   "kind": "wild",
+   "hub": "farrows",
+   "place": "sprout-patch"
+  },
+  {
+   "x": 1299,
+   "y": 5749,
+   "kind": "wild",
+   "hub": "lookout",
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 3122,
+   "y": 6214,
+   "kind": "wild",
+   "hub": "beehives",
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 2031,
+   "y": 7842,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 1903,
+   "y": 7835,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 1775,
+   "y": 7834,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1649,
+   "y": 7815,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1534,
+   "y": 7758,
+   "kind": "wild",
+   "hub": null,
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 2298,
+   "y": 7855,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 2436,
+   "y": 7861,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 2574,
+   "y": 7871,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2712,
+   "y": 7859,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2835,
+   "y": 7799,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2227,
+   "y": 7741,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 2267,
+   "y": 7614,
+   "kind": "wild",
+   "hub": null,
+   "place": "puddlewick"
+  },
+  {
+   "x": 2263,
+   "y": 7480,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2230,
+   "y": 7351,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2198,
+   "y": 7220,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2188,
+   "y": 7087,
+   "kind": "wild",
+   "hub": null,
+   "place": "oldmill"
+  },
+  {
+   "x": 1490,
+   "y": 7547,
+   "kind": "wild",
+   "hub": null,
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 1562,
+   "y": 7427,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1600,
+   "y": 7295,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1692,
+   "y": 7107,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1809,
+   "y": 7035,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1925,
+   "y": 6961,
+   "kind": "wild",
+   "hub": null,
+   "place": "oldmill"
+  },
+  {
+   "x": 2058,
+   "y": 6932,
+   "kind": "wild",
+   "hub": null,
+   "place": "oldmill"
+  },
+  {
+   "x": 1514,
+   "y": 7025,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1446,
+   "y": 6898,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1377,
+   "y": 6771,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1355,
+   "y": 6630,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1474,
+   "y": 6397,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1527,
+   "y": 6280,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1544,
+   "y": 6152,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1566,
+   "y": 6026,
+   "kind": "wild",
+   "hub": null,
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 1728,
+   "y": 5811,
+   "kind": "wild",
+   "hub": null,
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 1842,
+   "y": 5711,
+   "kind": "wild",
+   "hub": null,
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 1974,
+   "y": 5639,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2210,
+   "y": 5754,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2317,
+   "y": 5862,
+   "kind": "gear",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2403,
+   "y": 5986,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2367,
+   "y": 6270,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2301,
+   "y": 6401,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2229,
+   "y": 6528,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2176,
+   "y": 6664,
+   "kind": "chest",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2167,
+   "y": 6809,
+   "kind": "wild",
+   "hub": null,
+   "place": "oldmill"
+  },
+  {
+   "x": 2515,
+   "y": 6028,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2597,
+   "y": 5913,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2671,
+   "y": 5793,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2760,
+   "y": 5684,
+   "kind": "shrine",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2877,
+   "y": 5607,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2307,
+   "y": 6869,
+   "kind": "wild",
+   "hub": null,
+   "place": "oldmill"
+  },
+  {
+   "x": 2413,
+   "y": 6775,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2521,
+   "y": 6684,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2654,
+   "y": 6638,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2785,
+   "y": 6789,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2759,
+   "y": 6933,
+   "kind": "spring",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2757,
+   "y": 7077,
+   "kind": "wild",
+   "hub": null,
+   "place": "sprout-patch"
+  },
+  {
+   "x": 2794,
+   "y": 7342,
+   "kind": "wild",
+   "hub": null,
+   "place": "sprout-patch"
+  },
+  {
+   "x": 2832,
+   "y": 7468,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2894,
+   "y": 7586,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2751,
+   "y": 6498,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 2774,
+   "y": 6347,
+   "kind": "wild",
+   "hub": null,
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 2822,
+   "y": 6201,
+   "kind": "wild",
+   "hub": null,
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 2900,
+   "y": 5928,
+   "kind": "wild",
+   "hub": null,
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 2968,
+   "y": 5814,
+   "kind": "wild",
+   "hub": null,
+   "place": "buzzing-orchard"
+  },
+  {
+   "x": 3017,
+   "y": 5692,
+   "kind": "wild",
+   "hub": null,
+   "place": null
+  },
+  {
+   "x": 1316,
+   "y": 7708,
+   "kind": "wild",
+   "hub": null,
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 1212,
+   "y": 7777,
+   "kind": "gear",
+   "hub": null,
+   "place": "jelly-shallows"
+  },
+  {
+   "x": 2928,
+   "y": 7156,
+   "kind": "wild",
+   "hub": null,
+   "place": "sprout-patch"
+  },
+  {
+   "x": 3021,
+   "y": 7068,
+   "kind": "wild",
+   "hub": null,
+   "place": "sprout-patch"
+  },
+  {
+   "x": 1498,
+   "y": 5863,
+   "kind": "wild",
+   "hub": null,
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 1389,
+   "y": 5823,
+   "kind": "wild",
+   "hub": null,
+   "place": "bandit-thicket"
+  },
+  {
+   "x": 2971,
+   "y": 6152,
+   "kind": "wild",
+   "hub": null,
+   "place": "buzzing-orchard"
+  }
+ ]
+}

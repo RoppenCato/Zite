@@ -1,0 +1,63 @@
+{
+ "frames": {
+  "silhouette_yeti_king": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 198,
+    "h": 216
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 216
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 216
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9907
+   }
+  },
+  "silhouette_captain": {
+   "frame": {
+    "x": 204,
+    "y": 3,
+    "w": 188,
+    "h": 216
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 188,
+    "h": 216
+   },
+   "sourceSize": {
+    "w": 188,
+    "h": 216
+   },
+   "pivot": {
+    "x": 0.3138,
+    "y": 0.9907
+   }
+  }
+ },
+ "meta": {
+  "image": "fog_far_pieces.png",
+  "size": {
+   "w": 512,
+   "h": 256
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/world/coming_lands.js",
+  "filePx": 2
+ }
+}

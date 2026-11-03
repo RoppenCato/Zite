@@ -1,0 +1,22 @@
+{
+ "northwest": {
+  "image": "overview_northwest.jpg",
+  "worldX": 0,
+  "worldY": 0,
+  "worldW": 4096,
+  "worldH": 4096,
+  "width": 901,
+  "height": 901,
+  "filePxPerWorldPx": 0.22
+ },
+ "southwest": {
+  "image": "overview_southwest.jpg",
+  "worldX": 0,
+  "worldY": 9216,
+  "worldW": 4096,
+  "worldH": 3484,
+  "width": 901,
+  "height": 766,
+  "filePxPerWorldPx": 0.22
+ }
+}
