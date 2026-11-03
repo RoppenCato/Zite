@@ -8,6 +8,7 @@
 // Other players stand on the board as small marks with their names; the HUD says whether the world is online.
 
 import Phaser from 'phaser';
+import { bendsBetween } from '../routes.ts';
 import {
   CLASS_DATA,
   countdown,
@@ -2371,26 +2372,41 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private walk(path: string[], done: () => void): void {
-    const spaces = this.game_.state.board.spaces;
+    const board = this.game_.state.board;
+    const spaces = board.spaces;
     this.walking = true;
     this.setMessage('On the road…');
     this.hero?.play('move');
-    let from = { x: this.token.x, y: this.token.y };
+    // Along the painted road, through its bends, at an even pace (Robin, 2026-11-03: walking in the city "was quite buggy
+    // and unnatural. The paths were clipping"): a straight step from spot to spot cut every corner, and each step stopped.
+    const lift = SPACE_RADIUS + 6;
+    let foot = { x: this.token.x, y: this.token.y + lift };
+    const legs: { x: number; y: number; spot: boolean }[] = [];
+    for (const id of path) {
+      const s = spaces[id]!;
+      for (const bend of bendsBetween(board, foot, s)) legs.push({ ...bend, spot: false });
+      legs.push({ x: s.x, y: s.y, spot: true });
+      foot = { x: s.x, y: s.y };
+    }
+    // About as quick as before: a usual spot-to-spot step of 110 px in STEP_MS.
+    const speed = 110 / STEP_MS;
+    let from = { x: this.token.x, y: this.token.y + lift };
     this.tweens.chain({
       targets: this.token,
-      tweens: path.map((id) => {
-        const s = spaces[id]!;
-        const to = { x: s.x, y: s.y - SPACE_RADIUS - 6 };
-        const faceRight = to.x >= from.x;
-        from = to;
+      tweens: legs.map((leg, i) => {
+        const faceRight = leg.x >= from.x;
+        const length = Math.hypot(leg.x - from.x, leg.y - from.y);
+        from = leg;
         return {
-          x: to.x,
-          y: to.y,
-          duration: STEP_MS,
-          ease: 'Sine.easeInOut',
+          x: leg.x,
+          y: leg.y - lift,
+          duration: Math.max(40, length / speed),
+          ease: legs.length === 1 ? 'Sine.easeInOut' : i === 0 ? 'Sine.easeIn' : i === legs.length - 1 ? 'Sine.easeOut' : 'Linear',
           onStart: () => {
             this.hero?.face(faceRight);
-            sfx.play(stepSound(this.game_.state.board.areas[this.game_.state.board.spaces[this.game_.me.space]?.area ?? '']?.theme));
+          },
+          onComplete: () => {
+            if (leg.spot) sfx.play(stepSound(this.game_.state.board.areas[this.game_.state.board.spaces[this.game_.me.space]?.area ?? '']?.theme));
           },
         };
       }),
