@@ -142,212 +142,212 @@
     },
     "ui/chest-burst-rare": {
       "start": 9.4875,
-      "end": 10.2131,
+      "end": 10.982,
       "loop": false
     },
     "ui/chest-burst-epic": {
-      "start": 10.2631,
-      "end": 11.2782,
+      "start": 11.032,
+      "end": 12.5264,
       "loop": false
     },
     "ui/chest-burst-legendary": {
-      "start": 11.3282,
-      "end": 13.1264,
+      "start": 12.5764,
+      "end": 14.3746,
       "loop": false
     },
     "ui/chest-burst-unique": {
-      "start": 13.1764,
-      "end": 14.5076,
+      "start": 14.4246,
+      "end": 15.7559,
       "loop": false
     },
     "ui/gold-gain": {
-      "start": 14.5576,
-      "end": 15.1136,
+      "start": 15.8059,
+      "end": 16.3618,
       "loop": false
     },
     "ui/gold-small": {
-      "start": 15.1636,
-      "end": 15.2962,
+      "start": 16.4118,
+      "end": 16.5444,
       "loop": false
     },
     "ui/gold-lost": {
-      "start": 15.3462,
-      "end": 15.8682,
+      "start": 16.5944,
+      "end": 17.1164,
       "loop": false
     },
     "ui/pick-appear": {
-      "start": 15.9182,
-      "end": 16.1204,
+      "start": 17.1664,
+      "end": 17.3686,
       "loop": false
     },
     "ui/chip": {
-      "start": 16.1704,
-      "end": 16.3159,
+      "start": 17.4186,
+      "end": 17.5641,
       "loop": false
     },
     "ui/errand-take": {
-      "start": 16.3659,
-      "end": 16.598,
+      "start": 17.6141,
+      "end": 17.8462,
       "loop": false
     },
     "ui/errand-done": {
-      "start": 16.648,
-      "end": 17.2243,
+      "start": 17.8962,
+      "end": 18.4725,
       "loop": false
     },
     "ui/trainer": {
-      "start": 17.2742,
-      "end": 17.872,
+      "start": 18.5225,
+      "end": 19.1202,
       "loop": false
     },
     "ui/buy": {
-      "start": 17.922,
-      "end": 18.3436,
+      "start": 19.1702,
+      "end": 19.5918,
       "loop": false
     },
     "ui/sell": {
-      "start": 18.3936,
-      "end": 18.623,
+      "start": 19.6418,
+      "end": 19.8712,
       "loop": false
     },
     "ui/wear": {
-      "start": 18.673,
-      "end": 18.8274,
+      "start": 19.9213,
+      "end": 20.0756,
       "loop": false
     },
     "ui/take-off": {
-      "start": 18.8774,
-      "end": 19.0337,
+      "start": 20.1256,
+      "end": 20.2819,
       "loop": false
     },
     "ui/drop-item": {
-      "start": 19.0837,
-      "end": 19.201,
+      "start": 20.3319,
+      "end": 20.4492,
       "loop": false
     },
     "ui/online-join": {
-      "start": 19.251,
-      "end": 19.7015,
+      "start": 20.4992,
+      "end": 20.9497,
       "loop": false
     },
     "ui/online-leave": {
-      "start": 19.7515,
-      "end": 20.182,
+      "start": 20.9997,
+      "end": 21.4302,
       "loop": false
     },
     "ui/online-reconnect": {
-      "start": 20.232,
-      "end": 20.6915,
+      "start": 21.4802,
+      "end": 21.9397,
       "loop": false
     },
     "ui/online-note": {
-      "start": 20.7415,
-      "end": 21.1097,
+      "start": 21.9897,
+      "end": 22.3579,
       "loop": false
     },
     "ui/card": {
-      "start": 21.1597,
-      "end": 21.3586,
+      "start": 22.4079,
+      "end": 22.6068,
       "loop": false
     },
     "ui/card-knight": {
-      "start": 21.4086,
-      "end": 21.6263,
+      "start": 22.6568,
+      "end": 22.8745,
       "loop": false
     },
     "ui/card-trickster": {
-      "start": 21.6763,
-      "end": 21.7488,
+      "start": 22.9245,
+      "end": 22.997,
       "loop": false
     },
     "ui/card-wizard": {
-      "start": 21.7987,
-      "end": 22.1578,
+      "start": 23.047,
+      "end": 23.406,
       "loop": false
     },
     "ui/card-archer": {
-      "start": 22.2078,
-      "end": 22.2794,
+      "start": 23.456,
+      "end": 23.5276,
       "loop": false
     },
     "ui/begin": {
-      "start": 22.3294,
-      "end": 24.3294,
+      "start": 23.5776,
+      "end": 25.5776,
       "loop": false
     },
     "ui/hint": {
-      "start": 24.3794,
-      "end": 24.7065,
+      "start": 25.6276,
+      "end": 25.9547,
       "loop": false
     },
     "ui/message-tick": {
-      "start": 24.7565,
-      "end": 24.8556,
+      "start": 26.0047,
+      "end": 26.1038,
       "loop": false
     },
     "ui/sheet-open": {
-      "start": 24.9056,
-      "end": 25.0533,
+      "start": 26.1538,
+      "end": 26.3015,
       "loop": false
     },
     "ui/sheet-close": {
-      "start": 25.1033,
-      "end": 25.2743,
+      "start": 26.3515,
+      "end": 26.5225,
       "loop": false
     },
     "ui/stung": {
-      "start": 25.3243,
-      "end": 25.4743,
+      "start": 26.5725,
+      "end": 26.7225,
       "loop": false
     },
     "ui/board-open": {
-      "start": 25.5243,
-      "end": 25.8166,
+      "start": 26.7725,
+      "end": 27.0648,
       "loop": false
     },
     "ui/quest-done": {
-      "start": 25.8666,
-      "end": 26.7251,
+      "start": 27.1148,
+      "end": 27.9733,
       "loop": false
     },
     "ui/person-found": {
-      "start": 26.7751,
-      "end": 27.4079,
+      "start": 28.0233,
+      "end": 28.6561,
       "loop": false
     },
     "ui/log-open": {
-      "start": 27.4579,
-      "end": 27.8214,
+      "start": 28.7061,
+      "end": 29.0696,
       "loop": false
     },
     "ui/night-falls": {
-      "start": 27.8714,
-      "end": 29.5765,
+      "start": 29.1196,
+      "end": 30.8247,
       "loop": false
     },
     "ui/morning": {
-      "start": 29.6265,
-      "end": 30.9472,
+      "start": 30.8747,
+      "end": 32.1954,
       "loop": false
     },
     "ui/sleep": {
-      "start": 30.9972,
-      "end": 32.6972,
+      "start": 32.2454,
+      "end": 33.9454,
       "loop": false
     },
     "ui/level-up": {
-      "start": 32.7472,
-      "end": 34.2472,
+      "start": 33.9954,
+      "end": 35.4954,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 34.2972,
-      "end": 36.2249,
+      "start": 35.5454,
+      "end": 37.4731,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 36.2749,
-      "end": 38.1895,
+      "start": 37.5231,
+      "end": 39.4377,
       "loop": false
     }
   }

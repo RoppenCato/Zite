@@ -65,7 +65,7 @@ A second audio sprite. Every blow has a swing and an impact so the game can line
 
 About 45 sounds in chapter 1, 21 more in chapter 2. **Delivered as** `fight.ogg` plus `fight.json`, then `fight-classes.ogg`.
 
-## Wave 3 (chapter 1): Cloverfield Meadows' music, ambience and voices
+## Wave 3 (chapter 1): Cloverfield Meadows' music and voices
 
 | Piece | Count | Length | Notes |
 | --- | --- | --- | --- |
@@ -74,11 +74,10 @@ About 45 sounds in chapter 1, 21 more in chapter 2. **Delivered as** `fight.ogg`
 | **King Goo's theme** (the boss: bigger, comic, a tuba somewhere) | 1 | loop of 45 to 60 s | the gate's fight |
 | **Puddlewick's theme** (the town: calm, a music box or a fiddle) | 1 | loop of 30 to 45 s | optional in chapter 1; the board theme serves if time is short |
 | The title (the character screen) | 1 | loop of 30 s | the first music heard; the Begin overture ends it |
-| Ambience beds: the meadow (birds, a breeze, a bee now and then), the town (a bell far off, chatter) | 2 | loops of 30 s, quiet | under the music, mono is fine |
 | **Creature voices**, three a creature (attack, hit, die): Jelly Slime (squelch, squish, splat), Grumpy Sprout (a grumble, a snap, a wilt), Meadow Bandit (a yah, an oof, a yelp), Bumbling Bee (a buzz swoop, a bzzt, a fading buzz; plus a hover buzz loop), Mushroom Muncher (a munch, a thump, a puff), King Goo (a wobble roar, a gloop, a great splat; plus the phase's surge) | 20 | 0.3 to 1.5 s | one audio sprite `creatures-meadows.ogg` |
 
 **Delivered as** loops in `music/` (`meadows-board.ogg`, `meadows-fight.ogg`, `meadows-boss.ogg`, `meadows-town.ogg`,
-`title.ogg`), beds in `ambience/`, the voices as a sprite. NOTES.md gives each loop's exact loop points and its loudness.
+`title.ogg`) and the voices as a sprite. No ambience beds (Robin, 2026-11-03: "Nah we dont need ambient sound"). NOTES.md gives each loop's exact loop points and its loudness.
 
 ## Wave 4 (chapter 2): Wobblewood Forest
 
@@ -100,7 +99,7 @@ that exists in the rules, one generic for the rest), a friend joining your fight
 ## Wave 7 (chapters 5 and on, one theme a chapter)
 
 For each grown theme in the catalogue's order (Glimmerlake, Moonwhisper, Thunderstone, Sunfall, Frostveil, Thornhollow,
-Starfall, Embercrown, the Shattered Crown): a board theme, a fight theme, a boss theme, an ambience bed, steps on its
+Starfall, Embercrown, the Shattered Crown): a board theme, a fight theme, a boss theme, steps on its
 ground, and the voices of its four mobs, mini-boss and boss (18). The second round of themes reuses them.
 
 ## Rules for every piece (mine, 2026-11-01; the budgets the game can carry)
@@ -127,7 +126,7 @@ ground, and the voices of its four mobs, mini-boss and boss (18). The second rou
   the fight's end go past a second.
 - **Variants**: steps, hits and taps in two or three variants, named `step-grass-1`, `-2`, `-3`; the game picks at random.
 - **Names**: `ui/tap`, `ui/die-land`, `ui/chest-burst-epic`, `fight/hit-heavy`, `fight/ability-mighty-swing`,
-  `creature/jelly-slime/hit`, `music/meadows-board`, `ambience/meadow`. Lower case, hyphens, the group first.
+  `creature/jelly-slime/hit`, `music/meadows-board`. Lower case, hyphens, the group first.
 - **First load** (the title loop, the UI sprite, the fight sprite): under 3 MB; an area's music, bed and voices load when
   the player enters it.
 - **Delivery**: `out/<name>/` with the files, the sprite JSON and NOTES.md (what each sound is, when it plays, loop points,
@@ -140,15 +139,15 @@ ground, and the voices of its four mobs, mini-boss and boss (18). The second rou
 
 An audio layer in the client: the sprites loaded with the scene, a `play(name)` on the events the scenes already have
 (a tap, a roll, a step, a hit, a chest), music per area with a crossfade over two seconds on an area change and on a
-fight's start and end, ambience under it, the settings' mute and two volumes, `?mute=1` for test pages, and the audio
+fight's start and end, the settings' mute and two volumes, `?mute=1` for test pages, and the audio
 unlocked on the first tap (phones play nothing before a gesture). Phaser's sound manager plays the sprites; an audio
 element streams the music.
 
 ## The totals, for planning
 
-| | Short sounds | Music loops | Ambience beds |
-| --- | --- | --- | --- |
-| Chapter 1 (waves 1 to 3) | about 60 UI, 45 fight, 20 voices | 5 | 2 |
-| Chapter 2 (wave 4 and the classes) | 21 abilities, 18 voices, steps | 4 | 1 |
-| Chapter 3 (wave 5) | 18 voices, the world boss, settings | 4 | 1 |
-| Each grown theme | 18 voices, steps | 3 | 1 |
+| | Short sounds | Music loops |
+| --- | --- | --- |
+| Chapter 1 (waves 1 to 3) | about 60 UI, 45 fight, 20 voices | 5 |
+| Chapter 2 (wave 4 and the classes) | 21 abilities, 18 voices, steps | 4 |
+| Chapter 3 (wave 5) | 18 voices, the world boss, settings | 4 |
+| Each grown theme | 18 voices, steps | 3 |
