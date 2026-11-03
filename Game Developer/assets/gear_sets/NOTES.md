@@ -36,3 +36,34 @@ For those classes, use that clip name if the frame exists, otherwise `attack1`. 
 ## Not tested
 
 Not seen in the game. A hood or cap replaces the hair, as every hat does. The Wizard's own body skirt sits under the robe, and I saw no conflict in the preview.
+
+## Every rank, 2026-11-03
+
+Robin chose "fill the holes" and "polish and looks". Miles, GD found that every rank past Tin and Copper, Leather and Cloth was drawn as Tin, so "a level-25 hero still looks like a beginner". Now every rank has its own atlas in the same form as `leather` and `cloth`. Designs mine; Robin has not judged them. Not seen in the game.
+
+Each line has **four looks**, drawn once and recoloured across its ranks. The shape changes every two or three ranks and the colour every rank:
+
+| Line | Look | Ranks |
+| --- | --- | --- |
+| Heavy | kettle cap and plate | Tin, Copper (in `hero_gear`), Iron, Silver |
+| Heavy | knight's helm with a plume, tabard, big pauldron | Moonsilver, Sunsteel |
+| Heavy | horned dragon helm, scale coat, spiked pauldron | Dragonscale, Starglass |
+| Heavy | winged helm with a crown, royal tabard with a sun, gold-trimmed cape | Crownsteel, Everbright |
+| Light | leather cap and jerkin; Hide adds a fur trim, Studded adds studs | Leather, Hide, Studded |
+| Light | ranger's cowl, scarf and bandolier, a shoulder plate | Drakeskin, Nightskin |
+| Light | head-wrap with a feather, fringed jerkin and crossed belts | Sunskin, Wyrmskin |
+| Light | plumed hat, long coat with tails and gold buttons | Starskin, Crownskin, Everskin |
+| Magic | hood and robe | Cloth, Linen, Silk |
+| Magic | pointed wizard hat with a star, starry robe | Moonweave, Starweave, Sunweave |
+| Magic | turban with a plume and a gem, high collar and sash | Dreamweave, Aetherweave |
+| Magic | crowned mitre, robe with a gold stole | Crownweave, Everweave |
+
+- **Atlases:** `<rank>/<rank>.png` and `.json`, plus `<rank>/<rank>_archer` for the Hunter's gloves and shield. These are the same frame names as Leather's, `<rank>_hat`, `_coat`, `_coat_near`, `_gloves_near`, `_gloves_far`, `_gloves_far_shield`, `_gloves_near_open`, `_boots`, `_cape`, `_charm`, `_shield`, with the same `attack1_wizard` and `_archer` clips. The rank id is the rules' name in lower case.
+- **Size:** each is 1024 by 2048 or 2048 by 2048 (the tall hats and plumes take room), 150 to 300 KB on disk. Load one when worn, as with Leather.
+- **Icons:** every rank's slot icons are in `icons.png`. That atlas is now 1024 by 2048.
+- **Pictures:**
+  - `ranks.jpg`: all thirty ranks, line by line, on the Knight.
+  - `ranks_classes.jpg`: each new rank from its atlas, on the four classes in turn.
+  - `ranks_icons.jpg`: their icons.
+
+Tools: `tools/hybrid/ranks.js` has the looks and colours; `tools/hybrid/sets.js` draws and packs them.

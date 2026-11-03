@@ -140,6 +140,19 @@ const SETS: Record<string, Tex> = {
   cloth: { key: 'set_cloth', png: clothPng, json: clothJson },
   wooden: { key: 'set_wooden', png: woodenPng, json: woodenJson },
 };
+// Every rank of every line (Mitch, AD, 2026-11-03: "Armour by rank"): `gear_sets/<rank>/<rank>`, with `<rank>_archer` for the
+// Hunter's hands; a piece's first word names its atlas, loaded only while worn.
+const RANK_FILES = import.meta.glob('../../assets/gear_sets/*/*.{png,json}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const RANK_ARCHER: Record<string, Tex> = {};
+for (const [path, url] of Object.entries(RANK_FILES)) {
+  const m = /gear_sets\/(\w+)\/(\w+)\.(png|json)$/.exec(path);
+  if (!m || ['leather', 'cloth', 'wooden'].includes(m[1]!)) continue;
+  const [, folder, file, ext] = m as unknown as [string, string, string, 'png' | 'json'];
+  const archer = file === `${folder}_archer`;
+  if (!archer && file !== folder) continue;
+  const tex = archer ? (RANK_ARCHER[`set_${folder}`] ??= { key: `set_${folder}_archer`, png: '', json: '' }) : (SETS[folder] ??= { key: `set_${folder}`, png: '', json: '' });
+  tex[ext] = url;
+}
 /** The Archer's hands move their own way (Mitch, AD's corrected arm, 2026-11-02): these load only for an Archer. */
 // The legendary weapons (Mitch, AD, 2026-11-02): an atlas each, loaded only while worn.
 // The second set and the Arena's (Mitch, AD, 2026-11-03) name their frames by kind: bonecrusher_great, clockwork_wand, hedgerow_buckler, will_o_wisp_orb.
@@ -191,6 +204,7 @@ const ARCHER_OVER: Tex = { key: 'hero_gear_over_archer', png: archerOverPng, jso
 const ARCHER_SETS: Record<string, Tex> = {
   set_leather: { key: 'set_leather_archer', png: leatherArcherPng, json: leatherArcherJson },
   set_cloth: { key: 'set_cloth_archer', png: clothArcherPng, json: clothArcherJson },
+  ...RANK_ARCHER,
 };
 const SET_ICONS: Tex = { key: 'set_icons', png: setIconsPng, json: setIconsJson };
 const LEGEND_ICONS: Tex = { key: 'legend_icons', png: legendIconsPng, json: legendIconsJson };
@@ -231,9 +245,15 @@ export function releaseClasses(game: Phaser.Game, keep: ClassId): void {
 
 /** A legend's atlas is big (Mitch, AD, 2026-11-03: "load one when it's worn and free it after"): free those nobody here wears. */
 export function releaseUnworn(game: Phaser.Game, characters: readonly Character[]): void {
+  // Every set atlas a piece worn here draws from: a legend's, a rank's (2026-11-03: every rank has its own now).
   const worn = new Set<string>();
-  for (const c of characters) for (const g of Object.values(c.equipment)) if (g?.unique && UNIQUES[g.unique]?.art) worn.add(UNIQUES[g.unique]!.art!);
-  for (const [word, tex] of Object.entries(SETS)) if (tex.key === `legend_${word}` && !worn.has(word) && game.textures.exists(tex.key)) game.textures.remove(tex.key);
+  for (const c of characters) for (const g of Object.values(c.equipment)) if (g) for (const w of artWords(g)) if (SETS[w]) worn.add(w);
+  for (const [word, tex] of Object.entries(SETS)) {
+    if (worn.has(word) || word === 'wooden') continue;
+    if (game.textures.exists(tex.key)) game.textures.remove(tex.key);
+    const archer = ARCHER_SETS[tex.key];
+    if (archer && game.textures.exists(archer.key)) game.textures.remove(archer.key);
+  }
 }
 
 /** Queue the shared gear and these classes' own atlases; call from a scene's preload. */
