@@ -4,6 +4,8 @@
 // that runs before the kit is loaded (nothing, once the first scene preloads it) falls back to the shapes in ui.ts.
 
 import guideIconJson from '../../assets/fx_rogue/guide_icon.json?url';
+import dayNightJson from '../../assets/weapons_v2/daynight.json?url';
+import dayNightPng from '../../assets/weapons_v2/daynight.png';
 import guideIconPng from '../../assets/fx_rogue/guide_icon.png';
 import Phaser from 'phaser';
 import bigDieJson from '../../assets/big_die/big_die.json?url';
@@ -20,6 +22,8 @@ import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_T
 export const KIT = 'ui';
 /** The guide's open book (Mitch, AD, 2026-11-03), in place of a "?". */
 export const GUIDE_ICON = 'guide_icon';
+/** The sun and the moon for the clock (Mitch, AD, 2026-11-03). */
+export const DAYNIGHT = 'daynight';
 export const KIT_SOFT = 'ui_soft';
 const SCALE = 0.5;
 
@@ -45,6 +49,7 @@ export function preloadKit(scene: Phaser.Scene): void {
   if (!scene.textures.exists(KIT)) scene.load.atlas(KIT, uiPng, uiJson);
   if (!scene.textures.exists(KIT_SOFT)) scene.load.atlas(KIT_SOFT, softPng, softJson);
   if (!scene.textures.exists(GUIDE_ICON)) scene.load.atlas(GUIDE_ICON, guideIconPng, guideIconJson);
+  if (!scene.textures.exists(DAYNIGHT)) scene.load.atlas(DAYNIGHT, dayNightPng, dayNightJson);
 }
 
 export function kitReady(scene: Phaser.Scene): boolean {

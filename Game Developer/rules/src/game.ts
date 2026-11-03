@@ -3,6 +3,7 @@
 // again after a while and for spawns; the rules never read a clock themselves.
 
 import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './skills.ts';
+import { clockOf, isNight, nextMorning } from './daynight.ts';
 import { notePlace } from './journal.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
@@ -174,6 +175,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return door(state, action, character);
     case 'link':
       return link(state, action, character, rng, now);
+    case 'sleep':
+      return sleep(state, action, character);
     case 'arena':
       return arena(state, action, character, rng, now);
     case 'skill':
@@ -261,6 +264,16 @@ function goHome(state: GameState, action: HomeAction, c: Character, rng: Rng, no
   const events: GameEvent[] = [{ type: 'wentHome', action: action.id, player: action.player, from: c.space, to: hub }];
   const next: Character = { ...c, steps: 0, space: hub, cooldowns: { ...c.cooldowns, home: now + PROGRESSION.homeWaitMs } };
   return land(state, next, state.board.spaces[hub]!, action, rng, now, events);
+}
+
+/** Sleep in a town till the morning (Robin, 2026-11-03): the night's creatures go back to their dens. */
+function sleep(state: GameState, action: Extract<Action, { type: 'sleep' }>, c: Character): ApplyResult {
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  if (state.board.spaces[c.space]?.kind !== 'town' || !isNight(c)) return reject(state, action, 'not now');
+  const clock = nextMorning(c);
+  const s = stats(c);
+  return { state: withCharacter(state, { ...c, clock, hp: s.maxHp, mana: s.maxMana }), events: [{ type: 'daybreak', action: action.id, player: action.player, night: false, day: clockOf({ clock }).day }] };
 }
 
 const LINK_LETTERS = 'ABCDEFGHJKMNPQRSTVWXYZ';
@@ -459,7 +472,12 @@ function roll(state: GameState, action: Action, character: Character, rng: Rng):
   const strider = powers(character).strider;
   const steps = value === 1 && strider ? strider : value;
   if (steps !== value) events.push({ type: 'steps', action: action.id, player: action.player, steps });
-  const next = withCharacter({ ...state, die: { ...state.die, last: steps } }, { ...character, steps });
+  // The clock: a roll is an hour or so (Robin, 2026-11-03). Night falls, or the morning comes, on the roll that turns it.
+  const clock = (character.clock ?? 0) + 1;
+  const was = clockOf(character);
+  const now_ = clockOf({ clock });
+  if (was.night !== now_.night) events.push({ type: 'daybreak', action: action.id, player: action.player, night: now_.night, day: now_.day });
+  const next = withCharacter({ ...state, die: { ...state.die, last: steps } }, { ...character, steps, clock });
   return { state: next, events };
 }
 
@@ -538,7 +556,8 @@ function noticeSecrets(board: Board, c: Character, space: Space, action: Action,
 function hearRumour(state: GameState, c: Character, town: Space, action: Action, rng: Rng, now: number, events: GameEvent[]): Character {
   const key = `rumour:${town.id}`;
   const rumours = c.rumours ?? [];
-  if (rumours.length >= RUMOURS.max || (c.cooldowns[key] ?? 0) > now) return c;
+  // At night the taverns talk more: no wait between rumours (Robin, 2026-11-03).
+  if (rumours.length >= RUMOURS.max || ((c.cooldowns[key] ?? 0) > now && !isNight(c))) return c;
   const board = state.board;
   const taken = new Set(rumours.map((r) => r.space));
   const wild = Object.values(board.spaces)
@@ -873,6 +892,13 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
     const f = fighting.fight!;
     fighting = { ...fighting, fight: { ...f, shared: true, enemy: { ...f.enemy, hp: shared.hp ?? f.enemy.hp, maxHp: shared.maxHp ?? f.enemy.maxHp } } };
   }
+  // At night the wild is stronger and pays more; bosses and world bosses stay as they are (mine).
+  if (isNight(c) && !shared && fighting.fight!.enemy.role !== 'boss') {
+    const d = PROGRESSION.dayNight;
+    const f0 = fighting.fight!;
+    const en = f0.enemy;
+    fighting = { ...fighting, fight: { ...f0, enemy: { ...en, hp: Math.round(en.hp * d.enemyMult), maxHp: Math.round(en.maxHp * d.enemyMult), attack: Math.round(en.attack * d.enemyMult), xp: Math.round(en.xp * d.rewardMult), gold: Math.round(en.gold * d.rewardMult) } } };
+  }
   const e = fighting.fight!.enemy;
   events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...e, moves: e.moves.map((m) => ({ ...m })) }, space });
   events.push(intentEvent(e, action.id, action.player));
@@ -969,7 +995,7 @@ function themeEvent(state: GameState, c: Character, theme: string, tier: number,
 /** What can be bought where the character stands, or null away from any shop. A merchant has everything. */
 export function shopOffer(state: GameState, c: Character): { stock: ShopStock; lines: GearLine[]; items: string[]; town: TownKind | null; tier: number; price: (item: string) => number } | null {
   const space = state.board.spaces[c.space];
-  const stock: ShopStock | null = state.spawns[c.space]?.kind === 'merchant' ? 'merchant' : space?.kind === 'town' ? 'town' : space?.kind === 'shop' ? (space.stock ?? 'arms') : null;
+  const stock: ShopStock | null = state.spawns[c.space]?.kind === 'merchant' || (space?.kind === 'town' && isNight(c)) ? 'merchant' : space?.kind === 'town' ? 'town' : space?.kind === 'shop' ? (space.stock ?? 'arms') : null;
   if (!stock || !space) return null;
   const own = state.board.areas[space.area];
   const tier = own?.city ? Math.max(own.tier, ...c.opened.map((id) => state.board.areas[id]?.tier ?? 1)) : (own?.tier ?? 1);

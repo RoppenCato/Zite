@@ -11,7 +11,7 @@ import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
 import { feel, sfx } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
-import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate, GUIDE_ICON } from '../kit.ts';
+import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate, GUIDE_ICON, DAYNIGHT } from '../kit.ts';
 import { settings } from '../settings.ts';
 import { Bar, makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -85,6 +85,7 @@ export class HudScene extends Phaser.Scene {
   private mapLabel!: Phaser.GameObjects.Text;
   private chipRow!: Phaser.GameObjects.Container;
   private linkText!: Phaser.GameObjects.Text;
+  private clockIcon: Phaser.GameObjects.Image | null = null;
 
   constructor(deps: HudSceneDeps) {
     super('hud');
@@ -363,8 +364,9 @@ export class HudScene extends Phaser.Scene {
   }
 
   /** The link to the world, under the die: solo, online with how many, or reconnecting (mine, 2026-11-01). */
-  setLink(text: string, color: string): void {
+  setLink(text: string, color: string, night?: boolean): void {
     this.linkText.setText(text).setColor(color);
+    if (this.clockIcon && night !== undefined) this.clockIcon.setFrame(night ? 'icon_moon' : 'icon_sun').setVisible(true).setX(this.linkText.x - this.linkText.width - 10);
   }
 
   /** The chips to show in the row; an empty list clears it. */
@@ -453,7 +455,9 @@ export class HudScene extends Phaser.Scene {
       this.dieText = this.add.text(0, 0, '–', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       this.dieBox = this.add.container(DIE.x, DIE.y, [box, this.dieText]);
     }
-    this.linkText = this.add.text(240, 44, '', { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 2.5 }).setOrigin(0, 0.5);
+    this.linkText = this.add.text(340, 44, '', { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 2.5 }).setOrigin(1, 0.5);
+    // The sun or the moon, left of the words (Robin, 2026-11-03).
+    this.clockIcon = this.textures.exists(DAYNIGHT) ? this.add.image(0, 44, DAYNIGHT, 'icon_sun').setScale(0.5).setVisible(false) : null;
   }
 
   private drawControls(): void {

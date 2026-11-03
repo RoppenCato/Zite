@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { clockOf } from '../src/index.ts';
 import { CLASS_DATA, apply, boardQuests, hubOf, makeRng, makeUnique, newGame, plainGear, PROGRESSION, sealCount, sealsOf, SEALS_COMING, shopOffer, startFight, strollPath, type Board, type GameState } from '../src/index.ts';
 import { migrate } from '../src/save.ts';
 import { WORLD_DATA } from '../src/data.ts';
@@ -305,5 +306,47 @@ describe('a land stays veiled until you stand in it (Robin, 2026-11-03)', () => 
     const up = apply({ ...s, characters: { [P]: c } }, { type: 'skill', id: 'l', player: P, op: 'testLevel' } as never, makeRng('l'), 0).state.characters[P]!;
     expect(up.level).toBe(2);
     expect(up.hp).toBe(up.maxHp);
+  });
+});
+
+describe('day and night in die rolls (Robin, 2026-11-03)', () => {
+  it('twenty rolls of day, ten of night; nightfall and morning are told', () => {
+    expect(clockOf({ clock: 0 })).toMatchObject({ day: 1, phase: 'morning', night: false });
+    expect(clockOf({ clock: 17 })).toMatchObject({ day: 1, phase: 'dusk', night: false });
+    expect(clockOf({ clock: 20 })).toMatchObject({ day: 1, night: true, left: 10 });
+    expect(clockOf({ clock: 30 })).toMatchObject({ day: 2, phase: 'morning', night: false });
+    let s = newGame({ seed: 'clock', player: P, name: 'Robin', classId: 'warrior' });
+    s = { ...s, characters: { [P]: { ...s.characters[P]!, clock: 19 } } };
+    const r = apply(s, { type: 'roll', id: 'r', player: P }, makeRng('r'), 0);
+    expect(r.state.characters[P]!.clock).toBe(20);
+    expect(r.events).toContainEqual(expect.objectContaining({ type: 'daybreak', night: true }));
+  });
+  it('at night the wild is stronger and pays more; a boss is not', () => {
+    const s = newGame({ seed: 'night', player: P, name: 'Robin', classId: 'warrior' });
+    const space = Object.values(s.board.spaces).find((x) => x.area === 'meadows' && x.kind === 'normal' && x.links.length)!;
+    const before = (clock: number) => ({ ...s, characters: { [P]: { ...s.characters[P]!, clock, space: space.links[0]!, steps: 1 } } });
+    const enemyAfter = (clock: number) => {
+      for (let i = 0; i < 400; i++) {
+        const r = apply(before(clock), { type: 'move', id: 'm', player: P, path: [space.id] }, makeRng(`night-${i}`), 0);
+        const f = r.state.characters[P]!.fight;
+        if (f && f.enemy.role !== 'boss') return f.enemy;
+      }
+      return null;
+    };
+    const day = enemyAfter(0)!;
+    const night = enemyAfter(25)!;
+    expect(night.maxHp).toBe(Math.round(day.maxHp * PROGRESSION.dayNight.enemyMult));
+    expect(night.xp).toBe(Math.round(day.xp * PROGRESSION.dayNight.rewardMult));
+  });
+  it('a town sleeps you till morning, and by night its shop is a night merchant', () => {
+    let s = newGame({ seed: 'inn', player: P, name: 'Robin', classId: 'warrior' });
+    const town = Object.values(s.board.spaces).find((x) => x.kind === 'town')!;
+    s = { ...s, characters: { [P]: { ...s.characters[P]!, space: town.id, clock: 24, hp: 10 } } };
+    expect(shopOffer(s, s.characters[P]!)?.stock).toBe('merchant');
+    const slept = apply(s, { type: 'sleep', id: 's', player: P }, makeRng('s'), 0);
+    expect(slept.state.characters[P]!.clock).toBe(30);
+    expect(slept.events[0]).toMatchObject({ type: 'daybreak', night: false, day: 2 });
+    expect(shopOffer(slept.state, slept.state.characters[P]!)?.stock).toBe('town');
+    expect(apply(slept.state, { type: 'sleep', id: 's2', player: P }, makeRng('s'), 0).events[0]).toMatchObject({ type: 'rejected' });
   });
 });

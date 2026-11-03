@@ -105,5 +105,12 @@
     "codeSeconds": 60,
     "linkMinutes": 30
   },
-  "critCap": 0.6
+  "critCap": 0.6,
+  "dayNight": {
+    "_about": "Day and night counted in die rolls (Robin, 2026-11-03: 'a day is 24 rolls, a night is 12 rolls, or whatever is more appropriate'; he chose 20 and 10). At night the wild's creatures are stronger and pay more; bosses stay as they are. Numbers mine.",
+    "dayRolls": 20,
+    "nightRolls": 10,
+    "enemyMult": 1.15,
+    "rewardMult": 1.2
+  }
 }

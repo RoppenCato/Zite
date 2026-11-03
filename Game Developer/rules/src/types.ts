@@ -235,6 +235,8 @@ export type Offer = { kind: 'arena'; mode: string; wave: number; total: number; 
 export interface Character {
   /** The lands you have stood in: the rest of what is open stays under its veil (Robin, 2026-11-03). Missing on old saves: all open land. */
   seen?: string[];
+  /** The die rolls made: the day and the night go by them (Robin, 2026-11-03). */
+  clock?: number;
   /** Linked with a friend, until a time (the brief: "a fixed time, e.g. 30 min, after the scan"). */
   link?: Link;
   /** The one-off code this player is showing. */
@@ -524,6 +526,8 @@ export type Action =
   | { type: 'skill'; id: string; player: string; op: 'learn' | 'carry'; ability: string }
   /** For Robin's testing (2026-11-02), to go before an Alpha: another class, or a level more. */
   /** Show a one-off code, type a friend's, or join the world boss a linked friend is fighting. */
+  /** Sleep in a town till the morning. */
+  | { type: 'sleep'; id: string; player: string }
   | { type: 'link'; id: string; player: string; op: 'offer' }
   | { type: 'link'; id: string; player: string; op: 'accept'; code: string }
   | { type: 'link'; id: string; player: string; op: 'join' }
@@ -607,6 +611,8 @@ export type GameEvent =
   | { type: 'secretFound'; action: string; player: string; space: string; name: string }
   | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
+  /** Night has fallen, or the morning come (Robin, 2026-11-03). */
+  | { type: 'daybreak'; action: string; player: string; night: boolean; day: number }
   | { type: 'linkOffered'; action: string; player: string; code: string; until: number }
   | { type: 'linked'; action: string; player: string; with: string; until: number }
   /** The last boss of all, beaten for the first time. */

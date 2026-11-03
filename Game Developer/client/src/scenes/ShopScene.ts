@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -43,7 +43,7 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine';
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine' | 'inn';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -87,7 +87,7 @@ export class ShopScene extends Phaser.Scene {
     const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
-    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : [])];
+    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
     if (offer?.town?.rank) tabs.unshift(['fine', 'Fine']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
@@ -139,7 +139,13 @@ export class ShopScene extends Phaser.Scene {
       this.rows.push(this.add.text(292, y, price, { fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: this.ink.gold }).setOrigin(1, 0.5));
       this.rows.push(makeButton(this, button.x, y, button.w, button.h, label, label === 'Sell' ? 0xb0643a : label === '—' ? COLORS.log : COLORS.button, '15px', onTap).button);
     };
-    if (tab === 'coach') {
+    if (tab === 'inn') {
+      // Sleep till morning (Robin, 2026-11-03): the night's creatures go back to their dens.
+      const c = clockOf(me);
+      row(0, 'Sleep till morning', this.ink.text, `${c.left} rolls of night left. You wake rested.`, 'free', 'Sleep', () => {
+        void this.game_.act({ type: 'sleep', player: this.game_.player } as never).then(() => (this.scene.get('board') as BoardScene).shopLeft());
+      });
+    } else if (tab === 'coach') {
       // The coach to a town you have stood in (mine, 2026-11-02: a bigger world needs a way back).
       const options = travelOptions(this.game_.state, me);
       if (!options.length) this.rows.push(this.add.text(CENTRE, firstRowY, 'The coach goes to towns you have been to.\nNo other yet.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim, align: 'center' }).setOrigin(0.5, 0));

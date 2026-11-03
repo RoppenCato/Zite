@@ -415,6 +415,8 @@ export interface ThemesData {
 export interface ProgressionData {
   /** The most a crit chance can be, a sure crit aside (Robin, 2026-11-03: crit capped at 60%). */
   critCap: number;
+  /** Day and night in die rolls (Robin, 2026-11-03). */
+  dayNight: { dayRolls: number; nightRolls: number; enemyMult: number; rewardMult: number };
   /** Total xp needed to be at level n + 1, by index; the last entry is the top level. */
   xpForLevel: number[];
   baseCrit: number;

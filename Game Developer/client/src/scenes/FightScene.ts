@@ -8,7 +8,7 @@
 
 import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -252,6 +252,8 @@ export class FightScene extends Phaser.Scene {
       sfx.play('ui/sheet-open');
       this.scene.launch('guide', { page: 2 });
     }, { icon: { frame: 'icon_guide', y: 2, size: 30, atlas: GUIDE_ICON } });
+    // The night darkens the road behind the fighters (Robin, 2026-11-03).
+    if (isNight(me)) this.add.rectangle(0, 0, DESIGN_WIDTH * 3, 2000, 0x0b1440, 0.3).setOrigin(0.3, 0.3).setDepth(0.5);
     sfx.play('fight/begin');
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
   }

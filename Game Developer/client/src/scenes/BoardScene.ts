@@ -42,7 +42,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -225,6 +225,8 @@ export class BoardScene extends Phaser.Scene {
   private arenaWasOpen: boolean | null = null;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
   private crownDoor: Phaser.GameObjects.Image | null = null;
+  private night: Phaser.GameObjects.Rectangle | null = null;
+  private nightWant = -1;
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
   /** The other players' figures, by id: `others` holds their marks. */
   private readonly otherHeroes = new Map<string, Hero>();
@@ -418,9 +420,11 @@ export class BoardScene extends Phaser.Scene {
   /** The HUD's link line: solo, online with how many, or reconnecting. */
   private refreshLink(): void {
     const link = this.game_.link();
-    const day = DAY_NAMES[weekday(this.game_.now())]!;
-    if (link.kind === 'solo') this.hud?.setLink(`${day} · solo`, COLORS.dim);
-    else if (link.kind === 'online') this.hud?.setLink(`${day.slice(0, 3)} · ${link.online > 1 ? `${link.online} online` : 'online'}`, '#6fcf7a');
+    const day = DAY_NAMES[weekday(this.game_.now())]!.slice(0, 3);
+    // The game's own clock beside the week's day (Robin, 2026-11-03): "Day 4 · dusk", and a sun or a moon.
+    const clock = clockOf(this.game_.me);
+    if (link.kind === 'solo') this.hud?.setLink(`${day} · Day ${clock.day} · ${clock.phase}`, COLORS.dim, clock.night);
+    else if (link.kind === 'online') this.hud?.setLink(`${day} · ${clock.phase} · ${link.online > 1 ? `${link.online} on` : 'online'}`, '#6fcf7a', clock.night);
     else this.hud?.setLink(link.tries ? `reconnecting (${link.tries})…` : 'connecting…', '#f0a030');
   }
 
@@ -644,6 +648,9 @@ export class BoardScene extends Phaser.Scene {
     }
     for (const e of events) {
       switch (e.type) {
+        case 'daybreak':
+          m.find(e.night ? 'mark_star' : 'mark_heart', e.night ? 'Night falls' : `Day ${e.day} begins`, e.night ? 'The wild grows bolder: stronger foes, richer pickings. A town can put you to bed.' : 'Morning: the night\'s creatures go back to their dens.', e.night ? 0x8fa0ff : 0xffe28a);
+          break;
         case 'rested': {
           const cured = events.find((x) => x.type === 'cured');
           if (!e.restored && cured?.type !== 'cured' && !tips.take('rested')) break;
@@ -988,6 +995,8 @@ export class BoardScene extends Phaser.Scene {
     const top = v.y - margin;
     const bottom = v.bottom + margin;
     const namesHidden = cam.zoom < NAME_ZOOM;
+    // The night's veil follows the camera (Robin, 2026-11-03).
+    this.nightVeil(cam);
     const open = this.shownAreas();
     const seen = this.game_.me.seen;
     this.painted?.update(cam, seen ? new Set([...open].filter((a) => seen.includes(a) || this.dungeonHere()?.id === a)) : open);
@@ -1456,6 +1465,19 @@ export class BoardScene extends Phaser.Scene {
     const { board } = this.game_.state;
     const area = board.areas[board.spaces[this.game_.me.space]?.area ?? ''];
     return area?.dungeon ? area : null;
+  }
+
+  /** Night darkens the board: a blue veil over the land, fading in and out as the clock turns (Robin, 2026-11-03). */
+  private nightVeil(cam: Phaser.Cameras.Scene2D.Camera): void {
+    const night = isNight(this.game_.me) && !this.dungeonHere();
+    if (!this.night) this.night = this.add.rectangle(0, 0, 10, 10, 0x0b1440, 1).setOrigin(0, 0).setDepth(7.9).setAlpha(night ? 0.36 : 0);
+    const v = cam.worldView;
+    this.night.setPosition(v.x - 50, v.y - 50).setSize(v.width + 100, v.height + 100);
+    const want = night ? 0.36 : 0;
+    if (this.nightWant !== want) {
+      this.nightWant = want;
+      this.tweens.add({ targets: this.night, alpha: want, duration: settings.ms(1500) });
+    }
   }
 
   /** The lands drawn: what is open, but a dungeon only while you stand in it. */
