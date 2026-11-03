@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 36;
+export const STATE_VERSION = 37;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -231,6 +231,8 @@ export interface Quest {
 export type Offer = { kind: 'arena'; mode: string; wave: number; total: number; gold: number; xp: number; gear: boolean } | { kind: 'gamble'; stake: number } | { kind: 'board'; quests: Quest[]; from?: string } | { kind: 'roll'; what: 'flask' | 'gear' | 'find'; need: number; slot?: Slot; text?: string } | { kind: 'loot'; gear: GearItem };
 
 export interface Character {
+  /** The lands you have stood in: the rest of what is open stays under its veil (Robin, 2026-11-03). Missing on old saves: all open land. */
+  seen?: string[];
   /** Linked with a friend, until a time (the brief: "a fixed time, e.g. 30 min, after the scan"). */
   link?: Link;
   /** The one-off code this player is showing. */
@@ -571,7 +573,7 @@ export type GameEvent =
   | { type: 'moved'; action: string; player: string; from: string; path: string[] }
   | { type: 'landed'; action: string; player: string; space: string; kind: SpaceKind }
   /** A town: HP and mana back to full. */
-  | { type: 'rested'; action: string; player: string; hp: number; mana: number }
+  | { type: 'rested'; action: string; player: string; hp: number; mana: number; restored?: boolean }
   /** A church took these off you. */
   | { type: 'cured'; action: string; player: string; ailments: string[] }
   /** Poison carried out of a fight stung on a roll. */

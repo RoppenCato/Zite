@@ -16,7 +16,7 @@ import type { GameLog } from '../game-log.ts';
 import { abilityIcon, fly, freeTalentIconsAfter, HeldEffects, Owl, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
-import { INK, kitReady, plate } from '../kit.ts';
+import { INK, kitReady, plate, GUIDE_ICON } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY, SCREEN_WIDTH, HUD_PLANK } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { gearIn, type Prize } from '../loot.ts';
@@ -69,6 +69,7 @@ export const FIGHT_BUTTONS = {
 } as const;
 
 const STEP_MS = 450; // between two events of a round
+const COMBO_MS = 170; // between the hits of one combo
 /** The first fight's line, said once (tips.ts). */
 const TIP_FIGHT = 'Pick a move, then a guard. The orange line says what comes next.';
 const CENTRE = DESIGN_WIDTH / 2;
@@ -103,6 +104,8 @@ interface Option {
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
 export class FightScene extends Phaser.Scene {
+  private combo: { move: string; at: number; n: number } | null = null;
+  private dripIn = 400;
   private readonly game_: GameHolder;
   private readonly log: GameLog;
   private backdrop: Backdrop | null = null;
@@ -150,7 +153,7 @@ export class FightScene extends Phaser.Scene {
     if (!me.fight) return;
     const board = this.game_.state.board;
     preloadCreature(this, me.fight.enemy.id);
-    preloadEffects(this, me.classId === 'ranger');
+    preloadEffects(this, me.classId === 'ranger', me.classId === 'rogue');
     preloadCarriedIcons(this, me.carried);
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
@@ -245,15 +248,26 @@ export class FightScene extends Phaser.Scene {
     this.manaBar.set(me.mana, s.maxMana, true);
     this.refreshStatus();
     this.showMoves();
-    makeButton(this, 380, 124, 44, 44, '?', COLORS.log, '20px', () => {
+    makeButton(this, 380, 124, 44, 44, this.textures.exists(GUIDE_ICON) ? '' : '?', COLORS.log, '20px', () => {
       sfx.play('ui/sheet-open');
-      this.scene.launch('guide', { page: 1 });
-    });
+      this.scene.launch('guide', { page: 2 });
+    }, { icon: { frame: 'icon_guide', y: 2, size: 30, atlas: GUIDE_ICON } });
     sfx.play('fight/begin');
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
   }
 
   override update(_time: number, delta: number): void {
+    // A coated blade drips (Robin, 2026-11-03), about once a second.
+    if (this.game_.me.fight?.coat && this.game_.me.classId === 'rogue') {
+      this.dripIn -= delta;
+      if (this.dripIn <= 0) {
+        this.dripIn = 900 + Math.random() * 300;
+        // The dagger hangs low in the right hand at stand: its tip, measured on the phone-size screen.
+        const tip = { x: FIGHT_LAYOUT.heroX + 8, y: this.feetY - 28 };
+        const drop = playOnce(this, 'blade_drip', tip.x, tip.y, 'fx_rogue');
+        drop?.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => playOnce(this, 'drip_splash', tip.x + 2, this.feetY - 2, 'fx_rogue'));
+      }
+    }
     this.backdrop?.update(delta);
     this.hero?.update(delta);
   }
@@ -401,7 +415,11 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
       return;
     }
     this.show(events[i]!);
-    this.time.delayedCall(STEP_MS, () => this.play(events, i + 1));
+    // A combo's hits come close together: a swipe, not three blows (Robin, 2026-11-03).
+    const now = events[i]!;
+    const following = events[i + 1];
+    const combo = now.type === 'hit' && now.by === 'player' && following?.type === 'hit' && following.by === 'player' && following.move === now.move;
+    this.time.delayedCall(combo ? COMBO_MS : STEP_MS, () => this.play(events, i + 1));
   }
 
   private show(e: GameEvent): void {
@@ -410,16 +428,19 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     switch (e.type) {
       case 'hit':
         if (e.by === 'player') {
+          const combo = this.comboStep(e.move);
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
           const byOwl = e.move === ABILITIES.hawk?.name;
           const star = e.move === ABILITIES.meteor?.name;
           if (byOwl) this.owl?.strike(FIGHT_LAYOUT.enemyX - 70);
           else {
-            this.hero?.play('attack1');
-            this.step(this.heroBody, 34);
+            // In a combo the hero swings fast and steps in once.
+            this.hero?.play('attack1', false, combo > 0 ? 2.2 : 1);
+            if (combo <= 1) this.step(this.heroBody, 34);
           }
-          this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs() ?? 0), () => {
+          this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs(combo > 0 ? 2.2 : 1) ?? 0), () => {
             const at = this.spot('enemy', 'chest');
+            if (combo > 0 && this.game_.me.classId === 'rogue') this.slash(combo);
             const land = () => playOnce(this, star ? 'star_impact' : e.crit ? 'crit_burst' : 'hit_spark', at.x, at.y);
             if (star) fly(this, 'falling_star', { x: at.x, y: HUD_HEIGHT + 20 }, at, settings.ms(260), land);
             else if (this.game_.me.classId === 'ranger' && !byOwl) fly(this, 'arrow', this.spot('hero', 'chest'), at, settings.ms(130), land);
@@ -676,6 +697,22 @@ ${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
     const home = body === this.heroBody ? FIGHT_LAYOUT.heroX : body === this.enemyBody ? FIGHT_LAYOUT.enemyX : body.x;
     body.x = home;
     this.tweens.add({ targets: body, x: home + dx, duration: 160, ease: 'Quad.easeOut', yoyo: true, hold: 120, onComplete: () => (body.x = home) });
+  }
+
+  /** Which hit of a combo this is: 1, 2, 3 for hits of the same move in a row within 600 ms, 0 when it is a lone hit. */
+  private comboStep(move: string): number {
+    const now = this.time.now;
+    this.combo = this.combo && this.combo.move === move && now - this.combo.at < 600 ? { move, at: now, n: this.combo.n + 1 } : { move, at: now, n: 1 };
+    const f = this.game_.me.fight;
+    const hits = traitsOf(this.game_.me).attackHits ?? 1;
+    return hits > 1 || this.combo.n > 1 || (f && move !== 'Attack') ? this.combo.n : 0;
+  }
+
+  /** A Rogue's slash across the foe (Mitch, AD's clips): across, back, then up; drawn additively. */
+  private slash(n: number): void {
+    const clip = ['slash_a', 'slash_b', 'slash_c'][(n - 1) % 3]!;
+    const s = playOnce(this, clip, FIGHT_LAYOUT.enemyX, this.feetY - 75, 'fx_rogue');
+    s?.setBlendMode(Phaser.BlendModes.ADD);
   }
 
   /** Something that waits for a blow to land on its frame; at once with fewer effects. */

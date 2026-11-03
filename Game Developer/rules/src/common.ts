@@ -11,7 +11,16 @@ export function reject(state: GameState, action: Action, reason: RejectReason): 
 }
 
 export function withCharacter(state: GameState, character: Character): GameState {
-  return { ...state, characters: { ...state.characters, [character.id]: character } };
+  // Where you stand, you have seen: its veil lifts (Robin, 2026-11-03).
+  const c = seeing(state, character, [character.space]);
+  return { ...state, characters: { ...state.characters, [c.id]: c } };
+}
+
+/** The lands these spots lie in, added to what the character has seen. A save from before `seen` keeps seeing all it has open. */
+export function seeing(state: GameState, c: Character, spots: readonly string[]): Character {
+  if (!c.seen) return c;
+  const fresh = [...new Set(spots.map((id) => state.board.spaces[id]?.area).filter((a): a is string => !!a && !c.seen!.includes(a)))];
+  return fresh.length ? { ...c, seen: [...c.seen, ...fresh] } : c;
 }
 
 /** Gold never goes below 0: a loss takes what there is. */
@@ -108,6 +117,9 @@ export function gainXp(c: Character, xp: number, action: Action, events: GameEve
       defense: next.defense + growth.defense,
     };
     next = withCore(next);
+    // Every level heals you whole (Robin, 2026-11-03).
+    const s = stats(next);
+    next = { ...next, hp: s.maxHp, mana: s.maxMana };
     events.push({ type: 'levelled', action: action.id, player: action.player, level, maxHp: next.maxHp, maxMana: next.maxMana, attack: next.attack, defense: next.defense });
   }
   return next;

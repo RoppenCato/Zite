@@ -8,7 +8,7 @@ export { peekArea, generateArea, growBoard, grownIndex, cellFor, entryName, GROW
 export { legalPaths, reachable, checkPath, nearestTown, type PathProblem, type Reach } from './paths.ts';
 export { stats, powers, plainGear, rollLegend, rollSetPiece, rollGear, rollRarity, rankName, rankStat, rankPrice, describeGear, gearPowers, makeUnique, rollUnique, uniquePool, type Stats } from './gear.ts';
 export { levelFor, sellPrice } from './common.ts';
-export { makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, noteLevels } from './fight.ts';
+export { fightOdds, makeEnemy, creature, startFight, freshFight, pickMove, intentEvent, noteLevels } from './fight.ts';
 export { setsWorn, MAX_CARRIED, TIER_POINTS, carriedLimit, needsFor, abilitiesFor, canLearn, isOpen, pointsForLevel, pointsFree, pointsSpent, resetSkills, specialization, traitsOf } from './skills.ts';
 export { boardQuests, finishQuests, questProgress, questLine } from './quests.ts';
 export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.ts';

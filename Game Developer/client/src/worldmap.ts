@@ -159,7 +159,7 @@ export class PaintedGround {
 
   /** From the camera's cull: load what is near on open land, free what has gone far. */
   update(cam: Phaser.Cameras.Scene2D.Camera, opened: ReadonlySet<string>): void {
-    // Closed land shows under its mist (Robin, 2026-11-02: what is ahead, not empty sea); the mist lifts when it opens.
+    // Closed land shows under its mist (Robin, 2026-11-02: what is ahead, not empty sea); the mist lifts when you first stand in it (2026-11-03): `opened` here is what you have seen.
     for (const [area, veil] of this.veils) {
       if (!opened.has(area)) continue;
       this.veils.delete(area);

@@ -6,7 +6,7 @@ import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './sk
 import { notePlace } from './journal.ts';
 import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
-import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier } from './common.ts';
+import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
 import { makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
@@ -94,6 +94,7 @@ export function makeCharacter(id: string, name: string, classId: ClassId, board:
     bag: [],
     abilities,
     opened: [start.area],
+    seen: [start.area],
     cooldowns: {},
     bossKills: {},
     offer: null,
@@ -465,6 +466,8 @@ function move(state: GameState, action: MoveAction, character: Character, rng: R
   if (character.steps === 0) return reject(state, action, 'roll first');
   const problem = checkPath(state.board, character.space, character.steps, action.path, walkable(character));
   if (problem) return reject(state, action, problem);
+  // The lands you walk through, you have seen.
+  character = seeing(state, character, action.path);
   // A boss that is in stops the walk: you do not stroll past it (Robin, 2026-11-02).
   const atBoss = action.path.findIndex((id, i) => i < action.path.length - 1 && state.board.spaces[id]?.kind === 'boss' && (character.cooldowns[id] ?? 0) <= now);
   if (atBoss >= 0) return walkTo(state, character, action.path.slice(0, atBoss + 1), action, rng, now);
@@ -628,7 +631,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     case 'town': {
       const s = stats(c);
       const rested: Character = { ...c, hp: s.maxHp, mana: s.maxMana, visited: [...new Set([...(c.visited ?? []), space.id])] };
-      events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana });
+      events.push({ type: 'rested', action: id, player, hp: rested.hp, mana: rested.mana, restored: c.hp < s.maxHp || c.mana < s.maxMana });
       return { state: withCharacter(state, hearRumour(state, rested, space, action, rng, now, events)), events };
     }
     case 'board': {
@@ -670,7 +673,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     case 'church': {
       // Robin, 2026-11-01: a church on every map, to heal and be rid of poison and the like. Always open, and free.
       const s = stats(c);
-      events.push({ type: 'rested', action: id, player, hp: s.maxHp, mana: s.maxMana });
+      events.push({ type: 'rested', action: id, player, hp: s.maxHp, mana: s.maxMana, restored: c.hp < s.maxHp || c.mana < s.maxMana });
       const carried = Object.keys(c.ailments ?? {});
       if (carried.length) events.push({ type: 'cured', action: id, player, ailments: carried });
       return { state: withCharacter(state, { ...c, hp: s.maxHp, mana: s.maxMana, ailments: {} }), events };

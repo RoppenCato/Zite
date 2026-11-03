@@ -52,7 +52,7 @@ export function makeButton(
   color: number,
   fontSize: string,
   onTap: () => void,
-  opts: { small?: boolean; labelY?: number; icon?: { frame: string; y: number; size: number } } = {},
+  opts: { small?: boolean; labelY?: number; icon?: { frame: string; y: number; size: number; atlas?: string } } = {},
 ): Button {
   if (!kitReady(scene)) return shapeButton(scene, x, y, w, h, text, color, fontSize, onTap);
   const { kind, tint } = kindOf(color);
@@ -66,7 +66,7 @@ export function makeButton(
   if (tint !== null) face.setTint(tint);
   const label = scene.add.text(0, labelY - 3, text, { fontFamily: FONT_DISPLAY, fontSize, fontStyle: 'bold', color: CREAM, stroke: '#2a2030', strokeThickness: 3, align: 'center' }).setOrigin(0.5);
   for (let px = parseInt(fontSize, 10); px > 13 && label.width > width - 14; px--) label.setFontSize(`${px}px`);
-  const icon = opts.icon ? scene.add.image(0, opts.icon.y - 3, KIT, opts.icon.frame).setDisplaySize(opts.icon.size, opts.icon.size) : undefined;
+  const icon = opts.icon && scene.textures.exists(opts.icon.atlas ?? KIT) ? scene.add.image(0, opts.icon.y - 3, opts.icon.atlas ?? KIT, opts.icon.frame).setDisplaySize(opts.icon.size, opts.icon.size) : undefined;
   const button = scene.add.container(x, y, icon ? [face, icon, label] : [face, label]).setSize(width, height);
   button.setInteractive({ useHandCursor: true });
   let enabled = true;

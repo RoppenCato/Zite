@@ -3,6 +3,8 @@
 // json (`nine`, in file pixels). The two soft gradients (the die's glow, the level-up burst) sit in `ui_soft`. A scene
 // that runs before the kit is loaded (nothing, once the first scene preloads it) falls back to the shapes in ui.ts.
 
+import guideIconJson from '../../assets/fx_rogue/guide_icon.json?url';
+import guideIconPng from '../../assets/fx_rogue/guide_icon.png';
 import Phaser from 'phaser';
 import bigDieJson from '../../assets/big_die/big_die.json?url';
 import bigDiePng from '../../assets/big_die/big_die.png';
@@ -16,6 +18,8 @@ import softPng from '../../assets/ui/ui_soft.png';
 import { DESIGN_WIDTH, HUD_HEIGHT, VIEW_HEIGHT, SCREEN_WIDTH, HUD_PLANK, PLANK_TOP, ROLL_TOP, ROLL_LEFT, ROLL_RIGHT } from './layout.ts';
 
 export const KIT = 'ui';
+/** The guide's open book (Mitch, AD, 2026-11-03), in place of a "?". */
+export const GUIDE_ICON = 'guide_icon';
 export const KIT_SOFT = 'ui_soft';
 const SCALE = 0.5;
 
@@ -40,6 +44,7 @@ export function preloadKit(scene: Phaser.Scene): void {
   if (!scene.textures.exists(BIG_DIE)) scene.load.atlas(BIG_DIE, bigDiePng, bigDieJson);
   if (!scene.textures.exists(KIT)) scene.load.atlas(KIT, uiPng, uiJson);
   if (!scene.textures.exists(KIT_SOFT)) scene.load.atlas(KIT_SOFT, softPng, softJson);
+  if (!scene.textures.exists(GUIDE_ICON)) scene.load.atlas(GUIDE_ICON, guideIconPng, guideIconJson);
 }
 
 export function kitReady(scene: Phaser.Scene): boolean {

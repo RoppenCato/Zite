@@ -41,7 +41,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -417,8 +417,9 @@ export class BoardScene extends Phaser.Scene {
   /** The HUD's link line: solo, online with how many, or reconnecting. */
   private refreshLink(): void {
     const link = this.game_.link();
-    if (link.kind === 'solo') this.hud?.setLink('solo', COLORS.dim);
-    else if (link.kind === 'online') this.hud?.setLink(link.online > 1 ? `online · ${link.online} here` : 'online', '#6fcf7a');
+    const day = DAY_NAMES[weekday(this.game_.now())]!;
+    if (link.kind === 'solo') this.hud?.setLink(`${day} · solo`, COLORS.dim);
+    else if (link.kind === 'online') this.hud?.setLink(`${day.slice(0, 3)} · ${link.online > 1 ? `${link.online} online` : 'online'}`, '#6fcf7a');
     else this.hud?.setLink(link.tries ? `reconnecting (${link.tries})…` : 'connecting…', '#f0a030');
   }
 
@@ -644,6 +645,7 @@ export class BoardScene extends Phaser.Scene {
       switch (e.type) {
         case 'rested': {
           const cured = events.find((x) => x.type === 'cured');
+          if (!e.restored && cured?.type !== 'cured' && !tips.take('rested')) break;
           if (cured?.type === 'cured') m.find('mark_star', 'Healed and cured', `HP and mana full; ${cured.ailments.join(' and ')} gone.`, 0xfff1b0);
           else m.find('mark_heart', 'Rested', 'HP and mana full.', 0x6fcf7a);
           break;
@@ -986,7 +988,8 @@ export class BoardScene extends Phaser.Scene {
     const bottom = v.bottom + margin;
     const namesHidden = cam.zoom < NAME_ZOOM;
     const open = this.shownAreas();
-    this.painted?.update(cam, open);
+    const seen = this.game_.me.seen;
+    this.painted?.update(cam, seen ? new Set([...open].filter((a) => seen.includes(a) || this.dungeonHere()?.id === a)) : open);
     const zoomedOut = cam.zoom < CHUNK_ZOOM;
     const standing = this.game_.state.board.spaces[this.game_.me.space]?.area;
     const inDungeon = !!this.dungeonHere();
@@ -2460,7 +2463,7 @@ export class BoardScene extends Phaser.Scene {
     for (const e of events) {
       switch (e.type) {
         case 'rested':
-          parts.push('Rested: HP and mana full.');
+          if (e.restored) parts.push('Rested: HP and mana full.');
           break;
         case 'cured':
           parts.push(`Cured of ${e.ailments.join(' and ')}.`);

@@ -11,7 +11,7 @@ import type { GameHolder } from '../game-holder.ts';
 import { audio, type LoopHandle } from '../audio.ts';
 import { feel, sfx } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
-import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate } from '../kit.ts';
+import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate, GUIDE_ICON } from '../kit.ts';
 import { settings } from '../settings.ts';
 import { Bar, makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
@@ -415,11 +415,11 @@ export class HudScene extends Phaser.Scene {
       plate(this, 'board_slip', 240, 76, 160, 24).setOrigin(0, 0);
     }
     // How the game works, a tap away (Robin, 2026-11-02).
-    makeButton(this, 322, 50, 30, 26, '?', COLORS.log, '15px', () => {
+    makeButton(this, 318, 24, 32, 28, this.textures.exists(GUIDE_ICON) ? '' : '?', COLORS.log, '15px', () => {
       sfx.play('ui/sheet-open');
       this.scene.launch('guide', { page: 0 });
       this.scene.bringToTop('guide');
-    }, { small: true });
+    }, { small: true, icon: { frame: 'icon_guide', y: 2, size: 24, atlas: GUIDE_ICON } });
     makeButton(this, 218, 89, 40, 26, 'Home', COLORS.log, '10.5px', () => (this.scene.get('board') as BoardScene).goHome(), { small: true });
     this.place = this.add.text(24, 88, '', { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
     this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);

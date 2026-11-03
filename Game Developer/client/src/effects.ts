@@ -18,6 +18,9 @@ import effectsPng from '../../assets/effects/effects.png';
 import owlData from '../../assets/effects/owl/owl.json';
 import owlJson from '../../assets/effects/owl/owl.json?url';
 import owlPng from '../../assets/effects/owl/owl.png';
+import rogueData from '../../assets/fx_rogue/fx_rogue.json';
+import rogueJson from '../../assets/fx_rogue/fx_rogue.json?url';
+import roguePng from '../../assets/fx_rogue/fx_rogue.png';
 import { ensureClips, msBefore, type ActionData } from './clips.ts';
 import { settings } from './settings.ts';
 
@@ -26,6 +29,8 @@ const ATLASES = {
   effects: { png: effectsPng, json: effectsJson, actions: actionsOf(effectsData), scale: 0.5 },
   bubble: { png: bubblePng, json: bubbleJson, actions: actionsOf(bubbleData), scale: 1 },
   owl: { png: owlPng, json: owlJson, actions: actionsOf(owlData), scale: 0.5 },
+  // The Rogue's slashes and the poisoned blade's drip (Mitch, AD, 2026-11-03).
+  fx_rogue: { png: roguePng, json: rogueJson, actions: actionsOf(rogueData), scale: 0.5 },
 } as const;
 type AtlasName = keyof typeof ATLASES;
 
@@ -70,8 +75,8 @@ export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: 
 }
 
 /** The clips for a fight; call from its preload. The owl is only for an Archer. */
-export function preloadEffects(scene: Phaser.Scene, withOwl: boolean): void {
-  for (const name of withOwl ? (['effects', 'bubble', 'owl'] as const) : (['effects', 'bubble'] as const)) {
+export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false): void {
+  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue'] as const) : [])]) {
     if (!scene.textures.exists(name)) scene.load.atlas(name, ATLASES[name].png, ATLASES[name].json);
   }
 }

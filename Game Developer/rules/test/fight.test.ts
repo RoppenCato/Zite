@@ -301,12 +301,12 @@ describe('a fight', () => {
     expect(apply(state, { type: 'roll', id: 'r', player: P }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rolled' });
   });
 
-  it('winning gives xp and the levels the table says: more HP, mana, attack and defense, the gains healed', () => {
+  it('winning gives xp and the levels the table says: more HP, mana, attack and defense, and a level heals you whole (Robin, 2026-11-03)', () => {
     const almost = versus('warrior', 'slime', { xp: 36, hp: 100, mana: 10, journal: { beaten: { slime: 1 }, places: [], done: [] } }, { hp: 1 });
     const { state, events } = apply(almost, turn(attack, 'none'), makeRng('x'), NOW);
     expect(events[1]).toEqual({ type: 'won', action: 'f1', player: P, xp: 5, gold: 3 });
     expect(events[2]).toEqual({ type: 'levelled', action: 'f1', player: P, level: 2, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
-    expect(me(state)).toMatchObject({ xp: 41, level: 2, hp: 112, mana: 12, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
+    expect(me(state)).toMatchObject({ xp: 41, level: 2, hp: 132, mana: 22, maxHp: 132, maxMana: 22, attack: 14, defense: 9 });
   });
 
   it('loot: a mob drops gear now and then, a mini-boss often and never common, a boss always and rare or better; flasks and cards sometimes', () => {

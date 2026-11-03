@@ -338,11 +338,21 @@ export class BagScene extends Phaser.Scene {
 
   private slip(x: number, y: number, w: number, h: number, lines: { text: string; color?: string; bold?: boolean; small?: boolean }[]): void {
     if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, y, w, h).setOrigin(0, 0));
-    let at = y + (lines.some((l) => l.small) ? 5 : 9);
-    for (const line of lines) {
-      const t = this.add.text(x + 10, at, line.text, { fontFamily: FONT, fontSize: line.small ? '11px' : '13px', fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
-      this.rows.push(t);
-      at += t.height + (line.small ? 1 : 4);
+    // Smaller words before words past the edge (Robin, 2026-11-03: "Cant read all the text in the item description").
+    for (let shrink = 0; shrink <= 4; shrink++) {
+      const made: Phaser.GameObjects.Text[] = [];
+      let at = y + (lines.some((l) => l.small) ? 5 : 9) - Math.min(shrink, 2);
+      for (const line of lines) {
+        const size = Math.max(line.small ? 9.5 : 10.5, (line.small ? 11 : 13) - shrink * 0.75);
+        const t = this.add.text(x + 10, at, line.text, { fontFamily: FONT, fontSize: `${size}px`, fontStyle: line.bold ? 'bold' : 'normal', color: line.color ?? (kitReady(this) ? WOOD_INK : COLORS.text), wordWrap: { width: w - 20 } });
+        made.push(t);
+        at += t.height + (line.small ? 1 : shrink ? 2 : 4);
+      }
+      if (at <= y + h - 3 || shrink === 4) {
+        this.rows.push(...made);
+        break;
+      }
+      for (const t of made) t.destroy();
     }
   }
 
@@ -383,7 +393,8 @@ export class BagScene extends Phaser.Scene {
     this.rows.push(this.woodText(88, card.y + 16, g.name, 15).setOrigin(0, 0.5));
     const rarity = g.unique && UNIQUES[g.unique]?.legend ? 'legendary' : g.rarity;
     const kind = g.name.toLowerCase() === g.base.toLowerCase() ? rarity : `${rarity} ${g.base}`;
-    this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind} ${SLOT_NAMES[g.slot].toLowerCase()}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
+    const slotWord = SLOT_NAMES[g.slot].toLowerCase();
+    this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind}${kind.endsWith(slotWord) || kind.endsWith(slotWord.replace(/s$/, '')) ? '' : ` ${slotWord}`}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
     const lines: { text: string; color?: string; bold?: boolean; small?: boolean }[] = [{ text: gearPowers(g).filter((p) => !p.startsWith('Set: ')).join(' · ') || 'A plain piece.', bold: true }];
     const set = g.set ? SETS[g.set] : undefined;
     if (set) {

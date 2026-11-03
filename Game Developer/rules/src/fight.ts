@@ -108,6 +108,27 @@ function blow(attack: number, power: number, defense: number, critChance: number
   return { damage: Math.max(1, Math.round(plain * (crit ? PROGRESSION.critPower : 1))), base: plain, crit };
 }
 
+/** This character's numbers in a fight, as the guards and a plain hit use them: for the guide (Robin, 2026-11-03: "the actual % chance"). */
+export function fightOdds(c: Character): { crit: number; critPower: number; hits: number; block: number; shieldMana: number; dodge: number; brace: number; braceMana: number; counter: number; counterHits: number; autoCounter: number; taken: number } {
+  const s = stats(c);
+  const t = traitsOf(c);
+  const g = PROGRESSION.guards;
+  return {
+    crit: Math.min(1, s.crit),
+    critPower: PROGRESSION.critPower * (1 + (t.critPower ?? 0)),
+    hits: t.attackHits ?? 1,
+    block: Math.max(0.15, g.block - (s.bonus.wall ?? 0) - (t.blockPower ?? 0)),
+    shieldMana: t.shieldMana ?? 0,
+    dodge: Math.min(1, g.dodge + s.dodge),
+    brace: g.brace,
+    braceMana: Math.max(g.braceMana, Math.round(s.maxMana * g.braceManaShare)),
+    counter: t.counterPower ?? g.counter,
+    counterHits: t.counterHits ?? 1,
+    autoCounter: t.counterChance ?? 0,
+    taken: t.damageTaken ?? 1,
+  };
+}
+
 /** The enemy's move for a round, by weight; a wind-up is never picked twice in a row. */
 export function pickMove(enemy: Enemy, rng: Rng): EnemyMove {
   const pool = enemy.charged ? enemy.moves.filter((m) => !m.charge) : enemy.moves;
@@ -1051,6 +1072,8 @@ function win(r: Round): ApplyResult {
         next = { ...next, opened: [...next.opened, a.id] };
         events.push({ type: 'opened', action: id, player, area: a.id });
       }
+      // What the gate opened onto shows at once, and a city with it; the lands beside stay veiled until you walk in (Robin, 2026-11-03).
+      if (next.seen) next = { ...next, seen: [...new Set([...next.seen, space.opens, ...withIt.filter((a) => a.city).map((a) => a.id)])] };
       events.push({ type: 'skillPoints', action: id, player, gained: 1, free: pointsFree(next) });
     }
   }

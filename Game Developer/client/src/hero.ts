@@ -316,6 +316,8 @@ const OWN_ATTACK: Partial<Record<ClassId, string>> = { mage: 'attack1_wizard', r
 
 /** A hero in layers. `root` is a container whose x, y is where the feet stand; the scene calls `update(delta)` each frame. */
 export class Hero {
+  /** How fast the clip runs: a combo's swings run quick. */
+  private speed = 1;
   readonly root: Phaser.GameObjects.Container;
   private readonly scene: Phaser.Scene;
   private readonly scale: number;
@@ -372,13 +374,14 @@ export class Hero {
   }
 
   /** How far into attack1 the blow lands, in ms (the fourth frame, held): the hit's flash waits for it. */
-  blowMs(): number {
-    return CLIPS.attack1.frames.slice(0, 3).reduce((n, f) => n + f.delay, 0);
+  blowMs(speed = 1): number {
+    return CLIPS.attack1.frames.slice(0, 3).reduce((n, f) => n + f.delay, 0) / speed;
   }
 
   /** Play a clip from its first frame; a one-shot clip goes back to `stand` when it ends unless `hold` is set (a guard holds). */
-  play(action: HeroAction, hold = false): void {
+  play(action: HeroAction, hold = false, speed = 1): void {
     if (!CLIPS[action]) return;
+    this.speed = speed;
     this.clip = action;
     this.index = 0;
     this.elapsed = 0;
@@ -392,7 +395,7 @@ export class Hero {
   update(delta: number): void {
     if (this.done || !this.root.active) return;
     const clip = CLIPS[this.clip];
-    this.elapsed += delta;
+    this.elapsed += delta * this.speed;
     let frame = clip.frames[this.index]!;
     while (this.elapsed >= frame.delay) {
       this.elapsed -= frame.delay;

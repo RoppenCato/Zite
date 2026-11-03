@@ -79,7 +79,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(36);
+    expect(up.version).toBe(37);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));
@@ -280,5 +280,30 @@ describe('the Yeti King\'s storm (mine, 2026-11-02)', () => {
     const last = apply(s, { type: 'fight', id: 'f9', player: P, move: { kind: 'attack' }, guard: 'block' }, makeRng('r9'), 2000);
     expect(last.events.some((e) => e.type === 'trick')).toBe(true);
     expect(last.state.characters[P]!.hp).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe('a land stays veiled until you stand in it (Robin, 2026-11-03)', () => {
+  it('King Goo shows the Kingswood and the city; the lands beside it wait until you walk in', () => {
+    let s = newGame({ seed: 'veil', player: P, name: 'Robin', classId: 'warrior' });
+    const gate = s.board.spaces.gate!;
+    let c = startFight({ ...s.characters[P]!, space: 'gate', level: 8 }, gate.boss!, 'gate', false);
+    c = { ...c, fight: { ...c.fight!, enemy: { ...c.fight!.enemy, hp: 1 } } };
+    s = { ...s, characters: { [P]: c } };
+    const won = apply(s, { type: 'fight', id: 'w', player: P, move: { kind: 'attack' }, guard: 'block' }, makeRng('w'), 1000).state;
+    const me = won.characters[P]!;
+    expect(me.opened).toEqual(expect.arrayContaining(['kingswood', 'thornwood', 'frostpeak', 'crownhaven']));
+    expect(me.seen).toEqual(expect.arrayContaining(['meadows', 'kingswood', 'crownhaven']));
+    expect(me.seen).not.toContain('thornwood');
+    const town = Object.values(won.board.spaces).find((x) => x.area === 'thornwood' && x.kind === 'town')!;
+    const there = apply(won, { type: 'skill', id: 't', player: P, op: 'testLand', to: town.id } as never, makeRng('t'), 2000).state;
+    expect(there.characters[P]!.seen).toContain('thornwood');
+  });
+  it('a level heals you whole', () => {
+    const s = newGame({ seed: 'lvl', player: P, name: 'Robin', classId: 'rogue' });
+    const c = { ...s.characters[P]!, hp: 5, mana: 1 };
+    const up = apply({ ...s, characters: { [P]: c } }, { type: 'skill', id: 'l', player: P, op: 'testLevel' } as never, makeRng('l'), 0).state.characters[P]!;
+    expect(up.level).toBe(2);
+    expect(up.hp).toBe(up.maxHp);
   });
 });
