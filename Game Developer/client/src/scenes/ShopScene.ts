@@ -90,7 +90,10 @@ export class ShopScene extends Phaser.Scene {
     const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
     if (offer?.town?.rank) tabs.unshift(['fine', 'Fine']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
-    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, '15px', () => this.show(id)));
+    // Many tabs (a night merchant, a rich town): short words, so they never run together (2026-11-03).
+    const crowded = tabs.length > 6;
+    const short: Partial<Record<Tab, string>> = { heavy: 'Heavy', light: 'Light', magic: 'Magic' };
+    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, crowded ? (short[id] ?? word) : word, COLORS.log, crowded ? '12px' : '15px', () => this.show(id)));
     this.message = this.add
       .text(CENTRE, 636, offer?.town?.line ?? 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);

@@ -366,7 +366,7 @@ export class HudScene extends Phaser.Scene {
   /** The link to the world, under the die: solo, online with how many, or reconnecting (mine, 2026-11-01). */
   setLink(text: string, color: string, night?: boolean): void {
     this.linkText.setText(text).setColor(color);
-    if (this.clockIcon && night !== undefined) this.clockIcon.setFrame(night ? 'icon_moon' : 'icon_sun').setVisible(true).setX(this.linkText.x - this.linkText.width - 10);
+    if (this.clockIcon && night !== undefined) this.clockIcon.setFrame(night ? 'icon_moon' : 'icon_sun').setVisible(true).setX(this.linkText.x - this.linkText.width - 8);
   }
 
   /** The chips to show in the row; an empty list clears it. */
@@ -455,9 +455,9 @@ export class HudScene extends Phaser.Scene {
       this.dieText = this.add.text(0, 0, '–', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#101318' }).setOrigin(0.5);
       this.dieBox = this.add.container(DIE.x, DIE.y, [box, this.dieText]);
     }
-    this.linkText = this.add.text(340, 44, '', { fontFamily: FONT, fontSize: '11px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 2.5 }).setOrigin(1, 0.5);
+    this.linkText = this.add.text(340, 44, '', { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: dim, stroke: '#3a2410', strokeThickness: 2.5 }).setOrigin(1, 0.5);
     // The sun or the moon, left of the words (Robin, 2026-11-03).
-    this.clockIcon = this.textures.exists(DAYNIGHT) ? this.add.image(0, 44, DAYNIGHT, 'icon_sun').setScale(0.5).setVisible(false) : null;
+    this.clockIcon = this.textures.exists(DAYNIGHT) ? this.add.image(0, 44, DAYNIGHT, 'icon_sun').setScale(0.42).setVisible(false) : null;
   }
 
   private drawControls(): void {

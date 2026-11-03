@@ -423,7 +423,7 @@ export class BoardScene extends Phaser.Scene {
     const day = DAY_NAMES[weekday(this.game_.now())]!.slice(0, 3);
     // The game's own clock beside the week's day (Robin, 2026-11-03): "Day 4 · dusk", and a sun or a moon.
     const clock = clockOf(this.game_.me);
-    if (link.kind === 'solo') this.hud?.setLink(`${day} · Day ${clock.day} · ${clock.phase}`, COLORS.dim, clock.night);
+    if (link.kind === 'solo') this.hud?.setLink(`${day} · Day ${clock.day}, ${clock.phase}`, COLORS.dim, clock.night);
     else if (link.kind === 'online') this.hud?.setLink(`${day} · ${clock.phase} · ${link.online > 1 ? `${link.online} on` : 'online'}`, '#6fcf7a', clock.night);
     else this.hud?.setLink(link.tries ? `reconnecting (${link.tries})…` : 'connecting…', '#f0a030');
   }
