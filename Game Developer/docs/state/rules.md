@@ -554,3 +554,9 @@ Robin, after playing the Magician: the Pocket Watch (`time-warp`) gives way to *
 ## Holes filled (Robin, 2026-11-03: "fill the holes")
 
 King Goo has a trick now (every third round he puffs up for a Belly Flop: block it), so does Old Rootbeard (every third round his glowcaps' spores poison you), and Old Rootbeard has a second phase at half his HP; every great boss has a trick. `encounters.json`: every land has eight events and four finds, the later lands as many as the first three.
+
+**The Kingswood's own** (Mitch, AD's places and art, 2026-11-03; stats, grounds and the town's kind mine). Hollybrook (`kw-village`, a town, herbalist) and Hollybrook Store (`kw-store`, a shop, arms) stand off The Long Hedge, and the road to Snowshoulder's Jetty now runs through the village (`kw-nw` → `kw-village` → `gate-snowshoulder`, each with a spot halfway; the old straight road is gone). The Outlaw King's Hall (`gate-outlaw`, off Old Toll Oak) holds the Outlaw King, level 8, the Kingswood's great boss: band gathers each round (`swarm`), a second phase at half HP with the gold blade, and so **a Seal, the eighth**; the door under Crownhaven counts its sockets from the Seals. Three new creatures, each with a ground: Hedge Knights on The Long Hedge (`kw-nw`, 5 to 6), Poachers in the Toll Oak Woods (`kw-ne`, 4 to 5), Wild Tuskers in the Tusker Wallows (`kw-se`, 5 to 6).
+
+**More in the Rootways.** Root Grubs in the Root Tunnels (`rw-fork`, 3 to 4), Mole Miners in the Old Diggings (`rw-join`, 4 to 5), and Old Digby, the Burrow Boss, a mini-boss (`charger`) at Old Digby's Dig (`rw-digby`), halfway along the road to Old Rootbeard, where he stops the walk as the Steward does before the Hollow King.
+
+Save version 42: the board is laid again, so every save gets the new spots; anyone standing on the old jetty road wakes in the Kingswood's town.

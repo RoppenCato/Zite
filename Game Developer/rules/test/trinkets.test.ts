@@ -156,7 +156,7 @@ describe('the rest, and old saves', () => {
     const old = { ...s, version: 39, characters: { [P]: { ...me(s), equipment: { ...me(s).equipment, trinket: necklace }, bag: [heart] } } };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(41);
+    expect(up.version).toBe(42);
     expect(c.equipment.trinket).toMatchObject({ id: 'n1', rarity: 'rare', stats: {} });
     expect(TRINKETS[c.equipment.trinket!.trinket!]!.rarity).toBe('rare');
     expect(TRINKETS[c.equipment.trinket!.trinket!]!.tier).toBeLessThanOrEqual(3);

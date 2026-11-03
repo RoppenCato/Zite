@@ -17,9 +17,13 @@
       ],
       "mobs": [
         "wolf",
-        "glowcap"
+        "glowcap",
+        "root-grub",
+        "mole-miner"
       ],
-      "miniBosses": [],
+      "miniBosses": [
+        "old-digby"
+      ],
       "kingdom": "Verdant Kingdom",
       "hubs": [
         {
@@ -63,6 +67,14 @@
           "name": "The Hollow Crossing",
           "x": 11000,
           "y": 10748
+        },
+        {
+          "id": "rw-digby",
+          "kind": "boss",
+          "name": "Old Digby’s Dig",
+          "x": 11171,
+          "y": 10635,
+          "boss": "old-digby"
         },
         {
           "id": "rw-throne",
@@ -340,7 +352,7 @@
         },
         {
           "from": "rw-join",
-          "to": "rw-throne",
+          "to": "rw-digby",
           "kinds": "n",
           "bow": 0,
           "via": [
@@ -359,11 +371,15 @@
             {
               "x": 11138,
               "y": 10661
-            },
-            {
-              "x": 11171,
-              "y": 10635
-            },
+            }
+          ]
+        },
+        {
+          "from": "rw-digby",
+          "to": "rw-throne",
+          "kinds": "",
+          "bow": 0,
+          "via": [
             {
               "x": 11205,
               "y": 10612
@@ -411,6 +427,36 @@
           ],
           "levels": [
             3,
+            5
+          ]
+        },
+        {
+          "id": "root-tunnels",
+          "name": "The Root Tunnels",
+          "hub": "rw-fork",
+          "mob": "root-grub",
+          "trophy": "Grub Jaws",
+          "drops": [
+            "boots",
+            "gloves"
+          ],
+          "levels": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": "old-diggings",
+          "name": "The Old Diggings",
+          "hub": "rw-join",
+          "mob": "mole-miner",
+          "trophy": "Miners’ Lamps",
+          "drops": [
+            "helm",
+            "weapon"
+          ],
+          "levels": [
+            4,
             5
           ]
         }

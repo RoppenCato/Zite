@@ -168,6 +168,30 @@ import outcastPng from '../../assets/creatures_hub/city_outcast/city_outcast.png
 import glowcapData from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json';
 import glowcapJson from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.json?url';
 import glowcapPng from '../../assets/dungeon_meadows/creatures/glowcap/glowcap.png';
+import poacherData from '../../assets/creatures_kingswood/poacher/poacher.json';
+import poacherJson from '../../assets/creatures_kingswood/poacher/poacher.json?url';
+import poacherPng from '../../assets/creatures_kingswood/poacher/poacher.png';
+import hedgeKnightData from '../../assets/creatures_kingswood/hedge_knight/hedge_knight.json';
+import hedgeKnightJson from '../../assets/creatures_kingswood/hedge_knight/hedge_knight.json?url';
+import hedgeKnightPng from '../../assets/creatures_kingswood/hedge_knight/hedge_knight.png';
+import tuskerData from '../../assets/creatures_kingswood/tusker/tusker.json';
+import tuskerJson from '../../assets/creatures_kingswood/tusker/tusker.json?url';
+import tuskerPng from '../../assets/creatures_kingswood/tusker/tusker.png';
+import outlawKingData from '../../assets/creatures_kingswood/outlaw_king/outlaw_king.json';
+import outlawKingJson from '../../assets/creatures_kingswood/outlaw_king/outlaw_king.json?url';
+import outlawKingPng from '../../assets/creatures_kingswood/outlaw_king/outlaw_king.png';
+import outlawKing2Data from '../../assets/creatures_kingswood/outlaw_king2/outlaw_king2.json';
+import outlawKing2Json from '../../assets/creatures_kingswood/outlaw_king2/outlaw_king2.json?url';
+import outlawKing2Png from '../../assets/creatures_kingswood/outlaw_king2/outlaw_king2.png';
+import rootGrubData from '../../assets/dungeon_meadows/creatures/root_grub/root_grub.json';
+import rootGrubJson from '../../assets/dungeon_meadows/creatures/root_grub/root_grub.json?url';
+import rootGrubPng from '../../assets/dungeon_meadows/creatures/root_grub/root_grub.png';
+import moleMinerData from '../../assets/dungeon_meadows/creatures/mole_miner/mole_miner.json';
+import moleMinerJson from '../../assets/dungeon_meadows/creatures/mole_miner/mole_miner.json?url';
+import moleMinerPng from '../../assets/dungeon_meadows/creatures/mole_miner/mole_miner.png';
+import oldDigbyData from '../../assets/dungeon_meadows/creatures/old_digby/old_digby.json';
+import oldDigbyJson from '../../assets/dungeon_meadows/creatures/old_digby/old_digby.json?url';
+import oldDigbyPng from '../../assets/dungeon_meadows/creatures/old_digby/old_digby.png';
 import rootbeardData from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.json';
 import rootbeardJson from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.json?url';
 import rootbeardPng from '../../assets/dungeon_meadows/creatures/old_rootbeard/old_rootbeard.png';
@@ -258,8 +282,17 @@ const CREATURES: Record<string, CreatureFiles> = {
   'frostbeard': { key: 'frostbeard', png: frostbeardPng, json: frostbeardJson, actions: actionsOf(frostbeardData), scale: 1.1, blowFrame: 5, phase2: { key: 'frostbeard2', png: frostbeard2Png, json: frostbeard2Json, actions: actionsOf(frostbeard2Data) } },
   // The Kingswood (Mitch, AD, 2026-11-02).
   'city-outcast': { key: 'city_outcast', png: outcastPng, json: outcastJson, actions: actionsOf(outcastData), scale: 0.5, blowFrame: 4 },
+  // Its own folk (Mitch, AD, 2026-11-03). The King at 1.12, not the atlas's 1.6, to stay in the column, like the Hollow King.
+  poacher: { key: 'poacher', png: poacherPng, json: poacherJson, actions: actionsOf(poacherData), scale: 0.5333, blowFrame: 4 },
+  'hedge-knight': { key: 'hedge_knight', png: hedgeKnightPng, json: hedgeKnightJson, actions: actionsOf(hedgeKnightData), scale: 0.5714, blowFrame: 4 },
+  tusker: { key: 'tusker', png: tuskerPng, json: tuskerJson, actions: actionsOf(tuskerData), scale: 0.6667, blowFrame: 7 },
+  'outlaw-king': { key: 'outlaw_king', png: outlawKingPng, json: outlawKingJson, actions: actionsOf(outlawKingData), scale: 1.12, blowFrame: 4, phase2: { key: 'outlaw_king2', png: outlawKing2Png, json: outlawKing2Json, actions: actionsOf(outlawKing2Data) } },
   // The Rootways (Mitch, AD, 2026-11-02). Old Rootbeard at his number, not the atlas's, which runs past the column.
   'glowcap': { key: 'glowcap', png: glowcapPng, json: glowcapJson, actions: actionsOf(glowcapData), scale: 0.5714, blowFrame: 7 },
+  // More of them (Mitch, AD, 2026-11-03). Old Digby a touch under his atlas's 1.1429, smaller than Old Rootbeard.
+  'root-grub': { key: 'root_grub', png: rootGrubPng, json: rootGrubJson, actions: actionsOf(rootGrubData), scale: 0.5, blowFrame: 7 },
+  'mole-miner': { key: 'mole_miner', png: moleMinerPng, json: moleMinerJson, actions: actionsOf(moleMinerData), scale: 0.6667, blowFrame: 7 },
+  'old-digby': { key: 'old_digby', png: oldDigbyPng, json: oldDigbyJson, actions: actionsOf(oldDigbyData), scale: 1.05, blowFrame: 7 },
   'old-rootbeard': { key: 'old_rootbeard', png: rootbeardPng, json: rootbeardJson, actions: actionsOf(rootbeardData), scale: 1.2, blowFrame: 5 },
   'spider': { key: 'twigling', png: twiglingPng, json: twiglingJson, actions: actionsOf(twiglingData), scale: 0.5, blowFrame: 7 },
   'treant': { key: 'moss_goblin', png: mossGoblinPng, json: mossGoblinJson, actions: actionsOf(mossGoblinData), scale: 0.5, blowFrame: 4 },

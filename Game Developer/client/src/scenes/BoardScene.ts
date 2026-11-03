@@ -44,7 +44,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, arenaModeOpen, arenaPrize, ARENA, UNIQUES, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, arenaModeOpen, arenaPrize, ARENA, UNIQUES, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealCount, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -2029,7 +2029,7 @@ export class BoardScene extends Phaser.Scene {
     if (!here || !beyond) return;
     const inside = !!board.areas[here.area]?.dungeon;
     if (here.sealed && !sealsAllWon(board, this.game_.me)) {
-      this.finish('A door with seven sockets. It wants every land’s Seal.');
+      this.finish(`A door with ${sealCount(board, this.game_.me).total} sockets. It wants every land’s Seal.`);
       return;
     }
     const land = board.areas[beyond.area];

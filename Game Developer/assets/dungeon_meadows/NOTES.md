@@ -87,3 +87,15 @@ Baked into the ground at `rw-door`: a stone arch with steps going up and dayligh
 Not in the game or on a phone. The fight effects have not been checked over this backdrop. A tall tree or a tent could stand in front of the door from some camera positions: I looked only from the one in `door_outside.jpg`.
 
 Tools: `tools/world/rootways_build.js`, `tools/world/rootways_art.js`, `tools/kit/rootways_battle.js`, `tools/monsters/rootways.js`.
+
+## 6. More creatures and a mini-boss, 2026-11-03
+
+Robin chose "fill the holes"; Miles, GD asked for one or two more creatures and a mini-boss. Designs and names mine; Robin has not judged them. Not seen in the game. `creatures_2.jpg` shows every clip. Same form as the others: one folder each in `creatures/`, files facing left, pivot at the feet. Each has stand 6, move 6, attack1 12, hit1 1 and die1 8, like the Glowcap.
+
+| Id | Name | Folder | Scale | Blow | Tall | Look |
+| --- | --- | --- | --- | --- | --- | --- |
+| `root-grub` | Root Grub | `root_grub` | 0.5 | 7 | 90 | a fat pale grub with little legs and chewing jaws |
+| `mole-miner` | Mole Miner | `mole_miner` | 0.6667 | 7 | 125 | a mole in a yellow miner's helmet with a glowcap lamp, swinging a pick |
+| `old-digby` | Old Digby, the Burrow Boss | `old_digby` | 1.3333 | 7 | 210 | the oldest mole, the **mini-boss**: grey whiskers, a battered helmet with glowcaps growing on it, a great pick that throws up stones on the blow |
+
+My suggestion: Root Grubs in the root tunnels, Mole Miners by the glowing pools, Old Digby in a side cave on the way to Old Rootbeard. Where they live, their stats and the mini-boss's hub are yours.

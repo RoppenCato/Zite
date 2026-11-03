@@ -1587,5 +1587,224 @@
       "text": "The flame under his crown grows each round: he hits harder the longer it lasts.",
       "line": "The flame grows."
     }
+  },
+  "poacher": {
+    "name": "Poacher",
+    "level": 5,
+    "role": "mob",
+    "hp": 105,
+    "attack": 21,
+    "defense": 4,
+    "xp": 17,
+    "gold": 9,
+    "moves": [
+      {
+        "name": "Crossbow Bolt",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Snare Shot",
+        "power": 0.7,
+        "weight": 1,
+        "effect": "weaken"
+      },
+      {
+        "name": "Into the Ferns",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      }
+    ]
+  },
+  "tusker": {
+    "name": "Wild Tusker",
+    "level": 5,
+    "role": "mob",
+    "hp": 140,
+    "attack": 21,
+    "defense": 6,
+    "xp": 18,
+    "gold": 5,
+    "moves": [
+      {
+        "name": "Gore",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Tusk Charge",
+        "power": 1.8,
+        "weight": 1,
+        "charge": true
+      }
+    ]
+  },
+  "hedge-knight": {
+    "name": "Hedge Knight",
+    "level": 6,
+    "role": "mob",
+    "hp": 175,
+    "attack": 23,
+    "defense": 10,
+    "xp": 24,
+    "gold": 13,
+    "moves": [
+      {
+        "name": "Long Sword",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Oath Cut",
+        "power": 1.5,
+        "weight": 1
+      },
+      {
+        "name": "Raise Shield",
+        "power": 0,
+        "weight": 1,
+        "effect": "armour"
+      }
+    ]
+  },
+  "outlaw-king": {
+    "name": "The Outlaw King",
+    "level": 8,
+    "role": "boss",
+    "hp": 821,
+    "attack": 38,
+    "defense": 11,
+    "xp": 170,
+    "gold": 115,
+    "moves": [
+      {
+        "name": "Thorned Sword",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Crown’s Toll",
+        "power": 0.8,
+        "weight": 1,
+        "effect": "weaken"
+      },
+      {
+        "name": "Kingly Cleave",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "trick": {
+      "kind": "swarm",
+      "share": 0.03,
+      "max": 0.45,
+      "text": "His band gathers round the hall each round: their arrows land harder the longer it lasts.",
+      "line": "More outlaws gather."
+    },
+    "phase2": {
+      "at": 0.5,
+      "text": "The Outlaw King casts off his cloak: the gold blade is out!",
+      "moves": [
+        {
+          "name": "Gold Blade",
+          "power": 1.15,
+          "weight": 2
+        },
+        {
+          "name": "Crown’s Toll",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        },
+        {
+          "name": "Kingly Cleave",
+          "power": 2.2,
+          "weight": 2,
+          "charge": true
+        }
+      ]
+    }
+  },
+  "root-grub": {
+    "name": "Root Grub",
+    "level": 3,
+    "role": "mob",
+    "hp": 70,
+    "attack": 14,
+    "defense": 4,
+    "xp": 11,
+    "gold": 4,
+    "moves": [
+      {
+        "name": "Chew",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Burrow",
+        "power": 0,
+        "weight": 1,
+        "effect": "evade"
+      }
+    ]
+  },
+  "mole-miner": {
+    "name": "Mole Miner",
+    "level": 4,
+    "role": "mob",
+    "hp": 105,
+    "attack": 17,
+    "defense": 6,
+    "xp": 15,
+    "gold": 8,
+    "moves": [
+      {
+        "name": "Pick Swing",
+        "power": 1,
+        "weight": 3
+      },
+      {
+        "name": "Lamp Flash",
+        "power": 0.6,
+        "weight": 1,
+        "effect": "weaken"
+      }
+    ]
+  },
+  "old-digby": {
+    "name": "Old Digby, the Burrow Boss",
+    "level": 5,
+    "role": "mini",
+    "hp": 280,
+    "attack": 22,
+    "defense": 7,
+    "xp": 50,
+    "gold": 35,
+    "moves": [
+      {
+        "name": "Great Pick",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Stone Spray",
+        "power": 1.4,
+        "weight": 1
+      },
+      {
+        "name": "Cave-in",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round Old Digby heaves his great pick high. Block it.",
+      "line": "Old Digby heaves his pick."
+    }
   }
 }

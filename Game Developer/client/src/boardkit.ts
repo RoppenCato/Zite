@@ -25,7 +25,9 @@ import propsJson from '../../assets/board_meadows/board_props.json?url';
 import propsPng from '../../assets/board_meadows/board_props.png';
 import coverPng from '../../assets/board_meadows/cover.png';
 import placementJson from '../../assets/world_moved/placement_meadows.json';
-import kingswoodPlacementJson from '../../assets/world_moved/placement_kingswood.json';
+import kingswoodPlacementJson from '../../assets/kingswood_village/placement_kingswood.json';
+import kingswoodVillageJson from '../../assets/kingswood_village/kingswood_village.json?url';
+import kingswoodVillagePng from '../../assets/kingswood_village/kingswood_village.png';
 import kingswoodPlacesJson from '../../assets/world_moved/kingswood_places.json?url';
 import kingswoodPlacesPng from '../../assets/world_moved/kingswood_places.png';
 import placesJson from '../../assets/world_meadows/board_places.json?url';
@@ -122,7 +124,7 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, FAR_SECRETS, KINGSWOOD_PLACES];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, FAR_SECRETS, KINGSWOOD_PLACES, KINGSWOOD_VILLAGE];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
@@ -133,6 +135,7 @@ export const CROWN_PLACES = 'crown_places';
 /** The door under Crownhaven: where it stands, barred or open. */
 export const CROWN_DOOR = buriedCrown.door;
 const KINGSWOOD_PLACES = 'kingswood_places';
+const KINGSWOOD_VILLAGE = 'kingswood_village';
 export const SECRET_PLACES = 'secret_places';
 /** The painted world's pieces that belong to one region. */
 const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
@@ -235,6 +238,7 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(SECRET_PLACES)) scene.load.atlas(SECRET_PLACES, secretPlacesPng, secretPlacesJson);
   if (!scene.textures.exists(FAR_SECRETS)) scene.load.atlas(FAR_SECRETS, farSecretsPng, farSecretsJson);
   if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
+  if (!scene.textures.exists(KINGSWOOD_VILLAGE)) scene.load.atlas(KINGSWOOD_VILLAGE, kingswoodVillagePng, kingswoodVillageJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   if (!scene.textures.exists(CROWN_PLACES)) scene.load.atlas(CROWN_PLACES, crownPlacesPng, crownPlacesJson);
   // The hub city's plates and the dungeons' are always held, as their pieces are.

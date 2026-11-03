@@ -1,0 +1,97 @@
+[
+ {
+  "name": "poacher",
+  "id": "poacher",
+  "title": "Poacher",
+  "h": 145,
+  "px": 1.875,
+  "scale": 0.5333,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 118
+ },
+ {
+  "name": "hedge_knight",
+  "id": "hedge-knight",
+  "title": "Hedge Knight",
+  "h": 155,
+  "px": 1.75,
+  "scale": 0.5714,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 135
+ },
+ {
+  "name": "tusker",
+  "id": "tusker",
+  "title": "Wild Tusker",
+  "h": 125,
+  "px": 1.5,
+  "scale": 0.6667,
+  "blow": 7,
+  "frames": 33,
+  "clips": {
+   "stand": 6,
+   "move": 6,
+   "attack1": 12,
+   "hit1": 1,
+   "die1": 8
+  },
+  "hovers": false,
+  "kb": 93
+ },
+ {
+  "name": "outlaw_king",
+  "id": "outlaw-king",
+  "title": "The Outlaw King",
+  "h": 290,
+  "px": 0.625,
+  "scale": 1.6,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 120
+ },
+ {
+  "name": "outlaw_king2",
+  "id": "outlaw-king, second phase",
+  "title": "The Outlaw King, cloak cast off",
+  "h": 290,
+  "px": 0.625,
+  "scale": 1.6,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 96
+ }
+]
