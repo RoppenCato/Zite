@@ -22,6 +22,8 @@ import {
   plainGear,
   RARITIES,
   reachable,
+  stepChoices,
+  traitsOf,
   rollGear,
   rollUnique,
   sellPrice,
@@ -1701,7 +1703,10 @@ export class BoardScene extends Phaser.Scene {
     const me = this.game_.me;
     const { board } = this.game_.state;
     const value = this.game_.state.die.last ?? me.steps;
-    const options = reachable(board, me.space, me.steps, walkable(me));
+    // A stride (Gambler's Die, Robin, 2026-11-03) lights the spots a step or two nearer and further too; the roll's own first.
+    const counts = stepChoices(me.steps, traitsOf(me).stride ?? 0).sort((a, b) => Math.abs(a - me.steps) - Math.abs(b - me.steps));
+    const seen = new Set<string>();
+    const options = counts.flatMap((n) => reachable(board, me.space, n, walkable(me))).filter((o) => !seen.has(o.space) && !!seen.add(o.space));
     if (options.length === 0) {
       this.finish(`No way to walk ${me.steps} from here.`);
       return;
@@ -1753,7 +1758,7 @@ export class BoardScene extends Phaser.Scene {
     const lucky = powers(me).lucky;
     if (lucky) {
       const left = (me.cooldowns.charm ?? 0) - this.game_.now();
-      chips.push({ text: left > 0 ? `Charm ${countdown(left)}` : 'Charm', onTap: () => (left > 0 ? this.setMessage(`The charm is spent; again in ${countdown(left)}.`) : this.useCard('charm')) });
+      chips.push({ text: left > 0 ? `Reroll ${countdown(left)}` : 'Reroll', onTap: () => (left > 0 ? this.setMessage(`The clover is spent; again in ${countdown(left)}.`) : this.useCard('charm')) });
     }
     return chips;
   }

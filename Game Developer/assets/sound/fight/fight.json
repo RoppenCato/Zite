@@ -319,6 +319,11 @@
       "start": 34.775,
       "end": 34.9035,
       "loop": false
+    },
+    "fight/lightning": {
+      "start": 34.9535,
+      "end": 35.4989,
+      "loop": false
     }
   }
 }

@@ -169,6 +169,11 @@ export class SettingsScene extends Phaser.Scene {
           void this.game_.act({ type: 'skill', op: 'testLand', to: nextTown.id, player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
         });
       }
+      const trinket = this.game_.me.equipment.trinket;
+      this.settingRow(row + 5, 'Test: trinket', trinket ? `Now ${trinket.name}.` : 'Wear the first one.', 'Next', () => {
+        if (this.game_.me.fight) return;
+        void this.game_.act({ type: 'skill', op: 'testTrinket', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
+      });
       this.settingRow(row + 2, 'Test: Arena', this.game_.me.arenaTest ? 'Open for you whatever the day.' : 'Goes by the calendar.', this.game_.me.arenaTest ? 'Calendar' : 'Open it', () => {
         void this.game_.act({ type: 'arena', op: 'test', player: this.game_.player } as never).then(() => setTimeout(() => location.reload(), 150));
       });

@@ -25,7 +25,8 @@ describe('gear', () => {
   it('a plain piece is the common rank item of its slot, priced from the table', () => {
     expect(plainGear('g1', 'weapon', 2)).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'common', name: 'Copper Sword', base: 'copper sword', kind: 'sword', stats: { attack: 8 }, affixes: [], price: 90 });
     expect(plainGear('g2', 'helm', 1)).toMatchObject({ name: 'Tin Hat', stats: { maxHp: 14 }, price: 32 });
-    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ name: 'Iron Charm', stats: { maxHp: 34 } });
+    // The trinket slot holds trinkets (Robin, 2026-11-03): a plain one is the land's newest common, numbers none.
+    expect(plainGear('g3', 'trinket', 3)).toMatchObject({ slot: 'trinket', rarity: 'common', trinket: 'fox-tail', stats: {} });
   });
 
   it('rolls rarities by weight, and a boost skips the lowest', () => {
@@ -49,7 +50,8 @@ describe('gear', () => {
 
   it('a rolled piece swings round the rank times the rarity, affixes rare and up, names epic and up', () => {
     for (let i = 0; i < 300; i++) {
-      const slot = SLOTS[i % SLOTS.length]!;
+      const kinds = SLOTS.filter((s) => s !== 'trinket');
+      const slot = kinds[i % kinds.length]!;
       // A weapon and an off-hand by their kind (2026-11-03): a sword and a kite shield, near the slot's own number.
       const kind = slot === 'weapon' ? 'sword' : slot === 'shield' ? 'kite' : undefined;
       const g = rollGear(`g${i}`, slot, 2, 0, makeRng(`roll-${i}`), 'heavy', 'warrior', kind);
@@ -100,7 +102,7 @@ describe('gear', () => {
         trinket: { ...plainGear('t', 'trinket', 1), affixes: [{ kind: 'lifesteal' as const, value: 0.2 }] },
       },
     };
-    expect(stats(worn)).toEqual({ attack: 22, defense: 14, maxHp: Math.round(144 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, bonus: {}, powers: {} });
+    expect(stats(worn)).toEqual({ attack: 22, defense: 14, maxHp: Math.round(134 * 1.1), maxMana: 20, magic: 0, crit: 0.25, dodge: 0.1, lifesteal: 0.2, thorns: 0.2, bonus: {}, powers: {} });
     expect(RARITIES).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'unique']);
   });
 });

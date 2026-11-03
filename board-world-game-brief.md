@@ -124,6 +124,11 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 - Each land has a legendary set at **level 30**, fitting the land: one of each weapon type and different shields. It is won from that land's Arena on its **hardest mode, which opens once every Seal is won**, before the last dungeon.
 - "Miles will need to find a way to balance loot and to distribute loot in a good way in the game": the numbers, the chances and how the mode opens are the Game Developer's.
 
+### Trinkets (Robin, 2026-11-03)
+- **No necklaces: the slot holds trinkets.** A trinket gives a passive bonus of its own, which may or may not touch combat.
+- Robin's examples: heal 10 HP after every battle in the overworld (not the Arena); your normal attack hits twice as many times at half the damage (a Rogue's three become six); after a roll you may walk to the nearby spots too (a 5 lets you walk 4, 5 or 6); 3 mana back after every round in battle; normal attacks have a small chance (5 to 10%) to deal lightning damage and stun the target so it cannot use its next attack.
+- A bunch of them, of varying power and levels, spread out through the world; some fun, some really good (by rarity). The list and the numbers are the Game Developer's.
+
 ## Real-world flavor (light, optional)
 - Real weather and time of day affect monsters on the board (e.g. rain → water monsters, night → undead).
 - Later idea: real places (OpenStreetMap) as shrines giving dice cards when visited.

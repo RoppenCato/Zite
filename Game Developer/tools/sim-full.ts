@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded } from '../rules/src/index.ts';
+import { ABILITIES, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -152,7 +152,10 @@ const score = (c: Character): number => {
   const g = guardOf(c);
   // The skills it carries that the hands allow: a player keeps the weapon its tree wants.
   const allowed = c.carried.filter((id) => holdsFor(c, ABILITIES[id]?.needs)).length;
-  return (might * special + s.defense * 2 + s.maxHp * 0.25 * (1 + g.block * 0.8 + g.dodge * 0.5)) * (1 + 0.15 * allowed);
+  // A trinket is worth its land and its rarity: a player wears the better one (2026-11-03).
+  const trinket = c.equipment.trinket;
+  const charm = trinket?.trinket ? 1 + 0.02 * trinket.rank + 0.03 * RARITIES.indexOf(trinket.rarity) : 1;
+  return (might * special + s.defense * 2 + s.maxHp * 0.25 * (1 + g.block * 0.8 + g.dodge * 0.5)) * (1 + 0.15 * allowed) * charm;
 };
 // As the rules allow it: no off-hand beside a two-hander, and a two-hander puts the off-hand away (2026-11-03).
 const wearing = (c: Character, g: GearItem): Character => {

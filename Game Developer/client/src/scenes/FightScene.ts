@@ -153,7 +153,8 @@ export class FightScene extends Phaser.Scene {
     if (!me.fight) return;
     const board = this.game_.state.board;
     preloadCreature(this, me.fight.enemy.id);
-    preloadEffects(this, me.classId === 'ranger', me.classId === 'rogue');
+    // Lightning only for one who can call it: a trinket's, or the storm blade (2026-11-03).
+    preloadEffects(this, me.classId === 'ranger', me.classId === 'rogue', !!traitsOf(me).lightning || !!me.abilities['storm-blade']);
     preloadCarriedIcons(this, me.carried);
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
@@ -441,6 +442,23 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     const s = stats(me);
     switch (e.type) {
       case 'hit':
+        if (e.by === 'player' && e.move === 'Lightning') {
+          // A trinket's lightning (Robin, 2026-11-03): a bolt from the sky once the blow has landed.
+          this.after((this.hero?.blowMs(1) ?? 0) + 140, () => {
+            const at = this.spot('enemy', 'chest');
+            // Mitch, AD's strike, added light on the foe's chest; the drawn line if it is not loaded.
+            const strike = playOnce(this, 'strike', at.x, at.y, 'fx_lightning');
+            if (strike) strike.setBlendMode(Phaser.BlendModes.ADD).setDepth(20);
+            else this.bolt(at);
+            playOnce(this, 'hit_spark', at.x, at.y);
+            this.enemy?.play('hit1');
+            sfx.play('fight/lightning');
+            this.flash(this.enemyBody, e.damage, false);
+            this.enemyBar.set(e.hp, this.enemyMaxHp);
+          });
+          this.say(`Lightning strikes ${this.enemyName} for ${e.damage}!`);
+          break;
+        }
         if (e.by === 'player') {
           const combo = this.comboStep(e.move);
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
@@ -920,6 +938,26 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'weakened': return `You are weakened for ${rounds} rounds: your hits land softer.`;
       default: return '';
     }
+  }
+
+  /** A bolt of lightning down onto `at`: a jagged line drawn once and faded, until Mitch, AD's own clip (2026-11-03). */
+  private bolt(at: { x: number; y: number }): void {
+    const g = this.add.graphics().setDepth(20);
+    const top = HUD_HEIGHT + 10;
+    const points: { x: number; y: number }[] = [];
+    const steps = 7;
+    for (let i = 0; i <= steps; i++) {
+      const y = top + ((at.y - top) * i) / steps;
+      points.push({ x: at.x + (i === 0 || i === steps ? 0 : (Math.random() - 0.5) * 34), y });
+    }
+    for (const [width, color, alpha] of [[10, 0xfff3a0, 0.35], [4, 0xffffff, 1]] as const) {
+      g.lineStyle(width, color, alpha);
+      g.beginPath();
+      g.moveTo(points[0]!.x, points[0]!.y);
+      for (const p of points.slice(1)) g.lineTo(p.x, p.y);
+      g.strokePath();
+    }
+    this.tweens.add({ targets: g, alpha: 0, duration: settings.ms(260), delay: settings.ms(60), onComplete: () => g.destroy() });
   }
 
   /** A blow landing: the figure blinks, the number floats up from its chest, a crit shakes the camera a little. */

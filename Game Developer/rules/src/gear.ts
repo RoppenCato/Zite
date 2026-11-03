@@ -3,7 +3,7 @@
 // evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
 import { traitsOf } from './skills.ts';
-import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, UNIQUE_IDS, UNIQUES, type KindData } from './data.ts';
+import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, TRINKET_DATA, TRINKET_IDS, TRINKETS, UNIQUE_IDS, UNIQUES, type KindData } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
 
@@ -29,7 +29,7 @@ export function powers(c: Character): Partial<Record<PowerKind, number>> {
   const out: Partial<Record<PowerKind, number>> = {};
   for (const slot of SLOTS) {
     const g = c.equipment[slot];
-    const u = g?.unique ? UNIQUES[g.unique] : undefined;
+    const u = g?.unique ? UNIQUES[g.unique] : g?.trinket ? TRINKETS[g.trinket] : undefined;
     if (u?.power) out[u.power] = (out[u.power] ?? 0) + (u.value ?? 0);
   }
   return out;
@@ -285,7 +285,43 @@ function lineNumbers(slot: Slot, rank: number, line: GearLine, mult: number): { 
 }
 
 /** A plain common piece of the rank and line: what a shop sells. */
+/** A trinket as a piece to carry (Robin, 2026-11-03): no numbers of its own, only its passive. */
+export function makeTrinket(id: string, trinketId: string): GearItem {
+  const t = TRINKETS[trinketId];
+  if (!t) throw new Error(`no such trinket: ${trinketId}`);
+  const price = Math.round(TRINKET_DATA.price.base * t.tier * (TRINKET_DATA.price.rarity[t.rarity] ?? 1));
+  return { id, slot: 'trinket', rank: t.tier, rarity: t.rarity, name: t.name, base: 'trinket', stats: {}, affixes: (t.affixes ?? []).map((a) => ({ ...a })), trinket: trinketId, price };
+}
+
+/**
+ * A trinket found in a land of this tier at this rarity: one whose tier the land has reached, the land's own tier and the
+ * two before it the likelier; with none of that rarity yet, the next rarity down.
+ */
+export function rollTrinket(id: string, tier: number, rarity: Rarity, rng: Rng): GearItem {
+  const order: Rarity[] = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+  const want = rarity === 'unique' ? 'legendary' : rarity;
+  for (const r of order.slice(order.indexOf(want))) {
+    const pool = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === r && TRINKETS[t]!.tier <= tier);
+    if (!pool.length) continue;
+    const weight = (t: string): number => (TRINKETS[t]!.tier >= tier - TRINKET_DATA.nearTiers ? TRINKET_DATA.nearWeight : 1);
+    let pick = rng.next() * pool.reduce((n, t) => n + weight(t), 0);
+    for (const t of pool) {
+      pick -= weight(t);
+      if (pick < 0) return makeTrinket(id, t);
+    }
+    return makeTrinket(id, pool[pool.length - 1]!);
+  }
+  return makeTrinket(id, TRINKET_IDS[0]!);
+}
+
+/** The plainest trinket of a land: its newest common one. */
+function plainTrinket(id: string, tier: number): GearItem {
+  const commons = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === 'common' && TRINKETS[t]!.tier <= tier);
+  return makeTrinket(id, commons[commons.length - 1] ?? TRINKET_IDS[0]!);
+}
+
 export function plainGear(id: string, slot: Slot, rank: number, line: GearLine = 'heavy', classId: ClassId = 'warrior', kind?: string): GearItem {
+  if (slot === 'trinket') return plainTrinket(id, rank);
   const r = Math.max(1, Math.floor(rank));
   const k = kind ?? pickKind(slot, classId);
   const name = pieceName(slot, r, line, classId, k);
@@ -334,6 +370,8 @@ function rollAffixes(count: number, slot: Slot, rank: number, rarityMult: number
 export function rollGear(id: string, slot: Slot, rank: number, boost: number, rng: Rng, line: GearLine = 'heavy', classId: ClassId = 'warrior', kind?: string): GearItem {
   const r = Math.max(1, Math.floor(rank));
   const rarity = rollRarity(rng, boost);
+  // The trinket slot holds trinkets now (Robin, 2026-11-03).
+  if (slot === 'trinket') return rollTrinket(id, r, rarity, rng);
   const rar = GEAR.rarities[rarity];
   const swing = 1 + (rng.next() * 2 - 1) * GEAR.roll;
   const k = kind ?? pickKind(slot, classId, rng);
@@ -419,6 +457,8 @@ export function describeGear(g: GearItem): string {
 
 /** What a piece does, as short parts: "+3 attack", "+12% crits bleed", a unique's power. The loot card shows these under the name. */
 export function gearPowers(g: GearItem): string[] {
+  // A trinket is its passive, said once (Robin, 2026-11-03).
+  if (g.trinket && TRINKETS[g.trinket]) return [TRINKETS[g.trinket]!.text];
   const parts: string[] = [];
   // What its kind means for the guards and the hands (Robin, 2026-11-03).
   const w = g.slot === 'weapon' ? kindData('weapon', gearKind(g)) : undefined;

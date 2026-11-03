@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 39;
+export const STATE_VERSION = 40;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -204,6 +204,8 @@ export interface GearItem {
   unique?: string;
   /** The id in sets.json when the piece belongs to a set. */
   set?: string;
+  /** The id in trinkets.json when the piece is a trinket (Robin, 2026-11-03): its passive is read from there. */
+  trinket?: string;
   price: number;
 }
 
@@ -536,6 +538,7 @@ export type Action =
   | { type: 'skill'; id: string; player: string; op: 'testClass'; classId: ClassId }
   | { type: 'skill'; id: string; player: string; op: 'testLevel' }
   | { type: 'skill'; id: string; player: string; op: 'testLegend' }
+  | { type: 'skill'; id: string; player: string; op: 'testTrinket' }
   | { type: 'skill'; id: string; player: string; op: 'testLand'; to: string }
   | { type: 'skill'; id: string; player: string; op: 'reset' }
   /** The answer to a town's errand. */

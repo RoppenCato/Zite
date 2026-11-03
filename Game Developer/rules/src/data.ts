@@ -17,6 +17,7 @@ import secretsJson from '../data/secrets.json' with { type: 'json' };
 import dungeonsJson from '../data/dungeons.json' with { type: 'json' };
 import themesJson from '../data/themes.json' with { type: 'json' };
 import uniquesJson from '../data/uniques.json' with { type: 'json' };
+import trinketsJson from '../data/trinkets.json' with { type: 'json' };
 import questsJson from '../data/quests.json' with { type: 'json' };
 import shapesJson from '../data/shapes.json' with { type: 'json' };
 import eventsJson from '../data/events.json' with { type: 'json' };
@@ -134,6 +135,16 @@ export interface ClassTraits {
   greatLifesteal?: number;
   /** Once a fight, under a third of HP, this share of it back (Second Wind). */
   secondWind?: number;
+  /** Trinkets (Robin, 2026-11-03): HP back after a fight won out in the world, not the Arena. */
+  wildHeal?: number;
+  /** Attack strikes twice as many times, each at half the damage. */
+  twinStrikes?: boolean;
+  /** A roll may be walked this many steps fewer or more. */
+  stride?: number;
+  /** The chance an Attack calls down lightning. */
+  lightning?: number;
+  /** Night makes the wild no stronger against you. */
+  nightOwl?: boolean;
   manaRegen?: number;
   winHeal?: number;
   winMana?: number;
@@ -483,6 +494,30 @@ export const THEMES = themesJson as ThemesData;
 const { _about: _uniquesAbout, ...uniqueEntries } = uniquesJson as unknown as { _about: string } & Record<string, UniqueData>;
 export const UNIQUES = uniqueEntries as Record<string, UniqueData>;
 export const UNIQUE_IDS = Object.keys(UNIQUES);
+
+/** A trinket (Robin, 2026-11-03): a passive of its own, in or out of a fight, and nothing else. */
+export interface TrinketData {
+  name: string;
+  /** The land's tier where it starts to be found. */
+  tier: number;
+  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+  power?: PowerKind;
+  value?: number;
+  traits?: Partial<ClassTraits>;
+  affixes?: Affix[];
+  text: string;
+  /** What Mitch, AD's icon shows. */
+  look: string;
+}
+export const TRINKET_DATA = trinketsJson as unknown as {
+  price: { base: number; rarity: Record<string, number> };
+  nearTiers: number;
+  nearWeight: number;
+  lightning: { power: number; stun: number };
+  trinkets: Record<string, TrinketData>;
+};
+export const TRINKETS = TRINKET_DATA.trinkets;
+export const TRINKET_IDS = Object.keys(TRINKETS);
 const { _about: _setsAbout, ...setEntries } = setsJson as unknown as Record<string, unknown>;
 export const SETS = setEntries as Record<string, SetData>;
 export const SET_IDS = Object.keys(SETS);

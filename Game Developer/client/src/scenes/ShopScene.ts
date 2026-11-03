@@ -163,8 +163,8 @@ export class ShopScene extends Phaser.Scene {
         if (!sold) gearRow(0, piece, `${piece.price} g`, '', () => this.compare(piece, 'Buy', () => this.buy({ daily: true })));
       }
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
-      // Both of the class's weapons, and the tab's off-hand (Robin, 2026-11-03).
-      const rowsFor: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'shield' ? [{ slot, kind: shopOffhand(me.classId, tab) }] : [{ slot, kind: undefined }]));
+      // Both of the class's weapons, and the tab's off-hand (Robin, 2026-11-03); no trinkets, they are found.
+      const rowsFor: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'shield' ? [{ slot, kind: shopOffhand(me.classId, tab) }] : slot === 'trinket' ? [] : [{ slot, kind: undefined }]));
       rowsFor.forEach(({ slot, kind }, i) => {
         const g = plainGear('preview', slot, tier, tab, me.classId, kind);
         gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab, kind })));

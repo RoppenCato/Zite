@@ -252,13 +252,13 @@ describe('gear by kind', () => {
     const on = (line: 'heavy' | 'light' | 'magic') => {
       const c = { ...me(world()) };
       const equipment = { ...c.equipment };
-      for (const slot of Object.keys(equipment) as (keyof typeof equipment)[]) equipment[slot] = plainGear(slot, slot, 1, line);
+      for (const slot of Object.keys(equipment) as (keyof typeof equipment)[]) if (slot !== 'trinket') equipment[slot] = plainGear(slot, slot, 1, line);
       return stats({ ...c, equipment });
     };
     expect(on('heavy').defense).toBeGreaterThan(on('light').defense);
     expect(on('heavy').maxHp).toBeGreaterThan(on('light').maxHp);
     expect(on('light').crit).toBeGreaterThan(on('heavy').crit);
-    expect(on('magic').magic).toBeGreaterThan(5);
+    expect(on('magic').magic).toBeGreaterThan(3);
     expect(on('magic').maxMana).toBeGreaterThan(on('heavy').maxMana);
   });
 });
@@ -300,7 +300,7 @@ describe('a save from before the board', () => {
     const s = world();
     const old = { ...put(s, { gold: 10, quests: [{ ...quest({ done: 2, gold: 40 }), kind: 'cull' as never }, { ...quest({}), kind: 'chests' as never }], offer: { kind: 'quest', quest: quest({}) } as never }), version: 14 };
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
-    expect(up.version).toBe(39);
+    expect(up.version).toBe(40);
     expect(me(up).quests).toEqual([]);
     expect(me(up).gold).toBe(50);
     expect(me(up).offer).toBeNull();

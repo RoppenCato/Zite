@@ -1,10 +1,10 @@
 // Uniques (Robin, 2026-10-31: loot with effects that change how you play; bosses give better loot): the pieces, their
 // powers one by one, what bosses and minis drop, and the save coming up from version 6.
 import { describe, expect, it } from 'vitest';
-import { GEAR, PROGRESSION, UNIQUES, UNIQUE_IDS } from '../src/data.ts';
+import { GEAR, PROGRESSION, TRINKETS, TRINKET_IDS, UNIQUES, UNIQUE_IDS } from '../src/data.ts';
 import { startFight } from '../src/fight.ts';
 import { apply, makeBoard, newGame } from '../src/game.ts';
-import { describeGear, makeUnique, rankPrice, rankStat, rollGear, rollUnique, stats, uniquePool } from '../src/gear.ts';
+import { describeGear, makeTrinket, makeUnique, rankPrice, rankStat, rollGear, rollUnique, stats, uniquePool } from '../src/gear.ts';
 import { makeRng } from '../src/rng.ts';
 import { migrate } from '../src/save.ts';
 import { SLOTS, type Action, type Character, type ClassId, type Enemy, type EnemyMove, type FightMove, type GameEvent, type GameState, type Guard, type PowerKind } from '../src/types.ts';
@@ -21,10 +21,10 @@ const hits = (events: GameEvent[], by: 'player' | 'enemy') => events.filter((e):
 const bite: EnemyMove = { name: 'Bite', power: 1, weight: 1 };
 const NO_GEAR = { weapon: null, shield: null, helm: null, armour: null, gloves: null, boots: null, cape: null, trinket: null };
 
-/** The unique worn alone, at rank 1, by a character of the class; the fight patched by hand. */
+/** The unique (or, since 2026-11-03, the trinket) worn alone, at rank 1, by a character of the class; the fight patched by hand. */
 function wearing(uniqueId: string, classId: ClassId = 'warrior', patch: Partial<Character> = {}): Character {
   const s = newGame({ seed: 'u', player: P, name: 'Robin', classId, board: ringBoard() });
-  const u = makeUnique('u1', uniqueId, 1, makeRng(uniqueId));
+  const u = TRINKETS[uniqueId] ? makeTrinket('u1', uniqueId) : makeUnique('u1', uniqueId, 1, makeRng(uniqueId));
   return { ...me(s), equipment: { ...NO_GEAR, [u.slot]: u }, ...patch };
 }
 function versus(c: Character, enemy: string, enemyPatch: Partial<Enemy> = {}, fightPatch: object = {}): GameState {
@@ -48,7 +48,8 @@ describe('the uniques', () => {
       expect(u.text.length, id).toBeGreaterThan(10);
       expect(u.name.length, id).toBeGreaterThan(2);
     }
-    for (const p of POWERS) expect(UNIQUE_IDS.some((id) => UNIQUES[id]!.power === p), p).toBe(true);
+    // The old charms' powers live on in trinkets (Robin, 2026-11-03).
+    for (const p of POWERS) expect(UNIQUE_IDS.some((id) => UNIQUES[id]!.power === p) || TRINKET_IDS.some((id) => TRINKETS[id]!.power === p), p).toBe(true);
   });
 
   it('are made at a rank with a unique\'s number, one affix, their name and their text, never rolled by chance', () => {
@@ -62,7 +63,7 @@ describe('the uniques', () => {
     expect(() => makeUnique('x', 'excalibur', 1, makeRng('m'))).toThrow(/no such unique/);
     for (let i = 0; i < 500; i++) expect(rollGear(`r${i}`, 'weapon', 1, 0, makeRng(`r${i}`)).rarity).not.toBe('unique');
     expect(uniquePool(1).sort()).toEqual(UNIQUE_IDS.filter((id) => UNIQUES[id]!.tier <= 1).sort());
-    expect(uniquePool(1)).toEqual(expect.arrayContaining(['misers-coin', 'twinfang']));
+    expect(uniquePool(1)).toEqual(expect.arrayContaining(['twinfang']));
     expect(uniquePool(5).length).toBeGreaterThan(uniquePool(1).length);
     expect(rollUnique('y', 0, 1, makeRng('m'))).toBeNull();
   });
@@ -83,7 +84,8 @@ describe('what the fallen leave', () => {
     for (let i = 0; i < seeds; i++) {
       const s = versus(wearing('striders'), enemy, { hp: 1 });
       const r = apply(s, turn(attack), makeRng(`drop-${enemy}-${i}`), NOW);
-      for (const e of r.events) if (e.type === 'loot') rarities.push(e.gear.rarity);
+      // A trinket keeps its own rarity, the nearest the land has (Robin, 2026-11-03).
+      for (const e of r.events) if (e.type === 'loot') rarities.push(e.gear.trinket ? 'trinket' : e.gear.rarity);
     }
     return rarities;
   };
@@ -94,9 +96,9 @@ describe('what the fallen leave', () => {
     const uniques = boss.filter((r) => r === 'unique').length;
     expect(uniques).toBeGreaterThan(5);
     expect(uniques).toBeLessThan(28);
-    for (const r of boss) expect(['unique', 'epic', 'legendary']).toContain(r);
+    for (const r of boss) expect(['unique', 'epic', 'legendary', 'trinket']).toContain(r);
     const mini = dropsFrom('wolf-alpha', 80);
-    for (const r of mini) expect(['unique', 'rare', 'epic', 'legendary']).toContain(r);
+    for (const r of mini) expect(['unique', 'rare', 'epic', 'legendary', 'trinket']).toContain(r);
     expect(mini.some((r) => r === 'unique')).toBe(true);
     const mob = dropsFrom('slime', 200);
     expect(mob.length).toBeGreaterThan(5);
@@ -253,7 +255,7 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(39);
+    expect(s!.version).toBe(40);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });

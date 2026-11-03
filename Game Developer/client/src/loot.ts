@@ -100,7 +100,7 @@ export function tierOf(prizes: Prize[]): Tier {
   return best >= 0 ? RARITIES[best]! : 'gold';
 }
 
-const SLOT_WORDS: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Coat', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Charm' };
+const SLOT_WORDS: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Coat', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 
 function capitalise(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);

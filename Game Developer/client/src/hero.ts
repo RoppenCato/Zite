@@ -13,6 +13,8 @@ import legend2IconsJson from '../../assets/legends_2/icons.json?url';
 import legend2IconsPng from '../../assets/legends_2/icons.png';
 import arenaIconsJson from '../../assets/arena_legends/icons.json?url';
 import arenaIconsPng from '../../assets/arena_legends/icons.png';
+import trinketIconsJson from '../../assets/trinkets/trinket_icons.json?url';
+import trinketIconsPng from '../../assets/trinkets/trinket_icons.png';
 import archerOverJson from '../../assets/hero_classes/archer/gear_over.json?url';
 import archerOverPng from '../../assets/hero_classes/archer/gear_over.png';
 import clothArcherJson from '../../assets/gear_sets/cloth/cloth_archer.json?url';
@@ -194,6 +196,8 @@ const SET_ICONS: Tex = { key: 'set_icons', png: setIconsPng, json: setIconsJson 
 const LEGEND_ICONS: Tex = { key: 'legend_icons', png: legendIconsPng, json: legendIconsJson };
 const LEGEND_ICONS_2: Tex = { key: 'legend_icons_2', png: legend2IconsPng, json: legend2IconsJson };
 const ARENA_ICONS: Tex = { key: 'arena_legend_icons', png: arenaIconsPng, json: arenaIconsJson };
+/** The trinkets' icons (Mitch, AD, 2026-11-03), framed by trinket id, and `slot_trinket`, the empty slot with no necklace. */
+export const TRINKET_ICONS: Tex = { key: 'trinket_icons', png: trinketIconsPng, json: trinketIconsJson };
 /** A legend's own frame names, by its kind: an orb's is `<art>_orb` whichever orb it is. */
 const legendFrames = (legend: string, g: GearItem): string[] => {
   const kind = gearKind(g) ?? '';
@@ -203,7 +207,7 @@ const legendFrames = (legend: string, g: GearItem): string[] => {
 const LINE_SET: Record<string, string> = { light: 'leather', magic: 'cloth' };
 
 /** The atlases every class shares: the gear and its icons. */
-const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS, LEGEND_ICONS_2, ARENA_ICONS, V2_ICONS];
+const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS, LEGEND_ICONS_2, ARENA_ICONS, TRINKET_ICONS, V2_ICONS];
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
@@ -305,6 +309,8 @@ export function preloadWornSets(scene: Phaser.Scene, characters: readonly Charac
 
 /** The icon of a piece, for the bag and the loot card, in this class's weapon: its own when drawn, else its rank's, else Tin's; null when none. */
 export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { texture: string; frame: string } | null {
+  // A trinket's own icon when Mitch, AD has drawn it; never the old necklaces (Robin, 2026-11-03).
+  if (g.slot === 'trinket') return g.trinket && has(scene, TRINKET_ICONS.key, g.trinket) ? { texture: TRINKET_ICONS.key, frame: g.trinket } : null;
   const wood = woodenPiece(g);
   if (wood && has(scene, SET_ICONS.key, wood)) return { texture: SET_ICONS.key, frame: wood };
   const part = partOf(g.slot, classId);
@@ -339,7 +345,8 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const boots = worn('boots');
   const coat = worn('armour');
   const gloves = worn('gloves');
-  const charm = worn('trinket');
+  // No necklace on the hero any more: the trinket slot holds trinkets, carried, not worn (Robin, 2026-11-03).
+  const charm = null;
   const hat = worn('helm');
   const sword = worn('weapon');
   const shield = worn('shield');

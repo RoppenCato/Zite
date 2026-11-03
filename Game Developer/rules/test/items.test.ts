@@ -98,7 +98,7 @@ describe('the wardrobe', () => {
     const worn = at('s1', { hp: 132, maxHp: 120, mana: 26, maxMana: 20, equipment: { shield: null, gloves: null, cape: null, weapon: null, armour: null, helm, boots: null, trinket: plainGear('g4', 'trinket', 1) } });
     const bare = apply(worn, { type: 'unequip', id: 'u1', player: P, slot: 'helm' }, makeRng('x'), NOW);
     expect(bare.events).toEqual([{ type: 'unequipped', action: 'u1', player: P, gear: helm }]);
-    expect(me(bare.state)).toMatchObject({ hp: 130, mana: 20 });
+    expect(me(bare.state)).toMatchObject({ hp: 120, mana: 20 });
     expect(me(bare.state).bag).toEqual([helm]);
     const barer = apply(bare.state, { type: 'unequip', id: 'u2', player: P, slot: 'trinket' }, makeRng('x'), NOW);
     expect(me(barer.state).mana).toBe(20);

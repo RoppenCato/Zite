@@ -57,6 +57,13 @@ export function reachable(board: Board, from: string, steps: number, open: Reado
   return out;
 }
 
+/** The step counts a roll may be walked: the roll, or with a stride (Gambler’s Die, Robin, 2026-11-03) that many fewer or more. */
+export function stepChoices(steps: number, stride = 0): number[] {
+  const out: number[] = [];
+  for (let n = Math.max(1, steps - stride); n <= steps + stride; n++) out.push(n);
+  return steps > 0 ? out : [];
+}
+
 /** Why `path` is not a legal walk of `steps` steps from `from`, or null when it is. */
 export function checkPath(board: Board, from: string, steps: number, path: string[], open: ReadonlySet<string> | null = null): PathProblem | null {
   if (path.length > steps || path.length === 0) return 'wrong number of steps';

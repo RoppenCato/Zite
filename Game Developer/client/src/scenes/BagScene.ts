@@ -13,7 +13,7 @@ import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { feel, sfx } from '../feel.ts';
 import { CREAM, frameTexture, hasFrame, INK, INK_DIM, itemFrame, KIT, kitReady, plate, sheet } from '../kit.ts';
-import { gearIcon, Hero, heroReady, releaseUnworn } from '../hero.ts';
+import { gearIcon, Hero, heroReady, releaseUnworn, TRINKET_ICONS } from '../hero.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -24,6 +24,8 @@ export interface BagSceneDeps {
 
 const SLOT_NAMES: Record<Slot, string> = { weapon: 'Weapon', shield: 'Shield', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 const WOOD_INK = '#3a2410';
+/** A slot's picture: the trinket slot's own, never the old necklace (Robin, 2026-11-03; Mitch, AD's charm on a hook). */
+const slotFrame = (slot: Slot): string => (slot === 'trinket' ? 'mark_ring' : `slot_${slot}`);
 const GOOD = '#2f7a35';
 const BAD = '#a23c2c';
 const BACKS: Record<string, string> = { meadow: meadowBackJpg, forest: forestBackJpg, harvest: harvestBackJpg };
@@ -183,7 +185,7 @@ export class BagScene extends Phaser.Scene {
   }
 
   private artOf(g: GearItem): { texture: string; frame: string } {
-    return gearIcon(this, g, this.game_.me.classId) ?? { texture: KIT, frame: `slot_${g.slot}` };
+    return gearIcon(this, g, this.game_.me.classId) ?? { texture: KIT, frame: slotFrame(g.slot) };
   }
 
   // ---- what is shown ------------------------------------------------------------------------------------------------
@@ -209,7 +211,7 @@ export class BagScene extends Phaser.Scene {
       slots.forEach((slot, i) => {
         const g = me.equipment[slot];
         const chosen = this.picked?.kind === 'worn' && this.picked.slot === slot;
-        const art = g ? this.artOf(g) : { texture: KIT, frame: `slot_${slot}`, alpha: 0.55 };
+        const art = g ? this.artOf(g) : slot === 'trinket' && this.textures.exists(TRINKET_ICONS.key) ? { texture: TRINKET_ICONS.key, frame: 'slot_trinket', alpha: 0.55 } : { texture: KIT, frame: slotFrame(slot), alpha: 0.55 };
         this.cubby(g ? `cubby_${g.rarity}` : 'cubby_plain', x, worn.y + i * worn.step, worn.size, art, chosen, () => this.pick({ kind: 'worn', slot }));
       });
     column(left, worn.leftX);

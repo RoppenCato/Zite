@@ -136,54 +136,6 @@
     "value": 1,
     "text": "Chests, springs and shrines give again to you in half the time."
   },
-  "misers-coin": {
-    "name": "Dragon's Penny",
-    "slot": "trinket",
-    "tier": 1,
-    "power": "greed",
-    "value": 2,
-    "text": "Twice the gold from every fight, half the xp."
-  },
-  "heartstone": {
-    "name": "Honeycomb Heart",
-    "slot": "trinket",
-    "tier": 2,
-    "power": "regen",
-    "value": 0.05,
-    "text": "Heals a twentieth of your HP at the end of every round in a fight."
-  },
-  "sapphire-tear": {
-    "name": "Moondrop",
-    "slot": "trinket",
-    "tier": 2,
-    "power": "manaWell",
-    "value": 3,
-    "text": "Three more mana back every round of a fight."
-  },
-  "lucky-charm": {
-    "name": "Rabbit's Foot",
-    "slot": "trinket",
-    "tier": 3,
-    "power": "lucky",
-    "value": 300000,
-    "text": "Roll the die again once every five minutes: a Charm chip appears after a roll."
-  },
-  "phoenix-feather": {
-    "name": "Phoenix Feather",
-    "slot": "trinket",
-    "tier": 4,
-    "power": "phoenix",
-    "value": 0.5,
-    "text": "When you would fall, you rise where you stand with half your HP instead, once every half hour."
-  },
-  "wolf-totem": {
-    "name": "Heartbeat Drum",
-    "slot": "trinket",
-    "tier": 5,
-    "power": "fury",
-    "value": 0.25,
-    "text": "Every point of your meter has a one-in-four chance to bring a second."
-  },
   "first-light": {
     "name": "First Light",
     "slot": "weapon",
@@ -312,63 +264,6 @@
       "hpRegen": 0.02
     },
     "text": "You regain 2% of your HP each round."
-  },
-  "lucky-acorn": {
-    "name": "Lucky Acorn",
-    "slot": "trinket",
-    "tier": 1,
-    "traits": {
-      "crit": 0.04
-    },
-    "text": "4% more crits."
-  },
-  "bottled-storm": {
-    "name": "Bottled Storm",
-    "slot": "trinket",
-    "tier": 3,
-    "traits": {
-      "manaRegen": 0.02
-    },
-    "text": "You regain 2% of your mana each round."
-  },
-  "saints-tooth": {
-    "name": "Saint’s Tooth",
-    "slot": "trinket",
-    "tier": 4,
-    "traits": {
-      "healPower": 1.2,
-      "potionPower": 1.2
-    },
-    "text": "Your healing and your flasks work 20% better."
-  },
-  "sand-of-patience": {
-    "name": "Sand of Patience",
-    "slot": "trinket",
-    "tier": 5,
-    "traits": {
-      "meterStart": 2
-    },
-    "text": "Start each fight with 2 points of your meter."
-  },
-  "drowned-compass": {
-    "name": "Drowned Compass",
-    "slot": "trinket",
-    "tier": 6,
-    "traits": {
-      "winHeal": 0.04,
-      "winMana": 0.08
-    },
-    "text": "Each win heals 4% of your HP and gives back 8% of your mana."
-  },
-  "kings-seal": {
-    "name": "The King’s Signet",
-    "slot": "trinket",
-    "tier": 7,
-    "traits": {
-      "hpMult": 1.1,
-      "attackMult": 1.05
-    },
-    "text": "10% more HP and 5% more attack."
   },
   "captains-hat": {
     "name": "Captain’s Tricorn",

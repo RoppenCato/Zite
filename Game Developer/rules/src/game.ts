@@ -5,14 +5,14 @@
 import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './skills.ts';
 import { clockOf, isNight, nextMorning } from './daynight.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, TRINKET_IDS, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded } from './gear.ts';
+import { makeTrinket, makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
-import { checkPath } from './paths.ts';
+import { checkPath, stepChoices } from './paths.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import { sealsAllWon } from './seals.ts';
 import { buildBoard, withArenas, withDungeons, withSecrets } from './world.ts';
@@ -512,7 +512,10 @@ function move(state: GameState, action: MoveAction, character: Character, rng: R
   const busy = boardBusy(character);
   if (busy) return reject(state, action, busy);
   if (character.steps === 0) return reject(state, action, 'roll first');
-  const problem = checkPath(state.board, character.space, character.steps, action.path, walkable(character));
+  // A stride (Gambler's Die, Robin, 2026-11-03) lets the roll be walked a step or two fewer or more.
+  const choices = stepChoices(character.steps, traitsOf(character).stride ?? 0);
+  const problems = choices.map((n) => checkPath(state.board, character.space, n, action.path, walkable(character)));
+  const problem = problems.includes(null) ? null : problems[choices.indexOf(character.steps)] ?? problems[0]!;
   if (problem) return reject(state, action, problem);
   // The lands you walk through, you have seen.
   character = seeing(state, character, action.path);
@@ -920,7 +923,9 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
     const d = PROGRESSION.dayNight;
     const f0 = fighting.fight!;
     const en = f0.enemy;
-    fighting = { ...fighting, fight: { ...f0, enemy: { ...en, hp: Math.round(en.hp * d.enemyMult), maxHp: Math.round(en.maxHp * d.enemyMult), attack: Math.round(en.attack * d.enemyMult), xp: Math.round(en.xp * d.rewardMult), gold: Math.round(en.gold * d.rewardMult) } } };
+    // An Owl Feather keeps the night's pay and none of its strength (2026-11-03).
+    const m = traitsOf(c).nightOwl ? 1 : d.enemyMult;
+    fighting = { ...fighting, fight: { ...f0, enemy: { ...en, hp: Math.round(en.hp * m), maxHp: Math.round(en.maxHp * m), attack: Math.round(en.attack * m), xp: Math.round(en.xp * d.rewardMult), gold: Math.round(en.gold * d.rewardMult) } } };
   }
   const e = fighting.fight!.enemy;
   events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...e, moves: e.moves.map((m) => ({ ...m })) }, space });
@@ -1078,7 +1083,8 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
     const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
     return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, gear: null, price: cost, gold }] };
   }
-  if (action.slot !== undefined && SLOTS.includes(action.slot)) {
+  // Trinkets are found, not sold on a shop's shelves (Robin, 2026-11-03: no more necklaces).
+  if (action.slot !== undefined && SLOTS.includes(action.slot) && action.slot !== 'trinket') {
     const tier = offer.tier;
     const got = nextGearId(state);
     const line = action.line ?? (offer.lines.includes('heavy') ? 'heavy' : offer.lines[0]);
@@ -1275,6 +1281,13 @@ function skill(state: GameState, action: SkillAction, c: Character): ApplyResult
     if (!to || !land || to.kind !== 'town' || c.steps > 0) return reject(state, action, 'not now');
     const opened = Object.values(state.board.areas).filter((a) => !a.dungeon && a.tier <= land.tier).map((a) => a.id);
     return done({ ...c, space: to.id, opened: [...new Set([...c.opened, ...opened])] });
+  }
+  if (action.op === 'testTrinket') {
+    // The next trinket, to try (Robin's testing, 2026-11-03).
+    const at = TRINKET_IDS.indexOf(c.equipment.trinket?.trinket ?? '');
+    const got = nextGearId(state);
+    const piece = makeTrinket(got.id, TRINKET_IDS[(at + 1) % TRINKET_IDS.length]!);
+    return { state: withCharacter(got.state, capped({ ...c, equipment: { ...c.equipment, trinket: piece } })), events: [] };
   }
   if (action.op === 'testLegend') {
     // The next of this class's legendary weapons, to look at (Robin's testing).

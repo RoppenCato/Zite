@@ -7,7 +7,7 @@
 
 import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
-import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
+import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA, TRINKET_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, gearKind, guardOf } from './gear.ts';
 import { growBoard } from './generate.ts';
@@ -243,7 +243,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   const move = action.move;
   switch (move.kind) {
     case 'attack': {
-      const hitsN = attackHitsOf(r.c);
+      // Twin Fangs (Robin, 2026-11-03): twice the hits at half the damage, so a Rogue's three become six.
+      const hitsN = traits.twinStrikes ? (attackHitsOf(r.c) ?? 1) * 2 : attackHitsOf(r.c);
       if (p.quickdraw && f.round === 1 && !f.used.includes('quickdraw')) {
         f.used.push('quickdraw');
         f.sureCrit += 1;
@@ -255,6 +256,16 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       // Of Haste: now and then the whole attack again.
       if (r.s.bonus.haste && f.enemy.hp > 0 && !r.done && rng.next() < r.s.bonus.haste) strike(r, 'Attack', 1, hitsN ?? 1, r.s.crit, !!traits.plainMagic, { split: !!hitsN, melee: true });
       if (f.clone && f.enemy.hp > 0 && !r.done) strike(r, 'Shadow Clone', f.clone.power, hitsN ?? 1, r.s.crit, false, { split: !!hitsN });
+      // A trinket's lightning (Robin, 2026-11-03): once an Attack at most; an ordinary creature loses its next move.
+      if (traits.lightning && f.enemy.hp > 0 && !r.done && rng.next() < traits.lightning) {
+        const bolt = blow(r.s.attack + r.s.magic, TRINKET_DATA.lightning.power, enemyDefense(f.enemy), 0, rng);
+        f.enemy.hp = Math.max(0, f.enemy.hp - bolt.damage);
+        events.push({ type: 'hit', action: id, player, by: 'player', move: 'Lightning', damage: bolt.damage, crit: false, hp: f.enemy.hp, absorbed: 0 });
+        if (f.enemy.hp > 0 && f.enemy.role === 'mob') {
+          f.enemy.stunned += TRINKET_DATA.lightning.stun;
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'stunned', rounds: TRINKET_DATA.lightning.stun });
+        } else if (f.enemy.hp > 0) events.push({ type: 'resisted', action: id, player, kind: 'stunned' });
+      }
       break;
     }
     case 'charge':
@@ -1068,6 +1079,12 @@ function win(r: Round): ApplyResult {
   const talents = traitsOf(c);
   if (talents.winHeal) next = { ...next, hp: Math.min(r.s.maxHp, next.hp + Math.round(r.s.maxHp * talents.winHeal)) };
   if (talents.winMana) next = { ...next, mana: Math.min(r.s.maxMana, next.mana + Math.round(r.s.maxMana * talents.winMana)) };
+  // Traveller's Bread and its kin: a little back after a fight won out in the world (Robin, 2026-11-03).
+  if (talents.wildHeal && next.hp < r.s.maxHp) {
+    const hp = Math.min(r.s.maxHp, next.hp + talents.wildHeal);
+    events.push({ type: 'healed', action: id, player, amount: hp - next.hp, hp });
+    next = { ...next, hp };
+  }
   const levelBefore = next.level;
   next = gainXp(next, xp, action, events);
   next = questProgress(next, { beat: e.id }, rng, action, events);

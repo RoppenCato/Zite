@@ -1,5 +1,5 @@
 {
-  "_about": "Sets (Robin, 2026-11-02: 'a few set bonuses, with 2(set), 4(set) so you can mix if you like'). Five pieces each, never a weapon, so two of one and two of another works. The bonuses use the same traits as talents. Which land they drop from goes by tier. Names and numbers mine.",
+  "_about": "Sets (Robin, 2026-11-02: 'a few set bonuses, with 2(set), 4(set) so you can mix if you like'). Five pieces each, never a weapon, so two of one and two of another works. The bonuses use the same traits as talents. Which land they drop from goes by tier. Names and numbers mine. No set has a trinket since trinkets came (Robin, 2026-11-03): each such set took the slot it lacked.",
   "warden": {
     "name": "The Warden's Watch",
     "word": "Warden's",
@@ -66,7 +66,7 @@
       "armour",
       "cape",
       "boots",
-      "trinket"
+      "gloves"
     ],
     "bonuses": {
       "2": {
@@ -94,7 +94,7 @@
       "gloves",
       "helm",
       "cape",
-      "trinket"
+      "boots"
     ],
     "bonuses": {
       "2": {
@@ -122,7 +122,7 @@
       "boots",
       "cape",
       "helm",
-      "trinket"
+      "armour"
     ],
     "bonuses": {
       "2": {
@@ -178,7 +178,7 @@
       "armour",
       "gloves",
       "cape",
-      "trinket"
+      "boots"
     ],
     "bonuses": {
       "2": {

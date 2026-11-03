@@ -1,6 +1,6 @@
 // How a class grows (Robin, 2026-11-02: "think like how wow classic does it, where you mainly go down one tree, and take some in the others"; "enough points and abilities up to level 30"). A point a level, and a region's boss one more. The class's own four come free with the level; a point raises them. Each of the three trees has eight tiers: a tier asks for points already spent in that tree and a level, so a tree is walked down, and there are never enough points for all three. Five abilities can be carried from level 15, four before. Everything can be reset for free in a town.
 
-import { ABILITIES, CLASS_DATA, SETS, UNIQUES, type ClassTraits } from './data.ts';
+import { ABILITIES, CLASS_DATA, SETS, TRINKETS, UNIQUES, type ClassTraits } from './data.ts';
 import { SLOTS, type Character } from './types.ts';
 
 export const MAX_CARRIED = 5;
@@ -48,6 +48,8 @@ export function traitsOf(c: Character): ClassTraits {
   for (const slot of SLOTS) {
     const u = c.equipment[slot]?.unique;
     if (u && UNIQUES[u]?.traits) fromGear.push(UNIQUES[u]!.traits!);
+    const t = c.equipment[slot]?.trinket;
+    if (t && TRINKETS[t]?.traits) fromGear.push(TRINKETS[t]!.traits!);
   }
   for (const [set, worn] of Object.entries(setsWorn(c))) {
     for (const [need, bonus] of Object.entries(SETS[set]!.bonuses)) if (worn >= Number(need)) fromGear.push(bonus.traits);

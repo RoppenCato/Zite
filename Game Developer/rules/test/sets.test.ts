@@ -76,7 +76,8 @@ describe('the legendary weapons (Robin, 2026-11-02)', () => {
 
 describe('the gear to level 30', () => {
   it('every slot has uniques, early and late', () => {
-    for (const slot of SLOTS) {
+    // The trinket slot holds trinkets instead (Robin, 2026-11-03).
+    for (const slot of SLOTS.filter((s) => s !== 'trinket')) {
       const tiers = UNIQUE_IDS.filter((id) => UNIQUES[id]!.slot === slot).map((id) => UNIQUES[id]!.tier);
       expect(tiers.length, slot).toBeGreaterThanOrEqual(3);
     }

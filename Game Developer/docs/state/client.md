@@ -577,3 +577,7 @@ Text never goes under 13 px (Robin, 2026-11-01, `hires.ts`), so `BagScene.slip` 
 ## The Arena legends on screen (2026-11-03)
 
 `assets/arena_legends` (Mitch, AD): loaded while worn like the other legends, icons in `arena_legend_icons`; an orb's frames are `<art>_orb` (`legendFrames`). Closing the hero sheet frees a legend atlas nobody wears (`releaseUnworn`). The Arena's gate shows Legend only to a holder of every Seal, says what a clear would win, and otherwise says a fourth way exists.
+
+## Trinkets on screen (Robin, 2026-11-03)
+
+No necklace on the hero: the trinket layer is off. `assets/trinkets` (Mitch, AD): `trinket_icons` (a frame per trinket id, and `slot_trinket`, the empty slot as a charm on a hook) and `fx_lightning` (clip `strike`, pivot on the foe's chest, drawn additively, loaded only for a fighter who can call lightning). The loot card and the hero sheet say "Trinket" and show its passive in one line. The shop shows no trinket rows. After a roll with a stride, the lit spots include the nearer and further ones (the roll's own first). A `Lightning` hit plays the strike (the bolt drawn in code, `FightScene.bolt`, only if it is not loaded) with Nigel, SD's `fight/lightning`. Settings, Testing, has Test: trinket. The Four-Leaf Clover's chip says Reroll.

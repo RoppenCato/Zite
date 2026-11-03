@@ -24,6 +24,9 @@ import owlData from '../../assets/effects/owl/owl.json';
 import owlJson from '../../assets/effects/owl/owl.json?url';
 import owlPng from '../../assets/effects/owl/owl.png';
 import rogueData from '../../assets/fx_rogue/fx_rogue.json';
+import lightningData from '../../assets/trinkets/fx_lightning.json';
+import lightningJson from '../../assets/trinkets/fx_lightning.json?url';
+import lightningPng from '../../assets/trinkets/fx_lightning.png';
 import rogueJson from '../../assets/fx_rogue/fx_rogue.json?url';
 import roguePng from '../../assets/fx_rogue/fx_rogue.png';
 import { ensureClips, msBefore, type ActionData } from './clips.ts';
@@ -38,6 +41,8 @@ const ATLASES = {
   fx_rogue: { png: roguePng, json: rogueJson, actions: actionsOf(rogueData), scale: 0.5 },
   // Blood on a Ninja's blade (Mitch, AD, 2026-11-03).
   fx_blood: { png: bloodPng, json: bloodJson, actions: actionsOf(bloodData), scale: 0.5 },
+  // A trinket's lightning and the storm blade's (Mitch, AD, 2026-11-03): the pivot is where it strikes, drawn additively.
+  fx_lightning: { png: lightningPng, json: lightningJson, actions: actionsOf(lightningData), scale: 0.5 },
 } as const;
 type AtlasName = keyof typeof ATLASES;
 
@@ -86,8 +91,8 @@ export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: 
 }
 
 /** The clips for a fight; call from its preload. The owl is only for an Archer. */
-export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false): void {
-  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : [])]) {
+export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false, withLightning = false): void {
+  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : []), ...(withLightning ? (['fx_lightning'] as const) : [])]) {
     if (!scene.textures.exists(name)) scene.load.atlas(name, ATLASES[name].png, ATLASES[name].json);
   }
 }
