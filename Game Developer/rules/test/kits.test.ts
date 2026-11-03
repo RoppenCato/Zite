@@ -198,11 +198,58 @@ describe('the Rogue', () => {
     expect(fight(s).dance).toBeNull();
   });
 
-  it('Alchemist: a coating poisons on each hit, and the poison grows', () => {
+  it('Alchemist: a coating poisons on each hit, and the sting holds steady instead of growing (Robin, 2026-11-03)', () => {
     const coated = apply(versus('rogue', 'slime', { abilities: { 'poison-coat': 1, 'alchemist-brew': 1 } }, tough), turn(ability('poison-coat')), makeRng('a'), NOW);
-    const r = apply(coated.state, turn(attack, 'none', 'f2'), makeRng('a'), NOW);
-    expect(fight(r.state).enemy.poison!.damage).toBeGreaterThanOrEqual(3);
-    expect(fight(r.state).coat!.hits).toBe(3);
+    const one = apply(coated.state, turn(attack, 'none', 'f2'), makeRng('a'), NOW);
+    const sting = fight(one.state).enemy.poison!.damage;
+    expect(sting).toBeGreaterThanOrEqual(3);
+    expect(fight(one.state).coat!.hits).toBe(3);
+    const two = apply(one.state, turn(attack, 'none', 'f3'), makeRng('b'), NOW);
+    expect(fight(two.state).enemy.poison!.damage).toBeLessThanOrEqual(sting + 2);
+  });
+
+  it('Toxic Jab is far harder on a poisoned foe', () => {
+    const jab = (poison: boolean) => {
+      const s = versus('rogue', 'slime', { abilities: { 'toxic-jab': 1 } }, { ...tough, poison: poison ? { rounds: 3, damage: 1 } : null });
+      return hits(apply(s, turn(ability('toxic-jab')), makeRng('j'), NOW).events, 'player')[0]!.damage;
+    };
+    expect(jab(true)).toBeGreaterThan(jab(false) * 1.4);
+  });
+
+  it('Ninja: each attack leaves blood, up to three; Crimson Arc spends it all, harder for each drop, and Red Mist heals for it', () => {
+    let s = versus('rogue', 'slime', { abilities: { 'blood-on-the-blade': 1, 'crimson-arc': 1, 'red-mist': 1 } }, { ...tough, next: { name: 'Nap', power: 0, weight: 1 }, moves: [{ name: 'Nap', power: 0, weight: 1 }] });
+    for (let i = 0; i < 4; i++) s = apply(s, turn(attack, 'none', `b${i}`), makeRng(`b${i}`), NOW).state;
+    expect(fight(s).blood).toBe(3);
+    s = { ...s, characters: { [P]: { ...me(s), hp: 50 } } };
+    const before = me(s).hp;
+    const arc = apply(s, turn(ability('crimson-arc'), 'none', 'arc'), makeRng('arc'), NOW);
+    expect(fight(arc.state).blood).toBe(0);
+    expect(arc.events.some((e) => e.type === 'healed')).toBe(true);
+    const dry = apply({ ...s, characters: { [P]: { ...me(s), hp: before, fight: { ...fight(s), blood: 0 } } } }, turn(ability('crimson-arc'), 'none', 'arc'), makeRng('arc'), NOW);
+    expect(hits(arc.events, 'player')[0]!.damage).toBeGreaterThan(hits(dry.events, 'player')[0]!.damage * 1.5);
+  });
+
+  it('Bleed Out opens a bleed that stings each round; Black Blood doubles both stings on a foe also poisoned', () => {
+    const cut = apply(versus('rogue', 'slime', { abilities: { 'bleed-out': 1 } }, tough), turn(ability('bleed-out'), 'none', 'c'), makeRng('c'), NOW);
+    expect(fight(cut.state).enemy.bleed).toBeTruthy();
+    expect(cut.events.some((e) => e.type === 'poisoned' && e.bleed)).toBe(true);
+    const both = (black: boolean) => {
+      const s = versus('rogue', 'slime', { abilities: black ? { 'black-blood': 1 } : {} }, { ...tough, poison: { rounds: 3, damage: 5 }, bleed: { rounds: 3, damage: 5 } });
+      return apply(s, turn(ability('shadowstep'), 'none', 'd'), makeRng('d'), NOW).events.filter((e) => e.type === 'poisoned' && e.target === 'enemy').reduce((n, e) => n + (e.type === 'poisoned' ? e.damage : 0), 0);
+    };
+    expect(both(true)).toBe(both(false) * 2);
+  });
+
+  it('Grand Finale by tree: Shadow strikes three times; Venom bursts the poison; Blood opens a bleed', () => {
+    const finale = (abilities: Record<string, number>, enemy: object = {}, fightPatch: object = {}) => apply(versus('rogue', 'slime', { abilities: { eviscerate: 1, ...abilities } }, { ...tough, ...enemy }, { meter: 4, ...fightPatch }), turn(ability('eviscerate'), 'none', 'e'), makeRng('e'), NOW);
+    expect(hits(finale({}).events, 'player')).toHaveLength(1);
+    expect(hits(finale({ 'shadow-finale': 1 }).events, 'player')).toHaveLength(3);
+    const venom = finale({ 'venom-finale': 1 }, { poison: { rounds: 3, damage: 10 } });
+    const plain = finale({}, { poison: { rounds: 3, damage: 10 } });
+    expect(fight(venom.state).enemy.hp).toBeLessThan(fight(plain.state).enemy.hp - 15);
+    const bled = finale({ 'blood-finale': 1 }, {}, { blood: 3 });
+    expect(fight(bled.state).enemy.bleed).toBeTruthy();
+    expect(fight(bled.state).blood).toBe(0);
   });
 });
 

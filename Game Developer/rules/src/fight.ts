@@ -207,6 +207,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       ...old.enemy,
       weakened: old.enemy.weakened ? { ...old.enemy.weakened } : null,
       poison: old.enemy.poison ? { ...old.enemy.poison } : null,
+      bleed: old.enemy.bleed ? { ...old.enemy.bleed } : null,
       armoured: old.enemy.armoured ? { ...old.enemy.armoured } : null,
       evade: old.enemy.evade ?? 0,
       phase: old.enemy.phase ?? 1,
@@ -386,8 +387,21 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         if (rk.windupBonus && (f.enemy.charged || f.enemy.next?.charge)) power *= rk.windupBonus;
         if (rk.infuseBonus && f.infuse) power *= rk.infuseBonus;
         if (rk.healedPower) power += (rk.healedPower * f.healed) / Math.max(1, r.s.attack + r.s.magic);
+        // The new Rogue (Robin, 2026-11-03): blood spent, a poisoned foe, a finale by its tree.
+        const blood = f.blood ?? 0;
+        if (rk.perBlood) power += rk.perBlood * blood;
+        if (rk.vsPoisoned && f.enemy.poison) power *= rk.vsPoisoned;
+        const finale = move.ability === 'eviscerate';
+        const shadow = finale && traits.shadowFinale ? traits.shadowFinale : 0;
         const before = f.enemy.hp;
-        strike(r, ability.name, power * powerMult, rk.hits ?? 1, rk.crit ?? r.s.crit, true, { split: rk.split, melee: rk.melee, ignoreDefense: rk.ignoreDefense });
+        strike(r, ability.name, power * powerMult, shadow ? 3 : (rk.hits ?? 1), (rk.crit ?? r.s.crit) + shadow * meterCost, true, { split: shadow ? true : rk.split, melee: rk.melee, ignoreDefense: rk.ignoreDefense, noBlood: !!rk.spendBlood || finale });
+        if (!r.done && finale && traits.venomFinale && f.enemy.poison && meterCost > 0) {
+          hurtEnemy(r, Math.max(1, Math.round(f.enemy.poison.damage * meterCost * traits.venomFinale)));
+          if (r.done) return r.done;
+        }
+        if (!r.done && f.enemy.hp > 0 && rk.bleed) openBleed(r, Math.max(1, Math.round(r.s.attack * (rk.bleed.power + (rk.bleed.perBlood ?? 0) * blood))), rk.bleed.rounds);
+        if (!r.done && f.enemy.hp > 0 && finale && traits.bloodFinale && blood > 0) openBleed(r, Math.max(1, Math.round(r.s.attack * traits.bloodFinale * blood)), 3);
+        if ((rk.spendBlood || (finale && traits.bloodFinale)) && blood > 0) spendBlood(r, blood);
         if (rk.healDealt && before > f.enemy.hp) healing(r, Math.max(1, Math.round((before - f.enemy.hp) * rk.healDealt * (traits.healPower ?? 1))));
         if (r.done) return r.done;
       }
@@ -423,7 +437,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: rk.weaken.rounds });
         }
         if (rk.poison) {
-          f.enemy.poison = { rounds: rk.poison.rounds, damage: Math.max(1, Math.round(r.s.attack * rk.poison.power * (traits.poisonPower ?? 1))) };
+          f.enemy.poison = { rounds: Math.max(rk.poison.rounds, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(r.s.attack * rk.poison.power * (traits.poisonPower ?? 1)))) };
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: rk.poison.rounds });
         }
       }
@@ -459,11 +473,22 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   }
 
   // ---- the enemy's poison -----------------------------------------------------------------------------------------
+  // Black Blood (Robin, 2026-11-03: "combining blood and poison"): a foe both poisoned and bleeding takes each sting twice.
+  const twice = traitsOf(r.c).blackBlood && f.enemy.poison && f.enemy.bleed ? 2 : 1;
   if (f.enemy.poison) {
-    f.enemy.hp = Math.max(0, f.enemy.hp - f.enemy.poison.damage);
-    events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: f.enemy.poison.damage, hp: f.enemy.hp });
+    f.enemy.hp = Math.max(0, f.enemy.hp - f.enemy.poison.damage * twice);
+    events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: f.enemy.poison.damage * twice, hp: f.enemy.hp });
     f.enemy.poison.rounds -= 1;
     if (f.enemy.poison.rounds <= 0) f.enemy.poison = null;
+    if (f.enemy.hp <= 0) return win(r);
+    phaseCheck(r);
+  }
+
+  if (f.enemy.bleed) {
+    const bleed = f.enemy.bleed;
+    f.enemy.hp = Math.max(0, f.enemy.hp - bleed.damage * twice);
+    events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: bleed.damage * twice, hp: f.enemy.hp, bleed: true });
+    f.enemy.bleed = bleed.rounds > 1 ? { ...bleed, rounds: bleed.rounds - 1 } : null;
     if (f.enemy.hp <= 0) return win(r);
     phaseCheck(r);
   }
@@ -701,7 +726,7 @@ function gainMeterFlat(r: Round, n: number): void {
  * sure crits, Stormcaller's third hits and the Sunblade apply; lifesteal heals; Frostbrand chills and Venomtooth poisons.
  * Ends the fight (sets `done`) when the enemy falls.
  */
-function strike(r: Round, move: string, power: number, hits: number, crit: number, spell = false, how: { split?: boolean; melee?: boolean; ignoreDefense?: boolean } = {}): void {
+function strike(r: Round, move: string, power: number, hits: number, crit: number, spell = false, how: { split?: boolean; melee?: boolean; ignoreDefense?: boolean; noBlood?: boolean } = {}): void {
   const { f, s, rng, events } = r;
   const traits = traitsOf(r.c);
   const infused = how.melee ? f.infuse : null;
@@ -788,8 +813,9 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
       events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: 2 });
     }
     if (f.enemy.hp > 0 && f.coat) {
-      const damage = (f.enemy.poison?.damage ?? 0) + Math.max(1, Math.round(s.attack * f.coat.power * (traits.poisonPower ?? 1)));
-      f.enemy.poison = { rounds: f.coat.rounds, damage };
+      // A steady sting: a fresh hit keeps it going, and never adds to it (Robin, 2026-11-03: poison growing every turn "is what made it op").
+      const damage = Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(s.attack * f.coat.power * (traits.poisonPower ?? 1))));
+      f.enemy.poison = { rounds: Math.max(f.coat.rounds, f.enemy.poison?.rounds ?? 0), damage };
       f.coat = f.coat.hits > 1 ? { ...f.coat, hits: f.coat.hits - 1 } : null;
       events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: f.enemy.poison.rounds });
     }
@@ -816,9 +842,25 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
       }
     }
   }
+  // Blood on the blade: a drop for each move that lands with a blade, up to the talent's (Robin, 2026-11-03).
+  if (traits.blood && !how.noBlood && f.enemy.hp < (f.enemy.maxHp ?? Infinity) && holdsFor(r.c, ['blade'])) f.blood = Math.min(traits.blood, (f.blood ?? 0) + 1);
   gainMeter(r, 'hit', 1);
   if (f.enemy.hp <= 0) r.done = win(r);
   else phaseCheck(r);
+}
+
+/** A bleed opened, or a stronger one kept (Robin, 2026-11-03). */
+function openBleed(r: Round, damage: number, rounds: number): void {
+  const b = r.f.enemy.bleed;
+  r.f.enemy.bleed = { rounds: Math.max(rounds, b?.rounds ?? 0), damage: Math.max(damage, b?.damage ?? 0) };
+  r.events.push({ type: 'effect', action: r.action.id, player: r.action.player, target: 'enemy', kind: 'bleed', rounds: r.f.enemy.bleed.rounds });
+}
+
+/** The blood on the blade spent; Red Mist heals for it. */
+function spendBlood(r: Round, drops: number): void {
+  r.f.blood = 0;
+  const mist = traitsOf(r.c).redMist;
+  if (mist) healing(r, Math.max(1, Math.round(r.s.maxHp * mist * drops)));
 }
 
 /** Damage to the enemy outside a strike: thorns, a mirrored blow, a counter. */

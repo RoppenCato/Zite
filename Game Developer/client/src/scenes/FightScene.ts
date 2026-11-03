@@ -258,6 +258,17 @@ export class FightScene extends Phaser.Scene {
 
   override update(_time: number, delta: number): void {
     // A coated blade drips (Robin, 2026-11-03), about once a second.
+    // Blood on the blade drips red, quicker the more there is (Robin, 2026-11-03; Mitch, AD's clips).
+    const blood = this.game_.me.fight?.blood ?? 0;
+    if (blood > 0 && !this.game_.me.fight?.coat) {
+      this.dripIn -= delta;
+      if (this.dripIn <= 0) {
+        this.dripIn = 1300 - blood * 250 + Math.random() * 250;
+        const tip = { x: FIGHT_LAYOUT.heroX + 8, y: this.feetY - 28 };
+        const drop = playOnce(this, 'blood_drip', tip.x, tip.y, 'fx_blood');
+        drop?.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => playOnce(this, 'blood_splash', tip.x + 2, this.feetY - 2, 'fx_blood'));
+      }
+    }
     if (this.game_.me.fight?.coat && this.game_.me.classId === 'rogue') {
       this.dripIn -= delta;
       if (this.dripIn <= 0) {
@@ -517,7 +528,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         if (e.target === 'enemy') {
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
-          this.say(e.burn ? `${this.enemyName} burns for ${e.damage}.` : `The poison bites ${this.enemyName} for ${e.damage}.`);
+          this.say(e.burn ? `${this.enemyName} burns for ${e.damage}.` : e.bleed ? `${this.enemyName} bleeds for ${e.damage}.` : `The poison bites ${this.enemyName} for ${e.damage}.`);
         } else {
           this.flash(this.heroBody, e.damage, false);
           this.heroBar.set(e.hp, s.maxHp);
@@ -795,6 +806,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       e.stunned ? `stunned ${e.stunned}` : '',
       e.poison ? `poisoned ${e.poison.rounds}` : '',
       e.burn ? `burning ${e.burn.rounds}` : '',
+      e.bleed ? `bleeding ${e.bleed.rounds}` : '',
       e.sunder ? `exposed ${e.sunder.rounds}` : '',
       e.weakened ? `weakened ${e.weakened.rounds}` : '',
       e.armoured ? `hardened ${e.armoured.rounds}` : '',
@@ -828,6 +840,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       f.infuse ? `${f.infuse.kind === 'ice' ? 'frost' : 'storm'} ${f.infuse.rounds}` : '',
       f.dance ? (f.dance.exposed ? 'open' : `shadow ${f.dance.rounds}`) : '',
       f.coat ? `coated ${f.coat.hits}` : '',
+      f.blood ? `blood ${f.blood}` : '',
       f.clone ? `clone ${f.clone.rounds}` : '',
       f.guardian ? 'last light' : '',
       f.regen ? `healing ${f.regen.rounds}` : '',
@@ -881,6 +894,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         case 'weakened': return `${n} is weakened for ${rounds} ${rounds === 1 ? 'round' : 'rounds'}.`;
         case 'poison': return `${n} is poisoned for ${rounds} rounds.`;
         case 'burn': return `${n} is burning for ${rounds} rounds.`;
+        case 'bleed': return `${n} is bleeding for ${rounds} rounds.`;
         case 'sunder': return `${n} takes more damage for ${rounds} rounds.`;
         case 'interrupt': return `You break ${n}'s wind-up!`;
         case 'armoured': return `${n} hardens: its hide is thicker for ${rounds} rounds.`;

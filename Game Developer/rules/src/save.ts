@@ -1,6 +1,6 @@
 import { resetSkills } from './skills.ts';
 import { emptyEquipment } from './gear.ts';
-import { CLASS_DATA, DICE_DATA, PROGRESSION } from './data.ts';
+import { CLASS_DATA, DICE_DATA, PROGRESSION, ABILITIES } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
@@ -121,6 +121,8 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withHubOpen(withEastOpen(before));
+  // 37 → 38: the new Rogue's talents (renamed in withArena).
+  if (version === 37) return withArena(up);
   // 36 → 37: a land is veiled until you stand in it.
   if (version === 36) return withArena(up);
   // 35 → 36: Arenas and hidden places in the two far lands.
@@ -207,9 +209,21 @@ function withoutStandIn(state: GameState): GameState {
 }
 
 /** To 24 (Robin, 2026-11-02): the Arena's spots; anyone standing on one just stands at the Arena. */
+/** The Rogue's talents renamed (Robin, 2026-11-03): points spent on a talent gone stay spent on the one in its place. */
+const ROGUE_RENAMED: Record<string, string> = { shuriken: 'blood-on-the-blade', 'nin-fleet': 'blood-finale', 'nin-kunai': 'crimson-arc', 'nin-calm': 'red-mist', 'nin-lotus': 'bleed-out', 'nin-feint': 'black-blood', 'sha-cover': 'shadow-finale', 'sha-opening': 'thousand-cuts', 'alc-vitriol': 'toxic-jab', 'alc-tough': 'venom-finale' };
+function renamed(c: GameState['characters'][string]): GameState['characters'][string] {
+  if (!Object.keys(c.abilities).some((id) => ROGUE_RENAMED[id])) return c;
+  const abilities: Record<string, number> = {};
+  for (const [id, rank] of Object.entries(c.abilities)) {
+    const to = ROGUE_RENAMED[id] ?? id;
+    abilities[to] = Math.min(ABILITIES[to]?.ranks.length ?? rank, (abilities[to] ?? 0) + rank);
+  }
+  return { ...c, abilities, carried: c.carried.map((id) => ROGUE_RENAMED[id] ?? id) };
+}
+
 function withArena(state: GameState): GameState {
   // To 37 (Robin, 2026-11-03): a land stays veiled until you stand in it; all you had open, you have seen.
-  const characters = Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, c.seen ? c : { ...c, seen: [...c.opened] }]));
+  const characters = Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, renamed(c.seen ? c : { ...c, seen: [...c.opened] })]));
   return { ...state, version: STATE_VERSION, characters, board: withSecrets(withDungeons(withArenas(state.board))) };
 }
 
@@ -241,7 +255,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

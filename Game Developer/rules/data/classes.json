@@ -478,38 +478,38 @@
         "name": "Ninja",
         "text": "Strikes first and can always get away.",
         "nodes": [
-          "shuriken",
+          "blood-on-the-blade",
           "nin-hands",
           "ninja-step",
-          "nin-fleet",
+          "blood-finale",
           "smoke-escape",
           "nin-first",
-          "nin-kunai",
-          "nin-calm",
+          "crimson-arc",
+          "red-mist",
           "clone",
           "nin-edge",
           "nin-vanish",
           "nin-grip",
-          "nin-lotus",
-          "nin-feint",
+          "bleed-out",
+          "black-blood",
           "nin-army"
         ],
         "tiers": [
           [
-            "shuriken",
+            "blood-on-the-blade",
             "nin-hands"
           ],
           [
             "ninja-step",
-            "nin-fleet"
+            "blood-finale"
           ],
           [
             "smoke-escape",
             "nin-first"
           ],
           [
-            "nin-kunai",
-            "nin-calm"
+            "crimson-arc",
+            "red-mist"
           ],
           [
             "clone",
@@ -520,8 +520,8 @@
             "nin-grip"
           ],
           [
-            "nin-lotus",
-            "nin-feint"
+            "bleed-out",
+            "black-blood"
           ],
           [
             "nin-army"
@@ -535,9 +535,9 @@
           "shadow-dance",
           "sha-dark",
           "shadow-pact",
-          "sha-cover",
+          "shadow-finale",
           "ambush",
-          "sha-opening",
+          "thousand-cuts",
           "sha-cut",
           "sha-streak",
           "assassinate",
@@ -555,11 +555,11 @@
           ],
           [
             "shadow-pact",
-            "sha-cover"
+            "shadow-finale"
           ],
           [
             "ambush",
-            "sha-opening"
+            "thousand-cuts"
           ],
           [
             "sha-cut",
@@ -592,8 +592,8 @@
           "alc-flask",
           "caustic-flask",
           "alc-fumes",
-          "alc-vitriol",
-          "alc-tough",
+          "toxic-jab",
+          "venom-finale",
           "bitter-end",
           "alc-mend",
           "alc-bomb",
@@ -616,8 +616,8 @@
             "alc-fumes"
           ],
           [
-            "alc-vitriol",
-            "alc-tough"
+            "toxic-jab",
+            "venom-finale"
           ],
           [
             "bitter-end",
@@ -641,7 +641,7 @@
     "story": "Its Attack strikes three times, and each hit makes a crit more likely until one lands. It dodges often but takes more when caught, so it wins by not being hit. Every attack builds Mischief for its finishing moves. For you if you like fast fights and big numbers.",
     "showcase": {
       "ninja": [
-        "shuriken",
+        "crimson-arc",
         "clone",
         "nin-army"
       ],
@@ -677,8 +677,7 @@
     },
     "traits": {
       "counterChance": 0.25,
-      "counterPower": 0.8,
-      "rangedOnly": true
+      "counterPower": 0.8
     },
     "kit": [
       "volley",

@@ -9,6 +9,11 @@ import sealsJson from '../../assets/seals/seals.json?url';
 import sealsPng from '../../assets/seals/seals.png';
 import talentsJson from '../../assets/talents/talents.json?url';
 import talentsPng from '../../assets/talents/talents.png';
+import talentsV2Json from '../../assets/weapons_v2/talents_v2.json?url';
+import talentsV2Png from '../../assets/weapons_v2/talents_v2.png';
+import bloodData from '../../assets/weapons_v2/fx_blood.json';
+import bloodJson from '../../assets/weapons_v2/fx_blood.json?url';
+import bloodPng from '../../assets/weapons_v2/fx_blood.png';
 import bubbleData from '../../assets/effects/bubble/bubble.json';
 import bubbleJson from '../../assets/effects/bubble/bubble.json?url';
 import bubblePng from '../../assets/effects/bubble/bubble.png';
@@ -31,12 +36,16 @@ const ATLASES = {
   owl: { png: owlPng, json: owlJson, actions: actionsOf(owlData), scale: 0.5 },
   // The Rogue's slashes and the poisoned blade's drip (Mitch, AD, 2026-11-03).
   fx_rogue: { png: roguePng, json: rogueJson, actions: actionsOf(rogueData), scale: 0.5 },
+  // Blood on a Ninja's blade (Mitch, AD, 2026-11-03).
+  fx_blood: { png: bloodPng, json: bloodJson, actions: actionsOf(bloodData), scale: 0.5 },
 } as const;
 type AtlasName = keyof typeof ATLASES;
 
 const ICONS = 'abilities';
 /** The talents to level 30 (Mitch, AD): 4 MB in memory, so held only while the skill board or a fight that carries one is up. */
 const TALENT_ICONS = 'talents';
+/** The new Rogue's ten talents (Mitch, AD, 2026-11-03). */
+const TALENT_ICONS_V2 = 'talents_v2';
 
 /** The ability icons, for the fight, the trainer and the guide; call from a scene's preload. */
 export function preloadAbilityIcons(scene: Phaser.Scene): void {
@@ -52,6 +61,7 @@ export function preloadSeals(scene: Phaser.Scene): void {
 /** The talents' icons, for the skill board. */
 export function preloadTalentIcons(scene: Phaser.Scene): void {
   if (!scene.textures.exists(TALENT_ICONS)) scene.load.atlas(TALENT_ICONS, talentsPng, talentsJson);
+  if (!scene.textures.exists(TALENT_ICONS_V2)) scene.load.atlas(TALENT_ICONS_V2, talentsV2Png, talentsV2Json);
 }
 
 /** For a fight: only when something carried is drawn there. */
@@ -63,12 +73,13 @@ export function preloadCarriedIcons(scene: Phaser.Scene, carried: string[]): voi
 export function freeTalentIconsAfter(scene: Phaser.Scene): void {
   scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
     if (scene.textures.exists(TALENT_ICONS)) scene.textures.remove(TALENT_ICONS);
+    if (scene.textures.exists(TALENT_ICONS_V2)) scene.textures.remove(TALENT_ICONS_V2);
   });
 }
 
 /** An ability's icon at this size, or null when it has none. Its frame is the rules' ability id. */
 export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: number, size = 28): Phaser.GameObjects.Image | null {
-  const atlas = [ICONS, TALENT_ICONS].find((key) => scene.textures.exists(key) && scene.textures.get(key).has(ability));
+  const atlas = [ICONS, TALENT_ICONS, TALENT_ICONS_V2].find((key) => scene.textures.exists(key) && scene.textures.get(key).has(ability));
   if (!atlas) return null;
   const image = scene.add.image(x, y, atlas, ability);
   return image.setScale(size / image.width);
@@ -76,7 +87,7 @@ export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: 
 
 /** The clips for a fight; call from its preload. The owl is only for an Archer. */
 export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false): void {
-  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue'] as const) : [])]) {
+  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : [])]) {
     if (!scene.textures.exists(name)) scene.load.atlas(name, ATLASES[name].png, ATLASES[name].json);
   }
 }

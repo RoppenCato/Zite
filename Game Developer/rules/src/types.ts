@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 37;
+export const STATE_VERSION = 38;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -353,6 +353,8 @@ export interface Enemy {
   stunned: number;
   weakened: { rounds: number; mult: number } | null;
   poison: { rounds: number; damage: number } | null;
+  /** A Ninja's bleed (Robin, 2026-11-03): stings each round like poison. */
+  bleed?: { rounds: number; damage: number } | null;
   /** What it will do next round, shown ahead so the guard can be chosen for it (mine, 2026-10-31); null before it is known. */
   next: EnemyMove | null;
   /** Hardened: its defense multiplied for some rounds. */
@@ -417,6 +419,8 @@ export interface Fight {
   /** Shadow Dance: this round's blow in full, then `rounds` rounds at this dodge. */
   dance: { exposed: boolean; rounds: number; chance: number } | null;
   coat: { hits: number; power: number; rounds: number } | null;
+  /** Drops of blood on a Ninja's blade, up to three (Robin, 2026-11-03). */
+  blood?: number;
   blockUp: { rounds: number; mult: number } | null;
   thornsUp: { rounds: number; share: number } | null;
   counterUp: { rounds: number; chance: number } | null;
@@ -646,9 +650,9 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
   /** A poison bit; `hp` is what it left. */
-  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean }
+  | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */
   | { type: 'intent'; action: string; player: string; move: string; effect: EnemyEffect | null; charge: boolean }
   /** A boss's second phase began. */

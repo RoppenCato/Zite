@@ -3,7 +3,6 @@
  "alc-bomb": "fight/talent-fire-small",
  "alc-philosopher": "fight/revive",
  "alc-plague": "fight/talent-flask",
- "alc-vitriol": "fight/talent-flask",
  "ambush": "fight/talent-dark-cut",
  "arc-slash": "fight/talent-triple-cut",
  "arcane-bolt": "fight/talent-arcane-bolt",
@@ -48,8 +47,6 @@
  "mend": "fight/heal",
  "meteor": "fight/ability-meteor",
  "nin-army": "fight/talent-clone",
- "nin-kunai": "fight/talent-thrown",
- "nin-lotus": "fight/talent-triple-cut",
  "nin-vanish": "fight/ability-smoke-bomb",
  "overflow": "fight/ability-mana-shield",
  "owl-swoop": "fight/talent-owl-swoop",
@@ -76,7 +73,6 @@
  "shield-bash": "fight/ability-shield-bash",
  "shield-slam": "fight/ability-shield-bash",
  "shield-wall": "fight/ability-shield-wall",
- "shuriken": "fight/talent-thrown",
  "smite": "fight/talent-holy-blast",
  "smoke-escape": "fight/ability-smoke-bomb",
  "snare": "fight/ability-aimed-shot",
@@ -97,5 +93,9 @@
  "wiz-firestorm": "fight/ability-meteor",
  "wiz-phoenix": "fight/revive",
  "wiz-pillar": "fight/ability-fireball",
- "wiz-scorch": "fight/talent-fire-small"
+ "wiz-scorch": "fight/talent-fire-small",
+ "crimson-arc": "fight/talent-triple-cut",
+ "bleed-out": "fight/talent-triple-cut",
+ "thousand-cuts": "fight/talent-triple-cut",
+ "toxic-jab": "fight/talent-flask"
 }

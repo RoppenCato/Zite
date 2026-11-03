@@ -68,7 +68,7 @@ const A = {
   ambush: { name: 'Ambush', classId: 'rogue', text: 'A hard hit from the dark; far harder while you dance in shadow.', mana: 5, level: 8, ranks: up({ power: 1.2, danceBonus: 1.5 }, { power: 1.35 }, { power: 1.5, danceBonus: 1.7 }) },
   assassinate: { name: 'Assassinate', classId: 'rogue', text: 'Spend 3 Mischief: a sure crit, far harder on a foe under a third of its HP.', mana: 3, meter: 3, level: 12, ranks: up({ power: 1.3, sureCrit: 1, executeBelow: 0.34, executePower: 2.4 }, { power: 1.5, executePower: 2.8 }, { power: 1.7, executePower: 3.2 }) },
   // Alchemist
-  'poison-coat': { name: 'Poison Coating', classId: 'rogue', text: 'Coat your blade: your next hits poison, and each one makes it worse.', mana: 5, level: 3, ranks: up({ coat: { hits: 6, power: 0.11, rounds: 3 } }, { coat: { hits: 8, power: 0.13, rounds: 3 } }, { coat: { hits: 9, power: 0.15, rounds: 4 } }) },
+  'poison-coat': { name: 'Poison Coating', classId: 'rogue', text: 'Coat your blade: your next hits poison it, a steady sting that a fresh hit keeps going.', mana: 5, level: 3, ranks: up({ coat: { hits: 6, power: 0.3, rounds: 3 } }, { coat: { hits: 8, power: 0.34, rounds: 3 } }, { coat: { hits: 9, power: 0.38, rounds: 4 } }) },
   'alchemist-brew': rule('Master Brewer', 'rogue', 'Poison hurts half as much again, and potions do too.', { poisonPower: 1.5, potionPower: 1.5 }),
   'caustic-flask': { name: 'Caustic Flask', classId: 'rogue', text: 'A thrown flask: it takes more damage for a few rounds.', mana: 6, level: 8, ranks: up({ power: 0.7, sunder: { rounds: 3, mult: 1.25 } }, { sunder: { rounds: 3, mult: 1.32 } }, { sunder: { rounds: 4, mult: 1.4 } }) },
   'bitter-end': { name: 'Bitter End', classId: 'rogue', text: 'All the poison in its veins lands at once, and stronger.', mana: 5, level: 12, ranks: up({ consume: { kind: 'poison', mult: 2 } }, { consume: { kind: 'poison', mult: 2.4 } }, { consume: { kind: 'poison', mult: 2.8 } }) },
@@ -110,7 +110,7 @@ const C = {
   mage: {
     name: 'Magician', style: 'Mana Shield, weak staff, strong spells.', about: 'Block is a Mana Shield: half of each blow is paid in mana. Weak staff, strong magic, and mana is everything.',
     hp: 90, mana: 40, attack: 7, magic: 6, defense: 4, gold: 50, growth: { hp: 9, mana: 4, attack: 1, magic: 1, defense: 1 },
-    traits: { shieldMana: 0.5 },
+    traits: { shieldMana: 0.5, attackMagic: 0.8 },
     kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'time-warp'],
     meter: { name: 'Arcana', gain: 'round', text: 'Arcana builds a point every round.' },
     trees: {
@@ -134,7 +134,7 @@ const C = {
   ranger: {
     name: 'Hunter', style: 'Bows only, strikes first, shoots back.', about: 'Bows only. Often shoots back when struck, strikes first, and is at its best when it reads what comes next.',
     hp: 100, mana: 25, attack: 10, defense: 6, gold: 50, crit: 0.15, dodge: 0.05, firstStrike: true, growth: { hp: 10, mana: 3, attack: 2, defense: 1 },
-    traits: { counterChance: 0.25, counterPower: 0.8, rangedOnly: true },
+    traits: { counterChance: 0.25, counterPower: 0.8 },
     kit: ['volley', 'sure-shot'], core: ['volley', 'sure-shot', 'aimed-shot', 'mark'],
     meter: { name: 'Aim', gain: 'miss', text: 'Aim builds when a blow misses you and when you crit.' },
     trees: {
@@ -174,13 +174,13 @@ const TALENTS = {
   },
   rogue: {
     ninja: [
-      ['shuriken', 'nin-hands'], ['ninja-step', 'nin-fleet'], ['smoke-escape', 'nin-first'], ['nin-kunai', 'nin-calm'], ['clone', 'nin-edge'], ['nin-vanish', 'nin-grip'], ['nin-lotus', 'nin-feint'], ['nin-army'],
+      ['blood-on-the-blade', 'nin-hands'], ['ninja-step', 'blood-finale'], ['smoke-escape', 'nin-first'], ['crimson-arc', 'red-mist'], ['clone', 'nin-edge'], ['nin-vanish', 'nin-grip'], ['bleed-out', 'black-blood'], ['nin-army'],
     ],
     shadow: [
-      ['shadow-dance', 'sha-dark'], ['shadow-pact', 'sha-cover'], ['ambush', 'sha-opening'], ['sha-cut', 'sha-streak'], ['assassinate', 'sha-finish'], ['sha-blind', 'sha-sight'], ['sha-gloom', 'sha-feed'], ['sha-reaper'],
+      ['shadow-dance', 'sha-dark'], ['shadow-pact', 'shadow-finale'], ['ambush', 'thousand-cuts'], ['sha-cut', 'sha-streak'], ['assassinate', 'sha-finish'], ['sha-blind', 'sha-sight'], ['sha-gloom', 'sha-feed'], ['sha-reaper'],
     ],
     alchemist: [
-      ['poison-coat', 'alc-toxin'], ['alchemist-brew', 'alc-flask'], ['caustic-flask', 'alc-fumes'], ['alc-vitriol', 'alc-tough'], ['bitter-end', 'alc-mend'], ['alc-bomb', 'alc-salve'], ['alc-plague', 'alc-tonic'], ['alc-philosopher'],
+      ['poison-coat', 'alc-toxin'], ['alchemist-brew', 'alc-flask'], ['caustic-flask', 'alc-fumes'], ['toxic-jab', 'venom-finale'], ['bitter-end', 'alc-mend'], ['alc-bomb', 'alc-salve'], ['alc-plague', 'alc-tonic'], ['alc-philosopher'],
     ],
   },
   ranger: {
@@ -209,12 +209,12 @@ const NEW = {
   'pal-zeal': pas('Zeal', 'Above 80% HP you deal 5% more a rank.', { highHpDamage: 1.05 }),
   'pal-miracle': act('Miracle', 'Once a fight: back to most of your HP, cured of everything.', 8, [{ healShare: 0.7, cure: true }], { oncePerFight: true }),
   // Warrior / Berserker: the nearer the end, the harder it hits.
-  'ber-fury': pas('Fury', '3% more attack a rank.', { attackMult: 1.03 }),
+  'ber-fury': pas('Bloodlust', 'With a great weapon, your hits heal you 3% of the damage they deal, a rank.', { greatLifesteal: 0.03 }),
   'ber-thirst': pas('Blood Thirst', 'Each win heals 4% of your HP a rank.', { winHeal: 0.04 }),
   'ber-savage': pas('Savage Hits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
   'ber-cleave': act('Cleave', 'Two wild hits.', 6, up({ power: 1.9, hits: 2, split: true }, { power: 2.2 }, { power: 2.5 })),
   'ber-wounds': pas('Open Wounds', 'Under a third of your HP you deal 6% more a rank.', { lowHpDamage: 1.06 }),
-  'ber-keen': pas('Keen Eye', '2% more crit a rank.', { crit: 0.02 }),
+  'ber-keen': pas('Second Wind', 'Once a fight, when a blow leaves you under a quarter of your HP, you get back 8% of it, a rank.', { secondWind: 0.08 }),
   'ber-frenzy': act('Frenzy', 'Lose some HP: your hits land far harder for a few rounds.', 4, up({ selfHurt: 0.1, attackUp: { rounds: 3, mult: 1.4 } }, { attackUp: { rounds: 3, mult: 1.5 } }, { attackUp: { rounds: 4, mult: 1.6 } })),
   'ber-drink': pas('Drink Deep', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
   'ber-rampage': act('Rampage', 'Four huge swings, at a cost.', 8, up({ power: 3, hits: 4, split: true, selfHurt: 0.08 }, { power: 3.4 }, { power: 3.8 })),
@@ -268,7 +268,13 @@ const NEW = {
   'spl-tempest': act('Tempest Blade', 'The blade holds the storm longer, and bites harder.', 10, up({ infuse: { kind: 'storm', rounds: 6, power: 0.5 } }, { infuse: { kind: 'storm', rounds: 6, power: 0.6 } }, { infuse: { kind: 'storm', rounds: 7, power: 0.7 } })),
   'spl-hunger': pas('Hungry Blade', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
   'spl-avatar': act('Avatar of War', 'Once a fight: for a while, every hit lands far harder.', 12, [{ attackUp: { rounds: 5, mult: 1.6 } }], { oncePerFight: true }),
-  // Rogue / Ninja: never where the blow lands.
+  // Rogue / Ninja: swords and daggers, and blood (Robin, 2026-11-03: "its main thing being blood. Blood is an effect where your blade gets bloody after you have attacked").
+  'blood-on-the-blade': pas('Blood on the Blade', 'With a blade, each attack that lands leaves a drop of blood on it, up to three. Ninja skills spend it.', { blood: 3 }, 1),
+  'blood-finale': pas('Blood Finale', 'Grand Finale spends your blood: each drop opens a bleed of 12% of your attack for three rounds, a rank.', { bloodFinale: 0.12 }),
+  'red-mist': pas('Red Mist', 'Spending blood heals you 2% of your HP a drop, a rank.', { redMist: 0.02 }),
+  'crimson-arc': act('Crimson Arc', 'A cut that spends all your blood: harder for every drop.', 6, up({ power: 1.3, perBlood: 0.45, spendBlood: true }, { power: 1.45, perBlood: 0.5 }, { power: 1.6, perBlood: 0.55 }), { needs: ['blade'] }),
+  'bleed-out': act('Bleed Out', 'A deep cut that bleeds for three rounds, more for every drop of blood it spends.', 8, up({ power: 1, bleed: { rounds: 3, power: 0.3, perBlood: 0.15 }, spendBlood: true }, { power: 1.15, bleed: { rounds: 3, power: 0.34, perBlood: 0.17 } }, { power: 1.3, bleed: { rounds: 4, power: 0.38, perBlood: 0.2 } }), { needs: ['blade'] }),
+  'black-blood': pas('Black Blood', 'A foe both bleeding and poisoned takes each sting twice.', { blackBlood: true }, 1),
   'nin-hands': pas('Quick Hands', '2% more crit a rank.', { crit: 0.02 }),
   'nin-fleet': pas('Fleet', '2% more dodge a rank.', { dodge: 0.02 }),
   'nin-first': pas('First Blood', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
@@ -280,7 +286,9 @@ const NEW = {
   'nin-lotus': act('Falling Lotus', 'Seven strikes too fast to follow.', 11, up({ power: 3, hits: 7, split: true }, { power: 3.4 }, { power: 3.8 })),
   'nin-feint': pas('Feint', 'After a dodge your next hit is a sure crit.', { dodgeCrit: true }, 1),
   'nin-army': act('Army of One', 'Once a fight: copies of you join in, and every attack strikes again and again.', 10, [{ clone: { rounds: 6, power: 0.9 } }], { oncePerFight: true }),
-  // Rogue / Shadow: one perfect cut.
+  // Rogue / Shadow: daggers and crits, many small hits (Robin, 2026-11-03).
+  'thousand-cuts': act('Thousand Cuts', 'Six quick cuts, each with its own chance to crit.', 6, up({ power: 1.5, hits: 6, split: true }, { power: 1.7 }, { power: 1.9 }), { needs: ['dagger'] }),
+  'shadow-finale': pas('Shadow Finale', 'Grand Finale strikes three times, and each point of Mischief adds 4% to its crit chance, a rank.', { shadowFinale: 0.04 }),
   'sha-dark': pas('Cruel Edge', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
   'sha-cover': pas('Cover of Dark', '2% more dodge a rank.', { dodge: 0.02 }),
   'sha-opening': pas('From Behind', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
@@ -292,7 +300,9 @@ const NEW = {
   'sha-gloom': act('Night Cut', 'A sure crit from nowhere.', 9, up({ power: 2.6, sureCrit: 1 }, { power: 3 }, { power: 3.4 })),
   'sha-feed': pas('Feed on Fear', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
   'sha-reaper': act('Reaper', 'A hard cut, and a killing one on a foe under 40% of its HP.', 12, [{ power: 2.2, executeBelow: 0.4, executePower: 5.5 }]),
-  // Rogue / Alchemist: wins slowly, and drinks better.
+  // Rogue / Alchemist: poison set up, then cashed in (Robin, 2026-11-03: "other skills you want to use that gets benefits from the target being poisoned").
+  'toxic-jab': act('Toxic Jab', 'A quick stab, far harder on a poisoned foe.', 4, up({ power: 1.1, vsPoisoned: 1.7 }, { power: 1.2, vsPoisoned: 1.8 }, { power: 1.3, vsPoisoned: 1.9 }), { needs: ['dagger'] }),
+  'venom-finale': pas('Venom Finale', "Grand Finale on a poisoned foe bursts the poison too: half its sting for each point of Mischief, a rank.", { venomFinale: 0.5 }),
   'alc-toxin': pas('Stronger Toxin', 'Your poison hurts 8% more a rank.', { poisonPower: 1.08 }),
   'alc-flask': pas('Better Flasks', 'Your flasks work 10% better a rank.', { potionPower: 1.1 }),
   'alc-fumes': pas('Fumes', 'A poisoned foe takes 5% more a rank.', { poisonedDamage: 1.05 }),
@@ -355,6 +365,12 @@ for (const [classId, trees] of Object.entries(TALENTS)) {
   }
 }
 
+// The skills tied to a weapon (Robin, 2026-11-03: "Skills that are obvious weapon focused ... only usable when correct weapon equipped").
+const NEEDS = { shield: ['shield-bash', 'shield-wall', 'shield-slam', 'kni-charge', 'kni-rampart'], staff: ['meteor', 'wiz-firestorm'], bow: ['volley', 'aimed-shot', 'rain-arrows', 'ran-pin', 'ran-snipe', 'ran-barrage', 'snare'], dagger: ['poison-coat'] };
+for (const [need, ids] of Object.entries(NEEDS)) for (const id of ids) A[id] = { ...A[id], needs: [need] };
+for (const id of ['frost-blade', 'storm-blade', 'spl-thrust', 'arc-slash', 'spl-whirl', 'spl-tempest']) A[id] = { ...A[id], needs: ['wand', 'sword'] };
+delete A.shuriken;
+
 const json = (x) => `${JSON.stringify(x, null, 2)}\n`;
 writeFileSync('rules/data/abilities.json', json(A));
 const old = JSON.parse(readFileSync('rules/data/classes.json', 'utf8'));
@@ -407,7 +423,7 @@ const WORDS = {
     "story": "Its Attack strikes three times, and each hit makes a crit more likely until one lands. It dodges often but takes more when caught, so it wins by not being hit. Every attack builds Mischief for its finishing moves. For you if you like fast fights and big numbers.",
     "showcase": {
       "ninja": [
-        "shuriken",
+        "crimson-arc",
         "clone",
         "nin-army"
       ],

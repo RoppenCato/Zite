@@ -835,30 +835,6 @@
       }
     ]
   },
-  "shuriken": {
-    "name": "Shuriken",
-    "classId": "rogue",
-    "text": "Four quick stars, each one a chance to crit.",
-    "mana": 5,
-    "level": 2,
-    "ranks": [
-      {
-        "power": 1.5,
-        "hits": 4,
-        "split": true
-      },
-      {
-        "power": 1.7,
-        "hits": 4,
-        "split": true
-      },
-      {
-        "power": 1.9,
-        "hits": 4,
-        "split": true
-      }
-    ]
-  },
   "ninja-step": {
     "name": "Light Feet",
     "classId": "rogue",
@@ -1004,28 +980,28 @@
   "poison-coat": {
     "name": "Poison Coating",
     "classId": "rogue",
-    "text": "Coat your blade: your next hits poison, and each one makes it worse.",
+    "text": "Coat your blade: your next hits poison it, a steady sting that a fresh hit keeps going.",
     "mana": 5,
     "level": 2,
     "ranks": [
       {
         "coat": {
           "hits": 6,
-          "power": 0.11,
+          "power": 0.3,
           "rounds": 3
         }
       },
       {
         "coat": {
           "hits": 8,
-          "power": 0.13,
+          "power": 0.34,
           "rounds": 3
         }
       },
       {
         "coat": {
           "hits": 9,
-          "power": 0.15,
+          "power": 0.38,
           "rounds": 4
         }
       }
@@ -2723,6 +2699,19 @@
     "classId": "mage",
     "level": 30
   },
+  "blood-on-the-blade": {
+    "name": "Blood on the Blade",
+    "text": "With a blade, each attack that lands leaves a drop of blood on it, up to three. Ninja skills spend it.",
+    "mana": 0,
+    "rule": {
+      "blood": 3
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "rogue",
+    "level": 2
+  },
   "nin-hands": {
     "name": "Quick Hands",
     "text": "2% more crit a rank.",
@@ -2738,12 +2727,12 @@
     "classId": "rogue",
     "level": 2
   },
-  "nin-fleet": {
-    "name": "Fleet",
-    "text": "2% more dodge a rank.",
+  "blood-finale": {
+    "name": "Blood Finale",
+    "text": "Grand Finale spends your blood: each drop opens a bleed of 12% of your attack for three rounds, a rank.",
     "mana": 0,
     "rule": {
-      "dodge": 0.02
+      "bloodFinale": 0.12
     },
     "ranks": [
       {},
@@ -2768,36 +2757,39 @@
     "classId": "rogue",
     "level": 9
   },
-  "nin-kunai": {
-    "name": "Kunai Storm",
-    "text": "Five thrown blades, each with its own chance to crit.",
-    "mana": 7,
+  "crimson-arc": {
+    "name": "Crimson Arc",
+    "text": "A cut that spends all your blood: harder for every drop.",
+    "mana": 6,
     "ranks": [
       {
-        "power": 1.8,
-        "hits": 5,
-        "split": true
+        "power": 1.3,
+        "perBlood": 0.45,
+        "spendBlood": true
       },
       {
-        "power": 2.1,
-        "hits": 5,
-        "split": true
+        "power": 1.45,
+        "perBlood": 0.5,
+        "spendBlood": true
       },
       {
-        "power": 2.4,
-        "hits": 5,
-        "split": true
+        "power": 1.6,
+        "perBlood": 0.55,
+        "spendBlood": true
       }
+    ],
+    "needs": [
+      "blade"
     ],
     "classId": "rogue",
     "level": 13
   },
-  "nin-calm": {
-    "name": "Still Water",
-    "text": "A dodge heals you 2% of your HP, a rank.",
+  "red-mist": {
+    "name": "Red Mist",
+    "text": "Spending blood heals you 2% of your HP a drop, a rank.",
     "mana": 0,
     "rule": {
-      "dodgeHeal": 0.02
+      "redMist": 0.02
     },
     "ranks": [
       {},
@@ -2858,36 +2850,51 @@
     "classId": "rogue",
     "level": 21
   },
-  "nin-lotus": {
-    "name": "Falling Lotus",
-    "text": "Seven strikes too fast to follow.",
-    "mana": 11,
+  "bleed-out": {
+    "name": "Bleed Out",
+    "text": "A deep cut that bleeds for three rounds, more for every drop of blood it spends.",
+    "mana": 8,
     "ranks": [
       {
-        "power": 3,
-        "hits": 7,
-        "split": true
+        "power": 1,
+        "bleed": {
+          "rounds": 3,
+          "power": 0.3,
+          "perBlood": 0.15
+        },
+        "spendBlood": true
       },
       {
-        "power": 3.4,
-        "hits": 7,
-        "split": true
+        "power": 1.15,
+        "bleed": {
+          "rounds": 3,
+          "power": 0.34,
+          "perBlood": 0.17
+        },
+        "spendBlood": true
       },
       {
-        "power": 3.8,
-        "hits": 7,
-        "split": true
+        "power": 1.3,
+        "bleed": {
+          "rounds": 4,
+          "power": 0.38,
+          "perBlood": 0.2
+        },
+        "spendBlood": true
       }
+    ],
+    "needs": [
+      "blade"
     ],
     "classId": "rogue",
     "level": 25
   },
-  "nin-feint": {
-    "name": "Feint",
-    "text": "After a dodge your next hit is a sure crit.",
+  "black-blood": {
+    "name": "Black Blood",
+    "text": "A foe both bleeding and poisoned takes each sting twice.",
     "mana": 0,
     "rule": {
-      "dodgeCrit": true
+      "blackBlood": true
     },
     "ranks": [
       {}
@@ -2926,12 +2933,12 @@
     "classId": "rogue",
     "level": 2
   },
-  "sha-cover": {
-    "name": "Cover of Dark",
-    "text": "2% more dodge a rank.",
+  "shadow-finale": {
+    "name": "Shadow Finale",
+    "text": "Grand Finale strikes three times, and each point of Mischief adds 4% to its crit chance, a rank.",
     "mana": 0,
     "rule": {
-      "dodge": 0.02
+      "shadowFinale": 0.04
     },
     "ranks": [
       {},
@@ -2941,17 +2948,29 @@
     "classId": "rogue",
     "level": 5
   },
-  "sha-opening": {
-    "name": "From Behind",
-    "text": "In the first round you deal 10% more a rank.",
-    "mana": 0,
-    "rule": {
-      "firstRoundDamage": 1.1
-    },
+  "thousand-cuts": {
+    "name": "Thousand Cuts",
+    "text": "Six quick cuts, each with its own chance to crit.",
+    "mana": 6,
     "ranks": [
-      {},
-      {},
-      {}
+      {
+        "power": 1.5,
+        "hits": 6,
+        "split": true
+      },
+      {
+        "power": 1.7,
+        "hits": 6,
+        "split": true
+      },
+      {
+        "power": 1.9,
+        "hits": 6,
+        "split": true
+      }
+    ],
+    "needs": [
+      "dagger"
     ],
     "classId": "rogue",
     "level": 9
@@ -3142,42 +3161,36 @@
     "classId": "rogue",
     "level": 9
   },
-  "alc-vitriol": {
-    "name": "Vitriol",
-    "text": "A splash that eats on for rounds.",
-    "mana": 5,
+  "toxic-jab": {
+    "name": "Toxic Jab",
+    "text": "A quick stab, far harder on a poisoned foe.",
+    "mana": 4,
     "ranks": [
       {
-        "power": 0.8,
-        "poison": {
-          "rounds": 4,
-          "power": 0.35
-        }
+        "power": 1.1,
+        "vsPoisoned": 1.7
       },
       {
-        "power": 0.8,
-        "poison": {
-          "rounds": 4,
-          "power": 0.42
-        }
+        "power": 1.2,
+        "vsPoisoned": 1.8
       },
       {
-        "power": 0.8,
-        "poison": {
-          "rounds": 5,
-          "power": 0.5
-        }
+        "power": 1.3,
+        "vsPoisoned": 1.9
       }
+    ],
+    "needs": [
+      "dagger"
     ],
     "classId": "rogue",
     "level": 13
   },
-  "alc-tough": {
-    "name": "Tough Gut",
-    "text": "You take 3% less a rank.",
+  "venom-finale": {
+    "name": "Venom Finale",
+    "text": "Grand Finale on a poisoned foe bursts the poison too: half its sting for each point of Mischief, a rank.",
     "mana": 0,
     "rule": {
-      "damageTaken": 0.97
+      "venomFinale": 0.5
     },
     "ranks": [
       {},

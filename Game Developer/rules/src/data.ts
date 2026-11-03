@@ -123,6 +123,13 @@ export interface ClassTraits {
   meterStart?: number;
   barrierStart?: number;
   hpRegen?: number;
+  /** The new Rogue (Robin, 2026-11-03): drops of blood a blade can hold; a finale's bleed a drop; heal a drop spent; poison and bleed sting twice; a finale's crit a point of Mischief; a finale's burst of poison a point. */
+  blood?: number;
+  bloodFinale?: number;
+  redMist?: number;
+  blackBlood?: boolean;
+  shadowFinale?: number;
+  venomFinale?: number;
   /** With a great weapon, this share of the damage dealt heals you (Bloodlust). */
   greatLifesteal?: number;
   /** Once a fight, under a third of HP, this share of it back (Second Wind). */
@@ -171,6 +178,13 @@ export interface AbilityRank {
   steal?: number;
   /** Power added for each meter point spent (with `meterAll`). */
   perMeter?: number;
+  /** More for each drop of blood on the blade, which the move spends (Robin, 2026-11-03). */
+  perBlood?: number;
+  spendBlood?: boolean;
+  /** Harder on a poisoned foe. */
+  vsPoisoned?: number;
+  /** Opens a bleed: this share of attack a round, more a drop of blood. */
+  bleed?: { rounds: number; power: number; perBlood?: number };
   /** Enemy turns lost, nothing resists it. */
   skip?: number;
   /** Rounds until the spell lands with `power`. */

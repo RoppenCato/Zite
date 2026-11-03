@@ -53,9 +53,9 @@ describe('the talents that wait for their moment', () => {
     };
     expect(total(off(fighter('rogue', { 'alc-flask': 3 }, 0.2)), 'block', hp, drink)).toBeGreaterThan(total(off(fighter('rogue', {}, 0.2)), 'block', hp, drink));
   });
-  it('Feint: after a dodge the next hit is a sure crit', () => {
+  it('Opportunist: after a dodge the next hit is a sure crit', () => {
     const crits = (a: GameState) => me(a).fight?.sureCrit ?? 0;
-    expect(total(fighter('rogue', { 'nin-feint': 1 }), 'dodge', crits)).toBeGreaterThan(total(fighter('rogue', {}), 'dodge', crits));
+    expect(total(fighter('rogue', { 'shadow-pact': 1 }), 'dodge', crits)).toBeGreaterThan(total(fighter('rogue', {}), 'dodge', crits));
   });
   it('Barbs and Venom on the Spikes: a stunned or poisoned foe takes more', () => {
     const left = (a: GameState) => -(me(a).fight?.enemy.hp ?? 0);
