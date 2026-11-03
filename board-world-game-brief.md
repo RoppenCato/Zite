@@ -125,10 +125,11 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 - Each land has a legendary set at **level 30**, fitting the land: one of each weapon type and different shields. It is won from that land's Arena on its **hardest mode, which opens once every Seal is won**, before the last dungeon.
 - "Miles will need to find a way to balance loot and to distribute loot in a good way in the game": the numbers, the chances and how the mode opens are the Game Developer's.
 
-### The endgame: the Shrine's dungeons (Robin, 2026-11-03)
-- After the last boss, a **small island with a small magical forest and a shrine**, reached by a **ferry from the hub**. At the shrine you play **dungeons generated for that run only**: they fit your level, take a random theme with recolours (to keep them cheap), and drop weapons and armour, again recoloured; their bosses have random elements and colours.
+### The endgame: the Dream (Robin, 2026-11-03)
+- After the last boss, a **small island with a small magical forest**, reached by a **ferry from the hub**. There you enter **the Dream** ("Lets not call it Shrine overall"): **dungeons generated for that run only**. They fit your level, take a random theme with recolours (to keep them cheap), and drop weapons and armour, again recoloured; their bosses have random elements and colours.
 - **Depths:** clearing a depth opens a harder one with better loot.
 - **Fall in one and you keep the gear but lose the gold** (the Game Developer reads this as the gold found on that run). **As often as you like.**
+- **A merchant outside the Dream:** potions and the like for gold, and unique good items (trinkets, weapons, armour) for **Dreamdust**, a currency that drops only in the Dream. Dreamdust found on a run is kept on a fall, like gear.
 
 ### Trinkets (Robin, 2026-11-03)
 - **No necklaces: the slot holds trinkets.** A trinket gives a passive bonus of its own, which may or may not touch combat.
