@@ -72,6 +72,14 @@ import harvestPlacesJson from '../../assets/world_harvest/board_places.json?url'
 import harvestPlacesPng from '../../assets/world_harvest/board_places.png';
 import forestPlacesJson from '../../assets/world_forest/board_places.json?url';
 import forestPlacesPng from '../../assets/world_forest/board_places.png';
+import cityPlatesJson from '../../assets/land_marks/plates_city.json?url';
+import cityPlatesPng from '../../assets/land_marks/plates_city.png';
+import crownPlatesJson from '../../assets/land_marks/plates_crown.json?url';
+import crownPlatesPng from '../../assets/land_marks/plates_crown.png';
+import dungeonPlatesJson from '../../assets/land_marks/plates_dungeon.json?url';
+import dungeonPlatesPng from '../../assets/land_marks/plates_dungeon.png';
+import rootwaysBannerPng from '../../assets/land_marks/banner_rootways.png';
+import crownBannerPng from '../../assets/land_marks/banner_buried-crown.png';
 
 export interface Placement {
   name: string;
@@ -96,6 +104,8 @@ interface Kit {
   placements: Record<string, Placement[]>;
   /** The banner moved along from the area's middle, clear of a landmark. */
   bannerDx?: number;
+  /** The kit's own spot plates (Mitch, AD's land marks), when its stone is not the Meadows'. */
+  plates?: { key: string; png: string; json: string };
   files: { groundPng: string; groundJson: string; propsPng: string; propsJson: string };
 }
 
@@ -209,6 +219,10 @@ const KITS: Record<string, Kit> = {
   },
 };
 
+/** A dungeon's own banner (Mitch, AD, 2026-11-03). The lands on the painted map draw none: their names are words over the map. */
+const AREA_BANNERS: Record<string, string> = { rootways: rootwaysBannerPng, 'buried-crown': crownBannerPng };
+const bannerKey = (areaId: string): string => `banner_${areaId}`;
+
 const PLATES: Record<SpaceKind, string> = { arena: 'spot_town', door: 'spot_door', board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
 
 /** Queue the kits of these themes, and the cover and banner they share. The board is drawn whole, so an area's kit must be here before it opens. */
@@ -223,6 +237,12 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   if (!scene.textures.exists(CROWN_PLACES)) scene.load.atlas(CROWN_PLACES, crownPlacesPng, crownPlacesJson);
+  // The hub city's plates and the dungeons' are always held, as their pieces are.
+  for (const [area, png] of Object.entries(AREA_BANNERS)) if (!scene.textures.exists(bannerKey(area))) scene.load.image(bannerKey(area), png);
+  for (const theme of ['city', 'crown', 'dungeon']) {
+    const plates = KITS[theme]?.plates;
+    if (plates && !scene.textures.exists(plates.key)) scene.load.atlas(plates.key, plates.png, plates.json);
+  }
   for (const theme of themes) {
     const places = THEME_PLACES[theme];
     if (places && !scene.textures.exists(places.key)) scene.load.atlas(places.key, places.png, places.json);
@@ -243,12 +263,12 @@ KITS.mountain = landKit('mountain', 'frostcrown', frostPlacementJson as Placemen
 KITS.giants = landKit('giants', 'giantsland', giantsPlacementJson as Placement[], { groundPng: giantsGroundPng, groundJson: giantsGroundJson, propsPng: giantsPropsPng, propsJson: giantsPropsJson });
 KITS.pirates = landKit('pirates', 'pirateisles', piratesPlacementJson as Placement[], { groundPng: piratesGroundPng, groundJson: piratesGroundJson, propsPng: piratesPropsPng, propsJson: piratesPropsJson });
 
-/** Crownhaven is baked whole: it needs only the Meadows' plates (Mitch, AD). */
-KITS.city = { ...KITS.meadow!, placements: {} };
+/** Crownhaven is baked whole: it needs only plates, in cobble (Mitch, AD, 2026-11-03). */
+KITS.city = { ...KITS.meadow!, placements: {}, plates: { key: 'plates_city', png: cityPlatesPng, json: cityPlatesJson } };
 
-/** A dungeon uses the Meadows' plates, with its own roads and pieces. */
-KITS.crown = { ...KITS.meadow!, road: buriedCrown.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { 'buried-crown': crownPlacement as Placement[] } };
-KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] } };
+/** A dungeon has its own roads, pieces and plates: crypt stone under the Crown, root-worn earth in the Rootways and after. */
+KITS.crown = { ...KITS.meadow!, road: buriedCrown.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { 'buried-crown': crownPlacement as Placement[] }, plates: { key: 'plates_crown', png: crownPlatesPng, json: crownPlatesJson } };
+KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] }, plates: { key: 'plates_dungeon', png: dungeonPlatesPng, json: dungeonPlatesJson } };
 
 export function kitFor(scene: Phaser.Scene, theme: string): Kit | null {
   // A far region's own atlases may not be held (`preloadRegion`): its roads need none, and its plates borrow the Meadows' until they are.
@@ -296,6 +316,8 @@ export function dressPlate(scene: Phaser.Scene, kit: Kit, space: Space, plate: P
 
 function plateArt(scene: Phaser.Scene, kit: Kit, space: Space): { atlas: string; frame: string } {
   const wanted = space.hidden && space.name ? 'spot_secret' : space.kind === 'shop' && space.stock === 'magic' ? 'spot_shop_magic' : PLATES[space.kind];
+  // A kind the kit's own plates lack (a door, a secret) stays as it was.
+  if (kit.plates && scene.textures.exists(kit.plates.key) && scene.textures.get(kit.plates.key).has(wanted)) return { atlas: kit.plates.key, frame: wanted };
   const props = scene.textures.exists(kit.props) ? kit.props : KITS.meadow!.props;
   if (scene.textures.get(props).has(wanted)) return { atlas: props, frame: wanted };
   const elsewhere = placesAtlas(scene, wanted);
@@ -357,7 +379,8 @@ export function drawKitBanner(scene: Phaser.Scene, kit: Kit, area: Area, font: s
   const b = area.bounds;
   const x = b.x + b.width / 2 + (kit.bannerDx ?? 0);
   const y = b.y + 40;
-  scene.add.image(x, y, kit.banner).setScale(SCALE).setDepth(KIT_DEPTH.names).setAlpha(0.92);
+  const banner = scene.textures.exists(bannerKey(area.id)) ? bannerKey(area.id) : kit.banner;
+  scene.add.image(x, y, banner).setScale(SCALE).setDepth(KIT_DEPTH.names).setAlpha(0.92);
   scene.add
     .text(x, y - 1, area.name, { fontFamily: font, fontSize: '22px', fontStyle: 'bold', color: '#fff8e6', stroke: '#4a3a22', strokeThickness: 3, resolution: 2 })
     .setOrigin(0.5)
