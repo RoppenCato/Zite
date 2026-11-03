@@ -388,6 +388,8 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
 }
 
 const OWN_ATTACK: Partial<Record<ClassId, string>> = { mage: 'attack1_wizard', ranger: 'attack1_archer' };
+/** The worn pieces that keep still while the Magician casts: coat, hat, boots, cape, charm (Mitch, AD, 2026-11-03). */
+const STILL_WHILE_CASTING = /(?:^|_)(?:coat|coat_near|hat|boots|boots_base|cape|charm)$/;
 
 /** A hero in layers. `root` is a container whose x, y is where the feet stand; the scene calls `update(delta)` each frame. */
 export class Hero {
@@ -407,6 +409,8 @@ export class Hero {
   private index = 0;
   private elapsed = 0;
   private hold = false;
+  /** The Magician swings a sword on her `melee` frames instead of casting (Mitch, AD, 2026-11-03). */
+  private melee = false;
   private done = false;
 
   constructor(scene: Phaser.Scene, character: Character, x: number, y: number, scale: number) {
@@ -455,8 +459,9 @@ export class Hero {
   }
 
   /** Play a clip from its first frame; a one-shot clip goes back to `stand` when it ends unless `hold` is set (a guard holds). */
-  play(action: HeroAction, hold = false, speed = 1): void {
+  play(action: HeroAction, hold = false, speed = 1, melee = false): void {
     if (!CLIPS[action]) return;
+    this.melee = melee;
     this.speed = speed;
     this.clip = action;
     this.index = 0;
@@ -497,6 +502,17 @@ export class Hero {
       const set = ARCHER_SETS[l.key];
       const own = `${l.piece}/${this.clip}_archer/${n}`;
       if (this.bow && set && has(this.scene, set.key, own)) return [set.key, own];
+    }
+    // The Magician (Mitch, AD, 2026-11-03): her attack1 is a cast. Casting, her worn pieces stay still on her standing frame, so
+    // they do not follow the Knight's lunge off her; swinging a sword, her body takes `melee` and the rest the plain attack1.
+    if (this.classId === 'mage' && this.clip === 'attack1') {
+      if (this.melee) {
+        const swing = `${l.piece}/melee/${n}`;
+        if (l.key === this.bodyKey && has(this.scene, l.key, swing)) return [l.key, swing];
+        return [has(this.scene, this.bodyKey, plain) ? this.bodyKey : l.key, plain];
+      }
+      const still = `${l.piece}/stand/0001`;
+      if (STILL_WHILE_CASTING.test(l.piece) && has(this.scene, l.key, still)) return [l.key, still];
     }
     const attack = this.clip === 'attack1' && OWN_ATTACK[this.classId] && (this.classId !== 'ranger' || this.bow) ? `${l.piece}/${OWN_ATTACK[this.classId]}/${n}` : '';
     if (attack && has(this.scene, l.key, attack)) return [l.key, attack];

@@ -478,7 +478,9 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
           if (byOwl) this.owl?.strike(FIGHT_LAYOUT.enemyX - 70);
           else {
             // In a combo the hero swings fast and steps in once; a caster and an archer stay put.
-            this.hero?.play('attack1', false, combo > 0 ? 2.2 : 1);
+            // A Magician who is not casting swings her sword on her own melee frames (Mitch, AD, 2026-11-03).
+            const mageSwing = this.game_.me.classId === 'mage' && !spell && !star;
+            this.hero?.play('attack1', false, combo > 0 ? 2.2 : 1, mageSwing);
             if (combo <= 1 && !spell && !star && !bowShot) this.step(this.heroBody, 34);
           }
           this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs(combo > 0 ? 2.2 : 1) ?? 0), () => {
