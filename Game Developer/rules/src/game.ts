@@ -359,7 +359,7 @@ function dream(state: GameState, action: DreamAction, c: Character, rng: Rng): A
     const area = board.areas[id]!;
     const start = `${id}-h0`;
     const next: Character = { ...c, dream: run, space: start, steps: 0, opened: [...c.opened, id], ...(c.seen ? { seen: [...c.seen, id] } : {}) };
-    const events: GameEvent[] = [{ type: 'dreamEntered', action: action.id, player: action.player, depth: run.depth, name: area.name, area: id, theme: area.theme, tint: area.dream!.tint, element: area.dream!.element }];
+    const events: GameEvent[] = [{ type: 'dreamEntered', action: action.id, player: action.player, depth: run.depth, name: area.name, area: id, theme: area.theme, palette: area.dream!.palette, element: area.dream!.element }];
     return { state: withCharacter({ ...state, board }, next), events };
   }
   return dreamBuy(state, action, c, rng);

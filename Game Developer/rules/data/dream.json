@@ -1,57 +1,409 @@
 {
   "_about": "The Dream (Robin, 2026-11-03): after the Hollow King a ferry from Crownhaven goes to the Dreaming Isle; at its Dreamgate a dungeon is laid for that run only, at a depth you choose, deeper and harder each time. Fall: lose the run's gold, keep the gear and the Dreamdust. Dreamdust only drops here and buys from the merchant at the camp. Robin, 2026-11-03: about 45 spots, not 18. Every number here mine, first settings for the bots to try.",
-  "isle": { "area": "dream-isle", "gate": "di-gate", "camp": "di-camp" },
+  "isle": {
+    "area": "dream-isle",
+    "gate": "di-gate",
+    "camp": "di-camp"
+  },
   "needs": "hollow-king",
   "_aboutPlace": "Where a run is laid: free sea at the top right, off every land. Every run is laid in the same box; only its dreamer sees it.",
-  "place": { "x": 13900, "y": 300, "width": 2800, "height": 1400 },
-  "_aboutLayout": "The road: `hubs` named spots left to right, `step` apart, the gate first and the boss last, `minis` and `springs` at those places; between each two, `roadSpots` plain spots; `loops` side roads that leave the road and rejoin it two hubs on, `spurs` dead ends with a hoard at the end, `chests` chests on the roads.",
-  "layout": { "hubs": 11, "step": 250, "wiggle": 200, "roadSpots": [2, 3], "minis": [4, 7], "springs": [3, 9], "loops": 2, "loopSpots": 5, "loopReach": 260, "spurs": 2, "spurSpots": 2, "spurReach": 300, "chests": 2, "tries": 40 },
-  "themes": {
-    "meadow": { "land": "Cloverfield", "mobs": ["slime", "wolf", "bandit", "wisp", "poacher", "tusker", "hedge-knight"], "minis": ["wolf-alpha"], "bosses": ["thornwood-warden", "outlaw-king"], "places": ["Meadow", "Fields", "Hedges"] },
-    "forest": { "land": "Wobblewood", "mobs": ["spider", "treant", "outlaw", "wraith"], "minis": ["spider-queen"], "bosses": ["briar-king"], "places": ["Wood", "Grove", "Thicket"] },
-    "harvest": { "land": "Honeyhill", "mobs": ["ice-wolf", "yeti", "frost-wisp", "ice-golem"], "minis": ["yeti-elder"], "bosses": ["frost-matriarch"], "places": ["Orchard", "Hives", "Cornfields"] },
-    "swamp": { "land": "Bogglemire", "mobs": ["bog-toad", "mudling", "lantern-wisp", "reed-witch"], "minis": ["bogsnapper"], "bosses": ["mother-murk"], "places": ["Fen", "Mire", "Marsh"] },
-    "mountain": { "land": "the Frostcrown", "mobs": ["snow-goat", "crag-goblin", "pebble-golem", "frostling"], "minis": ["old-bighorn"], "bosses": ["frostbeard"], "places": ["Peaks", "Pass", "Crags"] },
-    "pirates": { "land": "the Pirate Isles", "mobs": ["deck-hand", "scuttle-crab", "cheeky-parrot", "buccaneer"], "minis": ["first-mate-redwake"], "bosses": ["captain-saltjaw"], "places": ["Cove", "Wreck", "Shoals"] },
-    "giants": { "land": "the Giants' Land", "mobs": ["young-yeti", "snow-monster", "frost-ogre", "icicle-bat"], "minis": ["old-snowshoulder"], "bosses": ["yeti-king"], "places": ["Halls", "Glacier", "Steps"] }
+  "place": {
+    "x": 13900,
+    "y": 300,
+    "width": 2800,
+    "height": 1400
   },
-  "_aboutTints": "A run's colour, laid over its ground, its creatures and the gear it drops (Mitch, AD may change these).",
-  "tints": [
-    { "name": "Rose", "color": "#ffb6cf" },
-    { "name": "Violet", "color": "#c9b4ff" },
-    { "name": "Sea", "color": "#a8dcff" },
-    { "name": "Mint", "color": "#b4f5d2" },
-    { "name": "Gold", "color": "#ffe29a" },
-    { "name": "Ember", "color": "#ffb08f" },
-    { "name": "Frost", "color": "#d4ecff" },
-    { "name": "Dusk", "color": "#c2a8dc" }
+  "_aboutLayout": "The road: `hubs` named spots left to right, `step` apart, the gate first and the boss last, `minis` and `springs` at those places; between each two, `roadSpots` plain spots; `loops` side roads that leave the road and rejoin it two hubs on, `spurs` dead ends with a hoard at the end, `chests` chests on the roads.",
+  "layout": {
+    "hubs": 11,
+    "step": 250,
+    "wiggle": 200,
+    "roadSpots": [
+      2,
+      3
+    ],
+    "minis": [
+      4,
+      7
+    ],
+    "springs": [
+      3,
+      9
+    ],
+    "loops": 2,
+    "loopSpots": 5,
+    "loopReach": 260,
+    "spurs": 2,
+    "spurSpots": 2,
+    "spurReach": 300,
+    "chests": 2,
+    "tries": 40
+  },
+  "themes": {
+    "meadow": {
+      "land": "Cloverfield",
+      "mobs": [
+        "slime",
+        "wolf",
+        "bandit",
+        "wisp",
+        "poacher",
+        "tusker",
+        "hedge-knight"
+      ],
+      "minis": [
+        "wolf-alpha"
+      ],
+      "bosses": [
+        "thornwood-warden",
+        "outlaw-king"
+      ],
+      "places": [
+        "Meadow",
+        "Fields",
+        "Hedges"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose",
+        "gold",
+        "ember"
+      ]
+    },
+    "forest": {
+      "land": "Wobblewood",
+      "mobs": [
+        "spider",
+        "treant",
+        "outlaw",
+        "wraith"
+      ],
+      "minis": [
+        "spider-queen"
+      ],
+      "bosses": [
+        "briar-king"
+      ],
+      "places": [
+        "Wood",
+        "Grove",
+        "Thicket"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose",
+        "ember"
+      ]
+    },
+    "harvest": {
+      "land": "Honeyhill",
+      "mobs": [
+        "ice-wolf",
+        "yeti",
+        "frost-wisp",
+        "ice-golem"
+      ],
+      "minis": [
+        "yeti-elder"
+      ],
+      "bosses": [
+        "frost-matriarch"
+      ],
+      "places": [
+        "Orchard",
+        "Hives",
+        "Cornfields"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose"
+      ]
+    },
+    "swamp": {
+      "land": "Bogglemire",
+      "mobs": [
+        "bog-toad",
+        "mudling",
+        "lantern-wisp",
+        "reed-witch"
+      ],
+      "minis": [
+        "bogsnapper"
+      ],
+      "bosses": [
+        "mother-murk"
+      ],
+      "places": [
+        "Fen",
+        "Mire",
+        "Marsh"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose"
+      ]
+    },
+    "mountain": {
+      "land": "the Frostcrown",
+      "mobs": [
+        "snow-goat",
+        "crag-goblin",
+        "pebble-golem",
+        "frostling"
+      ],
+      "minis": [
+        "old-bighorn"
+      ],
+      "bosses": [
+        "frostbeard"
+      ],
+      "places": [
+        "Peaks",
+        "Pass",
+        "Crags"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose",
+        "gold",
+        "ember",
+        "frost"
+      ]
+    },
+    "pirates": {
+      "land": "the Pirate Isles",
+      "mobs": [
+        "deck-hand",
+        "scuttle-crab",
+        "cheeky-parrot",
+        "buccaneer"
+      ],
+      "minis": [
+        "first-mate-redwake"
+      ],
+      "bosses": [
+        "captain-saltjaw"
+      ],
+      "places": [
+        "Cove",
+        "Wreck",
+        "Shoals"
+      ],
+      "palettes": [
+        "teal",
+        "frost"
+      ]
+    },
+    "giants": {
+      "land": "the Giants' Land",
+      "mobs": [
+        "young-yeti",
+        "snow-monster",
+        "frost-ogre",
+        "icicle-bat"
+      ],
+      "minis": [
+        "old-snowshoulder"
+      ],
+      "bosses": [
+        "yeti-king"
+      ],
+      "places": [
+        "Halls",
+        "Glacier",
+        "Steps"
+      ],
+      "palettes": [
+        "lilac",
+        "teal",
+        "rose",
+        "gold",
+        "ember",
+        "frost"
+      ]
+    }
+  },
+  "_aboutTints": "Mitch, AD's palettes (2026-11-03, his out/dream_looks): a colour matrix (hue, then saturate, then brightness) on the run's board, its foes and the fight's backdrop, and `tint` on the overlay and the gear. Each land takes only those that suit it (`palettes` in its theme).",
+  "palettes": [
+    {
+      "id": "lilac",
+      "name": "Lilac Dusk",
+      "hue": 150,
+      "sat": -0.1,
+      "bright": 1.04,
+      "tint": "#c8b0ff"
+    },
+    {
+      "id": "teal",
+      "name": "Moonlit Teal",
+      "hue": 45,
+      "sat": 0,
+      "bright": 0.98,
+      "tint": "#9ae0e0"
+    },
+    {
+      "id": "rose",
+      "name": "Rose Dream",
+      "hue": 200,
+      "sat": -0.3,
+      "bright": 1.03,
+      "tint": "#ffb0d8"
+    },
+    {
+      "id": "gold",
+      "name": "Golden Haze",
+      "hue": -55,
+      "sat": 0.05,
+      "bright": 1.06,
+      "tint": "#ffe0a0"
+    },
+    {
+      "id": "ember",
+      "name": "Ember Night",
+      "hue": -105,
+      "sat": -0.1,
+      "bright": 0.94,
+      "tint": "#ffa080"
+    },
+    {
+      "id": "frost",
+      "name": "Pale Frost",
+      "hue": 80,
+      "sat": -0.45,
+      "bright": 1.08,
+      "tint": "#d0e4ff"
+    }
   ],
-  "words": ["Sunken", "Hollow", "Silent", "Drowned", "Gilded", "Endless", "Forgotten", "Shifting", "Whispering", "Starless", "Upside-down", "Sleeping"],
-  "hubNames": ["A Fork in the Dream", "The Quiet Turn", "The Glimmering Crossroads", "Where the Path Forgets", "The Turning Stair", "The Hush", "The Long Yawn", "A Door That Was Not There", "The Drifting Crossing", "The Half-Remembered Square"],
+  "words": [
+    "Sunken",
+    "Hollow",
+    "Silent",
+    "Drowned",
+    "Gilded",
+    "Endless",
+    "Forgotten",
+    "Shifting",
+    "Whispering",
+    "Starless",
+    "Upside-down",
+    "Sleeping"
+  ],
+  "hubNames": [
+    "A Fork in the Dream",
+    "The Quiet Turn",
+    "The Glimmering Crossroads",
+    "Where the Path Forgets",
+    "The Turning Stair",
+    "The Hush",
+    "The Long Yawn",
+    "A Door That Was Not There",
+    "The Drifting Crossing",
+    "The Half-Remembered Square"
+  ],
   "springName": "A Dream Spring",
   "hoardName": "A Forgotten Hoard",
   "gateName": "The Gate of Depth",
   "_aboutElements": "The boss's element: the boss trick it fights with in place of its own, and the word in the run's name.",
   "elements": {
-    "fire": { "word": "Embers", "prefix": "Emberborn", "trick": { "kind": "swarm", "share": 0.04, "max": 0.6, "text": "Dream fire burns round it: it hits harder the longer the fight lasts.", "line": "The dream fire grows." } },
-    "ice": { "word": "Frost", "prefix": "Frostborn", "trick": { "kind": "iceShell", "every": 3, "rounds": 2, "mult": 2, "text": "Every third round it freezes into a shell of dream ice: hit it twice as hard to get through.", "line": "Dream ice closes round it." } },
-    "poison": { "word": "Thorns", "prefix": "Thornborn", "trick": { "kind": "fumes", "every": 3, "text": "Every third round its thorns weep poison onto you.", "line": "The thorns weep poison." } },
-    "storm": { "word": "Storms", "prefix": "Stormborn", "trick": { "kind": "storm", "every": 3, "share": 0.1, "text": "Every third round dream lightning strikes you through any guard.", "line": "Dream lightning strikes." } }
+    "fire": {
+      "word": "Embers",
+      "prefix": "Emberborn",
+      "trick": {
+        "kind": "swarm",
+        "share": 0.04,
+        "max": 0.6,
+        "text": "Dream fire burns round it: it hits harder the longer the fight lasts.",
+        "line": "The dream fire grows."
+      }
+    },
+    "ice": {
+      "word": "Frost",
+      "prefix": "Frostborn",
+      "trick": {
+        "kind": "iceShell",
+        "every": 3,
+        "rounds": 2,
+        "mult": 2,
+        "text": "Every third round it freezes into a shell of dream ice: hit it twice as hard to get through.",
+        "line": "Dream ice closes round it."
+      }
+    },
+    "poison": {
+      "word": "Thorns",
+      "prefix": "Thornborn",
+      "trick": {
+        "kind": "fumes",
+        "every": 3,
+        "text": "Every third round its thorns weep poison onto you.",
+        "line": "The thorns weep poison."
+      }
+    },
+    "storm": {
+      "word": "Storms",
+      "prefix": "Stormborn",
+      "trick": {
+        "kind": "storm",
+        "every": 3,
+        "share": 0.1,
+        "text": "Every third round dream lightning strikes you through any guard.",
+        "line": "Dream lightning strikes."
+      }
+    }
   },
   "_aboutFoes": "A creature in the Dream is measured from you, as in the Arena (mostly what you wear, some your class's bare numbers at your level): it lasts about `rounds` of your Attacks and its plain blow takes `hit` of your HP. Each depth past the first adds `perDepth` to both. `xp` is a share of your level's bar; `gold` goes into the run's purse; `dust` straight to you.",
   "foes": {
-    "mob": { "rounds": 3, "hit": 0.06, "xp": 0.02, "gold": 60, "dust": 3 },
-    "mini": { "rounds": 6, "hit": 0.12, "xp": 0.08, "gold": 250, "dust": 12 },
-    "boss": { "rounds": 10, "hit": 0.15, "xp": 0.25, "gold": 800, "dust": 40 },
+    "mob": {
+      "rounds": 3,
+      "hit": 0.06,
+      "xp": 0.02,
+      "gold": 60,
+      "dust": 3
+    },
+    "mini": {
+      "rounds": 6,
+      "hit": 0.12,
+      "xp": 0.08,
+      "gold": 250,
+      "dust": 12
+    },
+    "boss": {
+      "rounds": 10,
+      "hit": 0.15,
+      "xp": 0.25,
+      "gold": 800,
+      "dust": 40
+    },
     "perDepth": 0.07,
     "goldPerDepth": 0.1,
     "dustPerDepth": 0.15,
     "level": 30
   },
   "_aboutSpots": "What a plain spot in the Dream holds: a fight mostly, now and then a moment of the land, or a drift of Dreamdust.",
-  "spots": { "fight": 0.82, "event": 0.08, "drift": 0.1, "driftDust": [4, 8], "chestDust": 8 },
+  "spots": {
+    "fight": 0.82,
+    "event": 0.08,
+    "drift": 0.1,
+    "driftDust": [
+      4,
+      8
+    ],
+    "chestDust": 8
+  },
   "_aboutLoot": "Gear found in the Dream is of rank `rankFrom` at the first depth and one rank more every `depthsPerRank` depths, past Everbright as Rank 11 and on; it carries the run's colour.",
-  "loot": { "rankFrom": 9, "depthsPerRank": 2 },
+  "loot": {
+    "rankFrom": 9,
+    "depthsPerRank": 2
+  },
   "_aboutMerchant": "The camp's merchant: for gold, the best flasks and dice cards (items with \"dream\" in their stock); for Dreamdust, the Dream's own trinkets and a piece of your choice at the rank of your best depth, legendary.",
-  "merchant": { "piece": 300, "piecePerRank": 25, "tint": "#c9b4ff" }
+  "merchant": {
+    "piece": 300,
+    "piecePerRank": 25,
+    "tint": "#c8b0ff",
+    "palette": "lilac"
+  }
 }

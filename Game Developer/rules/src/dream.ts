@@ -4,7 +4,7 @@
 // of a random element; it is taken off the board when the run ends. A fall loses the run's gold and keeps the gear and
 // the Dreamdust; the boss falling opens the next depth. Numbers in `data/dream.json`, all mine. Pure.
 
-import { ARENA, DREAM, PROGRESSION } from './data.ts';
+import { ARENA, DREAM, PROGRESSION, type DreamPalette } from './data.ts';
 import { stats } from './gear.ts';
 import { makeRng, type Rng } from './rng.ts';
 import { baseNumbers, traitsOf } from './skills.ts';
@@ -32,7 +32,7 @@ export function bossBeaten(board: Board, c: Character, boss: string): boolean {
 export interface DreamLaid {
   area: WorldArea;
   theme: string;
-  tint: string;
+  palette: DreamPalette;
   element: DreamElement;
 }
 
@@ -48,15 +48,16 @@ export function layDream(seed: string, depth: number, player: string): DreamLaid
   const rng = makeRng(`${seed}:look`);
   const themes = Object.keys(DREAM.themes);
   const theme = pick(rng, themes);
-  const tint = pick(rng, DREAM.tints).color;
-  const element = pick(rng, Object.keys(DREAM.elements) as DreamElement[]);
   const land = DREAM.themes[theme]!;
+  const paletteId = pick(rng, land.palettes);
+  const palette = DREAM.palettes.find((p) => p.id === paletteId)!;
+  const element = pick(rng, Object.keys(DREAM.elements) as DreamElement[]);
   const name = `Depth ${depth}: the ${pick(rng, DREAM.words)} ${pick(rng, land.places)} of ${DREAM.elements[element].word}`;
   const boss = pick(rng, land.bosses);
   const minis = DREAM.layout.minis.map(() => pick(rng, land.minis));
   for (let attempt = 0; attempt < DREAM.layout.tries; attempt++) {
     const area = tryLay(makeRng(`${seed}:lay:${attempt}`), { depth, player, theme, name, boss, minis });
-    if (area) return { area, theme, tint, element };
+    if (area) return { area, theme, palette, element };
   }
   throw new Error(`the Dream could not be laid from seed ${seed}`);
 }
@@ -171,7 +172,7 @@ export function withRun(board: Board, player: string, run: DreamRun): Board {
   const out: Board = { ...board, spaces: { ...board.spaces }, areas: { ...board.areas } };
   addArea(out, laid.area);
   setBounds(out, id);
-  out.areas[id] = { ...out.areas[id]!, dungeon: true, dream: { player, depth: run.depth, tint: laid.tint, element: laid.element } };
+  out.areas[id] = { ...out.areas[id]!, dungeon: true, dream: { player, depth: run.depth, palette: laid.palette.id, tint: laid.palette.tint, element: laid.element } };
   return out;
 }
 

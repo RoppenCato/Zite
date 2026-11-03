@@ -62,16 +62,17 @@ describe('a run laid from a seed (Robin, 2026-11-03: bigger than 18 spots)', () 
     expect(a.area.name).toMatch(/^Depth 3: the /);
     expect(a.area.tier).toBe(dreamRank(3));
   });
-  it('takes every land and every colour over many seeds, and always lays', () => {
+  it("takes every land and every palette over many seeds, each palette only on a land it suits, and always lays", () => {
     const themes = new Set<string>();
     const tints = new Set<string>();
     for (let i = 0; i < 120; i++) {
       const laid = layDream(`many-${i}`, 1 + (i % 9), P);
       themes.add(laid.theme);
-      tints.add(laid.tint);
+      tints.add(laid.palette.id);
+      expect(DREAM.themes[laid.theme]!.palettes).toContain(laid.palette.id);
     }
     expect(themes).toEqual(new Set(Object.keys(DREAM.themes)));
-    expect(tints.size).toBe(DREAM.tints.length);
+    expect(tints.size).toBe(DREAM.palettes.length);
   });
   it('gear rank: Crownsteel at depth 1, a rank more every two depths, past Everbright', () => {
     expect([1, 2, 3, 4, 5, 9].map(dreamRank)).toEqual([9, 9, 10, 10, 11, 13]);

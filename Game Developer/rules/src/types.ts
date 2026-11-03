@@ -194,7 +194,8 @@ export type DreamElement = 'fire' | 'ice' | 'poison' | 'storm';
 export interface DreamArea {
   player: string;
   depth: number;
-  /** The run's colour, `#rrggbb`. */
+  /** The run's palette (Mitch, AD's), and its tint `#rrggbb` for the gear it gives. */
+  palette: string;
   tint: string;
   element: DreamElement;
 }
@@ -655,7 +656,7 @@ export type GameEvent =
   | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
   /** Into a run of the Dream: its board is laid, and you stand at its gate. */
-  | { type: 'dreamEntered'; action: string; player: string; depth: number; name: string; area: string; theme: string; tint: string; element: DreamElement }
+  | { type: 'dreamEntered'; action: string; player: string; depth: number; name: string; area: string; theme: string; palette: string; element: DreamElement }
   /** A run is over: its boss fell (`cleared`, the next depth opens), you woke up, or you fell (the run's gold lost, `gold` how much). You stand at `to`. */
   | { type: 'dreamEnded'; action: string; player: string; how: 'cleared' | 'woke' | 'fell'; depth: number; gold: number; to: string }
   /** Dreamdust gained (or spent); `dust` is the new total. */

@@ -590,14 +590,24 @@ export interface DreamFoe {
   gold: number;
   dust: number;
 }
+/** A run's colour (Mitch, AD): the colour matrix laid over its board, its foes and the fight's backdrop, and a tint for its overlay and gear. */
+export interface DreamPalette {
+  id: string;
+  name: string;
+  hue: number;
+  sat: number;
+  bright: number;
+  /** `#rrggbb`. */
+  tint: string;
+}
 /** The Dream (Robin, 2026-11-03), `rules/data/dream.json`. */
 export const DREAM = dreamJson as unknown as {
   isle: { area: string; gate: string; camp: string };
   needs: string;
   place: { x: number; y: number; width: number; height: number };
   layout: { hubs: number; step: number; wiggle: number; roadSpots: [number, number]; minis: number[]; springs: number[]; loops: number; loopSpots: number; loopReach: number; spurs: number; spurSpots: number; spurReach: number; chests: number; tries: number };
-  themes: Record<string, { land: string; mobs: string[]; minis: string[]; bosses: string[]; places: string[] }>;
-  tints: { name: string; color: string }[];
+  themes: Record<string, { land: string; mobs: string[]; minis: string[]; bosses: string[]; places: string[]; palettes: string[] }>;
+  palettes: DreamPalette[];
   words: string[];
   hubNames: string[];
   springName: string;
@@ -607,7 +617,7 @@ export const DREAM = dreamJson as unknown as {
   foes: Record<'mob' | 'mini' | 'boss', DreamFoe> & { perDepth: number; goldPerDepth: number; dustPerDepth: number; level: number };
   spots: { fight: number; event: number; drift: number; driftDust: [number, number]; chestDust: number };
   loot: { rankFrom: number; depthsPerRank: number };
-  merchant: { piece: number; piecePerRank: number; tint: string };
+  merchant: { piece: number; piecePerRank: number; palette: string; tint: string };
 };
 
 /** Rumours' numbers and words (Robin, 2026-11-02). */
