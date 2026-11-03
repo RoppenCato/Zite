@@ -133,9 +133,9 @@ describe("the bosses' tricks (Robin, 2026-11-02)", () => {
     return { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, round: rounds, enemy: { ...c.fight!.enemy, hp: Math.round(c.fight!.enemy.maxHp / 2) } } } } };
   };
   const go = (s: GameState) => apply(s, { type: 'fight', id: 'f', player: P, move: { kind: 'attack' }, guard: 'block' } as never, makeRng('t'), NOW2);
-  it('every great boss after the first has one, and says so; King Goo does not', () => {
-    for (const id of ['briar-king', 'frost-matriarch', 'mother-murk', 'frostbeard', 'bogsnapper', 'old-bighorn']) expect(makeEnemy(id).trick?.text, id).toBeTruthy();
-    expect(makeEnemy('thornwood-warden').trick).toBeUndefined();
+  it('every great boss has one and says so, King Goo and Old Rootbeard too since 2026-11-03', () => {
+    for (const id of ['thornwood-warden', 'old-rootbeard', 'briar-king', 'frost-matriarch', 'mother-murk', 'frostbeard', 'bogsnapper', 'old-bighorn']) expect(makeEnemy(id).trick?.text, id).toBeTruthy();
+    expect(makeEnemy('old-rootbeard').phase2).toBeTruthy();
   });
   it('Grumblebark regrows, unless it burns', () => {
     const r = go(fightIn('briar-king'));

@@ -368,10 +368,12 @@ describe('a few turns from one seed', () => {
       let state = fresh();
       const log: string[] = [];
       let turns = 0;
-      for (let i = 0; i < 40 && turns < 3; i++) {
+      for (let i = 0; i < 160 && turns < 3; i++) {
         const c = me(state);
         let r;
         if (c.fight) r = apply(state, { type: 'fight', id: `f${i}`, player: P, move: { kind: 'attack' }, guard: 'block' }, rng, NOW);
+        // Answer whatever is offered: a quest board is passed by as a gamble is.
+        else if (c.offer?.kind === 'board') r = apply(state, { type: 'quest', id: `q${i}`, player: P, accept: false, index: 0 } as Action, rng, NOW);
         else if (c.offer) r = apply(state, { type: 'gamble', id: `g${i}`, player: P, choice: 'pass' }, rng, NOW);
         else if (c.steps > 0) r = apply(state, move(legalPaths(state.board, c.space, c.steps)[0]!, `m${i}`), rng, NOW);
         else {

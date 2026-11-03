@@ -162,6 +162,12 @@
           "effect": "poison"
         }
       ]
+    },
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round King Goo puffs up for a Belly Flop. Block it.",
+      "line": "King Goo puffs up, wobbling."
     }
   },
   "spider": {
@@ -595,7 +601,36 @@
         "weight": 1,
         "charge": true
       }
-    ]
+    ],
+    "trick": {
+      "kind": "fumes",
+      "every": 3,
+      "text": "Every third round the glowcaps round him burst: their spores poison you.",
+      "line": "The glowcaps burst: you are poisoned."
+    },
+    "phase2": {
+      "at": 0.5,
+      "text": "The deep roots wake: Old Rootbeard draws on the earth itself!",
+      "moves": [
+        {
+          "name": "Staff Slam",
+          "power": 1.1,
+          "weight": 2
+        },
+        {
+          "name": "Root Snare",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "poison"
+        },
+        {
+          "name": "Earthshaker",
+          "power": 2.2,
+          "weight": 2,
+          "charge": true
+        }
+      ]
+    }
   },
   "bog-toad": {
     "name": "Bog Toad",

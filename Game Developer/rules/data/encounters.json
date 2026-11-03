@@ -224,6 +224,21 @@
         "text": "A little bottle sits on a ledge, still corked.",
         "kind": "flask",
         "value": 1
+      },
+      {
+        "text": "Glowing moss makes a soft bed in a dry nook. You rest.",
+        "kind": "heal",
+        "value": 0.2
+      },
+      {
+        "text": "A root has grown round a lost purse. You work it free.",
+        "kind": "gold",
+        "value": 6
+      },
+      {
+        "text": "A card is pinned to the wall by a long thorn.",
+        "kind": "card",
+        "value": 1
       }
     ],
     "finds": [
@@ -235,6 +250,16 @@
       {
         "text": "Something shines under a heavy stone. Heave it up?",
         "slot": "trinket",
+        "need": 6
+      },
+      {
+        "text": "A pair of boots dangles from a root above a drop. Reach?",
+        "slot": "boots",
+        "need": 5
+      },
+      {
+        "text": "A sword is grown into a pillar of roots. Pull?",
+        "slot": "weapon",
         "need": 6
       }
     ]
@@ -270,6 +295,16 @@
         "text": "A card drifts past on the black water.",
         "kind": "card",
         "value": 1
+      },
+      {
+        "text": "A dry hummock with a crooked bench: you sit until your boots stop squelching.",
+        "kind": "heal",
+        "value": 0.15
+      },
+      {
+        "text": "A heron drops a shiny coin at your feet and stalks off.",
+        "kind": "gold",
+        "value": 20
       }
     ],
     "finds": [
@@ -287,6 +322,11 @@
         "text": "A cape is snagged high in a dead cypress. Climb?",
         "slot": "cape",
         "need": 6
+      },
+      {
+        "text": "A pair of gloves floats face down in a reed bed. Fish them out?",
+        "slot": "gloves",
+        "need": 5
       }
     ]
   },
@@ -321,6 +361,16 @@
         "text": "A card flutters out of a frozen pack.",
         "kind": "card",
         "value": 1
+      },
+      {
+        "text": "A goatherd shares her flask of warm milk by the cairn.",
+        "kind": "heal",
+        "value": 0.15
+      },
+      {
+        "text": "Something glints in a scree slope: old coins in a split purse.",
+        "kind": "gold",
+        "value": 30
       }
     ],
     "finds": [
@@ -337,6 +387,11 @@
       {
         "text": "Something bright lies on a ledge above the drop. Reach for it?",
         "slot": "trinket",
+        "need": 6
+      },
+      {
+        "text": "A cloak flaps from a crag above the path. Climb for it?",
+        "slot": "cape",
         "need": 6
       }
     ]
@@ -372,6 +427,16 @@
         "text": "A card blows along the sand.",
         "kind": "card",
         "value": 1
+      },
+      {
+        "text": "A hammock strung between two palms. A short nap, a long sigh.",
+        "kind": "heal",
+        "value": 0.15
+      },
+      {
+        "text": "The tide goes out and leaves a little chest of doubloons, mostly sand.",
+        "kind": "gold",
+        "value": 30
       }
     ],
     "finds": [
@@ -389,6 +454,11 @@
         "text": "A cutlass is wedged in a broken mast. Pull?",
         "slot": "weapon",
         "need": 6
+      },
+      {
+        "text": "A buckler is wedged in the ribs of a wreck. Wade out and pry?",
+        "slot": "shield",
+        "need": 5
       }
     ]
   },
@@ -423,6 +493,16 @@
         "text": "A card lies frozen on the path.",
         "kind": "card",
         "value": 1
+      },
+      {
+        "text": "A giant's forgotten cookfire still glows: you warm through.",
+        "kind": "heal",
+        "value": 0.15
+      },
+      {
+        "text": "A giant's dropped button, solid silver, as big as a plate.",
+        "kind": "gold",
+        "value": 35
       }
     ],
     "finds": [
@@ -439,6 +519,11 @@
       {
         "text": "A blade is frozen in the ice. Pull?",
         "slot": "weapon",
+        "need": 6
+      },
+      {
+        "text": "A boot the size of a boat, and inside it, boots your size. Climb in?",
+        "slot": "boots",
         "need": 6
       }
     ]
@@ -474,6 +559,16 @@
         "text": "A card lies on a dead king’s chest.",
         "kind": "card",
         "value": 1
+      },
+      {
+        "text": "A fountain in a hall of dust still runs clear. You drink.",
+        "kind": "heal",
+        "value": 0.15
+      },
+      {
+        "text": "Coins of a crown nobody remembers lie heaped on a stair.",
+        "kind": "gold",
+        "value": 40
       }
     ],
     "finds": [
@@ -490,6 +585,11 @@
       {
         "text": "A blade lies in a stone hand. Pull?",
         "slot": "weapon",
+        "need": 6
+      },
+      {
+        "text": "A charm hangs on a hook by a sealed door. Reach past the spikes?",
+        "slot": "trinket",
         "need": 6
       }
     ]

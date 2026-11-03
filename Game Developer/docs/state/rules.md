@@ -550,3 +550,7 @@ Robin asked whether Ward and Channel were balanced against the other classes; he
 ## Magic Power, dearer spells, Brace as everyone's (Robin, 2026-11-03)
 
 Robin, after playing the Magician: the Pocket Watch (`time-warp`) gives way to **Magic Power** (`magic-power`): a full meter of Arcana (Robin asked for 10; the meter tops out at 5), spells hit 40/50/60% harder for four rounds (`spellUp` on the rank and on the fight, read in `strike` when `spell`). Version 41 moves the Pocket Watch's points to it. **Spells cost more**: every Magician ability costs half as much again (`MAGE_COST` in `tools/class-data.mjs`), Overflow gives 8/9/10 mana a point of Arcana and grows with the level like the costs, so Overflow is how a Magician keeps casting. **Brace is everyone's again** ("since we have overflow, the brace change isnt needed"): no `channel` trait; the Ward stays.
+
+## Holes filled (Robin, 2026-11-03: "fill the holes")
+
+King Goo has a trick now (every third round he puffs up for a Belly Flop: block it), so does Old Rootbeard (every third round his glowcaps' spores poison you), and Old Rootbeard has a second phase at half his HP; every great boss has a trick. `encounters.json`: every land has eight events and four finds, the later lands as many as the first three.
