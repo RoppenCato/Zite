@@ -101,13 +101,16 @@ describe.each(boards)('$name', ({ board, maxLink }) => {
   });
 
   it(`keeps every two spaces at least ${MIN_APART} pixels apart`, () => {
+    // One check at the end, not one a pair: the world has grown past a million pairs.
+    const close: string[] = [];
     for (const a of spaces) {
       for (const b of spaces) {
         if (a.id >= b.id) continue;
         const d = Math.hypot(a.x - b.x, a.y - b.y);
-        expect(d, `${a.id} and ${b.id} are ${d.toFixed(1)} apart`).toBeGreaterThanOrEqual(MIN_APART);
+        if (d < MIN_APART) close.push(`${a.id} and ${b.id} are ${d.toFixed(1)} apart`);
       }
     }
+    expect(close).toEqual([]);
   });
 
   it(`keeps every space at least ${MARGIN} pixels inside the board, and inside its area's bounds`, () => {
