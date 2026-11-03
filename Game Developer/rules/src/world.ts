@@ -82,7 +82,7 @@ export const KIND_LETTERS: Record<string, SpaceKind> = { q: 'board',
   w: 'town',
 };
 
-const KNOWN_KINDS = new Set<string>([...Object.values(KIND_LETTERS), 'door']);
+const KNOWN_KINDS = new Set<string>([...Object.values(KIND_LETTERS), 'door', 'dream']);
 const AREA_MARGIN = 60;
 /** The id of an area grown by the generator: "gen-" and its number from 1. */
 export const GROWN = /^gen-\d+$/;
@@ -268,7 +268,7 @@ export function withDungeons(board: Board): Board {
     setBounds(out, id);
     out.areas[id] = { ...out.areas[id]!, dungeon: true };
     out.spaces[d.inside] = { ...out.spaces[d.inside]!, door: d.outside.spot };
-    out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside, ...(d.outside.sealed ? { sealed: true } : {}) };
+    out.spaces[d.outside.spot] = { ...out.spaces[d.outside.spot]!, kind: 'door', name: d.outside.name, door: d.inside, ...(d.outside.sealed ? { sealed: true } : {}), ...(d.outside.needs ? { needs: d.outside.needs } : {}) };
   }
   return out;
 }

@@ -399,6 +399,82 @@
       },
       "text": "Attack strikes twice as many times at half the damage each, and 5% more crits.",
       "look": "two little moons on one chain"
+    },
+    "dreamcatcher": {
+      "name": "Dreamcatcher",
+      "tier": 9,
+      "rarity": "epic",
+      "dream": true,
+      "dust": 250,
+      "traits": {
+        "dreamDust": 1.5
+      },
+      "text": "Half as much Dreamdust again from everything in the Dream.",
+      "look": "a little willow hoop with a feather web"
+    },
+    "lucid-bead": {
+      "name": "Lucid Bead",
+      "tier": 9,
+      "rarity": "epic",
+      "dream": true,
+      "dust": 200,
+      "traits": {
+        "lucid": 0.5
+      },
+      "text": "When you fall in the Dream, you keep half the gold the run had won.",
+      "look": "a clear glass bead with a tiny open eye inside"
+    },
+    "sleepers-bell": {
+      "name": "Sleeper’s Bell",
+      "tier": 9,
+      "rarity": "epic",
+      "dream": true,
+      "dust": 250,
+      "traits": {
+        "winHeal": 0.06,
+        "winMana": 0.1
+      },
+      "text": "Each win heals 6% of your HP and gives back 10% of your mana.",
+      "look": "a small silver bell stuffed with wool"
+    },
+    "moth-wing": {
+      "name": "Moth Wing",
+      "tier": 9,
+      "rarity": "epic",
+      "dream": true,
+      "dust": 300,
+      "traits": {
+        "dodge": 0.08,
+        "secondWind": 0.2
+      },
+      "text": "8% more dodge, and once a fight, when you drop under a quarter of your HP, 20% of it comes back.",
+      "look": "a pale moth wing set in silver"
+    },
+    "nightmare-shard": {
+      "name": "Nightmare Shard",
+      "tier": 9,
+      "rarity": "legendary",
+      "dream": true,
+      "dust": 400,
+      "traits": {
+        "executeDamage": 1.35,
+        "crit": 0.06
+      },
+      "text": "35% more damage to a foe under a third of its HP, and 6% more crits.",
+      "look": "a black splinter that drinks the light"
+    },
+    "morning-star": {
+      "name": "Morning Star",
+      "tier": 9,
+      "rarity": "legendary",
+      "dream": true,
+      "dust": 450,
+      "traits": {
+        "hpMult": 1.12,
+        "attackMult": 1.12
+      },
+      "text": "12% more HP and 12% more attack.",
+      "look": "a small star, still pink at its edges"
     }
   }
 }

@@ -143,8 +143,9 @@ const KIND_COLORS: Record<SpaceKind, number> = {
   boss: 0x8f2f3b,
   arena: 0xa23c2c,
   door: 0x6b5a48,
+  dream: 0xb59cf0,
 };
-const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { arena: 'A', door: 'D', gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B' };
+const KIND_LETTERS_SHOWN: Record<SpaceKind, string> = { arena: 'A', door: 'D', gear: 'L', board: 'Q', church: 'H', town: 'T', shop: '$', normal: '', chest: 'C', potion: '+', spell: '*', boss: 'B', dream: 'Z' };
 
 const CLASS_COLORS: Record<string, number> = {
   warrior: 0xf2f2f2,
@@ -2359,7 +2360,7 @@ export class BoardScene extends Phaser.Scene {
       const notes = traceLine(this.game_.state, landed.space, this.game_.now());
       const story = `${this.describeLanding(moved)}${notes ? ` ${notes}` : ''}`.trim();
       this.log.note(`landed on ${space.id} (${space.kind}): ${story || 'nothing'}`);
-      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', arena: 'town', door: 'town', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
+      sfx.play(`ui/arrive-${{ board: 'board', gear: 'chest', town: 'town', shop: 'shop', potion: 'spring', spell: 'shrine', church: 'church', arena: 'town', door: 'town', dream: 'shrine', chest: 'chest', boss: 'boss', normal: 'wild' }[space.kind] ?? 'wild'}`);
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');

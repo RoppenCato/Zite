@@ -325,7 +325,7 @@ export function rollTrinket(id: string, tier: number, rarity: Rarity, rng: Rng):
   const order: Rarity[] = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
   const want = rarity === 'unique' ? 'legendary' : rarity;
   for (const r of order.slice(order.indexOf(want))) {
-    const pool = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === r && TRINKETS[t]!.tier <= tier);
+    const pool = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === r && TRINKETS[t]!.tier <= tier && !TRINKETS[t]!.dream);
     if (!pool.length) continue;
     const weight = (t: string): number => (TRINKETS[t]!.tier >= tier - TRINKET_DATA.nearTiers ? TRINKET_DATA.nearWeight : 1);
     let pick = rng.next() * pool.reduce((n, t) => n + weight(t), 0);
@@ -340,7 +340,7 @@ export function rollTrinket(id: string, tier: number, rarity: Rarity, rng: Rng):
 
 /** The plainest trinket of a land: its newest common one. */
 function plainTrinket(id: string, tier: number): GearItem {
-  const commons = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === 'common' && TRINKETS[t]!.tier <= tier);
+  const commons = TRINKET_IDS.filter((t) => TRINKETS[t]!.rarity === 'common' && TRINKETS[t]!.tier <= tier && !TRINKETS[t]!.dream);
   return makeTrinket(id, commons[commons.length - 1] ?? TRINKET_IDS[0]!);
 }
 

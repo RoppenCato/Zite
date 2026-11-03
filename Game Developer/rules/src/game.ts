@@ -5,7 +5,7 @@
 import { baseNumbers, canLearn, carriedLimit, resetSkills, traitsOf } from './skills.ts';
 import { clockOf, isNight, nextMorning } from './daynight.ts';
 import { notePlace } from './journal.ts';
-import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, TRINKET_IDS, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
+import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM_IDS, PROGRESSION, QUESTS, SPACE_KIND_DATA, SURPRISES, TRACES, WORLD_DATA, UNIQUE_IDS, UNIQUES, TRINKET_IDS, TRINKETS, DREAM, townKind, type TownKind, ARENA, type ArenaMode, RUMOURS } from './data.ts';
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
@@ -15,6 +15,7 @@ import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath, stepChoices } from './paths.ts';
 import { hashSeed, makeRng, type Rng } from './rng.ts';
 import { sealsAllWon } from './seals.ts';
+import { bossBeaten, dreamAreaId, dreamDepthOpen, dreamFoe, dreamRank, dustFor, endDream, giveDust, measure, touchLoot, withRun } from './dream.ts';
 import { buildBoard, withArenas, withDungeons, withSecrets } from './world.ts';
 import {
   SLOTS,
@@ -60,6 +61,7 @@ type QuestAction = Extract<Action, { type: 'quest' }>;
 type KeepAction = Extract<Action, { type: 'keep' }>;
 type JoinAction = Extract<Action, { type: 'join' }>;
 type TraceAction = Extract<Action, { type: 'trace' }>;
+type DreamAction = Extract<Action, { type: 'dream' }>;
 
 /** The longest name a character may have. */
 export const MAX_NAME = 12;
@@ -195,6 +197,8 @@ export function apply(state: GameState, action: Action, rng: Rng, now = 0): Appl
       return keep(state, action, character);
     case 'trace':
       return trace(state, action, character, now);
+    case 'dream':
+      return dream(state, action, character, rng);
   }
 }
 
@@ -263,6 +267,8 @@ export function hubOf(state: GameState, c: Character): string | null {
 function goHome(state: GameState, action: HomeAction, c: Character, rng: Rng, now: number): ApplyResult {
   if (c.fight) return reject(state, action, 'finish the fight first');
   if (c.offer) return reject(state, action, 'answer first');
+  // Out of a run of the Dream only by waking up.
+  if (c.dream) return reject(state, action, 'not now');
   const hub = hubOf(state, c);
   if (!hub || hub === c.space || (c.cooldowns.home ?? 0) > now) return reject(state, action, 'not now');
   const events: GameEvent[] = [{ type: 'wentHome', action: action.id, player: action.player, from: c.space, to: hub }];
@@ -317,8 +323,88 @@ function door(state: GameState, action: DoorAction, c: Character): ApplyResult {
   const to = here?.door ? state.board.spaces[here.door] : undefined;
   if (!here || !to || c.steps > 0) return reject(state, action, 'not now');
   if (here.sealed && !sealsAllWon(state.board, c)) return reject(state, action, 'not now');
+  if (here.needs && !bossBeaten(state.board, c, here.needs)) return reject(state, action, 'not now');
   const opened = c.opened.includes(to.area) ? c.opened : [...c.opened, to.area];
   return { state: withCharacter(state, { ...c, space: to.id, opened }), events: [{ type: 'doored', action: action.id, player: action.player, from: here.id, to: to.id }] };
+}
+
+// ---- the Dream (Robin, 2026-11-03) -------------------------------------------------------------------------------------
+
+/** A plain spot of a run: mostly a fight with the land's creatures, now and then a moment of the land or a drift of Dreamdust. */
+function dreamSpot(state: GameState, c: Character, area: Area, space: Space, tier: number, action: Action, rng: Rng, events: GameEvent[]): ApplyResult {
+  const roll = rng.next();
+  if (roll < DREAM.spots.fight && area.mobs.length) return begin(state, c, area.mobs[rng.int(area.mobs.length) - 1]!, space.id, false, action, rng, events);
+  if (roll < DREAM.spots.fight + DREAM.spots.event) return themeEvent(state, c, area.theme, tier, action, rng, events);
+  const [lo, hi] = DREAM.spots.driftDust;
+  events.push({ type: 'nothing', action: action.id, player: action.player, text: 'A drift of Dreamdust glitters in the grass.' });
+  return { state: withCharacter(state, giveDust(c, dustFor(c, lo + rng.int(hi - lo + 1) - 1, area.dream!.depth), action, events)), events };
+}
+
+/** The Dream: go in at a depth from the Dreamgate, wake up from a run, or buy from the camp's merchant. */
+function dream(state: GameState, action: DreamAction, c: Character, rng: Rng): ApplyResult {
+  const busy = boardBusy(c);
+  if (busy) return reject(state, action, busy);
+  if (action.op === 'wake') {
+    if (!c.dream || c.steps > 0) return reject(state, action, 'not now');
+    const events: GameEvent[] = [];
+    return { state: endDream(state, c, 'woke', action, events), events };
+  }
+  if (action.op === 'enter') {
+    const here = state.board.spaces[c.space];
+    if (c.dream || c.steps > 0 || here?.kind !== 'dream' || here.area !== DREAM.isle.area) return reject(state, action, 'not now');
+    if (!Number.isInteger(action.depth) || action.depth < 1 || action.depth > dreamDepthOpen(c)) return reject(state, action, 'bad value');
+    const run = { depth: action.depth, seed: `${state.seed}:dream:${c.id}:${rng.int(1_000_000_000)}`, gold: c.gold };
+    const board = withRun(state.board, c.id, run);
+    const id = dreamAreaId(c.id);
+    const area = board.areas[id]!;
+    const start = `${id}-h0`;
+    const next: Character = { ...c, dream: run, space: start, steps: 0, opened: [...c.opened, id], ...(c.seen ? { seen: [...c.seen, id] } : {}) };
+    const events: GameEvent[] = [{ type: 'dreamEntered', action: action.id, player: action.player, depth: run.depth, name: area.name, area: id, theme: area.theme, tint: area.dream!.tint, element: area.dream!.element }];
+    return { state: withCharacter({ ...state, board }, next), events };
+  }
+  return dreamBuy(state, action, c, rng);
+}
+
+/** What the camp's merchant sells for Dreamdust: the Dream's trinkets, by price. */
+export function dreamWares(): { id: string; price: number }[] {
+  return TRINKET_IDS.filter((t) => TRINKETS[t]!.dream).map((t) => ({ id: t, price: TRINKETS[t]!.dust ?? 0 }));
+}
+
+/** A piece of your choice from the merchant: the rank of your best depth, and what it costs in Dreamdust. */
+export function dreamPiece(c: Character): { rank: number; price: number } {
+  const rank = dreamRank(Math.max(1, c.dreamDepth ?? 0));
+  return { rank, price: DREAM.merchant.piece + DREAM.merchant.piecePerRank * (rank - DREAM.loot.rankFrom) };
+}
+
+function dreamBuy(state: GameState, action: Extract<DreamAction, { op: 'buy' }>, c: Character, rng: Rng): ApplyResult {
+  const offer = shopOffer(state, c);
+  if (offer?.stock !== 'dream') return reject(state, action, 'not at a shop');
+  if (c.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
+  const dust = c.dreamdust ?? 0;
+  const got = nextGearId(state);
+  let gear: GearItem;
+  let price: number;
+  if (action.item !== undefined) {
+    const ware = dreamWares().find((w) => w.id === action.item);
+    if (!ware) return reject(state, action, 'no such item');
+    gear = makeTrinket(got.id, ware.id);
+    price = ware.price;
+  } else if (action.slot !== undefined && SLOTS.includes(action.slot) && action.slot !== 'trinket') {
+    const piece = dreamPiece(c);
+    const line = action.line && GEAR.lines[action.line] ? action.line : (({ warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' } as Record<string, GearLine>)[c.classId] ?? 'heavy');
+    const kind = action.slot === 'weapon' ? (action.kind && classKinds(c.classId, 'weapon').includes(action.kind) ? action.kind : classKinds(c.classId, 'weapon')[0]) : action.slot === 'shield' ? shopOffhand(c.classId, line) : undefined;
+    // Rolled legendary: every rarity under it skipped.
+    gear = rollGear(got.id, action.slot, piece.rank, Object.keys(GEAR.rarities).indexOf('legendary'), rng, line, c.classId, kind);
+    price = piece.price;
+  } else {
+    return reject(state, action, 'no such item');
+  }
+  if (dust < price) return reject(state, action, 'not enough dust');
+  const events: GameEvent[] = [];
+  const bought = { ...gear, dream: DREAM.merchant.tint };
+  const next = giveDust({ ...c, bag: [...c.bag, bought] }, -price, action, events);
+  events.unshift({ type: 'bought', action: action.id, player: action.player, item: null, gear: bought, price: 0, gold: c.gold });
+  return { state: withCharacter(got.state, next), events };
 }
 
 // ---- the Arena (Robin, 2026-11-02) ----------------------------------------------------------------------------------
@@ -361,27 +447,10 @@ export function arenaTried(c: Character, mode: string, now: number): boolean {
 
 /** A wave's numbers, from the fighter: mostly what is worn, some the class's bare numbers at this level, so good gear helps without making it easy. */
 function arenaNumbers(c: Character, wave: number, mode: ArenaMode): { hp: number; attack: number; defense: number } {
-  const bare = baseNumbers(c.classId, c.level);
-  const worn = stats(c);
   const w = ARENA.waves[wave - 1]!;
   const m = ARENA.modes[mode];
-  const share = ARENA.wornShare;
-  const blend = (b: number, n: number): number => b * (1 - share) + n * share;
-  const attack = blend(bare.attack, worn.attack);
-  const maxHp = blend(bare.maxHp, worn.maxHp);
-  const defense = blend(bare.defense, worn.defense);
-  const grown = 1 + Math.max(0, c.level - 4) * ARENA.levelStep;
-  // A class's handicap slides from its early number to its number at level 30 (2026-11-03): talents change who is ahead.
-  const cls = ARENA.classes[c.classId];
-  // From level 10, where the early numbers were measured, to 30.
-  const t = Math.min(1, Math.max(0, (c.level - 10) / 20));
-  const slide = (early: number | undefined, top: number | undefined): number => (early ?? 1) + ((top ?? early ?? 1) - (early ?? 1)) * t;
-  return {
-    hp: Math.round(attack * w.rounds * m.hp * grown * slide(cls?.hp, cls?.top?.hp)),
-    // Its plain blow takes this share of the fighter's HP through their armour (a blow is cut by half the defense).
-    attack: Math.round(maxHp * w.hit * m.hit * grown * slide(cls?.hit, cls?.top?.hit) + defense / 2),
-    defense: 0,
-  };
+  // Its plain blow takes this share of the fighter's HP through their armour (a blow is cut by half the defense).
+  return { ...measure(c, w.rounds * m.hp, w.hit * m.hit), defense: 0 };
 }
 
 /** The next wave's fight: a creature of the land, or at the last a mini-boss, at the fighter's measure. */
@@ -687,6 +756,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
   switch (space.kind) {
     case 'arena':
     case 'door':
+    case 'dream':
       return { state: withCharacter(state, c), events };
     case 'town': {
       const s = stats(c);
@@ -712,6 +782,12 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         }
         const keys = { ...c.keys, [space.area]: c.keys[space.area]! - 1 };
         return openChest(state, cooled({ ...c, keys }), tier, space.area, action, rng, events, true);
+      }
+      if (area?.dream) {
+        const from = events.length;
+        const opened = openChest(state, cooled(c), tier, space.area, action, rng, events);
+        const me = touchLoot(opened.state.characters[c.id]!, events, from, area.dream.tint);
+        return { state: withCharacter(opened.state, giveDust(me, dustFor(me, DREAM.spots.chestDust, area.dream.depth), action, events)), events };
       }
       return openChest(state, cooled(c), tier, space.area, action, rng, events);
     }
@@ -741,7 +817,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
     case 'boss': {
       if (!space.boss) return { state: withCharacter(state, c), events };
       if (onCooldown) {
-        events.push({ type: 'nothing', action: id, player, text: `${space.name} is quiet: the boss is not back yet.` });
+        events.push({ type: 'nothing', action: id, player, text: area?.dream ? 'Nothing stirs here now: this dream is spent.' : `${space.name} is quiet: the boss is not back yet.` });
         return { state: withCharacter(state, c), events };
       }
       return begin(state, { ...c, bossMet: [...new Set([...(c.bossMet ?? []), space.id])] }, space.boss, space.id, false, action, rng, events);
@@ -753,6 +829,7 @@ function land(state: GameState, c: Character, space: Space, action: Action, rng:
         const met = begin(state, first ? { ...c, foundDone: [...(c.foundDone ?? []), space.id] } : c, space.mob, space.id, false, action, rng, events);
         return first ? grownBeast(met, c.id) : met;
       }
+      if (area?.dream) return dreamSpot(state, c, area, space, tier, action, rng, events);
       const spawn = state.spawns[space.id];
       if (spawn?.kind === 'worldboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events, spawn);
       if (spawn?.kind === 'miniboss' && spawn.enemy) return begin(state, c, spawn.enemy, space.id, true, action, rng, events);
@@ -935,6 +1012,8 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
     const m = traitsOf(c).nightOwl ? 1 : d.enemyMult;
     fighting = { ...fighting, fight: { ...f0, enemy: { ...en, hp: Math.round(en.hp * m), maxHp: Math.round(en.maxHp * m), attack: Math.round(en.attack * m), xp: Math.round(en.xp * d.rewardMult), gold: Math.round(en.gold * d.rewardMult) } } };
   }
+  const dreamt = state.board.areas[state.board.spaces[space]?.area ?? '']?.dream;
+  if (dreamt) fighting = { ...fighting, fight: { ...fighting.fight!, enemy: dreamFoe(c, fighting.fight!.enemy, dreamt) } };
   const e = fighting.fight!.enemy;
   events.push({ type: 'fight', action: action.id, player: action.player, enemy: { ...e, moves: e.moves.map((m) => ({ ...m })) }, space });
   events.push(intentEvent(e, action.id, action.player));

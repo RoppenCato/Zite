@@ -1,9 +1,9 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 43;
+export const STATE_VERSION = 44;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
-export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
+export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
 
 export type ClassId = 'warrior' | 'rogue' | 'mage' | 'ranger';
 
@@ -80,6 +80,8 @@ export interface Space {
   door?: string;
   /** A door that opens only with every Seal (Robin, 2026-11-02: "when all are dead, the final dungeon opens"). */
   sealed?: boolean;
+  /** A door that opens only once this boss has fallen (the Ferry waits for the Hollow King, Robin, 2026-11-03). */
+  needs?: string;
   /** A shop's stock: arms when not said. */
   stock?: ShopStock;
   /** A locked chest: it opens only with the area's key, which its mini-boss carries, and holds more (mine, 2026-11-01). */
@@ -114,6 +116,8 @@ export interface Area {
   openWith?: string;
   /** A dungeon: off the map, hidden until you stand in it, with no spawns and no boss to walk straight to. */
   dungeon?: boolean;
+  /** A run of the Dream (Robin, 2026-11-03): laid for one dreamer, at a depth, in a colour, with its boss's element. */
+  dream?: DreamArea;
   id: string;
   name: string;
   theme: string;
@@ -181,7 +185,26 @@ export type GearStat = 'attack' | 'defense' | 'maxHp' | 'maxMana' | 'magic';
 export type GearLine = 'heavy' | 'light' | 'magic';
 
 /** What a shop sells: arms and armour, magic, a town's flasks and cards, or all of it from a merchant. */
-export type ShopStock = 'arms' | 'magic' | 'town' | 'merchant';
+export type ShopStock = 'arms' | 'magic' | 'town' | 'merchant' | 'dream';
+
+/** A Dream boss's element: the trick it fights with (Robin, 2026-11-03: "Bosses (again random elements, color, etc)"). */
+export type DreamElement = 'fire' | 'ice' | 'poison' | 'storm';
+
+/** What a run of the Dream is, written on its area. */
+export interface DreamArea {
+  player: string;
+  depth: number;
+  /** The run's colour, `#rrggbb`. */
+  tint: string;
+  element: DreamElement;
+}
+
+/** A run of the Dream under way: what lays its board again, and the gold you came in with (a fall loses what the run won). */
+export interface DreamRun {
+  depth: number;
+  seed: string;
+  gold: number;
+}
 
 /** A piece of gear as rolled: its rank by tier, its rarity, its name, what it adds, and its special effect if named. */
 export interface GearItem {
@@ -206,6 +229,8 @@ export interface GearItem {
   set?: string;
   /** The id in trinkets.json when the piece is a trinket (Robin, 2026-11-03): its passive is read from there. */
   trinket?: string;
+  /** Dream-touched: found or bought in the Dream, in its colour (`#rrggbb`). */
+  dream?: string;
   price: number;
 }
 
@@ -293,6 +318,12 @@ export interface Character {
   arenaLegends?: string[];
   /** A test switch: the Arena is open for this character whatever the day (to go before Alpha). */
   arenaTest?: boolean;
+  /** A run of the Dream under way (Robin, 2026-11-03). */
+  dream?: DreamRun;
+  /** Dreamdust: only the Dream drops it, kept through a fall, spent at its merchant. */
+  dreamdust?: number;
+  /** The deepest depth of the Dream cleared: the next one is open. */
+  dreamDepth?: number;
   /** The errands carried, one a town at most. */
   quests: Quest[];
   /** The errands finished, oldest first, the last few kept for the quest log (Robin, 2026-11-01). */
@@ -543,6 +574,10 @@ export type Action =
   | { type: 'skill'; id: string; player: string; op: 'testTrinket' }
   | { type: 'skill'; id: string; player: string; op: 'testLand'; to: string }
   | { type: 'skill'; id: string; player: string; op: 'reset' }
+  /** The Dream (Robin, 2026-11-03): go in at a depth from the Dreamgate, wake up from a run, or buy from its merchant (a trinket by id, or a piece for a slot). */
+  | { type: 'dream'; id: string; player: string; op: 'enter'; depth: number }
+  | { type: 'dream'; id: string; player: string; op: 'wake' }
+  | { type: 'dream'; id: string; player: string; op: 'buy'; item?: string; slot?: Slot; kind?: string; line?: GearLine }
   /** The answer to a town's errand. */
   | { type: 'quest'; id: string; player: string; accept: boolean; index?: number; drop?: boolean }
   | { type: 'try'; id: string; player: string }
@@ -578,6 +613,7 @@ export type RejectReason =
   | 'two hands'
   | 'wrong weapon'
   | 'not enough gold'
+  | 'not enough dust'
   | 'no such item'
   | 'no such gear'
   | 'none left'
@@ -618,6 +654,12 @@ export type GameEvent =
   | { type: 'secretFound'; action: string; player: string; space: string; name: string }
   | { type: 'secretTreasure'; action: string; player: string; space: string; name: string }
   | { type: 'doored'; action: string; player: string; from: string; to: string }
+  /** Into a run of the Dream: its board is laid, and you stand at its gate. */
+  | { type: 'dreamEntered'; action: string; player: string; depth: number; name: string; area: string; theme: string; tint: string; element: DreamElement }
+  /** A run is over: its boss fell (`cleared`, the next depth opens), you woke up, or you fell (the run's gold lost, `gold` how much). You stand at `to`. */
+  | { type: 'dreamEnded'; action: string; player: string; how: 'cleared' | 'woke' | 'fell'; depth: number; gold: number; to: string }
+  /** Dreamdust gained (or spent); `dust` is the new total. */
+  | { type: 'dreamdust'; action: string; player: string; delta: number; dust: number }
   /** Night has fallen, or the morning come (Robin, 2026-11-03). */
   | { type: 'daybreak'; action: string; player: string; night: boolean; day: number }
   | { type: 'linkOffered'; action: string; player: string; code: string; until: number }

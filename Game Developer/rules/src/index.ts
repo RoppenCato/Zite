@@ -15,10 +15,11 @@ export { groundsOf, groundAt, placeAt, placeName, inTownWalls } from './grounds.
 export { hintFor, countdown, traceLine } from './hints.ts';
 export { regionCreatures } from './journal.ts';
 export { FINAL_BOSS, sealAt, sealCount, sealsAllWon, sealsOf, SEALS_COMING, type Seal } from './seals.ts';
-export { townKind, TOWNS, ARENA, DUNGEONS, RUMOURS, SECRETS, type TownKind, type ArenaMode } from './data.ts';
+export { townKind, TOWNS, ARENA, DUNGEONS, DREAM, RUMOURS, SECRETS, type TownKind, type ArenaMode } from './data.ts';
+export { bossBeaten, dreamAreaId, dreamDepthOpen, dreamRank, layDream, measure, withRun, withoutRun, type DreamLaid } from './dream.ts';
 export { CALENDAR, DAY_NAMES, calendarDay, isOn, nextDay, weekday } from './calendar.ts';
 export { clockOf, isNight, nextMorning, type Phase } from './daynight.ts';
-export { startingGear, newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, arenaModeOpen, arenaPrize, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
+export { startingGear, newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, arenaModeOpen, arenaPrize, travelOptions, dreamWares, dreamPiece, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';
 export { migrate } from './save.ts';

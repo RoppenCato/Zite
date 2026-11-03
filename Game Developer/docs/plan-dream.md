@@ -1,6 +1,7 @@
 # The Dream: the plan (Robin's endgame, 2026-11-03)
 
 Robin's design is in the brief ("The endgame: the Dream"). This is how it is built; every choice not his is marked mine.
+Robin OK'd this plan on 2026-11-03 ("Go ahead with the Dream, but make the dungeon size bigger"), built locally.
 
 ## What Robin decided
 
@@ -23,8 +24,10 @@ and **the Dreamgate**, a spot of a new kind, `dream`.
 from a seed and added to the board for you alone (`dream-<player>`, far off the map, seen and walked only by you), and
 taken away when the run ends:
 
-- about 18 spots on a winding road with two or three forks, walked by the die like any land: fights, a chest or two, a
-  fountain that heals, a trap, a mini-boss half way, the boss at the end;
+- **about 45 spots** (Robin, 2026-11-03: "make the dungeon size bigger. 18 spots isnt very big"; the number mine), on a
+  winding road with four or five forks, some rejoining and some ending in a chest, walked by the die like any land: fights,
+  two or three chests, two fountains that heal, two traps, a mini-boss a third of the way and another two thirds in, the
+  boss at the end;
 - a **theme** drawn from the lands with board kits (Meadows, forest, Honeyhill, Bogglemire, the Frostcrown, the Pirate
   Isles, the Giants' Land, the Crown, the Rootways): its ground, props, plates, fight backdrop and creatures;
 - a **tint** from a palette, laid over the board, the backdrop and the creatures (a multiply tint: cheap, no filters);

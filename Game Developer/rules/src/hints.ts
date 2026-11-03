@@ -1,7 +1,7 @@
 // What touching a spot tells the player (Robin, 2026-10-31: hints on what you could meet, level range and loot, but
 // not everything). Pure text from the state, so the server can send the same line later.
 
-import { GEAR, SPACE_KIND_DATA, townKind } from './data.ts';
+import { DREAM, GEAR, SPACE_KIND_DATA, townKind } from './data.ts';
 import { nextDay } from './calendar.ts';
 import { arenaOpen } from './game.ts';
 import { creature } from './fight.ts';
@@ -11,6 +11,7 @@ import { groundAt } from './grounds.ts';
 import { questLine } from './quests.ts';
 import type { GameState } from './types.ts';
 import { sealCount, sealsAllWon } from './seals.ts';
+import { bossBeaten, dreamDepthOpen } from './dream.ts';
 
 /** A rough age: "just now", "5 min ago", "2 h ago". */
 function ago(ms: number): string {
@@ -57,6 +58,11 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
   const left = me ? (me.cooldowns[spaceId] ?? 0) - now : 0;
   const again = left > 0 ? ` Again in ${countdown(left)}.` : '';
   const spawn = state.spawns[spaceId];
+  // A run of the Dream (Robin, 2026-11-03).
+  const dreamt = area?.dream;
+  if (dreamt && space.kind === 'normal') return `${where}: the dreamt creatures of ${DREAM.themes[area.theme]?.land ?? 'a land'} roam here. Dreamdust from every fight; the run's gold is lost if you fall.`;
+  if (dreamt && space.kind === 'boss') return `${creature(space.boss ?? '', bestiary)?.name ?? 'Something'} dreams here. ${left > 0 ? 'Beaten.' : space.name === 'The Dreamer’s Throne' ? 'Beat it to clear the depth.' : 'Land here to face it.'}`;
+  if (dreamt && space.kind === 'dream') return `${where}: where this dream began. Wake up from anywhere outside a fight.`;
   switch (space.kind) {
     case 'normal': {
       // The hunting ground: what mostly roams here and what it tends to drop.
@@ -94,11 +100,16 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: learn an ability of your class, or improve one you know.${again}`;
     case 'church':
       return `${where}: heals you fully and takes off poison and weakness. Always open, and free.`;
+    case 'dream':
+      return `${where}: step into the Dream, a dungeon laid for you alone. Depths open to you: 1 to ${me ? dreamDepthOpen(me) : 1}.`;
     case 'shop':
+      if (space.stock === 'dream') return `${where}: the best flasks and dice cards for gold; the Dream's own trinkets and a legendary piece of your choice for Dreamdust.`;
       return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
     case 'door': {
       const beyond = space.door ? state.board.spaces[space.door] : undefined;
       if (space.sealed && me && !sealsAllWon(state.board, me)) return `${where}: a door with ${sealCount(state.board, me).total} sockets, sealed. Every land's Seal opens it.`;
+      if (space.needs && me && !bossBeaten(state.board, me, space.needs)) return `${where}: the ferryman waits for whoever has beaten ${creature(space.needs, bestiary)?.name ?? 'the last boss'}.`;
+      if (space.needs) return `${where}: across the water to the Dreaming Isle.`;
       return area?.dungeon ? `${where}: the way back to daylight.` : `${where}: a way in, levels ${state.board.areas[beyond?.area ?? '']?.levels.join(' to ') ?? '?'}. Something waits at the far end.`;
     }
     case 'arena':

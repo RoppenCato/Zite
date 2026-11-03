@@ -7,7 +7,8 @@
 
 import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
-import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA, TRINKET_DATA } from './data.ts';
+import { ABILITIES, CLASS_DATA, DREAM, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA, TRINKET_DATA } from './data.ts';
+import { endDream, foeDust, giveDust, touchLoot } from './dream.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
 import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, gearKind, guardOf, manaCost as costOf, manaScale } from './gear.ts';
 import { growBoard } from './generate.ts';
@@ -1090,9 +1091,9 @@ function win(r: Round): ApplyResult {
   }
   xp = Math.round(xp * (1 + (r.s.bonus.wisdom ?? 0)));
   gold = Math.round(gold * (1 + (r.s.bonus.fortune ?? 0)));
-  // The Arena's pay is measured from the fighter already.
-  if (!c.arena) {
-    const land = r.state.board.areas[r.state.board.spaces[f.space]?.area ?? ''];
+  // The Arena's pay is measured from the fighter already, and the Dream's from the depth.
+  const land = r.state.board.areas[r.state.board.spaces[f.space]?.area ?? ''];
+  if (!c.arena && !land?.dream) {
     const cap = softcap(c.level, e.level, land?.levels[1] ?? 99, e.role === 'boss');
     xp = Math.max(1, Math.round(xp * cap.xp));
     gold = Math.round(gold * cap.gold);
@@ -1118,6 +1119,7 @@ function win(r: Round): ApplyResult {
   next = noteBeaten(next, e.id, r.state.board, area?.id, action, events);
   const rank = area?.tier ?? 1;
   let s = r.state;
+  const lootFrom = events.length;
   if (e.wanderer || rng.next() < GEAR.dropChance[e.role] + (r.s.bonus.scavenger ?? 0)) {
     const got = nextGearId(s);
     s = got.state;
@@ -1136,6 +1138,10 @@ function win(r: Round): ApplyResult {
     next = giveItem(next, cards[rng.int(cards.length) - 1]!, 1, action, events);
   }
 
+  // What the Dream gives is in its colour, with Dreamdust beside it (Robin, 2026-11-03).
+  const dreamt = area?.dream;
+  if (dreamt) next = giveDust(touchLoot(next, events, lootFrom, dreamt.tint), foeDust(next, e, dreamt.depth), action, events);
+
   const paid = finishQuests(s, next, action, rng, events);
   s = paid.state;
   next = paid.c;
@@ -1146,8 +1152,10 @@ function win(r: Round): ApplyResult {
     events.push({ type: 'keyFound', action: id, player, area: area.id });
   }
 
+  // A run's foe on a boss spot stays beaten for the run; the run's boss clears the depth (below).
+  if (dreamt && space?.kind === 'boss') next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: Number.MAX_SAFE_INTEGER } };
   // A land's boss, or a mini-boss guarding a land's gate or a dungeon's last door.
-  if (space?.kind === 'boss' && (e.role === 'boss' || (e.role === 'mini' && (space.opens || area?.dungeon)))) {
+  if (!dreamt && space?.kind === 'boss' && (e.role === 'boss' || (e.role === 'mini' && (space.opens || area?.dungeon)))) {
     const until = now + (SPACE_KIND_DATA.boss.cooldownMs ?? 0);
     next = { ...next, cooldowns: { ...next.cooldowns, [f.space]: until }, bossKills: { ...next.bossKills, [f.space]: (next.bossKills[f.space] ?? 0) + 1 } };
     events.push({ type: 'bossDown', action: id, player, space: f.space, until });
@@ -1184,6 +1192,7 @@ function win(r: Round): ApplyResult {
     delete spawns[f.space];
     events.push({ type: 'despawned', action: id, player, space: f.space });
   }
+  if (dreamt && space?.kind === 'boss' && e.role === 'boss') return { state: endDream({ ...s, spawns }, next, 'cleared', action, events), events };
   return { state: { ...withCharacter(s, next), spawns }, events };
 }
 
@@ -1278,6 +1287,13 @@ export function noteLevels(c: Character, from: number, action: Action, events: G
 
 /** Beaten: back on your feet in the nearest town, HP and mana full, a fifth of the gold gone, gear kept. */
 function die(state: GameState, c: Character, action: Action, events: GameEvent[]): ApplyResult {
+  // In the Dream: awake at the camp, the run's gold lost, the gear and the Dreamdust kept (Robin, 2026-11-03), and no other cost.
+  if (c.dream) {
+    events.push({ type: 'died', action: action.id, player: action.player, town: DREAM.isle.camp, lostGold: 0 });
+    const woke: Character = { ...outOfArena(c), fight: null, offer: null, ailments: {} };
+    const full = stats(woke);
+    return { state: endDream(state, { ...woke, hp: full.maxHp, mana: full.maxMana }, 'fell', action, events), events };
+  }
   // In the Arena the pot is what you lose.
   const lostGold = c.arena ? 0 : Math.floor(c.gold * PROGRESSION.deathGoldLoss);
   // Out of a dungeon by its door: no road leads from inside to a town.

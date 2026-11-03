@@ -226,7 +226,7 @@ const KITS: Record<string, Kit> = {
 const AREA_BANNERS: Record<string, string> = { rootways: rootwaysBannerPng, 'buried-crown': crownBannerPng };
 const bannerKey = (areaId: string): string => `banner_${areaId}`;
 
-const PLATES: Record<SpaceKind, string> = { arena: 'spot_town', door: 'spot_door', board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate' };
+const PLATES: Record<SpaceKind, string> = { arena: 'spot_town', door: 'spot_door', board: 'spot_board', gear: 'spot_gear', normal: 'spot_wild', town: 'spot_town', shop: 'spot_shop', chest: 'spot_chest', potion: 'spot_spring', spell: 'spot_shrine', church: 'spot_church', boss: 'spot_gate', dream: 'spot_dream' };
 
 /** Queue the kits of these themes, and the cover and banner they share. The board is drawn whole, so an area's kit must be here before it opens. */
 export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[]): void {

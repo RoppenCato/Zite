@@ -1342,5 +1342,194 @@
       ],
       "places": []
     }
+  },
+  "dream-isle": {
+    "outside": {
+      "spot": "city-bank",
+      "name": "The Ferry",
+      "needs": "hollow-king"
+    },
+    "inside": "di-dock",
+    "area": {
+      "id": "dream-isle",
+      "name": "The Dreaming Isle",
+      "theme": "dream",
+      "tier": 9,
+      "levels": [
+        30,
+        30
+      ],
+      "mobs": [],
+      "miniBosses": [],
+      "hubs": [
+        {
+          "id": "di-dock",
+          "kind": "door",
+          "name": "The Dreamer’s Dock",
+          "x": 9200,
+          "y": 1680
+        },
+        {
+          "id": "di-glade",
+          "kind": "normal",
+          "name": "Moonleaf Glade",
+          "x": 9020,
+          "y": 1380
+        },
+        {
+          "id": "di-spring",
+          "kind": "potion",
+          "name": "The Wishing Spring",
+          "x": 9360,
+          "y": 1150
+        },
+        {
+          "id": "di-camp",
+          "kind": "shop",
+          "name": "The Wanderer’s Camp",
+          "x": 9020,
+          "y": 880,
+          "stock": "dream"
+        },
+        {
+          "id": "di-gate",
+          "kind": "dream",
+          "name": "The Dreamgate",
+          "x": 9250,
+          "y": 520
+        }
+      ],
+      "roads": [
+        {
+          "from": "di-dock",
+          "to": "di-glade",
+          "kinds": "n",
+          "bow": 0,
+          "via": [
+            {
+              "x": 9192,
+              "y": 1624
+            },
+            {
+              "x": 9174,
+              "y": 1573
+            },
+            {
+              "x": 9147,
+              "y": 1528
+            },
+            {
+              "x": 9113,
+              "y": 1488
+            },
+            {
+              "x": 9077,
+              "y": 1448
+            },
+            {
+              "x": 9043,
+              "y": 1407
+            }
+          ]
+        },
+        {
+          "from": "di-glade",
+          "to": "di-spring",
+          "kinds": "nn",
+          "bow": 0,
+          "via": [
+            {
+              "x": 9063,
+              "y": 1334
+            },
+            {
+              "x": 9107,
+              "y": 1289
+            },
+            {
+              "x": 9152,
+              "y": 1246
+            },
+            {
+              "x": 9200,
+              "y": 1206
+            },
+            {
+              "x": 9254,
+              "y": 1176
+            },
+            {
+              "x": 9315,
+              "y": 1157
+            }
+          ]
+        },
+        {
+          "from": "di-spring",
+          "to": "di-camp",
+          "kinds": "nn",
+          "bow": 0,
+          "via": [
+            {
+              "x": 9324,
+              "y": 1090
+            },
+            {
+              "x": 9282,
+              "y": 1039
+            },
+            {
+              "x": 9231,
+              "y": 999
+            },
+            {
+              "x": 9175,
+              "y": 965
+            },
+            {
+              "x": 9117,
+              "y": 933
+            },
+            {
+              "x": 9059,
+              "y": 901
+            }
+          ]
+        },
+        {
+          "from": "di-camp",
+          "to": "di-gate",
+          "kinds": "nn",
+          "bow": 0,
+          "via": [
+            {
+              "x": 9047,
+              "y": 821
+            },
+            {
+              "x": 9074,
+              "y": 763
+            },
+            {
+              "x": 9101,
+              "y": 703
+            },
+            {
+              "x": 9130,
+              "y": 646
+            },
+            {
+              "x": 9167,
+              "y": 594
+            },
+            {
+              "x": 9214,
+              "y": 548
+            }
+          ]
+        }
+      ],
+      "city": true
+    }
   }
 }

@@ -63,5 +63,10 @@
     "label": "Door",
     "letter": "D",
     "hint": "Leads somewhere else."
+  },
+  "dream": {
+    "label": "Dreamgate",
+    "letter": "d",
+    "hint": "Step through into the Dream: a dungeon laid for you alone, at a depth you choose."
   }
 }

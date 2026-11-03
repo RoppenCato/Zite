@@ -24,6 +24,7 @@ import eventsJson from '../data/events.json' with { type: 'json' };
 import setsJson from '../data/sets.json' with { type: 'json' };
 import encountersJson from '../data/encounters.json' with { type: 'json' };
 import tracesJson from '../data/traces.json' with { type: 'json' };
+import dreamJson from '../data/dream.json' with { type: 'json' };
 import type { World, WorldHub, WorldRoad } from './world.ts';
 import type { AffixKind, ClassId, EnemyData, EnemyMove, PowerKind, Rarity, Slot, SpaceKind, GearStat, GearLine, Affix  } from './types.ts';
 
@@ -149,6 +150,9 @@ export interface ClassTraits {
   lightning?: number;
   /** Night makes the wild no stronger against you. */
   nightOwl?: boolean;
+  /** The Dream's trinkets: Dreamdust found, times this; a share of the run's gold kept when you fall there. */
+  dreamDust?: number;
+  lucid?: number;
   manaRegen?: number;
   winHeal?: number;
   winMana?: number;
@@ -350,7 +354,7 @@ export interface ItemData {
   price: number;
   /** The area tier a flask belongs to: shops sell their own tier's and the one before. */
   tier: number;
-  stock: ('arms' | 'magic' | 'town')[];
+  stock: ('arms' | 'magic' | 'town' | 'dream')[];
   /** A flask: a set amount (Robin, 2026-11-02: "so that you need better potions later"). */
   heal?: number;
   mana?: number;
@@ -515,6 +519,9 @@ export interface TrinketData {
   text: string;
   /** What Mitch, AD's icon shows. */
   look: string;
+  /** Only the Dream's merchant sells it, for this much Dreamdust; never found (Robin, 2026-11-03). */
+  dream?: boolean;
+  dust?: number;
 }
 export const TRINKET_DATA = trinketsJson as unknown as {
   price: { base: number; rarity: Record<string, number> };
@@ -573,7 +580,35 @@ export const ARENA = arenaJson as unknown as {
 };
 
 /** The dungeons, off the map (Robin, 2026-11-02). */
-export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string; sealed?: boolean }; inside: string; area: import('./world.ts').WorldArea }>;
+export const DUNGEONS = Object.fromEntries(Object.entries(dungeonsJson).filter(([k]) => k !== '_about')) as unknown as Record<string, { outside: { spot: string; name: string; sealed?: boolean; needs?: string }; inside: string; area: import('./world.ts').WorldArea }>;
+
+/** A foe's measure in the Dream: rounds of your Attacks it lasts, the share of your HP its blow takes, and what it pays. */
+export interface DreamFoe {
+  rounds: number;
+  hit: number;
+  xp: number;
+  gold: number;
+  dust: number;
+}
+/** The Dream (Robin, 2026-11-03), `rules/data/dream.json`. */
+export const DREAM = dreamJson as unknown as {
+  isle: { area: string; gate: string; camp: string };
+  needs: string;
+  place: { x: number; y: number; width: number; height: number };
+  layout: { hubs: number; step: number; wiggle: number; roadSpots: [number, number]; minis: number[]; springs: number[]; loops: number; loopSpots: number; loopReach: number; spurs: number; spurSpots: number; spurReach: number; chests: number; tries: number };
+  themes: Record<string, { land: string; mobs: string[]; minis: string[]; bosses: string[]; places: string[] }>;
+  tints: { name: string; color: string }[];
+  words: string[];
+  hubNames: string[];
+  springName: string;
+  hoardName: string;
+  gateName: string;
+  elements: Record<import('./types.ts').DreamElement, { word: string; prefix: string; trick: import('./types.ts').BossTrick }>;
+  foes: Record<'mob' | 'mini' | 'boss', DreamFoe> & { perDepth: number; goldPerDepth: number; dustPerDepth: number; level: number };
+  spots: { fight: number; event: number; drift: number; driftDust: [number, number]; chestDust: number };
+  loot: { rankFrom: number; depthsPerRank: number };
+  merchant: { piece: number; piecePerRank: number; tint: string };
+};
 
 /** Rumours' numbers and words (Robin, 2026-11-02). */
 export const RUMOURS = rumoursJson as unknown as { max: number; cooldownMs: number; minDistance: number; weights: Record<'stash' | 'beast' | 'secret', number>; beast: { hp: number; attack: number; xp: number; gold: number }; lines: Record<'stash' | 'beast' | 'secret', string[]> };

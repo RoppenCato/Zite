@@ -99,7 +99,8 @@
     "price": 25,
     "tier": 1,
     "stock": [
-      "magic"
+      "magic",
+      "dream"
     ],
     "cure": true
   },
@@ -109,7 +110,8 @@
     "price": 20,
     "tier": 1,
     "stock": [
-      "town"
+      "town",
+      "dream"
     ],
     "dice": "reroll"
   },
@@ -119,7 +121,8 @@
     "price": 12,
     "tier": 1,
     "stock": [
-      "town"
+      "town",
+      "dream"
     ],
     "dice": "plus"
   },
@@ -129,7 +132,8 @@
     "price": 12,
     "tier": 1,
     "stock": [
-      "town"
+      "town",
+      "dream"
     ],
     "dice": "minus"
   },
@@ -139,7 +143,8 @@
     "price": 40,
     "tier": 1,
     "stock": [
-      "town"
+      "town",
+      "dream"
     ],
     "dice": "exact"
   },
@@ -161,7 +166,8 @@
     "tier": 5,
     "stock": [
       "arms",
-      "town"
+      "town",
+      "dream"
     ],
     "heal": 450
   },
@@ -183,7 +189,8 @@
     "tier": 5,
     "stock": [
       "magic",
-      "town"
+      "town",
+      "dream"
     ],
     "mana": 180
   },
@@ -193,7 +200,8 @@
     "price": 160,
     "tier": 4,
     "stock": [
-      "arms"
+      "arms",
+      "dream"
     ],
     "elixir": {
       "kind": "vigor",
@@ -207,7 +215,8 @@
     "price": 160,
     "tier": 4,
     "stock": [
-      "magic"
+      "magic",
+      "dream"
     ],
     "elixir": {
       "kind": "arcana",
