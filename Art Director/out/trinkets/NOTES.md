@@ -21,3 +21,18 @@ A bolt from the top of the screen onto the foe's chest: 5 frames, 40, 70, 70, 60
 The pivot is the point it strikes: put it on the foe's chest, drawn at 0.5. It is 270 px tall at that size, so the top runs off above most foes. Draw it additively over the foe, like the slashes. It is blue at the edge and white at the core, so it reads on light and dark backdrops.
 
 Tool: `tools/kit/trinkets.js`.
+
+## The Dream's own six, 2026-11-03
+
+Miles, GD's ask, for the camp's shop. Six more icons in `trinket_icons.png`, under the rules' ids, in the isle's lilac, teal and pink. `dream_trinkets.jpg` shows them at 80 and 40 on light and dark. The atlas is still 512 by 1024.
+
+| Id | Look |
+| --- | --- |
+| `dreamcatcher` | a willow hoop with a lilac web and a teal bead, two small feathers hanging below |
+| `lucid-bead` | a clear glass bead on a cord, a tiny open violet eye inside |
+| `sleepers-bell` | a small silver bell, wool puffing out of its mouth |
+| `moth-wing` | a pale moth's wings with lilac and teal eye-spots, set on a silver bar |
+| `nightmare-shard` | a black splinter, pale rays of light bending into it |
+| `morning-star` | a small pale-gold star, still pink at its edges |
+
+Not seen in the game.
