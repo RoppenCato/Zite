@@ -3,7 +3,7 @@
 
 import { withCore } from './skills.ts';
 import { CLASS_DATA, GEAR, ITEMS, PROGRESSION } from './data.ts';
-import { stats } from './gear.ts';
+import { stats, twoHanded } from './gear.ts';
 import type { Action, ApplyResult, Character, GameEvent, GameState, GearItem, RejectReason } from './types.ts';
 
 export function reject(state: GameState, action: Action, reason: RejectReason): ApplyResult {
@@ -66,7 +66,8 @@ export function spend(c: Character, item: string): Character {
  */
 export function addLoot(c: Character, gear: GearItem, action: Action, events: GameEvent[]): Character {
   events.push({ type: 'loot', action: action.id, player: action.player, gear });
-  if (!c.equipment[gear.slot]) {
+  // Not into the off-hand while a staff or a great weapon fills both hands (2026-11-03: a Magician held a staff and an orb).
+  if (!c.equipment[gear.slot] && !(gear.slot === 'shield' && twoHanded(c.equipment.weapon))) {
     events.push({ type: 'equipped', action: action.id, player: action.player, gear, replaced: null });
     return { ...c, equipment: { ...c.equipment, [gear.slot]: gear } };
   }

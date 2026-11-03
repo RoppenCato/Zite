@@ -1504,8 +1504,8 @@
     "name": "The Hollow King",
     "level": 31,
     "role": "boss",
-    "hp": 7200,
-    "attack": 130,
+    "hp": 6600,
+    "attack": 118,
     "defense": 44,
     "xp": 4000,
     "gold": 1500,
@@ -1547,8 +1547,8 @@
     },
     "trick": {
       "kind": "swarm",
-      "share": 0.03,
-      "max": 0.5,
+      "share": 0.025,
+      "max": 0.4,
       "text": "The flame under his crown grows each round: he hits harder the longer it lasts.",
       "line": "The flame grows."
     }

@@ -553,3 +553,19 @@ The Pirate Isles and The Giants’ Land are real areas now, closed under their v
 ## Legendary weapons (2026-11-02)
 
 `assets/legends/<id>/` (Mitch, AD): an atlas each, loaded only while worn. `hero.ts` adds each to `SETS`, and `artWords` and `gearIcon` look at `UNIQUES[g.unique].art` first. Settings has a home-only row, Test: legend.
+
+## Weapons on the hero (Robin, 2026-11-03)
+
+`assets/weapons_v2` (Mitch, AD): each kind's art and icon, `kindArt` and `kindTextures` in `hero.ts`; a great weapon has its own arm (`GREAT_ARM`), a Hunter with no bow stands as a fighter. The shop has a row for each of the class's two weapon kinds and a tab for the off-hand; a fight's buttons dim with "needs a ..." when the weapon is wrong.
+
+## The Rogue in a fight (Robin, 2026-11-03)
+
+The attack is a quick swiping combo (`COMBO_MS` 170). A coated blade drips green and a bloody one red at its tip (`fx_rogue`, `fx_blood`); a bleed has its words and sound. The talent icons are `talents_v2`.
+
+## Day and night on screen (Robin, 2026-11-03)
+
+The top bar says the day and the clock (`DAYNIGHT` icon, `linkText` right-aligned); the board dims under a night veil; a morning has its moment and sound; at night the town's shop has an Inn tab to sleep. "Full HP and mana" in a town shows once, not each landing. The fight guide ("?", now a book icon) opens on the numbers page with the real odds (`fightOdds`).
+
+## Walking along the streets (Robin, 2026-11-03)
+
+`routes.ts`: `bendsBetween(board, from, to)` follows the painted road's `via` points between two spots, so a walk keeps to the street and goes at an even speed (110 px a step), never cutting across houses.

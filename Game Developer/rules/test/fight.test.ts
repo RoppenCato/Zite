@@ -118,14 +118,14 @@ describe('a fight', () => {
       [
         { type: 'hit', by: 'player', move: 'Attack', damage: 14, crit: false, hp: 4, absorbed: 0 },
         { type: 'guarded', guard: 'block' },
-        { type: 'hit', by: 'enemy', move: 'Splat', damage: 4, crit: false, hp: 112, absorbed: 0 },
+        { type: 'hit', by: 'enemy', move: 'Splat', damage: 3, crit: false, hp: 113, absorbed: 0 },
       ],
       [
         { type: 'hit', by: 'player', move: 'Attack', damage: 11, crit: false, hp: 0, absorbed: 0 },
         { type: 'won', xp: 5, gold: 3 },
       ],
     ]);
-    expect(me(end)).toMatchObject({ hp: 112, mana: 20, gold: 53, xp: 5, level: 1, fight: null, space: 's1' });
+    expect(me(end)).toMatchObject({ hp: 113, mana: 20, gold: 53, xp: 5, level: 1, fight: null, space: 's1' });
   });
 
   it('Charge, then Mighty Swing: the charge doubles the next hit and is spent', () => {
@@ -182,7 +182,7 @@ describe('a fight', () => {
       { type: 'used', item: 'potion' },
       { type: 'healed', amount: 50, hp: 90 },
       { type: 'guarded', guard: 'block' },
-      { type: 'hit', by: 'enemy', move: 'Splat', damage: 6, crit: true, hp: 84, absorbed: 0 },
+      { type: 'hit', by: 'enemy', move: 'Splat', damage: 5, crit: true, hp: 85, absorbed: 0 },
     ]);
     expect(rounds[2]).toEqual([{ type: 'rejected', reason: 'none left' }]);
     expect(apply(state, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'none left' });

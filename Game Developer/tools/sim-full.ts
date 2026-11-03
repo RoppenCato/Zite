@@ -6,12 +6,14 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine } from '../rules/src/index.ts';
+import { ABILITIES, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
 const RUNS = Number(args[0]) || 1;
 const ONLY = args.find((a) => CLASSES_HAS(a));
+// NIGHT=off: no stronger night, to measure what the night costs.
+if (process.env.NIGHT === 'off') Object.assign(PROGRESSION.dayNight, { enemyMult: 1, rewardMult: 1 });
 const TACTICS_TOO = args.includes('--tactics');
 const JSON_OUT = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
 const TO = args.includes('--to') ? Number(args[args.indexOf('--to') + 1]) : 30;
@@ -80,6 +82,9 @@ interface Result {
   used: Record<string, number>;
   learned: string[];
   gearRank: number;
+  /** What was worn at the end, slot by slot: kind and rank (2026-11-03). */
+  wornAtEnd?: string;
+  bagAtEnd?: number;
   rarities: Record<string, number>;
   landSeconds: Record<string, number>;
 }
@@ -137,9 +142,21 @@ const score = (c: Character): number => {
   // Uniques and sets do more than their numbers say; about this much (mine).
   const worn = Object.values(c.equipment) as (GearItem | null)[];
   const special = 1 + worn.reduce((sum, g) => sum + (g?.unique ? 0.06 : 0) + (g?.set ? 0.04 : 0), 0);
-  return might * special + s.defense * 2 + s.maxHp * 0.25;
+  // NOGREAT=1: never a great weapon, to measure what it costs (2026-11-03).
+  if (process.env.NOGREAT && gearKind(c.equipment.weapon) === 'great') return -1e9;
+  // A great weapon is the Berserker's way (Robin, 2026-11-03): a player of another tree keeps the shield.
+  if (gearKind(c.equipment.weapon) === 'great' && !c.abilities.reckless) return -1e9;
+  // What the hands give the guards counts too: a shield is worth wearing (2026-11-03).
+  const g = guardOf(c);
+  // The skills it carries that the hands allow: a player keeps the weapon its tree wants.
+  const allowed = c.carried.filter((id) => holdsFor(c, ABILITIES[id]?.needs)).length;
+  return (might * special + s.defense * 2 + s.maxHp * 0.25 * (1 + g.block * 0.8 + g.dodge * 0.5)) * (1 + 0.15 * allowed);
 };
-const wearing = (c: Character, g: GearItem): Character => ({ ...c, equipment: { ...c.equipment, [g.slot]: g } });
+// As the rules allow it: no off-hand beside a two-hander, and a two-hander puts the off-hand away (2026-11-03).
+const wearing = (c: Character, g: GearItem): Character => {
+  if (g.slot === 'shield' && twoHanded(c.equipment.weapon)) return { ...c, equipment: { ...c.equipment, shield: null }, carried: [] };
+  return { ...c, equipment: { ...c.equipment, [g.slot]: g, ...(twoHanded(g) ? { shield: null } : {}) } };
+};
 
 const tried = new Set<string>();
 
@@ -156,11 +173,11 @@ function tacticMove(c: Character, tactic: Tactic): { move: unknown; guard: strin
     // A talent it has never pressed this fight, while safe: the fall-through for abilities `choose` has no line for.
     const fresh = c.carried.find((id) => {
       const a = ABILITIES[id]!;
-      return !tried.has(id) && !f.used.includes(id) && !a.oncePerFight && !hurts(id) && !a.ranks[0]!.flee && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
+      return !tried.has(id) && !f.used.includes(id) && !a.oncePerFight && !hurts(id) && !a.ranks[0]!.flee && holdsFor(c, a.needs) && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
     });
     const big = c.carried.find((id) => {
       const a = ABILITIES[id]!;
-      return a.oncePerFight && !a.ranks[0]!.flee && !f.used.includes(id) && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
+      return a.oncePerFight && !a.ranks[0]!.flee && !f.used.includes(id) && holdsFor(c, a.needs) && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
     });
     if (big && (share < 0.6 || f.enemy.role !== 'mob')) return { move: { kind: 'ability', ability: big }, guard: plan.guard };
     if (fresh && share > 0.6 && (plan.move as { kind: string }).kind === 'attack') {
@@ -290,10 +307,8 @@ function play(build: Build, seed: string): Result {
       for (const id of want) if (!me().carried.includes(id)) act({ type: 'skill', op: 'carry', ability: id });
     }
     for (const g of [...me().bag]) {
-      if (classId === 'ranger' && g.slot === 'weapon' && g.rarity !== 'unique' && !/bow\b/i.test(g.base)) {
-        note(broken, `a Hunter holds a weapon it cannot use: ${g.name}`);
-        continue;
-      }
+      // A sensible Hunter keeps its bow: the Ranger's arrows need one (2026-11-03).
+      if (classId === 'ranger' && g.slot === 'weapon' && g.rarity !== 'unique' && gearKind(g) !== 'bow') continue;
       if (score(wearing(me(), g)) > score(me()) + 0.5) act({ type: 'equip', gear: g.id });
     }
   };
@@ -466,6 +481,8 @@ function play(build: Build, seed: string): Result {
     // The next boss worth trying: its land open, near its level, more levels after each fall.
     const next = undone.find((b) => c1.opened.includes(b.area) || state.board.areas[b.area]?.dungeon);
     const readyFor = (b: { id: string; level: number }): boolean => c1.level >= Math.min(TO, b.level - 1 + (failed[b.id] ?? 0)) && c1.hp >= s1.maxHp * 0.7 && flasks(c1) >= 2 && (c1.cooldowns[b.id] ?? 0) <= clock;
+    // A sensible player sleeps through the night in a town (2026-11-03).
+    if (c1.steps === 0 && isNight(c1) && state.board.spaces[c1.space]?.kind === 'town' && !c1.fight && !c1.offer) act({ type: 'sleep' });
     if (c1.steps === 0) {
       if (clock > shopWait && shopOffer(state, c1)) {
         shopping();
@@ -624,6 +641,8 @@ function play(build: Build, seed: string): Result {
   const worn = Object.values(c.equipment).filter((g): g is GearItem => !!g);
   r.gearRank = worn.reduce((sum, g) => sum + g.rank, 0) / Math.max(1, worn.length);
   for (const g of worn) r.rarities[g.rarity] = (r.rarities[g.rarity] ?? 0) + 1;
+  r.wornAtEnd = Object.entries(c.equipment).map(([slot, g]) => `${slot}:${g ? `${gearKind(g) ?? ''}${g.rank}` : '-'}`).join(' ');
+  r.bagAtEnd = c.bag.length;
   return r;
 }
 

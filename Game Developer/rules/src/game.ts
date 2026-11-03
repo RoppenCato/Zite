@@ -893,7 +893,8 @@ function begin(state: GameState, c: Character, enemy: string, space: string, spa
     fighting = { ...fighting, fight: { ...f, shared: true, enemy: { ...f.enemy, hp: shared.hp ?? f.enemy.hp, maxHp: shared.maxHp ?? f.enemy.maxHp } } };
   }
   // At night the wild is stronger and pays more; bosses and world bosses stay as they are (mine).
-  if (isNight(c) && !shared && fighting.fight!.enemy.role !== 'boss') {
+  // Underground there is no night: a dungeon is the same at any hour (2026-11-03).
+  if (isNight(c) && !shared && fighting.fight!.enemy.role !== 'boss' && !state.board.areas[state.board.spaces[space]?.area ?? '']?.dungeon) {
     const d = PROGRESSION.dayNight;
     const f0 = fighting.fight!;
     const en = f0.enemy;

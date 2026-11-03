@@ -1,5 +1,5 @@
 // The sensible fighter the sims play with: heals when low, keeps its buffs up, spends its meter, guards as its class wants. Not part of the game.
-import { ABILITIES, stats, type Character } from '../rules/src/index.ts';
+import { ABILITIES, holdsFor, stats, type Character } from '../rules/src/index.ts';
 
 /** What a sensible player does this round. */
 export function choose(c: Character): { move: unknown; guard: string } {
@@ -21,6 +21,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (a.oncePerFight && f.used.includes(id)) return false;
     if (a.meter && f.meter < a.meter) return false;
     if (a.meterAll && f.meter < 3) return false;
+    // A skill tied to a weapon not in hand is not pressed (2026-11-03).
+    if (!holdsFor(c, a.needs)) return false;
     return c.mana >= a.mana;
   });
   const rank = (id: string) => ABILITIES[id]!.ranks[Math.min(c.abilities[id]!, 3) - 1]!;

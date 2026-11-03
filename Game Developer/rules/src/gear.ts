@@ -163,9 +163,10 @@ export function kindData(slot: Slot, kind: string | null | undefined): KindData 
   return slot === 'weapon' ? GEAR.kinds.weapon[kind] : slot === 'shield' ? GEAR.kinds.offhand[kind] : undefined;
 }
 
-/** A weapon held in both hands: a great weapon, a bow, a staff. */
+/** A weapon that takes the off-hand away: a great weapon, a staff. A bow is held in both hands but keeps it. */
 export function twoHanded(g: GearItem | null | undefined): boolean {
-  return !!g && g.slot === 'weapon' && kindData('weapon', gearKind(g))?.hands === 2;
+  const k = g?.slot === 'weapon' ? kindData('weapon', gearKind(g)) : undefined;
+  return k?.hands === 2 && !k.keepsOffhand;
 }
 
 /** The kinds a class wields as its own: two weapons, its off-hands. */
@@ -232,7 +233,8 @@ export function guardOf(c: Character): ReturnType<typeof offhandGuard> {
   if (c.equipment.shield) return offhandGuard(c.equipment.shield);
   const w = kindData('weapon', gearKind(c.equipment.weapon));
   const bare = offhandGuard(null);
-  return w && (w.block !== undefined || w.dodge !== undefined) ? { ...bare, block: w.block ?? bare.block, dodge: w.dodge ?? bare.dodge } : bare;
+  // A two-hander guards its own way: a great weapon dodges, a bow keeps its distance, a staff feeds the Mana Shield (2026-11-03).
+  return w && (w.block !== undefined || w.dodge !== undefined || w.mana !== undefined) ? { ...bare, block: w.block ?? bare.block, dodge: w.dodge ?? bare.dodge, mana: w.mana ?? bare.mana } : bare;
 }
 
 /** What is held allows this: any one of `needs`, a kind, `shield` (not an orb) or `blade` (a sword or a dagger). */
@@ -419,9 +421,10 @@ export function describeGear(g: GearItem): string {
 export function gearPowers(g: GearItem): string[] {
   const parts: string[] = [];
   // What its kind means for the guards and the hands (Robin, 2026-11-03).
-  if (twoHanded(g)) {
-    const w = kindData('weapon', gearKind(g));
-    parts.push(w?.block !== undefined ? `two-handed: Block stops ${Math.round(w.block * 100)}%, Dodge ${Math.round((w.dodge ?? 0) * 100)}%` : 'two-handed');
+  const w = g.slot === 'weapon' ? kindData('weapon', gearKind(g)) : undefined;
+  if (w?.hands === 2) {
+    const guards = w.block !== undefined ? `Block stops ${Math.round(w.block * 100)}%, Dodge ${Math.round((w.dodge ?? 0) * 100)}%` : '';
+    parts.push(w.keepsOffhand ? `keeps a shield on the bow arm${guards ? `; with none, ${guards}` : ''}` : `two-handed${guards ? `: ${guards}` : ''}`);
   }
   if (g.slot === 'shield' && kindData('shield', gearKind(g))) {
     const o = offhandGuard(g);

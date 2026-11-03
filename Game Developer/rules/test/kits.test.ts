@@ -4,11 +4,13 @@ import { describe, expect, it } from 'vitest';
 import { ABILITIES, CLASS_DATA, PROGRESSION } from '../src/data.ts';
 import { startFight } from '../src/fight.ts';
 import { apply, newGame } from '../src/game.ts';
-import { stats } from '../src/gear.ts';
+import { addLoot } from '../src/common.ts';
+import { gearKind, stats } from '../src/gear.ts';
+import { migrate } from '../src/save.ts';
 import { groundAt, inTownWalls, placeAt } from '../src/grounds.ts';
 import { makeRng } from '../src/rng.ts';
 import { carriedLimit, MAX_CARRIED, needsFor, pointsForLevel, pointsFree, specialization, traitsOf, withCore } from '../src/skills.ts';
-import type { Action, Character, ClassId, Enemy, EnemyMove, FightMove, GameEvent, GameState, Guard } from '../src/types.ts';
+import type { Action, Character, ClassId, Enemy, EnemyMove, FightMove, GameEvent, GameState, GearItem, Guard } from '../src/types.ts';
 import { ringBoard } from './fixtures/ring.ts';
 
 const P = 'p1';
@@ -334,15 +336,31 @@ describe('the Hunter', () => {
     expect(r.events.some((e) => e.type === 'countered')).toBe(true);
   });
 
-  it('wears anything (Robin, 2026-11-03); a bow takes both hands, so a shield waits for a free hand', () => {
+  it('found loot never slips an orb on beside a staff, and an old save with both puts the orb in the bag', () => {
+    const m = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const orb = { id: 'o', slot: 'shield', rank: 1, rarity: 'common', name: 'Tin Ward Orb', base: 'tin ward orb', kind: 'ward_orb', stats: { defense: 1 }, affixes: [], price: 5 } as GearItem;
+    const events: GameEvent[] = [];
+    const after = addLoot(me(m), orb, { type: 'roll', id: 'r', player: P } as Action, events);
+    expect(after.equipment.shield).toBeNull();
+    expect(after.bag.map((g) => g.id)).toContain('o');
+    const real = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage' });
+    const old = migrate(JSON.parse(JSON.stringify({ ...real, version: 38, characters: { [P]: { ...me(real), equipment: { ...me(real).equipment, shield: orb } } } })))!;
+    expect(old.characters[P]!.equipment.shield).toBeNull();
+    expect(old.characters[P]!.bag.map((g) => g.id)).toContain('o');
+  });
+
+  it('wears anything (Robin, 2026-11-03); a bow keeps a shield on its arm, a staff takes both hands', () => {
     const s = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'ranger', board: ringBoard() });
     const sword = { id: 'x', slot: 'weapon', rank: 1, rarity: 'common', name: 'Old Sword', base: 'old sword', stats: { attack: 3 }, affixes: [], price: 5 };
     const shield = { ...sword, id: 'z', slot: 'shield', name: 'Tin Buckler', base: 'tin buckler', kind: 'buckler', stats: { defense: 1 } };
     const held = { ...s, characters: { [P]: { ...me(s), bag: [sword, shield] } } } as unknown as GameState;
     expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
-    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'two hands' });
-    const swapped = apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).state;
-    expect(apply(swapped, { type: 'equip', id: 'e2', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
+    expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
+    const m = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const orb = { ...shield, name: 'Tin Ward Orb', base: 'tin ward orb', kind: 'ward_orb' };
+    const staffed = { ...m, characters: { [P]: { ...me(m), bag: [orb] } } } as unknown as GameState;
+    expect(gearKind(me(staffed).equipment.weapon)).toBe('staff');
+    expect(apply(staffed, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'two hands' });
   });
 });
 

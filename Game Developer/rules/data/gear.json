@@ -1038,12 +1038,12 @@
         "name": "Great Axe",
         "hands": 2,
         "stat": "attack",
-        "mult": 1.45,
+        "mult": 1.35,
         "price": 1.2,
         "classes": [
           "warrior"
         ],
-        "block": 0.25,
+        "block": 0.35,
         "dodge": 0.45
       },
       "dagger": {
@@ -1060,11 +1060,15 @@
       "bow": {
         "name": "Bow",
         "hands": 2,
+        "_offhand": "A bow is the one two-hander that keeps an off-hand: the proposal's quiver, a shield since Robin gave Hunters shields (2026-11-03); Mitch, AD's art hangs it on the bow arm.",
+        "keepsOffhand": true,
         "stat": "attack",
         "mult": 1.1,
         "classes": [
           "ranger"
-        ]
+        ],
+        "block": 0.5,
+        "dodge": 0.35
       },
       "staff": {
         "name": "Staff",
@@ -1107,8 +1111,8 @@
         "name": "Round Shield",
         "stat": "defense",
         "mult": 0.9,
-        "block": 0.45,
-        "dodge": 0.38,
+        "block": 0.5,
+        "dodge": 0.36,
         "classes": [
           "warrior",
           "rogue",
@@ -1119,7 +1123,7 @@
         "name": "Kite Shield",
         "stat": "defense",
         "mult": 1.15,
-        "block": 0.58,
+        "block": 0.6,
         "dodge": 0.27,
         "classes": [
           "warrior",
@@ -1198,7 +1202,7 @@
       }
     },
     "bare": {
-      "block": 0.35,
+      "block": 0.45,
       "dodge": 0.3
     },
     "qualityStep": 0.02,

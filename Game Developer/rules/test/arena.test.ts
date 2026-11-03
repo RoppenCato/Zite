@@ -38,7 +38,7 @@ describe('the Arena (Robin, 2026-11-02)', () => {
     const old = { ...now, version: 23, board: { ...now.board, spaces } };
     const up = migrate(JSON.parse(JSON.stringify(old)));
     expect(up).not.toBeNull();
-    expect(up!.version).toBe(38);
+    expect(up!.version).toBe(39);
     expect(up!.characters[P]!.gold).toBe(777);
     expect(up!.board.spaces.farrows).toMatchObject({ kind: 'arena', name: 'The Arena' });
   });

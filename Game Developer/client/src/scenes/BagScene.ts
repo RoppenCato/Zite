@@ -4,7 +4,7 @@
 // piece compares with what is worn, and holds only the buttons that apply. Equip, unequip, drop and use each send one intent.
 
 import Phaser from 'phaser';
-import { gearPowers, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING, SETS, setsWorn, UNIQUES } from '../../../rules/src/index.ts';
+import { gearPowers, guardOf, GEAR, ITEMS, pointsFree, SLOTS, stats, type Character, type GearItem, type Slot, sealCount, SEALS_COMING, SETS, setsWorn, UNIQUES } from '../../../rules/src/index.ts';
 import forestBackJpg from '../../../assets/forest_fight/background.jpg';
 import harvestBackJpg from '../../../assets/harvest_fight/background.jpg';
 import meadowBackJpg from '../../../assets/meadow_fight/background.jpg';
@@ -51,7 +51,7 @@ const STATS: { id: StatId; name: string; x: number; row: number; share: boolean;
   { id: 'defense', name: 'Defense', x: 104, row: 2, share: false, words: 'Takes some of the force out of every blow that lands on you.' },
   { id: 'thorns', name: 'Thorns', x: 104, row: 3, share: true, words: 'This share of the damage you take goes back to whoever dealt it.' },
   { id: 'crit', name: 'Crit', x: 308, row: 0, share: true, words: 'The chance that a strike of yours lands as a critical hit, for more damage.' },
-  { id: 'dodge', name: 'Dodge', x: 308, row: 1, share: true, words: 'Added to your chance of slipping a blow when you guard with Dodge.' },
+  { id: 'dodge', name: 'Dodge', x: 308, row: 1, share: true, words: 'Your chance of slipping a blow when you guard with Dodge.' },
   { id: 'lifesteal', name: 'Lifesteal', x: 308, row: 2, share: true, words: 'You heal this share of the damage you deal.' },
 ];
 
@@ -213,7 +213,8 @@ export class BagScene extends Phaser.Scene {
   }
 
   private statText(id: StatId, me: Character): { value: number; shown: string } {
-    const value = stats(me)[id];
+    // Dodge is the whole chance, what you hold and the rest, as a fight counts it (2026-11-03: a buckler showed 0%).
+    const value = id === 'dodge' ? guardOf(me).dodge + stats(me).dodge : stats(me)[id];
     const share = STATS.find((x) => x.id === id)!.share;
     return { value, shown: share ? `${Math.round(value * 100)}%` : `${value}` };
   }
@@ -319,7 +320,8 @@ export class BagScene extends Phaser.Scene {
       const st = STATS.find((x) => x.id === p.stat)!;
       this.rows.push(this.woodText(34, card.y + 20, st.name, 16).setOrigin(0, 0.5));
       this.rows.push(this.woodText(378, card.y + 20, this.statText(st.id, me).shown, 16).setOrigin(1, 0.5));
-      this.slip(30, card.y + 38, 352, 102, [{ text: st.words }]);
+      const held = st.id === 'dodge' ? ` ${Math.round(guardOf(me).dodge * 100)}% from what you hold, ${Math.round(stats(me).dodge * 100)}% from the rest.` : '';
+      this.slip(30, card.y + 38, 352, 102, [{ text: st.words + held }]);
       return;
     }
     if (p?.kind === 'item' && (me.items[p.item] ?? 0) > 0) return this.itemCard(me, p.item);

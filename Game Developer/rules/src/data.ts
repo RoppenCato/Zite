@@ -248,6 +248,8 @@ export interface AbilityRank {
 export interface KindData {
   name: string;
   hands?: number;
+  /** Two hands, yet the off-hand stays worn (a bow). */
+  keepsOffhand?: boolean;
   stat: GearStat;
   mult: number;
   extra?: { stat: GearStat; mult: number };
