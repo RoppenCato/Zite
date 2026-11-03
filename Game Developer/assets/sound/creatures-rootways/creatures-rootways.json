@@ -1,0 +1,84 @@
+{
+  "spritemap": {
+    "creature/glowcap/attack": {
+      "start": 0,
+      "end": 0.2299,
+      "loop": false
+    },
+    "creature/glowcap/hit": {
+      "start": 0.2799,
+      "end": 0.4746,
+      "loop": false
+    },
+    "creature/glowcap/die": {
+      "start": 0.5246,
+      "end": 0.8898,
+      "loop": false
+    },
+    "creature/old-rootbeard/attack": {
+      "start": 0.9398,
+      "end": 1.6022,
+      "loop": false
+    },
+    "creature/old-rootbeard/hit": {
+      "start": 1.6522,
+      "end": 1.8622,
+      "loop": false
+    },
+    "creature/old-rootbeard/die": {
+      "start": 1.9122,
+      "end": 2.7796,
+      "loop": false
+    },
+    "creature/root-grub/attack": {
+      "start": 2.8296,
+      "end": 3.1672,
+      "loop": false
+    },
+    "creature/root-grub/hit": {
+      "start": 3.2172,
+      "end": 3.595,
+      "loop": false
+    },
+    "creature/root-grub/die": {
+      "start": 3.645,
+      "end": 4.5647,
+      "loop": false
+    },
+    "creature/mole-miner/attack": {
+      "start": 4.6147,
+      "end": 5.0553,
+      "loop": false
+    },
+    "creature/mole-miner/hit": {
+      "start": 5.1053,
+      "end": 5.5319,
+      "loop": false
+    },
+    "creature/mole-miner/die": {
+      "start": 5.5819,
+      "end": 5.9694,
+      "loop": false
+    },
+    "creature/old-digby/attack": {
+      "start": 6.0194,
+      "end": 6.5513,
+      "loop": false
+    },
+    "creature/old-digby/hit": {
+      "start": 6.6013,
+      "end": 6.9516,
+      "loop": false
+    },
+    "creature/old-digby/die": {
+      "start": 7.0016,
+      "end": 7.7801,
+      "loop": false
+    },
+    "creature/old-rootbeard/surge": {
+      "start": 7.8301,
+      "end": 8.5401,
+      "loop": false
+    }
+  }
+}

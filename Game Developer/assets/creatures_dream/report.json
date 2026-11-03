@@ -1,0 +1,21 @@
+[
+ {
+  "name": "dream_merchant",
+  "id": "dream-merchant",
+  "title": "The Dream Merchant",
+  "h": 150,
+  "px": 2,
+  "scale": 0.5,
+  "blow": 4,
+  "frames": 24,
+  "clips": {
+   "stand": 4,
+   "move": 6,
+   "attack1": 6,
+   "hit1": 2,
+   "die1": 6
+  },
+  "hovers": false,
+  "kb": 135
+ }
+]

@@ -379,7 +379,6 @@ export function dreamPiece(c: Character): { rank: number; price: number } {
 function dreamBuy(state: GameState, action: Extract<DreamAction, { op: 'buy' }>, c: Character, rng: Rng): ApplyResult {
   const offer = shopOffer(state, c);
   if (offer?.stock !== 'dream') return reject(state, action, 'not at a shop');
-  if (c.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
   const dust = c.dreamdust ?? 0;
   const got = nextGearId(state);
   let gear: GearItem;
@@ -400,11 +399,14 @@ function dreamBuy(state: GameState, action: Extract<DreamAction, { op: 'buy' }>,
     return reject(state, action, 'no such item');
   }
   if (dust < price) return reject(state, action, 'not enough dust');
-  const events: GameEvent[] = [];
   const bought = { ...gear, dream: DREAM.merchant.tint };
-  const next = giveDust({ ...c, bag: [...c.bag, bought] }, -price, action, events);
-  events.unshift({ type: 'bought', action: action.id, player: action.player, item: null, gear: bought, price: 0, gold: c.gold });
-  return { state: withCharacter(got.state, next), events };
+  const events: GameEvent[] = [{ type: 'bought', action: action.id, player: action.player, item: null, gear: bought, price: 0, gold: c.gold }];
+  // A piece for an empty slot goes straight on, as in every shop (Robin, 2026-11-01); else into the bag.
+  const wear = !c.equipment[bought.slot] && !(bought.slot === 'shield' && twoHanded(c.equipment.weapon));
+  if (!wear && c.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
+  if (wear) events.push({ type: 'equipped', action: action.id, player: action.player, gear: bought, replaced: null });
+  const held = wear ? capped({ ...c, equipment: { ...c.equipment, [bought.slot]: bought } }) : { ...c, bag: [...c.bag, bought] };
+  return { state: withCharacter(got.state, giveDust(held, -price, action, events)), events };
 }
 
 // ---- the Arena (Robin, 2026-11-02) ----------------------------------------------------------------------------------

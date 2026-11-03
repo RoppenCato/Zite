@@ -81,6 +81,10 @@ import crownPlatesPng from '../../assets/land_marks/plates_crown.png';
 import dungeonPlatesJson from '../../assets/land_marks/plates_dungeon.json?url';
 import dungeonPlatesPng from '../../assets/land_marks/plates_dungeon.png';
 import rootwaysBannerPng from '../../assets/land_marks/banner_rootways.png';
+import dreamIsle from '../../assets/dream_isle/dream_isle.json';
+import dreamPlacement from '../../assets/dream_isle/placement.json';
+import dreamPlacesJson from '../../assets/dream_isle/dream_places.json?url';
+import dreamPlacesPng from '../../assets/dream_isle/dream_places.png';
 import crownBannerPng from '../../assets/land_marks/banner_buried-crown.png';
 
 export interface Placement {
@@ -124,7 +128,7 @@ const FROST_PLACES = 'frost_places';
 /** The atlas of the painted world that holds a piece: its names are shared where a piece is shared, so a theme's own comes first. */
 export function placesAtlas(scene: Phaser.Scene, name: string, theme?: string): string | null {
   const own = THEME_PLACES[theme ?? '']?.key ?? PLACES;
-  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, FAR_SECRETS, KINGSWOOD_PLACES, KINGSWOOD_VILLAGE];
+  const order = [own, PLACES, FOREST_PLACES, HARVEST_PLACES, SWAMP_PLACES, FROST_PLACES, PIRATE_PLACES, GIANT_PLACES, ROOTWAYS_PLACES, CROWN_PLACES, SECRET_PLACES, FAR_SECRETS, KINGSWOOD_PLACES, KINGSWOOD_VILLAGE, DREAM_PLACES];
   return order.find((key) => scene.textures.exists(key) && scene.textures.get(key).has(name)) ?? null;
 }
 /** A closed area's cloud stops this far into the open area under it, clear of its banner's top and its first spots. */
@@ -136,6 +140,8 @@ export const CROWN_PLACES = 'crown_places';
 export const CROWN_DOOR = buriedCrown.door;
 const KINGSWOOD_PLACES = 'kingswood_places';
 const KINGSWOOD_VILLAGE = 'kingswood_village';
+/** The Dreaming Isle's pieces, its Dreamgate plate and the Ferry's sign (Mitch, AD, 2026-11-03). */
+export const DREAM_PLACES = 'dream_places';
 export const SECRET_PLACES = 'secret_places';
 /** The painted world's pieces that belong to one region. */
 const THEME_PLACES: Record<string, { key: string; png: string; json: string }> = {
@@ -239,6 +245,8 @@ export function preloadBoardKits(scene: Phaser.Scene, themes: readonly string[])
   if (!scene.textures.exists(FAR_SECRETS)) scene.load.atlas(FAR_SECRETS, farSecretsPng, farSecretsJson);
   if (!scene.textures.exists(KINGSWOOD_PLACES)) scene.load.atlas(KINGSWOOD_PLACES, kingswoodPlacesPng, kingswoodPlacesJson);
   if (!scene.textures.exists(KINGSWOOD_VILLAGE)) scene.load.atlas(KINGSWOOD_VILLAGE, kingswoodVillagePng, kingswoodVillageJson);
+  // The Ferry's sign stands in Crownhaven, so the Isle's atlas is always held.
+  if (!scene.textures.exists(DREAM_PLACES)) scene.load.atlas(DREAM_PLACES, dreamPlacesPng, dreamPlacesJson);
   if (!scene.textures.exists(ROOTWAYS_PLACES)) scene.load.atlas(ROOTWAYS_PLACES, rootwaysPlacesPng, rootwaysPlacesJson);
   if (!scene.textures.exists(CROWN_PLACES)) scene.load.atlas(CROWN_PLACES, crownPlacesPng, crownPlacesJson);
   // The hub city's plates and the dungeons' are always held, as their pieces are.
@@ -272,6 +280,8 @@ KITS.city = { ...KITS.meadow!, placements: {}, plates: { key: 'plates_city', png
 
 /** A dungeon has its own roads, pieces and plates: crypt stone under the Crown, root-worn earth in the Rootways and after. */
 KITS.crown = { ...KITS.meadow!, road: buriedCrown.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { 'buried-crown': crownPlacement as Placement[] }, plates: { key: 'plates_crown', png: crownPlatesPng, json: crownPlatesJson } };
+/** The Dreaming Isle (Mitch, AD, 2026-11-03): painted whole like a dungeon, with its own pale stone roads and pieces. */
+KITS.dream = { ...KITS.meadow!, road: dreamIsle.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { 'dream-isle': dreamPlacement as Placement[] } };
 KITS.dungeon = { ...KITS.meadow!, road: rootways.roadColours.map(([width, colour]) => roadLine(width as number, colour as string)), placements: { rootways: rootwaysPlacement as Placement[] }, plates: { key: 'plates_dungeon', png: dungeonPlatesPng, json: dungeonPlatesJson } };
 
 export function kitFor(scene: Phaser.Scene, theme: string): Kit | null {
@@ -353,7 +363,8 @@ export function groundDepth(tier: number): number {
 }
 
 /** The area's ground: tiles over its bounds, chosen per cell from the seed. */
-export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: string, boardWidth: number, boardHeight: number, avoid: { x: number; y: number; width: number; height: number }[] = []): void {
+export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: string, boardWidth: number, boardHeight: number, avoid: { x: number; y: number; width: number; height: number }[] = []): Phaser.GameObjects.Image[] {
+  const tiles: Phaser.GameObjects.Image[] = [];
   const b = area.bounds;
   const t = kit.tile;
   const total = kit.tiles.reduce((n, x) => n + x.weight, 0);
@@ -373,9 +384,10 @@ export function drawKitGround(scene: Phaser.Scene, kit: Kit, area: Area, seed: s
         pick -= tile.weight;
       }
       // A touch over size, so the tiles overlap by a pixel or two and the camera's fractional zooms show no seam between them.
-      scene.add.image(x + t / 2, y + t / 2, kit.ground, frame).setScale(SCALE * 1.02).setDepth(groundDepth(area.tier));
+      tiles.push(scene.add.image(x + t / 2, y + t / 2, kit.ground, frame).setScale(SCALE * 1.02).setDepth(groundDepth(area.tier)));
     }
   }
+  return tiles;
 }
 
 /** The area's name on the kit's banner at the top of its bounds. */
@@ -426,6 +438,36 @@ export function drawKitPlate(scene: Phaser.Scene, kit: Kit, space: Space): Phase
   return plate;
 }
 
+/**
+ * A run of the Dream has no hand-laid props: its land's own are scattered from its seed, `count` tries, none within 70 px
+ * of a spot or 45 of a road, sorted by the foot like the rest.
+ */
+export function scatterProps(scene: Phaser.Scene, kit: Kit, area: Area, spaces: Space[], frames: string[], rng: { next(): number }, count = 140): Phaser.GameObjects.Image[] {
+  const atlas = scene.textures.exists(kit.props) ? scene.textures.get(kit.props) : null;
+  const names = frames.filter((f) => atlas?.has(f));
+  if (!atlas || !names.length) return [];
+  const byId = new Map(spaces.map((s) => [s.id, s]));
+  const roads: [Space, Space][] = [];
+  for (const s of spaces) for (const l of s.links) if (s.id < l && byId.has(l)) roads.push([s, byId.get(l)!]);
+  const nearRoad = (x: number, y: number): boolean =>
+    roads.some(([a, b]) => {
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy || 1)));
+      return Math.hypot(a.x + t * dx - x, a.y + t * dy - y) < 45;
+    });
+  const b = area.bounds;
+  const out: Phaser.GameObjects.Image[] = [];
+  for (let i = 0; i < count; i++) {
+    const x = b.x + rng.next() * b.width;
+    const y = b.y + rng.next() * b.height;
+    const name = names[Math.floor(rng.next() * names.length)]!;
+    if (spaces.some((s) => Math.hypot(s.x - x, s.y - y) < 70) || nearRoad(x, y)) continue;
+    out.push(scene.add.image(Math.round(x), Math.round(y), kit.props, name).setScale(SCALE).setDepth(standingDepth(y)));
+  }
+  return out;
+}
+
 /** The hand-laid props of an area, if the kit has them: the flat ones under the roads, the rest sorted by their foot. */
 export function drawKitProps(scene: Phaser.Scene, kit: Kit, area: Area): number {
   const list = kit.placements[area.id];
@@ -452,6 +494,23 @@ export function drawCrownDoor(scene: Phaser.Scene, door: Phaser.GameObjects.Imag
   allProps.push(sprite);
   propArea.set(sprite, 'crownhaven');
   return sprite;
+}
+
+/** The Ferry's sign beside the Bank (Mitch, AD): chained and dark until the Hollow King has fallen, lit after; its badge hangs over the Bank's coin. */
+export function drawFerry(scene: Phaser.Scene, parts: Phaser.GameObjects.Image[] | null, at: { x: number; y: number }, open: boolean): Phaser.GameObjects.Image[] | null {
+  if (!scene.textures.exists(DREAM_PLACES)) return null;
+  const frame = open ? 'ferry_open' : 'ferry_barred';
+  if (parts?.[0]?.active) {
+    parts[0].setFrame(frame);
+    return parts;
+  }
+  const sign = scene.add.image(at.x + 66, at.y - 22, DREAM_PLACES, frame).setScale(SCALE).setDepth(standingDepth(at.y - 22));
+  const badge = scene.add.image(7293, 6749, DREAM_PLACES, 'ferry_badge').setScale(SCALE).setDepth(standingDepth(6749) + 0.001);
+  for (const sprite of [sign, badge]) {
+    allProps.push(sprite);
+    propArea.set(sprite, 'crownhaven');
+  }
+  return [sign, badge];
 }
 
 /** The cover over an area not yet open: the kit's cloud, tiled, with a little dark over it. */

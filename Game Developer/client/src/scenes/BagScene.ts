@@ -15,6 +15,7 @@ import { feel, sfx } from '../feel.ts';
 import { CREAM, frameTexture, hasFrame, INK, INK_DIM, itemFrame, KIT, kitReady, plate, sheet } from '../kit.ts';
 import { gearIcon, Hero, heroReady, releaseUnworn, TRINKET_ICONS } from '../hero.ts';
 import { Bar, makeButton } from '../ui.ts';
+import { DREAMDUST } from '../dreamlook.ts';
 import type { BoardScene } from './BoardScene.ts';
 
 export interface BagSceneDeps {
@@ -127,6 +128,12 @@ export class BagScene extends Phaser.Scene {
       this.scene.stop();
       this.scene.launch('seals');
     }, { small: true });
+    // Dreamdust, once you have any (Robin, 2026-11-03: the Dream's own coin).
+    if ((me.dreamdust ?? 0) > 0) {
+      const y = picture.y + picture.h - 16;
+      if (this.textures.exists(DREAMDUST)) this.add.image(picture.x + 18, y, DREAMDUST).setDisplaySize(24, 24);
+      this.add.text(picture.x + 33, y, String(me.dreamdust), { fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#fff8e8', stroke: '#3a2410', strokeThickness: 3 }).setOrigin(0, 0.5);
+    }
     this.board(bars.x, bars.y, bars.w, bars.h);
     this.hpBar = new Bar(this, 128, 397, 200, 14, COLORS.button, 0, '', { fontSize: 11 });
     this.mpBar = new Bar(this, 311, 397, 146, 11, COLORS.mana, 0, '', { small: true, fontSize: 10 });
@@ -448,7 +455,7 @@ export class BagScene extends Phaser.Scene {
     const kind = g.name.toLowerCase() === g.base.toLowerCase() ? rarity : `${rarity} ${g.base}`;
     // An orb sits in the off-hand like a shield, but it is an orb.
     const slotWord = g.kind?.endsWith('_orb') ? 'orb' : SLOT_NAMES[g.slot].toLowerCase();
-    this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind}${kind.endsWith(slotWord) || kind.endsWith(slotWord.replace(/s$/, '')) ? '' : ` ${slotWord}`}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
+    this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${g.dream ? 'Dream-touched · ' : ''}${kind}${kind.endsWith(slotWord) || kind.endsWith(slotWord.replace(/s$/, '')) ? '' : ` ${slotWord}`}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
     const lines: { text: string; color?: string; bold?: boolean; small?: boolean }[] = [{ text: gearPowers(g).filter((p) => !p.startsWith('Set: ')).join(' · ') || 'A plain piece.', bold: true }];
     const set = g.set ? SETS[g.set] : undefined;
     if (set) {

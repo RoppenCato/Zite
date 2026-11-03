@@ -1,0 +1,50 @@
+[
+ {
+  "id": "lilac",
+  "name": "Lilac Dusk",
+  "hue": 150,
+  "sat": -0.1,
+  "bright": 1.04,
+  "tint": 13152511
+ },
+ {
+  "id": "teal",
+  "name": "Moonlit Teal",
+  "hue": 45,
+  "sat": 0,
+  "bright": 0.98,
+  "tint": 10150112
+ },
+ {
+  "id": "rose",
+  "name": "Rose Dream",
+  "hue": 200,
+  "sat": -0.3,
+  "bright": 1.03,
+  "tint": 16756952
+ },
+ {
+  "id": "gold",
+  "name": "Golden Haze",
+  "hue": -55,
+  "sat": 0.05,
+  "bright": 1.06,
+  "tint": 16769184
+ },
+ {
+  "id": "ember",
+  "name": "Ember Night",
+  "hue": -105,
+  "sat": -0.1,
+  "bright": 0.94,
+  "tint": 16752768
+ },
+ {
+  "id": "frost",
+  "name": "Pale Frost",
+  "hue": 80,
+  "sat": -0.45,
+  "bright": 1.08,
+  "tint": 13690111
+ }
+]

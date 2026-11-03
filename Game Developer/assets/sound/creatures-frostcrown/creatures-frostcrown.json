@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/snow-goat/attack": {
+      "start": 0,
+      "end": 0.2807,
+      "loop": false
+    },
+    "creature/snow-goat/hit": {
+      "start": 0.3307,
+      "end": 0.6709,
+      "loop": false
+    },
+    "creature/snow-goat/die": {
+      "start": 0.7209,
+      "end": 1.3401,
+      "loop": false
+    },
+    "creature/crag-goblin/attack": {
+      "start": 1.3901,
+      "end": 1.793,
+      "loop": false
+    },
+    "creature/crag-goblin/hit": {
+      "start": 1.843,
+      "end": 2.1837,
+      "loop": false
+    },
+    "creature/crag-goblin/die": {
+      "start": 2.2337,
+      "end": 2.6554,
+      "loop": false
+    },
+    "creature/pebble-golem/attack": {
+      "start": 2.7054,
+      "end": 3.1221,
+      "loop": false
+    },
+    "creature/pebble-golem/hit": {
+      "start": 3.1721,
+      "end": 3.802,
+      "loop": false
+    },
+    "creature/pebble-golem/die": {
+      "start": 3.852,
+      "end": 4.2911,
+      "loop": false
+    },
+    "creature/frostling/attack": {
+      "start": 4.3411,
+      "end": 4.6624,
+      "loop": false
+    },
+    "creature/frostling/hit": {
+      "start": 4.7124,
+      "end": 5.08,
+      "loop": false
+    },
+    "creature/frostling/die": {
+      "start": 5.13,
+      "end": 5.6243,
+      "loop": false
+    },
+    "creature/old-bighorn/attack": {
+      "start": 5.6743,
+      "end": 6.0187,
+      "loop": false
+    },
+    "creature/old-bighorn/hit": {
+      "start": 6.0687,
+      "end": 6.4355,
+      "loop": false
+    },
+    "creature/old-bighorn/die": {
+      "start": 6.4855,
+      "end": 7.2023,
+      "loop": false
+    },
+    "creature/frostbeard/attack": {
+      "start": 7.2523,
+      "end": 7.9448,
+      "loop": false
+    },
+    "creature/frostbeard/hit": {
+      "start": 7.9948,
+      "end": 8.4349,
+      "loop": false
+    },
+    "creature/frostbeard/die": {
+      "start": 8.4849,
+      "end": 9.4203,
+      "loop": false
+    },
+    "creature/frostbeard/surge": {
+      "start": 9.4703,
+      "end": 10.4117,
+      "loop": false
+    }
+  }
+}

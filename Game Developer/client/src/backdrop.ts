@@ -226,6 +226,8 @@ export function releaseBackdrops(game: Phaser.Game, keep: string): void {
 export class Backdrop {
   /** Where the fighters' feet stand. */
   readonly feetY: number;
+  /** What it drew, back to front: a run of the Dream lays its colour over them (Mitch, AD). */
+  readonly parts: Phaser.GameObjects.GameObject[] = [];
   private readonly drifting: { sprite: Phaser.GameObjects.TileSprite; drift: number }[] = [];
 
   constructor(scene: Phaser.Scene, theme: string, groundY: number, bottom: number) {
@@ -235,7 +237,8 @@ export class Backdrop {
     const low = b?.sky.bottom ?? 0x8aa0b8;
     sky.fillGradientStyle(top, top, low, low, 1);
     sky.fillRect((DESIGN_WIDTH - SCREEN_WIDTH) / 2, HUD_PLANK, SCREEN_WIDTH, groundY - HUD_PLANK);
-    scene.add.rectangle(DESIGN_WIDTH / 2, (groundY + bottom) / 2, SCREEN_WIDTH, bottom - groundY, b?.soil ?? 0x3a3024, 1);
+    const soil = scene.add.rectangle(DESIGN_WIDTH / 2, (groundY + bottom) / 2, SCREEN_WIDTH, bottom - groundY, b?.soil ?? 0x3a3024, 1);
+    this.parts.push(sky, soil);
     if (!b) {
       this.feetY = groundY;
       return;
@@ -252,6 +255,7 @@ export class Backdrop {
       sprite.tilePositionY = (s.h - shown) / scale;
       // The strip is composed for the column: a wider screen shows more of it to each side, the column where it was.
       sprite.tilePositionX = (DESIGN_WIDTH - SCREEN_WIDTH) / 2 / scale;
+      this.parts.push(sprite);
       if (s.drift) this.drifting.push({ sprite, drift: s.drift });
     }
     this.feetY = groundY + b.feet;

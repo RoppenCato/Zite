@@ -46,3 +46,7 @@ yet, and the convention `?mute=1` is written down in `docs/state/pages.md`.
 ## Nigel, SD's render of 2026-11-02
 
 New cuts of `ui`, `ui-spots` and `fight` (with the church's bell, the sting, the quest and log sounds, the dodge), and two new sprites loaded only when needed: `fight-classes` (the three classes' abilities and pips, for a class other than the Knight) and `creatures-forest` (the forest's six voices and steps, once it is open or entered). The borrowed names in `audio.ts` step aside by themselves. Robin's ear wanted on the phone: moss steps may nearly vanish, Grumblebark's death is 2.4 s on purpose. Held by Nigel, SD: the beds, and every theme including the forest's, until Robin has heard the meadows' board theme.
+
+## Nigel, SD's drop of 2026-11-03
+
+The new lands' voices as lazy sprites by folder (`creatures-honeyhill`, `-bogglemire`, `-frostcrown`, `-rootways`, `-kingswood`), found by the `creatures-*` glob; `creatures-forest` and `creatures-meadows` re-cut; `fight`, `fight-talents`, `ui` and `ui-spots` re-cut with the new effects, the ground steps and the Dream's five sounds. Music: `title`, `meadows-fight`, `king-goo` and `dream` (Robin: "fight good, Goo good, title good, Dream good", 2026-11-03). The fight theme's loop seam is 0.82 %FS; listen for a click on the phone.

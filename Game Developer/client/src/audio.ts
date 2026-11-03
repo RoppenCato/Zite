@@ -14,6 +14,10 @@ import fightOgg from '../../assets/sound/fight/fight.ogg';
 import spotsJson from '../../assets/sound/ui-spots/ui-spots.json?url';
 import spotsOgg from '../../assets/sound/ui-spots/ui-spots.ogg';
 import meadowsBoardOgg from '../../assets/sound/music/meadows-board.ogg';
+import meadowsFightOgg from '../../assets/sound/music/meadows-fight.ogg';
+import kingGooOgg from '../../assets/sound/music/king-goo.ogg';
+import titleOgg from '../../assets/sound/music/title.ogg';
+import dreamOgg from '../../assets/sound/music/dream.ogg';
 import creaturesMeadowsJson from '../../assets/sound/creatures-meadows/creatures-meadows.json?url';
 import creaturesMeadowsOgg from '../../assets/sound/creatures-meadows/creatures-meadows.ogg';
 import fightClassesJson from '../../assets/sound/fight-classes/fight-classes.json?url';
@@ -78,7 +82,8 @@ const ALIASES: Record<string, string> = {
 };
 
 /** The music, one file per piece, streamed through an audio element and looped whole (Nigel, SD's board theme, 2026-11-01). */
-const MUSIC: Record<string, string> = { 'music/meadows-board': meadowsBoardOgg };
+// The title, the Meadows' fight, King Goo's and the Dream's (Nigel, SD, 2026-11-03).
+const MUSIC: Record<string, string> = { 'music/meadows-board': meadowsBoardOgg, 'music/meadows-fight': meadowsFightOgg, 'music/king-goo': kingGooOgg, 'music/title': titleOgg, 'music/dream': dreamOgg };
 const MUSIC_VOLUME = 0.7;
 const CROSSFADE_MS = 2000;
 

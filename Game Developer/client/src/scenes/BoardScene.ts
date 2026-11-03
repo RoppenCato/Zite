@@ -44,13 +44,13 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, arenaModeOpen, arenaPrize, ARENA, UNIQUES, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealCount, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, arenaModeOpen, arenaPrize, ARENA, UNIQUES, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealCount, sealsAllWon, bossBeaten, DREAM, dreamDepthOpen, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
 import secretData from '../../../assets/world_moved/secrets.json';
 import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
-import { drawCrownDoor, allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
+import { drawCrownDoor, drawFerry, scatterProps, allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -67,6 +67,7 @@ import type { AskRequest } from './AskScene.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import type { Chip, HudScene } from './HudScene.ts';
 import { moments } from './MomentScene.ts';
+import { applyPalette, DREAM_PROPS, dreamPalette, preloadDreamLook, tintOf } from '../dreamlook.ts';
 
 export interface BoardSceneDeps {
   game: GameHolder;
@@ -102,10 +103,12 @@ function nearSegment(x: number, y: number, a: { x: number; y: number }, b: { x: 
   const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy || 1)));
   return Math.hypot(a.x + dx * t - x, a.y + dy * t - y) < margin;
 }
-/** The steps on an area's ground; the forest takes turns on roots and moss (Nigel, SD), the rest on grass until theirs come. */
+/** The steps on an area's ground (Nigel, SD's sounds; which land takes which, mine): roots and moss in the forest, the swamp's mud and boards, snow up north, sand on the Isles, stone in the city and the Crown. */
+const STEPS: Record<string, string[]> = { forest: ['roots', 'moss'], swamp: ['mud', 'wood'], mountain: ['snow'], giants: ['snow'], pirates: ['sand', 'wood'], city: ['stone'], crown: ['stone'], dungeon: ['mud'] };
 function stepSound(theme: string | undefined): string {
-  if (theme !== 'forest') return 'ui/step-grass';
-  return `ui/step-${Math.random() < 0.5 ? 'roots' : 'moss'}-${1 + Math.floor(Math.random() * 3)}`;
+  const kinds = STEPS[theme ?? ''];
+  if (!kinds) return 'ui/step-grass';
+  return `ui/step-${kinds[Math.floor(Math.random() * kinds.length)]}-${1 + Math.floor(Math.random() * 3)}`;
 }
 const STEP_MS = 260;
 const LIT = 0xfff27a;
@@ -228,6 +231,13 @@ export class BoardScene extends Phaser.Scene {
   private arenaWasOpen: boolean | null = null;
   private readonly closedLabels = new Map<string, Phaser.GameObjects.Text>();
   private crownDoor: Phaser.GameObjects.Image | null = null;
+  /** The Ferry's sign and badge in Crownhaven (Mitch, AD, 2026-11-03). */
+  private ferry: Phaser.GameObjects.Image[] | null = null;
+  /** A run of the Dream as drawn: its spots and its ground, cleared away when it ends; the colour matrix on the camera while you are in it. */
+  private readonly dreamSpots = new Map<string, Set<string>>();
+  private readonly dreamGround = new Map<string, Phaser.GameObjects.Image[]>();
+  private dreamFilter: Phaser.Filters.ColorMatrix | null = null;
+  private dreamFilterPalette: string | null = null;
   private night: Phaser.GameObjects.Rectangle | null = null;
   private nightWant = -1;
   private readonly closedMarks = new Map<string, Phaser.GameObjects.Image[]>();
@@ -302,6 +312,7 @@ export class BoardScene extends Phaser.Scene {
   /** The HUD is drawn: show the first message, and take up again whatever the page was closed in the middle of. */
   hudReady(hud: HudScene): void {
     this.hud = hud;
+    this.applyDreamLook();
     hud.setFollowing(this.following);
     hud.setBusy(this.busy);
     this.refreshHud();
@@ -323,7 +334,7 @@ export class BoardScene extends Phaser.Scene {
       this.setBusy(true);
       this.offerChoices();
     } else {
-      this.finish(message ?? (this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.city ? 'Tap a place in the city to walk there. The die works at the gates.' : `Tap Roll to move ${me.name}. Tap any spot to hear about it.`));
+      this.finish(message ?? (this.game_.state.board.spaces[me.space]?.area === DREAM.isle.area ? 'Tap a place on the isle to walk there.' : this.game_.state.board.areas[this.game_.state.board.spaces[me.space]?.area ?? '']?.city ? 'Tap a place in the city to walk there. The die works at the gates.' : `Tap Roll to move ${me.name}. Tap any spot to hear about it.`));
     }
   }
 
@@ -742,15 +753,27 @@ export class BoardScene extends Phaser.Scene {
    */
   private drawBoard(): void {
     const { board } = this.game_.state;
-    const fresh = Object.values(board.areas).filter((a) => !this.drawn.has(a.id));
-    if (!fresh.length) return;
+    // A run of the Dream that has ended leaves the board (Robin, 2026-11-03); another dreamer's run is never drawn here.
+    const gone = [...this.drawn].filter((id) => !board.areas[id]);
+    for (const id of gone) this.forgetArea(id);
+    const mine = (a: Area | undefined): boolean => !a?.dream || a.dream.player === this.game_.player;
+    const fresh = Object.values(board.areas).filter((a) => !this.drawn.has(a.id) && mine(a));
+    if (!fresh.length) {
+      if (gone.length) this.dreamMoved();
+      return;
+    }
     for (const area of fresh) {
       this.drawGround(area);
       this.drawn.add(area.id);
     }
-    const spaces = Object.values(board.spaces).filter((s) => !this.circles.has(s.id));
+    const spaces = Object.values(board.spaces).filter((s) => !this.circles.has(s.id) && mine(board.areas[s.area]));
     this.drawLinks(spaces, board.spaces);
     for (const space of spaces) this.drawSpace(space);
+    for (const space of spaces) {
+      if (!board.areas[space.area]?.dream) continue;
+      const own = this.dreamSpots.get(space.area) ?? new Set<string>();
+      this.dreamSpots.set(space.area, own.add(space.id));
+    }
     for (const area of fresh) {
       const kit = kitFor(this, area.theme);
       if (kit) this.log.note(`props: ${drawKitProps(this, kit, area)} on ${area.name}`);
@@ -774,6 +797,78 @@ export class BoardScene extends Phaser.Scene {
     this.lastCull.count = -1; // the new spots take the view's rule at the next frame
     this.refreshCovers();
     if (this.drawn.size > fresh.length) this.log.note(`board grown: ${fresh.map((a) => a.name).join(', ')}; ${Object.keys(board.spaces).length} spaces, ${board.width} by ${board.height}`);
+    if (gone.length || fresh.some((a) => a.dream)) this.dreamMoved();
+  }
+
+  /** An area gone from the board (a run of the Dream, ended): everything drawn for it goes. */
+  private forgetArea(areaId: string): void {
+    for (const id of this.dreamSpots.get(areaId) ?? []) {
+      const parts = this.spotParts.get(id);
+      for (const p of [...(parts?.parts ?? []), ...(parts?.names ?? [])]) p.destroy();
+      for (const map of [this.circles, this.rings, this.bossLabels, this.spawnMarks, this.traceMarks] as Map<string, Phaser.GameObjects.GameObject>[]) {
+        map.get(id)?.destroy();
+        map.delete(id);
+      }
+      this.spotParts.delete(id);
+    }
+    this.dreamSpots.delete(areaId);
+    for (let i = this.names.length - 1; i >= 0; i--) if (!this.names[i]!.active) this.names.splice(i, 1);
+    for (const tile of this.dreamGround.get(areaId) ?? []) tile.destroy();
+    this.dreamGround.delete(areaId);
+    this.closedRoads.get(areaId)?.destroy();
+    this.closedRoads.delete(areaId);
+    this.dungeonFloors.get(areaId)?.destroy();
+    this.dungeonFloors.delete(areaId);
+    this.drawn.delete(areaId);
+    this.lastCull.count = -1;
+  }
+
+  /** A run began or ended: the camera's bounds, its look on or off, the token where you stand now. */
+  private dreamMoved(): void {
+    if (!this.token) return;
+    this.fitBounds();
+    this.minZoom = this.overviewZoom();
+    this.applyDreamLook();
+    this.placeToken();
+    this.follow(true);
+    this.refreshHud();
+  }
+
+  /** In a run: Mitch, AD's colour matrix in its palette on the board's camera, and the HUD's vignette and motes; off elsewhere. */
+  private applyDreamLook(): void {
+    const palette = dreamPalette(this.dungeonHere()?.dream?.palette);
+    const cam = this.cameras.main;
+    if (this.dreamFilter && this.dreamFilterPalette !== palette?.id) {
+      cam.filters.internal.remove(this.dreamFilter);
+      this.dreamFilter = null;
+      this.dreamFilterPalette = null;
+    }
+    if (palette && !this.dreamFilter) {
+      this.dreamFilter = cam.filters.internal.addColorMatrix();
+      applyPalette(this.dreamFilter.colorMatrix, palette);
+      this.dreamFilterPalette = palette.id;
+    }
+    this.hud?.setDream(palette ? tintOf(palette.tint) : null);
+  }
+
+  /** A run's ground: its land's tiles over its box, once its land's atlases are here; its plates dressed in them too. */
+  private drawDreamGround(area: Area): void {
+    const kit = kitFor(this, area.theme);
+    if (!kit || this.dreamGround.has(area.id)) return;
+    if (!regionHeld(this, area.theme)) {
+      preloadRegion(this, area.theme);
+      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        const now = this.game_.state.board.areas[area.id];
+        if (now && this.drawn.has(area.id) && regionHeld(this, area.theme)) this.drawDreamGround(now);
+      });
+      this.load.start();
+      return;
+    }
+    const { board, seed } = this.game_.state;
+    const own = Object.values(board.spaces).filter((s) => s.area === area.id);
+    const props = scatterProps(this, kit, area, own, DREAM_PROPS[area.theme] ?? [], makeRng(`${this.game_.me.dream?.seed ?? seed}:props`));
+    this.dreamGround.set(area.id, [...drawKitGround(this, kit, area, seed, board.width, board.height), ...props]);
+    this.dressPlates(area, kit);
   }
 
   /** The hunting grounds' names on the map, each by its spot: what mostly roams there (Robin, 2026-11-02). */
@@ -797,6 +892,7 @@ export class BoardScene extends Phaser.Scene {
       const land = DUNGEON_LAND[area.id] ?? { ...area.bounds, fill: 0x1c1620 };
       this.painted ??= new PaintedGround(this);
       this.dungeonFloors.set(area.id, this.add.rectangle(land.x + land.width / 2, land.y + land.height / 2, land.width, land.height, land.fill, 1).setDepth(-2.5).setVisible(false));
+      if (area.dream) this.drawDreamGround(area);
       return;
     }
     this.drawGrounds(area);
@@ -833,6 +929,12 @@ export class BoardScene extends Phaser.Scene {
     const data = WORLD_DATA.areas.find((a) => a.id === areaId) ?? DUNGEONS[areaId]?.area;
     const area = this.game_.state.board.areas[areaId];
     const kit = area ? kitFor(this, area.theme) : null;
+    // A run of the Dream has no data to read: its spots' links are its roads.
+    if (area?.dream && kit) {
+      const { spaces } = this.game_.state.board;
+      this.closedRoads.set(areaId, drawKitRoads(this, kit, Object.values(spaces).filter((s) => s.area === areaId), spaces));
+      return;
+    }
     if (!data || !kit) return;
     const hubs = new Map(data.hubs.map((h) => [h.id, h]));
     const paths: { x: number; y: number }[][] = [];
@@ -1062,6 +1164,8 @@ export class BoardScene extends Phaser.Scene {
 
   private refreshCovers(): void {
     this.crownDoor = drawCrownDoor(this, this.crownDoor, sealsAllWon(this.game_.state.board, this.game_.me));
+    const bank = this.game_.state.board.spaces['city-bank'];
+    if (bank?.needs) this.ferry = drawFerry(this, this.ferry, bank, bossBeaten(this.game_.state.board, this.game_.me, bank.needs));
     const opened = new Set(this.game_.me.opened);
     for (const [areaId, cover] of this.covers) cover.setVisible(!opened.has(areaId));
     for (const areaId of opened) raiseTallProps(areaId);
@@ -1230,6 +1334,7 @@ export class BoardScene extends Phaser.Scene {
     // A painted region comes and goes with the camera (`fitRegions`); only the one you stand in comes now.
     const reach = Math.max(...this.game_.me.opened.map((id) => areas[id]?.tier ?? 1)) + 2;
     const here = areas[this.game_.state.board.spaces[this.game_.me.space]?.area ?? ''];
+    preloadDreamLook(this);
     preloadBoardKits(this, [...Object.values(areas).filter((a) => a.tier <= reach && !PAINTED[a.id] && !a.dungeon).map((a) => a.theme), ...(here && PAINTED[here.id] ? [here.theme] : [])]);
     preloadKit(this);
     preloadAbilityIcons(this);
@@ -1449,6 +1554,8 @@ export class BoardScene extends Phaser.Scene {
 
   private dropRegion(area: Area): void {
     this.regions.delete(area.id);
+    // A run of the Dream in this land's look holds its atlases.
+    if ([...this.dreamGround.keys()].some((id) => this.game_.state.board.areas[id]?.theme === area.theme)) return;
     const kit = kitFor(this, area.theme);
     if (!kit) return;
     clearKitProps(area.id);
@@ -2033,16 +2140,22 @@ export class BoardScene extends Phaser.Scene {
       this.finish(`A door with ${sealCount(board, this.game_.me).total} sockets. It wants every land’s Seal.`);
       return;
     }
+    if (here.needs && !bossBeaten(board, this.game_.me, here.needs)) {
+      this.finish('The ferryman shakes his head: he only sails for one who has beaten the Hollow King.');
+      return;
+    }
+    // The Ferry to the Dreaming Isle and back (Robin, 2026-11-03).
+    const ferry = !!here.needs || here.area === DREAM.isle.area;
     const land = board.areas[beyond.area];
-    this.setMessage(inside ? 'Daylight, up ahead.' : `${here.name}.`);
+    this.setMessage(ferry ? 'The ferry rocks at its mooring.' : inside ? 'Daylight, up ahead.' : `${here.name}.`);
     this.ask({
-      icon: 'mark_alert',
-      color: inside ? 0xf4c14a : 0x6b5a78,
+      icon: ferry ? 'mark_star' : 'mark_alert',
+      color: ferry ? 0xb59cf0 : inside ? 0xf4c14a : 0x6b5a78,
       title: here.name || 'A door',
-      text: inside ? 'The way back out to the open air. You can come back whenever you like.' : 'A cold breath from the dark. Something waits at the far end.',
-      ...(inside || !land ? {} : { pays: `Levels ${land.levels[0]} to ${land.levels[1]}` }),
+      text: ferry ? (inside ? 'The little boat with the crescent sail, back across to Crownhaven.' : 'A little boat with a crescent sail. Across the water lies the Dreaming Isle, and its Dreamgate.') : inside ? 'The way back out to the open air. You can come back whenever you like.' : 'A cold breath from the dark. Something waits at the far end.',
+      ...(inside || !land || ferry ? {} : { pays: `Levels ${land.levels[0]} to ${land.levels[1]}` }),
       options: [
-        { label: inside ? 'Go out' : 'Go in', color: COLORS.button, onTap: () => this.goThrough() },
+        { label: ferry ? 'Cross' : inside ? 'Go out' : 'Go in', color: COLORS.button, onTap: () => this.goThrough() },
         { label: 'Not yet', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish(inside ? 'You stay in the dark a while.' : 'You leave it be, for now.'); } },
       ],
     });
@@ -2062,8 +2175,79 @@ export class BoardScene extends Phaser.Scene {
       this.follow(true);
       this.drawSpawns();
       this.refreshHud();
-      sfx.play('ui/arrive-town');
-      this.finish(`You step through to ${board.areas[board.spaces[this.game_.me.space]!.area]?.name ?? 'the other side'}.`);
+      const doored = events.find((e) => e.type === 'doored');
+      const crossed = doored?.type === 'doored' && (!!board.spaces[doored.from]?.needs || board.spaces[doored.to]?.area === DREAM.isle.area);
+      sfx.play(crossed ? 'ui/ferry' : 'ui/arrive-town');
+      this.finish(`${crossed ? 'The ferry carries you' : 'You step through'} to ${board.areas[board.spaces[this.game_.me.space]!.area]?.name ?? 'the other side'}.`);
+    });
+  }
+
+  /** At the Dreamgate (Robin, 2026-11-03: "Depths"): the newest depth open, the one before it, the first, or not yet. */
+  private offerDreamgate(): void {
+    const me = this.game_.me;
+    const open = dreamDepthOpen(me);
+    const depths = [...new Set([open, open - 1, 1])].filter((d) => d >= 1);
+    this.setMessage('The Dreamgate hums. Which dream?');
+    this.ask({
+      icon: 'mark_star',
+      color: 0xb59cf0,
+      title: 'The Dreamgate',
+      text: 'A dungeon laid for you alone: a land dreamt in strange colours. Deeper is harder and pays better. Fall, and the run\'s gold is lost; your gear and Dreamdust stay with you.',
+      pays: me.dreamDepth ? `Deepest cleared: depth ${me.dreamDepth}` : 'No depth cleared yet',
+      options: [
+        ...depths.map((d) => ({ label: `Depth ${d}${d === open && d > 1 ? ' (new)' : ''}`, color: d === open ? COLORS.button : COLORS.log, onTap: () => this.enterDream(d) })),
+        { label: 'Not yet', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish('The gate hums on, patient.'); } },
+      ],
+    });
+  }
+
+  private enterDream(depth: number): void {
+    this.closeAsk();
+    this.send({ type: 'dream', player: this.game_.player, op: 'enter', depth }, (events) => {
+      const entered = events.find((e) => e.type === 'dreamEntered');
+      if (entered?.type !== 'dreamEntered') {
+        this.finish(this.describe(events));
+        return;
+      }
+      sfx.play('ui/dreamgate');
+      this.drawBoard();
+      this.drawSpawns();
+      this.finish(`${entered.name}. The dreamer waits at the far end; wake up when you like.`);
+    });
+  }
+
+  /** Wake up from a run, asked first: the gold kept, the depth not cleared. From the HUD. */
+  wakeUp(): void {
+    const me = this.game_.me;
+    if (!me.dream || me.fight || me.offer) return;
+    if (this.busy) {
+      this.setMessage('Finish your walk first, then wake up.');
+      return;
+    }
+    this.ask({
+      icon: 'mark_star',
+      color: 0xb59cf0,
+      title: 'Wake up?',
+      text: 'The dream ends: you keep the gold and everything you found, but this depth is not cleared.',
+      pays: `This run: ${Math.max(0, me.gold - me.dream.gold)} gold`,
+      options: [
+        { label: 'Wake up', color: COLORS.button, onTap: () => this.wake() },
+        { label: 'Dream on', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish('You dream on.'); } },
+      ],
+    });
+  }
+
+  private wake(): void {
+    this.closeAsk();
+    this.send({ type: 'dream', player: this.game_.player, op: 'wake' }, (events) => {
+      const ended = events.find((e) => e.type === 'dreamEnded');
+      if (ended?.type !== 'dreamEnded') {
+        this.finish(this.describe(events));
+        return;
+      }
+      sfx.play('ui/wake');
+      this.drawBoard();
+      this.finish(`You wake at the Dreamgate${ended.gold ? `, ${ended.gold} gold richer` : ''}.`);
     });
   }
 
@@ -2228,6 +2412,10 @@ export class BoardScene extends Phaser.Scene {
         this.offerGate();
         return;
       }
+      if (!this.busy && id === me.space && space.kind === 'dream' && !this.game_.state.board.areas[space.area]?.dream) {
+        this.offerDreamgate();
+        return;
+      }
       // Your own spot, free: the hint, and the notes you could leave as chips.
       if (!this.busy && id === me.space) {
         this.flashHint(id);
@@ -2364,6 +2552,7 @@ export class BoardScene extends Phaser.Scene {
       for (const e of moved) {
         if (e.type === 'gold') sfx.play(e.delta >= 20 ? 'ui/gold-gain' : e.delta > 0 ? 'ui/gold-small' : 'ui/gold-lost');
         else if (e.type === 'rested') sfx.play('ui/spring-fill');
+        else if (e.type === 'dreamdust' && e.delta > 0) sfx.play('ui/dreamdust');
         else if (e.type === 'learned') sfx.play('ui/shrine-teach');
         else if (e.type === 'empty') sfx.play('ui/spot-empty');
       }
@@ -2387,6 +2576,11 @@ export class BoardScene extends Phaser.Scene {
           this.setMessage(`${rolled}Landed ${where}.`);
           this.refreshHud();
           this.offerGate();
+          return;
+        }
+        if (space.kind === 'dream' && !this.game_.state.board.areas[space.area]?.dream) {
+          this.refreshHud();
+          this.offerDreamgate();
           return;
         }
         if (space.kind === 'shop' || space.kind === 'town' || moved.some((e) => e.type === 'merchant')) {
@@ -2493,7 +2687,7 @@ export class BoardScene extends Phaser.Scene {
     const area = space ? this.game_.state.board.areas[space.area] : undefined;
     const where = space ? space.name || placeName(this.game_.state.board, space) || (space.kind === 'normal' ? 'The road' : SPACE_KIND_DATA[space.kind].label) : me.space;
     const withOthers = Object.values(this.game_.state.characters).filter((c) => c.id !== me.id && c.space === me.space).map((c) => c.name);
-    if (area) audio.music(`music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
+    if (area) audio.music(area.dream || area.id === DREAM.isle.area ? 'music/dream' : `music/${area.theme === 'meadow' ? 'meadows' : area.theme}-board`);
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
     if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
       this.artArea = area.id;

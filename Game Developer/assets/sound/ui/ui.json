@@ -335,19 +335,94 @@
       "end": 33.9454,
       "loop": false
     },
-    "ui/level-up": {
+    "ui/step-stone-1": {
       "start": 33.9954,
-      "end": 35.4954,
+      "end": 34.0589,
+      "loop": false
+    },
+    "ui/step-stone-2": {
+      "start": 34.1089,
+      "end": 34.1705,
+      "loop": false
+    },
+    "ui/step-stone-3": {
+      "start": 34.2205,
+      "end": 34.2872,
+      "loop": false
+    },
+    "ui/step-wood-1": {
+      "start": 34.3372,
+      "end": 34.422,
+      "loop": false
+    },
+    "ui/step-wood-2": {
+      "start": 34.472,
+      "end": 34.5453,
+      "loop": false
+    },
+    "ui/step-wood-3": {
+      "start": 34.5953,
+      "end": 34.6767,
+      "loop": false
+    },
+    "ui/step-snow-1": {
+      "start": 34.7267,
+      "end": 35.0267,
+      "loop": false
+    },
+    "ui/step-snow-2": {
+      "start": 35.0767,
+      "end": 35.3767,
+      "loop": false
+    },
+    "ui/step-snow-3": {
+      "start": 35.4267,
+      "end": 35.7267,
+      "loop": false
+    },
+    "ui/step-mud-1": {
+      "start": 35.7767,
+      "end": 36.0767,
+      "loop": false
+    },
+    "ui/step-mud-2": {
+      "start": 36.1267,
+      "end": 36.4267,
+      "loop": false
+    },
+    "ui/step-mud-3": {
+      "start": 36.4767,
+      "end": 36.7767,
+      "loop": false
+    },
+    "ui/step-sand-1": {
+      "start": 36.8267,
+      "end": 37.0026,
+      "loop": false
+    },
+    "ui/step-sand-2": {
+      "start": 37.0526,
+      "end": 37.2595,
+      "loop": false
+    },
+    "ui/step-sand-3": {
+      "start": 37.3095,
+      "end": 37.4827,
+      "loop": false
+    },
+    "ui/level-up": {
+      "start": 37.5327,
+      "end": 39.0327,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 35.5454,
-      "end": 37.4731,
+      "start": 39.0827,
+      "end": 41.0104,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 37.5231,
-      "end": 39.4377,
+      "start": 41.0604,
+      "end": 42.975,
       "loop": false
     }
   }

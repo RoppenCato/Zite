@@ -119,6 +119,11 @@
       "start": 10.1091,
       "end": 10.1883,
       "loop": false
+    },
+    "creature/briar-king/surge": {
+      "start": 10.2383,
+      "end": 10.8597,
+      "loop": false
     }
   }
 }

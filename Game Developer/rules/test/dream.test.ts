@@ -205,7 +205,7 @@ describe('inside a run', () => {
 });
 
 describe("the camp's merchant", () => {
-  const camp = (dust: number, depth = 0): GameState => put(dreamer(), { space: DREAM.isle.camp, dreamdust: dust, dreamDepth: depth, bag: [] });
+  const camp = (dust: number, depth = 0): GameState => put(dreamer(), { space: DREAM.isle.camp, dreamdust: dust, dreamDepth: depth, bag: [], equipment: { ...me(dreamer()).equipment, helm: null, trinket: null } });
   it('sells the best flasks and cards for gold', () => {
     const r = apply(camp(0), { type: 'buy', id: 'b', player: P, item: 'potion-5' }, makeRng('b'), NOW);
     expect(r.events[0]).toMatchObject({ type: 'bought', item: 'potion-5' });
@@ -216,12 +216,13 @@ describe("the camp's merchant", () => {
     expect(apply(camp(ware.price - 1), { type: 'dream', id: 'b', player: P, op: 'buy', item: ware.id }, makeRng('b'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough dust' });
     const r = apply(camp(ware.price + 5), { type: 'dream', id: 'b', player: P, op: 'buy', item: ware.id }, makeRng('b'), NOW);
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'dreamdust', delta: -ware.price, dust: 5 }));
-    expect(me(r.state).bag[0]).toMatchObject({ trinket: ware.id, dream: DREAM.merchant.tint });
+    // The test hero wears no trinket: it goes straight on.
+    expect(me(r.state).equipment.trinket).toMatchObject({ trinket: ware.id, dream: DREAM.merchant.tint });
     for (let i = 0; i < 400; i++) expect(TRINKETS[rollTrinket(`t${i}`, 10, 'legendary', makeRng(`t${i}`)).trinket!]!.dream).toBeFalsy();
   });
   it('sells a legendary piece of your choice at the rank of your best depth', () => {
     const r = apply(camp(5000, 5), { type: 'dream', id: 'b', player: P, op: 'buy', slot: 'helm' }, makeRng('b'), NOW);
-    const piece = me(r.state).bag[0]!;
+    const piece = me(r.state).equipment.helm!;
     expect(piece).toMatchObject({ slot: 'helm', rarity: 'legendary', rank: dreamRank(5), dream: DREAM.merchant.tint });
     expect(me(r.state).dreamdust).toBe(5000 - (DREAM.merchant.piece + DREAM.merchant.piecePerRank * (dreamRank(5) - DREAM.loot.rankFrom)));
     expect(apply(put(dreamer(), { dreamdust: 5000 }), { type: 'dream', id: 'b', player: P, op: 'buy', slot: 'helm' }, makeRng('b'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });

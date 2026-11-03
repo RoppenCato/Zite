@@ -54,6 +54,36 @@
       "start": 6.1702,
       "end": 7.5179,
       "loop": false
+    },
+    "ui/arrive-board": {
+      "start": 7.5679,
+      "end": 8.0368,
+      "loop": false
+    },
+    "ui/ferry": {
+      "start": 8.0868,
+      "end": 9.3997,
+      "loop": false
+    },
+    "ui/dreamgate": {
+      "start": 9.4497,
+      "end": 10.6929,
+      "loop": false
+    },
+    "ui/wake": {
+      "start": 10.7429,
+      "end": 12.3291,
+      "loop": false
+    },
+    "ui/dreamdust": {
+      "start": 12.3791,
+      "end": 12.7316,
+      "loop": false
+    },
+    "ui/dreamdust-buy": {
+      "start": 12.7816,
+      "end": 13.3592,
+      "loop": false
     }
   }
 }

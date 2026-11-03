@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -43,7 +43,9 @@ export const SHOP_LAYOUT = {
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
 } as const;
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine' | 'inn';
+const SLOT_WORDS: Record<Slot, string> = { weapon: 'Weapon', shield: 'Off-hand', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
+
+type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine' | 'inn' | 'dust' | 'piece';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -89,6 +91,8 @@ export class ShopScene extends Phaser.Scene {
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
     const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
     if (offer?.town?.rank) tabs.unshift(['fine', 'Fine']);
+    // The Dream's merchant: its trinkets and a legendary piece, for Dreamdust (Robin, 2026-11-03).
+    if (offer?.stock === 'dream') tabs.splice(tabs.findIndex(([id]) => id === 'sell'), 0, ['dust', 'Trinkets'], ['piece', 'Gear']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     // Many tabs (a night merchant, a rich town): short words, so they never run together (2026-11-03).
     const crowded = tabs.length > 6;
@@ -107,7 +111,8 @@ export class ShopScene extends Phaser.Scene {
     for (const r of this.rows) r.destroy();
     this.rows = [];
     const me = this.game_.me;
-    this.gold.setText(`Gold ${me.gold}`);
+    const dreamShop = shopOffer(this.game_.state, me)?.stock === 'dream';
+    this.gold.setText(`Gold ${me.gold}${dreamShop ? ` · Dreamdust ${me.dreamdust ?? 0}` : ''}`);
     const { firstRowY, rowStep, button } = SHOP_LAYOUT;
     const tier = shopOffer(this.game_.state, me)?.tier ?? 1;
     const gearRow = (i: number, g: GearItem, price: string, own: string, onTap: () => void): void => {
@@ -168,6 +173,20 @@ export class ShopScene extends Phaser.Scene {
       rowsFor.forEach(({ slot, kind }, i) => {
         const g = plainGear('preview', slot, tier, tab, me.classId, kind);
         gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab, kind })));
+      });
+    } else if (tab === 'dust') {
+      // Only here, never found.
+      dreamWares().forEach((w, i) => {
+        const g = makeTrinket('preview', w.id);
+        gearRow(i, g, `${w.price} dust`, ownedGear(me.equipment.trinket, me.bag, g.base), () => this.compare(g, 'Buy', () => this.buyDream({ item: w.id })));
+      });
+    } else if (tab === 'piece') {
+      // A piece of your choice at the rank of your best depth, rolled legendary when you buy it.
+      const piece = dreamPiece(me);
+      const choices: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'trinket' ? [] : [{ slot, kind: undefined }]));
+      choices.forEach(({ slot, kind }, i) => {
+        const what = kind ? (GEAR.kinds.weapon[kind]?.name ?? kind) : SLOT_WORDS[slot];
+        row(i, `Legendary ${what}`, this.rarity.legendary ?? this.ink.text, `Rank ${piece.rank}, rolled for you`, `${piece.price} dust`, 'Buy', () => this.buyDream({ slot, kind }));
       });
     } else if (tab === 'items' || tab === 'cards') {
       const sold = (shopOffer(this.game_.state, me)?.items ?? []).filter((id) => !!ITEMS[id]!.dice === (tab === 'cards'));
@@ -245,13 +264,21 @@ export class ShopScene extends Phaser.Scene {
     this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));
   }
 
+  /** From the Dream's merchant, for Dreamdust. */
+  private buyDream(what: { item?: string; slot?: Slot; kind?: string }): void {
+    if (this.inFlight) return;
+    this.inFlight = true;
+    this.game_.act({ type: 'dream', op: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));
+  }
+
   private bought(events: GameEvent[]): void {
     this.inFlight = false;
     const bought = events.find((e) => e.type === 'bought');
     if (bought && bought.type === 'bought') {
-      sfx.play('ui/buy');
+      const dust = events.find((e) => e.type === 'dreamdust');
+      sfx.play(dust ? 'ui/dreamdust-buy' : 'ui/buy');
       const name = bought.gear ? bought.gear.name : (ITEMS[bought.item ?? '']?.name ?? bought.item);
-      this.message.setText(`Bought ${name} for ${bought.price} gold.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
+      this.message.setText(`Bought ${name} for ${dust?.type === 'dreamdust' ? `${-dust.delta} Dreamdust` : `${bought.price} gold`}.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
       this.log.note(`bought ${name} for ${bought.price}`);
     } else {
       this.message.setText(this.describe(events));

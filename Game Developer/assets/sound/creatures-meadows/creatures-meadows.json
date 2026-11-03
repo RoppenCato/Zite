@@ -12,87 +12,87 @@
     },
     "creature/slime/die": {
       "start": 0.5369,
-      "end": 1.0902,
+      "end": 1.2369,
       "loop": false
     },
     "creature/wolf/attack": {
-      "start": 1.1402,
-      "end": 1.4265,
+      "start": 1.2869,
+      "end": 1.5732,
       "loop": false
     },
     "creature/wolf/hit": {
-      "start": 1.4765,
-      "end": 1.694,
+      "start": 1.6232,
+      "end": 1.8407,
       "loop": false
     },
     "creature/wolf/die": {
-      "start": 1.744,
-      "end": 2.4265,
+      "start": 1.8907,
+      "end": 2.5731,
       "loop": false
     },
     "creature/bandit/attack": {
-      "start": 2.4765,
-      "end": 2.8528,
+      "start": 2.6231,
+      "end": 2.9995,
       "loop": false
     },
     "creature/bandit/hit": {
-      "start": 2.9028,
-      "end": 3.1854,
+      "start": 3.0495,
+      "end": 3.332,
       "loop": false
     },
     "creature/bandit/die": {
-      "start": 3.2354,
-      "end": 3.5804,
+      "start": 3.382,
+      "end": 3.7271,
       "loop": false
     },
     "creature/wisp/attack": {
-      "start": 3.6304,
-      "end": 3.9024,
+      "start": 3.7771,
+      "end": 4.049,
       "loop": false
     },
     "creature/wisp/hit": {
-      "start": 3.9524,
-      "end": 4.0885,
+      "start": 4.099,
+      "end": 4.2352,
       "loop": false
     },
     "creature/wisp/die": {
-      "start": 4.1385,
-      "end": 4.7996,
+      "start": 4.2852,
+      "end": 4.9463,
       "loop": false
     },
     "creature/wolf-alpha/attack": {
-      "start": 4.8496,
-      "end": 5.3102,
+      "start": 4.9963,
+      "end": 5.4569,
       "loop": false
     },
     "creature/wolf-alpha/hit": {
-      "start": 5.3602,
-      "end": 5.5919,
+      "start": 5.5069,
+      "end": 5.7386,
       "loop": false
     },
     "creature/wolf-alpha/die": {
-      "start": 5.6419,
-      "end": 5.9355,
+      "start": 5.7886,
+      "end": 6.0822,
       "loop": false
     },
     "creature/thornwood-warden/attack": {
-      "start": 5.9855,
-      "end": 6.736,
+      "start": 6.1322,
+      "end": 6.8827,
       "loop": false
     },
     "creature/thornwood-warden/hit": {
-      "start": 6.786,
-      "end": 7.4584,
+      "start": 6.9327,
+      "end": 7.605,
       "loop": false
     },
     "creature/thornwood-warden/die": {
-      "start": 7.5084,
-      "end": 8.8741,
+      "start": 7.655,
+      "end": 9.455,
       "loop": false
     },
     "creature/thornwood-warden/surge": {
-      "start": 8.9241,
-      "end": 9.8588,
+      "start": 9.505,
+      "end": 10.4397,
       "loop": false
     }
   }

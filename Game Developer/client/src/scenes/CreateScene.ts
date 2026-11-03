@@ -11,6 +11,7 @@ import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import { feel, sfx } from '../feel.ts';
+import { audio } from '../audio.ts';
 import backdropJpg from '../../../assets/brand/character_backdrop.jpg';
 import wordmarkPng from '../../../assets/brand/wordmark.png';
 import { CREAM, INK, kitReady, plate, preloadKit } from '../kit.ts';
@@ -88,6 +89,8 @@ export class CreateScene extends Phaser.Scene {
 
   create(): void {
     freeTalentIconsAfter(this);
+    // The title's own tune (Nigel, SD, 2026-11-03), until the board's takes over.
+    audio.music('music/title');
     if (this.textures.exists('character-backdrop')) this.add.image(CENTRE, DESIGN_HEIGHT / 2, 'character-backdrop').setScale((0.5 * SCREEN_WIDTH) / DESIGN_WIDTH);
     if (this.textures.exists('wordmark')) this.add.image(CENTRE, 62, 'wordmark').setScale(210 / 627);
     else this.add.text(CENTRE, 62, WORLD_DATA.name, { fontFamily: FONT_DISPLAY, fontSize: '36px', fontStyle: 'bold', color: COLORS.text }).setOrigin(0.5);

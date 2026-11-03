@@ -1,0 +1,41 @@
+{
+ "size": 1024,
+ "gutter": 1,
+ "imageSize": 1026,
+ "worldPxPerFilePx": 1,
+ "area": "dream-isle",
+ "x": 8192,
+ "y": 0,
+ "width": 2048,
+ "height": 2048,
+ "chunks": [
+  {
+   "file": "dream_8_0.jpg",
+   "col": 8,
+   "row": 0,
+   "x": 8191,
+   "y": -1
+  },
+  {
+   "file": "dream_8_1.jpg",
+   "col": 8,
+   "row": 1,
+   "x": 8191,
+   "y": 1023
+  },
+  {
+   "file": "dream_9_0.jpg",
+   "col": 9,
+   "row": 0,
+   "x": 9215,
+   "y": -1
+  },
+  {
+   "file": "dream_9_1.jpg",
+   "col": 9,
+   "row": 1,
+   "x": 9215,
+   "y": 1023
+  }
+ ]
+}

@@ -13,6 +13,7 @@ import { feel, sfx } from '../feel.ts';
 import { rememberMessage } from '../messages.ts';
 import { BIG_DIE, CREAM, icon, INK, KIT, KIT_SOFT, kitReady, plate, resizePlate, GUIDE_ICON, DAYNIGHT } from '../kit.ts';
 import { settings } from '../settings.ts';
+import { dreamOverlay } from '../dreamlook.ts';
 import { Bar, makeButton, type Button } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -86,6 +87,10 @@ export class HudScene extends Phaser.Scene {
   private chipRow!: Phaser.GameObjects.Container;
   private linkText!: Phaser.GameObjects.Text;
   private clockIcon: Phaser.GameObjects.Image | null = null;
+  private homeButton: Button | null = null;
+  /** The Dream's vignette and motes over the board, in the run's tint (Mitch, AD). */
+  private dreamOverlay: Phaser.GameObjects.GameObject[] = [];
+  private dreamTint: number | null = null;
 
   constructor(deps: HudSceneDeps) {
     super('hud');
@@ -117,9 +122,20 @@ export class HudScene extends Phaser.Scene {
 
   // ---- what the board scene tells us ------------------------------------------------------------------------------
 
+  /** In a run of the Dream: its overlay over the board, under the HUD's own parts; null takes it away. */
+  setDream(tint: number | null): void {
+    if (tint === this.dreamTint) return;
+    for (const o of this.dreamOverlay) o.destroy();
+    this.dreamOverlay = [];
+    this.dreamTint = tint;
+    if (tint === null) return;
+    this.dreamOverlay = dreamOverlay(this, { x: (DESIGN_WIDTH - SCREEN_WIDTH) / 2, y: HUD_PLANK, width: SCREEN_WIDTH, height: PLANK_TOP - HUD_PLANK }, tint, -10);
+  }
+
   /** The numbers under the name, and where you are. */
   setStats(n: HudNumbers, place: string): void {
     const me = this.game_.me;
+    this.homeButton?.label.setText(me.dream ? 'Wake' : 'Home');
     this.name.setText(`${me.name} the ${specialization(me) ?? CLASS_DATA[me.classId].name}`);
     this.levelText.setText(String(n.level));
     this.hpBar.set(n.hp, n.maxHp);
@@ -422,7 +438,12 @@ export class HudScene extends Phaser.Scene {
       this.scene.launch('guide', { page: 0 });
       this.scene.bringToTop('guide');
     }, { small: true, icon: { frame: 'icon_guide', y: 2, size: 24, atlas: GUIDE_ICON } });
-    makeButton(this, 218, 89, 40, 26, 'Home', COLORS.log, '10.5px', () => (this.scene.get('board') as BoardScene).goHome(), { small: true });
+    // In a run of the Dream the way out is to wake up (Robin, 2026-11-03).
+    this.homeButton = makeButton(this, 218, 89, 40, 26, 'Home', COLORS.log, '10.5px', () => {
+      const board = this.scene.get('board') as BoardScene;
+      if (this.game_.me.dream) board.wakeUp();
+      else board.goHome();
+    }, { small: true });
     this.place = this.add.text(24, 88, '', { fontFamily: FONT, fontSize: '11.5px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);
     this.add.text(250, 88, 'Next:', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#a23c2c' }).setOrigin(0, 0.5);
     this.goal = this.add.text(284, 88, '', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#3a2410' }).setOrigin(0, 0.5);

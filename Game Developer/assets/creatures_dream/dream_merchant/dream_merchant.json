@@ -1,0 +1,1164 @@
+{
+ "frames": {
+  "dream_merchant/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 246,
+    "h": 353
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 246,
+    "h": 353
+   },
+   "sourceSize": {
+    "w": 246,
+    "h": 353
+   },
+   "pivot": {
+    "x": 0.3496,
+    "y": 0.9688
+   }
+  },
+  "dream_merchant/attack1/0003": {
+   "frame": {
+    "x": 250,
+    "y": 2,
+    "w": 175,
+    "h": 351
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 175,
+    "h": 351
+   },
+   "sourceSize": {
+    "w": 175,
+    "h": 351
+   },
+   "pivot": {
+    "x": 0.5543,
+    "y": 0.9915
+   }
+  },
+  "dream_merchant/move/0002": {
+   "frame": {
+    "x": 427,
+    "y": 2,
+    "w": 196,
+    "h": 348
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 348
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 348
+   },
+   "pivot": {
+    "x": 0.5408,
+    "y": 0.9713
+   }
+  },
+  "dream_merchant/move/0003": {
+   "frame": {
+    "x": 625,
+    "y": 2,
+    "w": 196,
+    "h": 348
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 196,
+    "h": 348
+   },
+   "sourceSize": {
+    "w": 196,
+    "h": 348
+   },
+   "pivot": {
+    "x": 0.5408,
+    "y": 0.9713
+   }
+  },
+  "dream_merchant/stand/0001": {
+   "frame": {
+    "x": 823,
+    "y": 2,
+    "w": 176,
+    "h": 347
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 176,
+    "h": 347
+   },
+   "sourceSize": {
+    "w": 176,
+    "h": 347
+   },
+   "pivot": {
+    "x": 0.5511,
+    "y": 0.9769
+   }
+  },
+  "dream_merchant/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 357,
+    "w": 176,
+    "h": 347
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 176,
+    "h": 347
+   },
+   "sourceSize": {
+    "w": 176,
+    "h": 347
+   },
+   "pivot": {
+    "x": 0.5511,
+    "y": 0.9885
+   }
+  },
+  "dream_merchant/stand/0004": {
+   "frame": {
+    "x": 180,
+    "y": 357,
+    "w": 176,
+    "h": 347
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 176,
+    "h": 347
+   },
+   "sourceSize": {
+    "w": 176,
+    "h": 347
+   },
+   "pivot": {
+    "x": 0.5511,
+    "y": 0.9827
+   }
+  },
+  "dream_merchant/stand/0002": {
+   "frame": {
+    "x": 358,
+    "y": 357,
+    "w": 176,
+    "h": 346
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 176,
+    "h": 346
+   },
+   "sourceSize": {
+    "w": 176,
+    "h": 346
+   },
+   "pivot": {
+    "x": 0.5511,
+    "y": 0.9855
+   }
+  },
+  "dream_merchant/move/0001": {
+   "frame": {
+    "x": 536,
+    "y": 357,
+    "w": 179,
+    "h": 346
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 179,
+    "h": 346
+   },
+   "sourceSize": {
+    "w": 179,
+    "h": 346
+   },
+   "pivot": {
+    "x": 0.5922,
+    "y": 0.9913
+   }
+  },
+  "dream_merchant/move/0004": {
+   "frame": {
+    "x": 717,
+    "y": 357,
+    "w": 179,
+    "h": 346
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 179,
+    "h": 346
+   },
+   "sourceSize": {
+    "w": 179,
+    "h": 346
+   },
+   "pivot": {
+    "x": 0.5922,
+    "y": 0.9913
+   }
+  },
+  "dream_merchant/move/0005": {
+   "frame": {
+    "x": 2,
+    "y": 706,
+    "w": 185,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 185,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 185,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.6216,
+    "y": 0.9826
+   }
+  },
+  "dream_merchant/move/0006": {
+   "frame": {
+    "x": 189,
+    "y": 706,
+    "w": 185,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 185,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 185,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.6216,
+    "y": 0.9826
+   }
+  },
+  "dream_merchant/attack1/0001": {
+   "frame": {
+    "x": 376,
+    "y": 706,
+    "w": 176,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 176,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 176,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.5284,
+    "y": 0.9912
+   }
+  },
+  "dream_merchant/attack1/0002": {
+   "frame": {
+    "x": 554,
+    "y": 706,
+    "w": 219,
+    "h": 342
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 219,
+    "h": 342
+   },
+   "sourceSize": {
+    "w": 219,
+    "h": 342
+   },
+   "pivot": {
+    "x": 0.4064,
+    "y": 0.9912
+   }
+  },
+  "dream_merchant/attack1/0006": {
+   "frame": {
+    "x": 775,
+    "y": 706,
+    "w": 205,
+    "h": 341
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 205,
+    "h": 341
+   },
+   "sourceSize": {
+    "w": 205,
+    "h": 341
+   },
+   "pivot": {
+    "x": 0.6634,
+    "y": 0.9912
+   }
+  },
+  "dream_merchant/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1052,
+    "w": 237,
+    "h": 340
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 237,
+    "h": 340
+   },
+   "sourceSize": {
+    "w": 237,
+    "h": 340
+   },
+   "pivot": {
+    "x": 0.7511,
+    "y": 0.9882
+   }
+  },
+  "dream_merchant/attack1/0004": {
+   "frame": {
+    "x": 241,
+    "y": 1052,
+    "w": 248,
+    "h": 339
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 248,
+    "h": 339
+   },
+   "sourceSize": {
+    "w": 248,
+    "h": 339
+   },
+   "pivot": {
+    "x": 0.7823,
+    "y": 0.9853
+   }
+  },
+  "dream_merchant/hit1/0002": {
+   "frame": {
+    "x": 491,
+    "y": 1052,
+    "w": 210,
+    "h": 333
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 333
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 333
+   },
+   "pivot": {
+    "x": 0.4286,
+    "y": 0.985
+   }
+  },
+  "dream_merchant/die1/0001": {
+   "frame": {
+    "x": 703,
+    "y": 1052,
+    "w": 226,
+    "h": 327
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 226,
+    "h": 327
+   },
+   "sourceSize": {
+    "w": 226,
+    "h": 327
+   },
+   "pivot": {
+    "x": 0.3938,
+    "y": 0.9817
+   }
+  },
+  "dream_merchant/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1394,
+    "w": 291,
+    "h": 306
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 291,
+    "h": 306
+   },
+   "sourceSize": {
+    "w": 291,
+    "h": 306
+   },
+   "pivot": {
+    "x": 0.268,
+    "y": 0.951
+   }
+  },
+  "dream_merchant/die1/0003": {
+   "frame": {
+    "x": 295,
+    "y": 1394,
+    "w": 382,
+    "h": 230
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 382,
+    "h": 230
+   },
+   "sourceSize": {
+    "w": 382,
+    "h": 230
+   },
+   "pivot": {
+    "x": 0.1152,
+    "y": 1.0261
+   }
+  },
+  "dream_merchant/die1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1702,
+    "w": 365,
+    "h": 172
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 365,
+    "h": 172
+   },
+   "sourceSize": {
+    "w": 365,
+    "h": 172
+   },
+   "pivot": {
+    "x": 0.0274,
+    "y": 0.9477
+   }
+  },
+  "dream_merchant/die1/0005": {
+   "frame": {
+    "x": 369,
+    "y": 1702,
+    "w": 360,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 360,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 360,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.0222,
+    "y": 0.8757
+   }
+  },
+  "dream_merchant/die1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 1876,
+    "w": 360,
+    "h": 169
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 360,
+    "h": 169
+   },
+   "sourceSize": {
+    "w": 360,
+    "h": 169
+   },
+   "pivot": {
+    "x": 0.0222,
+    "y": 0.8757
+   }
+  }
+ },
+ "meta": {
+  "image": "dream_merchant.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 150,
+   "loop": true,
+   "frames": [
+    {
+     "name": "dream_merchant/stand/0001",
+     "w": 176,
+     "h": 347,
+     "origin": {
+      "x": 97,
+      "y": 339
+     },
+     "delay": 150,
+     "lt": {
+      "x": -97,
+      "y": -339
+     },
+     "rb": {
+      "x": 79,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -339
+     }
+    },
+    {
+     "name": "dream_merchant/stand/0002",
+     "w": 176,
+     "h": 346,
+     "origin": {
+      "x": 97,
+      "y": 341
+     },
+     "delay": 150,
+     "lt": {
+      "x": -97,
+      "y": -341
+     },
+     "rb": {
+      "x": 79,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -341
+     }
+    },
+    {
+     "name": "dream_merchant/stand/0003",
+     "w": 176,
+     "h": 347,
+     "origin": {
+      "x": 97,
+      "y": 343
+     },
+     "delay": 150,
+     "lt": {
+      "x": -97,
+      "y": -343
+     },
+     "rb": {
+      "x": 79,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -343
+     }
+    },
+    {
+     "name": "dream_merchant/stand/0004",
+     "w": 176,
+     "h": 347,
+     "origin": {
+      "x": 97,
+      "y": 341
+     },
+     "delay": 150,
+     "lt": {
+      "x": -97,
+      "y": -341
+     },
+     "rb": {
+      "x": 79,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -341
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 100,
+   "loop": true,
+   "frames": [
+    {
+     "name": "dream_merchant/move/0001",
+     "w": 179,
+     "h": 346,
+     "origin": {
+      "x": 106,
+      "y": 343
+     },
+     "delay": 100,
+     "lt": {
+      "x": -106,
+      "y": -343
+     },
+     "rb": {
+      "x": 73,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -343
+     }
+    },
+    {
+     "name": "dream_merchant/move/0002",
+     "w": 196,
+     "h": 348,
+     "origin": {
+      "x": 106,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -106,
+      "y": -338
+     },
+     "rb": {
+      "x": 90,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    },
+    {
+     "name": "dream_merchant/move/0003",
+     "w": 196,
+     "h": 348,
+     "origin": {
+      "x": 106,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -106,
+      "y": -338
+     },
+     "rb": {
+      "x": 90,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    },
+    {
+     "name": "dream_merchant/move/0004",
+     "w": 179,
+     "h": 346,
+     "origin": {
+      "x": 106,
+      "y": 343
+     },
+     "delay": 100,
+     "lt": {
+      "x": -106,
+      "y": -343
+     },
+     "rb": {
+      "x": 73,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -343
+     }
+    },
+    {
+     "name": "dream_merchant/move/0005",
+     "w": 185,
+     "h": 344,
+     "origin": {
+      "x": 115,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -115,
+      "y": -338
+     },
+     "rb": {
+      "x": 70,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    },
+    {
+     "name": "dream_merchant/move/0006",
+     "w": 185,
+     "h": 344,
+     "origin": {
+      "x": 115,
+      "y": 338
+     },
+     "delay": 100,
+     "lt": {
+      "x": -115,
+      "y": -338
+     },
+     "rb": {
+      "x": 70,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 67,
+   "loop": false,
+   "frames": [
+    {
+     "name": "dream_merchant/attack1/0001",
+     "w": 176,
+     "h": 342,
+     "origin": {
+      "x": 93,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -93,
+      "y": -339
+     },
+     "rb": {
+      "x": 83,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -339
+     }
+    },
+    {
+     "name": "dream_merchant/attack1/0002",
+     "w": 219,
+     "h": 342,
+     "origin": {
+      "x": 89,
+      "y": 339
+     },
+     "delay": 67,
+     "lt": {
+      "x": -89,
+      "y": -339
+     },
+     "rb": {
+      "x": 130,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -339
+     }
+    },
+    {
+     "name": "dream_merchant/attack1/0003",
+     "w": 175,
+     "h": 351,
+     "origin": {
+      "x": 97,
+      "y": 348
+     },
+     "delay": 67,
+     "lt": {
+      "x": -97,
+      "y": -348
+     },
+     "rb": {
+      "x": 78,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -348
+     }
+    },
+    {
+     "name": "dream_merchant/attack1/0004",
+     "w": 248,
+     "h": 339,
+     "origin": {
+      "x": 194,
+      "y": 334
+     },
+     "delay": 134,
+     "lt": {
+      "x": -194,
+      "y": -334
+     },
+     "rb": {
+      "x": 54,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -334
+     }
+    },
+    {
+     "name": "dream_merchant/attack1/0005",
+     "w": 237,
+     "h": 340,
+     "origin": {
+      "x": 178,
+      "y": 336
+     },
+     "delay": 67,
+     "lt": {
+      "x": -178,
+      "y": -336
+     },
+     "rb": {
+      "x": 59,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -336
+     }
+    },
+    {
+     "name": "dream_merchant/attack1/0006",
+     "w": 205,
+     "h": 341,
+     "origin": {
+      "x": 136,
+      "y": 338
+     },
+     "delay": 67,
+     "lt": {
+      "x": -136,
+      "y": -338
+     },
+     "rb": {
+      "x": 69,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -338
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 150,
+   "loop": false,
+   "frames": [
+    {
+     "name": "dream_merchant/hit1/0001",
+     "w": 246,
+     "h": 353,
+     "origin": {
+      "x": 86,
+      "y": 342
+     },
+     "delay": 150,
+     "lt": {
+      "x": -86,
+      "y": -342
+     },
+     "rb": {
+      "x": 160,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -342
+     }
+    },
+    {
+     "name": "dream_merchant/hit1/0002",
+     "w": 210,
+     "h": 333,
+     "origin": {
+      "x": 90,
+      "y": 328
+     },
+     "delay": 120,
+     "lt": {
+      "x": -90,
+      "y": -328
+     },
+     "rb": {
+      "x": 120,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -328
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "dream_merchant/die1/0001",
+     "w": 226,
+     "h": 327,
+     "origin": {
+      "x": 89,
+      "y": 321
+     },
+     "delay": 90,
+     "lt": {
+      "x": -89,
+      "y": -321
+     },
+     "rb": {
+      "x": 137,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -321
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "dream_merchant/die1/0002",
+     "w": 291,
+     "h": 306,
+     "origin": {
+      "x": 78,
+      "y": 291
+     },
+     "delay": 90,
+     "lt": {
+      "x": -78,
+      "y": -291
+     },
+     "rb": {
+      "x": 213,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -291
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "dream_merchant/die1/0003",
+     "w": 382,
+     "h": 230,
+     "origin": {
+      "x": 44,
+      "y": 236
+     },
+     "delay": 90,
+     "lt": {
+      "x": -44,
+      "y": -236
+     },
+     "rb": {
+      "x": 338,
+      "y": -6
+     },
+     "head": {
+      "x": 0,
+      "y": -236
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "dream_merchant/die1/0004",
+     "w": 365,
+     "h": 172,
+     "origin": {
+      "x": 10,
+      "y": 163
+     },
+     "delay": 90,
+     "lt": {
+      "x": -10,
+      "y": -163
+     },
+     "rb": {
+      "x": 355,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -163
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "dream_merchant/die1/0005",
+     "w": 360,
+     "h": 169,
+     "origin": {
+      "x": 8,
+      "y": 148
+     },
+     "delay": 90,
+     "lt": {
+      "x": -8,
+      "y": -148
+     },
+     "rb": {
+      "x": 352,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -148
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "dream_merchant/die1/0006",
+     "w": 360,
+     "h": 169,
+     "origin": {
+      "x": 8,
+      "y": 148
+     },
+     "delay": 90,
+     "lt": {
+      "x": -8,
+      "y": -148
+     },
+     "rb": {
+      "x": 352,
+      "y": 21
+     },
+     "head": {
+      "x": 0,
+      "y": -148
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

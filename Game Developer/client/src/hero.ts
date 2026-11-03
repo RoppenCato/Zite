@@ -353,6 +353,8 @@ export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { 
 interface Layer {
   key: string;
   piece: string;
+  /** A Dream-touched piece's tint (Mitch, AD, 2026-11-03). */
+  tint?: number;
 }
 
 /** The layers a character's wardrobe calls for, in Mitch, AD's draw order. */
@@ -360,7 +362,11 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const eq = c.equipment;
   const art = CLASS_ART[c.classId];
   const body = art.body.key;
-  const worn = (slot: Slot): Layer | null => (eq[slot] ? pieceFor(scene, eq[slot]!, c.classId) : null);
+  const worn = (slot: Slot): Layer | null => {
+    const g = eq[slot];
+    const l = g ? pieceFor(scene, g, c.classId) : null;
+    return l && g?.dream ? { ...l, tint: parseInt(g.dream.slice(1), 16) } : l;
+  };
   const cape = worn('cape');
   const boots = worn('boots');
   const coat = worn('armour');
@@ -403,8 +409,11 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
           : { key: body, piece: 'hand' },
     shield,
   ];
+  // A tinted piece's other parts (a coat's near sleeve, a glove's far hand) wear its tint too.
+  const tinted = [cape, boots, coat, gloves, hat, sword, shield].filter((l): l is Layer => !!l?.tint);
+  const dressed = layers.map((l) => (l && !l.tint ? { ...l, ...(tinted.find((t) => t.key === l.key && l.piece.startsWith(t.piece)) ? { tint: tinted.find((t) => t.key === l.key && l.piece.startsWith(t.piece))!.tint } : {}) } : l));
   // far_back and far_front are empty in many frames, so their atlas may have no standing frame: they stay, and are hidden where they have none.
-  return layers.filter((l): l is Layer => !!l && (l.piece.startsWith('far_') || has(scene, l.key, `${l.piece}/stand/0001`)));
+  return dressed.filter((l): l is Layer => !!l && (l.piece.startsWith('far_') || has(scene, l.key, `${l.piece}/stand/0001`)));
 }
 
 const OWN_ATTACK: Partial<Record<ClassId, string>> = { mage: 'attack1_wizard', ranger: 'attack1_archer' };
@@ -419,7 +428,7 @@ export class Hero {
   private readonly scene: Phaser.Scene;
   private readonly scale: number;
   private right = false;
-  private layers: { sprite: Phaser.GameObjects.Sprite; key: string; piece: string }[] = [];
+  private layers: { sprite: Phaser.GameObjects.Sprite; key: string; piece: string; tint?: number }[] = [];
   /** This class's own atlas: a frame found there overrides the shared one (the Wizard's and Archer's hands move differently). */
   private bodyKey = '';
   private classId: ClassId = 'warrior';
@@ -459,10 +468,14 @@ export class Hero {
       this.scene.load.start();
     }
     const wanted = layersFor(this.scene, character);
-    const same = wanted.length === this.layers.length && wanted.every((l, i) => l.piece === this.layers[i]!.piece && l.key === this.layers[i]!.key);
+    const same = wanted.length === this.layers.length && wanted.every((l, i) => l.piece === this.layers[i]!.piece && l.key === this.layers[i]!.key && l.tint === this.layers[i]!.tint);
     if (same) return;
     for (const l of this.layers) l.sprite.destroy();
-    this.layers = wanted.map((l) => ({ ...l, sprite: this.scene.add.sprite(0, 0, l.key, has(this.scene, l.key, `${l.piece}/stand/0001`) ? `${l.piece}/stand/0001` : undefined).setVisible(false) }));
+    this.layers = wanted.map((l) => {
+      const sprite = this.scene.add.sprite(0, 0, l.key, has(this.scene, l.key, `${l.piece}/stand/0001`) ? `${l.piece}/stand/0001` : undefined).setVisible(false);
+      if (l.tint !== undefined) sprite.setTint(l.tint);
+      return { ...l, sprite };
+    });
     this.root.add(this.layers.map((l) => l.sprite));
     this.apply();
   }

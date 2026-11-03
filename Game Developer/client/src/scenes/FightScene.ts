@@ -11,10 +11,12 @@ import talentSounds from '../../../assets/sound/talents/talent-map.json';
 import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
+import { applyPalette, dreamOverlay, dreamPalette, tintOf } from '../dreamlook.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { abilityIcon, behind, fly, freeTalentIconsAfter, HeldEffects, Owl, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
+import { audio } from '../audio.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
 import { INK, kitReady, plate, GUIDE_ICON } from '../kit.ts';
 import { COLORS, DESIGN_WIDTH, FONT, HUD_HEIGHT, FONT_DISPLAY, SCREEN_WIDTH, HUD_PLANK } from '../layout.ts';
@@ -109,6 +111,8 @@ export class FightScene extends Phaser.Scene {
   private readonly game_: GameHolder;
   private readonly log: GameLog;
   private backdrop: Backdrop | null = null;
+  /** In a run of the Dream: the backdrop and the foe under its colour matrix (Mitch, AD); the hero stays outside it. */
+  private dreamLayer: Phaser.GameObjects.Layer | null = null;
   private enemyBody!: Body;
   /** The enemy drawn from the Art Director's atlas when it has one. */
   private enemy: Figure | null = null;
@@ -186,6 +190,15 @@ export class FightScene extends Phaser.Scene {
     const board = this.game_.state.board;
     const theme = board.areas[board.spaces[fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow';
     this.backdrop = new Backdrop(this, theme, L.groundY, L.stripY);
+    const palette = dreamPalette(board.areas[board.spaces[fight.space]?.area ?? '']?.dream?.palette);
+    this.dreamLayer = null;
+    if (palette) {
+      this.dreamLayer = this.add.layer(this.backdrop.parts);
+      this.dreamLayer.enableFilters();
+      applyPalette(this.dreamLayer.filters!.internal.addColorMatrix().colorMatrix, palette);
+      // The vignette and motes over the band, under everything drawn after.
+      dreamOverlay(this, { x: (DESIGN_WIDTH - SCREEN_WIDTH) / 2, y: HUD_PLANK, width: SCREEN_WIDTH, height: L.stripY - HUD_PLANK }, tintOf(palette.tint), 0, 10);
+    }
     const kit = kitReady(this);
     if (kit) {
       plate(this, 'panel_bottom', CENTRE, (L.stripY + 915) / 2, SCREEN_WIDTH, 915 - L.stripY);
@@ -212,6 +225,7 @@ export class FightScene extends Phaser.Scene {
       const shadow = this.enemy.shadow();
       this.add.ellipse(L.enemyX + shadow.dx, feetY, shadow.width, Math.max(14, shadow.width * 0.16), 0x000000, 0.22);
       this.enemy.sprite.setDepth(1);
+      this.dreamLayer?.add(this.enemy.sprite);
       this.enemyBody = this.enemy.sprite;
     } else {
       this.add.ellipse(L.enemyX, feetY, 110, 20, 0x000000, 0.22);
@@ -256,6 +270,9 @@ export class FightScene extends Phaser.Scene {
     // The night darkens the road behind the fighters (Robin, 2026-11-03).
     if (isNight(me)) this.add.rectangle(0, 0, DESIGN_WIDTH * 3, 2000, 0x0b1440, 0.3).setOrigin(0.3, 0.3).setDepth(0.5);
     sfx.play('fight/begin');
+    // The Meadows' fight and King Goo's (Nigel, SD, 2026-11-03); the board's tune comes back with the board.
+    const tune = palette || board.areas[board.spaces[fight.space]?.area ?? '']?.dream ? null : enemy.id === 'thornwood-warden' ? 'music/king-goo' : theme === 'meadow' && !fight.shared ? 'music/meadows-fight' : null;
+    if (tune) audio.music(tune);
     this.log.note(`fight: ${enemy.name} L${enemy.level} ${enemy.hp} hp, round ${fight.round}; backdrop ${theme}, figure ${enemyArt ? enemy.id : 'circle'}`);
   }
 
