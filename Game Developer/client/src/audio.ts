@@ -8,6 +8,8 @@ import type Phaser from 'phaser';
 import uiJson from '../../assets/sound/ui/ui.json?url';
 import uiOgg from '../../assets/sound/ui/ui.ogg';
 import fightJson from '../../assets/sound/fight/fight.json?url';
+import fightTalentsJson from '../../assets/sound/talents/fight-talents.json?url';
+import fightTalentsOgg from '../../assets/sound/talents/fight-talents.ogg';
 import fightOgg from '../../assets/sound/fight/fight.ogg';
 import spotsJson from '../../assets/sound/ui-spots/ui-spots.json?url';
 import spotsOgg from '../../assets/sound/ui-spots/ui-spots.ogg';
@@ -33,6 +35,8 @@ interface SpriteFile {
 const SPRITES: SpriteFile[] = [
   { key: 'ui-sounds', json: uiJson, ogg: uiOgg, volume: 0.8 },
   { key: 'fight', json: fightJson, ogg: fightOgg, volume: 1 },
+  // The talents' sounds for every class (Nigel, SD, 2026-11-03): 72 KB.
+  { key: 'fight-talents', json: fightTalentsJson, ogg: fightTalentsOgg, volume: 1 },
   { key: 'ui-spots', json: spotsJson, ogg: spotsOgg, volume: 0.8 },
   // The meadows' creature voices; an area's voices belong with its load once areas load their own (Nigel, SD).
   { key: 'creatures-meadows', json: creaturesMeadowsJson, ogg: creaturesMeadowsOgg, volume: 1 },

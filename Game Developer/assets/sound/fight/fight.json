@@ -304,6 +304,16 @@
       "start": 31.5592,
       "end": 31.7761,
       "loop": false
+    },
+    "fight/storm-bite": {
+      "start": 31.8261,
+      "end": 32.1841,
+      "loop": false
+    },
+    "fight/ending-sting": {
+      "start": 32.2341,
+      "end": 34.7732,
+      "loop": false
     }
   }
 }
