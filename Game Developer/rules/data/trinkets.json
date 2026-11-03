@@ -1,5 +1,5 @@
 {
-  "_about": "Trinkets (Robin, 2026-11-03: \"There will be no necklaces, instead its gonna be trinkets for that slot\"): each gives a passive of its own, in or out of a fight, and nothing else. Found, never on a shop’s shelves (a town’s fine piece of the day may be one): a drop for the trinket slot draws one of the rolled rarity whose tier the land has reached, the land’s own tier and the two before it three times as often. Robin’s five examples are Traveller’s Bread, Twin Fangs, Gambler’s Die, Sapphire Tear and Storm Charm; the rest, every number and where each is found are mine. \"look\" is for Mitch, AD’s icons.",
+  "_about": "Trinkets (Robin, 2026-11-03: \"There will be no necklaces, instead its gonna be trinkets for that slot\"): each gives a passive of its own, in or out of a fight, and nothing else: no stats (Robin, 2026-11-03: yes). Found, never on a shop’s shelves (a town’s fine piece of the day may be one): a drop for the trinket slot draws one of the rolled rarity whose tier the land has reached, the land’s own tier and the two before it three times as often. Robin’s five examples are Traveller’s Bread, Twin Fangs, Gambler’s Die, Sapphire Tear and Storm Charm; the rest, every number and where each is found are mine. \"look\" is for Mitch, AD’s icons.",
   "price": {
     "base": 50,
     "rarity": {
@@ -13,7 +13,7 @@
   "nearTiers": 2,
   "nearWeight": 3,
   "lightning": {
-    "_about": "A trinket’s lightning: a bolt of this share of a blow, and an ordinary creature loses its next move (minis and bosses shrug off stuns).",
+    "_about": "A trinket’s lightning: a bolt of this share of a blow, and an ordinary creature loses its next move; minis and bosses take the damage and shrug off the stun (Robin, 2026-11-03: yes).",
     "power": 0.6,
     "stun": 1
   },

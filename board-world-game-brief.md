@@ -128,6 +128,7 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 - **No necklaces: the slot holds trinkets.** A trinket gives a passive bonus of its own, which may or may not touch combat.
 - Robin's examples: heal 10 HP after every battle in the overworld (not the Arena); your normal attack hits twice as many times at half the damage (a Rogue's three become six); after a roll you may walk to the nearby spots too (a 5 lets you walk 4, 5 or 6); 3 mana back after every round in battle; normal attacks have a small chance (5 to 10%) to deal lightning damage and stun the target so it cannot use its next attack.
 - A bunch of them, of varying power and levels, spread out through the world; some fun, some really good (by rarity). The list and the numbers are the Game Developer's.
+- **Lightning stuns ordinary creatures only**: mini-bosses and bosses take the damage but shrug off the stun, as with every stun. **A trinket has no stats of its own**, only its passive. (Robin, 2026-11-03: "yes" to both.)
 
 ## Real-world flavor (light, optional)
 - Real weather and time of day affect monsters on the board (e.g. rain → water monsters, night → undead).
