@@ -81,3 +81,5 @@ The chest (2026-11-02, Mitch, AD): redrawn as a classic treasure chest in `out/l
 `out/kingswood_village/`, `out/creatures_kingswood/` (2026-11-03, Mitch, AD): Hollybrook, its store, the Outlaw King's Hall; Poacher, Hedge Knight, Wild Tusker, the Outlaw King. Not seen in the game.
 
 `out/dungeon_meadows/creatures/` additions (2026-11-03, Mitch, AD): Root Grub, Mole Miner, Old Digby the mini-boss. Not seen in the game.
+
+`out/dream_isle/`, `out/creatures_dream/`, `out/dream_looks/` (2026-11-03, Mitch, AD): the Dreaming Isle, the Dreamgate and its plate, the Ferry, the Dream Merchant, Dreamdust; the look of a run (palettes, vignette, motes). Not seen in the game.
