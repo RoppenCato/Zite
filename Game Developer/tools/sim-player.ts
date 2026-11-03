@@ -10,8 +10,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
   const guardFor = (): string => {
     if (f.dance) return 'dodge';
     if (c.classId === 'rogue') return e.charged ? 'block' : 'dodge';
-    // Ward, and Channel when the mana runs low (2026-11-03).
-    if (c.classId === 'mage') return c.mana < s.maxMana * 0.4 ? 'brace' : 'block';
+    // The Ward costs nothing (2026-11-03).
+    if (c.classId === 'mage') return 'block';
     if (c.classId === 'ranger') return e.charged ? 'block' : hpShare > 0.5 ? 'counter' : 'block';
     return 'block';
   };

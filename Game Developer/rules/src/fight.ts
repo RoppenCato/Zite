@@ -221,6 +221,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       next: old.enemy.next ?? null,
     },
     attackUp: old.attackUp ? { ...old.attackUp } : null,
+    spellUp: old.spellUp ? { ...old.spellUp } : null,
     windup: old.windup ? { ...old.windup } : null,
     companion: old.companion ? { ...old.companion } : null,
     mark: old.mark ? { ...old.mark } : null,
@@ -312,7 +313,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         r.c = { ...r.c, hp };
       }
       if (rk.meterGain) gainMeterFlat(r, rk.meterGain);
-      if (rk.manaPerMeter) r.c = restoreMana(r.c, rk.manaPerMeter * meterCost, action, events);
+      // Overflow grows with the level as the costs do (2026-11-03).
+      if (rk.manaPerMeter) r.c = restoreMana(r.c, Math.round(rk.manaPerMeter * meterCost * manaScale(r.c)), action, events);
       if (rk.nextSpell) f.nextSpell = rk.nextSpell;
       if (rk.cure) {
         f.poisoned = null;
@@ -347,6 +349,10 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         }
       }
       if (rk.healShare) healing(r, Math.round(r.s.maxHp * rk.healShare * (traits.healPower ?? 1)));
+      if (rk.spellUp) {
+        f.spellUp = { ...rk.spellUp };
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'spellUp', rounds: rk.spellUp.rounds });
+      }
       if (rk.attackUp) {
         f.attackUp = { ...rk.attackUp };
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'attackUp', rounds: rk.attackUp.rounds });
@@ -681,6 +687,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     f.enemy.armoured.rounds -= 1;
     if (f.enemy.armoured.rounds <= 0) f.enemy.armoured = null;
   }
+  if (f.spellUp) {
+    f.spellUp = f.spellUp.rounds > 1 ? { ...f.spellUp, rounds: f.spellUp.rounds - 1 } : null;
+  }
   if (f.attackUp) {
     f.attackUp.rounds -= 1;
     if (f.attackUp.rounds <= 0) f.attackUp = null;
@@ -782,6 +791,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     f.charged = false;
   }
   if (f.attackUp) power *= f.attackUp.mult;
+  if (spell && f.spellUp) power *= f.spellUp.mult;
   if (f.weak) power *= f.weak.mult;
   if (p.sunblade && f.enemy.role !== 'mob') power *= p.sunblade;
   for (let i = 0; i < hits && f.enemy.hp > 0; i++) {

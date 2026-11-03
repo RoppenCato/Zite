@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 40;
+export const STATE_VERSION = 41;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door';
@@ -385,6 +385,8 @@ export interface Fight {
   /** True after a charge: the next hit is `charge` times as strong. */
   charged: boolean;
   attackUp: { rounds: number; mult: number } | null;
+  /** Magic Power: spells hit harder for a few rounds (Robin, 2026-11-03). */
+  spellUp?: { rounds: number; mult: number } | null;
   /** Damage soaked before HP. */
   barrier: number;
   /** Enemy blows that will miss. */
@@ -661,7 +663,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */

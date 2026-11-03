@@ -376,7 +376,7 @@
     "name": "Arcane Bolt",
     "classId": "mage",
     "text": "A bolt of magic, stronger the more mana you still hold.",
-    "mana": 5,
+    "mana": 8,
     "level": 1,
     "ranks": [
       {
@@ -402,11 +402,11 @@
     "level": 1,
     "ranks": [
       {
-        "manaPerMeter": 5,
+        "manaPerMeter": 8,
         "nextSpell": 1.3
       },
       {
-        "manaPerMeter": 6,
+        "manaPerMeter": 9,
         "nextSpell": 1.4
       },
       {
@@ -419,7 +419,7 @@
     "name": "Bubble Shield",
     "classId": "mage",
     "text": "A shimmering bubble worth a share of your HP that soaks the next damage.",
-    "mana": 7,
+    "mana": 11,
     "level": 2,
     "ranks": [
       {
@@ -433,24 +433,31 @@
       }
     ]
   },
-  "time-warp": {
-    "name": "Pocket Watch",
+  "magic-power": {
+    "name": "Magic Power",
     "classId": "mage",
-    "text": "Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.",
-    "mana": 6,
-    "meter": 4,
+    "text": "Spend a full meter of Arcana: your spells hit harder for four rounds.",
+    "mana": 0,
+    "meter": 5,
     "level": 3,
     "ranks": [
       {
-        "skip": 1
+        "spellUp": {
+          "rounds": 4,
+          "mult": 1.4
+        }
       },
       {
-        "skip": 1,
-        "power": 0.8
+        "spellUp": {
+          "rounds": 4,
+          "mult": 1.5
+        }
       },
       {
-        "skip": 2,
-        "power": 0.8
+        "spellUp": {
+          "rounds": 4,
+          "mult": 1.6
+        }
       }
     ]
   },
@@ -458,7 +465,7 @@
     "name": "Firework",
     "classId": "mage",
     "text": "A burst of flame: a huge hit that leaves it burning.",
-    "mana": 8,
+    "mana": 12,
     "level": 2,
     "ranks": [
       {
@@ -501,7 +508,7 @@
     "name": "Detonate",
     "classId": "mage",
     "text": "Set off the fire: all the burning it has left lands at once, and stronger.",
-    "mana": 3,
+    "mana": 5,
     "level": 9,
     "ranks": [
       {
@@ -528,7 +535,7 @@
     "name": "Falling Star",
     "classId": "mage",
     "text": "Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.",
-    "mana": 10,
+    "mana": 15,
     "level": 17,
     "ranks": [
       {
@@ -552,7 +559,7 @@
     "name": "Smite",
     "classId": "mage",
     "text": "Holy light: a strong hit that heals you a little.",
-    "mana": 6,
+    "mana": 9,
     "level": 2,
     "ranks": [
       {
@@ -588,7 +595,7 @@
     "name": "Mend",
     "classId": "mage",
     "text": "Heal a share of your HP, and clear poison and weakness.",
-    "mana": 7,
+    "mana": 11,
     "level": 9,
     "ranks": [
       {
@@ -609,7 +616,7 @@
     "name": "Judgement Day",
     "classId": "mage",
     "text": "A blast of light that grows with all you have healed this fight.",
-    "mana": 9,
+    "mana": 14,
     "level": 17,
     "ranks": [
       {
@@ -630,7 +637,7 @@
     "name": "Frost Blade",
     "classId": "mage",
     "text": "For a few rounds your attacks chill: harder, and its blows weaken.",
-    "mana": 6,
+    "mana": 9,
     "level": 2,
     "ranks": [
       {
@@ -683,7 +690,7 @@
     "name": "Storm Blade",
     "classId": "mage",
     "text": "For a few rounds lightning jumps from your attacks: much harder, and a chance of a second strike.",
-    "mana": 6,
+    "mana": 9,
     "level": 9,
     "ranks": [
       {
@@ -720,7 +727,7 @@
     "name": "Arc Slash",
     "classId": "mage",
     "text": "Three quick cuts, far harder while your blade is infused.",
-    "mana": 7,
+    "mana": 11,
     "level": 17,
     "ranks": [
       {
@@ -2133,7 +2140,7 @@
   "wiz-scorch": {
     "name": "Scorch",
     "text": "A cheap, quick flame that sets it burning.",
-    "mana": 4,
+    "mana": 6,
     "ranks": [
       {
         "power": 0.9,
@@ -2193,7 +2200,7 @@
   "wiz-pillar": {
     "name": "Pillar of Fire",
     "text": "Three bursts of flame.",
-    "mana": 12,
+    "mana": 18,
     "ranks": [
       {
         "power": 2.4,
@@ -2244,7 +2251,7 @@
   "wiz-firestorm": {
     "name": "Firestorm",
     "text": "A round to call it, then the sky falls.",
-    "mana": 16,
+    "mana": 24,
     "ranks": [
       {
         "windup": 1,
@@ -2283,7 +2290,7 @@
   "wiz-phoenix": {
     "name": "Phoenix",
     "text": "Once a fight: a great blast, and the next blow that would fell you leaves you standing.",
-    "mana": 14,
+    "mana": 21,
     "ranks": [
       {
         "power": 2.5,
@@ -2346,7 +2353,7 @@
   "cle-renew": {
     "name": "Renew",
     "text": "You heal a share of your HP each round for a while.",
-    "mana": 7,
+    "mana": 11,
     "ranks": [
       {
         "regen": {
@@ -2403,7 +2410,7 @@
   "cle-lance": {
     "name": "Lance of Light",
     "text": "A beam that heals you for part of it.",
-    "mana": 9,
+    "mana": 14,
     "ranks": [
       {
         "power": 2.1,
@@ -2439,7 +2446,7 @@
   "cle-sanctuary": {
     "name": "Sanctuary",
     "text": "A great barrier, and cured of everything.",
-    "mana": 12,
+    "mana": 18,
     "ranks": [
       {
         "barrierShare": 0.45,
@@ -2475,7 +2482,7 @@
   "cle-ascend": {
     "name": "Ascension",
     "text": "Once a fight: healed of most wounds, and your hits land far harder for a while.",
-    "mana": 12,
+    "mana": 18,
     "ranks": [
       {
         "healShare": 0.7,
@@ -2537,7 +2544,7 @@
   "spl-thrust": {
     "name": "Spell Thrust",
     "text": "A clean thrust, charged with whatever the blade holds.",
-    "mana": 5,
+    "mana": 8,
     "ranks": [
       {
         "power": 1.7,
@@ -2592,7 +2599,7 @@
   "spl-whirl": {
     "name": "Blade Whirl",
     "text": "Three quick cuts, all charged.",
-    "mana": 9,
+    "mana": 14,
     "ranks": [
       {
         "power": 2.2,
@@ -2637,7 +2644,7 @@
   "spl-tempest": {
     "name": "Tempest Blade",
     "text": "The blade holds the storm longer, and bites harder.",
-    "mana": 10,
+    "mana": 15,
     "ranks": [
       {
         "infuse": {
@@ -2686,7 +2693,7 @@
   "spl-avatar": {
     "name": "Avatar of War",
     "text": "Once a fight: for a while, every hit lands far harder.",
-    "mana": 12,
+    "mana": 18,
     "ranks": [
       {
         "attackUp": {

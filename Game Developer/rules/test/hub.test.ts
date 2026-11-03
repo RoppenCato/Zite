@@ -80,7 +80,7 @@ describe('the real hub world (Mitch, AD; Robin, 2026-11-02)', () => {
     const spaces = { ...s.board.spaces, shoreend: { ...s.board.spaces.summit!, id: 'shoreend', kind: 'normal' as const, boss: undefined, area: 'thornwood' } };
     const up = migrate(JSON.parse(JSON.stringify({ ...old, board: { ...s.board, spaces } })))!;
     const c = up.characters[P]!;
-    expect(up.version).toBe(40);
+    expect(up.version).toBe(41);
     expect(c.gold).toBe(123);
     expect(up.board.spaces[c.space]).toBeTruthy();
     expect(c.opened).toEqual(expect.arrayContaining(['kingswood', 'crownhaven', 'thornwood', 'frostpeak']));

@@ -122,6 +122,8 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withHubOpen(withEastOpen(before));
+  // 40 → 41: the Pocket Watch's points go to Magic Power (renamed in withArena).
+  if (version === 40) return withArena(up);
   // 39 → 40: the necklaces in the trinket slot become trinkets (in withArena).
   if (version === 39) return withArena(up);
   // 38 → 39: an off-hand worn with a two-handed weapon goes to the bag (in withArena).
@@ -215,7 +217,7 @@ function withoutStandIn(state: GameState): GameState {
 
 /** To 24 (Robin, 2026-11-02): the Arena's spots; anyone standing on one just stands at the Arena. */
 /** The Rogue's talents renamed (Robin, 2026-11-03): points spent on a talent gone stay spent on the one in its place. */
-const ROGUE_RENAMED: Record<string, string> = { shuriken: 'blood-on-the-blade', 'nin-fleet': 'blood-finale', 'nin-kunai': 'crimson-arc', 'nin-calm': 'red-mist', 'nin-lotus': 'bleed-out', 'nin-feint': 'black-blood', 'sha-cover': 'shadow-finale', 'sha-opening': 'thousand-cuts', 'alc-vitriol': 'toxic-jab', 'alc-tough': 'venom-finale' };
+const ROGUE_RENAMED: Record<string, string> = { 'time-warp': 'magic-power', shuriken: 'blood-on-the-blade', 'nin-fleet': 'blood-finale', 'nin-kunai': 'crimson-arc', 'nin-calm': 'red-mist', 'nin-lotus': 'bleed-out', 'nin-feint': 'black-blood', 'sha-cover': 'shadow-finale', 'sha-opening': 'thousand-cuts', 'alc-vitriol': 'toxic-jab', 'alc-tough': 'venom-finale' };
 /** To 39 (2026-11-03): found loot could slip an off-hand on beside a staff or a great weapon; it goes to the bag. */
 /**
  * To 40 (Robin, 2026-11-03: "There will be no necklaces, instead its gonna be trinkets for that slot"): a unique charm becomes the
@@ -288,7 +290,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

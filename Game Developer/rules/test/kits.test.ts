@@ -143,7 +143,7 @@ describe('the Magician', () => {
     expect(PROGRESSION.guards.blockFloor).toBe(0.25);
   });
 
-  it('Block is an Arcane Ward that costs no mana; Brace is Channel and gives half the mana back (Robin, 2026-11-03)', () => {
+  it('Block is an Arcane Ward that costs no mana; Brace is as everyone\'s; Magic Power makes spells hit harder (Robin, 2026-11-03)', () => {
     const ward = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
     const none = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack), makeRng('a'), NOW);
     expect(hits(ward.events, 'enemy')[0]!.damage).toBeLessThan(hits(none.events, 'enemy')[0]!.damage * 0.7);
@@ -152,7 +152,14 @@ describe('the Magician', () => {
     const channel = apply(versus('mage', 'bandit', dry, { ...tough, attack: 40 }), turn(attack, 'brace'), makeRng('a'), NOW);
     const back = channel.events.find((e) => e.type === 'mana' && e.delta > 0);
     expect(back).toBeTruthy();
-    expect(back!.type === 'mana' && back!.delta).toBe(Math.round(stats(me(channel.state)).maxMana * 0.5));
+    expect(back!.type === 'mana' && back!.delta).toBeLessThan(stats(me(channel.state)).maxMana * 0.5);
+    const bolt = (power: boolean) => {
+      let s = versus('mage', 'slime', { mana: 100, abilities: { 'arcane-bolt': 1, 'magic-power': 1 } }, tough, { meter: 5 });
+      if (power) s = apply(s, turn(ability('magic-power')), makeRng('p'), NOW).state;
+      s = { ...s, characters: { [P]: { ...me(s), mana: 100 } } };
+      return hits(apply(s, turn(ability('arcane-bolt')), makeRng('q'), NOW).events, 'player')[0]!.damage;
+    };
+    expect(bolt(true)).toBeGreaterThan(bolt(false) * 1.3);
   });
 
   it('a staff is poor and a spell strong; Overflow turns Arcana into mana and the next spell harder', () => {
@@ -285,7 +292,7 @@ describe('the signature abilities', () => {
     expect(hits(full.events, 'player')[0]!.damage).toBeGreaterThan(hits(none.events, 'player')[0]!.damage);
     expect(fight(full.state).meter).toBeGreaterThanOrEqual(5);
     const rich = apply(versus('mage', 'slime', { mana: 40 }, tough), turn(ability('arcane-bolt')), makeRng('z'), NOW);
-    const poor = apply(versus('mage', 'slime', { mana: 6 }, tough), turn(ability('arcane-bolt')), makeRng('z'), NOW);
+    const poor = apply(versus('mage', 'slime', { mana: 9 }, tough), turn(ability('arcane-bolt')), makeRng('z'), NOW);
     expect(hits(rich.events, 'player')[0]!.damage).toBeGreaterThan(hits(poor.events, 'player')[0]!.damage);
   });
 

@@ -142,7 +142,8 @@ describe('the powers', () => {
   it('Moonquill halves mana costs and softens abilities; Grudgeblade grows with the HP missing', () => {
     const shard = wearing('mindshard', 'mage', { abilities: { fireball: 1 } });
     const r = apply(versus(shard, 'slime', { hp: 5000, next: bite }), turn(ability('fireball')), makeRng('x'), NOW);
-    expect(r.events[0]).toMatchObject({ type: 'mana', delta: -4 });
+    // Firework is 12 since spells cost half as much again (Robin, 2026-11-03); the Moonquill halves it.
+    expect(r.events[0]).toMatchObject({ type: 'mana', delta: -6 });
     const full = wearing('gorefang');
     const half = { ...full, hp: 60 };
     expect(stats(half).attack).toBe(Math.round(stats(full).attack * 1.3));
@@ -255,7 +256,7 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(40);
+    expect(s!.version).toBe(41);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });

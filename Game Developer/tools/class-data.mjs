@@ -34,9 +34,10 @@ const A = {
   bulwark: { name: 'Unbreakable', classId: 'warrior', text: 'For a few rounds your Block stops almost everything.', mana: 5, level: 12, ranks: up({ blockUp: { rounds: 3, mult: 0.3 } }, { blockUp: { rounds: 3, mult: 0.22 } }, { blockUp: { rounds: 4, mult: 0.15 } }) },
   // ---- Magician: mana is health, damage and defense at once: what do you spend it on? --------------------------------------
   'arcane-bolt': { name: 'Arcane Bolt', classId: 'mage', text: 'A bolt of magic, stronger the more mana you still hold.', mana: 5, level: 1, ranks: up({ power: 1.2, manaPower: 0.7 }, { power: 1.35, manaPower: 0.8 }, { power: 1.5, manaPower: 0.9 }) },
-  overflow: { name: 'Overflow', classId: 'mage', text: 'Spend all your Arcana: mana back for each point, and your next spell hits harder.', mana: 0, meterAll: true, level: 1, ranks: up({ manaPerMeter: 5, nextSpell: 1.3 }, { manaPerMeter: 6, nextSpell: 1.4 }, { manaPerMeter: 7, nextSpell: 1.5 }) },
+  overflow: { name: 'Overflow', classId: 'mage', text: 'Spend all your Arcana: mana back for each point, and your next spell hits harder.', mana: 0, meterAll: true, level: 1, ranks: up({ manaPerMeter: 8, nextSpell: 1.3 }, { manaPerMeter: 9, nextSpell: 1.4 }, { manaPerMeter: 7, nextSpell: 1.5 }) },
   'arcane-shield': { name: 'Bubble Shield', classId: 'mage', text: 'A shimmering bubble worth a share of your HP that soaks the next damage.', mana: 7, level: 2, ranks: up({ barrierShare: 0.3 }, { barrierShare: 0.4 }, { barrierShare: 0.5 }) },
-  'time-warp': { name: 'Pocket Watch', classId: 'mage', text: 'Spend 4 Arcana: stop the clock, the enemy loses its next turn, boss or not.', mana: 6, meter: 4, level: 3, ranks: up({ skip: 1 }, { power: 0.8 }, { skip: 2 }) },
+  // Robin, 2026-11-03: "Magic power - increases magic damage by % over four turns." A full meter of Arcana (it tops out at 5).
+  'magic-power': { name: 'Magic Power', classId: 'mage', text: 'Spend a full meter of Arcana: your spells hit harder for four rounds.', mana: 0, meter: 5, level: 3, ranks: up({ spellUp: { rounds: 4, mult: 1.4 } }, { spellUp: { rounds: 4, mult: 1.5 } }, { spellUp: { rounds: 4, mult: 1.6 } }) },
   // Wizard
   fireball: { name: 'Firework', classId: 'mage', text: 'A burst of flame: a huge hit that leaves it burning.', mana: 8, level: 3, ranks: up({ power: 1.8, burn: { rounds: 3, power: 0.22 } }, { power: 2.05 }, { power: 2.3, burn: { rounds: 3, power: 0.26 } }) },
   'wizard-flame': rule('Kindled', 'mage', 'Your spells hit harder.', { spellPower: 1.2 }),
@@ -108,11 +109,11 @@ const C = {
     },
   },
   mage: {
-    name: 'Magician', style: 'Arcane Ward, Channel for mana, strong spells.', about: 'Block is an Arcane Ward: it stops part of a blow and costs no mana. Brace is Channel: take most of the blow and get half your mana back. Weak staff, strong spells.',
+    name: 'Magician', style: 'Arcane Ward, Overflow for mana, strong spells.', about: 'Block is an Arcane Ward: it stops part of a blow and costs no mana. Spells are dear: Overflow turns Arcana into mana. Weak staff, strong spells.',
     hp: 90, mana: 40, attack: 7, magic: 6, defense: 4, gold: 50, growth: { hp: 9, mana: 4, attack: 1, magic: 1, defense: 1 },
-    // Ward and Channel (Robin, 2026-11-03): the guards cost no mana, and Channel gives half of it back.
-    traits: { ward: true, channel: 0.5, attackMagic: 0.8 },
-    kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'time-warp'],
+    // The Ward costs no mana (Robin, 2026-11-03); Brace is as everyone's, Overflow is where the mana comes from.
+    traits: { ward: true, attackMagic: 0.8 },
+    kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'magic-power'],
     meter: { name: 'Arcana', gain: 'round', text: 'Arcana builds a point every round.' },
     trees: {
       wizard: { name: 'Wizard', text: 'Fire: huge hits that leave the target burning.', nodes: ['fireball', 'wizard-flame', 'detonate', 'meteor'] },
@@ -371,6 +372,10 @@ const NEEDS = { shield: ['shield-bash', 'shield-wall', 'shield-slam', 'kni-charg
 for (const [need, ids] of Object.entries(NEEDS)) for (const id of ids) A[id] = { ...A[id], needs: [need] };
 for (const id of ['frost-blade', 'storm-blade', 'spl-thrust', 'arc-slash', 'spl-whirl', 'spl-tempest']) A[id] = { ...A[id], needs: ['wand', 'sword'] };
 delete A.shuriken;
+// Spells cost more, so Overflow is how a Magician keeps casting (Robin, 2026-11-03: "make spells cost more to encourage using the
+// overflow to get mana back"): half as much again, Overflow itself free.
+const MAGE_COST = 1.5;
+for (const a of Object.values(A)) if (a.classId === 'mage' && a.mana) a.mana = Math.ceil(a.mana * MAGE_COST);
 
 const json = (x) => `${JSON.stringify(x, null, 2)}\n`;
 writeFileSync('rules/data/abilities.json', json(A));
@@ -400,7 +405,7 @@ const WORDS = {
   },
   "mage": {
     "tagline": "The strongest spells of all, and very little to stand on.",
-    "story": "Fragile, with a weak staff, but nothing hits harder than its spells. Mana is everything, and it all goes to your magic: your Ward stops blows for free, and when you run low, Channel takes the hit and gives you half your mana back. For you if you like to plan ahead and end fights fast.",
+    "story": "Fragile, with a weak staff, but nothing hits harder than its spells. Mana is everything, and it all goes to your magic: your Ward stops blows for free, spells are dear, and Overflow turns your Arcana back into mana. For you if you like to plan ahead and end fights fast.",
     "showcase": {
       "wizard": [
         "fireball",

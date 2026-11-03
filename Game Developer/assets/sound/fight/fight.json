@@ -324,6 +324,21 @@
       "start": 34.9535,
       "end": 35.4989,
       "loop": false
+    },
+    "fight/impact-arcane": {
+      "start": 35.5489,
+      "end": 35.8531,
+      "loop": false
+    },
+    "fight/impact-fire": {
+      "start": 35.9031,
+      "end": 36.2073,
+      "loop": false
+    },
+    "fight/impact-holy": {
+      "start": 36.2573,
+      "end": 36.6671,
+      "loop": false
     }
   }
 }

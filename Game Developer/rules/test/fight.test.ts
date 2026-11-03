@@ -147,7 +147,8 @@ describe('a fight', () => {
 
   it('Magician, Arcane Bolt: a spell costs mana, and mana trickles back each round', () => {
     const r = apply(versus('mage', 'slime', {}, { hp: 500, maxHp: 500 }), turn(ability('arcane-bolt'), 'none'), makeRng('x'), NOW);
-    expect(r.events[0]).toMatchObject({ type: 'mana', delta: -5, mana: 35 });
+    // Spells cost half as much again since 2026-11-03 (Robin): 5 becomes 8.
+    expect(r.events[0]).toMatchObject({ type: 'mana', delta: -8, mana: 32 });
     expect(r.events[1]).toMatchObject({ type: 'hit', by: 'player', move: 'Arcane Bolt' });
     expect(r.events).toContainEqual(expect.objectContaining({ type: 'mana', delta: 2 }));
   });

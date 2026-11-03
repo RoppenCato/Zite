@@ -8,7 +8,7 @@
 
 import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
-import { ABILITIES, manaCost, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
+import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -361,7 +361,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       // A Magician wards and channels (Robin, 2026-11-03).
       { text: traitsOf(this.game_.me).ward ? 'Ward (no mana)' : 'Block (half)', color: COLORS.log, enabled: true, onTap: () => this.act('block') },
       { text: 'Dodge (luck)', color: COLORS.log, enabled: true, onTap: () => this.act('dodge') },
-      { text: traitsOf(this.game_.me).channel ? 'Channel (+half mana)' : 'Brace (+mana)', size: traitsOf(this.game_.me).channel ? '14px' : undefined, color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
+      { text: 'Brace (+mana)', color: COLORS.log, enabled: true, onTap: () => this.act('brace') },
       { text: 'Counter (hit back)', color: COLORS.log, enabled: true, onTap: () => this.act('counter') },
       { text: 'Back', color: COLORS.log, enabled: true, onTap: () => this.showMoves() },
     ]);
@@ -373,7 +373,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     this.pendingMove = null;
     this.setBusy(true);
     // Each pressed talent's sound, from Nigel, SD's map; anything not arrived yet borrows the swing.
-    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, 'fight/swing');
+    // A Magician's spell with no sound of its own sounds like magic, not a swing (2026-11-03).
+    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
     else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
@@ -465,21 +466,27 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
           const byOwl = e.move === ABILITIES.hawk?.name;
           const star = e.move === ABILITIES.meteor?.name;
+          // A spell is cast and a bow shot from where the hero stands (Robin, 2026-11-03: "not hitting melee", "There should be ranged attack").
+          const spell = spellLook(e.move);
+          const bowShot = this.game_.me.classId === 'ranger' && gearKind(this.game_.me.equipment.weapon) === 'bow' && !byOwl;
           if (byOwl) this.owl?.strike(FIGHT_LAYOUT.enemyX - 70);
           else {
-            // In a combo the hero swings fast and steps in once.
+            // In a combo the hero swings fast and steps in once; a caster and an archer stay put.
             this.hero?.play('attack1', false, combo > 0 ? 2.2 : 1);
-            if (combo <= 1) this.step(this.heroBody, 34);
+            if (combo <= 1 && !spell && !star && !bowShot) this.step(this.heroBody, 34);
+            if (spell) playOnce(this, 'mana_sparkle', this.spot('hero', 'chest').x + 14, this.spot('hero', 'chest').y);
           }
           this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs(combo > 0 ? 2.2 : 1) ?? 0), () => {
             const at = this.spot('enemy', 'chest');
             if (combo > 0 && this.game_.me.classId === 'rogue') this.slash(combo);
-            const land = () => playOnce(this, star ? 'star_impact' : e.crit ? 'crit_burst' : 'hit_spark', at.x, at.y);
+            const land = () => playOnce(this, star ? 'star_impact' : spell ? spell.burst : e.crit ? 'crit_burst' : 'hit_spark', at.x, at.y);
             if (star) fly(this, 'falling_star', { x: at.x, y: HUD_HEIGHT + 20 }, at, settings.ms(260), land);
-            else if (this.game_.me.classId === 'ranger' && !byOwl) fly(this, 'arrow', this.spot('hero', 'chest'), at, settings.ms(130), land);
+            else if (spell) fly(this, spell.bolt, this.spot('hero', 'chest'), at, settings.ms(220), land);
+            else if (bowShot) fly(this, 'arrow', this.spot('hero', 'chest'), at, settings.ms(130), land);
             else land();
             this.enemy?.play('hit1');
-            sfx.play(e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+            // A spell lands with its element's sound (Nigel, SD, 2026-11-03).
+            sfx.play(spell ? spell.sound : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
             if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
             sfx.play(`creature/${this.enemyId}/hit`);
             this.flash(this.enemyBody, e.damage, e.crit);
@@ -536,7 +543,9 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
-        sfx.play(`fight/effect-${e.kind}`);
+        sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
+        // Magic Power glows on the hero (2026-11-03).
+        if (e.kind === 'spellUp') playOnce(this, 'mana_sparkle', this.spot('hero', 'chest').x, this.spot('hero', 'chest').y);
         this.say(this.effectText(e.target, e.kind, e.rounds));
         this.refreshStatus();
         break;
@@ -848,6 +857,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     const heroBits = [
       f.charged ? 'charged' : '',
       f.attackUp ? `hits harder ${f.attackUp.rounds}` : '',
+      f.spellUp ? `magic power ${f.spellUp.rounds}` : '',
       f.barrier ? `barrier ${f.barrier}` : '',
       f.evade ? `evading ${f.evade}` : '',
       f.sureCrit ? `sure crit ${f.sureCrit}` : '',
@@ -928,6 +938,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     }
     switch (kind) {
       case 'attackUp': return `Your hits land harder for ${rounds} rounds.`;
+      case 'spellUp': return `Magic Power: your spells hit harder for ${rounds} rounds.`;
       case 'barrier': return `A barrier of ${rounds} forms round you.`;
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
@@ -991,4 +1002,30 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     this.busy = busy;
     for (const b of this.buttons) b.setAlpha(busy ? 0.4 : b.alpha);
   }
+}
+
+/** Each of the Magician's damage spells by its element (Robin, 2026-11-03: "We need effects for spells"). */
+const SPELL_ELEMENT: Record<string, 'arcane' | 'fire' | 'holy'> = {
+  'arcane-bolt': 'arcane',
+  fireball: 'fire',
+  detonate: 'fire',
+  'wiz-scorch': 'fire',
+  'wiz-pillar': 'fire',
+  'wiz-firestorm': 'fire',
+  'wiz-phoenix': 'fire',
+  smite: 'holy',
+  'judgement-day': 'holy',
+  'cle-lance': 'holy',
+};
+/** How an element looks: the bolt that flies and the burst where it lands. Stand-ins from the effects atlas until Mitch, AD's own. */
+const SPELL_LOOKS: Record<'arcane' | 'fire' | 'holy', { bolt: string; burst: string; sound: string }> = {
+  arcane: { bolt: 'mana_sparkle', burst: 'star_impact', sound: 'fight/impact-arcane' },
+  fire: { bolt: 'burn', burst: 'crit_burst', sound: 'fight/impact-fire' },
+  holy: { bolt: 'heal_glow', burst: 'star_impact', sound: 'fight/impact-holy' },
+};
+const SPELL_BY_NAME = new Map(Object.entries(SPELL_ELEMENT).map(([id, el]) => [ABILITIES[id]?.name ?? id, el]));
+/** The look of a hit's move when it is a spell, else null. */
+function spellLook(move: string): { bolt: string; burst: string; sound: string } | null {
+  const el = SPELL_BY_NAME.get(move);
+  return el ? SPELL_LOOKS[el] : null;
 }

@@ -175,6 +175,8 @@ export interface AbilityRank {
   crit?: number;
   stun?: number;
   attackUp?: { rounds: number; mult: number };
+  /** Spells hit harder for a few rounds (Magic Power, Robin, 2026-11-03). */
+  spellUp?: { rounds: number; mult: number };
   weaken?: { rounds: number; mult: number };
   poison?: { rounds: number; power: number };
   barrier?: number;

@@ -121,13 +121,13 @@ export function playOnce(scene: Phaser.Scene, clip: string, x: number, y: number
 }
 
 /** A clip that moves from one place to another, then calls `then` where it lands. */
-export function fly(scene: Phaser.Scene, clip: string, from: { x: number; y: number }, to: { x: number; y: number }, ms: number, then: () => void): void {
-  const s = quiet() ? null : sprite(scene, 'effects', clip, from.x, from.y);
+export function fly(scene: Phaser.Scene, clip: string, from: { x: number; y: number }, to: { x: number; y: number }, ms: number, then: () => void, atlas: AtlasName = 'effects'): void {
+  const s = quiet() ? null : sprite(scene, atlas, clip, from.x, from.y);
   if (!s) {
     then();
     return;
   }
-  s.play(`effects/${clip}`);
+  s.play(`${atlas}/${clip}`);
   scene.tweens.add({
     targets: s,
     x: to.x,

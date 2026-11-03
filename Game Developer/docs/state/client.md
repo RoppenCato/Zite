@@ -585,3 +585,7 @@ No necklace on the hero: the trinket layer is off. `assets/trinkets` (Mitch, AD)
 ## Ward and Channel on screen (Robin, 2026-11-03)
 
 A Magician’s guard buttons say Ward (no mana) and Channel (+half mana); the fight guide names them and gives their numbers. An orb’s words: Ward stops X%, Dodge Y%.
+
+## Spells and bow shots from where you stand (Robin, 2026-11-03)
+
+A Magician's damage spell (`SPELL_ELEMENT` in `FightScene`: arcane, fire, holy) plays the attack clip without stepping in, a sparkle at the hand, a bolt flying to the foe and a burst there; stand-ins from the effects atlas (`mana_sparkle`, `burn`, `heal_glow`, `star_impact`, `crit_burst`) until Mitch, AD's cast clip and spell effects. A Hunter with a bow no longer steps in; the arrow flies. `fly` takes any effect atlas. A Magician's ability with no sound of its own sounds like Arcane Bolt, not a swing.
