@@ -120,6 +120,10 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 ### Day and night (Robin, 2026-11-03)
 - The game has a day and a night counted in die rolls: **a day is 20 rolls, a night 10.** At night creatures are stronger and pay more, and some things happen only at night. Weekly events stay on real days. This replaces real-world time of day affecting monsters (below).
 
+### The Arena legends (Robin, 2026-11-03, through Mitch, AD)
+- Each land has a legendary set at **level 30**, fitting the land: one of each weapon type and different shields. It is won from that land's Arena on its **hardest mode, which opens once every Seal is won**, before the last dungeon.
+- "Miles will need to find a way to balance loot and to distribute loot in a good way in the game": the numbers, the chances and how the mode opens are the Game Developer's.
+
 ## Real-world flavor (light, optional)
 - Real weather and time of day affect monsters on the board (e.g. rain → water monsters, night → undead).
 - Later idea: real places (OpenStreetMap) as shrines giving dice cards when visited.

@@ -42,7 +42,7 @@ import {
   questLine,
   placeName,
   inTownWalls,
-  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, ARENA, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
+  groundAt, townKind, arenaOpen, arenaSpot, arenaFee, arenaTried, arenaModeOpen, arenaPrize, ARENA, UNIQUES, nextDay, type ArenaMode, DUNGEONS, walkable, bossKnown, hubOf, strollPath, sealAt, sealsAllWon, DAY_NAMES, weekday, clockOf, isNight } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
@@ -2070,7 +2070,11 @@ export class BoardScene extends Phaser.Scene {
       this.finish(`The Arena is closed. It opens on ${nextDay('arena', now)}.`);
       return;
     }
-    const modes = (Object.keys(ARENA.modes) as ArenaMode[]).filter((mode) => !arenaTried(me, mode, now));
+    const modes = (Object.keys(ARENA.modes) as ArenaMode[]).filter((mode) => !arenaTried(me, mode, now) && arenaModeOpen(board, me, mode));
+    // Legend, once every Seal is won (Robin, 2026-11-03): say what a clear here would win.
+    const legendOpen = arenaModeOpen(board, me, 'legend');
+    const prize = legendOpen ? arenaPrize(me, area) : null;
+    const legendWords = !legendOpen ? ' A fourth way, Legend, opens to one who holds every Seal.' : prize ? ` A clear on Legend wins ${UNIQUES[prize]!.name}.` : ' You hold every legend this Arena gives.';
     if (!modes.length) {
       this.finish('You have fought every way there is today. Come back next time it opens.');
       return;
@@ -2080,12 +2084,12 @@ export class BoardScene extends Phaser.Scene {
       icon: 'mark_star',
       color: 0xe8b84a,
       title: 'The Arena',
-      text: `${ARENA.waves.length} fights in a row, HP and mana carried over, ${ARENA.flasks} flasks at most. After each win, take the pot or go on. Fall or flee, and it is lost. Each way once a day.`,
+      text: `${ARENA.waves.length} fights in a row, HP and mana carried over, ${ARENA.flasks} flasks at most. After each win, take the pot or go on. Fall or flee, and it is lost. Each way once a day.${legendWords}`,
       pays: `Win ${ARENA.gearFrom} and a fine piece comes with the pot`,
       options: [
         ...modes.map((mode) => {
           const fee = arenaFee(board, area, mode);
-          return { label: `${ARENA.modes[mode].name} · ${fee} g`, note: ARENA.modes[mode].words, color: mode === 'nightmare' ? 0xd9534f : mode === 'hard' ? 0xe8a23c : COLORS.button, onTap: () => this.enterArena(mode) };
+          return { label: `${ARENA.modes[mode].name} · ${fee} g`, note: ARENA.modes[mode].words, color: mode === 'legend' ? 0x8e5bd6 : mode === 'nightmare' ? 0xd9534f : mode === 'hard' ? 0xe8a23c : COLORS.button, onTap: () => this.enterArena(mode) };
         }),
         { label: 'Not today', color: COLORS.log, onTap: () => { this.closeAsk(); this.finish('You leave the crowd to it.'); } },
       ],

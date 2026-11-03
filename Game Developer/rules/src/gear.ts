@@ -389,7 +389,7 @@ export function makeUnique(id: string, uniqueId: string, rank: number, rng: Rng)
 
 /** A legendary weapon for this class that has come in by this tier, or null (Robin, 2026-11-02: "rare to find or drop from bosses"). */
 export function rollLegend(id: string, tier: number, rng: Rng, classId: ClassId): GearItem | null {
-  const pool = UNIQUE_IDS.filter((u) => UNIQUES[u]!.legend && UNIQUES[u]!.classId === classId && UNIQUES[u]!.tier <= tier);
+  const pool = UNIQUE_IDS.filter((u) => UNIQUES[u]!.legend && !UNIQUES[u]!.arena && UNIQUES[u]!.classId === classId && UNIQUES[u]!.tier <= tier);
   if (!pool.length) return null;
   return makeUnique(id, pool[rng.int(pool.length) - 1]!, tier, rng);
 }

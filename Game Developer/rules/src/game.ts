@@ -326,12 +326,28 @@ export function arenaSpot(board: Board, area: string): string | null {
 }
 
 export function arenaFee(board: Board, area: string, mode: ArenaMode = 'normal'): number {
-  const tier = board.areas[area]?.tier ?? 1;
-  return Math.round(ARENA.fee[Math.min(tier, ARENA.fee.length) - 1]! * ARENA.modes[mode].fee);
+  const m = ARENA.modes[mode];
+  const tier = m.feeTier ?? board.areas[area]?.tier ?? 1;
+  return Math.round(ARENA.fee[Math.min(tier, ARENA.fee.length) - 1]! * m.fee);
 }
 
 export function arenaOpen(c: Character, now: number): boolean {
   return !!c.arenaTest || isOn('arena', now);
+}
+
+/** Whether this mode is open to this character at all: Legend waits for every Seal (Robin, 2026-11-03). */
+export function arenaModeOpen(board: Board, c: Character, mode: ArenaMode): boolean {
+  return !ARENA.modes[mode]?.seals || sealsAllWon(board, c);
+}
+
+/** The piece of this land's Arena set a clear on Legend wins: your class's weapon first, then the off-hand that suits you, each once; null with both. */
+export function arenaPrize(c: Character, area: string): string | null {
+  const won = new Set(c.arenaLegends ?? []);
+  const set = UNIQUE_IDS.filter((id) => UNIQUES[id]!.arena === area);
+  const weapon = set.find((id) => UNIQUES[id]!.slot === 'weapon' && UNIQUES[id]!.classId === c.classId);
+  const orb = (id: string): boolean => /orb/.test(UNIQUES[id]!.kind ?? '');
+  const offhand = set.find((id) => UNIQUES[id]!.slot === 'shield' && orb(id) === (c.classId === 'mage'));
+  return [weapon, offhand].find((id): id is string => !!id && !won.has(id)) ?? null;
 }
 
 /** Whether this mode is still to be tried today: each once per open day, whatever came of it. */
@@ -386,7 +402,7 @@ function arena(state: GameState, action: ArenaAction, c: Character, rng: Rng, no
     if (busy) return reject(state, action, busy);
     const mode = action.mode as ArenaMode;
     if (!ARENA.modes[mode]) return reject(state, action, 'bad value');
-    if (!space || c.steps > 0 || space.kind !== 'arena' || !arenaOpen(c, now) || arenaTried(c, mode, now)) return reject(state, action, 'not now');
+    if (!space || c.steps > 0 || space.kind !== 'arena' || !arenaOpen(c, now) || arenaTried(c, mode, now) || !arenaModeOpen(state.board, c, mode)) return reject(state, action, 'not now');
     const fee = arenaFee(state.board, space.area, mode);
     if (c.gold < fee) return reject(state, action, 'not enough gold');
     const day = calendarDay(now);
@@ -407,7 +423,13 @@ function arena(state: GameState, action: ArenaAction, c: Character, rng: Rng, no
   const levelBefore = left.level;
   let next: Character = gainXp({ ...left, offer: null, gold: left.gold + run.gold }, run.xp, action, events);
   let s = state;
-  if (offer.gear) {
+  const prize = mode === 'legend' && run.wave >= ARENA.waves.length && space ? arenaPrize(next, space.area) : null;
+  if (prize) {
+    // A clear on Legend wins a piece of the land's set (Robin, 2026-11-03).
+    const got = nextGearId(s);
+    s = got.state;
+    next = addLoot({ ...next, arenaLegends: [...(next.arenaLegends ?? []), prize] }, makeUnique(got.id, prize, ARENA.legendRank, rng), action, events);
+  } else if (offer.gear) {
     const got = nextGearId(s);
     s = got.state;
     const m = ARENA.modes[mode];

@@ -817,5 +817,641 @@
       "value": 0.3
     },
     "kind": "bow"
+  },
+  "arena-millstone": {
+    "name": "The Millstone",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "meadows",
+    "classId": "warrior",
+    "art": "millstone",
+    "traits": {
+      "attackMult": 1.2,
+      "defenseMult": 1.1
+    },
+    "text": "A millstone on a pole: 20% more attack and 10% more defense.",
+    "affix": {
+      "kind": "ruin",
+      "value": 0.3
+    },
+    "kind": "great maul"
+  },
+  "arena-four_leaf": {
+    "name": "Four-Leaf",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "meadows",
+    "classId": "rogue",
+    "art": "four_leaf",
+    "traits": {
+      "crit": 0.1,
+      "dodge": 0.04
+    },
+    "text": "Lucky: 10% more crits and 4% more dodge.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "arena-goo_sceptre": {
+    "name": "King Goo’s Sceptre",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "meadows",
+    "classId": "mage",
+    "art": "goo_sceptre",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.2,
+      "hpRegen": 0.01
+    },
+    "text": "King Goo’s own: spells 20% stronger, and you regain 1% of your HP each round.",
+    "affix": {
+      "kind": "focus",
+      "value": 0.2
+    },
+    "kind": "wand"
+  },
+  "arena-sunfield": {
+    "name": "Sunfield",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "meadows",
+    "classId": "ranger",
+    "art": "sunfield",
+    "traits": {
+      "attackMult": 1.15,
+      "firstRoundDamage": 1.3
+    },
+    "text": "Morning sun: 15% more attack, and 30% more in the first round.",
+    "affix": {
+      "kind": "haste",
+      "value": 0.15
+    },
+    "kind": "bow"
+  },
+  "arena-hedgerow": {
+    "name": "Hedgerow Buckler",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "meadows",
+    "art": "hedgerow",
+    "traits": {
+      "dodge": 0.06,
+      "thorns": 0.1
+    },
+    "text": "A thorny hedge: 6% more dodge, and 10% of the damage you take goes back.",
+    "kind": "buckler"
+  },
+  "arena-briarthorn": {
+    "name": "Briarthorn",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "thornwood",
+    "classId": "warrior",
+    "art": "briarthorn",
+    "traits": {
+      "thorns": 0.15,
+      "blockHeal": 0.03
+    },
+    "text": "Briars: 15% of the damage you take goes back, and a Block heals 3% of your HP.",
+    "affix": {
+      "kind": "hunter",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "arena-nightowl": {
+    "name": "Nightowl",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "thornwood",
+    "classId": "rogue",
+    "art": "nightowl",
+    "traits": {
+      "dodgeCrit": true,
+      "critPower": 0.35
+    },
+    "text": "An owl in the dark: after a dodge your next hit is a sure crit, and crits hit 35% harder.",
+    "affix": {
+      "kind": "haste",
+      "value": 0.15
+    },
+    "kind": "dagger"
+  },
+  "arena-elderroot": {
+    "name": "Elderroot",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "thornwood",
+    "classId": "mage",
+    "art": "elderroot",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.2,
+      "healPower": 1.25
+    },
+    "text": "An old root: spells 20% stronger, and heals 25% stronger.",
+    "affix": {
+      "kind": "focus",
+      "value": 0.2
+    },
+    "kind": "staff"
+  },
+  "arena-stags_antler": {
+    "name": "Stag’s Antler",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "thornwood",
+    "classId": "ranger",
+    "art": "stags_antler",
+    "traits": {
+      "companionPower": 1.25,
+      "attackMult": 1.1
+    },
+    "text": "The stag’s crown: your companion hits 25% harder, and 10% more attack.",
+    "affix": {
+      "kind": "hunter",
+      "value": 0.3
+    },
+    "kind": "dagger"
+  },
+  "arena-oakheart": {
+    "name": "Oakheart",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "thornwood",
+    "art": "oakheart",
+    "traits": {
+      "blockPower": 0.08,
+      "hpMult": 1.08
+    },
+    "text": "Heart of oak: a Block stops 8% more, and 8% more HP.",
+    "kind": "round shield"
+  },
+  "arena-queensting": {
+    "name": "Queensting",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostpeak",
+    "classId": "warrior",
+    "art": "queensting",
+    "traits": {
+      "attackMult": 1.15,
+      "poisonedDamage": 1.15
+    },
+    "text": "The queen’s sting: 15% more attack; it poisons, and a poisoned foe takes 15% more.",
+    "affix": {
+      "kind": "venom",
+      "value": 0.3
+    },
+    "kind": "great sword"
+  },
+  "arena-waspknife": {
+    "name": "Waspknife",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostpeak",
+    "classId": "rogue",
+    "art": "waspknife",
+    "traits": {
+      "poisonPower": 1.25,
+      "crit": 0.06
+    },
+    "text": "A wasp’s knife: it poisons, the poison stings 25% harder, and 6% more crits.",
+    "affix": {
+      "kind": "venom",
+      "value": 0.3
+    },
+    "kind": "dagger"
+  },
+  "arena-harvest_moon": {
+    "name": "Harvest Moon",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostpeak",
+    "classId": "mage",
+    "art": "harvest_moon",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.22,
+      "manaRegen": 0.015
+    },
+    "text": "Spells 22% stronger, and you regain 1.5% of your mana each round.",
+    "affix": {
+      "kind": "focus",
+      "value": 0.2
+    },
+    "kind": "staff"
+  },
+  "arena-pollen_wind": {
+    "name": "Pollen Wind",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostpeak",
+    "classId": "ranger",
+    "art": "pollen_wind",
+    "traits": {
+      "counterChance": 0.15,
+      "crit": 0.06
+    },
+    "text": "On the wind: you shoot back 15% more often, and 6% more crits.",
+    "affix": {
+      "kind": "haste",
+      "value": 0.15
+    },
+    "kind": "bow"
+  },
+  "arena-honeycomb": {
+    "name": "Honeycomb Kite",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostpeak",
+    "art": "honeycomb",
+    "traits": {
+      "blockHeal": 0.03,
+      "winHeal": 0.05
+    },
+    "text": "Honey for wounds: a Block heals 3% of your HP, and each win heals 5%.",
+    "kind": "kite shield"
+  },
+  "arena-bog_anchor": {
+    "name": "Bog Anchor",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "bogglemire",
+    "classId": "warrior",
+    "art": "bog_anchor",
+    "traits": {
+      "attackMult": 1.15,
+      "weakenedDamage": 1.15
+    },
+    "text": "It drags them down: 15% more attack; it weakens, and a weakened foe takes 15% more.",
+    "affix": {
+      "kind": "frost",
+      "value": 0.3
+    },
+    "kind": "great anchor"
+  },
+  "arena-lanternlight": {
+    "name": "Lanternlight",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "bogglemire",
+    "classId": "rogue",
+    "art": "lanternlight",
+    "traits": {
+      "firstRoundDamage": 1.3,
+      "executeDamage": 1.15
+    },
+    "text": "Light in the fog: 30% more in the first round, and 15% more to a foe under a third of its HP.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "arena-witchs_reed": {
+    "name": "Witch’s Reed",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "bogglemire",
+    "classId": "mage",
+    "art": "witchs_reed",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.18,
+      "burnPower": 1.3
+    },
+    "text": "Spells 18% stronger; it sets foes burning, and burns hurt 30% more.",
+    "affix": {
+      "kind": "embers",
+      "value": 0.3
+    },
+    "kind": "wand"
+  },
+  "arena-heronwing": {
+    "name": "Heronwing",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "bogglemire",
+    "classId": "ranger",
+    "art": "heronwing",
+    "traits": {
+      "attackMult": 1.15,
+      "dodge": 0.05
+    },
+    "text": "A heron’s patience: 15% more attack and 5% more dodge.",
+    "affix": {
+      "kind": "haste",
+      "value": 0.15
+    },
+    "kind": "bow"
+  },
+  "arena-will_o_wisp": {
+    "name": "Will-o’-Wisp",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "bogglemire",
+    "classId": "mage",
+    "art": "will_o_wisp",
+    "traits": {
+      "dodge": 0.05,
+      "manaRegen": 0.01
+    },
+    "text": "It leads them astray: 5% more dodge, and you regain 1% of your mana each round.",
+    "kind": "blink orb"
+  },
+  "arena-frostbeards_hammer": {
+    "name": "Frostbeard’s Hammer",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostcrown",
+    "classId": "warrior",
+    "art": "frostbeards_hammer",
+    "traits": {
+      "attackMult": 1.2,
+      "highHpDamage": 1.15
+    },
+    "text": "Frostbeard’s own: 20% more attack, and 15% more damage above 80% HP.",
+    "affix": {
+      "kind": "frost",
+      "value": 0.3
+    },
+    "kind": "great hammer"
+  },
+  "arena-icicle": {
+    "name": "Icicle",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostcrown",
+    "classId": "rogue",
+    "art": "icicle",
+    "traits": {
+      "crit": 0.08,
+      "weakenedDamage": 1.15
+    },
+    "text": "Ice to the bone: 8% more crits; it weakens, and a weakened foe takes 15% more.",
+    "affix": {
+      "kind": "frost",
+      "value": 0.3
+    },
+    "kind": "dagger"
+  },
+  "arena-avalanche": {
+    "name": "Avalanche",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostcrown",
+    "classId": "mage",
+    "art": "avalanche",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.25,
+      "critPower": 0.25
+    },
+    "text": "An avalanche: spells 25% stronger, and crits hit 25% harder.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "staff"
+  },
+  "arena-goatsbane": {
+    "name": "Goatsbane",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostcrown",
+    "classId": "ranger",
+    "art": "goatsbane",
+    "traits": {
+      "companionPower": 1.2,
+      "executeDamage": 1.2
+    },
+    "text": "The goat-hunter’s knife: your companion hits 20% harder, and 20% more to a foe under a third of its HP.",
+    "affix": {
+      "kind": "hunter",
+      "value": 0.3
+    },
+    "kind": "dagger"
+  },
+  "arena-summit_wall": {
+    "name": "Summit Wall",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "frostcrown",
+    "art": "summit_wall",
+    "traits": {
+      "blockPower": 0.1,
+      "damageTaken": 0.95
+    },
+    "text": "A wall of the summit: a Block stops 10% more, and you take 5% less.",
+    "kind": "tower shield"
+  },
+  "arena-saltjaws_cutlass": {
+    "name": "Saltjaw’s Cutlass",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "pirateisles",
+    "classId": "warrior",
+    "art": "saltjaws_cutlass",
+    "traits": {
+      "attackMult": 1.15,
+      "winHeal": 0.05
+    },
+    "text": "Saltjaw’s blade: 15% more attack, and each win heals 5% of your HP.",
+    "affix": {
+      "kind": "lifesteal",
+      "value": 0.1
+    },
+    "kind": "sword"
+  },
+  "arena-black_tide": {
+    "name": "Black Tide",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "pirateisles",
+    "classId": "rogue",
+    "art": "black_tide",
+    "traits": {
+      "critPower": 0.4,
+      "lowHpDamage": 1.25
+    },
+    "text": "The black tide: crits hit 40% harder, and under a third of your HP you deal 25% more.",
+    "affix": {
+      "kind": "venom",
+      "value": 0.3
+    },
+    "kind": "sword"
+  },
+  "arena-compass": {
+    "name": "The Compass",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "pirateisles",
+    "classId": "mage",
+    "art": "compass",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.18,
+      "critMana": 0.04
+    },
+    "text": "It finds the way: spells 18% stronger, and each crit gives back 4% of your mana.",
+    "affix": {
+      "kind": "focus",
+      "value": 0.2
+    },
+    "kind": "wand"
+  },
+  "arena-krakens_arm": {
+    "name": "Kraken’s Arm",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "pirateisles",
+    "classId": "ranger",
+    "art": "krakens_arm",
+    "traits": {
+      "attackMult": 1.2,
+      "counterChance": 0.1
+    },
+    "text": "A kraken’s arm: 20% more attack, and you shoot back 10% more often.",
+    "affix": {
+      "kind": "giant",
+      "value": 0.3
+    },
+    "kind": "bow"
+  },
+  "arena-ships_wheel": {
+    "name": "Ship’s Wheel",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "pirateisles",
+    "art": "ships_wheel",
+    "traits": {
+      "dodge": 0.06,
+      "counterChance": 0.1
+    },
+    "text": "Steer clear: 6% more dodge, and you hit back 10% more often.",
+    "kind": "buckler"
+  },
+  "arena-crown_of_the_north": {
+    "name": "Crown of the North",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "giantsland",
+    "classId": "warrior",
+    "art": "crown_of_the_north",
+    "traits": {
+      "attackMult": 1.25,
+      "executeDamage": 1.15
+    },
+    "text": "The crown of the north: 25% more attack, and 15% more to a foe under a third of its HP.",
+    "affix": {
+      "kind": "giant",
+      "value": 0.35
+    },
+    "kind": "great axe"
+  },
+  "arena-snowfang": {
+    "name": "Snowfang",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "giantsland",
+    "classId": "rogue",
+    "art": "snowfang",
+    "traits": {
+      "crit": 0.08,
+      "critPower": 0.4
+    },
+    "text": "A snow wolf’s fang: 8% more crits, and they hit 40% harder.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.35
+    },
+    "kind": "dagger"
+  },
+  "arena-aurora": {
+    "name": "Aurora",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "giantsland",
+    "classId": "mage",
+    "art": "aurora",
+    "stat": "magic",
+    "traits": {
+      "spellPower": 1.3,
+      "manaRegen": 0.01
+    },
+    "text": "The northern lights: spells 30% stronger, and you regain 1% of your mana each round.",
+    "affix": {
+      "kind": "cruelty",
+      "value": 0.3
+    },
+    "kind": "staff"
+  },
+  "arena-northwind": {
+    "name": "Northwind",
+    "slot": "weapon",
+    "tier": 8,
+    "legend": true,
+    "arena": "giantsland",
+    "classId": "ranger",
+    "art": "northwind",
+    "traits": {
+      "attackMult": 1.2,
+      "crit": 0.08,
+      "critPower": 0.3
+    },
+    "text": "The north wind: 20% more attack, 8% more crits, and they hit 30% harder.",
+    "kind": "bow"
+  },
+  "arena-blizzard_orb": {
+    "name": "Blizzard Orb",
+    "slot": "shield",
+    "tier": 8,
+    "legend": true,
+    "arena": "giantsland",
+    "classId": "mage",
+    "art": "blizzard_orb",
+    "traits": {
+      "spellPower": 1.1,
+      "barrierStart": 0.1
+    },
+    "text": "A storm in glass: spells 10% stronger, and each fight starts behind a barrier of 10% of your HP.",
+    "kind": "storm orb"
   }
 }

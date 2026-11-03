@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { migrate } from '../src/save.ts';
-import { apply, ARENA, arenaFee, CALENDAR, isOn, makeRng, newGame, weekday, type GameState } from '../src/index.ts';
+import { apply, ARENA, arenaFee, arenaPrize, CALENDAR, gearKind, isOn, makeRng, newGame, rollLegend, sealsOf, UNIQUE_IDS, UNIQUES, weekday, type ClassId, type GameState } from '../src/index.ts';
 
 // 2026-11-02 at noon was a Monday; the 3rd a Tuesday.
 const MONDAY = Date.UTC(2026, 10, 2, 12);
@@ -116,5 +116,55 @@ describe('the Arena (Robin, 2026-11-02)', () => {
     expect(after.arena).toBeUndefined();
     expect(after.gold).toBe(me.gold);
     expect(after.hp).toBeGreaterThan(1);
+  });
+});
+
+describe('Legend, the Arena of one who holds every Seal (Robin, 2026-11-03)', () => {
+  /** A fighter at the Meadows' Arena holding every Seal (or not). */
+  const sealed = (classId: ClassId = 'warrior', seals = true): GameState => {
+    const s = newGame({ seed: 'arena', player: P, name: 'Robin', classId });
+    const bossKills = seals ? Object.fromEntries(sealsOf(s.board, s.characters[P]!).map((x) => [x.space, 1])) : {};
+    return { ...s, characters: { [P]: { ...s.characters[P]!, space: 'farrows', steps: 0, gold: 50000, hp: 100000, attack: 100000, level: 30, bossKills } } };
+  };
+  it('opens only with every Seal, for the same fee in every land', () => {
+    expect(act(sealed('warrior', false), 'enter', MONDAY, 'legend').events[0]).toMatchObject({ type: 'rejected', reason: 'not now' });
+    const r = act(sealed(), 'enter', MONDAY, 'legend');
+    expect(r.state.characters[P]!.arena?.mode).toBe('legend');
+    expect(arenaFee(r.state.board, 'meadows', 'legend')).toBe(arenaFee(r.state.board, 'giantsland', 'legend'));
+  });
+  it("a clear wins the land's piece for your class, then its off-hand, each once", () => {
+    let s = act(sealed(), 'enter', MONDAY, 'legend').state;
+    for (let w = 1; w <= ARENA.waves.length; w++) {
+      s = fightOut(s);
+      if (w < ARENA.waves.length) s = act(s, 'next', MONDAY, 'legend').state;
+    }
+    const r = act(s, 'take', MONDAY, 'legend');
+    const me = r.state.characters[P]!;
+    const won = [me.equipment.weapon, ...me.bag].find((g) => g?.unique === 'arena-millstone');
+    expect(won?.rank).toBe(ARENA.legendRank);
+    expect(me.arenaLegends).toEqual(['arena-millstone']);
+    expect(arenaPrize(me, 'meadows')).toBe('arena-hedgerow');
+    expect(arenaPrize({ ...me, arenaLegends: ['arena-millstone', 'arena-hedgerow'] }, 'meadows')).toBeNull();
+  });
+  it("a Magician's off-hand is an orb, and only two lands give one", () => {
+    const mage = sealed('mage').characters[P]!;
+    expect(arenaPrize(mage, 'bogglemire')).toBe('arena-witchs_reed');
+    expect(arenaPrize({ ...mage, arenaLegends: ['arena-witchs_reed'] }, 'bogglemire')).toBe('arena-will_o_wisp');
+    expect(arenaPrize({ ...mage, arenaLegends: ['arena-goo_sceptre'] }, 'meadows')).toBeNull();
+  });
+  it('thirty-five pieces, a weapon for each class and one off-hand in each of the seven lands, never dropped', () => {
+    const all = UNIQUE_IDS.filter((id) => UNIQUES[id]!.arena);
+    expect(all).toHaveLength(35);
+    for (const land of Object.keys(ARENA.spots)) {
+      const set = all.filter((id) => UNIQUES[id]!.arena === land);
+      expect(set, land).toHaveLength(5);
+      for (const cls of ['warrior', 'rogue', 'mage', 'ranger']) expect(set.filter((id) => UNIQUES[id]!.classId === cls && UNIQUES[id]!.slot === 'weapon'), `${land} ${cls}`).toHaveLength(1);
+    }
+    for (const id of all) {
+      const u = UNIQUES[id]!;
+      const kind = gearKind({ id, slot: u.slot, rank: 9, rarity: 'unique', name: u.name, base: u.kind!.toLowerCase(), stats: {}, affixes: [], price: 1 });
+      expect(u.slot === 'shield' ? ['buckler', 'round', 'kite', 'tower', 'blink_orb', 'storm_orb'] : ['great', 'sword', 'dagger', 'staff', 'wand', 'bow'], id).toContain(kind);
+    }
+    for (let i = 0; i < 200; i++) expect(UNIQUES[rollLegend('g', 8, makeRng(`a${i}`), 'warrior')!.unique!]!.arena).toBeUndefined();
   });
 });

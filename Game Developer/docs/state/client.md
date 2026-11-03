@@ -573,3 +573,7 @@ The top bar says the day and the clock (`DAYNIGHT` icon, `linkText` right-aligne
 ## Long words on the hero sheet (Robin, 2026-11-03)
 
 Text never goes under 13 px (Robin, 2026-11-01, `hires.ts`), so `BagScene.slip` does not shrink: words that do not fit go on to a next page, cut at a word, with "More, 1 of 2 ›" in the corner; a tap on the words turns the page, and a new pick starts at the first. The loot card still cuts its last parts with "…".
+
+## The Arena legends on screen (2026-11-03)
+
+`assets/arena_legends` (Mitch, AD): loaded while worn like the other legends, icons in `arena_legend_icons`; an orb's frames are `<art>_orb` (`legendFrames`). Closing the hero sheet frees a legend atlas nobody wears (`releaseUnworn`). The Arena's gate shows Legend only to a holder of every Seal, says what a clear would win, and otherwise says a fourth way exists.

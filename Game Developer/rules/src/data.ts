@@ -298,6 +298,8 @@ export interface UniqueData {
   art?: string;
   /** What it is, in words: a bow, a great axe. */
   kind?: string;
+  /** Won only from this land's Arena on Legend (Robin, 2026-11-03); never dropped. */
+  arena?: string;
   /** What its number adds to, when not the slot's own. */
   stat?: GearStat;
   affix?: Affix;
@@ -509,12 +511,14 @@ export function townKind(id: string): TownKind {
 }
 
 /** The Arena's numbers (Robin, 2026-11-02). */
-export type ArenaMode = 'normal' | 'hard' | 'nightmare';
+export type ArenaMode = 'normal' | 'hard' | 'nightmare' | 'legend';
 export const ARENA = arenaJson as unknown as {
   spots: Record<string, string>;
   fee: number[];
   waves: { rounds: number; hit: number; pay: number; mini?: boolean }[];
-  modes: Record<ArenaMode, { name: string; words: string; hp: number; hit: number; fee: number; gold: number; xpShare: number; midGear: 'mini' | 'boss'; clearGear: 'mini' | 'boss'; rankUp: number }>;
+  modes: Record<ArenaMode, { name: string; words: string; hp: number; hit: number; fee: number; gold: number; xpShare: number; midGear: 'mini' | 'boss'; clearGear: 'mini' | 'boss'; rankUp: number; feeTier?: number; seals?: boolean }>;
+  /** The rank an Arena legend is made at: level 30 and past it (Robin, 2026-11-03: "max level (30) so really good"). */
+  legendRank: number;
   gearFrom: number;
   wornShare: number;
   /** Flasks a run may drink: what stops a bag of them buying the hard ways. */

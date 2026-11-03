@@ -85,6 +85,8 @@ interface Result {
   /** What was worn at the end, slot by slot: kind and rank (2026-11-03). */
   wornAtEnd?: string;
   bagAtEnd?: number;
+  /** ENDSTATE=1: the character as it ended, for tools/sim-arena-end.ts (2026-11-03). */
+  endState?: Character;
   rarities: Record<string, number>;
   landSeconds: Record<string, number>;
 }
@@ -643,6 +645,7 @@ function play(build: Build, seed: string): Result {
   for (const g of worn) r.rarities[g.rarity] = (r.rarities[g.rarity] ?? 0) + 1;
   r.wornAtEnd = Object.entries(c.equipment).map(([slot, g]) => `${slot}:${g ? `${gearKind(g) ?? ''}${g.rank}` : '-'}`).join(' ');
   r.bagAtEnd = c.bag.length;
+  if (process.env.ENDSTATE) r.endState = c;
   return r;
 }
 

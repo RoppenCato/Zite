@@ -287,6 +287,8 @@ export interface Character {
   arena?: { mode: string; wave: number; gold: number; xp: number; flasks: number };
   /** The Arena's modes already tried on this day: once each, so it cannot be farmed. */
   arenaDone?: { day: number; modes: string[] };
+  /** The Arena legends won, by unique id: each is won once (Robin, 2026-11-03). */
+  arenaLegends?: string[];
   /** A test switch: the Arena is open for this character whatever the day (to go before Alpha). */
   arenaTest?: boolean;
   /** The errands carried, one a town at most. */

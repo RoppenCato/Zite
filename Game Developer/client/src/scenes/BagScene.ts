@@ -13,7 +13,7 @@ import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { feel, sfx } from '../feel.ts';
 import { CREAM, frameTexture, hasFrame, INK, INK_DIM, itemFrame, KIT, kitReady, plate, sheet } from '../kit.ts';
-import { gearIcon, Hero, heroReady } from '../hero.ts';
+import { gearIcon, Hero, heroReady, releaseUnworn } from '../hero.ts';
 import { Bar, makeButton } from '../ui.ts';
 import type { BoardScene } from './BoardScene.ts';
 
@@ -98,6 +98,8 @@ export class BagScene extends Phaser.Scene {
     this.tab = 'gear';
     this.itemPage = 0;
     this.rows = [];
+    // Closing the sheet frees a legend's atlas that nobody wears any more (Mitch, AD, 2026-11-03).
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => releaseUnworn(this.game, Object.values(this.game_.state.characters)));
     const me = this.game_.me;
     sheet(this);
     const { header, block, bars } = BAG_LAYOUT;

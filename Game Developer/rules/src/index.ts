@@ -18,7 +18,7 @@ export { FINAL_BOSS, sealAt, sealCount, sealsAllWon, sealsOf, SEALS_COMING, type
 export { townKind, TOWNS, ARENA, DUNGEONS, RUMOURS, SECRETS, type TownKind, type ArenaMode } from './data.ts';
 export { CALENDAR, DAY_NAMES, calendarDay, isOn, nextDay, weekday } from './calendar.ts';
 export { clockOf, isNight, nextMorning, type Phase } from './daynight.ts';
-export { startingGear, newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
+export { startingGear, newGame, newWorld, apply, makeBoard, makeCharacter, walkable, strollPath, hubOf, bossKnown, dailyPiece, shopOffer, arenaSpot, arenaFee, arenaOpen, arenaTried, arenaModeOpen, arenaPrize, travelOptions, MAX_NAME, type NewGameOptions } from './game.ts';
 export { diffState, mergeDelta, mergeDeltas, type Delta } from './delta.ts';
 export { PROTOCOL_VERSION, MAX_FRAME, RATE, BATCH_MS, type WireAction, type ClientMessage, type ServerMessage } from './protocol.ts';
 export { migrate } from './save.ts';
