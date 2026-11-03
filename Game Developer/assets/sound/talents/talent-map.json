@@ -17,6 +17,7 @@
  "ber-frenzy": "fight/talent-roar",
  "ber-rampage": "fight/talent-cleave",
  "bitter-end": "fight/ability-poison-blade",
+ "bleed-out": "fight/talent-blood",
  "blood-price": "fight/talent-roar",
  "bloodbath": "fight/talent-cleave",
  "bulwark": "fight/ability-shield-wall",
@@ -26,6 +27,7 @@
  "cle-renew": "fight/heal",
  "cle-sanctuary": "fight/ability-arcane-shield",
  "clone": "fight/talent-clone",
+ "crimson-arc": "fight/talent-blood",
  "detonate": "fight/talent-fire-small",
  "eviscerate": "fight/ability-eviscerate",
  "execute": "fight/ability-execute",
@@ -83,7 +85,9 @@
  "spl-whirl": "fight/talent-triple-cut",
  "storm-blade": "fight/talent-blade-charge",
  "sure-shot": "fight/ability-aimed-shot",
+ "thousand-cuts": "fight/talent-triple-cut",
  "time-warp": "fight/ability-time-warp",
+ "toxic-jab": "fight/ability-poison-blade",
  "tra-master": "fight/ability-trap",
  "tra-mine": "fight/talent-fire-small",
  "tra-net": "fight/ability-snare",
@@ -93,9 +97,5 @@
  "wiz-firestorm": "fight/ability-meteor",
  "wiz-phoenix": "fight/revive",
  "wiz-pillar": "fight/ability-fireball",
- "wiz-scorch": "fight/talent-fire-small",
- "crimson-arc": "fight/talent-blood",
- "bleed-out": "fight/talent-blood",
- "thousand-cuts": "fight/talent-triple-cut",
- "toxic-jab": "fight/talent-flask"
+ "wiz-scorch": "fight/talent-fire-small"
 }
