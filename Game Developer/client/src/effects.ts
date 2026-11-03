@@ -25,6 +25,9 @@ import owlJson from '../../assets/effects/owl/owl.json?url';
 import owlPng from '../../assets/effects/owl/owl.png';
 import rogueData from '../../assets/fx_rogue/fx_rogue.json';
 import lightningData from '../../assets/trinkets/fx_lightning.json';
+import spellsData from '../../assets/fx_spells/fx_spells.json';
+import spellsJson from '../../assets/fx_spells/fx_spells.json?url';
+import spellsPng from '../../assets/fx_spells/fx_spells.png';
 import lightningJson from '../../assets/trinkets/fx_lightning.json?url';
 import lightningPng from '../../assets/trinkets/fx_lightning.png';
 import rogueJson from '../../assets/fx_rogue/fx_rogue.json?url';
@@ -43,6 +46,8 @@ const ATLASES = {
   fx_blood: { png: bloodPng, json: bloodJson, actions: actionsOf(bloodData), scale: 0.5 },
   // A trinket's lightning and the storm blade's (Mitch, AD, 2026-11-03): the pivot is where it strikes, drawn additively.
   fx_lightning: { png: lightningPng, json: lightningJson, actions: actionsOf(lightningData), scale: 0.5 },
+  // The Magician's spells by school, and Magic Power (Mitch, AD, 2026-11-03): drawn normally, not added.
+  fx_spells: { png: spellsPng, json: spellsJson, actions: actionsOf(spellsData), scale: 0.5 },
 } as const;
 type AtlasName = keyof typeof ATLASES;
 
@@ -91,8 +96,8 @@ export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: 
 }
 
 /** The clips for a fight; call from its preload. The owl is only for an Archer. */
-export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false, withLightning = false): void {
-  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : []), ...(withLightning ? (['fx_lightning'] as const) : [])]) {
+export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false, withLightning = false, withSpells = false): void {
+  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : []), ...(withLightning ? (['fx_lightning'] as const) : []), ...(withSpells ? (['fx_spells'] as const) : [])]) {
     if (!scene.textures.exists(name)) scene.load.atlas(name, ATLASES[name].png, ATLASES[name].json);
   }
 }
@@ -121,12 +126,14 @@ export function playOnce(scene: Phaser.Scene, clip: string, x: number, y: number
 }
 
 /** A clip that moves from one place to another, then calls `then` where it lands. */
-export function fly(scene: Phaser.Scene, clip: string, from: { x: number; y: number }, to: { x: number; y: number }, ms: number, then: () => void, atlas: AtlasName = 'effects'): void {
+export function fly(scene: Phaser.Scene, clip: string, from: { x: number; y: number }, to: { x: number; y: number }, ms: number, then: () => void, atlas: AtlasName = 'effects', turn = false): void {
   const s = quiet() ? null : sprite(scene, atlas, clip, from.x, from.y);
   if (!s) {
     then();
     return;
   }
+  // A clip drawn pointing right turns to its line (a spell's bolt, 2026-11-03).
+  if (turn) s.setRotation(Math.atan2(to.y - from.y, to.x - from.x));
   s.play(`${atlas}/${clip}`);
   scene.tweens.add({
     targets: s,
@@ -141,6 +148,12 @@ export function fly(scene: Phaser.Scene, clip: string, from: { x: number; y: num
   });
 }
 
+/** Put an effect just behind something on screen: Magic Power round the Magician's feet (2026-11-03). */
+export function behind(scene: Phaser.Scene, s: Phaser.GameObjects.Sprite, target: Phaser.GameObjects.GameObject & { depth: number }): void {
+  s.setDepth(target.depth);
+  scene.children.moveBelow(s as Phaser.GameObjects.GameObject, target);
+}
+
 /** Clips held while a state lasts, each under a name of the caller's. */
 export class HeldEffects {
   private readonly held = new Map<string, Phaser.GameObjects.Sprite>();
@@ -151,11 +164,12 @@ export class HeldEffects {
   }
 
   /** The clip shows while `on`; `off` plays once where it stood when it ends. */
-  set(clip: string, on: boolean, x: number, y: number, atlas: AtlasName = 'effects', off?: string, name = `${clip}@${x}`): void {
+  set(clip: string, on: boolean, x: number, y: number, atlas: AtlasName = 'effects', off?: string, name = `${clip}@${x}`, below?: Phaser.GameObjects.GameObject & { depth: number }): void {
     const current = this.held.get(name);
     if (on && !current && !quiet()) {
       const s = sprite(this.scene, atlas, clip, x, y);
       if (!s) return;
+      if (below) behind(this.scene, s, below);
       s.play(`${atlas}/${clip}`);
       this.held.set(name, s);
     } else if (!on && current) {

@@ -11,3 +11,7 @@ Not seen in the game. I judged them at 40 and 28 on a parchment ground only.
 - **The always-on rules** sit in a gold-edged crest, so they read as something you are, not something you press.
 - **The signatures at the foot of each tree** have a gold ring, including `bulwark`, `meteor`, `arc-slash`, `return-fire` and `spike-trap`.
 - **Out of the atlas, nothing uses them:** `war-cry`, `rally`, `poison-blade`, `smoke-bomb`, `frost-bolt`, `mana-shield`, `ember`, `renew`, `night-veil`, `owl-watch`. They stay in the tool, so they can come back in a moment.
+
+## New on 2026-11-03
+
+- **`magic-power`**, Magic Power: a charged violet gem with rays and two gold chevrons going up. It is for Robin's Magic Power, in place of the Pocket Watch on the button. `time-warp` stays in the atlas until Miles, GD says it can go.

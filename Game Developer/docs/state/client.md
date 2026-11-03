@@ -589,3 +589,7 @@ A Magician’s guard buttons say Ward (no mana) and Channel (+half mana); the fi
 ## Spells and bow shots from where you stand (Robin, 2026-11-03)
 
 A Magician's damage spell (`SPELL_ELEMENT` in `FightScene`: arcane, fire, holy) plays the attack clip without stepping in, a sparkle at the hand, a bolt flying to the foe and a burst there; stand-ins from the effects atlas (`mana_sparkle`, `burn`, `heal_glow`, `star_impact`, `crit_burst`) until Mitch, AD's cast clip and spell effects. A Hunter with a bow no longer steps in; the arrow flies. `fly` takes any effect atlas. A Magician's ability with no sound of its own sounds like Arcane Bolt, not a swing.
+
+## The Magician casts (Mitch, AD, 2026-11-03)
+
+Her `attack1` is now a cast (all atlases with her frames recopied). `assets/fx_spells`: `<school>_flare`, `_bolt` (a loop, drawn pointing right, turned to its line by `fly(..., turn)`), `_burst` for arcane, fire and holy (holy's at the foe's feet), and `power_on` / `power_aura` for Magic Power, drawn behind her (`behind`). A spell: the flare at her free hand (50 px before her feet, 80 up) at the cast's blow frame, the bolt at about 600 px a second, the burst and the foe's reaction when it lands. Her plain Attack with a staff or wand is a small arcane cast; with a sword (Spellsword) she still steps in. A heal plays the holy burst at her feet. Falling Star lands with the fire burst. Loaded only when a Magician fights.
