@@ -490,7 +490,7 @@ export class BagScene extends Phaser.Scene {
         this.inFlight = false;
         const rejected = events.find((e) => e.type === 'rejected');
         if (!rejected) sfx.play(intent.type === 'use' ? (intent.item.startsWith('mana-potion') ? 'fight/mana-potion' : 'fight/potion') : intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
-        this.note = rejected?.type === 'rejected' ? `Not allowed: ${rejected.reason}.` : done;
+        this.note = rejected?.type === 'rejected' ? (rejected.reason === 'two hands' ? 'Your weapon takes both hands: put it away first, or wear a one-handed one.' : `Not allowed: ${rejected.reason}.`) : done;
         // A worn piece taken off is carried now, and a piece put on is worn: the pick follows it.
         if (!rejected && intent.type === 'equip') {
           const slot = SLOTS.find((s) => this.game_.me.equipment[s]?.id === intent.gear);

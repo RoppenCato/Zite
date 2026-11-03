@@ -6,7 +6,7 @@
 // has no art yet shows the Tin piece. Files are 2x and face left; `face(true)` flips the whole hero to face right.
 
 import Phaser from 'phaser';
-import { UNIQUES, type Character, type ClassId, type GearItem, type Slot } from '../../rules/src/index.ts';
+import { UNIQUES, type Character, type ClassId, type GearItem, type Slot, gearKind } from '../../rules/src/index.ts';
 import legendIconsJson from '../../assets/legends/icons.json?url';
 import legendIconsPng from '../../assets/legends/icons.png';
 import archerOverJson from '../../assets/hero_classes/archer/gear_over.json?url';
@@ -144,6 +144,42 @@ for (const [path, url] of Object.entries(LEGEND_FILES)) {
   if (m[2] === 'png') tex.png = url;
   else tex.json = url;
 }
+// Weapons and off-hands by kind (Mitch, AD, 2026-11-03, weapons_v2): an atlas each, loaded while worn. Three looks by rank.
+const V2_FILES = import.meta.glob('../../assets/weapons_v2/*.{png,json}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const v2 = (name: string): Tex => ({ key: `v2_${name}`, png: V2_FILES[`../../assets/weapons_v2/${name}.png`] ?? '', json: V2_FILES[`../../assets/weapons_v2/${name}.json`] ?? '' });
+const V2_ICONS = v2('icons');
+const GREAT_ARM = v2('great_arm');
+const HUNTER_BODY = v2('hunter_body');
+const lookOf = (rank: number): string => (rank <= 3 ? 'plain' : rank <= 6 ? 'fine' : 'grand');
+
+/** A weapon's or an off-hand's own drawing by its kind, or null where the class's own drawn ranks serve (a Warrior's sword, a Rogue's dagger, a Magician's staff, a Hunter's bow). */
+function kindArt(g: GearItem, classId: ClassId): { tex: Tex; piece: string } | null {
+  const kind = gearKind(g);
+  if (!kind) return null;
+  const look = lookOf(g.rank);
+  if (g.slot === 'weapon') {
+    if (kind === 'great') return { tex: v2(`${look}_great`), piece: `${look}_great` };
+    if (kind === 'sword' && classId === 'rogue') return { tex: v2(`rogue_${look}_sword`), piece: `${look}_sword` };
+    if (kind === 'wand') return { tex: v2('wands'), piece: `${look}_wand` };
+    if (kind === 'dagger' && classId === 'ranger') return { tex: v2('hunter_daggers'), piece: g.rank === 1 ? 'tin_dagger' : g.rank === 2 ? 'copper_dagger' : `${look}_dagger` };
+    return null;
+  }
+  if (g.slot === 'shield') return kind.endsWith('_orb') ? { tex: v2('orbs'), piece: kind } : { tex: v2(`shields_${kind}`), piece: `${look}_${kind}` };
+  return null;
+}
+
+/** The kind atlases a character's hands call for: the pieces, a great weapon's arm, a Hunter's body for a dagger. */
+function kindTextures(c: Character): Tex[] {
+  const out: Tex[] = [];
+  for (const g of [c.equipment.weapon, c.equipment.shield]) {
+    const art = g ? kindArt(g, c.classId) : null;
+    if (art) out.push(art.tex);
+  }
+  if (gearKind(c.equipment.weapon) === 'great') out.push(GREAT_ARM);
+  if (c.classId === 'ranger' && !holdsBow(c)) out.push(HUNTER_BODY);
+  return out;
+}
+
 const ARCHER_OVER: Tex = { key: 'hero_gear_over_archer', png: archerOverPng, json: archerOverJson };
 const ARCHER_SETS: Record<string, Tex> = {
   set_leather: { key: 'set_leather_archer', png: leatherArcherPng, json: leatherArcherJson },
@@ -155,7 +191,7 @@ const LEGEND_ICONS: Tex = { key: 'legend_icons', png: legendIconsPng, json: lege
 const LINE_SET: Record<string, string> = { light: 'leather', magic: 'cloth' };
 
 /** The atlases every class shares: the gear and its icons. */
-const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS];
+const SHARED: readonly Tex[] = [TEX.boots, TEX.capes, TEX.coats, TEX.gloves, TEX.charms, TEX.hats, TEX.shields, TEX.icons, SET_ICONS, LEGEND_ICONS, V2_ICONS];
 
 /** The files are 2x: 300 px in the file is 150 CSS px in a fight (Mitch, AD's number; Robin, 2026-11-01: "whatever works best", and the side view has the room). */
 export const HERO_FIGHT_SCALE = 0.5;
@@ -211,6 +247,9 @@ const woodenPiece = (g: GearItem): string | null => (g.slot === 'weapon' && g.ba
 function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): Layer | null {
   const wood = woodenPiece(g);
   if (wood && has(scene, SETS.wooden!.key, `${wood}/stand/0001`)) return { key: SETS.wooden!.key, piece: wood };
+  const legend = g.unique ? UNIQUES[g.unique]?.art : undefined;
+  const kind = legend ? null : kindArt(g, classId);
+  if (kind && has(scene, kind.tex.key, `${kind.piece}/stand/0001`)) return { key: kind.tex.key, piece: kind.piece };
   const part = partOf(g.slot, classId);
   for (const word of artWords(g)) {
     const key = SETS[word]?.key ?? texOf(g.slot, classId);
@@ -221,7 +260,7 @@ function pieceFor(scene: Phaser.Scene, g: GearItem, classId: ClassId): Layer | n
 }
 
 /** An Archer with a bow, not a wooden weapon: their hands use their own frames. */
-const holdsBow = (c: Character): boolean => c.classId === 'ranger' && !!c.equipment.weapon && !woodenPiece(c.equipment.weapon);
+const holdsBow = (c: Character): boolean => c.classId === 'ranger' && !!c.equipment.weapon && !woodenPiece(c.equipment.weapon) && gearKind(c.equipment.weapon) === 'bow';
 
 /** The sets this character wears that are not loaded yet. */
 function missingSets(scene: Phaser.Scene, c: Character): Tex[] {
@@ -234,6 +273,7 @@ function missingSets(scene: Phaser.Scene, c: Character): Tex[] {
     const own = set && holdsBow(c) ? ARCHER_SETS[set.key] : undefined;
     if (own && !scene.textures.exists(own.key)) out.add(own);
   }
+  for (const k of kindTextures(c)) if (k.png && !scene.textures.exists(k.key)) out.add(k);
   return [...out];
 }
 
@@ -249,6 +289,10 @@ export function gearIcon(scene: Phaser.Scene, g: GearItem, classId: ClassId): { 
   const part = partOf(g.slot, classId);
   const legend = g.unique ? UNIQUES[g.unique]?.art : undefined;
   if (legend && has(scene, LEGEND_ICONS.key, `${legend}_${part}`)) return { texture: LEGEND_ICONS.key, frame: `${legend}_${part}` };
+  // A piece of a new kind by its look (Mitch, AD's icons, 2026-11-03).
+  const kind = gearKind(g);
+  const iconName = kind?.endsWith('_orb') ? kind : kind ? `${lookOf(g.rank)}_${kind}` : '';
+  if (!legend && kind && kindArt(g, classId) && has(scene, V2_ICONS.key, iconName)) return { texture: V2_ICONS.key, frame: iconName };
   for (const word of artWords(g)) {
     if (has(scene, SET_ICONS.key, `${word}_${part}`)) return { texture: SET_ICONS.key, frame: `${word}_${part}` };
     const key = g.slot === 'weapon' ? CLASS_ART[classId].icons.key : TEX.icons.key;
@@ -277,7 +321,8 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const sword = worn('weapon');
   const shield = worn('shield');
   // What is held decides the arms (Mitch, AD's corrected arm, 2026-11-02). An Archer's shield hangs on the bow arm, with no change.
-  const archer = c.classId === 'ranger';
+  const archer = holdsBow(c);
+  const great = gearKind(eq.weapon) === 'great' && scene.textures.exists(GREAT_ARM.key);
   const shielded = !!shield && !archer;
   const emptyHanded = !sword && !archer;
   const woodenBow = archer && !!eq.weapon && !!woodenPiece(eq.weapon);
@@ -285,12 +330,12 @@ function layersFor(scene: Phaser.Scene, c: Character): Layer[] {
   const first = (key: string, ...pieces: string[]): Layer => ({ key, piece: pieces.find((p) => has(scene, key, `${p}/stand/0001`)) ?? pieces[pieces.length - 1]! });
   const layers: (Layer | null)[] = [
     cape,
-    shielded ? null : { key: body, piece: 'far_back' },
+    shielded || great ? null : { key: body, piece: 'far_back' },
     { key: body, piece: 'body' },
     boots ?? { key: TEX.boots.key, piece: 'boots_base' },
     coat,
-    shielded ? first(body, 'far_front_shield', 'far_front') : { key: body, piece: 'far_front' },
-    gloves ? (shielded ? first(gloves.key, `${gloves.piece}_far_shield`, `${gloves.piece}_far`) : { key: gloves.key, piece: `${gloves.piece}_far` }) : null,
+    great ? { key: GREAT_ARM.key, piece: 'far_front_great' } : shielded ? first(body, 'far_front_shield', 'far_front') : { key: body, piece: 'far_front' },
+    gloves ? (great ? (has(scene, GREAT_ARM.key, `${gloves.piece}_far_great/stand/0001`) ? { key: GREAT_ARM.key, piece: `${gloves.piece}_far_great` } : null) : shielded ? first(gloves.key, `${gloves.piece}_far_shield`, `${gloves.piece}_far`) : { key: gloves.key, piece: `${gloves.piece}_far` }) : null,
     charm,
     { key: body, piece: 'head' },
     hat ?? { key: body, piece: 'hair' },
@@ -345,7 +390,8 @@ export class Hero {
 
   /** The layers rebuilt from what the character wears; the clip goes on from the same frame. */
   wear(character: Character): void {
-    this.bodyKey = CLASS_ART[character.classId].body.key;
+    // A Hunter with no bow stands on the Warrior's moves (Mitch, AD's hunter_body, 2026-11-03).
+    this.bodyKey = character.classId === 'ranger' && !holdsBow(character) && this.scene.textures.exists(HUNTER_BODY.key) ? HUNTER_BODY.key : CLASS_ART[character.classId].body.key;
     this.classId = character.classId;
     this.bow = holdsBow(character);
     this.character = character;
@@ -416,13 +462,13 @@ export class Hero {
 
   /** Where a layer's frame comes from, best first: a class's own frames, then the piece's. */
   private frameFor(l: { key: string; piece: string }, plain: string, n: string): [string, string] {
-    if (this.classId === 'ranger') {
+    if (this.classId === 'ranger' && this.bow) {
       if (has(this.scene, ARCHER_OVER.key, plain)) return [ARCHER_OVER.key, plain];
       const set = ARCHER_SETS[l.key];
       const own = `${l.piece}/${this.clip}_archer/${n}`;
       if (this.bow && set && has(this.scene, set.key, own)) return [set.key, own];
     }
-    const attack = this.clip === 'attack1' && OWN_ATTACK[this.classId] ? `${l.piece}/${OWN_ATTACK[this.classId]}/${n}` : '';
+    const attack = this.clip === 'attack1' && OWN_ATTACK[this.classId] && (this.classId !== 'ranger' || this.bow) ? `${l.piece}/${OWN_ATTACK[this.classId]}/${n}` : '';
     if (attack && has(this.scene, l.key, attack)) return [l.key, attack];
     return [has(this.scene, this.bodyKey, plain) ? this.bodyKey : l.key, plain];
   }

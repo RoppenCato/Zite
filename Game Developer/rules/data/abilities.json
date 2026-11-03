@@ -1700,11 +1700,11 @@
     "level": 30
   },
   "ber-fury": {
-    "name": "Fury",
-    "text": "3% more attack a rank.",
+    "name": "Bloodlust",
+    "text": "With a great weapon, your hits heal you 3% of the damage they deal, a rank.",
     "mana": 0,
     "rule": {
-      "attackMult": 1.03
+      "greatLifesteal": 0.03
     },
     "ranks": [
       {},
@@ -1784,11 +1784,11 @@
     "level": 13
   },
   "ber-keen": {
-    "name": "Keen Eye",
-    "text": "2% more crit a rank.",
+    "name": "Second Wind",
+    "text": "Once a fight, when a blow leaves you under a quarter of your HP, you get back 8% of it, a rank.",
     "mana": 0,
     "rule": {
-      "crit": 0.02
+      "secondWind": 0.08
     },
     "ranks": [
       {},

@@ -123,6 +123,10 @@ export interface ClassTraits {
   meterStart?: number;
   barrierStart?: number;
   hpRegen?: number;
+  /** With a great weapon, this share of the damage dealt heals you (Bloodlust). */
+  greatLifesteal?: number;
+  /** Once a fight, under a third of HP, this share of it back (Second Wind). */
+  secondWind?: number;
   manaRegen?: number;
   winHeal?: number;
   winMana?: number;

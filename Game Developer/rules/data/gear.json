@@ -1042,7 +1042,9 @@
         "price": 1.2,
         "classes": [
           "warrior"
-        ]
+        ],
+        "block": 0.25,
+        "dodge": 0.45
       },
       "dagger": {
         "name": "Dagger",

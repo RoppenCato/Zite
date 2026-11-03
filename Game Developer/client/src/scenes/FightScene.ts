@@ -8,7 +8,7 @@
 
 import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA } from '../../../rules/src/index.ts';
+import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -313,13 +313,14 @@ export class FightScene extends Phaser.Scene {
       const used = !!a?.oncePerFight && !!f?.used?.includes(id);
       const meterOk = !a?.meter || (f?.meter ?? 0) >= a.meter;
       const meterAllOk = !a?.meterAll || (f?.meter ?? 0) > 0;
+      const held = holdsFor(me, a?.needs);
       return {
         text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''}
-${used ? 'used' : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
+${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? ` · ${cost}` : ''}`}`,
         size: '14px',
         icon: id,
         color: 0x8e6ad9,
-        enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used,
+        enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used && held,
         onTap: () => this.pick({ kind: 'ability', ability: id }),
       };
     });

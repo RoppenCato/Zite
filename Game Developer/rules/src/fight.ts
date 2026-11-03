@@ -9,7 +9,7 @@ import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
-import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, offhandGuard } from './gear.ts';
+import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, gearKind, guardOf } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -113,7 +113,7 @@ export function fightOdds(c: Character): { crit: number; critPower: number; hits
   const s = stats(c);
   const t = traitsOf(c);
   const g = PROGRESSION.guards;
-  const o = offhandGuard(c.equipment.shield);
+  const o = guardOf(c);
   return {
     crit: Math.min(1, s.crit),
     critPower: PROGRESSION.critPower * (1 + (t.critPower ?? 0)),
@@ -517,7 +517,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       let landed = false;
       const exposed = !!f.dance?.exposed;
       // What the off-hand gives the guards (Robin, 2026-11-03).
-      const off = offhandGuard(r.c.equipment.shield);
+      const off = guardOf(r.c);
       // Shadow Dance's first round: the blow in full, whatever the guard.
       const held: Guard = exposed ? 'none' : guard;
       if (f.spike) {
@@ -765,8 +765,10 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     if (b.crit) gainMeter(r, 'miss', 1);
     if (b.crit && traits.critHeal) healing(r, Math.max(1, Math.round(s.maxHp * traits.critHeal)));
     if (b.crit && traits.critMana) r.c = restoreMana(r.c, Math.max(1, Math.round(s.maxMana * traits.critMana)), r.action, events);
-    if (s.lifesteal > 0) {
-      const back = Math.max(1, Math.round(b.damage * s.lifesteal));
+    // Bloodlust: a great weapon drinks too (Robin, 2026-11-03).
+    const drink = s.lifesteal + (traits.greatLifesteal && gearKind(r.c.equipment.weapon) === 'great' ? traits.greatLifesteal : 0);
+    if (drink > 0) {
+      const back = Math.max(1, Math.round(b.damage * drink));
       const hp = Math.min(s.maxHp, r.c.hp + back);
       if (hp > r.c.hp) {
         events.push({ type: 'healed', action: id, player, amount: hp - r.c.hp, hp });
@@ -962,9 +964,11 @@ function survive(r: Round): boolean {
   const p = s.powers;
   const id = r.action.id;
   const player = r.action.player;
-  if (p.secondWind && !f.used.includes('secondWind') && r.c.hp < s.maxHp * EFFECTS.secondWindBelow) {
+  // A power's or a talent's (Berserker's Second Wind, 2026-11-03).
+  const wind = (p.secondWind ?? 0) + (traitsOf(r.c).secondWind ?? 0);
+  if (wind > 0 && !f.used.includes('secondWind') && r.c.hp < s.maxHp * EFFECTS.secondWindBelow) {
     f.used.push('secondWind');
-    const hp = Math.min(s.maxHp, r.c.hp + Math.round(s.maxHp * p.secondWind));
+    const hp = Math.min(s.maxHp, r.c.hp + Math.round(s.maxHp * wind));
     r.c = { ...r.c, hp };
     r.events.push({ type: 'revived', action: id, player, by: 'secondWind', hp });
   }

@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -37,7 +37,7 @@ export const SHOP_LAYOUT = {
   /** Gear, Items and Sell; in a town Train too. */
   tabY: 192,
   firstRowY: 244,
-  rowStep: 48,
+  rowStep: 46,
   rows: 8,
   button: { x: 344, w: 88, h: 42 },
   leave: { x: CENTRE, y: 706, w: 220, h: 50 },
@@ -153,9 +153,11 @@ export class ShopScene extends Phaser.Scene {
         if (!sold) gearRow(0, piece, `${piece.price} g`, '', () => this.compare(piece, 'Buy', () => this.buy({ daily: true })));
       }
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
-      SLOTS.forEach((slot, i) => {
-        const g = plainGear('preview', slot, tier, tab, me.classId);
-        gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab })));
+      // Both of the class's weapons, and the tab's off-hand (Robin, 2026-11-03).
+      const rowsFor: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'shield' ? [{ slot, kind: shopOffhand(me.classId, tab) }] : [{ slot, kind: undefined }]));
+      rowsFor.forEach(({ slot, kind }, i) => {
+        const g = plainGear('preview', slot, tier, tab, me.classId, kind);
+        gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab, kind })));
       });
     } else if (tab === 'items' || tab === 'cards') {
       const sold = (shopOffer(this.game_.state, me)?.items ?? []).filter((id) => !!ITEMS[id]!.dice === (tab === 'cards'));
@@ -227,7 +229,7 @@ export class ShopScene extends Phaser.Scene {
     this.comparing = [];
   }
 
-  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean }): void {
+  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean; kind?: string }): void {
     if (this.inFlight) return;
     this.inFlight = true;
     this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));

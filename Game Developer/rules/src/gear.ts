@@ -227,6 +227,14 @@ export function offhandGuard(g: GearItem | null | undefined): { block: number; d
   };
 }
 
+/** The guards as the hands give them: the off-hand's, or with none a two-hander's own (a great weapon blocks less and dodges more, Robin, 2026-11-03), or bare. */
+export function guardOf(c: Character): ReturnType<typeof offhandGuard> {
+  if (c.equipment.shield) return offhandGuard(c.equipment.shield);
+  const w = kindData('weapon', gearKind(c.equipment.weapon));
+  const bare = offhandGuard(null);
+  return w && (w.block !== undefined || w.dodge !== undefined) ? { ...bare, block: w.block ?? bare.block, dodge: w.dodge ?? bare.dodge } : bare;
+}
+
 /** What is held allows this: any one of `needs`, a kind, `shield` (not an orb) or `blade` (a sword or a dagger). */
 export function holdsFor(c: Character, needs: readonly string[] | undefined): boolean {
   if (!needs?.length) return true;
@@ -411,7 +419,10 @@ export function describeGear(g: GearItem): string {
 export function gearPowers(g: GearItem): string[] {
   const parts: string[] = [];
   // What its kind means for the guards and the hands (Robin, 2026-11-03).
-  if (twoHanded(g)) parts.push('two-handed');
+  if (twoHanded(g)) {
+    const w = kindData('weapon', gearKind(g));
+    parts.push(w?.block !== undefined ? `two-handed: Block stops ${Math.round(w.block * 100)}%, Dodge ${Math.round((w.dodge ?? 0) * 100)}%` : 'two-handed');
+  }
   if (g.slot === 'shield' && kindData('shield', gearKind(g))) {
     const o = offhandGuard(g);
     parts.push(o.shield ? `Block stops ${Math.round(o.block * 100)}%, Dodge ${Math.round(o.dodge * 100)}%` : `Mana Shield ${Math.round((o.mana ?? 0) * 100)}%, Dodge ${Math.round(o.dodge * 100)}%${o.mirror ? `, ${Math.round(o.mirror * 100)}% turned back` : ''}${o.brace > 1 ? ', Brace gives twice the mana' : ''}`);
