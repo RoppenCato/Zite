@@ -125,6 +125,11 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
 - Each land has a legendary set at **level 30**, fitting the land: one of each weapon type and different shields. It is won from that land's Arena on its **hardest mode, which opens once every Seal is won**, before the last dungeon.
 - "Miles will need to find a way to balance loot and to distribute loot in a good way in the game": the numbers, the chances and how the mode opens are the Game Developer's.
 
+### The endgame: the Shrine's dungeons (Robin, 2026-11-03)
+- After the last boss, a **small island with a small magical forest and a shrine**, reached by a **ferry from the hub**. At the shrine you play **dungeons generated for that run only**: they fit your level, take a random theme with recolours (to keep them cheap), and drop weapons and armour, again recoloured; their bosses have random elements and colours.
+- **Depths:** clearing a depth opens a harder one with better loot.
+- **Fall in one and you keep the gear but lose the gold** (the Game Developer reads this as the gold found on that run). **As often as you like.**
+
 ### Trinkets (Robin, 2026-11-03)
 - **No necklaces: the slot holds trinkets.** A trinket gives a passive bonus of its own, which may or may not touch combat.
 - Robin's examples: heal 10 HP after every battle in the overworld (not the Arena); your normal attack hits twice as many times at half the damage (a Rogue's three become six); after a roll you may walk to the nearby spots too (a 5 lets you walk 4, 5 or 6); 3 mana back after every round in battle; normal attacks have a small chance (5 to 10%) to deal lightning damage and stun the target so it cannot use its next attack.
