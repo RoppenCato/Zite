@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { apply, ITEMS, makeRng, newGame, plainGear, shopOffer, type GameState } from '../src/index.ts';
+import { apply, ITEMS, makeRng, newGame, plainGear, shopOffer, shopStall, type GameState } from '../src/index.ts';
 
 const at = (space: string): GameState => {
   const s = newGame({ seed: 'towns', player: 'p1', name: 'Robin', classId: 'warrior' });
@@ -20,9 +20,7 @@ describe('towns that differ (Robin, 2026-11-02)', () => {
     const s = at('millford');
     const offer = shopOffer(s, s.characters.p1!)!;
     expect(offer.lines).toEqual(['light', 'heavy', 'magic']);
-    const r = apply(s, { type: 'buy', id: 'b', player: 'p1', slot: 'helm', line: 'heavy' }, makeRng(1));
-    const worn = Object.values(r.state.characters.p1!.equipment).find((g) => g?.slot === 'helm');
-    expect(worn?.rank ?? r.state.characters.p1!.bag.at(-1)?.rank).toBe(offer.tier);
+    for (const g of shopStall(s, s.characters.p1!)) expect(g.rank).toBe(offer.tier);
     expect(offer.tier).toBe(2);
   });
   it('a town still rests you, whatever its kind', () => {

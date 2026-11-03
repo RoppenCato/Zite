@@ -306,6 +306,8 @@ export interface Character {
   bossMet?: string[];
   /** The day each smith's fine piece was last bought. */
   dailyBought?: Record<string, number>;
+  /** The stall last bought from (`shop:day`) and the places in it already sold to you. */
+  stall?: { at: string; taken: number[] };
   /** What you have heard: a mark on your map, paid off by walking onto it. */
   rumours?: Rumour[];
   /** The hidden spots you have found, and the ends whose first treasure you have had. */
@@ -546,7 +548,7 @@ export type Action =
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
   /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
-  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean; kind?: string; reforge?: string }
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean; kind?: string; reforge?: string; stall?: number }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }

@@ -9,7 +9,7 @@ import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { makeTrinket, makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded, canReforge, reforged } from './gear.ts';
+import { makeTrinket, makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded, canReforge, reforged, CLASS_LINE } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath, stepChoices } from './paths.ts';
@@ -26,6 +26,7 @@ import {
   type Board,
   type Character,
   type ClassId,
+  type Slot,
   type GameEvent,
   type GameState,
   type Space,
@@ -1133,6 +1134,57 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
   return { stock, lines, items, town, tier: tier + (town?.rank ?? 0), price };
 }
 
+/** Where a stall stands today for this character: its shop and the character's day. */
+function stallKey(state: GameState, c: Character): string {
+  return `${c.space}:${clockOf(c).day}`;
+}
+
+/**
+ * A shop's stall (Robin, 2026-11-03: "the shops should rotate random gear"): `GEAR.stall.size` pieces for the character's
+ * class and its kind of gear, of the shop's rank, the same all of the character's day and new the next. Mostly plain, now and
+ * then uncommon or rare; an arms shop leans to weapons and off-hands, a magic shop to what is worn. Pieces sold to you are in
+ * `c.stall`; their places stay, empty.
+ */
+export function shopStall(state: GameState, c: Character): GearItem[] {
+  const offer = shopOffer(state, c);
+  if (!offer?.lines.length) return [];
+  const S = GEAR.stall;
+  const rng = makeRng(hashSeed(`${state.seed}:stall:${stallKey(state, c)}:${c.classId}`));
+  const line = CLASS_LINE[c.classId];
+  const slots = SLOTS.filter((s) => s !== 'trinket');
+  const lean = S.lean[offer.stock] ?? {};
+  const weight = (s: Slot): number => lean[s] ?? 1;
+  const total = slots.reduce((n, s) => n + weight(s), 0);
+  const out: GearItem[] = [];
+  for (let i = 0; i < S.size; i++) {
+    let pick = rng.next() * total;
+    const slot = slots.find((s) => (pick -= weight(s)) < 0) ?? slots[slots.length - 1]!;
+    const kinds = slot === 'weapon' ? classKinds(c.classId, 'weapon') : [];
+    const kind = slot === 'weapon' ? kinds[rng.int(kinds.length) - 1] : slot === 'shield' ? shopOffhand(c.classId, line) : undefined;
+    const id = `stall-${i}`;
+    const roll = rng.next();
+    let piece = plainGear(id, slot, offer.tier, line, c.classId, kind);
+    if (roll >= S.common) {
+      // Uncommon or rare, never better: the great finds stay in the world.
+      const want = rng.next() < S.uncommon ? 'uncommon' : 'rare';
+      for (let t = 0; t < 6; t++) {
+        const g = rollGear(id, slot, offer.tier, want === 'uncommon' ? 1 : 2, rng, line, c.classId, kind);
+        if (g.rarity === want) {
+          piece = g;
+          break;
+        }
+      }
+    }
+    out.push(piece);
+  }
+  return out;
+}
+
+/** The places of today's stall already sold to this character. */
+export function stallTaken(state: GameState, c: Character): number[] {
+  return c.stall?.at === stallKey(state, c) ? c.stall.taken : [];
+}
+
 /** A master smith's fine piece today, the same for everyone of a class, dear on purpose: something for gold to do (Robin, 2026-11-02). */
 export function dailyPiece(state: GameState, c: Character, now: number): GearItem | null {
   const space = state.board.spaces[c.space];
@@ -1185,29 +1237,28 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
     const items = { ...character.items, [action.item]: (character.items[action.item] ?? 0) + 1 };
     return { state: withCharacter(state, { ...character, gold, items }), events: [{ type: 'bought', action: action.id, player: action.player, item: action.item, gear: null, price: cost, gold }] };
   }
-  // Trinkets are found, not sold on a shop's shelves (Robin, 2026-11-03: no more necklaces).
-  if (action.slot !== undefined && SLOTS.includes(action.slot) && action.slot !== 'trinket') {
-    const tier = offer.tier;
+  // The stall (Robin, 2026-11-03): one of today's few pieces, each sold once. Trinkets are found, never on a stall.
+  if (action.stall !== undefined) {
+    const piece = shopStall(state, character)[action.stall];
+    if (!piece || stallTaken(state, character).includes(action.stall)) return reject(state, action, 'no such item');
     const got = nextGearId(state);
-    const line = action.line ?? (offer.lines.includes('heavy') ? 'heavy' : offer.lines[0]);
-    if (!line || !offer.lines.includes(line)) return reject(state, action, 'not at a shop');
-    // A weapon of the class's two kinds, an off-hand of the tab's kind (Robin, 2026-11-03).
-    const kind = action.slot === 'weapon' ? (action.kind && classKinds(character.classId, 'weapon').includes(action.kind) ? action.kind : classKinds(character.classId, 'weapon')[0]) : action.slot === 'shield' ? shopOffhand(character.classId, line) : undefined;
-    const gear = plainGear(got.id, action.slot, tier, line, character.classId, kind);
+    const gear = { ...piece, id: got.id };
     if (character.gold < gear.price) return reject(state, action, 'not enough gold');
-    const old = character.equipment[action.slot];
+    const at = stallKey(state, character);
+    character = { ...character, stall: { at, taken: [...stallTaken(state, character), action.stall] } };
+    const old = character.equipment[gear.slot];
     const empty = !old;
     if (!empty && character.bag.length >= GEAR.bagLimit) return reject(state, action, 'bag full');
     const gold = character.gold - gear.price;
-    // A plain piece replaces a plain one no higher, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
+    // A piece replaces a plain one no higher, which goes to the bag: you bought it to wear it (mine, 2026-11-01).
     if (old && old.rarity === 'common' && old.rank <= gear.rank) {
-      if (action.slot === 'shield' && twoHanded(character.equipment.weapon)) return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
-      const worn = capped(handsFree({ ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [action.slot]: gear } }));
+      if (gear.slot === 'shield' && twoHanded(character.equipment.weapon)) return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };
+      const worn = capped(handsFree({ ...character, gold, bag: [...character.bag, old], equipment: { ...character.equipment, [gear.slot]: gear } }));
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: old }] };
     }
     // A piece for an empty slot goes straight on (Robin, 2026-11-01).
-    if (empty && !(action.slot === 'shield' && twoHanded(character.equipment.weapon))) {
-      const worn = capped(handsFree({ ...character, gold, equipment: { ...character.equipment, [action.slot]: gear } }));
+    if (empty && !(gear.slot === 'shield' && twoHanded(character.equipment.weapon))) {
+      const worn = capped(handsFree({ ...character, gold, equipment: { ...character.equipment, [gear.slot]: gear } }));
       return { state: withCharacter(got.state, worn), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }, { type: 'equipped', action: action.id, player: action.player, gear, replaced: null }] };
     }
     return { state: withCharacter(got.state, { ...character, gold, bag: [...character.bag, gear] }), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear, price: gear.price, gold }] };

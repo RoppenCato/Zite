@@ -609,3 +609,5 @@ The installed app is named Zite (the PWA manifest said Board World); its icons a
 - **Music and sound** (Nigel, SD): `music/dream` on the Isle and in runs, `music/meadows-fight` in the Meadows' fights, `music/king-goo` for King Goo, `music/title` on the character screen (Robin kept all four, 2026-11-03); `ui/ferry`, `ui/dreamgate`, `ui/wake`, `ui/dreamdust`, `ui/dreamdust-buy`; steps by the ground (`STEPS`: roots and moss, mud and boards, snow, sand, stone).
 
 **Reforge** (2026-11-03): a master smith's first tab, Smith, holds the day's fine piece and under it Reforge: the worn pieces then the bag's that it can raise, each shown one rank up with its price; tapping compares, Buy reforges.
+
+**The shop's Gear tab** (Robin, 2026-11-03: "Rotating stall"): today's five pieces for you in place of the Light, Heavy and Magic tabs; one sold to you shows Sold till the next day; a line says how many rolls until new pieces.

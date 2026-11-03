@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
+import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, shopStall, stallTaken, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -337,16 +337,14 @@ function play(build: Build, seed: string): Result {
         r.sold += 1;
       }
     }
-    const line = offer.lines.includes(LINE[classId]!) ? LINE[classId]! : offer.lines[0];
-    if (line) {
-      for (const slot of SLOTS) {
-        const c = me();
-        const piece = plainGear('x', slot, offer.tier, line, classId);
-        if (piece.price <= c.gold * 0.7 && score(wearing(c, piece)) > score(c) + 1) {
-          if (!act({ type: 'buy', slot, line }).some((e) => e.type === 'rejected')) r.bought += 1;
-        }
+    // Today's stall (Robin, 2026-11-03: rotating stalls): what is worth wearing and within reach.
+    shopStall(state, me()).forEach((piece, i) => {
+      const c = me();
+      if (stallTaken(state, c).includes(i)) return;
+      if (piece.price <= c.gold * 0.7 && score(wearing(c, piece)) > score(c) + 1) {
+        if (!act({ type: 'buy', stall: i }).some((e) => e.type === 'rejected')) r.bought += 1;
       }
-    }
+    });
     const fine = dailyPiece(state, me(), clock);
     if (fine && fine.price * 2 <= me().gold * 0.6 && score(wearing(me(), fine)) > score(me()) + 1) {
       if (!act({ type: 'buy', daily: true }).some((e) => e.type === 'rejected')) r.fine += 1;

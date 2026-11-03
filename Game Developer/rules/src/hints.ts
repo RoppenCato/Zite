@@ -104,7 +104,7 @@ function hintLine(state: GameState, spaceId: string, player: string, now: number
       return `${where}: step into the Dream, a dungeon laid for you alone. Depths open to you: 1 to ${me ? dreamDepthOpen(me) : 1}.`;
     case 'shop':
       if (space.stock === 'dream') return `${where}: the best flasks and dice cards for gold; the Dream's own trinkets and a legendary piece of your choice for Dreamdust.`;
-      return space.stock === 'magic' ? `${where}: robes, staves, mana potions and elixirs; it buys what you carry.` : `${where}: ${rank} and leather gear, health potions; it buys what you carry.`;
+      return space.stock === 'magic' ? `${where}: a few ${rank} pieces for you, mostly worn things, new each day; mana potions and elixirs; it buys what you carry.` : `${where}: a few ${rank} pieces for you, mostly weapons and off-hands, new each day; health potions; it buys what you carry.`;
     case 'door': {
       const beyond = space.door ? state.board.spaces[space.door] : undefined;
       if (space.sealed && me && !sealsAllWon(state.board, me)) return `${where}: a door with ${sealCount(state.board, me).total} sockets, sealed. Every land's Seal opens it.`;

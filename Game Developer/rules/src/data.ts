@@ -385,6 +385,8 @@ export interface LineSlot {
 }
 
 export interface GearData {
+  /** A shop's stall (Robin, 2026-11-03). */
+  stall: StallData;
   /** The rank names by tier, from 1; beyond the names a rank is "Rank n". */
   ranks: string[];
   /** How much each rank beyond the tables multiplies the last table entry's number and price. */
@@ -484,6 +486,13 @@ export const SPACE_KIND_DATA = spacesJson as Record<SpaceKind, SpaceKindData>;
 export const ENEMIES = enemiesJson as Record<string, EnemyData>;
 export const PROGRESSION = progressionJson as unknown as ProgressionData;
 export const ITEMS = itemsJson as Record<string, ItemData>;
+/** A shop's stall (Robin, 2026-11-03). */
+export interface StallData {
+  size: number;
+  common: number;
+  uncommon: number;
+  lean: Partial<Record<string, Partial<Record<Slot, number>>>>;
+}
 export const GEAR = gearJson as GearData;
 /** The notes a player may leave on a spot (mine, 2026-11-01: set lines, so nothing needs moderating). */
 export const TRACES: readonly string[] = (tracesJson as { texts: string[] }).texts;

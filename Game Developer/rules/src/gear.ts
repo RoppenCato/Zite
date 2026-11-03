@@ -482,7 +482,7 @@ export function rollUnique(id: string, tier: number, rank: number, rng: Rng): Ge
 
 /** A set's piece for this land's tier (Robin, 2026-11-02), at least a rare one, or null when none has come in yet. */
 /** The kind of gear a class wears best: a set of that line counts double when one is found. */
-const CLASS_LINE: Record<ClassId, GearLine> = { warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' };
+export const CLASS_LINE: Record<ClassId, GearLine> = { warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' };
 
 export function rollSetPiece(id: string, tier: number, rank: number, rng: Rng, classId: ClassId = 'warrior'): GearItem | null {
   const pool = SET_IDS.filter((s) => SETS[s]!.tier <= tier);

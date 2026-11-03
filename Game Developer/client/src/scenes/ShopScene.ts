@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket, canReforge, reforged } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket, canReforge, reforged, shopStall, stallTaken } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -45,7 +45,7 @@ export const SHOP_LAYOUT = {
 
 const SLOT_WORDS: Record<Slot, string> = { weapon: 'Weapon', shield: 'Off-hand', helm: 'Helm', armour: 'Armour', gloves: 'Gloves', boots: 'Boots', cape: 'Cape', trinket: 'Trinket' };
 
-type Tab = GearLine | 'items' | 'cards' | 'sell' | 'coach' | 'fine' | 'inn' | 'dust' | 'piece';
+type Tab = 'gear' | 'items' | 'cards' | 'sell' | 'coach' | 'fine' | 'inn' | 'dust' | 'piece';
 
 export class ShopScene extends Phaser.Scene {
   /** The text colours: ink on the kit's parchment. */
@@ -87,24 +87,22 @@ export class ShopScene extends Phaser.Scene {
     const { tabY, leave } = SHOP_LAYOUT;
     // What this shop sells, as tabs (Robin, 2026-11-02: "landing on different shops should give you option to buy different gear").
     const offer = shopOffer(this.game_.state, me);
-    const tier = offer?.tier ?? 1;
-    const lineWord = (line: GearLine): string => GEAR.lines[line].words[tier - 1] ?? line;
-    const lines = (offer?.lines ?? []) as GearLine[];
+    // Today's stall, a few pieces for you (Robin, 2026-11-03: "Rotating stall"), in place of every piece by kind.
+    const stalled = shopStall(this.game_.state, me).length > 0;
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
-    const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
+    const tabs: [Tab, string][] = [...(stalled ? ([['gear', 'Gear']] as [Tab, string][]) : []), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
     if (offer?.town?.rank) tabs.unshift(['fine', 'Smith']);
     // The Dream's merchant: its trinkets and a legendary piece, for Dreamdust (Robin, 2026-11-03).
     if (offer?.stock === 'dream') tabs.splice(tabs.findIndex(([id]) => id === 'sell'), 0, ['dust', 'Trinkets'], ['piece', 'Gear']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
     // Many tabs (a night merchant, a rich town): short words, so they never run together (2026-11-03).
     const crowded = tabs.length > 6;
-    const short: Partial<Record<Tab, string>> = { heavy: 'Heavy', light: 'Light', magic: 'Magic' };
-    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, crowded ? (short[id] ?? word) : word, COLORS.log, crowded ? '12px' : '15px', () => this.show(id)));
+    tabs.forEach(([id, word], i) => makeButton(this, 20 + tabW * (i + 0.5), tabY, tabW - 6, 44, word, COLORS.log, crowded ? '12px' : '15px', () => this.show(id)));
     this.message = this.add
       .text(CENTRE, 636, offer?.town?.line ?? 'What will it be?', { fontFamily: FONT, fontSize: '14px', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 40 } })
       .setOrigin(0.5, 0);
     makeButton(this, leave.x, leave.y, leave.w, leave.h, 'Leave', COLORS.log, '20px', () => (this.scene.get('board') as BoardScene).shopLeft());
-    this.show(lines[0] ?? 'items');
+    this.show(stalled ? 'gear' : 'items');
     this.log.note(`shop: ${title}`);
   }
 
@@ -177,13 +175,17 @@ export class ShopScene extends Phaser.Scene {
         const up = reforged(g);
         gearRow(i + 3, up, `${up.price} g`, `Rank ${g.rank} → ${up.rank}`, () => this.compare(up, 'Buy', () => this.buy({ reforge: g.id })));
       });
-    } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
-      // Both of the class's weapons, and the tab's off-hand (Robin, 2026-11-03); no trinkets, they are found.
-      const rowsFor: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'shield' ? [{ slot, kind: shopOffhand(me.classId, tab) }] : slot === 'trinket' ? [] : [{ slot, kind: undefined }]));
-      rowsFor.forEach(({ slot, kind }, i) => {
-        const g = plainGear('preview', slot, tier, tab, me.classId, kind);
-        gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ slot, line: tab, kind })));
+    } else if (tab === 'gear') {
+      // Today's few pieces for you; one sold to you leaves its place empty till tomorrow.
+      const stall = shopStall(this.game_.state, me);
+      const taken = stallTaken(this.game_.state, me);
+      stall.forEach((g, i) => {
+        if (taken.includes(i)) gearRow(i, g, '', 'Sold', () => undefined);
+        else gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[g.slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ stall: i })));
       });
+      const { dayRolls, nightRolls } = PROGRESSION.dayNight;
+      const left = dayRolls + nightRolls - ((me.clock ?? 0) % (dayRolls + nightRolls));
+      this.rows.push(this.add.text(CENTRE, firstRowY + stall.length * rowStep, `New pieces in ${left} ${left === 1 ? 'roll' : 'rolls'}.`, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim }).setOrigin(0.5, 0));
     } else if (tab === 'dust') {
       // Only here, never found.
       dreamWares().forEach((w, i) => {
@@ -273,7 +275,7 @@ export class ShopScene extends Phaser.Scene {
     this.comparing = [];
   }
 
-  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean; kind?: string; reforge?: string }): void {
+  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean; kind?: string; reforge?: string; stall?: number }): void {
     if (this.inFlight) return;
     this.inFlight = true;
     this.reforging = !!what.reforge;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ITEMS } from '../src/data.ts';
-import { emptyEquipment } from '../src/index.ts';
+import { classKinds, emptyEquipment, PROGRESSION, shopStall, stallTaken } from '../src/index.ts';
 import { apply, newGame } from '../src/game.ts';
 import { plainGear, stats } from '../src/gear.ts';
 import { legalPaths } from '../src/paths.ts';
@@ -15,31 +15,35 @@ function at(space: string, patch: Partial<Character> = {}, last: number | null =
   const s = newGame({ seed: 'ashford', player: P, name: 'Robin', classId: 'warrior', board: ringBoard() });
   return { ...s, characters: { [P]: { ...s.characters[P]!, equipment: emptyEquipment(), space, ...patch } }, die: { ...s.die, last } };
 }
-const buy = (what: { item?: string; slot?: Slot }, id = 'b1'): Action => ({ type: 'buy', id, player: P, ...what });
+const buy = (what: { item?: string; slot?: Slot; stall?: number }, id = 'b1'): Action => ({ type: 'buy', id, player: P, ...what });
 const use = (item: string, value?: number, id = 'u1'): Action => ({ type: 'use', id, player: P, item, ...(value !== undefined ? { value } : {}) });
 const me = (s: GameState): Character => s.characters[P]!;
 
 describe('the shop', () => {
-  it('sells a consumable for its price and the plain gear of its area\'s rank for a slot, when standing on a shop or in a town', () => {
+  it('sells a consumable for its price, and a piece of its stall, when standing on a shop or in a town', () => {
     const { state, events } = apply(at('s2', { gold: 200 }), buy({ item: 'potion' }), makeRng('x'), NOW);
     expect(events).toEqual([{ type: 'bought', action: 'b1', player: P, item: 'potion', gear: null, price: 20, gold: 180 }]);
     expect(me(state)).toMatchObject({ gold: 180, items: { potion: 1 } });
-    const sword = apply(state, buy({ slot: 'weapon' }, 'b2'), makeRng('x'), NOW);
-    // The weapon's slot is empty: it goes straight on (Robin, 2026-11-01). A second one goes into the bag.
+    // Every slot is empty: a piece of the stall goes straight on (Robin, 2026-11-01).
+    const rich = { ...state, characters: { [P]: { ...me(state), gold: 100000 } } };
+    const stall = shopStall(rich, me(rich));
+    const sword = apply(rich, buy({ stall: 0 }, 'b2'), makeRng('x'), NOW);
     expect(sword.events).toEqual([
-      { type: 'bought', action: 'b2', player: P, item: null, gear: plainGear('g1', 'weapon', 1), price: 50, gold: 130 },
-      { type: 'equipped', action: 'b2', player: P, gear: plainGear('g1', 'weapon', 1), replaced: null },
+      { type: 'bought', action: 'b2', player: P, item: null, gear: { ...stall[0]!, id: 'g1' }, price: stall[0]!.price, gold: 100000 - stall[0]!.price },
+      { type: 'equipped', action: 'b2', player: P, gear: { ...stall[0]!, id: 'g1' }, replaced: null },
     ]);
-    expect(me(sword.state).bag).toEqual([]);
-    expect(me(sword.state).equipment.weapon).toEqual(plainGear('g1', 'weapon', 1));
+    expect(me(sword.state).equipment[stall[0]!.slot]?.id).toBe('g1');
     expect(sword.state.nextItem).toBe(2);
-    const second = apply(sword.state, buy({ slot: 'weapon' }, 'b3'), makeRng('x'), NOW);
-    // Bought to be worn: it goes on and the one it replaces goes to the bag.
-    expect(me(second.state).bag).toEqual([plainGear('g1', 'weapon', 1)]);
-    expect(me(second.state).equipment.weapon?.id).toBe('g2');
+    // Each piece sells once; its place stays, empty, for the day.
+    expect(apply(sword.state, buy({ stall: 0 }, 'b3'), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
+    expect(stallTaken(sword.state, me(sword.state))).toEqual([0]);
+    expect(shopStall(sword.state, me(sword.state))).toEqual(stall);
+    // A full list by slot is not sold any more.
+    expect(apply(rich, buy({ slot: 'weapon' }, 'b4'), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
     // A town that is not a smith's sells flasks and cards, no gear.
-    const inTown = apply(at('s0', { gold: 200 }), buy({ slot: 'helm' }), makeRng('x'), NOW);
-    expect(inTown.events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
+    // A town that is not a smith's has no stall.
+    expect(shopStall(at('s0'), me(at('s0')))).toEqual([]);
+    expect(apply(at('s0', { gold: 200 }), buy({ stall: 0 }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
     const camped = { ...at('s1', { gold: 200 }), spawns: { s1: { kind: 'merchant' as const, enemy: null, until: NOW + 1 } } };
     expect(apply(camped, buy({ item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'bought', item: 'reroll', price: 20 });
   });
@@ -47,7 +51,8 @@ describe('the shop', () => {
   it('refuses away from a shop, without the gold, for a thing it does not sell, and in a fight', () => {
     expect(apply(at('s1', { gold: 50 }), buy({ item: 'potion' }), makeRng('x'), NOW).events).toEqual([{ type: 'rejected', action: 'b1', player: P, reason: 'not at a shop' }]);
     expect(apply(at('s2', { gold: 10 }), buy({ item: 'potion' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough gold' });
-    expect(apply(at('s2', { gold: 10 }), buy({ slot: 'weapon' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough gold' });
+    expect(apply(at('s2', { gold: 10 }), buy({ stall: 0 }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not enough gold' });
+    expect(apply(at('s2', { gold: 100000 }), buy({ stall: 99 }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
     expect(apply(at('s2', { gold: 100 }), buy({ item: 'sword' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
     expect(apply(at('s2', { gold: 100 }), buy({}), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
     expect(apply(at('s2', { gold: 100 }), buy({ slot: 'hat' as Slot }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
@@ -173,26 +178,50 @@ describe('the dice cards', () => {
   });
 });
 
-describe('buying a higher plain piece', () => {
-  const inForestTown = (old: GearItem) => {
+describe('the stall (Robin, 2026-11-03: "Rotating stall")', () => {
+  const inForestShop = (patch: Partial<Character> = {}): GameState => {
     const s = newGame({ seed: 'buy', player: 'p', name: 'R', classId: 'warrior' });
-    const town = Object.values(s.board.spaces).find((x) => x.kind === 'shop' && x.stock === 'arms' && s.board.areas[x.area]?.tier === 2)!;
-    const me = s.characters.p!;
-    return { ...s, characters: { p: { ...me, space: town.id, gold: 500, equipment: { ...me.equipment, weapon: old } } } };
+    const shop = Object.values(s.board.spaces).find((x) => x.kind === 'shop' && x.stock === 'arms' && s.board.areas[x.area]?.tier === 2)!;
+    const c = s.characters.p!;
+    return { ...s, characters: { p: { ...c, space: shop.id, gold: 100000, ...patch } } };
   };
-
-  it('goes on, and the old one goes to the bag', () => {
-    const old = plainGear('old', 'weapon', 1);
-    const r = apply(inForestTown(old), { type: 'buy', id: 'b1', player: 'p', slot: 'weapon' } as Action, makeRng('x'), 0);
-    expect(r.state.characters.p!.equipment.weapon!.rank).toBe(2);
-    expect(r.state.characters.p!.bag.map((g) => g.id)).toEqual(['old']);
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'equipped', replaced: old }));
+  const turn = PROGRESSION.dayNight.dayRolls + PROGRESSION.dayNight.nightRolls;
+  const onDay = (s: GameState, day: number): GameState => ({ ...s, characters: { p: { ...s.characters.p!, clock: day * turn } } });
+  it("is a few pieces for your class, of the shop's rank, the same all day and new the next", () => {
+    const s = inForestShop();
+    const stall = shopStall(s, s.characters.p!);
+    expect(stall).toHaveLength(5);
+    for (const g of stall) {
+      expect(g.rank).toBe(2);
+      expect(g.slot).not.toBe('trinket');
+      if (g.slot === 'weapon') expect(classKinds('warrior', 'weapon')).toContain(g.kind);
+      else expect(g.line ?? 'heavy').toBe('heavy');
+    }
+    const later = { ...s, characters: { p: { ...s.characters.p!, clock: 5 } } };
+    expect(shopStall(later, later.characters.p!)).toEqual(stall);
+    const tomorrow = onDay(s, 1);
+    expect(shopStall(tomorrow, tomorrow.characters.p!)).not.toEqual(stall);
   });
-
-  it('leaves a rare piece on: it may be the better one', () => {
-    const old = { ...plainGear('old', 'weapon', 1), rarity: 'rare' as const };
-    const r = apply(inForestTown(old), { type: 'buy', id: 'b1', player: 'p', slot: 'weapon' } as Action, makeRng('x'), 0);
-    expect(r.state.characters.p!.equipment.weapon!.id).toBe('old');
-    expect(r.state.characters.p!.bag[0]!.rank).toBe(2);
+  it('is mostly plain, now and then uncommon or rare, never better; an arms shop leans to weapons and off-hands', () => {
+    const s = inForestShop();
+    const all = Array.from({ length: 60 }, (_, day) => onDay(s, day)).flatMap((x) => shopStall(x, x.characters.p!));
+    const share = (f: (g: GearItem) => boolean): number => all.filter(f).length / all.length;
+    expect(share((g) => g.rarity === 'common')).toBeGreaterThan(0.5);
+    expect(share((g) => g.rarity === 'uncommon' || g.rarity === 'rare')).toBeGreaterThan(0.15);
+    expect(share((g) => !['common', 'uncommon', 'rare'].includes(g.rarity))).toBe(0);
+    expect(share((g) => g.slot === 'weapon' || g.slot === 'shield')).toBeGreaterThan(0.45);
+  });
+  it('a piece replaces a plain one no higher, which goes to the bag; a rare one stays on', () => {
+    const s = inForestShop();
+    const g = shopStall(s, s.characters.p!)[0]!;
+    const old = plainGear('old', g.slot, 1, 'heavy', 'warrior', g.kind);
+    const worn = inForestShop({ equipment: { ...s.characters.p!.equipment, [g.slot]: old } });
+    const r = apply(worn, { type: 'buy', id: 'b1', player: 'p', stall: 0 } as Action, makeRng('x'), 0);
+    expect(r.state.characters.p!.equipment[g.slot]!.rank).toBe(2);
+    expect(r.state.characters.p!.bag.map((x) => x.id)).toContain('old');
+    const rare = inForestShop({ equipment: { ...s.characters.p!.equipment, [g.slot]: { ...old, rarity: 'rare' as const } } });
+    const kept = apply(rare, { type: 'buy', id: 'b1', player: 'p', stall: 0 } as Action, makeRng('x'), 0);
+    expect(kept.state.characters.p!.equipment[g.slot]!.id).toBe('old');
+    expect(kept.state.characters.p!.bag.at(-1)!.rank).toBe(2);
   });
 });
