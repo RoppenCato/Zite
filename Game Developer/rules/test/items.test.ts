@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ITEMS } from '../src/data.ts';
+import { GEAR, ITEMS } from '../src/data.ts';
 import { classKinds, emptyEquipment, PROGRESSION, shopStall, stallTaken } from '../src/index.ts';
 import { apply, newGame } from '../src/game.ts';
 import { plainGear, stats } from '../src/gear.ts';
@@ -187,7 +187,7 @@ describe('the stall (Robin, 2026-11-03: "Rotating stall")', () => {
   };
   const turn = PROGRESSION.dayNight.dayRolls + PROGRESSION.dayNight.nightRolls;
   const onDay = (s: GameState, day: number): GameState => ({ ...s, characters: { p: { ...s.characters.p!, clock: day * turn } } });
-  it("is a few pieces for your class, of the shop's rank, the same all day and new the next", () => {
+  it("is a few pieces for your class, of the shop's rank, the same for a few rolls and then new (Robin: more often)", () => {
     const s = inForestShop();
     const stall = shopStall(s, s.characters.p!);
     expect(stall).toHaveLength(5);
@@ -199,8 +199,8 @@ describe('the stall (Robin, 2026-11-03: "Rotating stall")', () => {
     }
     const later = { ...s, characters: { p: { ...s.characters.p!, clock: 5 } } };
     expect(shopStall(later, later.characters.p!)).toEqual(stall);
-    const tomorrow = onDay(s, 1);
-    expect(shopStall(tomorrow, tomorrow.characters.p!)).not.toEqual(stall);
+    const soon = { ...s, characters: { p: { ...s.characters.p!, clock: GEAR.stall.everyRolls } } };
+    expect(shopStall(soon, soon.characters.p!)).not.toEqual(stall);
   });
   it('is mostly plain, now and then uncommon or rare, never better; an arms shop leans to weapons and off-hands', () => {
     const s = inForestShop();

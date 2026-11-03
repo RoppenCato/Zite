@@ -1134,14 +1134,14 @@ export function shopOffer(state: GameState, c: Character): { stock: ShopStock; l
   return { stock, lines, items, town, tier: tier + (town?.rank ?? 0), price };
 }
 
-/** Where a stall stands today for this character: its shop and the character's day. */
+/** Where a stall stands now for this character: its shop, and which stretch of `everyRolls` of the character's rolls it is. */
 function stallKey(state: GameState, c: Character): string {
-  return `${c.space}:${clockOf(c).day}`;
+  return `${c.space}:${Math.floor((c.clock ?? 0) / GEAR.stall.everyRolls)}`;
 }
 
 /**
  * A shop's stall (Robin, 2026-11-03: "the shops should rotate random gear"): `GEAR.stall.size` pieces for the character's
- * class and its kind of gear, of the shop's rank, the same all of the character's day and new the next. Mostly plain, now and
+ * class and its kind of gear, of the shop's rank, the same for `GEAR.stall.everyRolls` of the character's rolls, then new. Mostly plain, now and
  * then uncommon or rare; an arms shop leans to weapons and off-hands, a magic shop to what is worn. Pieces sold to you are in
  * `c.stall`; their places stay, empty.
  */

@@ -489,6 +489,8 @@ export const ITEMS = itemsJson as Record<string, ItemData>;
 /** A shop's stall (Robin, 2026-11-03). */
 export interface StallData {
   size: number;
+  /** New pieces every this many of the buyer's rolls. */
+  everyRolls: number;
   common: number;
   uncommon: number;
   lean: Partial<Record<string, Partial<Record<Slot, number>>>>;

@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket, canReforge, reforged, shopStall, stallTaken } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket, canReforge, reforged, shopStall, stallTaken } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -176,15 +176,15 @@ export class ShopScene extends Phaser.Scene {
         gearRow(i + 3, up, `${up.price} g`, `Rank ${g.rank} → ${up.rank}`, () => this.compare(up, 'Buy', () => this.buy({ reforge: g.id })));
       });
     } else if (tab === 'gear') {
-      // Today's few pieces for you; one sold to you leaves its place empty till tomorrow.
+      // A few pieces for you, new every few rolls; one sold to you leaves its place empty till then.
       const stall = shopStall(this.game_.state, me);
       const taken = stallTaken(this.game_.state, me);
       stall.forEach((g, i) => {
         if (taken.includes(i)) gearRow(i, g, '', 'Sold', () => undefined);
         else gearRow(i, g, `${g.price} g`, ownedGear(me.equipment[g.slot], me.bag, g.base), () => this.compare(g, 'Buy', () => this.buy({ stall: i })));
       });
-      const { dayRolls, nightRolls } = PROGRESSION.dayNight;
-      const left = dayRolls + nightRolls - ((me.clock ?? 0) % (dayRolls + nightRolls));
+      const every = GEAR.stall.everyRolls;
+      const left = every - ((me.clock ?? 0) % every);
       this.rows.push(this.add.text(CENTRE, firstRowY + stall.length * rowStep, `New pieces in ${left} ${left === 1 ? 'roll' : 'rolls'}.`, { fontFamily: FONT, fontSize: '13px', color: this.ink.dim }).setOrigin(0.5, 0));
     } else if (tab === 'dust') {
       // Only here, never found.

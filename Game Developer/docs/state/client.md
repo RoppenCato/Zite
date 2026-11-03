@@ -610,4 +610,4 @@ The installed app is named Zite (the PWA manifest said Board World); its icons a
 
 **Reforge** (2026-11-03): a master smith's first tab, Smith, holds the day's fine piece and under it Reforge: the worn pieces then the bag's that it can raise, each shown one rank up with its price; tapping compares, Buy reforges.
 
-**The shop's Gear tab** (Robin, 2026-11-03: "Rotating stall"): today's five pieces for you in place of the Light, Heavy and Magic tabs; one sold to you shows Sold till the next day; a line says how many rolls until new pieces.
+**The shop's Gear tab** (Robin, 2026-11-03: "Rotating stall"): today's five pieces for you in place of the Light, Heavy and Magic tabs; one sold to you shows Sold till the pieces change, every 10 rolls; a line says how many rolls until then.
