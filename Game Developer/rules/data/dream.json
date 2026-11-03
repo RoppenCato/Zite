@@ -378,7 +378,7 @@
       "gold": 800,
       "dust": 40
     },
-    "perDepth": 0.07,
+    "perDepth": 0.1,
     "goldPerDepth": 0.1,
     "dustPerDepth": 0.15,
     "level": 30
@@ -399,10 +399,10 @@
     "rankFrom": 9,
     "depthsPerRank": 2
   },
-  "_aboutMerchant": "The camp's merchant: for gold, the best flasks and dice cards (items with \"dream\" in their stock); for Dreamdust, the Dream's own trinkets and a piece of your choice at the rank of your best depth, legendary.",
+  "_aboutMerchant": "The camp's merchant: for gold, the best flasks and dice cards (items with \"dream\" in their stock); for Dreamdust, the Dream's own trinkets and a piece of your choice at the rank of your best depth, legendary. Prices set from the bots (2026-11-03): a depth-1 run gives about 85 Dreamdust in 3 to 5 minutes, so a piece is about ten runs and the dearest trinket fifteen.",
   "merchant": {
-    "piece": 300,
-    "piecePerRank": 25,
+    "piece": 900,
+    "piecePerRank": 75,
     "tint": "#c8b0ff",
     "palette": "lilac"
   }

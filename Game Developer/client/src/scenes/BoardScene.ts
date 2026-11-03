@@ -50,7 +50,7 @@ import { audio } from '../audio.ts';
 import { releaseBackdrops } from '../backdrop.ts';
 import secretData from '../../../assets/world_moved/secrets.json';
 import { drawArenaBuilding, loadArenaFor, type ArenaDrawn } from '../arena.ts';
-import { drawCrownDoor, drawFerry, scatterProps, allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
+import { drawCrownDoor, drawFerry, scatterProps, DREAM_PLACES, allProps, groundDepth, placesAtlas, propArea, raiseTallProps, TOP_MARGIN, drawKitBanner, drawKitCover, drawKitGround, drawKitPlate, drawKitProps, drawKitRoads, KIT_DEPTH, kitFor, preloadBoardKits, standingDepth, clearKitProps, dressPlate, freeRegion, preloadRegion, regionHeld, regionPlaces, themedPlaces, SECRET_PLACES } from '../boardkit.ts';
 import { releaseCreatures } from '../creatures.ts';
 import { feel, sfx } from '../feel.ts';
 import { Hero, HERO_BOARD_SCALE, heroReady, preloadHero, preloadWornSets } from '../hero.ts';
@@ -867,6 +867,8 @@ export class BoardScene extends Phaser.Scene {
     const { board, seed } = this.game_.state;
     const own = Object.values(board.spaces).filter((s) => s.area === area.id);
     const props = scatterProps(this, kit, area, own, DREAM_PROPS[area.theme] ?? [], makeRng(`${this.game_.me.dream?.seed ?? seed}:props`));
+    // A handful of the Isle's crystals in every dream (Mitch, AD).
+    props.push(...scatterProps(this, { ...kit, props: DREAM_PLACES }, area, own, ['crystal_a', 'crystal_b'], makeRng(`${this.game_.me.dream?.seed ?? seed}:crystals`), 24));
     this.dreamGround.set(area.id, [...drawKitGround(this, kit, area, seed, board.width, board.height), ...props]);
     this.dressPlates(area, kit);
   }
@@ -2698,7 +2700,7 @@ export class BoardScene extends Phaser.Scene {
       releaseBackdrops(this.game, area.theme);
     }
     const carried = [me.ailments?.poison ? 'poisoned' : '', me.ailments?.weak ? 'weakened' : '', me.elixirs?.vigor ? `vigor ${me.elixirs.vigor.fights}` : '', me.elixirs?.arcana ? `arcana ${me.elixirs.arcana.fights}` : ''].filter(Boolean).join(', ');
-    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried || (area?.name ?? '')} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
+    this.hud?.setStats({ level: me.level, hp: me.hp, maxHp: s.maxHp, mana: me.mana, maxMana: s.maxMana, gold: me.gold }, `${carried || (area?.dream ? `Depth ${area.dream.depth}` : (area?.name ?? ''))} · ${where}${withOthers.length ? ` · with ${withOthers.join(', ')}` : ''}`);
   }
 
   private setMessage(text: string): void {

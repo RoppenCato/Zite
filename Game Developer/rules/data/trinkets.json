@@ -405,7 +405,7 @@
       "tier": 9,
       "rarity": "epic",
       "dream": true,
-      "dust": 250,
+      "dust": 750,
       "traits": {
         "dreamDust": 1.5
       },
@@ -417,7 +417,7 @@
       "tier": 9,
       "rarity": "epic",
       "dream": true,
-      "dust": 200,
+      "dust": 600,
       "traits": {
         "lucid": 0.5
       },
@@ -429,7 +429,7 @@
       "tier": 9,
       "rarity": "epic",
       "dream": true,
-      "dust": 250,
+      "dust": 750,
       "traits": {
         "winHeal": 0.06,
         "winMana": 0.1
@@ -442,7 +442,7 @@
       "tier": 9,
       "rarity": "epic",
       "dream": true,
-      "dust": 300,
+      "dust": 900,
       "traits": {
         "dodge": 0.08,
         "secondWind": 0.2
@@ -455,7 +455,7 @@
       "tier": 9,
       "rarity": "legendary",
       "dream": true,
-      "dust": 400,
+      "dust": 1200,
       "traits": {
         "executeDamage": 1.35,
         "crit": 0.06
@@ -468,7 +468,7 @@
       "tier": 9,
       "rarity": "legendary",
       "dream": true,
-      "dust": 450,
+      "dust": 1350,
       "traits": {
         "hpMult": 1.12,
         "attackMult": 1.12
