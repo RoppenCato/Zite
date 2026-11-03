@@ -526,7 +526,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         this.heroBar.set(e.hp, s.maxHp);
         break;
       case 'poisoned':
-        sfx.play(e.storm ? 'fight/storm-bite' : 'fight/effect-poison-tick');
+        sfx.play(e.storm ? 'fight/storm-bite' : e.bleed ? 'fight/effect-bleed-tick' : 'fight/effect-poison-tick');
         if (e.target === 'enemy') {
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);

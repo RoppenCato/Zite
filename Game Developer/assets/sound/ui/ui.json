@@ -320,19 +320,34 @@
       "end": 27.8214,
       "loop": false
     },
-    "ui/level-up": {
+    "ui/night-falls": {
       "start": 27.8714,
-      "end": 29.3714,
+      "end": 29.5765,
+      "loop": false
+    },
+    "ui/morning": {
+      "start": 29.6265,
+      "end": 30.9472,
+      "loop": false
+    },
+    "ui/sleep": {
+      "start": 30.9972,
+      "end": 32.6972,
+      "loop": false
+    },
+    "ui/level-up": {
+      "start": 32.7472,
+      "end": 34.2472,
       "loop": false
     },
     "ui/boss-down": {
-      "start": 29.4214,
-      "end": 31.3491,
+      "start": 34.2972,
+      "end": 36.2249,
       "loop": false
     },
     "ui/area-opened": {
-      "start": 31.3991,
-      "end": 33.3137,
+      "start": 36.2749,
+      "end": 38.1895,
       "loop": false
     }
   }

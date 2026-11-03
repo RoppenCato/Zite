@@ -146,6 +146,7 @@ export class ShopScene extends Phaser.Scene {
       // Sleep till morning (Robin, 2026-11-03): the night's creatures go back to their dens.
       const c = clockOf(me);
       row(0, 'Sleep till morning', this.ink.text, `${c.left} rolls of night left. You wake rested.`, 'free', 'Sleep', () => {
+        sfx.play('ui/sleep');
         void this.game_.act({ type: 'sleep', player: this.game_.player } as never).then(() => (this.scene.get('board') as BoardScene).shopLeft());
       });
     } else if (tab === 'coach') {

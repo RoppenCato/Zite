@@ -649,6 +649,7 @@ export class BoardScene extends Phaser.Scene {
     for (const e of events) {
       switch (e.type) {
         case 'daybreak':
+          sfx.play(e.night ? 'ui/night-falls' : 'ui/morning');
           m.find(e.night ? 'mark_star' : 'mark_heart', e.night ? 'Night falls' : `Day ${e.day} begins`, e.night ? 'The wild grows bolder: stronger foes, richer pickings. A town can put you to bed.' : 'Morning: the night\'s creatures go back to their dens.', e.night ? 0x8fa0ff : 0xffe28a);
           break;
         case 'rested': {

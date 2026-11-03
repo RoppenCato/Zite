@@ -94,8 +94,8 @@
  "wiz-phoenix": "fight/revive",
  "wiz-pillar": "fight/ability-fireball",
  "wiz-scorch": "fight/talent-fire-small",
- "crimson-arc": "fight/talent-triple-cut",
- "bleed-out": "fight/talent-triple-cut",
+ "crimson-arc": "fight/talent-blood",
+ "bleed-out": "fight/talent-blood",
  "thousand-cuts": "fight/talent-triple-cut",
  "toxic-jab": "fight/talent-flask"
 }

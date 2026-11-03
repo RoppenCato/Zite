@@ -314,6 +314,11 @@
       "start": 32.1859,
       "end": 34.725,
       "loop": false
+    },
+    "fight/effect-bleed-tick": {
+      "start": 34.775,
+      "end": 34.9035,
+      "loop": false
     }
   }
 }

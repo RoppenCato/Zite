@@ -74,6 +74,11 @@
       "start": 8.0296,
       "end": 8.6279,
       "loop": false
+    },
+    "fight/talent-blood": {
+      "start": 8.6779,
+      "end": 8.9725,
+      "loop": false
     }
   }
 }
