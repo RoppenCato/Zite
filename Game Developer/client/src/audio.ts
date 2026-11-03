@@ -51,10 +51,9 @@ for (const key of ['creatures-pirates', 'creatures-giants', 'creatures-crown']) 
   if (json && ogg) SPRITES.push({ key, json, ogg, volume: 1, lazy: true });
 }
 
-/** Until Robin picks the die's landing, Nigel, SD's B plays (2026-11-01); the pick renames the winner `ui/die-land-n`. */
+// Robin picked the die's landing B (2026-11-03): it is `ui/die-land-1` to `-3` now, found as a family.
 // A borrowed sound steps aside by itself the day its own name is in a sprite (the church's bell, Nigel, SD's next cut).
 const ALIASES: Record<string, string> = {
-  'ui/die-land': 'ui/die-land-b',
   'ui/arrive-church': 'ui/arrive-shrine',
   // Chapter 2's names (Nigel, SD), silent or borrowed until his drops land.
   'ui/board-open': 'ui/sheet-open',

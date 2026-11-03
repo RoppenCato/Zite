@@ -142,177 +142,177 @@
     },
     "fight/victory": {
       "start": 9.4469,
-      "end": 10.8991,
+      "end": 10.8508,
       "loop": false
     },
     "fight/defeat": {
-      "start": 10.9491,
-      "end": 12.9057,
+      "start": 10.9008,
+      "end": 12.8574,
       "loop": false
     },
     "fight/drop": {
-      "start": 12.9557,
-      "end": 13.4199,
+      "start": 12.9074,
+      "end": 13.3716,
       "loop": false
     },
     "fight/flee": {
-      "start": 13.4699,
-      "end": 13.9245,
+      "start": 13.4216,
+      "end": 13.8762,
       "loop": false
     },
     "fight/caught": {
-      "start": 13.9745,
-      "end": 14.3176,
+      "start": 13.9262,
+      "end": 14.2693,
       "loop": false
     },
     "fight/phase": {
-      "start": 14.3676,
-      "end": 15.8421,
+      "start": 14.3193,
+      "end": 15.7938,
       "loop": false
     },
     "fight/charge": {
-      "start": 15.8921,
-      "end": 16.9764,
+      "start": 15.8438,
+      "end": 16.9281,
       "loop": false
     },
     "fight/potion": {
-      "start": 17.0264,
-      "end": 17.8992,
+      "start": 16.9781,
+      "end": 17.851,
       "loop": false
     },
     "fight/mana-potion": {
-      "start": 17.9492,
-      "end": 18.6781,
+      "start": 17.901,
+      "end": 18.6298,
       "loop": false
     },
     "fight/ability-heavy-blow": {
-      "start": 18.7281,
-      "end": 19.3292,
+      "start": 18.6798,
+      "end": 19.2809,
       "loop": false
     },
     "fight/ability-shield-bash": {
-      "start": 19.3792,
-      "end": 19.7058,
+      "start": 19.3309,
+      "end": 19.6575,
       "loop": false
     },
     "fight/ability-war-cry": {
-      "start": 19.7558,
-      "end": 20.9558,
+      "start": 19.7075,
+      "end": 20.9075,
       "loop": false
     },
     "fight/ability-execute": {
-      "start": 21.0058,
-      "end": 21.6249,
+      "start": 20.9575,
+      "end": 21.5766,
       "loop": false
     },
     "fight/ability-rally": {
-      "start": 21.6749,
-      "end": 22.6845,
+      "start": 21.6266,
+      "end": 22.6363,
       "loop": false
     },
     "fight/ability-shield-wall": {
-      "start": 22.7345,
-      "end": 23.4063,
+      "start": 22.6863,
+      "end": 23.3581,
       "loop": false
     },
     "fight/effect-stunned": {
-      "start": 23.4563,
-      "end": 24.1435,
+      "start": 23.4081,
+      "end": 24.0952,
       "loop": false
     },
     "fight/effect-weakened": {
-      "start": 24.1935,
-      "end": 24.7205,
+      "start": 24.1452,
+      "end": 24.6722,
       "loop": false
     },
     "fight/effect-poison": {
-      "start": 24.7705,
-      "end": 25.1194,
+      "start": 24.7222,
+      "end": 25.0711,
       "loop": false
     },
     "fight/effect-poison-tick": {
-      "start": 25.1694,
-      "end": 25.3063,
+      "start": 25.1211,
+      "end": 25.258,
       "loop": false
     },
     "fight/effect-armoured": {
-      "start": 25.3563,
-      "end": 25.5624,
+      "start": 25.308,
+      "end": 25.5141,
       "loop": false
     },
     "fight/effect-evade": {
-      "start": 25.6124,
-      "end": 25.894,
+      "start": 25.5641,
+      "end": 25.8457,
       "loop": false
     },
     "fight/effect-mark": {
-      "start": 25.944,
-      "end": 26.3872,
+      "start": 25.8957,
+      "end": 26.3389,
       "loop": false
     },
     "fight/effect-trap": {
-      "start": 26.4372,
-      "end": 26.5456,
+      "start": 26.3889,
+      "end": 26.4973,
       "loop": false
     },
     "fight/effect-skip": {
-      "start": 26.5956,
-      "end": 26.9565,
+      "start": 26.5473,
+      "end": 26.9082,
       "loop": false
     },
     "fight/effect-attackUp": {
-      "start": 27.0065,
-      "end": 27.5065,
+      "start": 26.9582,
+      "end": 27.4582,
       "loop": false
     },
     "fight/effect-barrier": {
-      "start": 27.5565,
-      "end": 28.1381,
+      "start": 27.5083,
+      "end": 28.0898,
       "loop": false
     },
     "fight/effect-sureCrit": {
-      "start": 28.1881,
-      "end": 28.2464,
+      "start": 28.1398,
+      "end": 28.1981,
       "loop": false
     },
     "fight/effect-companion": {
-      "start": 28.2964,
-      "end": 28.6922,
+      "start": 28.2481,
+      "end": 28.6439,
       "loop": false
     },
     "fight/effect-windup": {
-      "start": 28.7422,
-      "end": 29.1878,
+      "start": 28.6939,
+      "end": 29.1395,
       "loop": false
     },
     "fight/effect-drained": {
-      "start": 29.2378,
-      "end": 29.7332,
+      "start": 29.1895,
+      "end": 29.6849,
       "loop": false
     },
     "fight/heal": {
-      "start": 29.7832,
-      "end": 30.346,
+      "start": 29.7349,
+      "end": 30.2977,
       "loop": false
     },
     "fight/revive": {
-      "start": 30.396,
-      "end": 31.5092,
+      "start": 30.3477,
+      "end": 31.4609,
       "loop": false
     },
     "fight/dodge": {
-      "start": 31.5592,
-      "end": 31.7761,
+      "start": 31.5109,
+      "end": 31.7279,
       "loop": false
     },
     "fight/storm-bite": {
-      "start": 31.8261,
-      "end": 32.1841,
+      "start": 31.7779,
+      "end": 32.1359,
       "loop": false
     },
     "fight/ending-sting": {
-      "start": 32.2341,
-      "end": 34.7732,
+      "start": 32.1859,
+      "end": 34.725,
       "loop": false
     }
   }
