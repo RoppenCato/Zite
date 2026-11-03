@@ -508,7 +508,10 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
               const hand = { x: FIGHT_LAYOUT.heroX + 50, y: this.feetY - 80 };
               playOnce(this, spell.flare, hand.x, hand.y, 'fx_spells');
               fly(this, spell.bolt, hand, at, settings.ms(Math.max(160, Math.hypot(at.x - hand.x, at.y - hand.y) / 0.6)), land, 'fx_spells', true);
-            } else if (bowShot) fly(this, 'arrow', this.spot('hero', 'chest'), at, settings.ms(130), land);
+            } else if (bowShot) {
+              // From the drawn bow, not her middle, and slow enough to be seen (Mitch, AD, 2026-11-03).
+              fly(this, 'arrow', { x: FIGHT_LAYOUT.heroX + 57, y: this.feetY - 83 }, at, settings.ms(200), land);
+            }
             else land();
           });
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
