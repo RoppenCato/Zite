@@ -1,7 +1,7 @@
 import { resetSkills } from './skills.ts';
-import { emptyEquipment, makeTrinket, rollTrinket, twoHanded } from './gear.ts';
+import { emptyEquipment, gearKind, makeTrinket, plainGear, rollTrinket, twoHanded } from './gear.ts';
 import { makeRng } from './rng.ts';
-import { CLASS_DATA, DICE_DATA, PROGRESSION, ABILITIES } from './data.ts';
+import { CLASS_DATA, DICE_DATA, GEAR, PROGRESSION, ABILITIES } from './data.ts';
 import { freshFight } from './fight.ts';
 import { makeBoard, makeCharacter } from './game.ts';
 import { growBoard } from './generate.ts';
@@ -122,6 +122,8 @@ export function migrate(raw: unknown): GameState | null {
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
   const up = withHubOpen(withEastOpen(before));
+  // 42 → 43: a Magician gets a wand and a ward orb (in withArena).
+  if (version === 42) return withArena(up);
   // 41 → 42: Hollybrook, the Outlaw King’s Hall and Old Digby’s Dig are laid (the board is laid again in relay).
   if (version === 41) return withArena(up);
   // 40 → 41: the Pocket Watch's points go to Magic Power (renamed in withArena).
@@ -248,6 +250,20 @@ function handsFreed(c: Character): Character {
   return { ...c, bag: [...c.bag, c.equipment.shield], equipment: { ...c.equipment, shield: null } };
 }
 
+/**
+ * To 43 (Robin, 2026-11-03: "Cant wear an orb on my mage"): a staff takes both hands, so a Magician who has no wand or no orb gets one
+ * in the bag, at a rank for their level (mine), while the bag has room. They choose: the staff, or the wand and the orb.
+ */
+function magesArmed(c: Character): Character {
+  if (c.classId !== 'mage') return c;
+  const owned = [...Object.values(c.equipment ?? {}), ...c.bag];
+  const rank = Math.min(10, Math.max(1, Math.ceil(c.level / 3)));
+  const gifts: GearItem[] = [];
+  if (!owned.some((g) => g?.slot === 'weapon' && gearKind(g) === 'wand')) gifts.push(plainGear(`${c.id}-gift-wand`, 'weapon', rank, 'heavy', 'mage', 'wand'));
+  if (!owned.some((g) => g?.slot === 'shield' && gearKind(g)?.endsWith('_orb'))) gifts.push(plainGear(`${c.id}-gift-orb`, 'shield', rank, 'heavy', 'mage', 'ward_orb'));
+  return { ...c, bag: [...c.bag, ...gifts.slice(0, Math.max(0, GEAR.bagLimit - c.bag.length))] };
+}
+
 function renamed(c: GameState['characters'][string]): GameState['characters'][string] {
   if (!Object.keys(c.abilities).some((id) => ROGUE_RENAMED[id])) return c;
   const abilities: Record<string, number> = {};
@@ -260,7 +276,7 @@ function renamed(c: GameState['characters'][string]): GameState['characters'][st
 
 function withArena(state: GameState): GameState {
   // To 37 (Robin, 2026-11-03): a land stays veiled until you stand in it; all you had open, you have seen.
-  const characters = Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, trinketsNow(handsFreed(renamed(c.seen ? c : { ...c, seen: [...c.opened] })))]));
+  const characters = Object.fromEntries(Object.entries(state.characters).map(([id, c]) => [id, magesArmed(trinketsNow(handsFreed(renamed(c.seen ? c : { ...c, seen: [...c.opened] }))))]));
   return { ...state, version: STATE_VERSION, characters, board: withSecrets(withDungeons(withArenas(state.board))) };
 }
 
@@ -292,7 +308,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 42 || candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

@@ -69,11 +69,15 @@ export function makeBoard(): Board {
   return withSecrets(withDungeons(withArenas(buildBoard(WORLD_DATA))));
 }
 
-/** What a new character holds (Robin, 2026-11-03, with skills tied to weapons): the class's first weapon, and a Warrior's round shield. */
+/**
+ * What a new character holds (Robin, 2026-11-03, with skills tied to weapons): the class's first weapon, and a Warrior's round shield; a
+ * Magician a wand and a ward orb, since a staff takes both hands and leaves none for an orb (Robin, 2026-11-03).
+ */
 export function startingGear(id: string, classId: ClassId): Character['equipment'] {
   const gear = emptyEquipment();
-  gear.weapon = plainGear(`${id}-kit-weapon`, 'weapon', 1, 'heavy', classId);
+  gear.weapon = plainGear(`${id}-kit-weapon`, 'weapon', 1, 'heavy', classId, classId === 'mage' ? 'wand' : undefined);
   if (classId === 'warrior') gear.shield = plainGear(`${id}-kit-shield`, 'shield', 1, 'heavy', classId, 'round');
+  if (classId === 'mage') gear.shield = plainGear(`${id}-kit-shield`, 'shield', 1, 'heavy', classId, 'ward_orb');
   return gear;
 }
 

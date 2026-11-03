@@ -446,7 +446,8 @@ export class BagScene extends Phaser.Scene {
     this.rows.push(this.woodText(88, card.y + 16, g.name, 15).setOrigin(0, 0.5));
     const rarity = g.unique && UNIQUES[g.unique]?.legend ? 'legendary' : g.rarity;
     const kind = g.name.toLowerCase() === g.base.toLowerCase() ? rarity : `${rarity} ${g.base}`;
-    const slotWord = SLOT_NAMES[g.slot].toLowerCase();
+    // An orb sits in the off-hand like a shield, but it is an orb.
+    const slotWord = g.kind?.endsWith('_orb') ? 'orb' : SLOT_NAMES[g.slot].toLowerCase();
     this.rows.push(this.add.text(88, card.y + 34, `${worn ? 'Worn · ' : ''}${kind}${kind.endsWith(slotWord) || kind.endsWith(slotWord.replace(/s$/, '')) ? '' : ` ${slotWord}`}`, { fontFamily: FONT, fontSize: '11px', color: CREAM }).setOrigin(0, 0.5));
     const lines: { text: string; color?: string; bold?: boolean; small?: boolean }[] = [{ text: gearPowers(g).filter((p) => !p.startsWith('Set: ')).join(' · ') || 'A plain piece.', bold: true }];
     const set = g.set ? SETS[g.set] : undefined;
@@ -544,7 +545,7 @@ export class BagScene extends Phaser.Scene {
         this.inFlight = false;
         const rejected = events.find((e) => e.type === 'rejected');
         if (!rejected) sfx.play(intent.type === 'use' ? (intent.item.startsWith('mana-potion') ? 'fight/mana-potion' : 'fight/potion') : intent.type === 'equip' ? 'ui/wear' : intent.type === 'unequip' ? 'ui/take-off' : 'ui/drop-item');
-        this.note = rejected?.type === 'rejected' ? (rejected.reason === 'two hands' ? 'Your weapon takes both hands: put it away first, or wear a one-handed one.' : `Not allowed: ${rejected.reason}.`) : done;
+        this.note = rejected?.type === 'rejected' ? (rejected.reason === 'two hands' ? `Your ${this.game_.me.equipment.weapon?.name ?? 'weapon'} takes both hands: wear a ${this.game_.me.classId === 'mage' ? 'wand' : 'one-handed weapon'} to hold this.` : `Not allowed: ${rejected.reason}.`) : done;
         // A worn piece taken off is carried now, and a piece put on is worn: the pick follows it.
         if (!rejected && intent.type === 'equip') {
           const slot = SLOTS.find((s) => this.game_.me.equipment[s]?.id === intent.gear);

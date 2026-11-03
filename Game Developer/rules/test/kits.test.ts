@@ -5,7 +5,7 @@ import { ABILITIES, CLASS_DATA, PROGRESSION } from '../src/data.ts';
 import { fightOdds, startFight } from '../src/fight.ts';
 import { apply, newGame } from '../src/game.ts';
 import { addLoot } from '../src/common.ts';
-import { gearKind, guardOf, manaCost, manaScale, stats } from '../src/gear.ts';
+import { gearKind, guardOf, manaCost, manaScale, plainGear, stats } from '../src/gear.ts';
 import { migrate } from '../src/save.ts';
 import { groundAt, inTownWalls, placeAt } from '../src/grounds.ts';
 import { makeRng } from '../src/rng.ts';
@@ -366,17 +366,30 @@ describe('the Hunter', () => {
     expect(r.events.some((e) => e.type === 'countered')).toBe(true);
   });
 
+  const staffed = (s: GameState): GameState => ({ ...s, characters: { [P]: { ...me(s), equipment: { ...me(s).equipment, weapon: plainGear('st', 'weapon', 1, 'heavy', 'mage', 'staff'), shield: null } } } });
   it('found loot never slips an orb on beside a staff, and an old save with both puts the orb in the bag', () => {
-    const m = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const m = staffed(newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() }));
     const orb = { id: 'o', slot: 'shield', rank: 1, rarity: 'common', name: 'Tin Ward Orb', base: 'tin ward orb', kind: 'ward_orb', stats: { defense: 1 }, affixes: [], price: 5 } as GearItem;
     const events: GameEvent[] = [];
     const after = addLoot(me(m), orb, { type: 'roll', id: 'r', player: P } as Action, events);
     expect(after.equipment.shield).toBeNull();
     expect(after.bag.map((g) => g.id)).toContain('o');
-    const real = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage' });
+    const real = staffed(newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage' }));
     const old = migrate(JSON.parse(JSON.stringify({ ...real, version: 38, characters: { [P]: { ...me(real), equipment: { ...me(real).equipment, shield: orb } } } })))!;
     expect(old.characters[P]!.equipment.shield).toBeNull();
     expect(old.characters[P]!.bag.map((g) => g.id)).toContain('o');
+  });
+
+  it('a Magician starts with a wand and a ward orb; an old one with a staff gets both in the bag (Robin, 2026-11-03)', () => {
+    const m = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    expect(gearKind(me(m).equipment.weapon)).toBe('wand');
+    expect(gearKind(me(m).equipment.shield)).toBe('ward_orb');
+    const old = staffed(newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage' }));
+    const up = migrate(JSON.parse(JSON.stringify({ ...old, version: 42, characters: { [P]: { ...me(old), level: 12 } } })))!;
+    const bag = up.characters[P]!.bag;
+    expect(bag.map((g) => gearKind(g))).toEqual(['wand', 'ward_orb']);
+    expect(bag.every((g) => g.rank === 4)).toBe(true);
+    expect(migrate(JSON.parse(JSON.stringify({ ...up, version: 42 })))!.characters[P]!.bag).toHaveLength(2);
   });
 
   it('wears anything (Robin, 2026-11-03); a bow keeps a shield on its arm, a staff takes both hands', () => {
@@ -386,11 +399,11 @@ describe('the Hunter', () => {
     const held = { ...s, characters: { [P]: { ...me(s), bag: [sword, shield] } } } as unknown as GameState;
     expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'x' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
     expect(apply(held, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'equipped' });
-    const m = newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const m = staffed(newGame({ seed: 'kit', player: P, name: 'Robin', classId: 'mage', board: ringBoard() }));
     const orb = { ...shield, name: 'Tin Ward Orb', base: 'tin ward orb', kind: 'ward_orb' };
-    const staffed = { ...m, characters: { [P]: { ...me(m), bag: [orb] } } } as unknown as GameState;
-    expect(gearKind(me(staffed).equipment.weapon)).toBe('staff');
-    expect(apply(staffed, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'two hands' });
+    const holding = { ...m, characters: { [P]: { ...me(m), bag: [orb] } } } as unknown as GameState;
+    expect(gearKind(me(holding).equipment.weapon)).toBe('staff');
+    expect(apply(holding, { type: 'equip', id: 'e', player: P, gear: 'z' }, makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'two hands' });
   });
 });
 

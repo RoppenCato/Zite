@@ -560,3 +560,5 @@ King Goo has a trick now (every third round he puffs up for a Belly Flop: block 
 **More in the Rootways.** Root Grubs in the Root Tunnels (`rw-fork`, 3 to 4), Mole Miners in the Old Diggings (`rw-join`, 4 to 5), and Old Digby, the Burrow Boss, a mini-boss (`charger`) at Old Digby's Dig (`rw-digby`), halfway along the road to Old Rootbeard, where he stops the walk as the Steward does before the Hollow King.
 
 Save version 42: the board is laid again, so every save gets the new spots; anyone standing on the old jetty road wakes in the Kingswood's town.
+
+**A Magician starts with a wand and a ward orb** (Robin, 2026-11-03: "Cant wear an orb on my mage"; a staff takes both hands). Save version 43: a Magician with no wand, or no orb, finds one in the bag at a rank for their level (level / 3, mine), while the bag has room. An orb's card says "orb", not "shield"; a refused orb names the weapon in the way.

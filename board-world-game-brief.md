@@ -106,7 +106,7 @@ The class names, the meters, the abilities, the gear ranks and the items carry E
   - Possible extras: "camp" bonus aura, IRL-only trading and friendly duels (ideas, not decided)
 
 ### Weapons and off-hands by class (Robin, 2026-11-03)
-- **Weapon types:** Warrior: sword with a shield, or a two-handed great weapon (heavy attacks, no shield). Rogue: dagger or sword. Magician: staff (two-handed) or wand. Hunter: bow (two-handed) or dagger.
+- **Weapon types:** Warrior: sword with a shield, or a two-handed great weapon (heavy attacks, no shield). Rogue: dagger or sword. Magician: staff (two-handed) or wand. **A Magician starts with a wand and a ward orb**, so the orb is in hand from the first fight; the staff stays two-handed, more magic and mana but no orb (Robin, 2026-11-03). Hunter: bow (two-handed) or dagger.
 - **Off-hands:** Warriors, Rogues and Hunters can carry shields; Magicians carry orbs instead. "Shields should be balanced around their size, which corresponds to their amount of damage absorbed, and the different chances to defend": a bigger shield stops more of a blow when blocking but dodges less; "a buckler might make you dodge 50% of the time, but only block 30% of the damage when blocking". Balanced across shield types, level and quality. Orbs come in types too, which change blocking and dodging "in a more magic way".
 - **Weapons not meant for your class:** wearable, at full strength; only the skills tied to a weapon type stop working.
 - **Skills tied to a weapon** work only with it (poison with a dagger, a shield skill with a shield).
