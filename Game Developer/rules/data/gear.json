@@ -167,7 +167,7 @@
       "prefix": true
     },
     "unique": {
-      "mult": 1.9,
+      "mult": 2.2,
       "weight": 0,
       "priceMult": 8,
       "affixes": 1,
@@ -631,10 +631,10 @@
     "boss": 0.25
   },
   "consumableDrop": {
-    "potion": 0.08,
+    "potion": 0.05,
     "card": 0.08
   },
-  "sellShare": 0.2,
+  "sellShare": 0.12,
   "bagLimit": 12,
   "rankGrowth": 1.35,
   "priceGrowth": 1.8,

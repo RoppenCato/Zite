@@ -129,6 +129,23 @@ export function rankPrice(slot: Slot, rank: number): number {
   return r <= n ? def.price[r - 1]! : Math.round(def.price[n - 1]! * Math.pow(GEAR.priceGrowth, r - n));
 }
 
+/**
+ * A piece one rank up at a master smith (2026-11-03): each of its numbers grows as its slot's do from this rank to the
+ * next, its price too; its rarity, affixes, set and power stay. Gear that is special to you (epic and up, and set pieces) only.
+ */
+export function reforged(g: GearItem): GearItem {
+  const statUp = rankStat(g.slot, g.rank + 1) / rankStat(g.slot, g.rank);
+  const priceUp = rankPrice(g.slot, g.rank + 1) / rankPrice(g.slot, g.rank);
+  // Whole numbers grow by a point at least; a share (a crit chance) stays.
+  const stats = Object.fromEntries(Object.entries(g.stats).map(([k, v]) => [k, Number.isInteger(v) && v ? Math.max(v + 1, Math.round(v * statUp)) : v]));
+  return { ...g, rank: g.rank + 1, stats, price: Math.round(g.price * priceUp) };
+}
+
+/** Whether a smith whose gear is of rank `top` will reforge this piece. */
+export function canReforge(g: GearItem | null | undefined, top: number): g is GearItem {
+  return !!g && g.slot !== 'trinket' && (g.rarity === 'epic' || g.rarity === 'legendary' || g.rarity === 'unique' || !!g.set) && g.rank < top;
+}
+
 /** A table's number at a rank: the table while it lasts, then the last entry grown. */
 function tableAt(table: number[], rank: number): number {
   return rank <= table.length ? table[rank - 1]! : Math.round(table[table.length - 1]! * Math.pow(GEAR.rankGrowth, rank - table.length));
@@ -464,10 +481,17 @@ export function rollUnique(id: string, tier: number, rank: number, rng: Rng): Ge
 }
 
 /** A set's piece for this land's tier (Robin, 2026-11-02), at least a rare one, or null when none has come in yet. */
+/** The kind of gear a class wears best: a set of that line counts double when one is found. */
+const CLASS_LINE: Record<ClassId, GearLine> = { warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' };
+
 export function rollSetPiece(id: string, tier: number, rank: number, rng: Rng, classId: ClassId = 'warrior'): GearItem | null {
   const pool = SET_IDS.filter((s) => SETS[s]!.tier <= tier);
   if (!pool.length) return null;
-  const setId = pool[rng.int(pool.length) - 1]!;
+  // A land's own set three times as often, your class's kind twice (2026-11-03: the bots found 13 pieces a run, scattered over nine sets, and wore none).
+  const newest = Math.max(...pool.map((s) => SETS[s]!.tier));
+  const weight = (s: string): number => (SETS[s]!.tier === newest ? 3 : 1) * (SETS[s]!.line === CLASS_LINE[classId] ? 2 : 1);
+  let pick = rng.next() * pool.reduce((n, s) => n + weight(s), 0);
+  const setId = pool.find((s) => (pick -= weight(s)) < 0) ?? pool[pool.length - 1]!;
   const set = SETS[setId]!;
   const slot = set.slots[rng.int(set.slots.length) - 1]!;
   const piece = rollGear(id, slot, rank, GEAR.rarityBoost.boss, rng, set.line, classId);

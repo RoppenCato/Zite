@@ -9,7 +9,7 @@ import { ABILITIES, CLASS_DATA, DICE_DATA, ENCOUNTERS, EVENTS, GEAR, ITEMS, ITEM
 import { calendarDay, isOn } from './calendar.ts';
 import { flaskId, addLoot, gainXp, giveGold, giveItem, heal, nextGearId, reject, restoreMana, sellPrice, spend, withCharacter, flaskTier, seeing } from './common.ts';
 import { fightRound, intentEvent, makeEnemy, noteLevels, startFight, creature } from './fight.ts';
-import { makeTrinket, makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded } from './gear.ts';
+import { makeTrinket, makeUnique, plainGear, powers, rollGear, rollUnique, stats, emptyEquipment, rollLegend, rollSetPiece, classKinds, shopOffhand, twoHanded, canReforge, reforged } from './gear.ts';
 import { dropSlot, groundAt, inTownWalls, rollLine, placeName } from './grounds.ts';
 import { boardQuests, finishQuests, questFound, questLine } from './quests.ts';
 import { checkPath, stepChoices } from './paths.ts';
@@ -1162,6 +1162,19 @@ function buy(state: GameState, action: BuyAction, character: Character, now: num
   if (action.daily) return buyDaily(state, action, character, now);
   const offer = shopOffer(state, character);
   if (!offer) return reject(state, action, 'not at a shop');
+  // A master smith reforges a piece you love one rank up, to the rank of what the smith makes (2026-11-03): gold for gold to do.
+  if (action.reforge !== undefined) {
+    if (!offer.town?.rank) return reject(state, action, 'not at a shop');
+    const slot = SLOTS.find((s) => character.equipment[s]?.id === action.reforge);
+    const piece = slot ? character.equipment[slot] : character.bag.find((g) => g.id === action.reforge);
+    if (!piece) return reject(state, action, 'no such gear');
+    if (!canReforge(piece, offer.tier)) return reject(state, action, 'not now');
+    const up = reforged(piece);
+    if (character.gold < up.price) return reject(state, action, 'not enough gold');
+    const gold = character.gold - up.price;
+    const next = slot ? capped({ ...character, gold, equipment: { ...character.equipment, [slot]: up } }) : { ...character, gold, bag: character.bag.map((g) => (g.id === up.id ? up : g)) };
+    return { state: withCharacter(state, next), events: [{ type: 'bought', action: action.id, player: action.player, item: null, gear: up, price: up.price, gold }] };
+  }
   if (action.item !== undefined) {
     const item = ITEMS[action.item];
     if (!item) return reject(state, action, 'no such item');

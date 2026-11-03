@@ -266,16 +266,16 @@
     "level": 17,
     "ranks": [
       {
-        "power": 1.5,
+        "power": 2,
         "missingPower": 1.5
       },
       {
-        "power": 1.7,
-        "missingPower": 1.5
+        "power": 2.2,
+        "missingPower": 1.7
       },
       {
-        "power": 1.9,
-        "missingPower": 1.8
+        "power": 2.4,
+        "missingPower": 2
       }
     ]
   },
@@ -620,16 +620,16 @@
     "level": 17,
     "ranks": [
       {
-        "power": 1.2,
-        "healedPower": 0.5
+        "power": 1.6,
+        "healedPower": 1
       },
       {
-        "power": 1.2,
-        "healedPower": 0.65
+        "power": 1.8,
+        "healedPower": 1.2
       },
       {
-        "power": 1.4,
-        "healedPower": 0.8
+        "power": 2,
+        "healedPower": 1.4
       }
     ]
   },
@@ -1145,15 +1145,15 @@
     "level": 2,
     "ranks": [
       {
-        "power": 1.4,
+        "power": 1.7,
         "windupBonus": 1.6
       },
       {
-        "power": 1.6,
-        "windupBonus": 1.6
+        "power": 1.9,
+        "windupBonus": 1.7
       },
       {
-        "power": 1.8,
+        "power": 2.1,
         "windupBonus": 1.8
       }
     ],
@@ -2250,20 +2250,32 @@
   },
   "wiz-firestorm": {
     "name": "Firestorm",
-    "text": "A round to call it, then the sky falls.",
+    "text": "A round to call it, then the sky falls and the ground burns.",
     "mana": 24,
     "ranks": [
       {
         "windup": 1,
-        "power": 4.2
+        "power": 5.6,
+        "burn": {
+          "rounds": 3,
+          "power": 0.3
+        }
       },
       {
         "windup": 1,
-        "power": 4.8
+        "power": 6.4,
+        "burn": {
+          "rounds": 3,
+          "power": 0.3
+        }
       },
       {
         "windup": 1,
-        "power": 5.4
+        "power": 7.2,
+        "burn": {
+          "rounds": 3,
+          "power": 0.35
+        }
       }
     ],
     "classId": "mage",

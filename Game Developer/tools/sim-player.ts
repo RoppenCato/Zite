@@ -57,6 +57,14 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.trap && !f.trap && e.next?.charge) return { move: { kind: 'ability', ability: id }, guard };
     if (r.manaPerMeter && c.mana < s.maxMana * 0.5 && f.meter >= 3) return { move: { kind: 'ability', ability: id }, guard };
     if (r.meterGain && !f.attackUp && hpShare > 0.6) return { move: { kind: 'ability', ability: id }, guard };
+    // When the situational ones pay (2026-11-03): a blow winding up is dodged or stopped, or met with a shot that hurts more for it;
+    // a foe low is finished; a hero low hits back with what was lost; one who healed much turns it to light; a full meter makes spells stronger.
+    if ((r.evade || r.skip) && (e.charged || e.next?.charge) && !f.evade && !f.skip) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.windupBonus && (e.charged || e.next?.charge)) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.executeBelow && e.hp < e.maxHp * r.executeBelow) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.missingPower && hpShare < 0.6) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.healedPower && f.healed > s.maxHp * 0.3) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.spellUp && !f.spellUp) return { move: { kind: 'ability', ability: id }, guard };
   }
   // The hardest hit there is.
   // A Spellsword fights with the blade; its only spells are what it infuses it with.

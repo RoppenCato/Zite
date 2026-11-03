@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 44;
+export const STATE_VERSION = 45;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
@@ -408,6 +408,8 @@ export interface Enemy {
   trick?: BossTrick;
   /** Its attack before a swarm grew it. */
   baseAttack?: number;
+  /** What it has healed itself this fight: never more than half its HP (2026-11-03). */
+  regrown?: number;
 }
 
 export interface Fight {
@@ -544,7 +546,7 @@ export type Action =
   /** One round of a fight: the move, and the guard taken before the enemy's blow. */
   | { type: 'fight'; id: string; player: string; move: FightMove; guard: Guard }
   /** At a shop: a consumable by id, or the plain gear of the shop's rank for a slot. */
-  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean; kind?: string }
+  | { type: 'buy'; id: string; player: string; line?: GearLine; item?: string; slot?: Slot; daily?: boolean; kind?: string; reforge?: string }
   | { type: 'sell'; id: string; player: string; gear: string }
   | { type: 'equip'; id: string; player: string; gear: string }
   | { type: 'unequip'; id: string; player: string; slot: Slot }

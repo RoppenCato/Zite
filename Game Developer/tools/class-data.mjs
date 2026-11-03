@@ -26,7 +26,7 @@ const A = {
   reckless: { name: 'Reckless Swing', classId: 'warrior', text: 'A huge hit that costs you some of your own HP.', mana: 5, level: 3, ranks: up({ power: 2, selfHurt: 0.08 }, { power: 2.25 }, { power: 2.5 }) },
   'berserker-rage': rule('Rage', 'warrior', 'You deal more damage, and take more.', { damageDealt: 1.15, damageTaken: 1.1 }),
   'blood-price': { name: 'Blood Price', classId: 'warrior', text: 'Lose some of your HP: gain 2 Valor at once, and your hits land much harder for a few rounds.', mana: 0, level: 8, ranks: up({ selfHurt: 0.08, meterGain: 2, attackUp: { rounds: 3, mult: 1.35 } }, { attackUp: { rounds: 3, mult: 1.45 } }, { attackUp: { rounds: 4, mult: 1.55 } }) },
-  bloodbath: { name: 'Bloodbath', classId: 'warrior', text: 'A hit that grows with all the HP you have lost: the nearer the end, the harder.', mana: 6, level: 12, ranks: up({ power: 1.5, missingPower: 1.5 }, { power: 1.7 }, { power: 1.9, missingPower: 1.8 }) },
+  bloodbath: { name: 'Bloodbath', classId: 'warrior', text: 'A hit that grows with all the HP you have lost: the nearer the end, the harder.', mana: 6, level: 12, ranks: up({ power: 2.0, missingPower: 1.5 }, { power: 2.2, missingPower: 1.7 }, { power: 2.4, missingPower: 2.0 }) },
   // Knight
   'shield-slam': { name: 'Shield Slam', classId: 'warrior', text: 'A hit that grows with your defense.', mana: 5, level: 3, ranks: up({ power: 1.1, defensePower: 1.4 }, { defensePower: 1.7 }, { defensePower: 2 }) },
   'knight-oath': rule('Armoured', 'warrior', 'A fifth more defense, and part of each blow goes back at whoever struck.', { defenseMult: 1.2, thorns: 0.15 }),
@@ -47,7 +47,7 @@ const A = {
   smite: { name: 'Smite', classId: 'mage', text: 'Holy light: a strong hit that heals you a little.', mana: 6, level: 3, ranks: up({ power: 1.6, healDealt: 0.25 }, { power: 1.85 }, { power: 2.1, healDealt: 0.35 }) },
   'cleric-grace': rule('Grace', 'mage', 'Your healing is stronger, your defense too, and healing past full becomes a barrier.', { healPower: 1.25, defenseMult: 1.15, healOverflow: 0.5 }),
   mend: { name: 'Mend', classId: 'mage', text: 'Heal a share of your HP, and clear poison and weakness.', mana: 7, level: 8, ranks: up({ healShare: 0.28, cure: true }, { healShare: 0.35 }, { healShare: 0.42 }) },
-  'judgement-day': { name: 'Judgement Day', classId: 'mage', text: 'A blast of light that grows with all you have healed this fight.', mana: 9, level: 12, ranks: up({ power: 1.2, healedPower: 0.5 }, { healedPower: 0.65 }, { power: 1.4, healedPower: 0.8 }) },
+  'judgement-day': { name: 'Judgement Day', classId: 'mage', text: 'A blast of light that grows with all you have healed this fight.', mana: 9, level: 12, ranks: up({ power: 1.6, healedPower: 1.0 }, { power: 1.8, healedPower: 1.2 }, { power: 2.0, healedPower: 1.4 }) },
   // Spellsword
   'frost-blade': { name: 'Frost Blade', classId: 'mage', text: 'For a few rounds your attacks chill: harder, and its blows weaken.', mana: 6, level: 3, ranks: up({ infuse: { kind: 'ice', rounds: 4, power: 0.45, mult: 0.8 } }, { infuse: { kind: 'ice', rounds: 5, power: 0.5, mult: 0.75 } }, { infuse: { kind: 'ice', rounds: 6, power: 0.55, mult: 0.7 } }) },
   'spellsword-bond': rule('Spell and Steel', 'mage', 'Your plain attacks use your magic too, and you are as sturdy as a fighter.', { plainMagic: true, hpMult: 1.25, defenseMult: 1.3, damageDealt: 1.4 }),
@@ -76,7 +76,7 @@ const A = {
   // ---- Hunter: read the next: line and answer it --------------------------------------------------------------------------
   volley: { name: 'Triple Shot', classId: 'ranger', text: 'Three quick arrows.', mana: 5, level: 1, ranks: up({ power: 2, hits: 3, split: true }, { power: 2.25 }, { power: 2.5 }) },
   'sure-shot': { name: 'Sure Shot', classId: 'ranger', text: 'Spend 2 Aim: an arrow that surely crits.', mana: 0, meter: 2, level: 1, ranks: up({ power: 1, sureCrit: 1 }, { power: 1.15 }, { power: 1.3 }) },
-  'aimed-shot': { name: 'Bullseye', classId: 'ranger', text: 'One careful arrow, far harder on a foe that is winding up.', mana: 5, level: 2, ranks: up({ power: 1.4, windupBonus: 1.6 }, { power: 1.6 }, { power: 1.8, windupBonus: 1.8 }) },
+  'aimed-shot': { name: 'Bullseye', classId: 'ranger', text: 'One careful arrow, far harder on a foe that is winding up.', mana: 5, level: 2, ranks: up({ power: 1.7, windupBonus: 1.6 }, { power: 1.9, windupBonus: 1.7 }, { power: 2.1, windupBonus: 1.8 }) },
   mark: { name: 'Painted Target', classId: 'ranger', text: 'Paint a target on the enemy: your next hits land harder.', mana: 4, level: 3, ranks: up({ mark: { hits: 3, mult: 1.3 } }, { mark: { hits: 3, mult: 1.4 } }, { mark: { hits: 4, mult: 1.5 } }) },
   // Ranger
   'quick-reflex': { name: 'Quick Reflexes', classId: 'ranger', text: 'For a few rounds you shoot back far more often.', mana: 5, level: 3, ranks: up({ counterUp: { rounds: 3, chance: 0.4 } }, { counterUp: { rounds: 3, chance: 0.55 } }, { counterUp: { rounds: 4, chance: 0.7 } }) },
@@ -243,7 +243,7 @@ const NEW = {
   'wiz-clarity': pas('Clarity', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
   'wiz-pillar': act('Pillar of Fire', 'Three bursts of flame.', 12, up({ power: 2.4, hits: 3, split: true, burn: { rounds: 3, power: 0.3 } }, { power: 2.8 }, { power: 3.2 })),
   'wiz-sear': pas('Searing Crits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
-  'wiz-firestorm': act('Firestorm', 'A round to call it, then the sky falls.', 16, up({ windup: 1, power: 4.2 }, { power: 4.8 }, { power: 5.4 })),
+  'wiz-firestorm': act('Firestorm', 'A round to call it, then the sky falls and the ground burns.', 16, up({ windup: 1, power: 5.6, burn: { rounds: 3, power: 0.3 } }, { power: 6.4 }, { power: 7.2, burn: { rounds: 3, power: 0.35 } })),
   'wiz-heart': pas('Heart of Flame', 'Each win gives back 5% of your mana a rank.', { winMana: 0.05 }),
   'wiz-phoenix': act('Phoenix', 'Once a fight: a great blast, and the next blow that would fell you leaves you standing.', 14, [{ power: 2.5, guardian: 0.4, burn: { rounds: 4, power: 0.4 } }], { oncePerFight: true }),
   // Magician / Cleric: outlasts everything with holy light.

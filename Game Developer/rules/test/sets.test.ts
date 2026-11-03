@@ -10,6 +10,21 @@ const wearing = (...pieces: GearItem[]): Character => {
 };
 
 describe('sets', () => {
+  it("leans to the land's own set and the class's kind of gear (2026-11-03)", () => {
+    const count = (classId: 'warrior' | 'mage', tier: number): Record<string, number> => {
+      const n: Record<string, number> = {};
+      for (let i = 0; i < 3000; i++) {
+        const g = rollSetPiece(`s${i}`, tier, tier, makeRng(`set-${classId}-${i}`), classId)!;
+        n[g.set!] = (n[g.set!] ?? 0) + 1;
+      }
+      return n;
+    };
+    // The Giants' Land: Giantborn is the newest and heavy; nine sets in the pool.
+    const warrior = count('warrior', 7);
+    expect(warrior.giantborn! / 3000).toBeGreaterThan(0.3);
+    const mage = count('mage', 7);
+    expect(mage.moonweave! + mage.sunsworn!).toBeGreaterThan(warrior.moonweave! + warrior.sunsworn!);
+  });
   it('each has five pieces, no weapon, and a bonus at 2 and at 4', () => {
     expect(SET_IDS.length).toBeGreaterThanOrEqual(5);
     for (const id of SET_IDS) {

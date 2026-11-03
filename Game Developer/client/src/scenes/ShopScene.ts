@@ -3,7 +3,7 @@
 // merchant has set up, or when the player taps the shop they stand on. Each Buy or Sell sends one intent.
 
 import Phaser from 'phaser';
-import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket } from '../../../rules/src/index.ts';
+import { CLASS_DATA, GEAR, ITEMS, plainGear, PROGRESSION, sellPrice, shopOffer, SLOTS, SPACE_KIND_DATA, travelOptions, type GearItem, type GearLine, gearPowers, calendarDay, dailyPiece, classKinds, shopOffhand, type Slot, isNight, clockOf, dreamPiece, dreamWares, makeTrinket, canReforge, reforged } from '../../../rules/src/index.ts';
 import type { GameLog } from '../game-log.ts';
 import { COLORS, DESIGN_WIDTH, FONT, FONT_DISPLAY, HUD_HEIGHT, RARITY_COLORS, RARITY_INK, VIEW_HEIGHT } from '../layout.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -61,6 +61,8 @@ export class ShopScene extends Phaser.Scene {
   private comparing: Phaser.GameObjects.GameObject[] = [];
   private tab: Tab = 'items';
   private merchant = false;
+  /** The buy under way is a reforge: its message says so. */
+  private reforging = false;
   private town = false;
 
   constructor(deps: ShopSceneDeps) {
@@ -90,7 +92,7 @@ export class ShopScene extends Phaser.Scene {
     const lines = (offer?.lines ?? []) as GearLine[];
     const hasCards = (offer?.items ?? []).some((id) => ITEMS[id]?.dice);
     const tabs: [Tab, string][] = [...lines.map((l): [Tab, string] => [l, lineWord(l)]), ['items', 'Flasks'], ...(hasCards ? ([['cards', 'Cards']] as [Tab, string][]) : []), ['sell', 'Sell'], ...(this.town ? ([['coach', 'Coach']] as [Tab, string][]) : []), ...(this.town && isNight(this.game_.me) ? ([['inn', 'Inn']] as [Tab, string][]) : [])];
-    if (offer?.town?.rank) tabs.unshift(['fine', 'Fine']);
+    if (offer?.town?.rank) tabs.unshift(['fine', 'Smith']);
     // The Dream's merchant: its trinkets and a legendary piece, for Dreamdust (Robin, 2026-11-03).
     if (offer?.stock === 'dream') tabs.splice(tabs.findIndex(([id]) => id === 'sell'), 0, ['dust', 'Trinkets'], ['piece', 'Gear']);
     const tabW = (DESIGN_WIDTH - 40) / tabs.length;
@@ -167,6 +169,14 @@ export class ShopScene extends Phaser.Scene {
         this.rows.push(this.add.text(CENTRE, sold ? firstRowY : firstRowY + rowStep, sold ? 'Gone for today. Back tomorrow.' : 'One piece a day, and dear.', { fontFamily: FONT, fontSize: '14px', color: this.ink.dim }).setOrigin(0.5));
         if (!sold) gearRow(0, piece, `${piece.price} g`, '', () => this.compare(piece, 'Buy', () => this.buy({ daily: true })));
       }
+      // Under it, Reforge (2026-11-03): a piece you love one rank up, what you wear first, then your bag.
+      const top = shopOffer(this.game_.state, me)?.tier ?? 1;
+      const pieces = [...SLOTS.map((x) => me.equipment[x]), ...me.bag].filter((g): g is GearItem => canReforge(g, top)).slice(0, SHOP_LAYOUT.rows - 3);
+      this.rows.push(this.woodTitle(firstRowY + rowStep * 2, pieces.length ? 'Reforge: one rank up' : `Reforge: epic, legendary, unique and set pieces below rank ${top}`));
+      pieces.forEach((g, i) => {
+        const up = reforged(g);
+        gearRow(i + 3, up, `${up.price} g`, `Rank ${g.rank} → ${up.rank}`, () => this.compare(up, 'Buy', () => this.buy({ reforge: g.id })));
+      });
     } else if (tab === 'light' || tab === 'heavy' || tab === 'magic') {
       // Both of the class's weapons, and the tab's off-hand (Robin, 2026-11-03); no trinkets, they are found.
       const rowsFor: { slot: Slot; kind: string | undefined }[] = SLOTS.flatMap((slot): { slot: Slot; kind: string | undefined }[] => (slot === 'weapon' ? classKinds(me.classId, 'weapon').map((kind) => ({ slot, kind })) : slot === 'shield' ? [{ slot, kind: shopOffhand(me.classId, tab) }] : slot === 'trinket' ? [] : [{ slot, kind: undefined }]));
@@ -202,6 +212,11 @@ export class ShopScene extends Phaser.Scene {
       this.rows.push(this.add.text(24, firstRowY - 34, `Bag: ${me.bag.length} of ${GEAR.bagLimit}`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }));
       if (me.bag.length > bag.length) this.rows.push(this.add.text(CENTRE, firstRowY + bag.length * rowStep, `and ${me.bag.length - bag.length} more`, { fontFamily: FONT, fontSize: '12px', color: this.ink.dim }).setOrigin(0.5));
     }
+  }
+
+  /** A small heading between rows. */
+  private woodTitle(y: number, text: string): Phaser.GameObjects.Text {
+    return this.add.text(CENTRE, y, text, { fontFamily: FONT_DISPLAY, fontSize: '15px', fontStyle: 'bold', color: this.ink.text, align: 'center', wordWrap: { width: DESIGN_WIDTH - 60 } }).setOrigin(0.5);
   }
 
   private pieceIcon(g: GearItem, x: number, y: number, size: number, list: Phaser.GameObjects.GameObject[] = this.rows): void {
@@ -258,9 +273,10 @@ export class ShopScene extends Phaser.Scene {
     this.comparing = [];
   }
 
-  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean; kind?: string }): void {
+  private buy(what: { item?: string; slot?: (typeof SLOTS)[number]; ability?: string; line?: GearLine; daily?: boolean; kind?: string; reforge?: string }): void {
     if (this.inFlight) return;
     this.inFlight = true;
+    this.reforging = !!what.reforge;
     this.game_.act({ type: 'buy', player: this.game_.player, ...what }).then((events) => this.bought(events), (e: unknown) => this.failed(e));
   }
 
@@ -278,7 +294,8 @@ export class ShopScene extends Phaser.Scene {
       const dust = events.find((e) => e.type === 'dreamdust');
       sfx.play(dust ? 'ui/dreamdust-buy' : 'ui/buy');
       const name = bought.gear ? bought.gear.name : (ITEMS[bought.item ?? '']?.name ?? bought.item);
-      this.message.setText(`Bought ${name} for ${dust?.type === 'dreamdust' ? `${-dust.delta} Dreamdust` : `${bought.price} gold`}.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
+      if (this.reforging && bought.gear) this.message.setText(`Reforged ${name} to rank ${bought.gear.rank} for ${bought.price} gold.`);
+      else this.message.setText(`Bought ${name} for ${dust?.type === 'dreamdust' ? `${-dust.delta} Dreamdust` : `${bought.price} gold`}.${bought.gear ? (events.some((e) => e.type === 'equipped') ? ' You put it on.' : ' It is in your bag.') : ''}`);
       this.log.note(`bought ${name} for ${bought.price}`);
     } else {
       this.message.setText(this.describe(events));

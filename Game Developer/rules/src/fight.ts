@@ -27,6 +27,8 @@ const EFFECTS = {
   drain: 6,
   armour: { rounds: 2, mult: 1.5 },
   heal: 0.1,
+  /** The most a foe heals back in one fight, as a share of its HP, by tricks and moves together (2026-11-03: Grumblebark walled builds with no fire or poison). */
+  healCap: 0.5,
   weaken: { rounds: 2, mult: 0.7 },
   /** How long Frostbrand's chill and Venomtooth's poison last. */
   frostbrand: 1,
@@ -908,6 +910,11 @@ function hurtEnemy(r: Round, damage: number): void {
 }
 
 /** A boss under its mark switches to its second phase: new moves, a line, its next move chosen afresh. */
+/** How much of a heal a foe may take: never past its HP, never more than `healCap` of it in a fight. */
+function healRoom(e: Enemy, want: number): number {
+  return Math.max(0, Math.min(e.maxHp - e.hp, Math.round(e.maxHp * EFFECTS.healCap) - (e.regrown ?? 0), Math.max(1, want)));
+}
+
 function phaseCheck(r: Round): void {
   const e = r.f.enemy;
   if (!e.phase2 || e.phase !== 1 || e.hp <= 0 || e.hp > e.maxHp * e.phase2.at) return;
@@ -931,8 +938,10 @@ function bossTrick(r: Round): void {
     case 'regrow': {
       // Fire and poison stop it: something for those who have them.
       if (e.burn || e.poison || e.hp >= e.maxHp) return;
-      const amount = Math.min(e.maxHp - e.hp, Math.max(1, Math.round(e.maxHp * (t.share ?? 0))));
+      const amount = healRoom(e, Math.round(e.maxHp * (t.share ?? 0)));
+      if (amount <= 0) return;
       e.hp += amount;
+      e.regrown = (e.regrown ?? 0) + amount;
       events.push({ type: 'enemyHealed', action: action.id, player: action.player, amount, hp: e.hp });
       return;
     }
@@ -1021,9 +1030,10 @@ function enemyEffect(r: Round, mv: EnemyMove): void {
       events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'evade', rounds: 1 });
       break;
     case 'heal': {
-      const amount = Math.min(f.enemy.maxHp - f.enemy.hp, Math.max(1, Math.round(f.enemy.maxHp * EFFECTS.heal)));
+      const amount = healRoom(f.enemy, Math.round(f.enemy.maxHp * EFFECTS.heal));
       if (amount > 0) {
         f.enemy.hp += amount;
+        f.enemy.regrown = (f.enemy.regrown ?? 0) + amount;
         events.push({ type: 'enemyHealed', action: id, player, amount, hp: f.enemy.hp });
       }
       break;

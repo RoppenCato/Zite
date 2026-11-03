@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { softcap } from '../src/common.ts';
-import { apply, dailyPiece, makeRng, newGame, type GameState } from '../src/index.ts';
+import { apply, dailyPiece, makeRng, newGame, PROGRESSION, type GameState } from '../src/index.ts';
 import { migrate } from '../src/save.ts';
 
 const P = 'p1';
@@ -52,8 +52,18 @@ describe('the new level curve', () => {
     const up = migrate(JSON.parse(JSON.stringify(old)))!;
     const c = up.characters[P]!;
     expect(c.level).toBe(4);
-    expect(up.version).toBe(44);
+    expect(up.version).toBe(45);
     expect(c.xp).toBeGreaterThan(230);
     expect(c.xp).toBeLessThan(410);
+  });
+  it('levels 21 to 30 came nearer (2026-11-03): a level 25 halfway along stays level 25, halfway along', () => {
+    // Halfway from 42710 to 47950 on the curve before 45.
+    const old = { ...at('ashford', { level: 25, xp: 45330 }), version: 44 };
+    const c = migrate(JSON.parse(JSON.stringify(old)))!.characters[P]!;
+    expect(c.level).toBe(25);
+    const from = PROGRESSION.xpForLevel[24]!;
+    const to = PROGRESSION.xpForLevel[25]!;
+    expect(Math.abs((c.xp - from) / (to - from) - 0.5)).toBeLessThan(0.01);
+    expect(to - from).toBeLessThan(47950 - 42710);
   });
 });

@@ -122,7 +122,9 @@ export function migrate(raw: unknown): GameState | null {
   const before = migrateOlder(version === 25 ? withoutStandIn(raw as GameState) : raw);
   if (!before || version === STATE_VERSION) return before;
   // 26 → 27: the two new lands lie before the grown ones: anyone past Queen Bumble already has them open.
-  const up = withHubOpen(withEastOpen(before));
+  // 44 → 45 (2026-11-03): levels 21 to 30 came nearer; anyone past the old curve of 29 keeps their level and how far along it they were.
+  const up = typeof version === 'number' && version >= 29 && version < 45 ? onNewCurve(withHubOpen(withEastOpen(before)), CURVE_BEFORE_45) : withHubOpen(withEastOpen(before));
+  if (version === 44) return withArena(up);
   // 43 → 44: the Dream: the Ferry, the Dreaming Isle (the board is laid again in relay).
   if (version === 43) return withArena(up);
   // 42 → 43: a Magician gets a wand and a ward orb (in withArena).
@@ -174,12 +176,15 @@ function withTalents(state: GameState): GameState {
 
 const CURVE_BEFORE_29 = [0, 30, 80, 160, 280, 440, 650, 920, 1250, 1650, 2100, 2650, 3300, 4050, 4900, 5850, 6900, 8050, 9300, 10650, 12100, 13650, 15300, 17050, 18900, 20850, 22900, 25050, 27300, 29650];
 
-function onNewCurve(state: GameState): GameState {
+/** The curve before 45 (2026-11-03), when levels 21 to 30 came nearer. */
+const CURVE_BEFORE_45 = [0, 40, 110, 230, 410, 660, 1000, 1450, 2030, 2740, 3570, 4610, 5870, 7370, 9110, 11120, 13390, 15940, 18790, 21940, 25410, 29210, 33350, 37850, 42710, 47950, 53590, 59620, 66070, 72940];
+
+function onNewCurve(state: GameState, was: readonly number[] = CURVE_BEFORE_29): GameState {
   const now = PROGRESSION.xpForLevel;
   const characters = Object.fromEntries(
     Object.entries(state.characters).map(([id, c]) => {
-      const from = CURVE_BEFORE_29[c.level - 1] ?? 0;
-      const to = CURVE_BEFORE_29[c.level] ?? from + 1;
+      const from = was[c.level - 1] ?? 0;
+      const to = was[c.level] ?? from + 1;
       const share = Math.min(1, Math.max(0, (c.xp - from) / Math.max(1, to - from)));
       const low = now[c.level - 1] ?? c.xp;
       const high = now[c.level] ?? low + 1;
@@ -311,7 +316,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 43 || candidate.version === 42 || candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 44 || candidate.version === 43 || candidate.version === 42 || candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

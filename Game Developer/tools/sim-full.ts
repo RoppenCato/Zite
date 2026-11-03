@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
+import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -71,6 +71,7 @@ interface Result {
   secrets: number;
   bought: number;
   fine: number;
+  reforged: number;
   sold: number;
   travels: number;
   homes: number;
@@ -218,7 +219,7 @@ function play(build: Build, seed: string): Result {
   let n = 0;
   const r: Result = {
     build, seed, level: 1, hours: 0, reached: { 1: 0 }, bosses: [], bossesLeft: [], bands: {}, deaths: 0, fights: 0, questsDone: 0, questsTaken: 0, arena: { runs: 0, waves: 0, wins: 0 }, rumours: 0, secrets: 0,
-    bought: 0, fine: 0, sold: 0, travels: 0, homes: 0, gold: 0, flasksEnd: 0, flasksFound: 0, goldEarned: 0, stuck: null, used: {}, learned: [], gearRank: 0, rarities: {}, landSeconds: {},
+    bought: 0, fine: 0, reforged: 0, sold: 0, travels: 0, homes: 0, gold: 0, flasksEnd: 0, flasksFound: 0, goldEarned: 0, stuck: null, used: {}, learned: [], gearRank: 0, rarities: {}, landSeconds: {},
   };
   const me = (): Character => state.characters[P]!;
   const spaces = (): GameState['board']['spaces'] => state.board.spaces;
@@ -308,6 +309,13 @@ function play(build: Build, seed: string): Result {
       const c = me();
       const known = (t: string): string[] => treeNodes(t).filter((id) => c.abilities[id] && !ABILITIES[id]!.rule).reverse();
       const want = [...new Set([...known(main), ...(second ? known(second) : []), ...cls.core.filter((id) => c.abilities[id])])].slice(0, carriedLimit(c.level));
+      // One slot for the best situational skill known, so the sims press them too (2026-11-03): a sensible player keeps one.
+      const situational = (id: string): boolean => {
+        const r = ABILITIES[id]!.ranks[0]!;
+        return !!(r.evade || r.skip || r.windupBonus || r.executeBelow || r.missingPower || r.healedPower || r.spellUp || r.mark || r.barrierShare);
+      };
+      const spare = Object.keys(c.abilities).filter((id) => situational(id) && !ABILITIES[id]!.rule).sort((a, b) => ABILITIES[b]!.level - ABILITIES[a]!.level)[0];
+      if (spare && want.length >= 3 && !want.some(situational)) want[want.length - 1] = spare;
       for (const id of [...c.carried]) if (!want.includes(id)) act({ type: 'skill', op: 'carry', ability: id });
       for (const id of want) if (!me().carried.includes(id)) act({ type: 'skill', op: 'carry', ability: id });
     }
@@ -342,6 +350,14 @@ function play(build: Build, seed: string): Result {
     const fine = dailyPiece(state, me(), clock);
     if (fine && fine.price * 2 <= me().gold * 0.6 && score(wearing(me(), fine)) > score(me()) + 1) {
       if (!act({ type: 'buy', daily: true }).some((e) => e.type === 'rejected')) r.fine += 1;
+    }
+    // At a master smith, the best of what it wears one rank up while gold is plenty (2026-11-03): a sensible player keeps a piece it loves.
+    if (offer.town?.rank) {
+      for (const slot of SLOTS) {
+        const g = me().equipment[slot];
+        if (!canReforge(g, offer.tier)) continue;
+        if (reforged(g).price <= me().gold * 0.4 && !act({ type: 'buy', reforge: g.id }).some((e) => e.type === 'rejected')) r.reforged += 1;
+      }
     }
     // The best flask it can afford.
     const best = (key: 'heal' | 'mana'): string | undefined => {
@@ -698,7 +714,7 @@ for (const b of builds) for (let i = 0; i < RUNS; i++) {
   const res = play(b, `${b.classId}-${b.main}-${b.second ?? 'x'}-${b.tactic}-${i}`);
   results.push(res);
   const when = (l: number): string => (res.reached[l] === undefined ? '  - ' : res.reached[l]!.toFixed(1).padStart(4));
-  console.log(`${CLASS_DATA[b.classId]!.name.padEnd(9)} ${(b.main + (b.second ? `+${b.second}` : '')).padEnd(24)} ${b.tactic.padEnd(8)} L${String(res.level).padStart(2)} h ${when(5)} ${when(10)} ${when(15)} ${when(20)} ${when(25)} ${when(30)} deaths ${String(res.deaths).padStart(3)} fights ${String(res.fights).padStart(4)} bosses ${String(res.bosses.filter((x) => x.level).length).padStart(2)} left ${res.bossesLeft.length} quests ${String(res.questsDone).padStart(3)} arena ${res.arena.runs}/${res.arena.wins} gold ${String(res.gold).padStart(6)} rank ${res.gearRank.toFixed(1)} flasks ${res.flasksEnd}/${res.flasksFound}${res.stuck ? ` STUCK ${res.stuck}` : ''}`);
+  console.log(`${CLASS_DATA[b.classId]!.name.padEnd(9)} ${(b.main + (b.second ? `+${b.second}` : '')).padEnd(24)} ${b.tactic.padEnd(8)} L${String(res.level).padStart(2)} h ${when(5)} ${when(10)} ${when(15)} ${when(20)} ${when(25)} ${when(30)} deaths ${String(res.deaths).padStart(3)} fights ${String(res.fights).padStart(4)} bosses ${String(res.bosses.filter((x) => x.level).length).padStart(2)} left ${res.bossesLeft.length} quests ${String(res.questsDone).padStart(3)} arena ${res.arena.runs}/${res.arena.wins} gold ${String(res.gold).padStart(6)} rank ${res.gearRank.toFixed(1)} flasks ${res.flasksEnd}/${res.flasksFound} reforged ${res.reforged}${res.stuck ? ` STUCK ${res.stuck}` : ''}`);
 }
 if (JSON_OUT) writeFileSync(JSON_OUT, JSON.stringify({ results, refused: [...refused], broken: [...broken], thrown: [...thrown] }));
 

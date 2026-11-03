@@ -53,10 +53,10 @@ describe('the shop', () => {
     expect(apply(at('s2', { gold: 100 }), buy({ slot: 'hat' as Slot }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such item' });
   });
 
-  it('buys back what you carry for a fifth of its worth, at a shop, never what you wear', () => {
+  it('buys back what you carry for an eighth of its worth (2026-11-03), at a shop, never what you wear', () => {
     const sword = plainGear('g9', 'weapon', 2);
     const { state, events } = apply(at('s2', { gold: 10, bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW);
-    expect(events).toEqual([{ type: 'sold', action: 's1', player: P, gear: sword, price: 18, gold: 28 }]);
+    expect(events).toEqual([{ type: 'sold', action: 's1', player: P, gear: sword, price: Math.round(sword.price * 0.12), gold: 10 + Math.round(sword.price * 0.12) }]);
     expect(me(state).bag).toEqual([]);
     expect(apply(at('s2', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'nope' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'no such gear' });
     expect(apply(at('s1', { bag: [sword] }), { type: 'sell', id: 's1', player: P, gear: 'g9' }, makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not at a shop' });
