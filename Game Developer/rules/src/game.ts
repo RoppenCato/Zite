@@ -367,11 +367,15 @@ function arenaNumbers(c: Character, wave: number, mode: ArenaMode): { hp: number
   const maxHp = blend(bare.maxHp, worn.maxHp);
   const defense = blend(bare.defense, worn.defense);
   const grown = 1 + Math.max(0, c.level - 4) * ARENA.levelStep;
+  // A class's handicap slides from its early number to its number at level 30 (2026-11-03): talents change who is ahead.
   const cls = ARENA.classes[c.classId];
+  // From level 10, where the early numbers were measured, to 30.
+  const t = Math.min(1, Math.max(0, (c.level - 10) / 20));
+  const slide = (early: number | undefined, top: number | undefined): number => (early ?? 1) + ((top ?? early ?? 1) - (early ?? 1)) * t;
   return {
-    hp: Math.round(attack * w.rounds * m.hp * grown * (cls?.hp ?? 1)),
+    hp: Math.round(attack * w.rounds * m.hp * grown * slide(cls?.hp, cls?.top?.hp)),
     // Its plain blow takes this share of the fighter's HP through their armour (a blow is cut by half the defense).
-    attack: Math.round(maxHp * w.hit * m.hit * grown * (cls?.hit ?? 1) + defense / 2),
+    attack: Math.round(maxHp * w.hit * m.hit * grown * slide(cls?.hit, cls?.top?.hit) + defense / 2),
     defense: 0,
   };
 }

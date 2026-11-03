@@ -561,7 +561,7 @@ export const ARENA = arenaJson as unknown as {
   /** How much harder each level past 4 makes a wave: a fighter's abilities outgrow plain numbers. */
   levelStep: number;
   /** A class the sim finds well ahead here. */
-  classes: Record<string, { hp: number; hit: number }>;
+  classes: Record<string, { hp?: number; hit?: number; top?: { hp: number; hit: number } }>;
   outgrown: { levelsOver: number; xp: number };
 };
 

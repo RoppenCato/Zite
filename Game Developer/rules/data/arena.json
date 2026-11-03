@@ -84,8 +84,8 @@
     "legend": {
       "name": "Legend",
       "words": "For one who holds every Seal. Clear all five for a legend of this land.",
-      "hp": 1.8,
-      "hit": 1.8,
+      "hp": 2.1,
+      "hit": 2.1,
       "fee": 4,
       "feeTier": 5,
       "gold": 3,
@@ -107,13 +107,34 @@
   "classes": {
     "ranger": {
       "hp": 1.2,
-      "hit": 1.15
+      "hit": 1.15,
+      "top": {
+        "hp": 0.95,
+        "hit": 0.95
+      }
     },
     "warrior": {
       "hp": 0.9,
-      "hit": 0.9
+      "hit": 0.9,
+      "top": {
+        "hp": 1.5,
+        "hit": 1.5
+      }
+    },
+    "mage": {
+      "top": {
+        "hp": 1.52,
+        "hit": 1.52
+      }
+    },
+    "rogue": {
+      "top": {
+        "hp": 1.25,
+        "hit": 1.25
+      }
     }
   },
   "_aboutLegend": "The Legend mode (Robin, 2026-11-03, through Mitch, AD: a level 30 legendary set for each land, won from its Arena on its hardest mode, which opens once every Seal is won). A clear wins one piece of the land's set you do not have yet: your class's weapon first, then the off-hand if it suits you (an orb for a Magician, a shield for the rest); with both, the pot and a boss's piece as before. The same fee in every land. Numbers mine.",
-  "legendRank": 9
+  "legendRank": 9,
+  "_aboutClasses": "Each class’s handicap: hp and hit early (from tools/sim-arena.ts at levels 4 and 12), sliding from level 10 to top at level 30 (from tools/sim-arena-end.ts, 2026-11-03: talents change who is ahead). Numbers mine."
 }
