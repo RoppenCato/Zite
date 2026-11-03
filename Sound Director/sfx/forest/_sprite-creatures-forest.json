@@ -1,0 +1,150 @@
+{
+ "name": "creatures-forest",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/spider/attack",
+   "file": "out/sfx/forest/twigling_attack_1.wav",
+   "gain": 0.557,
+   "loop": false
+  },
+  {
+   "name": "creature/spider/hit",
+   "file": "out/sfx/forest/twigling_hit_1.wav",
+   "gain": 0.279,
+   "loop": false
+  },
+  {
+   "name": "creature/spider/die",
+   "file": "out/sfx/forest/twigling_die_1.wav",
+   "gain": 0.625,
+   "loop": false
+  },
+  {
+   "name": "creature/treant/attack",
+   "file": "out/sfx/forest/goblin_attack_1.wav",
+   "gain": 0.52,
+   "loop": false
+  },
+  {
+   "name": "creature/treant/hit",
+   "file": "out/sfx/forest/goblin_hit_1.wav",
+   "gain": 0.491,
+   "loop": false
+  },
+  {
+   "name": "creature/treant/die",
+   "file": "out/sfx/forest/goblin_die_1.wav",
+   "gain": 0.611,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw/attack",
+   "file": "out/sfx/forest/sporeling_attack_1.wav",
+   "gain": 0.279,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw/hit",
+   "file": "out/sfx/forest/sporeling_hit_1.wav",
+   "gain": 0.263,
+   "loop": false
+  },
+  {
+   "name": "creature/outlaw/die",
+   "file": "out/sfx/forest/sporeling_die_1.wav",
+   "gain": 0.551,
+   "loop": false
+  },
+  {
+   "name": "creature/wraith/attack",
+   "file": "out/sfx/forest/nutkin_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/wraith/hit",
+   "file": "out/sfx/forest/nutkin_hit_1.wav",
+   "gain": 0.238,
+   "loop": false
+  },
+  {
+   "name": "creature/wraith/die",
+   "file": "out/sfx/forest/nutkin_die_1.wav",
+   "gain": 0.343,
+   "loop": false
+  },
+  {
+   "name": "creature/spider-queen/attack",
+   "file": "out/sfx/forest/owlbear_attack_1.wav",
+   "gain": 0.427,
+   "loop": false
+  },
+  {
+   "name": "creature/spider-queen/hit",
+   "file": "out/sfx/forest/owlbear_hit_1.wav",
+   "gain": 0.355,
+   "loop": false
+  },
+  {
+   "name": "creature/spider-queen/die",
+   "file": "out/sfx/forest/owlbear_die_1.wav",
+   "gain": 0.502,
+   "loop": false
+  },
+  {
+   "name": "creature/briar-king/attack",
+   "file": "out/sfx/forest/grumblebark_attack_1.wav",
+   "gain": 0.422,
+   "loop": false
+  },
+  {
+   "name": "creature/briar-king/hit",
+   "file": "out/sfx/forest/grumblebark_hit_1.wav",
+   "gain": 0.625,
+   "loop": false
+  },
+  {
+   "name": "creature/briar-king/die",
+   "file": "out/sfx/forest/grumblebark_die_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "ui/step-roots-1",
+   "file": "out/sfx/forest/step_roots_1.wav",
+   "gain": 0.343,
+   "loop": false
+  },
+  {
+   "name": "ui/step-roots-2",
+   "file": "out/sfx/forest/step_roots_2.wav",
+   "gain": 0.343,
+   "loop": false
+  },
+  {
+   "name": "ui/step-roots-3",
+   "file": "out/sfx/forest/step_roots_3.wav",
+   "gain": 0.343,
+   "loop": false
+  },
+  {
+   "name": "ui/step-moss-1",
+   "file": "out/sfx/forest/step_moss_1.wav",
+   "gain": 0.27,
+   "loop": false
+  },
+  {
+   "name": "ui/step-moss-2",
+   "file": "out/sfx/forest/step_moss_2.wav",
+   "gain": 0.27,
+   "loop": false
+  },
+  {
+   "name": "ui/step-moss-3",
+   "file": "out/sfx/forest/step_moss_3.wav",
+   "gain": 0.27,
+   "loop": false
+  }
+ ]
+}

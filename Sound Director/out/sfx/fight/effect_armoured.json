@@ -1,0 +1,13 @@
+{
+  "name": "effect_armoured",
+  "category": "fight",
+  "gain": 0.413,
+  "use": "armoured",
+  "variations": [
+    {
+      "file": "effect_armoured_1.wav",
+      "seconds": 0.206,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "crit",
+  "category": "fight",
+  "gain": 1,
+  "use": "a crit: bigger, a crack",
+  "variations": [
+    {
+      "file": "crit_1.wav",
+      "seconds": 0.157,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "crit_2.wav",
+      "seconds": 0.207,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "crit_3.wav",
+      "seconds": 0.158,
+      "peak_dbfs": -1
+    }
+  ]
+}

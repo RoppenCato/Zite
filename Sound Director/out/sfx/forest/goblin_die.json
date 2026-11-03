@@ -1,0 +1,13 @@
+{
+  "name": "goblin_die",
+  "category": "forest",
+  "gain": 0.611,
+  "use": "the Moss Goblin falls: a long small groan.",
+  "variations": [
+    {
+      "file": "goblin_die_1.wav",
+      "seconds": 0.48,
+      "peak_dbfs": -1
+    }
+  ]
+}

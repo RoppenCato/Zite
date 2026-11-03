@@ -62,7 +62,8 @@ MapleStory stays, and now fits the game it is made for.
 5. **Deliver.** `out/music/<name>/` or `out/sfx/<category>/` holds the WAVs, an MP3 to listen to, the manifest and a
    `NOTES.md`: what it is, what changed and why in Robin's words, the measurements, the file's size, how the game plays it.
    Send the files **into the chat** (SendUserFile) so Robin can listen from any device; never only a path. Put it on his phone
-   page (the artifact made from `viewer/listen.html`: publish a new one for this game the first time, and keep its URL here)
+   page (the artifact made from `viewer/listen.html`, published for Zite on 2026-11-01:
+   **https://claude.ai/artifact/RbeCB5EqixKqLrj4TCYa8m**; republish the same file with the audio under `files` to update it)
    and the local viewer (`tools\viewer.cmd`, http://localhost:8778/). Add a line to `docs/log.md`, update `docs/catalog.md`
    and `docs/feedback.md`. Robin decides whether it goes in the game; write his decisions down with the date.
 6. **Silence while working.** Robin does not want to hear every test (2026-10-14). Renders run muted (`--silent`); only
@@ -74,8 +75,9 @@ MapleStory stays, and now fits the game it is made for.
   the energy in numbers and the structure in bars before any code, the render, the notes.
 - **"Improve the X track"** or **"make it longer."** Skill `improve-track`: pin the version Robin liked, write down what is
   weak, rewrite, render, say what changed.
-- **"Make a sound for X."** Skill `make-sfx`: a short layered sound, three variations, trimmed, peak-normalised, levelled,
-  named as the game names it; from a reference Robin likes.
+- **"Make a sound for X."** Skill `make-sfx`: first the Survival game's library (`docs/survival-library.md`; Robin,
+  2026-11-01); if nothing there fits, a short layered sound, three variations, trimmed, peak-normalised, levelled, named as
+  the game names it; from a reference Robin likes.
 - **"Study X"** (a track in `Inspiration/`, or in the Survival game's `C:\dev\SG\Sound Director\Inspiration\`). Skill
   `study-song`: transcribed, taken apart into chords, bass, lead and phrases as Sonic Pi code, and a report with what it
   teaches. Never for the game.
@@ -96,8 +98,20 @@ MapleStory stays, and now fits the game it is made for.
   gets a new key, a new lead voice and a new rhythmic cell, so the map sounds like many places.
 - **A phone is the speaker.** The tune in the middle register where a phone can carry it; the bass as a line, not a weight;
   listen to every delivery on the phone page before calling it done, and say in the notes what the phone loses.
-- **Small files.** A 160 kbps MP3 is about 1.2 MB a minute; a region's theme of two to three minutes is 2 to 4 MB, fetched
-  when the player first reaches the region. The notes give every file's size and loop length in samples.
+- **The Survival game's sounds first** (Robin, 2026-11-01: "reuse sound effects from my other game; whenever you need a
+  new sound, check if those could be used"). Before any sound is made, look in `C:\dev\SG\Sound Director\out\sfx\` and the
+  game's `C:\dev\SG\Game Developer\assets\sfx\` (its `keep.txt` is what Robin picked by ear). `docs/survival-library.md`
+  lists what is there and what Robin chose. A sound that fits is copied into `out/sfx/<category>/` under this game's name,
+  re-levelled to this game's set, its origin and licence in `NOTES.md`; only what the library lacks is made new.
+- **Miles, GD confirms the sizes** (Robin, 2026-11-01: "this is a more efficient game, so the GD needs to confirm what sizes
+  sounds and music can be"). The budgets in the game's `docs/sound-demands.md` (format, a loop's length, a sprite's size,
+  what the first load may weigh) are Miles, GD's to set and confirm; the studio delivers inside them, and asks before any
+  delivery that would not fit. **Confirmed 2026-11-01**, written in `docs/game-notes.md`: OGG Vorbis at 48 kHz (quality 4,
+  effects mono, music stereo), short sounds as one audio sprite per wave with a `spritemap` JSON, the title loop under 1 MB,
+  an area's board theme up to 2.5 minutes and 2.5 MB, its fight theme 45 to 60 s, boss and town 60 to 90 s, an area's music
+  under 6 MB, the first load under 3 MB; WAV masters stay in `work/`.
+- **Small files.** The notes give every file's size and loop length in samples; a delivery that would break a budget above is
+  asked about first.
 - **Loops are whole bars and seamless.** Rendered as two passes, the second cut out. A piece that ramps up (a boss) is a
   ramp played once and a loop.
 - **One mix.** A track is one `full.wav`, no layers (Robin, 2026-10-14: "the music will just be what it is").

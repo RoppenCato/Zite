@@ -1,0 +1,120 @@
+{
+ "name": "creatures-meadows",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/slime/attack",
+   "file": "out/sfx/creatures/slime_attack_1.wav",
+   "gain": 0.394,
+   "loop": false
+  },
+  {
+   "name": "creature/slime/hit",
+   "file": "out/sfx/creatures/slime_hit_1.wav",
+   "gain": 0.538,
+   "loop": false
+  },
+  {
+   "name": "creature/slime/die",
+   "file": "out/sfx/creatures/slime_die_1.wav",
+   "gain": 0.743,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf/attack",
+   "file": "out/sfx/creatures/sprout_attack_1.wav",
+   "gain": 0.508,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf/hit",
+   "file": "out/sfx/creatures/sprout_hit_1.wav",
+   "gain": 0.343,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf/die",
+   "file": "out/sfx/creatures/sprout_die_1.wav",
+   "gain": 0.508,
+   "loop": false
+  },
+  {
+   "name": "creature/bandit/attack",
+   "file": "out/sfx/creatures/bandit_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/bandit/hit",
+   "file": "out/sfx/creatures/bandit_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/bandit/die",
+   "file": "out/sfx/creatures/bandit_die_1.wav",
+   "gain": 0.437,
+   "loop": false
+  },
+  {
+   "name": "creature/wisp/attack",
+   "file": "out/sfx/creatures/bee_attack_1.wav",
+   "gain": 0.632,
+   "loop": false
+  },
+  {
+   "name": "creature/wisp/hit",
+   "file": "out/sfx/creatures/bee_hit_1.wav",
+   "gain": 0.508,
+   "loop": false
+  },
+  {
+   "name": "creature/wisp/die",
+   "file": "out/sfx/creatures/bee_die_1.wav",
+   "gain": 0.778,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf-alpha/attack",
+   "file": "out/sfx/creatures/muncher_attack_1.wav",
+   "gain": 0.474,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf-alpha/hit",
+   "file": "out/sfx/creatures/muncher_hit_1.wav",
+   "gain": 0.385,
+   "loop": false
+  },
+  {
+   "name": "creature/wolf-alpha/die",
+   "file": "out/sfx/creatures/muncher_die_1.wav",
+   "gain": 0.52,
+   "loop": false
+  },
+  {
+   "name": "creature/thornwood-warden/attack",
+   "file": "out/sfx/creatures/goo_attack_1.wav",
+   "gain": 0.364,
+   "loop": false
+  },
+  {
+   "name": "creature/thornwood-warden/hit",
+   "file": "out/sfx/creatures/goo_hit_1.wav",
+   "gain": 0.685,
+   "loop": false
+  },
+  {
+   "name": "creature/thornwood-warden/die",
+   "file": "out/sfx/creatures/goo_die_1.wav",
+   "gain": 0.701,
+   "loop": false
+  },
+  {
+   "name": "creature/thornwood-warden/surge",
+   "file": "out/sfx/creatures/goo_surge_1.wav",
+   "gain": 0.381,
+   "loop": false
+  }
+ ]
+}

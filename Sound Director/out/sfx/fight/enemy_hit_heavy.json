@@ -1,0 +1,23 @@
+{
+  "name": "enemy_hit_heavy",
+  "category": "fight",
+  "gain": 0.59,
+  "use": "the enemy's heavy blow",
+  "variations": [
+    {
+      "file": "enemy_hit_heavy_1.wav",
+      "seconds": 0.164,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "enemy_hit_heavy_2.wav",
+      "seconds": 0.191,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "enemy_hit_heavy_3.wav",
+      "seconds": 0.157,
+      "peak_dbfs": -1
+    }
+  ]
+}

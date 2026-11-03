@@ -1,0 +1,13 @@
+{
+  "name": "effect_surecrit",
+  "category": "fight",
+  "gain": 0.442,
+  "use": "the next blow sure to crit: a glint of iron",
+  "variations": [
+    {
+      "file": "effect_surecrit_1.wav",
+      "seconds": 0.058,
+      "peak_dbfs": -1
+    }
+  ]
+}

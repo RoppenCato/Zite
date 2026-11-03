@@ -13,3 +13,5 @@ Art Director/out/**/*.blend
 */*.png
 # the Art Director's example pictures of the look: screenshots of published games, study only, never in the public repo
 Art Director/Examples/
+# the sound studio's cut reference pieces: rebuilt from the Survival studio's recordings by its decode step (Sound Director/docs/pipeline.md)
+Sound Director/sfx/*/ref/cut/*.wav

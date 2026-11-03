@@ -1,0 +1,13 @@
+{
+  "name": "arrive_shop",
+  "category": "ui",
+  "gain": 0.276,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "arrive_shop_1.wav",
+      "seconds": 0.51,
+      "peak_dbfs": -1
+    }
+  ]
+}

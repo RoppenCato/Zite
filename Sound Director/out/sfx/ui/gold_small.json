@@ -1,0 +1,13 @@
+{
+  "name": "gold_small",
+  "category": "ui",
+  "gain": 0.317,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "gold_small_1.wav",
+      "seconds": 0.133,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ability_snare",
+  "category": "fight-classes",
+  "gain": 0.59,
+  "use": "Net Toss: a rush of air, the net's small weights landing.",
+  "variations": [
+    {
+      "file": "ability_snare_1.wav",
+      "seconds": 0.283,
+      "peak_dbfs": -1
+    }
+  ]
+}

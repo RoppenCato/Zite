@@ -1,0 +1,23 @@
+{
+  "name": "chest_burst_uncommon",
+  "category": "ui",
+  "gain": 0.583,
+  "use": "an uncommon chest",
+  "variations": [
+    {
+      "file": "chest_burst_uncommon_1.wav",
+      "seconds": 0.499,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_uncommon_2.wav",
+      "seconds": 0.499,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_uncommon_3.wav",
+      "seconds": 0.499,
+      "peak_dbfs": -1
+    }
+  ]
+}

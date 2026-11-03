@@ -1,0 +1,13 @@
+{
+  "name": "roar",
+  "category": "talents",
+  "gain": 0.717,
+  "use": "a berserk's roar and a hit of the blood: the recorded roar, the drip.",
+  "variations": [
+    {
+      "file": "roar_1.wav",
+      "seconds": 0.574,
+      "peak_dbfs": -1
+    }
+  ]
+}

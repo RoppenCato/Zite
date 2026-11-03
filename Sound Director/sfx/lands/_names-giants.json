@@ -1,0 +1,82 @@
+[
+ {
+  "name": "creature/young-yeti/attack",
+  "src": "giants_youngyeti_attack"
+ },
+ {
+  "name": "creature/young-yeti/hit",
+  "src": "giants_youngyeti_hit"
+ },
+ {
+  "name": "creature/young-yeti/die",
+  "src": "giants_youngyeti_die"
+ },
+ {
+  "name": "creature/snow-monster/attack",
+  "src": "giants_snowmonster_attack"
+ },
+ {
+  "name": "creature/snow-monster/hit",
+  "src": "giants_snowmonster_hit"
+ },
+ {
+  "name": "creature/snow-monster/die",
+  "src": "giants_snowmonster_die"
+ },
+ {
+  "name": "creature/frost-ogre/attack",
+  "src": "giants_frostogre_attack"
+ },
+ {
+  "name": "creature/frost-ogre/hit",
+  "src": "giants_frostogre_hit"
+ },
+ {
+  "name": "creature/frost-ogre/die",
+  "src": "giants_frostogre_die"
+ },
+ {
+  "name": "creature/icicle-bat/attack",
+  "src": "giants_icebat_attack"
+ },
+ {
+  "name": "creature/icicle-bat/hit",
+  "src": "giants_icebat_hit"
+ },
+ {
+  "name": "creature/icicle-bat/die",
+  "src": "giants_icebat_die"
+ },
+ {
+  "name": "creature/old-snowshoulder/attack",
+  "src": "giants_snowshoulder_attack"
+ },
+ {
+  "name": "creature/old-snowshoulder/hit",
+  "src": "giants_snowshoulder_hit"
+ },
+ {
+  "name": "creature/old-snowshoulder/die",
+  "src": "giants_snowshoulder_die"
+ },
+ {
+  "name": "creature/yeti-king/attack",
+  "src": "giants_yetiking_attack"
+ },
+ {
+  "name": "creature/yeti-king/hit",
+  "src": "giants_yetiking_hit"
+ },
+ {
+  "name": "creature/yeti-king/die",
+  "src": "giants_yetiking_die"
+ },
+ {
+  "name": "creature/yeti-king/surge",
+  "src": "giants_yetiking_surge"
+ },
+ {
+  "name": "fight/storm-bite",
+  "src": "giants_storm_bite"
+ }
+]

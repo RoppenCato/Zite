@@ -1,0 +1,13 @@
+{
+  "name": "sporeling_attack",
+  "category": "forest",
+  "gain": 0.279,
+  "use": "the Sporeling: a tiny voice and a puff.",
+  "variations": [
+    {
+      "file": "sporeling_attack_1.wav",
+      "seconds": 0.262,
+      "peak_dbfs": -1
+    }
+  ]
+}

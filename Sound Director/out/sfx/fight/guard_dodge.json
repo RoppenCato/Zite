@@ -1,0 +1,13 @@
+{
+  "name": "guard_dodge",
+  "category": "fight",
+  "gain": 0.324,
+  "use": "Dodge",
+  "variations": [
+    {
+      "file": "guard_dodge_1.wav",
+      "seconds": 0.24,
+      "peak_dbfs": -1
+    }
+  ]
+}

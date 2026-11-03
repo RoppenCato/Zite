@@ -1,0 +1,23 @@
+{
+  "name": "hit_light",
+  "category": "fight",
+  "gain": 0.751,
+  "use": "a light hit on the blow's frame: Robin's pick, as loud as the die's land",
+  "variations": [
+    {
+      "file": "hit_light_1.wav",
+      "seconds": 0.138,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "hit_light_2.wav",
+      "seconds": 0.13,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "hit_light_3.wav",
+      "seconds": 0.136,
+      "peak_dbfs": -1
+    }
+  ]
+}

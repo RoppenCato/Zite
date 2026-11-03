@@ -1,0 +1,13 @@
+{
+  "name": "effect_weakened",
+  "category": "fight",
+  "gain": 0.282,
+  "use": "weakened",
+  "variations": [
+    {
+      "file": "effect_weakened_1.wav",
+      "seconds": 0.527,
+      "peak_dbfs": -1
+    }
+  ]
+}

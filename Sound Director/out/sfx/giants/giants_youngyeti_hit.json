@@ -1,0 +1,13 @@
+{
+  "name": "giants_youngyeti_hit",
+  "category": "giants",
+  "gain": 0.279,
+  "use": "young-yeti, hit (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_youngyeti_hit_1.wav",
+      "seconds": 0.281,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "message_tick",
+  "category": "ui",
+  "gain": 0.289,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "message_tick_1.wav",
+      "seconds": 0.099,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "arrive_spring",
+  "category": "ui",
+  "gain": 0.576,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "arrive_spring_1.wav",
+      "seconds": 0.425,
+      "peak_dbfs": -1
+    }
+  ]
+}

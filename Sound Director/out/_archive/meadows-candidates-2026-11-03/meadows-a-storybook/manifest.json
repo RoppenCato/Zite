@@ -1,0 +1,20 @@
+{
+  "name": "meadows-a-storybook",
+  "bpm": 126,
+  "bars": 32,
+  "beats": 4,
+  "loop_seconds": 60.95238095238095,
+  "sample_rate": 48000,
+  "loop_frames": 2925714,
+  "rendered": "2026-11-03T08:54:41.678Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -3.6,
+      "rms_dbfs": -21.4,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

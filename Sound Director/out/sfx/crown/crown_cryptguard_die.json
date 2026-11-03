@@ -1,0 +1,13 @@
+{
+  "name": "crown_cryptguard_die",
+  "category": "crown",
+  "gain": 0.463,
+  "use": "crypt-guard, die (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_cryptguard_die_1.wav",
+      "seconds": 0.534,
+      "peak_dbfs": -1
+    }
+  ]
+}

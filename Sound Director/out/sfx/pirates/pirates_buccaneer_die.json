@@ -1,0 +1,13 @@
+{
+  "name": "pirates_buccaneer_die",
+  "category": "pirates",
+  "gain": 0.422,
+  "use": "buccaneer, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_buccaneer_die_1.wav",
+      "seconds": 0.2,
+      "peak_dbfs": -1
+    }
+  ]
+}

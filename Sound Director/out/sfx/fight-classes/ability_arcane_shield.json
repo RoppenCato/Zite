@@ -1,0 +1,13 @@
+{
+  "name": "ability_arcane_shield",
+  "category": "fight-classes",
+  "gain": 0.833,
+  "use": "Bubble Shield: recorded drops rising as bubbles, a string swell closing round.",
+  "variations": [
+    {
+      "file": "ability_arcane_shield_1.wav",
+      "seconds": 0.64,
+      "peak_dbfs": -1
+    }
+  ]
+}

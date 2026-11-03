@@ -1,0 +1,13 @@
+{
+  "name": "crown_steward_attack",
+  "category": "crown",
+  "gain": 0.31,
+  "use": "last-steward, attack (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_steward_attack_1.wav",
+      "seconds": 0.658,
+      "peak_dbfs": -1
+    }
+  ]
+}

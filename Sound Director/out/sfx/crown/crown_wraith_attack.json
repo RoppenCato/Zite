@@ -1,0 +1,13 @@
+{
+  "name": "crown_wraith_attack",
+  "category": "crown",
+  "gain": 0.427,
+  "use": "gilded-wraith, attack (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_wraith_attack_1.wav",
+      "seconds": 0.47,
+      "peak_dbfs": -1
+    }
+  ]
+}

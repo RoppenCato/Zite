@@ -1,0 +1,13 @@
+{
+  "name": "sell",
+  "category": "ui",
+  "gain": 0.381,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "sell_1.wav",
+      "seconds": 0.229,
+      "peak_dbfs": -1
+    }
+  ]
+}

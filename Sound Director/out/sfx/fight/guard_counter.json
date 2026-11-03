@@ -1,0 +1,13 @@
+{
+  "name": "guard_counter",
+  "category": "fight",
+  "gain": 0.693,
+  "use": "Counter: the parry's ring",
+  "variations": [
+    {
+      "file": "guard_counter_1.wav",
+      "seconds": 0.298,
+      "peak_dbfs": -1
+    }
+  ]
+}

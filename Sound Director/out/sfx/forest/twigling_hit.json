@@ -1,0 +1,13 @@
+{
+  "name": "twigling_hit",
+  "category": "forest",
+  "gain": 0.279,
+  "use": "the Twigling struck: a twig's snap, a small voice.",
+  "variations": [
+    {
+      "file": "twigling_hit_1.wav",
+      "seconds": 0.209,
+      "peak_dbfs": -1
+    }
+  ]
+}

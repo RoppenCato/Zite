@@ -1,0 +1,13 @@
+{
+  "name": "cleave",
+  "category": "talents",
+  "gain": 1,
+  "use": "wild swings: the recorded sweep and two heavy hits close together.",
+  "variations": [
+    {
+      "file": "cleave_1.wav",
+      "seconds": 0.488,
+      "peak_dbfs": -1
+    }
+  ]
+}

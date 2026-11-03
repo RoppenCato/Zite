@@ -1,0 +1,23 @@
+{
+  "name": "step_grass",
+  "category": "ui",
+  "gain": 0.372,
+  "use": "a step on grass, one per step of a walk: soft, constant",
+  "variations": [
+    {
+      "file": "step_grass_1.wav",
+      "seconds": 0.067,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_grass_2.wav",
+      "seconds": 0.125,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_grass_3.wav",
+      "seconds": 0.079,
+      "peak_dbfs": -1
+    }
+  ]
+}

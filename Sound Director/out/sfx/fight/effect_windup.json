@@ -1,0 +1,13 @@
+{
+  "name": "effect_windup",
+  "category": "fight",
+  "gain": 0.32,
+  "use": "winding up for next turn",
+  "variations": [
+    {
+      "file": "effect_windup_1.wav",
+      "seconds": 0.446,
+      "peak_dbfs": -1
+    }
+  ]
+}

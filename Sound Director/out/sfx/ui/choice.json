@@ -1,0 +1,23 @@
+{
+  "name": "choice",
+  "category": "ui",
+  "gain": 0.491,
+  "use": "a lit spot tapped after a roll",
+  "variations": [
+    {
+      "file": "choice_1.wav",
+      "seconds": 0.09,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "choice_2.wav",
+      "seconds": 0.086,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "choice_3.wav",
+      "seconds": 0.087,
+      "peak_dbfs": -1
+    }
+  ]
+}

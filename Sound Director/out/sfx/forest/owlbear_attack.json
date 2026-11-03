@@ -1,0 +1,13 @@
+{
+  "name": "owlbear_attack",
+  "category": "forest",
+  "gain": 0.427,
+  "use": "the Sleepy Owlbear Cub: a drowsy growl.",
+  "variations": [
+    {
+      "file": "owlbear_attack_1.wav",
+      "seconds": 0.387,
+      "peak_dbfs": -1
+    }
+  ]
+}

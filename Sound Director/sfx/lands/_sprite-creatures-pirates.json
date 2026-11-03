@@ -1,0 +1,120 @@
+{
+ "name": "creatures-pirates",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/deck-hand/attack",
+   "file": "out/sfx/pirates/pirates_deckhand_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/deck-hand/hit",
+   "file": "out/sfx/pirates/pirates_deckhand_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/deck-hand/die",
+   "file": "out/sfx/pirates/pirates_deckhand_die_1.wav",
+   "gain": 0.432,
+   "loop": false
+  },
+  {
+   "name": "creature/buccaneer/attack",
+   "file": "out/sfx/pirates/pirates_buccaneer_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/buccaneer/hit",
+   "file": "out/sfx/pirates/pirates_buccaneer_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/buccaneer/die",
+   "file": "out/sfx/pirates/pirates_buccaneer_die_1.wav",
+   "gain": 0.422,
+   "loop": false
+  },
+  {
+   "name": "creature/scuttle-crab/attack",
+   "file": "out/sfx/pirates/pirates_crab_attack_1.wav",
+   "gain": 0.463,
+   "loop": false
+  },
+  {
+   "name": "creature/scuttle-crab/hit",
+   "file": "out/sfx/pirates/pirates_crab_hit_1.wav",
+   "gain": 0.479,
+   "loop": false
+  },
+  {
+   "name": "creature/scuttle-crab/die",
+   "file": "out/sfx/pirates/pirates_crab_die_1.wav",
+   "gain": 0.769,
+   "loop": false
+  },
+  {
+   "name": "creature/cheeky-parrot/attack",
+   "file": "out/sfx/pirates/pirates_parrot_attack_1.wav",
+   "gain": 0.332,
+   "loop": false
+  },
+  {
+   "name": "creature/cheeky-parrot/hit",
+   "file": "out/sfx/pirates/pirates_parrot_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/cheeky-parrot/die",
+   "file": "out/sfx/pirates/pirates_parrot_die_1.wav",
+   "gain": 0.336,
+   "loop": false
+  },
+  {
+   "name": "creature/first-mate-redwake/attack",
+   "file": "out/sfx/pirates/pirates_redwake_attack_1.wav",
+   "gain": 0.32,
+   "loop": false
+  },
+  {
+   "name": "creature/first-mate-redwake/hit",
+   "file": "out/sfx/pirates/pirates_redwake_hit_1.wav",
+   "gain": 0.232,
+   "loop": false
+  },
+  {
+   "name": "creature/first-mate-redwake/die",
+   "file": "out/sfx/pirates/pirates_redwake_die_1.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "creature/captain-saltjaw/attack",
+   "file": "out/sfx/pirates/pirates_saltjaw_attack_1.wav",
+   "gain": 0.351,
+   "loop": false
+  },
+  {
+   "name": "creature/captain-saltjaw/hit",
+   "file": "out/sfx/pirates/pirates_saltjaw_hit_1.wav",
+   "gain": 0.238,
+   "loop": false
+  },
+  {
+   "name": "creature/captain-saltjaw/die",
+   "file": "out/sfx/pirates/pirates_saltjaw_die_1.wav",
+   "gain": 0.453,
+   "loop": false
+  },
+  {
+   "name": "creature/captain-saltjaw/surge",
+   "file": "out/sfx/pirates/pirates_saltjaw_surge_1.wav",
+   "gain": 0.805,
+   "loop": false
+  }
+ ]
+}

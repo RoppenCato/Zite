@@ -1,0 +1,13 @@
+{
+  "name": "guard_brace",
+  "category": "fight",
+  "gain": 0.743,
+  "use": "Brace: a thud and a grunt",
+  "variations": [
+    {
+      "file": "guard_brace_1.wav",
+      "seconds": 0.344,
+      "peak_dbfs": -1
+    }
+  ]
+}

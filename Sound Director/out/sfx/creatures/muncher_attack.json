@@ -1,0 +1,13 @@
+{
+  "name": "muncher_attack",
+  "category": "creatures",
+  "gain": 0.474,
+  "use": "the Mushroom Muncher: a munch.",
+  "variations": [
+    {
+      "file": "muncher_attack_1.wav",
+      "seconds": 0.461,
+      "peak_dbfs": -1
+    }
+  ]
+}

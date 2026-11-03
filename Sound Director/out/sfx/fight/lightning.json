@@ -1,0 +1,13 @@
+{
+  "name": "lightning",
+  "category": "fight",
+  "gain": 0.632,
+  "use": "a trinket's lightning striking the enemy (Miles, GD, 2026-11-03)",
+  "variations": [
+    {
+      "file": "lightning_1.wav",
+      "seconds": 0.545,
+      "peak_dbfs": -1
+    }
+  ]
+}

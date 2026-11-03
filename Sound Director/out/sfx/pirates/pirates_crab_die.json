@@ -1,0 +1,13 @@
+{
+  "name": "pirates_crab_die",
+  "category": "pirates",
+  "gain": 0.769,
+  "use": "scuttle-crab, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_crab_die_1.wav",
+      "seconds": 0.397,
+      "peak_dbfs": -1
+    }
+  ]
+}

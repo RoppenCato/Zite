@@ -1,0 +1,13 @@
+{
+  "name": "grumblebark_die",
+  "category": "forest",
+  "gain": 1,
+  "use": "Grumblebark falls: Robin's tree falling, cracking and crashing.",
+  "variations": [
+    {
+      "file": "grumblebark_die_1.wav",
+      "seconds": 2.4,
+      "peak_dbfs": -1
+    }
+  ]
+}

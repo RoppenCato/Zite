@@ -1,0 +1,13 @@
+{
+  "name": "pirates_buccaneer_hit",
+  "category": "pirates",
+  "gain": 0.232,
+  "use": "buccaneer, hit (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_buccaneer_hit_1.wav",
+      "seconds": 0.365,
+      "peak_dbfs": -1
+    }
+  ]
+}

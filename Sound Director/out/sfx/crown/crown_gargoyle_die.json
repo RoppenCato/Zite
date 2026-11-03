@@ -1,0 +1,13 @@
+{
+  "name": "crown_gargoyle_die",
+  "category": "crown",
+  "gain": 0.99,
+  "use": "stone-gargoyle, die (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_gargoyle_die_1.wav",
+      "seconds": 1.251,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "goo_surge",
+  "category": "creatures",
+  "gain": 0.381,
+  "use": "King Goo's second phase: a swelling burble and a roar.",
+  "variations": [
+    {
+      "file": "goo_surge_1.wav",
+      "seconds": 0.935,
+      "peak_dbfs": -1
+    }
+  ]
+}

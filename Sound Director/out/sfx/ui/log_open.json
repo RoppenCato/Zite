@@ -1,0 +1,13 @@
+{
+  "name": "log_open",
+  "category": "ui",
+  "gain": 0.437,
+  "use": "the log opens",
+  "variations": [
+    {
+      "file": "log_open_1.wav",
+      "seconds": 0.364,
+      "peak_dbfs": -1
+    }
+  ]
+}

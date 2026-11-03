@@ -1,0 +1,13 @@
+{
+  "name": "blade_charge",
+  "category": "talents",
+  "gain": 0.538,
+  "use": "a blade charged with frost or storm: a small recorded lightning under rising bells and a string's edge.",
+  "variations": [
+    {
+      "file": "blade_charge_1.wav",
+      "seconds": 0.622,
+      "peak_dbfs": -1
+    }
+  ]
+}

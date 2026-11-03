@@ -1,0 +1,13 @@
+{
+  "name": "crown_hollowking_surge",
+  "category": "crown",
+  "gain": 0.914,
+  "use": "The crown burns, the blue flame turns to gold: the recorded fire swelling, a dark chord opening to gold bells.",
+  "variations": [
+    {
+      "file": "crown_hollowking_surge_1.wav",
+      "seconds": 1.366,
+      "peak_dbfs": -1
+    }
+  ]
+}

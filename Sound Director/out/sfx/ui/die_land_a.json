@@ -1,0 +1,23 @@
+{
+  "name": "die_land_a",
+  "category": "ui",
+  "gain": 1,
+  "use": "the die landing, candidate A: a plain clack and one bounce",
+  "variations": [
+    {
+      "file": "die_land_a_1.wav",
+      "seconds": 0.132,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_a_2.wav",
+      "seconds": 0.129,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_a_3.wav",
+      "seconds": 0.137,
+      "peak_dbfs": -1
+    }
+  ]
+}

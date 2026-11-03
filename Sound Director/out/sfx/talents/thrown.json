@@ -1,0 +1,13 @@
+{
+  "name": "thrown",
+  "category": "talents",
+  "gain": 0.787,
+  "use": "thrown stars: four thin whooshes and little metal ticks.",
+  "variations": [
+    {
+      "file": "thrown_1.wav",
+      "seconds": 0.384,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ability_fireball",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Firework: the recorded fire arrow goes up, a crack, a burst of sparks in small bells.",
+  "variations": [
+    {
+      "file": "ability_fireball_1.wav",
+      "seconds": 0.938,
+      "peak_dbfs": -1
+    }
+  ]
+}

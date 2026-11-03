@@ -1,0 +1,13 @@
+{
+  "name": "card",
+  "category": "ui",
+  "gain": 0.514,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "card_1.wav",
+      "seconds": 0.199,
+      "peak_dbfs": -1
+    }
+  ]
+}

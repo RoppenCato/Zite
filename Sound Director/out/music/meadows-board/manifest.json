@@ -1,0 +1,20 @@
+{
+  "name": "meadows-board",
+  "bpm": 122,
+  "bars": 72,
+  "beats": 4,
+  "loop_seconds": 141.63934426229508,
+  "sample_rate": 48000,
+  "loop_frames": 6798689,
+  "rendered": "2026-11-01T13:18:31.184Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -1.3,
+      "rms_dbfs": -21.4,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

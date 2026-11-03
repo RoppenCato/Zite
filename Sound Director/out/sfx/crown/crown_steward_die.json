@@ -1,0 +1,13 @@
+{
+  "name": "crown_steward_die",
+  "category": "crown",
+  "gain": 0.583,
+  "use": "last-steward, die (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_steward_die_1.wav",
+      "seconds": 1.018,
+      "peak_dbfs": -1
+    }
+  ]
+}

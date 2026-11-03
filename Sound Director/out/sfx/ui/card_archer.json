@@ -1,0 +1,13 @@
+{
+  "name": "card_archer",
+  "category": "ui",
+  "gain": 0.751,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "card_archer_1.wav",
+      "seconds": 0.072,
+      "peak_dbfs": -1
+    }
+  ]
+}

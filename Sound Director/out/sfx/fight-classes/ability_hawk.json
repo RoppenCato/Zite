@@ -1,0 +1,13 @@
+{
+  "name": "ability_hawk",
+  "category": "fight-classes",
+  "gain": 0.709,
+  "use": "Owl Friend: a soft hoot, two notes, and wings (Robin's sail flap, quick).",
+  "variations": [
+    {
+      "file": "ability_hawk_1.wav",
+      "seconds": 0.732,
+      "peak_dbfs": -1
+    }
+  ]
+}

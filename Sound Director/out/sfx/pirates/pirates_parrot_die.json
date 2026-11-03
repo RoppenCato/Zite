@@ -1,0 +1,13 @@
+{
+  "name": "pirates_parrot_die",
+  "category": "pirates",
+  "gain": 0.336,
+  "use": "cheeky-parrot, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_parrot_die_1.wav",
+      "seconds": 0.29,
+      "peak_dbfs": -1
+    }
+  ]
+}

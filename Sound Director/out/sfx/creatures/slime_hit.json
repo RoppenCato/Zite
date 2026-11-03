@@ -1,0 +1,13 @@
+{
+  "name": "slime_hit",
+  "category": "creatures",
+  "gain": 0.538,
+  "use": "the Jelly Slime struck: a squish.",
+  "variations": [
+    {
+      "file": "slime_hit_1.wav",
+      "seconds": 0.226,
+      "peak_dbfs": -1
+    }
+  ]
+}

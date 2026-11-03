@@ -1,0 +1,23 @@
+{
+  "name": "step_moss",
+  "category": "forest",
+  "gain": 0.27,
+  "use": "a step on moss: Kenney's grass footsteps, slower and dulled, very soft.",
+  "variations": [
+    {
+      "file": "step_moss_1.wav",
+      "seconds": 0.078,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_moss_2.wav",
+      "seconds": 0.149,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_moss_3.wav",
+      "seconds": 0.079,
+      "peak_dbfs": -1
+    }
+  ]
+}

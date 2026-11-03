@@ -1,0 +1,13 @@
+{
+  "name": "pirates_deckhand_attack",
+  "category": "pirates",
+  "gain": 0.32,
+  "use": "deck-hand, attack (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_deckhand_attack_1.wav",
+      "seconds": 0.409,
+      "peak_dbfs": -1
+    }
+  ]
+}

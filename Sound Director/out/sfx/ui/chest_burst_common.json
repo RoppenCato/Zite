@@ -1,0 +1,23 @@
+{
+  "name": "chest_burst_common",
+  "category": "ui",
+  "gain": 0.583,
+  "use": "a common chest's lid",
+  "variations": [
+    {
+      "file": "chest_burst_common_1.wav",
+      "seconds": 0.109,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_common_2.wav",
+      "seconds": 0.106,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_common_3.wav",
+      "seconds": 0.109,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "level_up",
+  "category": "ui",
+  "gain": 0.485,
+  "use": "a level gained: one of the four big moments",
+  "variations": [
+    {
+      "file": "level_up_1.wav",
+      "seconds": 1.5,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "level_up_2.wav",
+      "seconds": 1.5,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "level_up_3.wav",
+      "seconds": 1.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

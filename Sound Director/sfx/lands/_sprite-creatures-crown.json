@@ -1,0 +1,120 @@
+{
+ "name": "creatures-crown",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/crypt-guard/attack",
+   "file": "out/sfx/crown/crown_cryptguard_attack_1.wav",
+   "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "creature/crypt-guard/hit",
+   "file": "out/sfx/crown/crown_cryptguard_hit_1.wav",
+   "gain": 0.355,
+   "loop": false
+  },
+  {
+   "name": "creature/crypt-guard/die",
+   "file": "out/sfx/crown/crown_cryptguard_die_1.wav",
+   "gain": 0.463,
+   "loop": false
+  },
+  {
+   "name": "creature/gilded-wraith/attack",
+   "file": "out/sfx/crown/crown_wraith_attack_1.wav",
+   "gain": 0.427,
+   "loop": false
+  },
+  {
+   "name": "creature/gilded-wraith/hit",
+   "file": "out/sfx/crown/crown_wraith_hit_1.wav",
+   "gain": 0.324,
+   "loop": false
+  },
+  {
+   "name": "creature/gilded-wraith/die",
+   "file": "out/sfx/crown/crown_wraith_die_1.wav",
+   "gain": 0.502,
+   "loop": false
+  },
+  {
+   "name": "creature/stone-gargoyle/attack",
+   "file": "out/sfx/crown/crown_gargoyle_attack_1.wav",
+   "gain": 0.604,
+   "loop": false
+  },
+  {
+   "name": "creature/stone-gargoyle/hit",
+   "file": "out/sfx/crown/crown_gargoyle_hit_1.wav",
+   "gain": 0.778,
+   "loop": false
+  },
+  {
+   "name": "creature/stone-gargoyle/die",
+   "file": "out/sfx/crown/crown_gargoyle_die_1.wav",
+   "gain": 0.99,
+   "loop": false
+  },
+  {
+   "name": "creature/gold-mimic/attack",
+   "file": "out/sfx/crown/crown_mimic_attack_1.wav",
+   "gain": 0.485,
+   "loop": false
+  },
+  {
+   "name": "creature/gold-mimic/hit",
+   "file": "out/sfx/crown/crown_mimic_hit_1.wav",
+   "gain": 0.385,
+   "loop": false
+  },
+  {
+   "name": "creature/gold-mimic/die",
+   "file": "out/sfx/crown/crown_mimic_die_1.wav",
+   "gain": 0.557,
+   "loop": false
+  },
+  {
+   "name": "creature/last-steward/attack",
+   "file": "out/sfx/crown/crown_steward_attack_1.wav",
+   "gain": 0.31,
+   "loop": false
+  },
+  {
+   "name": "creature/last-steward/hit",
+   "file": "out/sfx/crown/crown_steward_hit_1.wav",
+   "gain": 0.632,
+   "loop": false
+  },
+  {
+   "name": "creature/last-steward/die",
+   "file": "out/sfx/crown/crown_steward_die_1.wav",
+   "gain": 0.583,
+   "loop": false
+  },
+  {
+   "name": "creature/hollow-king/attack",
+   "file": "out/sfx/crown/crown_hollowking_attack_1.wav",
+   "gain": 0.496,
+   "loop": false
+  },
+  {
+   "name": "creature/hollow-king/hit",
+   "file": "out/sfx/crown/crown_hollowking_hit_1.wav",
+   "gain": 0.39,
+   "loop": false
+  },
+  {
+   "name": "creature/hollow-king/die",
+   "file": "out/sfx/crown/crown_hollowking_die_1.wav",
+   "gain": 0.734,
+   "loop": false
+  },
+  {
+   "name": "creature/hollow-king/surge",
+   "file": "out/sfx/crown/crown_hollowking_surge_1.wav",
+   "gain": 0.914,
+   "loop": false
+  }
+ ]
+}

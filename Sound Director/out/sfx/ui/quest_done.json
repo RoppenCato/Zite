@@ -1,0 +1,13 @@
+{
+  "name": "quest_done",
+  "category": "ui",
+  "gain": 0.39,
+  "use": "a quest done: under the level up (+1)",
+  "variations": [
+    {
+      "file": "quest_done_1.wav",
+      "seconds": 0.858,
+      "peak_dbfs": -1
+    }
+  ]
+}

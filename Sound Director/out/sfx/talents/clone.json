@@ -1,0 +1,13 @@
+{
+  "name": "clone",
+  "category": "talents",
+  "gain": 0.639,
+  "use": "a copy of you: the recorded shadowstep twice, a shadow behind itself, a falling pair of bells.",
+  "variations": [
+    {
+      "file": "clone_1.wav",
+      "seconds": 0.636,
+      "peak_dbfs": -1
+    }
+  ]
+}

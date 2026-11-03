@@ -1,0 +1,13 @@
+{
+  "name": "online_join",
+  "category": "ui",
+  "gain": 0.176,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "online_join_1.wav",
+      "seconds": 0.45,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/slime/attack": {
+      "start": 0,
+      "end": 0.2114,
+      "loop": false
+    },
+    "creature/slime/hit": {
+      "start": 0.2614,
+      "end": 0.4869,
+      "loop": false
+    },
+    "creature/slime/die": {
+      "start": 0.5369,
+      "end": 1.0902,
+      "loop": false
+    },
+    "creature/wolf/attack": {
+      "start": 1.1402,
+      "end": 1.4265,
+      "loop": false
+    },
+    "creature/wolf/hit": {
+      "start": 1.4765,
+      "end": 1.694,
+      "loop": false
+    },
+    "creature/wolf/die": {
+      "start": 1.744,
+      "end": 2.4265,
+      "loop": false
+    },
+    "creature/bandit/attack": {
+      "start": 2.4765,
+      "end": 2.8528,
+      "loop": false
+    },
+    "creature/bandit/hit": {
+      "start": 2.9028,
+      "end": 3.1854,
+      "loop": false
+    },
+    "creature/bandit/die": {
+      "start": 3.2354,
+      "end": 3.5804,
+      "loop": false
+    },
+    "creature/wisp/attack": {
+      "start": 3.6304,
+      "end": 3.9024,
+      "loop": false
+    },
+    "creature/wisp/hit": {
+      "start": 3.9524,
+      "end": 4.0885,
+      "loop": false
+    },
+    "creature/wisp/die": {
+      "start": 4.1385,
+      "end": 4.7996,
+      "loop": false
+    },
+    "creature/wolf-alpha/attack": {
+      "start": 4.8496,
+      "end": 5.3102,
+      "loop": false
+    },
+    "creature/wolf-alpha/hit": {
+      "start": 5.3602,
+      "end": 5.5919,
+      "loop": false
+    },
+    "creature/wolf-alpha/die": {
+      "start": 5.6419,
+      "end": 5.9355,
+      "loop": false
+    },
+    "creature/thornwood-warden/attack": {
+      "start": 5.9855,
+      "end": 6.736,
+      "loop": false
+    },
+    "creature/thornwood-warden/hit": {
+      "start": 6.786,
+      "end": 7.4584,
+      "loop": false
+    },
+    "creature/thornwood-warden/die": {
+      "start": 7.5084,
+      "end": 8.8741,
+      "loop": false
+    },
+    "creature/thornwood-warden/surge": {
+      "start": 8.9241,
+      "end": 9.8588,
+      "loop": false
+    }
+  }
+}

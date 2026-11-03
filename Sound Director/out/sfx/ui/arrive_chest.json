@@ -1,0 +1,13 @@
+{
+  "name": "arrive_chest",
+  "category": "ui",
+  "gain": 1,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "arrive_chest_1.wav",
+      "seconds": 0.685,
+      "peak_dbfs": -1
+    }
+  ]
+}

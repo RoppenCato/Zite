@@ -1,0 +1,13 @@
+{
+  "name": "pirates_buccaneer_attack",
+  "category": "pirates",
+  "gain": 0.32,
+  "use": "buccaneer, attack (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_buccaneer_attack_1.wav",
+      "seconds": 0.488,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "enemy_windup",
+  "category": "fight",
+  "gain": 0.576,
+  "use": "Guard well",
+  "variations": [
+    {
+      "file": "enemy_windup_1.wav",
+      "seconds": 0.62,
+      "peak_dbfs": -1
+    }
+  ]
+}

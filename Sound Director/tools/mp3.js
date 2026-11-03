@@ -5,6 +5,20 @@
 // and is not sample-exact, so it is for listening; the game's loops are the WAVs.
 'use strict';
 const fs = require('fs'), path = require('path');
+// 2026-11-01: lamejs is not installed in this studio; with ffmpeg on the PC (C:/dev/ffmpeg, Robin's yes of 2026-11-01) the encode
+// goes through its libmp3lame instead, same arguments, same result for listening.
+{
+  const FF = 'C:/dev/ffmpeg/bin/ffmpeg.exe';
+  if (!fs.existsSync(path.join(__dirname, '..', 'node_modules', 'lamejs')) && fs.existsSync(FF)) {
+    const [inp, outArg, kbpsArg] = process.argv.slice(2);
+    if (!inp) { console.error('usage: node tools/mp3.js IN.wav [OUT.mp3] [KBPS]'); process.exit(1); }
+    const out = outArg || inp.replace(/.wav$/i, '') + '.mp3', kbps = +(kbpsArg || 160);
+    const r = require('child_process').spawnSync(FF, ['-y', '-hide_banner', '-loglevel', 'error', '-i', inp, '-c:a', 'libmp3lame', '-b:a', kbps + 'k', out], { encoding: 'utf8' });
+    if (r.status !== 0) { console.error(r.stderr); process.exit(2); }
+    console.log(out + ' ' + (fs.statSync(out).size / 1024).toFixed(0) + ' KB (ffmpeg, ' + kbps + ' kbps)');
+    process.exit(0);
+  }
+}
 // lamejs 1.2.1's own entry misses three globals (a known bug: `MPEGMode is not defined`); supply them, then load it
 const lameDir = path.join(__dirname, '..', 'node_modules', 'lamejs', 'src', 'js');
 global.MPEGMode = require(path.join(lameDir, 'MPEGMode.js')); global.Lame = require(path.join(lameDir, 'Lame.js')); global.BitStream = require(path.join(lameDir, 'BitStream.js'));

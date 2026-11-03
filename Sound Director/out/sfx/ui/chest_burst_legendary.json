@@ -1,0 +1,23 @@
+{
+  "name": "chest_burst_legendary",
+  "category": "ui",
+  "gain": 0.654,
+  "use": "a legendary chest: the loudest UI sound",
+  "variations": [
+    {
+      "file": "chest_burst_legendary_1.wav",
+      "seconds": 1.798,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_legendary_2.wav",
+      "seconds": 1.798,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_legendary_3.wav",
+      "seconds": 1.798,
+      "peak_dbfs": -1
+    }
+  ]
+}

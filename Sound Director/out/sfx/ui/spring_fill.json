@@ -1,0 +1,13 @@
+{
+  "name": "spring_fill",
+  "category": "ui",
+  "gain": 0.544,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "spring_fill_1.wav",
+      "seconds": 0.348,
+      "peak_dbfs": -1
+    }
+  ]
+}

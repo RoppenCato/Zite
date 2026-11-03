@@ -1,0 +1,13 @@
+{
+  "name": "ability_time_warp",
+  "category": "fight-classes",
+  "gain": 0.726,
+  "use": "Pocket Watch: four ticks of a small clock slowing to a stop, one long bell.",
+  "variations": [
+    {
+      "file": "ability_time_warp_1.wav",
+      "seconds": 1.2,
+      "peak_dbfs": -1
+    }
+  ]
+}

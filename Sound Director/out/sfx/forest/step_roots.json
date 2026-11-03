@@ -1,0 +1,23 @@
+{
+  "name": "step_roots",
+  "category": "forest",
+  "gain": 0.343,
+  "use": "a step on roots: a recorded wooden knock, dull and light.",
+  "variations": [
+    {
+      "file": "step_roots_1.wav",
+      "seconds": 0.07,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_roots_2.wav",
+      "seconds": 0.091,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "step_roots_3.wav",
+      "seconds": 0.07,
+      "peak_dbfs": -1
+    }
+  ]
+}

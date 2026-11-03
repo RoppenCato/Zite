@@ -1,0 +1,13 @@
+{
+  "name": "effect_mark",
+  "category": "fight",
+  "gain": 0.39,
+  "use": "marked",
+  "variations": [
+    {
+      "file": "effect_mark_1.wav",
+      "seconds": 0.443,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "goblin_hit",
+  "category": "forest",
+  "gain": 0.491,
+  "use": "the Moss Goblin struck: a yelp.",
+  "variations": [
+    {
+      "file": "goblin_hit_1.wav",
+      "seconds": 0.298,
+      "peak_dbfs": -1
+    }
+  ]
+}

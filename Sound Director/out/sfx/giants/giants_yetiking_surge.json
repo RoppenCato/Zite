@@ -1,0 +1,13 @@
+{
+  "name": "giants_yetiking_surge",
+  "category": "giants",
+  "gain": 1,
+  "use": "The Yeti King roars, the storm comes: a roar, the gust rising, far thunder.",
+  "variations": [
+    {
+      "file": "giants_yetiking_surge_1.wav",
+      "seconds": 0.995,
+      "peak_dbfs": -1
+    }
+  ]
+}

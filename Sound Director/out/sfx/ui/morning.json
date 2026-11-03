@@ -1,0 +1,13 @@
+{
+  "name": "morning",
+  "category": "ui",
+  "gain": 0.368,
+  "use": "morning: bells rising (D5 F#5 A5 D6), a bright string chord opening, a wooden knock of a shutter. 1.6 s.",
+  "variations": [
+    {
+      "file": "morning_1.wav",
+      "seconds": 1.321,
+      "peak_dbfs": -1
+    }
+  ]
+}

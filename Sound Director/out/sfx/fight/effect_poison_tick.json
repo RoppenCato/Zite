@@ -1,0 +1,13 @@
+{
+  "name": "effect_poison_tick",
+  "category": "fight",
+  "gain": 0.306,
+  "use": "a poison tick, each round",
+  "variations": [
+    {
+      "file": "effect_poison_tick_1.wav",
+      "seconds": 0.137,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "board_open",
+  "category": "ui",
+  "gain": 0.474,
+  "use": "the pin-board opens",
+  "variations": [
+    {
+      "file": "board_open_1.wav",
+      "seconds": 0.292,
+      "peak_dbfs": -1
+    }
+  ]
+}

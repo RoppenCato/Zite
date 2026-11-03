@@ -1,0 +1,13 @@
+{
+  "name": "sprout_die",
+  "category": "creatures",
+  "gain": 0.508,
+  "use": "the Grumpy Sprout wilts: a small voice sagging, slowed.",
+  "variations": [
+    {
+      "file": "sprout_die_1.wav",
+      "seconds": 0.682,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ability_smoke_bomb",
+  "category": "fight-classes",
+  "gain": 0.778,
+  "use": "Puff of Smoke: a small pop on wood and a rush of smoke.",
+  "variations": [
+    {
+      "file": "ability_smoke_bomb_1.wav",
+      "seconds": 0.488,
+      "peak_dbfs": -1
+    }
+  ]
+}

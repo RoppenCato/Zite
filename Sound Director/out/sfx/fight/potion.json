@@ -1,0 +1,13 @@
+{
+  "name": "potion",
+  "category": "fight",
+  "gain": 0.502,
+  "use": "Honey Tonic",
+  "variations": [
+    {
+      "file": "potion_1.wav",
+      "seconds": 0.873,
+      "peak_dbfs": -1
+    }
+  ]
+}

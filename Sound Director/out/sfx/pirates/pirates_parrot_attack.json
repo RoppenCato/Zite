@@ -1,0 +1,13 @@
+{
+  "name": "pirates_parrot_attack",
+  "category": "pirates",
+  "gain": 0.332,
+  "use": "cheeky-parrot, attack (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_parrot_attack_1.wav",
+      "seconds": 0.321,
+      "peak_dbfs": -1
+    }
+  ]
+}

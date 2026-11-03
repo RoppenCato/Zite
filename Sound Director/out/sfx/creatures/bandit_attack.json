@@ -1,0 +1,13 @@
+{
+  "name": "bandit_attack",
+  "category": "creatures",
+  "gain": 0.32,
+  "use": "the Meadow Bandit: a yah.",
+  "variations": [
+    {
+      "file": "bandit_attack_1.wav",
+      "seconds": 0.376,
+      "peak_dbfs": -1
+    }
+  ]
+}

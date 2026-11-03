@@ -1,0 +1,13 @@
+{
+  "name": "errand_done",
+  "category": "ui",
+  "gain": 0.544,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "errand_done_1.wav",
+      "seconds": 0.576,
+      "peak_dbfs": -1
+    }
+  ]
+}

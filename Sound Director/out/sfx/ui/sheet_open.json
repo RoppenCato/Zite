@@ -1,0 +1,13 @@
+{
+  "name": "sheet_open",
+  "category": "ui",
+  "gain": 0.381,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "sheet_open_1.wav",
+      "seconds": 0.148,
+      "peak_dbfs": -1
+    }
+  ]
+}

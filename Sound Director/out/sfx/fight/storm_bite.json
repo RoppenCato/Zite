@@ -1,0 +1,13 @@
+{
+  "name": "storm_bite",
+  "category": "fight",
+  "gain": 0.778,
+  "use": "the storm biting: a short cold gust and glass-high bells, a bite, 0.5 s.",
+  "variations": [
+    {
+      "file": "storm_bite_1.wav",
+      "seconds": 0.358,
+      "peak_dbfs": -1
+    }
+  ]
+}

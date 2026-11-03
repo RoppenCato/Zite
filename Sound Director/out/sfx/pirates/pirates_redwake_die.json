@@ -1,0 +1,13 @@
+{
+  "name": "pirates_redwake_die",
+  "category": "pirates",
+  "gain": 0.418,
+  "use": "first-mate-redwake, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_redwake_die_1.wav",
+      "seconds": 0.355,
+      "peak_dbfs": -1
+    }
+  ]
+}

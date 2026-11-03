@@ -1,0 +1,13 @@
+{
+  "name": "mana_potion",
+  "category": "fight",
+  "gain": 0.526,
+  "use": "Moon Dew",
+  "variations": [
+    {
+      "file": "mana_potion_1.wav",
+      "seconds": 0.729,
+      "peak_dbfs": -1
+    }
+  ]
+}

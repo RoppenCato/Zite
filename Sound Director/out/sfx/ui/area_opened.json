@@ -1,0 +1,23 @@
+{
+  "name": "area_opened",
+  "category": "ui",
+  "gain": 0.292,
+  "use": "a new area opens: a swell, softer",
+  "variations": [
+    {
+      "file": "area_opened_1.wav",
+      "seconds": 1.915,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "area_opened_2.wav",
+      "seconds": 1.925,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "area_opened_3.wav",
+      "seconds": 1.931,
+      "peak_dbfs": -1
+    }
+  ]
+}

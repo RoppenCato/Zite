@@ -1,0 +1,23 @@
+{
+  "name": "enemy_hit_light",
+  "category": "fight",
+  "gain": 0.437,
+  "use": "the enemy's blow: blunt, a step under the hero's",
+  "variations": [
+    {
+      "file": "enemy_hit_light_1.wav",
+      "seconds": 0.154,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "enemy_hit_light_2.wav",
+      "seconds": 0.148,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "enemy_hit_light_3.wav",
+      "seconds": 0.13,
+      "peak_dbfs": -1
+    }
+  ]
+}

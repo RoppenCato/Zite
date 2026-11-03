@@ -1,0 +1,354 @@
+{
+  "spritemap": {
+    "ui/die-shake-1": {
+      "start": 0,
+      "end": 0.3256,
+      "loop": false
+    },
+    "ui/die-shake-2": {
+      "start": 0.3756,
+      "end": 0.7748,
+      "loop": false
+    },
+    "ui/die-shake-3": {
+      "start": 0.8248,
+      "end": 1.1827,
+      "loop": false
+    },
+    "ui/die-tumble-1": {
+      "start": 1.2327,
+      "end": 1.8327,
+      "loop": true
+    },
+    "ui/die-tumble-2": {
+      "start": 1.8827,
+      "end": 2.4827,
+      "loop": true
+    },
+    "ui/die-tumble-3": {
+      "start": 2.5327,
+      "end": 3.1327,
+      "loop": true
+    },
+    "ui/die-land-1": {
+      "start": 3.1827,
+      "end": 3.461,
+      "loop": false
+    },
+    "ui/die-land-2": {
+      "start": 3.511,
+      "end": 3.7939,
+      "loop": false
+    },
+    "ui/die-land-3": {
+      "start": 3.8439,
+      "end": 4.1295,
+      "loop": false
+    },
+    "ui/tap-1": {
+      "start": 4.1795,
+      "end": 4.2278,
+      "loop": false
+    },
+    "ui/tap-2": {
+      "start": 4.2778,
+      "end": 4.3307,
+      "loop": false
+    },
+    "ui/tap-3": {
+      "start": 4.3807,
+      "end": 4.4332,
+      "loop": false
+    },
+    "ui/tap-denied-1": {
+      "start": 4.4832,
+      "end": 4.604,
+      "loop": false
+    },
+    "ui/tap-denied-2": {
+      "start": 4.654,
+      "end": 4.7716,
+      "loop": false
+    },
+    "ui/tap-denied-3": {
+      "start": 4.8216,
+      "end": 4.9433,
+      "loop": false
+    },
+    "ui/choice-1": {
+      "start": 4.9933,
+      "end": 5.0829,
+      "loop": false
+    },
+    "ui/choice-2": {
+      "start": 5.1329,
+      "end": 5.2194,
+      "loop": false
+    },
+    "ui/choice-3": {
+      "start": 5.2694,
+      "end": 5.3561,
+      "loop": false
+    },
+    "ui/step-grass-1": {
+      "start": 5.4061,
+      "end": 5.473,
+      "loop": false
+    },
+    "ui/step-grass-2": {
+      "start": 5.523,
+      "end": 5.6481,
+      "loop": false
+    },
+    "ui/step-grass-3": {
+      "start": 5.6981,
+      "end": 5.7772,
+      "loop": false
+    },
+    "ui/chest-shimmer": {
+      "start": 5.8272,
+      "end": 7.3272,
+      "loop": false
+    },
+    "ui/chest-card-1": {
+      "start": 7.3772,
+      "end": 7.6386,
+      "loop": false
+    },
+    "ui/chest-card-2": {
+      "start": 7.6886,
+      "end": 7.9528,
+      "loop": false
+    },
+    "ui/chest-card-3": {
+      "start": 8.0028,
+      "end": 8.2609,
+      "loop": false
+    },
+    "ui/chest-ding": {
+      "start": 8.3109,
+      "end": 8.7294,
+      "loop": false
+    },
+    "ui/chest-burst-common": {
+      "start": 8.7794,
+      "end": 8.888,
+      "loop": false
+    },
+    "ui/chest-burst-uncommon": {
+      "start": 8.938,
+      "end": 9.4375,
+      "loop": false
+    },
+    "ui/chest-burst-rare": {
+      "start": 9.4875,
+      "end": 10.982,
+      "loop": false
+    },
+    "ui/chest-burst-epic": {
+      "start": 11.032,
+      "end": 12.5264,
+      "loop": false
+    },
+    "ui/chest-burst-legendary": {
+      "start": 12.5764,
+      "end": 14.3746,
+      "loop": false
+    },
+    "ui/chest-burst-unique": {
+      "start": 14.4246,
+      "end": 15.7559,
+      "loop": false
+    },
+    "ui/gold-gain": {
+      "start": 15.8059,
+      "end": 16.3618,
+      "loop": false
+    },
+    "ui/gold-small": {
+      "start": 16.4118,
+      "end": 16.5444,
+      "loop": false
+    },
+    "ui/gold-lost": {
+      "start": 16.5944,
+      "end": 17.1164,
+      "loop": false
+    },
+    "ui/pick-appear": {
+      "start": 17.1664,
+      "end": 17.3686,
+      "loop": false
+    },
+    "ui/chip": {
+      "start": 17.4186,
+      "end": 17.5641,
+      "loop": false
+    },
+    "ui/errand-take": {
+      "start": 17.6141,
+      "end": 17.8462,
+      "loop": false
+    },
+    "ui/errand-done": {
+      "start": 17.8962,
+      "end": 18.4725,
+      "loop": false
+    },
+    "ui/trainer": {
+      "start": 18.5225,
+      "end": 19.1202,
+      "loop": false
+    },
+    "ui/buy": {
+      "start": 19.1702,
+      "end": 19.5918,
+      "loop": false
+    },
+    "ui/sell": {
+      "start": 19.6418,
+      "end": 19.8712,
+      "loop": false
+    },
+    "ui/wear": {
+      "start": 19.9213,
+      "end": 20.0756,
+      "loop": false
+    },
+    "ui/take-off": {
+      "start": 20.1256,
+      "end": 20.2819,
+      "loop": false
+    },
+    "ui/drop-item": {
+      "start": 20.3319,
+      "end": 20.4492,
+      "loop": false
+    },
+    "ui/online-join": {
+      "start": 20.4992,
+      "end": 20.9497,
+      "loop": false
+    },
+    "ui/online-leave": {
+      "start": 20.9997,
+      "end": 21.4302,
+      "loop": false
+    },
+    "ui/online-reconnect": {
+      "start": 21.4802,
+      "end": 21.9397,
+      "loop": false
+    },
+    "ui/online-note": {
+      "start": 21.9897,
+      "end": 22.3579,
+      "loop": false
+    },
+    "ui/card": {
+      "start": 22.4079,
+      "end": 22.6068,
+      "loop": false
+    },
+    "ui/card-knight": {
+      "start": 22.6568,
+      "end": 22.8745,
+      "loop": false
+    },
+    "ui/card-trickster": {
+      "start": 22.9245,
+      "end": 22.997,
+      "loop": false
+    },
+    "ui/card-wizard": {
+      "start": 23.047,
+      "end": 23.406,
+      "loop": false
+    },
+    "ui/card-archer": {
+      "start": 23.456,
+      "end": 23.5276,
+      "loop": false
+    },
+    "ui/begin": {
+      "start": 23.5776,
+      "end": 25.5776,
+      "loop": false
+    },
+    "ui/hint": {
+      "start": 25.6276,
+      "end": 25.9547,
+      "loop": false
+    },
+    "ui/message-tick": {
+      "start": 26.0047,
+      "end": 26.1038,
+      "loop": false
+    },
+    "ui/sheet-open": {
+      "start": 26.1538,
+      "end": 26.3015,
+      "loop": false
+    },
+    "ui/sheet-close": {
+      "start": 26.3515,
+      "end": 26.5225,
+      "loop": false
+    },
+    "ui/stung": {
+      "start": 26.5725,
+      "end": 26.7225,
+      "loop": false
+    },
+    "ui/board-open": {
+      "start": 26.7725,
+      "end": 27.0648,
+      "loop": false
+    },
+    "ui/quest-done": {
+      "start": 27.1148,
+      "end": 27.9733,
+      "loop": false
+    },
+    "ui/person-found": {
+      "start": 28.0233,
+      "end": 28.6561,
+      "loop": false
+    },
+    "ui/log-open": {
+      "start": 28.7061,
+      "end": 29.0696,
+      "loop": false
+    },
+    "ui/night-falls": {
+      "start": 29.1196,
+      "end": 30.8247,
+      "loop": false
+    },
+    "ui/morning": {
+      "start": 30.8747,
+      "end": 32.1954,
+      "loop": false
+    },
+    "ui/sleep": {
+      "start": 32.2454,
+      "end": 33.9454,
+      "loop": false
+    },
+    "ui/level-up": {
+      "start": 33.9954,
+      "end": 35.4954,
+      "loop": false
+    },
+    "ui/boss-down": {
+      "start": 35.5454,
+      "end": 37.4731,
+      "loop": false
+    },
+    "ui/area-opened": {
+      "start": 37.5231,
+      "end": 39.4377,
+      "loop": false
+    }
+  }
+}

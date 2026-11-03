@@ -1,0 +1,13 @@
+{
+  "name": "pip_wizard",
+  "category": "fight-classes",
+  "gain": 0.145,
+  "use": "Arcana's pip: one small bell.",
+  "variations": [
+    {
+      "file": "pip_wizard_1.wav",
+      "seconds": 0.227,
+      "peak_dbfs": -1
+    }
+  ]
+}

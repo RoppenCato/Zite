@@ -1,0 +1,13 @@
+{
+  "name": "chest_shimmer",
+  "category": "ui",
+  "gain": 0.31,
+  "use": "the chest building, Z (Robin, 2026-11-03: \"Yes Z!\"): rising tremolo strings, a timpani roll, a harp into the lid",
+  "variations": [
+    {
+      "file": "chest_shimmer_1.wav",
+      "seconds": 1.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

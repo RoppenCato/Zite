@@ -1,0 +1,13 @@
+{
+  "name": "sporeling_hit",
+  "category": "forest",
+  "gain": 0.263,
+  "use": "the Sporeling struck: a squeak.",
+  "variations": [
+    {
+      "file": "sporeling_hit_1.wav",
+      "seconds": 0.221,
+      "peak_dbfs": -1
+    }
+  ]
+}

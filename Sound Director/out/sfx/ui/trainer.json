@@ -1,0 +1,13 @@
+{
+  "name": "trainer",
+  "category": "ui",
+  "gain": 0.479,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "trainer_1.wav",
+      "seconds": 0.598,
+      "peak_dbfs": -1
+    }
+  ]
+}

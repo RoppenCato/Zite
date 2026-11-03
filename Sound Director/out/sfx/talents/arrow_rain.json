@@ -1,0 +1,13 @@
+{
+  "name": "arrow_rain",
+  "category": "talents",
+  "gain": 1,
+  "use": "arrows from above: Robin's bow shot up, then five small thuds falling around.",
+  "variations": [
+    {
+      "file": "arrow_rain_1.wav",
+      "seconds": 0.711,
+      "peak_dbfs": -1
+    }
+  ]
+}

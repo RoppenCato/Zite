@@ -1,0 +1,23 @@
+{
+  "name": "chest_ding",
+  "category": "ui",
+  "gain": 0.214,
+  "use": "the card rests",
+  "variations": [
+    {
+      "file": "chest_ding_1.wav",
+      "seconds": 0.418,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_ding_2.wav",
+      "seconds": 0.419,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_ding_3.wav",
+      "seconds": 0.419,
+      "peak_dbfs": -1
+    }
+  ]
+}

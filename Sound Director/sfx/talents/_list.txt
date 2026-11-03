@@ -1,0 +1,15 @@
+holy_hit
+holy_blast
+roar
+cleave
+arcane_bolt
+fire_small
+blade_charge
+triple_cut
+thrown
+clone
+dark_cut
+flask
+arrow_rain
+bow_ready
+owl_swoop

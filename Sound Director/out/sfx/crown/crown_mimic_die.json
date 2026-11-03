@@ -1,0 +1,13 @@
+{
+  "name": "crown_mimic_die",
+  "category": "crown",
+  "gain": 0.557,
+  "use": "gold-mimic, die (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_mimic_die_1.wav",
+      "seconds": 0.534,
+      "peak_dbfs": -1
+    }
+  ]
+}

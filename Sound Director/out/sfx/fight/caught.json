@@ -1,0 +1,13 @@
+{
+  "name": "caught",
+  "category": "fight",
+  "gain": 0.833,
+  "use": "a flee that failed",
+  "variations": [
+    {
+      "file": "caught_1.wav",
+      "seconds": 0.343,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "magic_power",
+  "category": "talents",
+  "gain": 0.418,
+  "use": "Magic Power: a rising, charging swell: strings climbing from low C, bells running up through two octaves faster and faster, the recorded rune waking at the top, a bright chord held. 1.3 s.",
+  "variations": [
+    {
+      "file": "magic_power_1.wav",
+      "seconds": 1.4,
+      "peak_dbfs": -1
+    }
+  ]
+}

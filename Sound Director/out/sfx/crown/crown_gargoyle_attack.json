@@ -1,0 +1,13 @@
+{
+  "name": "crown_gargoyle_attack",
+  "category": "crown",
+  "gain": 0.604,
+  "use": "stone-gargoyle, attack (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_gargoyle_attack_1.wav",
+      "seconds": 0.382,
+      "peak_dbfs": -1
+    }
+  ]
+}

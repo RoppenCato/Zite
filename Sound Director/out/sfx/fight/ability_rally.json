@@ -1,0 +1,13 @@
+{
+  "name": "ability_rally",
+  "category": "fight",
+  "gain": 0.833,
+  "use": "Second Wind",
+  "variations": [
+    {
+      "file": "ability_rally_1.wav",
+      "seconds": 1.01,
+      "peak_dbfs": -1
+    }
+  ]
+}

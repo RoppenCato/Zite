@@ -1,0 +1,23 @@
+{
+  "name": "die_land_b",
+  "category": "ui",
+  "gain": 0.977,
+  "use": "the die landing, candidate B: the clack, the board's body, two bounces, a settle",
+  "variations": [
+    {
+      "file": "die_land_b_1.wav",
+      "seconds": 0.278,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_b_2.wav",
+      "seconds": 0.283,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_b_3.wav",
+      "seconds": 0.286,
+      "peak_dbfs": -1
+    }
+  ]
+}

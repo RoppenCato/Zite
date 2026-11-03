@@ -1,0 +1,275 @@
+{
+  "about": "The giants sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T08:31:26.114Z",
+  "sounds": {
+    "giants_youngyeti_attack": {
+      "files": [
+        "giants_youngyeti_attack_1.wav"
+      ],
+      "seconds": [
+        0.414
+      ],
+      "loud_db": -13,
+      "target_db": -4,
+      "use": "young-yeti, attack (The Giants' Land).",
+      "gain": 0.563,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_youngyeti_hit": {
+      "files": [
+        "giants_youngyeti_hit_1.wav"
+      ],
+      "seconds": [
+        0.281
+      ],
+      "loud_db": -7.9,
+      "target_db": -5,
+      "use": "young-yeti, hit (The Giants' Land).",
+      "gain": 0.279,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_youngyeti_die": {
+      "files": [
+        "giants_youngyeti_die_1.wav"
+      ],
+      "seconds": [
+        0.727
+      ],
+      "loud_db": -10.1,
+      "target_db": -2,
+      "use": "young-yeti, die (The Giants' Land).",
+      "gain": 0.508,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_snowmonster_attack": {
+      "files": [
+        "giants_snowmonster_attack_1.wav"
+      ],
+      "seconds": [
+        0.419
+      ],
+      "loud_db": -9.5,
+      "target_db": -4,
+      "use": "snow-monster, attack (The Giants' Land).",
+      "gain": 0.377,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_snowmonster_hit": {
+      "files": [
+        "giants_snowmonster_hit_1.wav"
+      ],
+      "seconds": [
+        0.37
+      ],
+      "loud_db": -15.3,
+      "target_db": -5,
+      "use": "snow-monster, hit (The Giants' Land).",
+      "gain": 0.654,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_snowmonster_die": {
+      "files": [
+        "giants_snowmonster_die_1.wav"
+      ],
+      "seconds": [
+        0.744
+      ],
+      "loud_db": -15.3,
+      "target_db": -2,
+      "use": "snow-monster, die (The Giants' Land).",
+      "gain": 0.924,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_frostogre_attack": {
+      "files": [
+        "giants_frostogre_attack_1.wav"
+      ],
+      "seconds": [
+        0.498
+      ],
+      "loud_db": -5.9,
+      "target_db": -4,
+      "use": "frost-ogre, attack (The Giants' Land).",
+      "gain": 0.249,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_frostogre_hit": {
+      "files": [
+        "giants_frostogre_hit_1.wav"
+      ],
+      "seconds": [
+        0.271
+      ],
+      "loud_db": -6.8,
+      "target_db": -5,
+      "use": "frost-ogre, hit (The Giants' Land).",
+      "gain": 0.246,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_frostogre_die": {
+      "files": [
+        "giants_frostogre_die_1.wav"
+      ],
+      "seconds": [
+        0.64
+      ],
+      "loud_db": -7.1,
+      "target_db": -2,
+      "use": "frost-ogre, die (The Giants' Land).",
+      "gain": 0.36,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_icebat_attack": {
+      "files": [
+        "giants_icebat_attack_1.wav"
+      ],
+      "seconds": [
+        0.23
+      ],
+      "loud_db": -14.2,
+      "target_db": -4,
+      "use": "icicle-bat, attack (The Giants' Land).",
+      "gain": 0.647,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_icebat_hit": {
+      "files": [
+        "giants_icebat_hit_1.wav"
+      ],
+      "seconds": [
+        0.189
+      ],
+      "loud_db": -13.3,
+      "target_db": -5,
+      "use": "icicle-bat, hit (The Giants' Land).",
+      "gain": 0.52,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_icebat_die": {
+      "files": [
+        "giants_icebat_die_1.wav"
+      ],
+      "seconds": [
+        0.45
+      ],
+      "loud_db": -10.7,
+      "target_db": -2,
+      "use": "icicle-bat, die (The Giants' Land).",
+      "gain": 0.544,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_snowshoulder_attack": {
+      "files": [
+        "giants_snowshoulder_attack_1.wav"
+      ],
+      "seconds": [
+        0.328
+      ],
+      "loud_db": -8.2,
+      "target_db": -4,
+      "use": "old-snowshoulder, attack (The Giants' Land).",
+      "gain": 0.324,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_snowshoulder_hit": {
+      "files": [
+        "giants_snowshoulder_hit_1.wav"
+      ],
+      "seconds": [
+        0.414
+      ],
+      "loud_db": -8.9,
+      "target_db": -5,
+      "use": "old-snowshoulder, hit (The Giants' Land).",
+      "gain": 0.313,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_snowshoulder_die": {
+      "files": [
+        "giants_snowshoulder_die_1.wav"
+      ],
+      "seconds": [
+        0.717
+      ],
+      "loud_db": -13.1,
+      "target_db": -2,
+      "use": "old-snowshoulder, die (The Giants' Land).",
+      "gain": 0.717,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_yetiking_attack": {
+      "files": [
+        "giants_yetiking_attack_1.wav"
+      ],
+      "seconds": [
+        0.673
+      ],
+      "loud_db": -8.9,
+      "target_db": -4,
+      "use": "yeti-king, attack (The Giants' Land).",
+      "gain": 0.351,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "giants_yetiking_hit": {
+      "files": [
+        "giants_yetiking_hit_1.wav"
+      ],
+      "seconds": [
+        0.372
+      ],
+      "loud_db": -11.1,
+      "target_db": -5,
+      "use": "yeti-king, hit (The Giants' Land).",
+      "gain": 0.403,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "giants_yetiking_die": {
+      "files": [
+        "giants_yetiking_die_1.wav"
+      ],
+      "seconds": [
+        1.095
+      ],
+      "loud_db": -11.7,
+      "target_db": -2,
+      "use": "yeti-king, die (The Giants' Land).",
+      "gain": 0.611,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "giants_yetiking_surge": {
+      "files": [
+        "giants_yetiking_surge_1.wav"
+      ],
+      "seconds": [
+        0.995
+      ],
+      "loud_db": -13.1,
+      "target_db": 2,
+      "use": "The Yeti King roars, the storm comes: a roar, the gust rising, far thunder.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

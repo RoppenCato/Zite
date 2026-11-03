@@ -1,0 +1,13 @@
+{
+  "name": "giants_frostogre_die",
+  "category": "giants",
+  "gain": 0.36,
+  "use": "frost-ogre, die (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_frostogre_die_1.wav",
+      "seconds": 0.64,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "heal",
+  "category": "fight",
+  "gain": 0.422,
+  "use": "healed",
+  "variations": [
+    {
+      "file": "heal_1.wav",
+      "seconds": 0.563,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "twigling_die",
+  "category": "forest",
+  "gain": 0.625,
+  "use": "the Twigling falls: sticks clattering down.",
+  "variations": [
+    {
+      "file": "twigling_die_1.wav",
+      "seconds": 0.316,
+      "peak_dbfs": -1
+    }
+  ]
+}

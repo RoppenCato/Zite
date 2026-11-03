@@ -1,0 +1,13 @@
+{
+  "name": "owlbear_hit",
+  "category": "forest",
+  "gain": 0.355,
+  "use": "the Owlbear Cub struck: a hoot of surprise.",
+  "variations": [
+    {
+      "file": "owlbear_hit_1.wav",
+      "seconds": 0.315,
+      "peak_dbfs": -1
+    }
+  ]
+}

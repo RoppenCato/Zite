@@ -1,0 +1,13 @@
+{
+  "name": "meter_pip",
+  "category": "fight",
+  "gain": 0.32,
+  "use": "a pip of the meter",
+  "variations": [
+    {
+      "file": "meter_pip_1.wav",
+      "seconds": 0.126,
+      "peak_dbfs": -1
+    }
+  ]
+}

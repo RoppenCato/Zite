@@ -1,0 +1,13 @@
+{
+  "name": "person_found",
+  "category": "ui",
+  "gain": 0.263,
+  "use": "a person found",
+  "variations": [
+    {
+      "file": "person_found_1.wav",
+      "seconds": 0.633,
+      "peak_dbfs": -1
+    }
+  ]
+}

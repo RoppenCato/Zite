@@ -1,0 +1,13 @@
+{
+  "name": "revive",
+  "category": "fight",
+  "gain": 0.76,
+  "use": "revived",
+  "variations": [
+    {
+      "file": "revive_1.wav",
+      "seconds": 1.113,
+      "peak_dbfs": -1
+    }
+  ]
+}

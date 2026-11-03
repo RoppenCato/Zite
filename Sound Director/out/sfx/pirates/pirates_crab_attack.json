@@ -1,0 +1,13 @@
+{
+  "name": "pirates_crab_attack",
+  "category": "pirates",
+  "gain": 0.463,
+  "use": "scuttle-crab, attack (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_crab_attack_1.wav",
+      "seconds": 0.134,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "spritemap": {
+    "creature/spider/attack": {
+      "start": 0,
+      "end": 0.1618,
+      "loop": false
+    },
+    "creature/spider/hit": {
+      "start": 0.2118,
+      "end": 0.4208,
+      "loop": false
+    },
+    "creature/spider/die": {
+      "start": 0.4708,
+      "end": 0.7873,
+      "loop": false
+    },
+    "creature/treant/attack": {
+      "start": 0.8373,
+      "end": 1.1746,
+      "loop": false
+    },
+    "creature/treant/hit": {
+      "start": 1.2246,
+      "end": 1.5224,
+      "loop": false
+    },
+    "creature/treant/die": {
+      "start": 1.5724,
+      "end": 2.052,
+      "loop": false
+    },
+    "creature/outlaw/attack": {
+      "start": 2.102,
+      "end": 2.3637,
+      "loop": false
+    },
+    "creature/outlaw/hit": {
+      "start": 2.4137,
+      "end": 2.6351,
+      "loop": false
+    },
+    "creature/outlaw/die": {
+      "start": 2.6851,
+      "end": 2.9628,
+      "loop": false
+    },
+    "creature/wraith/attack": {
+      "start": 3.0128,
+      "end": 3.3505,
+      "loop": false
+    },
+    "creature/wraith/hit": {
+      "start": 3.4005,
+      "end": 3.7445,
+      "loop": false
+    },
+    "creature/wraith/die": {
+      "start": 3.7945,
+      "end": 4.1958,
+      "loop": false
+    },
+    "creature/spider-queen/attack": {
+      "start": 4.2458,
+      "end": 4.6325,
+      "loop": false
+    },
+    "creature/spider-queen/hit": {
+      "start": 4.6825,
+      "end": 4.9971,
+      "loop": false
+    },
+    "creature/spider-queen/die": {
+      "start": 5.0471,
+      "end": 5.9541,
+      "loop": false
+    },
+    "creature/briar-king/attack": {
+      "start": 6.0041,
+      "end": 6.6091,
+      "loop": false
+    },
+    "creature/briar-king/hit": {
+      "start": 6.6591,
+      "end": 6.9017,
+      "loop": false
+    },
+    "creature/briar-king/die": {
+      "start": 6.9517,
+      "end": 9.3517,
+      "loop": false
+    },
+    "ui/step-roots-1": {
+      "start": 9.4017,
+      "end": 9.4714,
+      "loop": false
+    },
+    "ui/step-roots-2": {
+      "start": 9.5214,
+      "end": 9.6122,
+      "loop": false
+    },
+    "ui/step-roots-3": {
+      "start": 9.6622,
+      "end": 9.7323,
+      "loop": false
+    },
+    "ui/step-moss-1": {
+      "start": 9.7823,
+      "end": 9.8601,
+      "loop": false
+    },
+    "ui/step-moss-2": {
+      "start": 9.9101,
+      "end": 10.0591,
+      "loop": false
+    },
+    "ui/step-moss-3": {
+      "start": 10.1091,
+      "end": 10.1883,
+      "loop": false
+    }
+  }
+}

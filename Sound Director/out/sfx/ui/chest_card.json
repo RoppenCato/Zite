@@ -1,0 +1,23 @@
+{
+  "name": "chest_card",
+  "category": "ui",
+  "gain": 0.544,
+  "use": "a card slides out",
+  "variations": [
+    {
+      "file": "chest_card_1.wav",
+      "seconds": 0.261,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_card_2.wav",
+      "seconds": 0.264,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_card_3.wav",
+      "seconds": 0.258,
+      "peak_dbfs": -1
+    }
+  ]
+}

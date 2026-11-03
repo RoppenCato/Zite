@@ -1,0 +1,691 @@
+{
+  "about": "The fight sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T12:06:56.582Z",
+  "sounds": {
+    "swing": {
+      "files": [
+        "swing_1.wav",
+        "swing_2.wav",
+        "swing_3.wav"
+      ],
+      "seconds": [
+        0.533,
+        0.518,
+        0.503
+      ],
+      "loud_db": -11.6,
+      "target_db": -9,
+      "use": "the Knight's swing, sent with the round",
+      "gain": 0.27
+    },
+    "hit_light": {
+      "files": [
+        "hit_light_1.wav",
+        "hit_light_2.wav",
+        "hit_light_3.wav"
+      ],
+      "seconds": [
+        0.138,
+        0.13,
+        0.136
+      ],
+      "loud_db": -15,
+      "target_db": -3.5,
+      "use": "a light hit on the blow's frame: Robin's pick, as loud as the die's land",
+      "gain": 0.751
+    },
+    "hit_heavy": {
+      "files": [
+        "hit_heavy_1.wav",
+        "hit_heavy_2.wav",
+        "hit_heavy_3.wav"
+      ],
+      "seconds": [
+        0.158,
+        0.181,
+        0.148
+      ],
+      "loud_db": -16.1,
+      "target_db": -2.1,
+      "use": "a heavy hit",
+      "gain": 1
+    },
+    "crit": {
+      "files": [
+        "crit_1.wav",
+        "crit_2.wav",
+        "crit_3.wav"
+      ],
+      "seconds": [
+        0.157,
+        0.207,
+        0.158
+      ],
+      "loud_db": -13.8,
+      "target_db": 0.2,
+      "use": "a crit: bigger, a crack",
+      "gain": 1
+    },
+    "miss": {
+      "files": [
+        "miss_1.wav",
+        "miss_2.wav",
+        "miss_3.wav"
+      ],
+      "seconds": [
+        0.418,
+        0.406,
+        0.395
+      ],
+      "loud_db": -12.4,
+      "target_db": -9,
+      "use": "a whiff",
+      "gain": 0.296
+    },
+    "enemy_hit_light": {
+      "files": [
+        "enemy_hit_light_1.wav",
+        "enemy_hit_light_2.wav",
+        "enemy_hit_light_3.wav"
+      ],
+      "seconds": [
+        0.154,
+        0.148,
+        0.13
+      ],
+      "loud_db": -11.3,
+      "target_db": -4.5,
+      "use": "the enemy's blow: blunt, a step under the hero's",
+      "gain": 0.437
+    },
+    "enemy_hit_heavy": {
+      "files": [
+        "enemy_hit_heavy_1.wav",
+        "enemy_hit_heavy_2.wav",
+        "enemy_hit_heavy_3.wav"
+      ],
+      "seconds": [
+        0.164,
+        0.191,
+        0.157
+      ],
+      "loud_db": -11.9,
+      "target_db": -2.5,
+      "use": "the enemy's heavy blow",
+      "gain": 0.59
+    },
+    "guard_block": {
+      "files": [
+        "guard_block_1.wav"
+      ],
+      "seconds": [
+        0.288
+      ],
+      "loud_db": -10.8,
+      "target_db": -2,
+      "use": "Block",
+      "gain": 0.551
+    },
+    "guard_dodge": {
+      "files": [
+        "guard_dodge_1.wav"
+      ],
+      "seconds": [
+        0.24
+      ],
+      "loud_db": -10.2,
+      "target_db": -6,
+      "use": "Dodge",
+      "gain": 0.324
+    },
+    "guard_brace": {
+      "files": [
+        "guard_brace_1.wav"
+      ],
+      "seconds": [
+        0.344
+      ],
+      "loud_db": -11.4,
+      "target_db": 0,
+      "use": "Brace: a thud and a grunt",
+      "gain": 0.743
+    },
+    "guard_counter": {
+      "files": [
+        "guard_counter_1.wav"
+      ],
+      "seconds": [
+        0.298
+      ],
+      "loud_db": -10.8,
+      "target_db": 0,
+      "use": "Counter: the parry's ring",
+      "gain": 0.693
+    },
+    "enemy_windup": {
+      "files": [
+        "enemy_windup_1.wav"
+      ],
+      "seconds": [
+        0.62
+      ],
+      "loud_db": -12.2,
+      "target_db": -3,
+      "use": "Guard well",
+      "gain": 0.576
+    },
+    "meter_pip": {
+      "files": [
+        "meter_pip_1.wav"
+      ],
+      "seconds": [
+        0.126
+      ],
+      "loud_db": -12.1,
+      "target_db": -8,
+      "use": "a pip of the meter",
+      "gain": 0.32
+    },
+    "begin": {
+      "files": [
+        "begin_1.wav"
+      ],
+      "seconds": [
+        1
+      ],
+      "loud_db": -5.4,
+      "target_db": -2,
+      "use": "the fight opens (toned down, Robin 2026-11-03)",
+      "gain": 0.296
+    },
+    "victory": {
+      "files": [
+        "victory_1.wav"
+      ],
+      "seconds": [
+        1.404
+      ],
+      "loud_db": -6.9,
+      "target_db": -1,
+      "use": "a fight won (toned down, Robin 2026-11-03)",
+      "gain": 0.394
+    },
+    "defeat": {
+      "files": [
+        "defeat_1.wav"
+      ],
+      "seconds": [
+        1.957
+      ],
+      "loud_db": -7.5,
+      "target_db": 0,
+      "use": "a fight lost",
+      "gain": 0.474
+    },
+    "drop": {
+      "files": [
+        "drop_1.wav"
+      ],
+      "seconds": [
+        0.464
+      ],
+      "loud_db": -15.3,
+      "target_db": -6,
+      "use": "a drop rolling onto the card",
+      "gain": 0.583
+    },
+    "flee": {
+      "files": [
+        "flee_1.wav"
+      ],
+      "seconds": [
+        0.455
+      ],
+      "loud_db": -12.1,
+      "target_db": -5,
+      "use": "hurried steps",
+      "gain": 0.453
+    },
+    "caught": {
+      "files": [
+        "caught_1.wav"
+      ],
+      "seconds": [
+        0.343
+      ],
+      "loud_db": -12.4,
+      "target_db": 0,
+      "use": "a flee that failed",
+      "gain": 0.833
+    },
+    "phase": {
+      "files": [
+        "phase_1.wav"
+      ],
+      "seconds": [
+        1.475
+      ],
+      "loud_db": -9.2,
+      "target_db": 2,
+      "use": "the enemy's second phase: a dark swell",
+      "gain": 0.726
+    },
+    "charge": {
+      "files": [
+        "charge_1.wav"
+      ],
+      "seconds": [
+        1.084
+      ],
+      "loud_db": -9.5,
+      "target_db": -3,
+      "use": "the power gathering",
+      "gain": 0.422
+    },
+    "potion": {
+      "files": [
+        "potion_1.wav"
+      ],
+      "seconds": [
+        0.873
+      ],
+      "loud_db": -12,
+      "target_db": -4,
+      "use": "Honey Tonic",
+      "gain": 0.502
+    },
+    "mana_potion": {
+      "files": [
+        "mana_potion_1.wav"
+      ],
+      "seconds": [
+        0.729
+      ],
+      "loud_db": -12.4,
+      "target_db": -4,
+      "use": "Moon Dew",
+      "gain": 0.526
+    },
+    "ability_heavy_blow": {
+      "files": [
+        "ability_heavy_blow_1.wav"
+      ],
+      "seconds": [
+        0.601
+      ],
+      "loud_db": -11.9,
+      "target_db": 3,
+      "use": "Mighty Swing",
+      "gain": 1
+    },
+    "ability_shield_bash": {
+      "files": [
+        "ability_shield_bash_1.wav"
+      ],
+      "seconds": [
+        0.327
+      ],
+      "loud_db": -10.7,
+      "target_db": 2,
+      "use": "Shield Bonk",
+      "gain": 0.863
+    },
+    "ability_war_cry": {
+      "files": [
+        "ability_war_cry_1.wav"
+      ],
+      "seconds": [
+        1.2
+      ],
+      "loud_db": -10,
+      "target_db": 1,
+      "use": "Battle Hymn",
+      "gain": 0.709
+    },
+    "ability_execute": {
+      "files": [
+        "ability_execute_1.wav"
+      ],
+      "seconds": [
+        0.619
+      ],
+      "loud_db": -11.1,
+      "target_db": 3,
+      "use": "Finishing Flourish",
+      "gain": 1
+    },
+    "ability_rally": {
+      "files": [
+        "ability_rally_1.wav"
+      ],
+      "seconds": [
+        1.01
+      ],
+      "loud_db": -12.4,
+      "target_db": 0,
+      "use": "Second Wind",
+      "gain": 0.833
+    },
+    "ability_shield_wall": {
+      "files": [
+        "ability_shield_wall_1.wav"
+      ],
+      "seconds": [
+        0.672
+      ],
+      "loud_db": -16.3,
+      "target_db": -2.3,
+      "use": "Castle Stance",
+      "gain": 1
+    },
+    "effect_stunned": {
+      "files": [
+        "effect_stunned_1.wav"
+      ],
+      "seconds": [
+        0.687
+      ],
+      "loud_db": -15.2,
+      "target_db": -2,
+      "use": "stunned",
+      "gain": 0.914
+    },
+    "effect_weakened": {
+      "files": [
+        "effect_weakened_1.wav"
+      ],
+      "seconds": [
+        0.527
+      ],
+      "loud_db": -8,
+      "target_db": -5,
+      "use": "weakened",
+      "gain": 0.282
+    },
+    "effect_poison": {
+      "files": [
+        "effect_poison_1.wav"
+      ],
+      "seconds": [
+        0.349
+      ],
+      "loud_db": -10.6,
+      "target_db": -4,
+      "use": "poisoned",
+      "gain": 0.427
+    },
+    "effect_poison_tick": {
+      "files": [
+        "effect_poison_tick_1.wav"
+      ],
+      "seconds": [
+        0.137
+      ],
+      "loud_db": -11.7,
+      "target_db": -8,
+      "use": "a poison tick, each round",
+      "gain": 0.306
+    },
+    "effect_armoured": {
+      "files": [
+        "effect_armoured_1.wav"
+      ],
+      "seconds": [
+        0.206
+      ],
+      "loud_db": -10.3,
+      "target_db": -4,
+      "use": "armoured",
+      "gain": 0.413
+    },
+    "effect_evade": {
+      "files": [
+        "effect_evade_1.wav"
+      ],
+      "seconds": [
+        0.282
+      ],
+      "loud_db": -10.1,
+      "target_db": -6,
+      "use": "ready to evade",
+      "gain": 0.32
+    },
+    "effect_mark": {
+      "files": [
+        "effect_mark_1.wav"
+      ],
+      "seconds": [
+        0.443
+      ],
+      "loud_db": -11.8,
+      "target_db": -6,
+      "use": "marked",
+      "gain": 0.39
+    },
+    "effect_trap": {
+      "files": [
+        "effect_trap_1.wav"
+      ],
+      "seconds": [
+        0.108
+      ],
+      "loud_db": -14.3,
+      "target_db": -5,
+      "use": "a trap set",
+      "gain": 0.583
+    },
+    "effect_skip": {
+      "files": [
+        "effect_skip_1.wav"
+      ],
+      "seconds": [
+        0.361
+      ],
+      "loud_db": -16,
+      "target_db": -6,
+      "use": "a turn lost",
+      "gain": 0.632
+    },
+    "effect_attackup": {
+      "files": [
+        "effect_attackup_1.wav"
+      ],
+      "seconds": [
+        0.5
+      ],
+      "loud_db": -9.8,
+      "target_db": -3,
+      "use": "attack raised",
+      "gain": 0.437
+    },
+    "effect_barrier": {
+      "files": [
+        "effect_barrier_1.wav"
+      ],
+      "seconds": [
+        0.582
+      ],
+      "loud_db": -7.8,
+      "target_db": -3,
+      "use": "a barrier up",
+      "gain": 0.347
+    },
+    "effect_surecrit": {
+      "files": [
+        "effect_surecrit_1.wav"
+      ],
+      "seconds": [
+        0.058
+      ],
+      "loud_db": -11.9,
+      "target_db": -5,
+      "use": "the next blow sure to crit: a glint of iron",
+      "gain": 0.442
+    },
+    "effect_companion": {
+      "files": [
+        "effect_companion_1.wav"
+      ],
+      "seconds": [
+        0.396
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "a companion joins",
+      "gain": 0.232
+    },
+    "effect_windup": {
+      "files": [
+        "effect_windup_1.wav"
+      ],
+      "seconds": [
+        0.446
+      ],
+      "loud_db": -9.1,
+      "target_db": -5,
+      "use": "winding up for next turn",
+      "gain": 0.32
+    },
+    "effect_drained": {
+      "files": [
+        "effect_drained_1.wav"
+      ],
+      "seconds": [
+        0.495
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "mana drained",
+      "gain": 0.32
+    },
+    "heal": {
+      "files": [
+        "heal_1.wav"
+      ],
+      "seconds": [
+        0.563
+      ],
+      "loud_db": -8.5,
+      "target_db": -2,
+      "use": "healed",
+      "gain": 0.422
+    },
+    "revive": {
+      "files": [
+        "revive_1.wav"
+      ],
+      "seconds": [
+        1.113
+      ],
+      "loud_db": -10.6,
+      "target_db": 1,
+      "use": "revived",
+      "gain": 0.76
+    },
+    "dodge": {
+      "files": [
+        "dodge_1.wav"
+      ],
+      "seconds": [
+        0.217
+      ],
+      "loud_db": -12.2,
+      "target_db": -3,
+      "use": "a dodge pops on screen: a clear whoosh, louder than the guard row's",
+      "gain": 0.576
+    },
+    "storm_bite": {
+      "files": [
+        "storm_bite_1.wav"
+      ],
+      "seconds": [
+        0.358
+      ],
+      "loud_db": -14.8,
+      "target_db": -3,
+      "use": "the storm biting: a short cold gust and glass-high bells, a bite, 0.5 s.",
+      "gain": 0.778
+    },
+    "ending_sting": {
+      "files": [
+        "ending_sting_1.wav"
+      ],
+      "seconds": [
+        2.539
+      ],
+      "loud_db": -10.1,
+      "target_db": 2,
+      "use": "the Hollow King falls, the ending: a low chord that does not resolve, then a slow horn-less rise of bells to a clean D major, 2.5 s: an old thing laid down, sorrow and light.",
+      "gain": 0.805
+    },
+    "effect_bleed_tick": {
+      "files": [
+        "effect_bleed_tick_1.wav"
+      ],
+      "seconds": [
+        0.129
+      ],
+      "loud_db": -12.2,
+      "target_db": -8,
+      "use": "a bleed tick: one small wet drip, under 0.2 s.",
+      "gain": 0.324
+    },
+    "lightning": {
+      "files": [
+        "lightning_1.wav"
+      ],
+      "seconds": [
+        0.545
+      ],
+      "loud_db": -8,
+      "target_db": 2,
+      "use": "a trinket's lightning striking the enemy (Miles, GD, 2026-11-03)",
+      "gain": 0.632
+    },
+    "impact_arcane": {
+      "files": [
+        "impact_arcane_1.wav"
+      ],
+      "seconds": [
+        0.304
+      ],
+      "loud_db": -9.2,
+      "target_db": 0,
+      "use": "an arcane spell lands: a bright cluster of bells, the rune's front, a soft knock. 0.35 s.",
+      "gain": 0.576,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "impact_fire": {
+      "files": [
+        "impact_fire_1.wav"
+      ],
+      "seconds": [
+        0.304
+      ],
+      "loud_db": -11,
+      "target_db": 0,
+      "use": "a fire spell lands: a whoomp of air, the recorded fire's crackle, a dull knock. 0.45 s.",
+      "gain": 0.709,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "impact_holy": {
+      "files": [
+        "impact_holy_1.wav"
+      ],
+      "seconds": [
+        0.41
+      ],
+      "loud_db": -10.1,
+      "target_db": 0,
+      "use": "a holy spell lands: a bright major chord of bells, strings flaring for a moment, a clean crack. 0.5 s.",
+      "gain": 0.639,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    }
+  }
+}

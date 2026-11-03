@@ -1,0 +1,13 @@
+{
+  "name": "phase",
+  "category": "fight",
+  "gain": 0.726,
+  "use": "the enemy's second phase: a dark swell",
+  "variations": [
+    {
+      "file": "phase_1.wav",
+      "seconds": 1.475,
+      "peak_dbfs": -1
+    }
+  ]
+}

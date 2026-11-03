@@ -1,0 +1,13 @@
+{
+  "name": "pirates_saltjaw_surge",
+  "category": "pirates",
+  "gain": 0.805,
+  "use": "Saltjaw bellows, all guns: a shout and a far cannon.",
+  "variations": [
+    {
+      "file": "pirates_saltjaw_surge_1.wav",
+      "seconds": 0.793,
+      "peak_dbfs": -1
+    }
+  ]
+}

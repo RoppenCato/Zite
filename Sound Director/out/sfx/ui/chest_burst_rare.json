@@ -1,0 +1,13 @@
+{
+  "name": "chest_burst_rare",
+  "category": "ui",
+  "gain": 0.677,
+  "use": "a rare chest: Z's reveal, a G major chord on horn, strings and bells",
+  "variations": [
+    {
+      "file": "chest_burst_rare_1.wav",
+      "seconds": 1.494,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+ "name": "creatures-giants",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "creature/young-yeti/attack",
+   "file": "out/sfx/giants/giants_youngyeti_attack_1.wav",
+   "gain": 0.563,
+   "loop": false
+  },
+  {
+   "name": "creature/young-yeti/hit",
+   "file": "out/sfx/giants/giants_youngyeti_hit_1.wav",
+   "gain": 0.279,
+   "loop": false
+  },
+  {
+   "name": "creature/young-yeti/die",
+   "file": "out/sfx/giants/giants_youngyeti_die_1.wav",
+   "gain": 0.508,
+   "loop": false
+  },
+  {
+   "name": "creature/snow-monster/attack",
+   "file": "out/sfx/giants/giants_snowmonster_attack_1.wav",
+   "gain": 0.377,
+   "loop": false
+  },
+  {
+   "name": "creature/snow-monster/hit",
+   "file": "out/sfx/giants/giants_snowmonster_hit_1.wav",
+   "gain": 0.654,
+   "loop": false
+  },
+  {
+   "name": "creature/snow-monster/die",
+   "file": "out/sfx/giants/giants_snowmonster_die_1.wav",
+   "gain": 0.924,
+   "loop": false
+  },
+  {
+   "name": "creature/frost-ogre/attack",
+   "file": "out/sfx/giants/giants_frostogre_attack_1.wav",
+   "gain": 0.249,
+   "loop": false
+  },
+  {
+   "name": "creature/frost-ogre/hit",
+   "file": "out/sfx/giants/giants_frostogre_hit_1.wav",
+   "gain": 0.246,
+   "loop": false
+  },
+  {
+   "name": "creature/frost-ogre/die",
+   "file": "out/sfx/giants/giants_frostogre_die_1.wav",
+   "gain": 0.36,
+   "loop": false
+  },
+  {
+   "name": "creature/icicle-bat/attack",
+   "file": "out/sfx/giants/giants_icebat_attack_1.wav",
+   "gain": 0.647,
+   "loop": false
+  },
+  {
+   "name": "creature/icicle-bat/hit",
+   "file": "out/sfx/giants/giants_icebat_hit_1.wav",
+   "gain": 0.52,
+   "loop": false
+  },
+  {
+   "name": "creature/icicle-bat/die",
+   "file": "out/sfx/giants/giants_icebat_die_1.wav",
+   "gain": 0.544,
+   "loop": false
+  },
+  {
+   "name": "creature/old-snowshoulder/attack",
+   "file": "out/sfx/giants/giants_snowshoulder_attack_1.wav",
+   "gain": 0.324,
+   "loop": false
+  },
+  {
+   "name": "creature/old-snowshoulder/hit",
+   "file": "out/sfx/giants/giants_snowshoulder_hit_1.wav",
+   "gain": 0.313,
+   "loop": false
+  },
+  {
+   "name": "creature/old-snowshoulder/die",
+   "file": "out/sfx/giants/giants_snowshoulder_die_1.wav",
+   "gain": 0.717,
+   "loop": false
+  },
+  {
+   "name": "creature/yeti-king/attack",
+   "file": "out/sfx/giants/giants_yetiking_attack_1.wav",
+   "gain": 0.351,
+   "loop": false
+  },
+  {
+   "name": "creature/yeti-king/hit",
+   "file": "out/sfx/giants/giants_yetiking_hit_1.wav",
+   "gain": 0.403,
+   "loop": false
+  },
+  {
+   "name": "creature/yeti-king/die",
+   "file": "out/sfx/giants/giants_yetiking_die_1.wav",
+   "gain": 0.611,
+   "loop": false
+  },
+  {
+   "name": "creature/yeti-king/surge",
+   "file": "out/sfx/giants/giants_yetiking_surge_1.wav",
+   "gain": 1,
+   "loop": false
+  }
+ ]
+}

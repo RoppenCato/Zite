@@ -1,0 +1,13 @@
+{
+  "name": "begin",
+  "category": "fight",
+  "gain": 0.296,
+  "use": "the fight opens (toned down, Robin 2026-11-03)",
+  "variations": [
+    {
+      "file": "begin_1.wav",
+      "seconds": 1,
+      "peak_dbfs": -1
+    }
+  ]
+}

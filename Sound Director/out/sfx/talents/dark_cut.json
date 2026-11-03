@@ -1,0 +1,13 @@
+{
+  "name": "dark_cut",
+  "category": "talents",
+  "gain": 0.968,
+  "use": "a hard cut from the dark: a breath drawn, the heavy hit and the edge.",
+  "variations": [
+    {
+      "file": "dark_cut_1.wav",
+      "seconds": 0.297,
+      "peak_dbfs": -1
+    }
+  ]
+}

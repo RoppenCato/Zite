@@ -1,0 +1,13 @@
+{
+  "name": "pip_archer",
+  "category": "fight-classes",
+  "gain": 0.413,
+  "use": "Aim's pip: a tick of the bowstring.",
+  "variations": [
+    {
+      "file": "pip_archer_1.wav",
+      "seconds": 0.055,
+      "peak_dbfs": -1
+    }
+  ]
+}

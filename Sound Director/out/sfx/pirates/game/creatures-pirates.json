@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/deck-hand/attack": {
+      "start": 0,
+      "end": 0.4095,
+      "loop": false
+    },
+    "creature/deck-hand/hit": {
+      "start": 0.4595,
+      "end": 0.7667,
+      "loop": false
+    },
+    "creature/deck-hand/die": {
+      "start": 0.8167,
+      "end": 0.9858,
+      "loop": false
+    },
+    "creature/buccaneer/attack": {
+      "start": 1.0358,
+      "end": 1.5238,
+      "loop": false
+    },
+    "creature/buccaneer/hit": {
+      "start": 1.5738,
+      "end": 1.9388,
+      "loop": false
+    },
+    "creature/buccaneer/die": {
+      "start": 1.9888,
+      "end": 2.1884,
+      "loop": false
+    },
+    "creature/scuttle-crab/attack": {
+      "start": 2.2384,
+      "end": 2.3724,
+      "loop": false
+    },
+    "creature/scuttle-crab/hit": {
+      "start": 2.4224,
+      "end": 2.5337,
+      "loop": false
+    },
+    "creature/scuttle-crab/die": {
+      "start": 2.5837,
+      "end": 2.9811,
+      "loop": false
+    },
+    "creature/cheeky-parrot/attack": {
+      "start": 3.0311,
+      "end": 3.3517,
+      "loop": false
+    },
+    "creature/cheeky-parrot/hit": {
+      "start": 3.4017,
+      "end": 3.6738,
+      "loop": false
+    },
+    "creature/cheeky-parrot/die": {
+      "start": 3.7238,
+      "end": 4.0138,
+      "loop": false
+    },
+    "creature/first-mate-redwake/attack": {
+      "start": 4.0638,
+      "end": 4.6099,
+      "loop": false
+    },
+    "creature/first-mate-redwake/hit": {
+      "start": 4.6599,
+      "end": 5.0682,
+      "loop": false
+    },
+    "creature/first-mate-redwake/die": {
+      "start": 5.1182,
+      "end": 5.4728,
+      "loop": false
+    },
+    "creature/captain-saltjaw/attack": {
+      "start": 5.5228,
+      "end": 6.2262,
+      "loop": false
+    },
+    "creature/captain-saltjaw/hit": {
+      "start": 6.2762,
+      "end": 6.7413,
+      "loop": false
+    },
+    "creature/captain-saltjaw/die": {
+      "start": 6.7913,
+      "end": 7.818,
+      "loop": false
+    },
+    "creature/captain-saltjaw/surge": {
+      "start": 7.868,
+      "end": 8.6609,
+      "loop": false
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "grumblebark_attack",
+  "category": "forest",
+  "gain": 0.422,
+  "use": "Grumblebark: a huge groan: Kenney's creak slowed under a low grunt.",
+  "variations": [
+    {
+      "file": "grumblebark_attack_1.wav",
+      "seconds": 0.605,
+      "peak_dbfs": -1
+    }
+  ]
+}

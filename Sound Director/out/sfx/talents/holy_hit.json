@@ -1,0 +1,13 @@
+{
+  "name": "holy_hit",
+  "category": "talents",
+  "gain": 1,
+  "use": "a holy blow: Robin's heavy hit with a bright chord of bells on it.",
+  "variations": [
+    {
+      "file": "holy_hit_1.wav",
+      "seconds": 0.506,
+      "peak_dbfs": -1
+    }
+  ]
+}

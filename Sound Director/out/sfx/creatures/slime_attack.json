@@ -1,0 +1,13 @@
+{
+  "name": "slime_attack",
+  "category": "creatures",
+  "gain": 0.394,
+  "use": "the Jelly Slime lunges: a squelch.",
+  "variations": [
+    {
+      "file": "slime_attack_1.wav",
+      "seconds": 0.211,
+      "peak_dbfs": -1
+    }
+  ]
+}

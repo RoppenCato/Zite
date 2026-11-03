@@ -1,0 +1,13 @@
+{
+  "name": "impact_fire",
+  "category": "fight",
+  "gain": 0.709,
+  "use": "a fire spell lands: a whoomp of air, the recorded fire's crackle, a dull knock. 0.45 s.",
+  "variations": [
+    {
+      "file": "impact_fire_1.wav",
+      "seconds": 0.304,
+      "peak_dbfs": -1
+    }
+  ]
+}

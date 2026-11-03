@@ -1,0 +1,13 @@
+{
+  "name": "goblin_attack",
+  "category": "forest",
+  "gain": 0.52,
+  "use": "the Moss Goblin: a nasal grunt.",
+  "variations": [
+    {
+      "file": "goblin_attack_1.wav",
+      "seconds": 0.337,
+      "peak_dbfs": -1
+    }
+  ]
+}

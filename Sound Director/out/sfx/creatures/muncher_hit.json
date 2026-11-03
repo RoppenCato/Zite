@@ -1,0 +1,13 @@
+{
+  "name": "muncher_hit",
+  "category": "creatures",
+  "gain": 0.385,
+  "use": "the Mushroom Muncher struck: a soft thump and a grunt.",
+  "variations": [
+    {
+      "file": "muncher_hit_1.wav",
+      "seconds": 0.232,
+      "peak_dbfs": -1
+    }
+  ]
+}

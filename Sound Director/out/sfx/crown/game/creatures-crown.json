@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/crypt-guard/attack": {
+      "start": 0,
+      "end": 0.4377,
+      "loop": false
+    },
+    "creature/crypt-guard/hit": {
+      "start": 0.4877,
+      "end": 0.7005,
+      "loop": false
+    },
+    "creature/crypt-guard/die": {
+      "start": 0.7505,
+      "end": 1.2847,
+      "loop": false
+    },
+    "creature/gilded-wraith/attack": {
+      "start": 1.3347,
+      "end": 1.8052,
+      "loop": false
+    },
+    "creature/gilded-wraith/hit": {
+      "start": 1.8552,
+      "end": 2.0937,
+      "loop": false
+    },
+    "creature/gilded-wraith/die": {
+      "start": 2.1437,
+      "end": 2.8244,
+      "loop": false
+    },
+    "creature/stone-gargoyle/attack": {
+      "start": 2.8744,
+      "end": 3.2568,
+      "loop": false
+    },
+    "creature/stone-gargoyle/hit": {
+      "start": 3.3068,
+      "end": 3.8462,
+      "loop": false
+    },
+    "creature/stone-gargoyle/die": {
+      "start": 3.8963,
+      "end": 5.1477,
+      "loop": false
+    },
+    "creature/gold-mimic/attack": {
+      "start": 5.1977,
+      "end": 5.6588,
+      "loop": false
+    },
+    "creature/gold-mimic/hit": {
+      "start": 5.7088,
+      "end": 5.8584,
+      "loop": false
+    },
+    "creature/gold-mimic/die": {
+      "start": 5.9084,
+      "end": 6.4426,
+      "loop": false
+    },
+    "creature/last-steward/attack": {
+      "start": 6.4926,
+      "end": 7.1502,
+      "loop": false
+    },
+    "creature/last-steward/hit": {
+      "start": 7.2002,
+      "end": 7.5719,
+      "loop": false
+    },
+    "creature/last-steward/die": {
+      "start": 7.6219,
+      "end": 8.6399,
+      "loop": false
+    },
+    "creature/hollow-king/attack": {
+      "start": 8.6899,
+      "end": 9.4899,
+      "loop": false
+    },
+    "creature/hollow-king/hit": {
+      "start": 9.5399,
+      "end": 10.0185,
+      "loop": false
+    },
+    "creature/hollow-king/die": {
+      "start": 10.0685,
+      "end": 11.3634,
+      "loop": false
+    },
+    "creature/hollow-king/surge": {
+      "start": 11.4134,
+      "end": 12.7796,
+      "loop": false
+    }
+  }
+}

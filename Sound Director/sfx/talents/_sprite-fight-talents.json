@@ -1,0 +1,108 @@
+{
+ "name": "fight-talents",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "fight/talent-holy-hit",
+   "file": "out/sfx/talents/holy_hit_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-holy-blast",
+   "file": "out/sfx/talents/holy_blast_1.wav",
+   "gain": 0.805,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-roar",
+   "file": "out/sfx/talents/roar_1.wav",
+   "gain": 0.717,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-cleave",
+   "file": "out/sfx/talents/cleave_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-arcane-bolt",
+   "file": "out/sfx/talents/arcane_bolt_1.wav",
+   "gain": 0.67,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-fire-small",
+   "file": "out/sfx/talents/fire_small_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-blade-charge",
+   "file": "out/sfx/talents/blade_charge_1.wav",
+   "gain": 0.538,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-triple-cut",
+   "file": "out/sfx/talents/triple_cut_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-thrown",
+   "file": "out/sfx/talents/thrown_1.wav",
+   "gain": 0.787,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-clone",
+   "file": "out/sfx/talents/clone_1.wav",
+   "gain": 0.639,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-dark-cut",
+   "file": "out/sfx/talents/dark_cut_1.wav",
+   "gain": 0.968,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-flask",
+   "file": "out/sfx/talents/flask_1.wav",
+   "gain": 0.618,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-arrow-rain",
+   "file": "out/sfx/talents/arrow_rain_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-bow-ready",
+   "file": "out/sfx/talents/bow_ready_1.wav",
+   "gain": 0.778,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-owl-swoop",
+   "file": "out/sfx/talents/owl_swoop_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-blood",
+   "file": "out/sfx/talents/blood_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-magic-power",
+   "file": "out/sfx/talents/magic_power_1.wav",
+   "gain": 0.418,
+   "loop": false
+  }
+ ]
+}

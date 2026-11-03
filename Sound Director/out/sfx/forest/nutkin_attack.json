@@ -1,0 +1,13 @@
+{
+  "name": "nutkin_attack",
+  "category": "forest",
+  "gain": 0.32,
+  "use": "the Nutkin Thief: a chatter of small voices.",
+  "variations": [
+    {
+      "file": "nutkin_attack_1.wav",
+      "seconds": 0.338,
+      "peak_dbfs": -1
+    }
+  ]
+}

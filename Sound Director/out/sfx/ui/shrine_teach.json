@@ -1,0 +1,13 @@
+{
+  "name": "shrine_teach",
+  "category": "ui",
+  "gain": 0.324,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "shrine_teach_1.wav",
+      "seconds": 0.744,
+      "peak_dbfs": -1
+    }
+  ]
+}

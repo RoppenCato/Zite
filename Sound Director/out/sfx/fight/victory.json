@@ -1,0 +1,13 @@
+{
+  "name": "victory",
+  "category": "fight",
+  "gain": 0.394,
+  "use": "a fight won (toned down, Robin 2026-11-03)",
+  "variations": [
+    {
+      "file": "victory_1.wav",
+      "seconds": 1.404,
+      "peak_dbfs": -1
+    }
+  ]
+}

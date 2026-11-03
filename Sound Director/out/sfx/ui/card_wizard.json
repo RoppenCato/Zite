@@ -1,0 +1,13 @@
+{
+  "name": "card_wizard",
+  "category": "ui",
+  "gain": 0.385,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "card_wizard_1.wav",
+      "seconds": 0.359,
+      "peak_dbfs": -1
+    }
+  ]
+}

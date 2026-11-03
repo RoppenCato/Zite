@@ -1,0 +1,13 @@
+{
+  "name": "ending_sting",
+  "category": "fight",
+  "gain": 0.805,
+  "use": "the Hollow King falls, the ending: a low chord that does not resolve, then a slow horn-less rise of bells to a clean D major, 2.5 s: an old thing laid down, sorrow and light.",
+  "variations": [
+    {
+      "file": "ending_sting_1.wav",
+      "seconds": 2.539,
+      "peak_dbfs": -1
+    }
+  ]
+}

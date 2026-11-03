@@ -1,0 +1,13 @@
+{
+  "name": "ability_meteor",
+  "category": "fight-classes",
+  "gain": 0.843,
+  "use": "Falling Star, the casting: bells falling from the top, a deep whoosh; the star lands two rounds later (a second name if the game wants one).",
+  "variations": [
+    {
+      "file": "ability_meteor_1.wav",
+      "seconds": 0.932,
+      "peak_dbfs": -1
+    }
+  ]
+}

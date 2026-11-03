@@ -1,0 +1,13 @@
+{
+  "name": "impact_arcane",
+  "category": "fight",
+  "gain": 0.576,
+  "use": "an arcane spell lands: a bright cluster of bells, the rune's front, a soft knock. 0.35 s.",
+  "variations": [
+    {
+      "file": "impact_arcane_1.wav",
+      "seconds": 0.304,
+      "peak_dbfs": -1
+    }
+  ]
+}

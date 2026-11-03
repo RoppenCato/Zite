@@ -210,3 +210,18 @@ where the game's mix already is. The game builds its bundle only from what plays
 grows, gather what is finished into `work/_old-renders-<date>/` (with a README of what is in it) for Robin to delete; keep
 `work/sp-home/` (the studio's Sonic Pi home), `work/queue.sh`, the scripts, and the decode takes of any set still being picked.
 
+
+## Zite (2026-11-01): the game's format, the sprite, the anchor
+
+- **ffmpeg** is at `C:\dev\ffmpeg\bin\ffmpeg.exe` (Robin's yes, 2026-11-01; the gyan.dev release essentials build, on the user PATH).
+  `tools/mp3.js` uses it when lamejs is missing (it is, here). The game's format is OGG Vorbis (`docs/game-notes.md`).
+- **The sprite:** `node tools/sprite.js sfx/<wave>/_sprite.json out/sfx/<wave>/game` packs a wave's levelled masters into one
+  `<wave>.ogg` (48 kHz mono, quality 4, 50 ms gaps, the set's peak at -3 dBFS, 5 ms fades) with `<wave>.json` in the game's
+  spritemap form, and every sound as a loose OGG beside them. The spec lists name, file, gain and loop per sound; the names
+  are the game's (`ui/die-land-b-1`). The WAV masters stay in `out/sfx/<wave>/` (git ignores WAVs) and `work/`.
+- **The anchor:** Zite's first set is the die landing, `out/sfx/ui/die_land_a_1.wav` at gain 1.0. Every later set is levelled
+  with `node tools/sfx-level.js out/sfx/<wave> sfx/<wave>/_levels.json --weighted --anchor out/_archive/die-land-a-c-2026-11-03/die_land_a_1.wav:1.0`.
+- **Decoding references:** slots of 3 s or more, or read piece N as recording N; `label.js` with 1 s slots named the pieces two
+  off (`docs/sfx-notes.md` section 13).
+- **Robin's phone page for Zite:** https://claude.ai/artifact/RbeCB5EqixKqLrj4TCYa8m (published 2026-11-01 from `viewer/listen.html`;
+  republish the same file with the audio under `files` to update it).

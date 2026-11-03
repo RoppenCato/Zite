@@ -1,0 +1,13 @@
+{
+  "name": "giants_snowshoulder_die",
+  "category": "giants",
+  "gain": 0.717,
+  "use": "old-snowshoulder, die (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_snowshoulder_die_1.wav",
+      "seconds": 0.717,
+      "peak_dbfs": -1
+    }
+  ]
+}

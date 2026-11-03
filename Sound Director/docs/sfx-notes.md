@@ -216,3 +216,22 @@ and its gain as the anchor, target 0), then write the equivalent target against 
 times of nine (and B, a raw recurve, for the bow). Lead with the best single recording; a layered V is worth offering only
 where no one recording does what the moment needs (the storm's gathering, a sound the game times to the frame).
 
+
+## 13. The die landing, Zite's first sound (2026-11-01)
+
+- **A decode's slot must be longer than its lead-in, or label by piece number.** The decode file sleeps 2 s before its
+  marker; with 1 s slots `work/decode/label.js` found a latency of 0.877 s instead of 2.877 and named every piece two
+  recordings off. The first three renders were built on a 590 Hz knock believed to be a 3.4 kHz clack (60 % of the energy
+  under 250 Hz). Rule: slots of 3 s or more, or read `die_N` as recording N and check one piece by ear or by its length.
+- **Wood for a die**: of 40 recorded knocks on this PC only rubberduck's `wood_hit_01` and `_06` (2.6 and 3.4 kHz, attacks
+  under 3 ms) read as a small hard object; Kenney's impacts and footsteps are all heavy things on boards (under 260 Hz).
+
+## 14. What the Survival fight sounds lose on a phone (2026-11-01)
+
+- **Measure the band shares before reusing a sound for the phone.** `hurt` 100 % under 250 Hz, `stagger` 99, `slam` 99, `heavytell` 97, `finish` 96, `last_stand_a` 95, `cudgel_thud_a` 86. On a phone speaker these nearly vanish. Use them only under a sound that lives in the mids (a wooden knock, the club's hit, a recorded breath).
+- **A normalised file can measure louder than a heavier one.** At equal gain `hit_w` is 1.1 dB over `heavyhit_x` by the weighted measure: set the ladder from the printed loudness, and check that a gain has not hit the ceiling of 1.0.
+- **Recorded yells can start with a long silence** (HaelDB's `3grunt1`): `render-sfx.js` split it off as a second piece. Cut past the head (`sfx/fight/ref/cut/grunt.wav`).
+
+## 15. Recorded roars on a phone (2026-11-03)
+
+- rubberduck's roars and BigSoundBank's groans are mostly under 250 Hz. High-pass them at 330 Hz (`:hpf, cutoff: 64`) before anything else; a high-pass at 196 Hz left Old Snowshoulder at 86 to 94 %. Some recordings stay low whatever is done (roar_01, roar_02): swap the recording.

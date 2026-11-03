@@ -1,0 +1,13 @@
+{
+  "name": "nutkin_die",
+  "category": "forest",
+  "gain": 0.343,
+  "use": "the Nutkin Thief falls: a falling squeak, acorns dropping.",
+  "variations": [
+    {
+      "file": "nutkin_die_1.wav",
+      "seconds": 0.401,
+      "peak_dbfs": -1
+    }
+  ]
+}

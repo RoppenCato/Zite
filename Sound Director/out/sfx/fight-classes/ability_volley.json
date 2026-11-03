@@ -1,0 +1,13 @@
+{
+  "name": "ability_volley",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Triple Shot: Robin's bow shot, three times, quick.",
+  "variations": [
+    {
+      "file": "ability_volley_1.wav",
+      "seconds": 0.319,
+      "peak_dbfs": -1
+    }
+  ]
+}

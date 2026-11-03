@@ -1,0 +1,13 @@
+{
+  "name": "sporeling_die",
+  "category": "forest",
+  "gain": 0.551,
+  "use": "the Sporeling bursts: a pop and a puff of spores.",
+  "variations": [
+    {
+      "file": "sporeling_die_1.wav",
+      "seconds": 0.278,
+      "peak_dbfs": -1
+    }
+  ]
+}

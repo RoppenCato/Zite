@@ -1,0 +1,13 @@
+{
+  "name": "begin",
+  "category": "ui",
+  "gain": 0.76,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "begin_1.wav",
+      "seconds": 2,
+      "peak_dbfs": -1
+    }
+  ]
+}

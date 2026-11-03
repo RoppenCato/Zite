@@ -1,0 +1,13 @@
+{
+  "name": "crown_hollowking_die",
+  "category": "crown",
+  "gain": 0.734,
+  "use": "hollow-king, die (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_hollowking_die_1.wav",
+      "seconds": 1.295,
+      "peak_dbfs": -1
+    }
+  ]
+}

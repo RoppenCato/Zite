@@ -1,0 +1,13 @@
+{
+  "name": "blood",
+  "category": "talents",
+  "gain": 1,
+  "use": "a wet slash, Crimson Arc and Bleed Out: the riposte's edge, Robin's slap and a wet splat, the drip after.",
+  "variations": [
+    {
+      "file": "blood_1.wav",
+      "seconds": 0.295,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "owlbear_die",
+  "category": "forest",
+  "gain": 0.502,
+  "use": "the Owlbear Cub goes to sleep: a long yawning groan and a snore.",
+  "variations": [
+    {
+      "file": "owlbear_die_1.wav",
+      "seconds": 0.907,
+      "peak_dbfs": -1
+    }
+  ]
+}

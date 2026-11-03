@@ -1,0 +1,13 @@
+{
+  "name": "giants_snowshoulder_hit",
+  "category": "giants",
+  "gain": 0.313,
+  "use": "old-snowshoulder, hit (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_snowshoulder_hit_1.wav",
+      "seconds": 0.414,
+      "peak_dbfs": -1
+    }
+  ]
+}

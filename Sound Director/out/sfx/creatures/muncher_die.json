@@ -1,0 +1,13 @@
+{
+  "name": "muncher_die",
+  "category": "creatures",
+  "gain": 0.52,
+  "use": "the Mushroom Muncher: a puff of spores, a breath let out.",
+  "variations": [
+    {
+      "file": "muncher_die_1.wav",
+      "seconds": 0.294,
+      "peak_dbfs": -1
+    }
+  ]
+}

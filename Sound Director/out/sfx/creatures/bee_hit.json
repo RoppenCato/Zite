@@ -1,0 +1,13 @@
+{
+  "name": "bee_hit",
+  "category": "creatures",
+  "gain": 0.508,
+  "use": "the Bumbling Bee struck: a bzzt.",
+  "variations": [
+    {
+      "file": "bee_hit_1.wav",
+      "seconds": 0.136,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ability_mana_shield",
+  "category": "fight-classes",
+  "gain": 0.364,
+  "use": "Moonlight Veil: high strings opening, slow bells, a pale chord.",
+  "variations": [
+    {
+      "file": "ability_mana_shield_1.wav",
+      "seconds": 1.061,
+      "peak_dbfs": -1
+    }
+  ]
+}

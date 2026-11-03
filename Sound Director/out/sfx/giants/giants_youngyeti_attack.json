@@ -1,0 +1,13 @@
+{
+  "name": "giants_youngyeti_attack",
+  "category": "giants",
+  "gain": 0.563,
+  "use": "young-yeti, attack (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_youngyeti_attack_1.wav",
+      "seconds": 0.414,
+      "peak_dbfs": -1
+    }
+  ]
+}

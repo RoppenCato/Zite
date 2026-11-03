@@ -1,0 +1,13 @@
+{
+  "name": "effect_bleed_tick",
+  "category": "fight",
+  "gain": 0.324,
+  "use": "a bleed tick: one small wet drip, under 0.2 s.",
+  "variations": [
+    {
+      "file": "effect_bleed_tick_1.wav",
+      "seconds": 0.129,
+      "peak_dbfs": -1
+    }
+  ]
+}

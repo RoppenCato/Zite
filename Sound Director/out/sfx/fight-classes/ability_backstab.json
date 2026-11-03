@@ -1,0 +1,13 @@
+{
+  "name": "ability_backstab",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Sneak Jab: a quick thin cut and the slap.",
+  "variations": [
+    {
+      "file": "ability_backstab_1.wav",
+      "seconds": 0.216,
+      "peak_dbfs": -1
+    }
+  ]
+}

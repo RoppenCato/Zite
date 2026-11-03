@@ -1,0 +1,13 @@
+{
+  "name": "bandit_hit",
+  "category": "creatures",
+  "gain": 0.232,
+  "use": "the Meadow Bandit struck: an oof.",
+  "variations": [
+    {
+      "file": "bandit_hit_1.wav",
+      "seconds": 0.283,
+      "peak_dbfs": -1
+    }
+  ]
+}

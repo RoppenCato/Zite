@@ -1,0 +1,13 @@
+{
+  "name": "ability_shield_bash",
+  "category": "fight",
+  "gain": 0.863,
+  "use": "Shield Bonk",
+  "variations": [
+    {
+      "file": "ability_shield_bash_1.wav",
+      "seconds": 0.327,
+      "peak_dbfs": -1
+    }
+  ]
+}

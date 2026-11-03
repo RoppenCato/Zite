@@ -1,0 +1,275 @@
+{
+  "about": "The crown sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T08:31:27.288Z",
+  "sounds": {
+    "crown_cryptguard_attack": {
+      "files": [
+        "crown_cryptguard_attack_1.wav"
+      ],
+      "seconds": [
+        0.438
+      ],
+      "loud_db": -10.4,
+      "target_db": -4,
+      "use": "crypt-guard, attack (The Buried Crown).",
+      "gain": 0.418,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_cryptguard_hit": {
+      "files": [
+        "crown_cryptguard_hit_1.wav"
+      ],
+      "seconds": [
+        0.213
+      ],
+      "loud_db": -10,
+      "target_db": -5,
+      "use": "crypt-guard, hit (The Buried Crown).",
+      "gain": 0.355,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_cryptguard_die": {
+      "files": [
+        "crown_cryptguard_die_1.wav"
+      ],
+      "seconds": [
+        0.534
+      ],
+      "loud_db": -9.3,
+      "target_db": -2,
+      "use": "crypt-guard, die (The Buried Crown).",
+      "gain": 0.463,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_wraith_attack": {
+      "files": [
+        "crown_wraith_attack_1.wav"
+      ],
+      "seconds": [
+        0.47
+      ],
+      "loud_db": -10.6,
+      "target_db": -4,
+      "use": "gilded-wraith, attack (The Buried Crown).",
+      "gain": 0.427,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_wraith_hit": {
+      "files": [
+        "crown_wraith_hit_1.wav"
+      ],
+      "seconds": [
+        0.239
+      ],
+      "loud_db": -9.2,
+      "target_db": -5,
+      "use": "gilded-wraith, hit (The Buried Crown).",
+      "gain": 0.324,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_wraith_die": {
+      "files": [
+        "crown_wraith_die_1.wav"
+      ],
+      "seconds": [
+        0.681
+      ],
+      "loud_db": -10,
+      "target_db": -2,
+      "use": "gilded-wraith, die (The Buried Crown).",
+      "gain": 0.502,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_gargoyle_attack": {
+      "files": [
+        "crown_gargoyle_attack_1.wav"
+      ],
+      "seconds": [
+        0.382
+      ],
+      "loud_db": -13.6,
+      "target_db": -4,
+      "use": "stone-gargoyle, attack (The Buried Crown).",
+      "gain": 0.604,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_gargoyle_hit": {
+      "files": [
+        "crown_gargoyle_hit_1.wav"
+      ],
+      "seconds": [
+        0.539
+      ],
+      "loud_db": -16.8,
+      "target_db": -5,
+      "use": "stone-gargoyle, hit (The Buried Crown).",
+      "gain": 0.778,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_gargoyle_die": {
+      "files": [
+        "crown_gargoyle_die_1.wav"
+      ],
+      "seconds": [
+        1.251
+      ],
+      "loud_db": -15.9,
+      "target_db": -2,
+      "use": "stone-gargoyle, die (The Buried Crown).",
+      "gain": 0.99,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_mimic_attack": {
+      "files": [
+        "crown_mimic_attack_1.wav"
+      ],
+      "seconds": [
+        0.461
+      ],
+      "loud_db": -11.7,
+      "target_db": -4,
+      "use": "gold-mimic, attack (The Buried Crown).",
+      "gain": 0.485,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_mimic_hit": {
+      "files": [
+        "crown_mimic_hit_1.wav"
+      ],
+      "seconds": [
+        0.15
+      ],
+      "loud_db": -10.7,
+      "target_db": -5,
+      "use": "gold-mimic, hit (The Buried Crown).",
+      "gain": 0.385,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_mimic_die": {
+      "files": [
+        "crown_mimic_die_1.wav"
+      ],
+      "seconds": [
+        0.534
+      ],
+      "loud_db": -10.9,
+      "target_db": -2,
+      "use": "gold-mimic, die (The Buried Crown).",
+      "gain": 0.557,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_steward_attack": {
+      "files": [
+        "crown_steward_attack_1.wav"
+      ],
+      "seconds": [
+        0.658
+      ],
+      "loud_db": -7.8,
+      "target_db": -4,
+      "use": "last-steward, attack (The Buried Crown).",
+      "gain": 0.31,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_steward_hit": {
+      "files": [
+        "crown_steward_hit_1.wav"
+      ],
+      "seconds": [
+        0.372
+      ],
+      "loud_db": -15,
+      "target_db": -5,
+      "use": "last-steward, hit (The Buried Crown).",
+      "gain": 0.632,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_steward_die": {
+      "files": [
+        "crown_steward_die_1.wav"
+      ],
+      "seconds": [
+        1.018
+      ],
+      "loud_db": -11.3,
+      "target_db": -2,
+      "use": "last-steward, die (The Buried Crown).",
+      "gain": 0.583,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_hollowking_attack": {
+      "files": [
+        "crown_hollowking_attack_1.wav"
+      ],
+      "seconds": [
+        0.8
+      ],
+      "loud_db": -11.9,
+      "target_db": -4,
+      "use": "hollow-king, attack (The Buried Crown).",
+      "gain": 0.496,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "crown_hollowking_hit": {
+      "files": [
+        "crown_hollowking_hit_1.wav"
+      ],
+      "seconds": [
+        0.479
+      ],
+      "loud_db": -10.8,
+      "target_db": -5,
+      "use": "hollow-king, hit (The Buried Crown).",
+      "gain": 0.39,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "crown_hollowking_die": {
+      "files": [
+        "crown_hollowking_die_1.wav"
+      ],
+      "seconds": [
+        1.295
+      ],
+      "loud_db": -13.3,
+      "target_db": -2,
+      "use": "hollow-king, die (The Buried Crown).",
+      "gain": 0.734,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "crown_hollowking_surge": {
+      "files": [
+        "crown_hollowking_surge_1.wav"
+      ],
+      "seconds": [
+        1.366
+      ],
+      "loud_db": -11.2,
+      "target_db": 2,
+      "use": "The crown burns, the blue flame turns to gold: the recorded fire swelling, a dark chord opening to gold bells.",
+      "gain": 0.914,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

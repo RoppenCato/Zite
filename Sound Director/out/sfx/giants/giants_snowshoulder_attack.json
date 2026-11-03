@@ -1,0 +1,13 @@
+{
+  "name": "giants_snowshoulder_attack",
+  "category": "giants",
+  "gain": 0.324,
+  "use": "old-snowshoulder, attack (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_snowshoulder_attack_1.wav",
+      "seconds": 0.328,
+      "peak_dbfs": -1
+    }
+  ]
+}

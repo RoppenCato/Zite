@@ -1,0 +1,13 @@
+{
+  "name": "giants_yetiking_hit",
+  "category": "giants",
+  "gain": 0.403,
+  "use": "yeti-king, hit (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_yetiking_hit_1.wav",
+      "seconds": 0.372,
+      "peak_dbfs": -1
+    }
+  ]
+}

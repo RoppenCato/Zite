@@ -1,0 +1,13 @@
+{
+  "name": "effect_stunned",
+  "category": "fight",
+  "gain": 0.914,
+  "use": "stunned",
+  "variations": [
+    {
+      "file": "effect_stunned_1.wav",
+      "seconds": 0.687,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "meteor_land",
+  "category": "fight-classes",
+  "gain": 0.979,
+  "use": "Falling Star lands, two rounds after the cast (fight/meteor-land): a rush down, a crack and the heavy split, bells scattering. The biggest of the Wizard's.",
+  "variations": [
+    {
+      "file": "meteor_land_1.wav",
+      "seconds": 0.933,
+      "peak_dbfs": -1
+    }
+  ]
+}

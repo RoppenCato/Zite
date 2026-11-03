@@ -1,0 +1,13 @@
+{
+  "name": "effect_evade",
+  "category": "fight",
+  "gain": 0.32,
+  "use": "ready to evade",
+  "variations": [
+    {
+      "file": "effect_evade_1.wav",
+      "seconds": 0.282,
+      "peak_dbfs": -1
+    }
+  ]
+}

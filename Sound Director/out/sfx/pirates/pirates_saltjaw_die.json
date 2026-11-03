@@ -1,0 +1,13 @@
+{
+  "name": "pirates_saltjaw_die",
+  "category": "pirates",
+  "gain": 0.453,
+  "use": "captain-saltjaw, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_saltjaw_die_1.wav",
+      "seconds": 1.027,
+      "peak_dbfs": -1
+    }
+  ]
+}

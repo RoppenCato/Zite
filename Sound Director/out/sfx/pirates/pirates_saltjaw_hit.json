@@ -1,0 +1,13 @@
+{
+  "name": "pirates_saltjaw_hit",
+  "category": "pirates",
+  "gain": 0.238,
+  "use": "captain-saltjaw, hit (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_saltjaw_hit_1.wav",
+      "seconds": 0.465,
+      "peak_dbfs": -1
+    }
+  ]
+}

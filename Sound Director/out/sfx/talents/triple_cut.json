@@ -1,0 +1,13 @@
+{
+  "name": "triple_cut",
+  "category": "talents",
+  "gain": 1,
+  "use": "three quick cuts: the recorded riposte three times, a bright hit on the last; under 7 kHz (the first render centred at 5 kHz).",
+  "variations": [
+    {
+      "file": "triple_cut_1.wav",
+      "seconds": 0.365,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "crown_cryptguard_attack",
+  "category": "crown",
+  "gain": 0.418,
+  "use": "crypt-guard, attack (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_cryptguard_attack_1.wav",
+      "seconds": 0.438,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "boss_down",
+  "category": "ui",
+  "gain": 1,
+  "use": "a boss falls: the biggest UI sound",
+  "variations": [
+    {
+      "file": "boss_down_1.wav",
+      "seconds": 1.928,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "boss_down_2.wav",
+      "seconds": 1.936,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "boss_down_3.wav",
+      "seconds": 1.938,
+      "peak_dbfs": -1
+    }
+  ]
+}

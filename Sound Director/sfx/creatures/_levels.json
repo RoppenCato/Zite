@@ -1,0 +1,97 @@
+{
+  "slime_attack": {
+    "target": -4,
+    "max": 0.7,
+    "use": "the Jelly Slime lunges: a squelch."
+  },
+  "slime_hit": {
+    "target": -5,
+    "max": 0.7,
+    "use": "the Jelly Slime struck: a squish."
+  },
+  "slime_die": {
+    "target": -2,
+    "max": 0.7,
+    "use": "the Jelly Slime bursts: a squish and a splat falling apart."
+  },
+  "sprout_attack": {
+    "target": -4,
+    "max": 0.7,
+    "use": "the Grumpy Sprout: a small grumble, sped up."
+  },
+  "sprout_hit": {
+    "target": -5,
+    "max": 0.7,
+    "use": "the Grumpy Sprout struck: a twig's snap and a squeak."
+  },
+  "sprout_die": {
+    "target": -2,
+    "max": 0.7,
+    "use": "the Grumpy Sprout wilts: a small voice sagging, slowed."
+  },
+  "bandit_attack": {
+    "target": -4,
+    "max": 0.7,
+    "use": "the Meadow Bandit: a yah."
+  },
+  "bandit_hit": {
+    "target": -5,
+    "max": 0.7,
+    "use": "the Meadow Bandit struck: an oof."
+  },
+  "bandit_die": {
+    "target": -2,
+    "max": 0.7,
+    "use": "the Meadow Bandit runs out of luck: a yelp."
+  },
+  "bee_attack": {
+    "target": -4,
+    "max": 0.7,
+    "use": "the Bumbling Bee swoops: a buzz."
+  },
+  "bee_hit": {
+    "target": -5,
+    "max": 0.7,
+    "use": "the Bumbling Bee struck: a bzzt."
+  },
+  "bee_die": {
+    "target": -2,
+    "max": 0.7,
+    "use": "the Bumbling Bee falls: the buzz slowing and fading."
+  },
+  "muncher_attack": {
+    "target": -4,
+    "max": 0.7,
+    "use": "the Mushroom Muncher: a munch."
+  },
+  "muncher_hit": {
+    "target": -5,
+    "max": 0.7,
+    "use": "the Mushroom Muncher struck: a soft thump and a grunt."
+  },
+  "muncher_die": {
+    "target": -2,
+    "max": 0.7,
+    "use": "the Mushroom Muncher: a puff of spores, a breath let out."
+  },
+  "goo_attack": {
+    "target": -2,
+    "max": 1.0,
+    "use": "King Goo: a wobbling roar: a burp slowed under the slime's squelch."
+  },
+  "goo_hit": {
+    "target": -2,
+    "max": 1.0,
+    "use": "King Goo struck: a gloop."
+  },
+  "goo_die": {
+    "target": -2,
+    "max": 1.8,
+    "use": "King Goo falls: a long burble, then a great splat and the crown's tiny ring."
+  },
+  "goo_surge": {
+    "target": -2,
+    "max": 1.0,
+    "use": "King Goo's second phase: a swelling burble and a roar."
+  }
+}

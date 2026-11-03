@@ -1,0 +1,13 @@
+{
+  "name": "arrive_shrine",
+  "category": "ui",
+  "gain": 0.282,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "arrive_shrine_1.wav",
+      "seconds": 0.882,
+      "peak_dbfs": -1
+    }
+  ]
+}

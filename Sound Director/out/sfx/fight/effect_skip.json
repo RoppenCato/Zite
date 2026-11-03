@@ -1,0 +1,13 @@
+{
+  "name": "effect_skip",
+  "category": "fight",
+  "gain": 0.632,
+  "use": "a turn lost",
+  "variations": [
+    {
+      "file": "effect_skip_1.wav",
+      "seconds": 0.361,
+      "peak_dbfs": -1
+    }
+  ]
+}

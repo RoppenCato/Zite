@@ -1,0 +1,102 @@
+{
+  "twigling_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "the Twigling: dry wood clacking twice."
+  },
+  "twigling_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "the Twigling struck: a twig's snap, a small voice."
+  },
+  "twigling_die": {
+    "target": -2,
+    "max": 0.8,
+    "use": "the Twigling falls: sticks clattering down."
+  },
+  "goblin_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "the Moss Goblin: a nasal grunt."
+  },
+  "goblin_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "the Moss Goblin struck: a yelp."
+  },
+  "goblin_die": {
+    "target": -2,
+    "max": 0.8,
+    "use": "the Moss Goblin falls: a long small groan."
+  },
+  "sporeling_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "the Sporeling: a tiny voice and a puff."
+  },
+  "sporeling_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "the Sporeling struck: a squeak."
+  },
+  "sporeling_die": {
+    "target": -2,
+    "max": 0.8,
+    "use": "the Sporeling bursts: a pop and a puff of spores."
+  },
+  "nutkin_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "the Nutkin Thief: a chatter of small voices."
+  },
+  "nutkin_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "the Nutkin Thief struck: a squeak and a nut's knock."
+  },
+  "nutkin_die": {
+    "target": -2,
+    "max": 0.8,
+    "use": "the Nutkin Thief falls: a falling squeak, acorns dropping."
+  },
+  "owlbear_attack": {
+    "target": -3,
+    "max": 0.8,
+    "use": "the Sleepy Owlbear Cub: a drowsy growl."
+  },
+  "owlbear_hit": {
+    "target": -4,
+    "max": 0.8,
+    "use": "the Owlbear Cub struck: a hoot of surprise."
+  },
+  "owlbear_die": {
+    "target": -2,
+    "max": 1.5,
+    "use": "the Owlbear Cub goes to sleep: a long yawning groan and a snore."
+  },
+  "grumblebark_attack": {
+    "target": -1,
+    "max": 1.2,
+    "use": "Grumblebark: a huge groan: Kenney's creak slowed under a low grunt."
+  },
+  "grumblebark_hit": {
+    "target": -2,
+    "max": 0.9,
+    "use": "Grumblebark struck: heavy wood knocked, a creak."
+  },
+  "grumblebark_die": {
+    "target": 0,
+    "max": 2.4,
+    "use": "Grumblebark falls: Robin's tree falling, cracking and crashing."
+  },
+  "step_roots": {
+    "target": -9,
+    "max": 0.25,
+    "use": "a step on roots: a recorded wooden knock, dull and light."
+  },
+  "step_moss": {
+    "target": -11,
+    "max": 0.25,
+    "use": "a step on moss: Kenney's grass footsteps, slower and dulled, very soft."
+  }
+}

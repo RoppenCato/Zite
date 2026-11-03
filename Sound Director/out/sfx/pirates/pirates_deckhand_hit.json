@@ -1,0 +1,13 @@
+{
+  "name": "pirates_deckhand_hit",
+  "category": "pirates",
+  "gain": 0.232,
+  "use": "deck-hand, hit (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_deckhand_hit_1.wav",
+      "seconds": 0.307,
+      "peak_dbfs": -1
+    }
+  ]
+}

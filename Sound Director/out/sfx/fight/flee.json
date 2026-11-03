@@ -1,0 +1,13 @@
+{
+  "name": "flee",
+  "category": "fight",
+  "gain": 0.453,
+  "use": "hurried steps",
+  "variations": [
+    {
+      "file": "flee_1.wav",
+      "seconds": 0.455,
+      "peak_dbfs": -1
+    }
+  ]
+}

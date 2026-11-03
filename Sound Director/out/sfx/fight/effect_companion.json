@@ -1,0 +1,13 @@
+{
+  "name": "effect_companion",
+  "category": "fight",
+  "gain": 0.232,
+  "use": "a companion joins",
+  "variations": [
+    {
+      "file": "effect_companion_1.wav",
+      "seconds": 0.396,
+      "peak_dbfs": -1
+    }
+  ]
+}

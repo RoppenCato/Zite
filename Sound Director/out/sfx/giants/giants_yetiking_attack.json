@@ -1,0 +1,13 @@
+{
+  "name": "giants_yetiking_attack",
+  "category": "giants",
+  "gain": 0.351,
+  "use": "yeti-king, attack (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_yetiking_attack_1.wav",
+      "seconds": 0.673,
+      "peak_dbfs": -1
+    }
+  ]
+}

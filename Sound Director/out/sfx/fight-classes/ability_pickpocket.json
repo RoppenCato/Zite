@@ -1,0 +1,13 @@
+{
+  "name": "ability_pickpocket",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Sticky Fingers: a quick cut and coins lifted.",
+  "variations": [
+    {
+      "file": "ability_pickpocket_1.wav",
+      "seconds": 0.275,
+      "peak_dbfs": -1
+    }
+  ]
+}

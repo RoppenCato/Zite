@@ -1,0 +1,13 @@
+{
+  "name": "defeat",
+  "category": "fight",
+  "gain": 0.474,
+  "use": "a fight lost",
+  "variations": [
+    {
+      "file": "defeat_1.wav",
+      "seconds": 1.957,
+      "peak_dbfs": -1
+    }
+  ]
+}

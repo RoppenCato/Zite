@@ -1,0 +1,13 @@
+{
+  "name": "sprout_hit",
+  "category": "creatures",
+  "gain": 0.343,
+  "use": "the Grumpy Sprout struck: a twig's snap and a squeak.",
+  "variations": [
+    {
+      "file": "sprout_hit_1.wav",
+      "seconds": 0.217,
+      "peak_dbfs": -1
+    }
+  ]
+}

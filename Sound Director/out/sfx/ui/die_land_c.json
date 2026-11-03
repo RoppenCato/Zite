@@ -1,0 +1,23 @@
+{
+  "name": "die_land_c",
+  "category": "ui",
+  "gain": 0.871,
+  "use": "the die landing, candidate C: B with a small chime",
+  "variations": [
+    {
+      "file": "die_land_c_1.wav",
+      "seconds": 0.295,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_c_2.wav",
+      "seconds": 0.295,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_land_c_3.wav",
+      "seconds": 0.295,
+      "peak_dbfs": -1
+    }
+  ]
+}

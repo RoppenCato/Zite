@@ -1,0 +1,13 @@
+{
+  "name": "ability_heavy_blow",
+  "category": "fight",
+  "gain": 1,
+  "use": "Mighty Swing",
+  "variations": [
+    {
+      "file": "ability_heavy_blow_1.wav",
+      "seconds": 0.601,
+      "peak_dbfs": -1
+    }
+  ]
+}

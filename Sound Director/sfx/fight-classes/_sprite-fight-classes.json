@@ -1,0 +1,138 @@
+{
+ "name": "fight-classes",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "fight/ability-backstab",
+   "file": "out/sfx/fight-classes/ability_backstab_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-poison-blade",
+   "file": "out/sfx/fight-classes/ability_poison_blade_1.wav",
+   "gain": 0.551,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-shadowstep",
+   "file": "out/sfx/fight-classes/ability_shadowstep_1.wav",
+   "gain": 0.662,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-smoke-bomb",
+   "file": "out/sfx/fight-classes/ability_smoke_bomb_1.wav",
+   "gain": 0.778,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-pickpocket",
+   "file": "out/sfx/fight-classes/ability_pickpocket_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-eviscerate",
+   "file": "out/sfx/fight-classes/ability_eviscerate_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-fireball",
+   "file": "out/sfx/fight-classes/ability_fireball_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-frost-bolt",
+   "file": "out/sfx/fight-classes/ability_frost_bolt_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-arcane-shield",
+   "file": "out/sfx/fight-classes/ability_arcane_shield_1.wav",
+   "gain": 0.833,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-time-warp",
+   "file": "out/sfx/fight-classes/ability_time_warp_1.wav",
+   "gain": 0.726,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-meteor",
+   "file": "out/sfx/fight-classes/ability_meteor_1.wav",
+   "gain": 0.843,
+   "loop": false
+  },
+  {
+   "name": "fight/meteor-land",
+   "file": "out/sfx/fight-classes/meteor_land_1.wav",
+   "gain": 0.979,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-mana-shield",
+   "file": "out/sfx/fight-classes/ability_mana_shield_1.wav",
+   "gain": 0.364,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-volley",
+   "file": "out/sfx/fight-classes/ability_volley_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-aimed-shot",
+   "file": "out/sfx/fight-classes/ability_aimed_shot_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-snare",
+   "file": "out/sfx/fight-classes/ability_snare_1.wav",
+   "gain": 0.59,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-trap",
+   "file": "out/sfx/fight-classes/ability_trap_1.wav",
+   "gain": 0.903,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-hawk",
+   "file": "out/sfx/fight-classes/ability_hawk_1.wav",
+   "gain": 0.709,
+   "loop": false
+  },
+  {
+   "name": "fight/ability-mark",
+   "file": "out/sfx/fight-classes/ability_mark_1.wav",
+   "gain": 0.514,
+   "loop": false
+  },
+  {
+   "name": "fight/meter-pip-trickster",
+   "file": "out/sfx/fight-classes/pip_trickster_1.wav",
+   "gain": 0.432,
+   "loop": false
+  },
+  {
+   "name": "fight/meter-pip-wizard",
+   "file": "out/sfx/fight-classes/pip_wizard_1.wav",
+   "gain": 0.145,
+   "loop": false
+  },
+  {
+   "name": "fight/meter-pip-archer",
+   "file": "out/sfx/fight-classes/pip_archer_1.wav",
+   "gain": 0.413,
+   "loop": false
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "hint",
+  "category": "ui",
+  "gain": 0.447,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "hint_1.wav",
+      "seconds": 0.327,
+      "peak_dbfs": -1
+    }
+  ]
+}

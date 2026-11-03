@@ -1,0 +1,275 @@
+{
+  "about": "The creatures sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-01T13:34:53.574Z",
+  "sounds": {
+    "slime_attack": {
+      "files": [
+        "slime_attack_1.wav"
+      ],
+      "seconds": [
+        0.211
+      ],
+      "loud_db": -9.9,
+      "target_db": -4,
+      "use": "the Jelly Slime lunges: a squelch.",
+      "gain": 0.394,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "slime_hit": {
+      "files": [
+        "slime_hit_1.wav"
+      ],
+      "seconds": [
+        0.226
+      ],
+      "loud_db": -13.6,
+      "target_db": -5,
+      "use": "the Jelly Slime struck: a squish.",
+      "gain": 0.538,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "slime_die": {
+      "files": [
+        "slime_die_1.wav"
+      ],
+      "seconds": [
+        0.553
+      ],
+      "loud_db": -13.4,
+      "target_db": -2,
+      "use": "the Jelly Slime bursts: a squish and a splat falling apart.",
+      "gain": 0.743,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "sprout_attack": {
+      "files": [
+        "sprout_attack_1.wav"
+      ],
+      "seconds": [
+        0.286
+      ],
+      "loud_db": -12.1,
+      "target_db": -4,
+      "use": "the Grumpy Sprout: a small grumble, sped up.",
+      "gain": 0.508,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "sprout_hit": {
+      "files": [
+        "sprout_hit_1.wav"
+      ],
+      "seconds": [
+        0.217
+      ],
+      "loud_db": -9.7,
+      "target_db": -5,
+      "use": "the Grumpy Sprout struck: a twig's snap and a squeak.",
+      "gain": 0.343,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "sprout_die": {
+      "files": [
+        "sprout_die_1.wav"
+      ],
+      "seconds": [
+        0.682
+      ],
+      "loud_db": -10.1,
+      "target_db": -2,
+      "use": "the Grumpy Sprout wilts: a small voice sagging, slowed.",
+      "gain": 0.508,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bandit_attack": {
+      "files": [
+        "bandit_attack_1.wav"
+      ],
+      "seconds": [
+        0.376
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "the Meadow Bandit: a yah.",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bandit_hit": {
+      "files": [
+        "bandit_hit_1.wav"
+      ],
+      "seconds": [
+        0.283
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "the Meadow Bandit struck: an oof.",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bandit_die": {
+      "files": [
+        "bandit_die_1.wav"
+      ],
+      "seconds": [
+        0.345
+      ],
+      "loud_db": -8.8,
+      "target_db": -2,
+      "use": "the Meadow Bandit runs out of luck: a yelp.",
+      "gain": 0.437,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "bee_attack": {
+      "files": [
+        "bee_attack_1.wav"
+      ],
+      "seconds": [
+        0.272
+      ],
+      "loud_db": -14,
+      "target_db": -4,
+      "use": "the Bumbling Bee swoops: a buzz.",
+      "gain": 0.632,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "bee_hit": {
+      "files": [
+        "bee_hit_1.wav"
+      ],
+      "seconds": [
+        0.136
+      ],
+      "loud_db": -13.1,
+      "target_db": -5,
+      "use": "the Bumbling Bee struck: a bzzt.",
+      "gain": 0.508,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "bee_die": {
+      "files": [
+        "bee_die_1.wav"
+      ],
+      "seconds": [
+        0.661
+      ],
+      "loud_db": -13.8,
+      "target_db": -2,
+      "use": "the Bumbling Bee falls: the buzz slowing and fading.",
+      "gain": 0.778,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "muncher_attack": {
+      "files": [
+        "muncher_attack_1.wav"
+      ],
+      "seconds": [
+        0.461
+      ],
+      "loud_db": -11.5,
+      "target_db": -4,
+      "use": "the Mushroom Muncher: a munch.",
+      "gain": 0.474,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "muncher_hit": {
+      "files": [
+        "muncher_hit_1.wav"
+      ],
+      "seconds": [
+        0.232
+      ],
+      "loud_db": -10.7,
+      "target_db": -5,
+      "use": "the Mushroom Muncher struck: a soft thump and a grunt.",
+      "gain": 0.385,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "muncher_die": {
+      "files": [
+        "muncher_die_1.wav"
+      ],
+      "seconds": [
+        0.294
+      ],
+      "loud_db": -10.3,
+      "target_db": -2,
+      "use": "the Mushroom Muncher: a puff of spores, a breath let out.",
+      "gain": 0.52,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "goo_attack": {
+      "files": [
+        "goo_attack_1.wav"
+      ],
+      "seconds": [
+        0.75
+      ],
+      "loud_db": -7.2,
+      "target_db": -2,
+      "use": "King Goo: a wobbling roar: a burp slowed under the slime's squelch.",
+      "gain": 0.364,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "goo_hit": {
+      "files": [
+        "goo_hit_1.wav"
+      ],
+      "seconds": [
+        0.672
+      ],
+      "loud_db": -12.7,
+      "target_db": -2,
+      "use": "King Goo struck: a gloop.",
+      "gain": 0.685,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "goo_die": {
+      "files": [
+        "goo_die_1.wav"
+      ],
+      "seconds": [
+        1.366
+      ],
+      "loud_db": -12.9,
+      "target_db": -2,
+      "use": "King Goo falls: a long burble, then a great splat and the crown's tiny ring.",
+      "gain": 0.701,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "goo_surge": {
+      "files": [
+        "goo_surge_1.wav"
+      ],
+      "seconds": [
+        0.935
+      ],
+      "loud_db": -7.6,
+      "target_db": -2,
+      "use": "King Goo's second phase: a swelling burble and a roar.",
+      "gain": 0.381,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "twigling_attack",
+  "category": "forest",
+  "gain": 0.557,
+  "use": "the Twigling: dry wood clacking twice.",
+  "variations": [
+    {
+      "file": "twigling_attack_1.wav",
+      "seconds": 0.162,
+      "peak_dbfs": -1
+    }
+  ]
+}

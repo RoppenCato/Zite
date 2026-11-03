@@ -1,0 +1,13 @@
+{
+  "name": "sleep",
+  "category": "ui",
+  "gain": 0.377,
+  "use": "the inn, a night's sleep: a sigh, then a music box's three falling notes and a soft low chord. 1.6 s.",
+  "variations": [
+    {
+      "file": "sleep_1.wav",
+      "seconds": 1.7,
+      "peak_dbfs": -1
+    }
+  ]
+}

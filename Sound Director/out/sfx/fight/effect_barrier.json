@@ -1,0 +1,13 @@
+{
+  "name": "effect_barrier",
+  "category": "fight",
+  "gain": 0.347,
+  "use": "a barrier up",
+  "variations": [
+    {
+      "file": "effect_barrier_1.wav",
+      "seconds": 0.582,
+      "peak_dbfs": -1
+    }
+  ]
+}

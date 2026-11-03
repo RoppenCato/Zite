@@ -1,0 +1,22 @@
+# owl_swoop: the owl dives: wings (Robin's sail flap), a rush, a hard hit and a hoot.
+# The talents' family sounds, written by sfx/talents/_make.py; change it there. Recordings from the Survival studio (CC0, docs/survival-library.md).
+# name: owl_swoop
+# seconds: 2.0
+# count: 1
+
+use_bpm 60
+S = "C:/dev/SG/Sound Director/out/sfx/"
+W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
+define :bell do |n, amp, rel|
+  synth :pretty_bell, note: n, attack: 0.002, sustain: 0.01, release: rel, amp: amp * 0.5
+  synth :sine, note: n + 12, attack: 0.002, sustain: 0.005, release: rel * 0.45, amp: amp * 0.07
+end
+define :str do |n, a, s, rel, amp|
+  synth :blade, note: n, attack: a, sustain: s, release: rel, cutoff: 90, vibrato_depth: 0.06, vibrato_delay: 0.3, amp: amp
+end
+use_random_seed 6340
+sample S + "ships/sail_flap_b_2.wav", rate: 1.7, amp: 0.8, attack: 0, sustain: 0.15, release: 0.1
+sample S + "combat/swish_axe_1.wav", rate: 1.2, amp: 0.7
+at [0.22] do sample S + "flesh/hit_w_1.wav", amp: 0.9; sample S + "flesh/heavyhit_x_2.wav", amp: 0.6 end
+at [0.34] do synth :sine, note: 69, attack: 0.04, sustain: 0.12, release: 0.1, amp: 0.3 end
+sleep 1.5

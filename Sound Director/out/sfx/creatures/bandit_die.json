@@ -1,0 +1,13 @@
+{
+  "name": "bandit_die",
+  "category": "creatures",
+  "gain": 0.437,
+  "use": "the Meadow Bandit runs out of luck: a yelp.",
+  "variations": [
+    {
+      "file": "bandit_die_1.wav",
+      "seconds": 0.345,
+      "peak_dbfs": -1
+    }
+  ]
+}

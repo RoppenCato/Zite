@@ -1,0 +1,13 @@
+{
+  "name": "stung",
+  "category": "ui",
+  "gain": 0.343,
+  "use": "poison stinging on a roll",
+  "variations": [
+    {
+      "file": "stung_1.wav",
+      "seconds": 0.15,
+      "peak_dbfs": -1
+    }
+  ]
+}

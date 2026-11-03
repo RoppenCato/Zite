@@ -1,0 +1,13 @@
+{
+  "name": "holy_blast",
+  "category": "talents",
+  "gain": 0.805,
+  "use": "a blast of light: strings opening fast, bells running up, a soft crack.",
+  "variations": [
+    {
+      "file": "holy_blast_1.wav",
+      "seconds": 0.885,
+      "peak_dbfs": -1
+    }
+  ]
+}

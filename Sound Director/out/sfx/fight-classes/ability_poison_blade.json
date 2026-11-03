@@ -1,0 +1,13 @@
+{
+  "name": "ability_poison_blade",
+  "category": "fight-classes",
+  "gain": 0.551,
+  "use": "Nettle Knife: the cut, a drip and a thin hiss.",
+  "variations": [
+    {
+      "file": "ability_poison_blade_1.wav",
+      "seconds": 0.422,
+      "peak_dbfs": -1
+    }
+  ]
+}

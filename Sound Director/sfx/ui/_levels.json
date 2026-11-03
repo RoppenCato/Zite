@@ -1,0 +1,327 @@
+{
+  "die_land_b": {
+    "target": 0,
+    "max": 0.5,
+    "use": "the die landing, candidate B: the clack, the board's body, two bounces, a settle"
+  },
+  "die_shake": {
+    "target": -8,
+    "max": 0.4,
+    "use": "the die shaken in the hand before the throw: inside a hand, well under the land"
+  },
+  "die_tumble": {
+    "target": -4,
+    "max": 0.6,
+    "use": "the die tumbling over the board, a 0.6 s loop: smaller knocks than the land"
+  },
+  "tap": {
+    "target": -10,
+    "max": 0.15,
+    "use": "every button: heard constantly, so quiet"
+  },
+  "tap_denied": {
+    "target": -12,
+    "max": 0.2,
+    "use": "a dim button: softer than the tap"
+  },
+  "choice": {
+    "target": -6,
+    "max": 0.2,
+    "use": "a lit spot tapped after a roll"
+  },
+  "chest_card": {
+    "target": -8,
+    "max": 0.4,
+    "use": "a card slides out"
+  },
+  "chest_ding": {
+    "target": -4,
+    "max": 0.5,
+    "use": "the card rests"
+  },
+  "chest_shimmer": {
+    "target": -8,
+    "max": 1.5,
+    "use": "the chest building, Z (Robin, 2026-11-03: \"Yes Z!\"): rising tremolo strings, a timpani roll, a harp into the lid"
+  },
+  "chest_burst_common": {
+    "target": -2,
+    "max": 0.6,
+    "use": "a common chest's lid"
+  },
+  "chest_burst_uncommon": {
+    "target": -1,
+    "max": 0.8,
+    "use": "an uncommon chest"
+  },
+  "chest_burst_rare": {
+    "target": 0,
+    "max": 1.5,
+    "use": "a rare chest: Z's reveal, a G major chord on horn, strings and bells"
+  },
+  "chest_burst_epic": {
+    "target": 1.5,
+    "max": 1.5,
+    "use": "an epic chest: Z's reveal, a touch louder"
+  },
+  "chest_burst_legendary": {
+    "target": 2,
+    "max": 2.0,
+    "use": "a legendary chest: the loudest UI sound"
+  },
+  "chest_burst_unique": {
+    "target": 2,
+    "max": 1.8,
+    "use": "a unique chest"
+  },
+  "level_up": {
+    "target": 1,
+    "max": 1.5,
+    "use": "a level gained: one of the four big moments"
+  },
+  "boss_down": {
+    "target": 3,
+    "max": 2.0,
+    "use": "a boss falls: the biggest UI sound"
+  },
+  "area_opened": {
+    "target": -4,
+    "max": 2.0,
+    "use": "a new area opens: a swell, softer"
+  },
+  "step_grass": {
+    "target": -9,
+    "max": 0.25,
+    "use": "a step on grass, one per step of a walk: soft, constant"
+  },
+  "arrive_town": {
+    "target": -4,
+    "max": 1.1,
+    "use": "wave 1, the second half"
+  },
+  "arrive_shop": {
+    "target": -5,
+    "max": 0.8,
+    "use": "wave 1, the second half"
+  },
+  "arrive_spring": {
+    "target": -5,
+    "max": 0.9,
+    "use": "wave 1, the second half"
+  },
+  "arrive_shrine": {
+    "target": -4,
+    "max": 1.3,
+    "use": "wave 1, the second half"
+  },
+  "arrive_chest": {
+    "target": -3,
+    "max": 1.0,
+    "use": "wave 1, the second half"
+  },
+  "arrive_wild": {
+    "target": -8,
+    "max": 0.6,
+    "use": "wave 1, the second half"
+  },
+  "arrive_boss": {
+    "target": -1,
+    "max": 1.2,
+    "use": "wave 1, the second half"
+  },
+  "spring_fill": {
+    "target": -4,
+    "max": 0.7,
+    "use": "wave 1, the second half"
+  },
+  "shrine_teach": {
+    "target": -3,
+    "max": 0.9,
+    "use": "wave 1, the second half"
+  },
+  "spot_empty": {
+    "target": -10,
+    "max": 0.2,
+    "use": "wave 1, the second half"
+  },
+  "gold_gain": {
+    "target": -3,
+    "max": 0.7,
+    "use": "wave 1, the second half"
+  },
+  "gold_small": {
+    "target": -6,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "gold_lost": {
+    "target": -4,
+    "max": 0.8,
+    "use": "wave 1, the second half"
+  },
+  "pick_appear": {
+    "target": -7,
+    "max": 0.4,
+    "use": "wave 1, the second half"
+  },
+  "chip": {
+    "target": -8,
+    "max": 0.2,
+    "use": "wave 1, the second half"
+  },
+  "errand_take": {
+    "target": -6,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "errand_done": {
+    "target": -3,
+    "max": 0.6,
+    "use": "wave 1, the second half"
+  },
+  "trainer": {
+    "target": -3,
+    "max": 0.7,
+    "use": "wave 1, the second half"
+  },
+  "buy": {
+    "target": -4,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "sell": {
+    "target": -5,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "wear": {
+    "target": -6,
+    "max": 0.4,
+    "use": "wave 1, the second half"
+  },
+  "take_off": {
+    "target": -8,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "drop_item": {
+    "target": -7,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "online_join": {
+    "target": -8,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "online_leave": {
+    "target": -10,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "online_reconnect": {
+    "target": -8,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "online_note": {
+    "target": -8,
+    "max": 0.5,
+    "use": "wave 1, the second half"
+  },
+  "card": {
+    "target": -4,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "card_knight": {
+    "target": -3,
+    "max": 0.35,
+    "use": "wave 1, the second half"
+  },
+  "card_trickster": {
+    "target": -3,
+    "max": 0.35,
+    "use": "wave 1, the second half"
+  },
+  "card_wizard": {
+    "target": -3,
+    "max": 0.4,
+    "use": "wave 1, the second half"
+  },
+  "card_archer": {
+    "target": -3,
+    "max": 0.35,
+    "use": "wave 1, the second half"
+  },
+  "begin": {
+    "target": 2,
+    "max": 2.0,
+    "use": "wave 1, the second half"
+  },
+  "hint": {
+    "target": -9,
+    "max": 0.4,
+    "use": "wave 1, the second half"
+  },
+  "message_tick": {
+    "target": -12,
+    "max": 0.2,
+    "use": "wave 1, the second half"
+  },
+  "sheet_open": {
+    "target": -7,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "sheet_close": {
+    "target": -8,
+    "max": 0.3,
+    "use": "wave 1, the second half"
+  },
+  "arrive_church": {
+    "target": -4,
+    "max": 1.5,
+    "use": "arriving at a church"
+  },
+  "stung": {
+    "target": -7,
+    "max": 0.2,
+    "use": "poison stinging on a roll"
+  },
+  "board_open": {
+    "target": -7,
+    "max": 0.6,
+    "use": "the pin-board opens"
+  },
+  "quest_done": {
+    "target": -1,
+    "max": 1.0,
+    "use": "a quest done: under the level up (+1)"
+  },
+  "person_found": {
+    "target": -5,
+    "max": 0.7,
+    "use": "a person found"
+  },
+  "log_open": {
+    "target": -9,
+    "max": 0.4,
+    "use": "the log opens"
+  },
+  "night_falls": {
+    "target": -4,
+    "max": 1.9,
+    "use": "night falls: a slow falling of soft bells (A5 F5 D5), a low warm string chord, a single far owl's hoot. 1.8 s."
+  },
+  "morning": {
+    "target": -4,
+    "max": 1.7,
+    "use": "morning: bells rising (D5 F#5 A5 D6), a bright string chord opening, a wooden knock of a shutter. 1.6 s."
+  },
+  "sleep": {
+    "target": -5,
+    "max": 1.7,
+    "use": "the inn, a night's sleep: a sigh, then a music box's three falling notes and a soft low chord. 1.6 s."
+  }
+}

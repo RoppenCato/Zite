@@ -1,0 +1,36 @@
+# crown_hollowking_surge: The crown burns, the blue flame turns to gold: the recorded fire swelling, a dark chord opening to gold bells.
+# Written by sfx/lands/_make.py; change it there. Recordings CC0, from the Survival studio.
+# name: crown_hollowking_surge
+# seconds: 3.0
+# count: 1
+
+use_bpm 60
+S = "C:/dev/SG/Sound Director/out/sfx/"
+R = "C:/dev/SG/Sound Director/sfx/flesh/ref/"
+A = R + "oga_creature1/files/"
+B = R + "oga_creature2/files/"
+V = R + "bsb_voices/"
+C = "C:/dev/Zite/Sound Director/sfx/creatures/ref/cut/"
+W = "C:/dev/Zite/Sound Director/sfx/ui/ref/cut/"
+K = "C:/dev/SG/Sound Director/sfx/world/ref/kenney/"
+define :bell do |n, amp, rel|
+  synth :pretty_bell, note: n, attack: 0.002, sustain: 0.01, release: rel, amp: amp * 0.5
+  synth :sine, note: n + 12, attack: 0.002, sustain: 0.005, release: rel * 0.45, amp: amp * 0.07
+end
+define :str do |n, a, s, rel, amp|
+  synth :blade, note: n, attack: a, sustain: s, release: rel, cutoff: 90, vibrato_depth: 0.06, vibrato_delay: 0.3, amp: amp
+end
+define :cut do |path, rate, amp, len|          # a recording held to a length, high-passed at 330 Hz: a roar a phone can carry (196 Hz left Snowshoulder 86 to 94 % low)
+  with_fx :hpf, cutoff: 64 do
+    sample path, rate: rate, amp: amp, attack: 0, sustain: len * 0.65, release: len * 0.35
+  end
+end
+define :coin do |rate, amp|
+  sample K + "impactMetal_light_00#{rrand_i(0, 4)}.ogg", rate: rate * 0.62, amp: amp, attack: 0, sustain: 0.03, release: 0.1
+end
+use_random_seed 7180
+sample S + "runes/fire_arrow_a_1.wav", rate: 0.7, amp: 0.8
+sample V + "bsb_2110.flac", rate: 0.7, amp: 0.6, attack: 0, sustain: 0.5, release: 0.3
+str 50, 0.3, 0.7, 0.4, 0.12; str 57, 0.35, 0.65, 0.4, 0.11; str 65, 0.4, 0.3, 0.2, 0.1
+at [0.7] do str 69, 0.1, 0.4, 0.4, 0.11; [[0, 86], [0.09, 93], [0.18, 98]].each { |t, n| at [t] do bell n, 0.55, 0.5 end } end
+sleep 2.5

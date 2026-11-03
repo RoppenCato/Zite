@@ -1,0 +1,99 @@
+{
+  "spritemap": {
+    "creature/young-yeti/attack": {
+      "start": 0,
+      "end": 0.4138,
+      "loop": false
+    },
+    "creature/young-yeti/hit": {
+      "start": 0.4638,
+      "end": 0.7448,
+      "loop": false
+    },
+    "creature/young-yeti/die": {
+      "start": 0.7948,
+      "end": 1.5221,
+      "loop": false
+    },
+    "creature/snow-monster/attack": {
+      "start": 1.5721,
+      "end": 1.9906,
+      "loop": false
+    },
+    "creature/snow-monster/hit": {
+      "start": 2.0406,
+      "end": 2.411,
+      "loop": false
+    },
+    "creature/snow-monster/die": {
+      "start": 2.461,
+      "end": 3.2049,
+      "loop": false
+    },
+    "creature/frost-ogre/attack": {
+      "start": 3.2549,
+      "end": 3.7528,
+      "loop": false
+    },
+    "creature/frost-ogre/hit": {
+      "start": 3.8028,
+      "end": 4.0743,
+      "loop": false
+    },
+    "creature/frost-ogre/die": {
+      "start": 4.1243,
+      "end": 4.7648,
+      "loop": false
+    },
+    "creature/icicle-bat/attack": {
+      "start": 4.8148,
+      "end": 5.0452,
+      "loop": false
+    },
+    "creature/icicle-bat/hit": {
+      "start": 5.0952,
+      "end": 5.2845,
+      "loop": false
+    },
+    "creature/icicle-bat/die": {
+      "start": 5.3345,
+      "end": 5.7849,
+      "loop": false
+    },
+    "creature/old-snowshoulder/attack": {
+      "start": 5.8349,
+      "end": 6.163,
+      "loop": false
+    },
+    "creature/old-snowshoulder/hit": {
+      "start": 6.213,
+      "end": 6.627,
+      "loop": false
+    },
+    "creature/old-snowshoulder/die": {
+      "start": 6.677,
+      "end": 7.3937,
+      "loop": false
+    },
+    "creature/yeti-king/attack": {
+      "start": 7.4437,
+      "end": 8.1167,
+      "loop": false
+    },
+    "creature/yeti-king/hit": {
+      "start": 8.1668,
+      "end": 8.5385,
+      "loop": false
+    },
+    "creature/yeti-king/die": {
+      "start": 8.5885,
+      "end": 9.684,
+      "loop": false
+    },
+    "creature/yeti-king/surge": {
+      "start": 9.734,
+      "end": 10.7293,
+      "loop": false
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "effect_trap",
+  "category": "fight",
+  "gain": 0.583,
+  "use": "a trap set",
+  "variations": [
+    {
+      "file": "effect_trap_1.wav",
+      "seconds": 0.108,
+      "peak_dbfs": -1
+    }
+  ]
+}

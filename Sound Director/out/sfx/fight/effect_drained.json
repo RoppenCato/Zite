@@ -1,0 +1,13 @@
+{
+  "name": "effect_drained",
+  "category": "fight",
+  "gain": 0.32,
+  "use": "mana drained",
+  "variations": [
+    {
+      "file": "effect_drained_1.wav",
+      "seconds": 0.495,
+      "peak_dbfs": -1
+    }
+  ]
+}

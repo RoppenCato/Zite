@@ -1,0 +1,13 @@
+{
+  "name": "card_knight",
+  "category": "ui",
+  "gain": 0.502,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "card_knight_1.wav",
+      "seconds": 0.218,
+      "peak_dbfs": -1
+    }
+  ]
+}

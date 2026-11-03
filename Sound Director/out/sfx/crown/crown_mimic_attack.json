@@ -1,0 +1,13 @@
+{
+  "name": "crown_mimic_attack",
+  "category": "crown",
+  "gain": 0.485,
+  "use": "gold-mimic, attack (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_mimic_attack_1.wav",
+      "seconds": 0.461,
+      "peak_dbfs": -1
+    }
+  ]
+}

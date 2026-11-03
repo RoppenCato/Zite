@@ -1,0 +1,13 @@
+{
+  "name": "ability_execute",
+  "category": "fight",
+  "gain": 1,
+  "use": "Finishing Flourish",
+  "variations": [
+    {
+      "file": "ability_execute_1.wav",
+      "seconds": 0.619,
+      "peak_dbfs": -1
+    }
+  ]
+}

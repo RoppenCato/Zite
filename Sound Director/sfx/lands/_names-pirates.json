@@ -1,0 +1,78 @@
+[
+ {
+  "name": "creature/deck-hand/attack",
+  "src": "pirates_deckhand_attack"
+ },
+ {
+  "name": "creature/deck-hand/hit",
+  "src": "pirates_deckhand_hit"
+ },
+ {
+  "name": "creature/deck-hand/die",
+  "src": "pirates_deckhand_die"
+ },
+ {
+  "name": "creature/buccaneer/attack",
+  "src": "pirates_buccaneer_attack"
+ },
+ {
+  "name": "creature/buccaneer/hit",
+  "src": "pirates_buccaneer_hit"
+ },
+ {
+  "name": "creature/buccaneer/die",
+  "src": "pirates_buccaneer_die"
+ },
+ {
+  "name": "creature/scuttle-crab/attack",
+  "src": "pirates_crab_attack"
+ },
+ {
+  "name": "creature/scuttle-crab/hit",
+  "src": "pirates_crab_hit"
+ },
+ {
+  "name": "creature/scuttle-crab/die",
+  "src": "pirates_crab_die"
+ },
+ {
+  "name": "creature/cheeky-parrot/attack",
+  "src": "pirates_parrot_attack"
+ },
+ {
+  "name": "creature/cheeky-parrot/hit",
+  "src": "pirates_parrot_hit"
+ },
+ {
+  "name": "creature/cheeky-parrot/die",
+  "src": "pirates_parrot_die"
+ },
+ {
+  "name": "creature/first-mate-redwake/attack",
+  "src": "pirates_redwake_attack"
+ },
+ {
+  "name": "creature/first-mate-redwake/hit",
+  "src": "pirates_redwake_hit"
+ },
+ {
+  "name": "creature/first-mate-redwake/die",
+  "src": "pirates_redwake_die"
+ },
+ {
+  "name": "creature/captain-saltjaw/attack",
+  "src": "pirates_saltjaw_attack"
+ },
+ {
+  "name": "creature/captain-saltjaw/hit",
+  "src": "pirates_saltjaw_hit"
+ },
+ {
+  "name": "creature/captain-saltjaw/die",
+  "src": "pirates_saltjaw_die"
+ },
+ {
+  "name": "creature/captain-saltjaw/surge",
+  "src": "pirates_saltjaw_surge"
+ }
+]

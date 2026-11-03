@@ -1,0 +1,13 @@
+{
+  "name": "effect_poison",
+  "category": "fight",
+  "gain": 0.427,
+  "use": "poisoned",
+  "variations": [
+    {
+      "file": "effect_poison_1.wav",
+      "seconds": 0.349,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "impact_holy",
+  "category": "fight",
+  "gain": 0.639,
+  "use": "a holy spell lands: a bright major chord of bells, strings flaring for a moment, a clean crack. 0.5 s.",
+  "variations": [
+    {
+      "file": "impact_holy_1.wav",
+      "seconds": 0.41,
+      "peak_dbfs": -1
+    }
+  ]
+}

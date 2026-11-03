@@ -1,0 +1,13 @@
+{
+  "name": "online_reconnect",
+  "category": "ui",
+  "gain": 0.282,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "online_reconnect_1.wav",
+      "seconds": 0.46,
+      "peak_dbfs": -1
+    }
+  ]
+}

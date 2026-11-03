@@ -1,0 +1,13 @@
+{
+  "name": "giants_youngyeti_die",
+  "category": "giants",
+  "gain": 0.508,
+  "use": "young-yeti, die (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_youngyeti_die_1.wav",
+      "seconds": 0.727,
+      "peak_dbfs": -1
+    }
+  ]
+}

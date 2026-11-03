@@ -1,0 +1,20 @@
+{
+  "name": "meadows-b-jig",
+  "bpm": 168,
+  "bars": 56,
+  "beats": 3,
+  "loop_seconds": 60,
+  "sample_rate": 48000,
+  "loop_frames": 2880000,
+  "rendered": "2026-11-03T08:57:00.960Z",
+  "seamless": true,
+  "stems": {
+    "full": {
+      "file": "full.wav",
+      "peak_dbfs": -6.7,
+      "rms_dbfs": -20.8,
+      "gain_peace": 1,
+      "gain_danger": 1
+    }
+  }
+}

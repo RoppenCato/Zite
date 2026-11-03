@@ -1,0 +1,89 @@
+{
+  "spritemap": {
+    "fight/talent-holy-hit": {
+      "start": 0,
+      "end": 0.5062,
+      "loop": false
+    },
+    "fight/talent-holy-blast": {
+      "start": 0.5562,
+      "end": 1.441,
+      "loop": false
+    },
+    "fight/talent-roar": {
+      "start": 1.491,
+      "end": 2.0652,
+      "loop": false
+    },
+    "fight/talent-cleave": {
+      "start": 2.1153,
+      "end": 2.6033,
+      "loop": false
+    },
+    "fight/talent-arcane-bolt": {
+      "start": 2.6533,
+      "end": 3.1576,
+      "loop": false
+    },
+    "fight/talent-fire-small": {
+      "start": 3.2076,
+      "end": 3.71,
+      "loop": false
+    },
+    "fight/talent-blade-charge": {
+      "start": 3.76,
+      "end": 4.3817,
+      "loop": false
+    },
+    "fight/talent-triple-cut": {
+      "start": 4.4317,
+      "end": 4.7964,
+      "loop": false
+    },
+    "fight/talent-thrown": {
+      "start": 4.8464,
+      "end": 5.2304,
+      "loop": false
+    },
+    "fight/talent-clone": {
+      "start": 5.2804,
+      "end": 5.9167,
+      "loop": false
+    },
+    "fight/talent-dark-cut": {
+      "start": 5.9667,
+      "end": 6.2636,
+      "loop": false
+    },
+    "fight/talent-flask": {
+      "start": 6.3136,
+      "end": 7.0049,
+      "loop": false
+    },
+    "fight/talent-arrow-rain": {
+      "start": 7.0549,
+      "end": 7.7656,
+      "loop": false
+    },
+    "fight/talent-bow-ready": {
+      "start": 7.8156,
+      "end": 7.9796,
+      "loop": false
+    },
+    "fight/talent-owl-swoop": {
+      "start": 8.0296,
+      "end": 8.6279,
+      "loop": false
+    },
+    "fight/talent-blood": {
+      "start": 8.6779,
+      "end": 8.9725,
+      "loop": false
+    },
+    "fight/talent-magic-power": {
+      "start": 9.0225,
+      "end": 10.4225,
+      "loop": false
+    }
+  }
+}

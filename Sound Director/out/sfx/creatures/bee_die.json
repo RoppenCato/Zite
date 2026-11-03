@@ -1,0 +1,13 @@
+{
+  "name": "bee_die",
+  "category": "creatures",
+  "gain": 0.778,
+  "use": "the Bumbling Bee falls: the buzz slowing and fading.",
+  "variations": [
+    {
+      "file": "bee_die_1.wav",
+      "seconds": 0.661,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "arcane_bolt",
+  "category": "talents",
+  "gain": 0.67,
+  "use": "a bolt of magic: a quick run of bells and the recorded rune's front, a knock on arrival.",
+  "variations": [
+    {
+      "file": "arcane_bolt_1.wav",
+      "seconds": 0.504,
+      "peak_dbfs": -1
+    }
+  ]
+}

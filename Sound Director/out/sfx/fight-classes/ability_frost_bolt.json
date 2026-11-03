@@ -1,0 +1,13 @@
+{
+  "name": "ability_frost_bolt",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Snowball Hex: a soft crunch of recorded snow and glassy bells.",
+  "variations": [
+    {
+      "file": "ability_frost_bolt_1.wav",
+      "seconds": 0.412,
+      "peak_dbfs": -1
+    }
+  ]
+}

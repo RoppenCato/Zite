@@ -1,0 +1,13 @@
+{
+  "name": "bow_ready",
+  "category": "talents",
+  "gain": 0.778,
+  "use": "a bow held ready: the string drawn (the recorded trap's catch, low), a soft hum of the string.",
+  "variations": [
+    {
+      "file": "bow_ready_1.wav",
+      "seconds": 0.164,
+      "peak_dbfs": -1
+    }
+  ]
+}

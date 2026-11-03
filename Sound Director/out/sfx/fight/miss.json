@@ -1,0 +1,23 @@
+{
+  "name": "miss",
+  "category": "fight",
+  "gain": 0.296,
+  "use": "a whiff",
+  "variations": [
+    {
+      "file": "miss_1.wav",
+      "seconds": 0.418,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "miss_2.wav",
+      "seconds": 0.406,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "miss_3.wav",
+      "seconds": 0.395,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "giants_youngyeti_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "young-yeti, attack (The Giants' Land)."
+  },
+  "giants_youngyeti_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "young-yeti, hit (The Giants' Land)."
+  },
+  "giants_youngyeti_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "young-yeti, die (The Giants' Land)."
+  },
+  "giants_snowmonster_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "snow-monster, attack (The Giants' Land)."
+  },
+  "giants_snowmonster_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "snow-monster, hit (The Giants' Land)."
+  },
+  "giants_snowmonster_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "snow-monster, die (The Giants' Land)."
+  },
+  "giants_frostogre_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "frost-ogre, attack (The Giants' Land)."
+  },
+  "giants_frostogre_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "frost-ogre, hit (The Giants' Land)."
+  },
+  "giants_frostogre_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "frost-ogre, die (The Giants' Land)."
+  },
+  "giants_icebat_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "icicle-bat, attack (The Giants' Land)."
+  },
+  "giants_icebat_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "icicle-bat, hit (The Giants' Land)."
+  },
+  "giants_icebat_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "icicle-bat, die (The Giants' Land)."
+  },
+  "giants_snowshoulder_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "old-snowshoulder, attack (The Giants' Land)."
+  },
+  "giants_snowshoulder_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "old-snowshoulder, hit (The Giants' Land)."
+  },
+  "giants_snowshoulder_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "old-snowshoulder, die (The Giants' Land)."
+  },
+  "giants_yetiking_attack": {
+    "target": -4,
+    "max": 0.8,
+    "use": "yeti-king, attack (The Giants' Land)."
+  },
+  "giants_yetiking_hit": {
+    "target": -5,
+    "max": 0.8,
+    "use": "yeti-king, hit (The Giants' Land)."
+  },
+  "giants_yetiking_die": {
+    "target": -2,
+    "max": 1.3,
+    "use": "yeti-king, die (The Giants' Land)."
+  },
+  "giants_yetiking_surge": {
+    "target": 2,
+    "max": 1.4,
+    "use": "The Yeti King roars, the storm comes: a roar, the gust rising, far thunder."
+  }
+}

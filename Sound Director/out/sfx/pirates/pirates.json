@@ -1,0 +1,275 @@
+{
+  "about": "The pirates sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T08:31:25.038Z",
+  "sounds": {
+    "pirates_deckhand_attack": {
+      "files": [
+        "pirates_deckhand_attack_1.wav"
+      ],
+      "seconds": [
+        0.409
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "deck-hand, attack (The Pirate Isles).",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_deckhand_hit": {
+      "files": [
+        "pirates_deckhand_hit_1.wav"
+      ],
+      "seconds": [
+        0.307
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "deck-hand, hit (The Pirate Isles).",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_deckhand_die": {
+      "files": [
+        "pirates_deckhand_die_1.wav"
+      ],
+      "seconds": [
+        0.169
+      ],
+      "loud_db": -8.7,
+      "target_db": -2,
+      "use": "deck-hand, die (The Pirate Isles).",
+      "gain": 0.432,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_buccaneer_attack": {
+      "files": [
+        "pirates_buccaneer_attack_1.wav"
+      ],
+      "seconds": [
+        0.488
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "buccaneer, attack (The Pirate Isles).",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_buccaneer_hit": {
+      "files": [
+        "pirates_buccaneer_hit_1.wav"
+      ],
+      "seconds": [
+        0.365
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "buccaneer, hit (The Pirate Isles).",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_buccaneer_die": {
+      "files": [
+        "pirates_buccaneer_die_1.wav"
+      ],
+      "seconds": [
+        0.2
+      ],
+      "loud_db": -8.5,
+      "target_db": -2,
+      "use": "buccaneer, die (The Pirate Isles).",
+      "gain": 0.422,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_crab_attack": {
+      "files": [
+        "pirates_crab_attack_1.wav"
+      ],
+      "seconds": [
+        0.134
+      ],
+      "loud_db": -11.3,
+      "target_db": -4,
+      "use": "scuttle-crab, attack (The Pirate Isles).",
+      "gain": 0.463,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_crab_hit": {
+      "files": [
+        "pirates_crab_hit_1.wav"
+      ],
+      "seconds": [
+        0.111
+      ],
+      "loud_db": -12.6,
+      "target_db": -5,
+      "use": "scuttle-crab, hit (The Pirate Isles).",
+      "gain": 0.479,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_crab_die": {
+      "files": [
+        "pirates_crab_die_1.wav"
+      ],
+      "seconds": [
+        0.397
+      ],
+      "loud_db": -13.7,
+      "target_db": -2,
+      "use": "scuttle-crab, die (The Pirate Isles).",
+      "gain": 0.769,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_parrot_attack": {
+      "files": [
+        "pirates_parrot_attack_1.wav"
+      ],
+      "seconds": [
+        0.321
+      ],
+      "loud_db": -8.4,
+      "target_db": -4,
+      "use": "cheeky-parrot, attack (The Pirate Isles).",
+      "gain": 0.332,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_parrot_hit": {
+      "files": [
+        "pirates_parrot_hit_1.wav"
+      ],
+      "seconds": [
+        0.272
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "cheeky-parrot, hit (The Pirate Isles).",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_parrot_die": {
+      "files": [
+        "pirates_parrot_die_1.wav"
+      ],
+      "seconds": [
+        0.29
+      ],
+      "loud_db": -6.5,
+      "target_db": -2,
+      "use": "cheeky-parrot, die (The Pirate Isles).",
+      "gain": 0.336,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_redwake_attack": {
+      "files": [
+        "pirates_redwake_attack_1.wav"
+      ],
+      "seconds": [
+        0.546
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "first-mate-redwake, attack (The Pirate Isles).",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_redwake_hit": {
+      "files": [
+        "pirates_redwake_hit_1.wav"
+      ],
+      "seconds": [
+        0.408
+      ],
+      "loud_db": -6.3,
+      "target_db": -5,
+      "use": "first-mate-redwake, hit (The Pirate Isles).",
+      "gain": 0.232,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_redwake_die": {
+      "files": [
+        "pirates_redwake_die_1.wav"
+      ],
+      "seconds": [
+        0.355
+      ],
+      "loud_db": -8.4,
+      "target_db": -2,
+      "use": "first-mate-redwake, die (The Pirate Isles).",
+      "gain": 0.418,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_saltjaw_attack": {
+      "files": [
+        "pirates_saltjaw_attack_1.wav"
+      ],
+      "seconds": [
+        0.703
+      ],
+      "loud_db": -8.9,
+      "target_db": -4,
+      "use": "captain-saltjaw, attack (The Pirate Isles).",
+      "gain": 0.351,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "pirates_saltjaw_hit": {
+      "files": [
+        "pirates_saltjaw_hit_1.wav"
+      ],
+      "seconds": [
+        0.465
+      ],
+      "loud_db": -6.5,
+      "target_db": -5,
+      "use": "captain-saltjaw, hit (The Pirate Isles).",
+      "gain": 0.238,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "pirates_saltjaw_die": {
+      "files": [
+        "pirates_saltjaw_die_1.wav"
+      ],
+      "seconds": [
+        1.027
+      ],
+      "loud_db": -9.1,
+      "target_db": -2,
+      "use": "captain-saltjaw, die (The Pirate Isles).",
+      "gain": 0.453,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pirates_saltjaw_surge": {
+      "files": [
+        "pirates_saltjaw_surge_1.wav"
+      ],
+      "seconds": [
+        0.793
+      ],
+      "loud_db": -10.1,
+      "target_db": 2,
+      "use": "Saltjaw bellows, all guns: a shout and a far cannon.",
+      "gain": 0.805,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "pick_appear",
+  "category": "ui",
+  "gain": 0.422,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "pick_appear_1.wav",
+      "seconds": 0.202,
+      "peak_dbfs": -1
+    }
+  ]
+}

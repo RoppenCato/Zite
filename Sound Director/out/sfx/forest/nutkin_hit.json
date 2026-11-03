@@ -1,0 +1,13 @@
+{
+  "name": "nutkin_hit",
+  "category": "forest",
+  "gain": 0.238,
+  "use": "the Nutkin Thief struck: a squeak and a nut's knock.",
+  "variations": [
+    {
+      "file": "nutkin_hit_1.wav",
+      "seconds": 0.344,
+      "peak_dbfs": -1
+    }
+  ]
+}

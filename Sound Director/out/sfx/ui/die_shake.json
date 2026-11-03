@@ -1,0 +1,23 @@
+{
+  "name": "die_shake",
+  "category": "ui",
+  "gain": 0.442,
+  "use": "the die shaken in the hand before the throw: inside a hand, well under the land",
+  "variations": [
+    {
+      "file": "die_shake_1.wav",
+      "seconds": 0.326,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_shake_2.wav",
+      "seconds": 0.399,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_shake_3.wav",
+      "seconds": 0.358,
+      "peak_dbfs": -1
+    }
+  ]
+}

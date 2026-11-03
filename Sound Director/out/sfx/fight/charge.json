@@ -1,0 +1,13 @@
+{
+  "name": "charge",
+  "category": "fight",
+  "gain": 0.422,
+  "use": "the power gathering",
+  "variations": [
+    {
+      "file": "charge_1.wav",
+      "seconds": 1.084,
+      "peak_dbfs": -1
+    }
+  ]
+}

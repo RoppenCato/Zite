@@ -1,0 +1,13 @@
+{
+  "name": "fire_small",
+  "category": "talents",
+  "gain": 1,
+  "use": "a quick flame: a rush, the recorded fire arrow, a crackle.",
+  "variations": [
+    {
+      "file": "fire_small_1.wav",
+      "seconds": 0.502,
+      "peak_dbfs": -1
+    }
+  ]
+}

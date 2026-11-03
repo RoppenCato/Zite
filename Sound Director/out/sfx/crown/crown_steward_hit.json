@@ -1,0 +1,13 @@
+{
+  "name": "crown_steward_hit",
+  "category": "crown",
+  "gain": 0.632,
+  "use": "last-steward, hit (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_steward_hit_1.wav",
+      "seconds": 0.372,
+      "peak_dbfs": -1
+    }
+  ]
+}

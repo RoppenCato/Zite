@@ -1,0 +1,23 @@
+{
+  "name": "chest_burst_unique",
+  "category": "ui",
+  "gain": 0.709,
+  "use": "a unique chest",
+  "variations": [
+    {
+      "file": "chest_burst_unique_1.wav",
+      "seconds": 1.331,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_unique_2.wav",
+      "seconds": 1.331,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "chest_burst_unique_3.wav",
+      "seconds": 1.331,
+      "peak_dbfs": -1
+    }
+  ]
+}

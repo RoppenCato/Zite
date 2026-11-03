@@ -1,0 +1,13 @@
+{
+  "name": "effect_attackup",
+  "category": "fight",
+  "gain": 0.437,
+  "use": "attack raised",
+  "variations": [
+    {
+      "file": "effect_attackup_1.wav",
+      "seconds": 0.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

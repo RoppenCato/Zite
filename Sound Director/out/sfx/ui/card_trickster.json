@@ -1,0 +1,13 @@
+{
+  "name": "card_trickster",
+  "category": "ui",
+  "gain": 0.914,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "card_trickster_1.wav",
+      "seconds": 0.072,
+      "peak_dbfs": -1
+    }
+  ]
+}

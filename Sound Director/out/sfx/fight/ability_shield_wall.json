@@ -1,0 +1,13 @@
+{
+  "name": "ability_shield_wall",
+  "category": "fight",
+  "gain": 1,
+  "use": "Castle Stance",
+  "variations": [
+    {
+      "file": "ability_shield_wall_1.wav",
+      "seconds": 0.672,
+      "peak_dbfs": -1
+    }
+  ]
+}

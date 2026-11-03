@@ -1,0 +1,13 @@
+{
+  "name": "ability_war_cry",
+  "category": "fight",
+  "gain": 0.709,
+  "use": "Battle Hymn",
+  "variations": [
+    {
+      "file": "ability_war_cry_1.wav",
+      "seconds": 1.2,
+      "peak_dbfs": -1
+    }
+  ]
+}

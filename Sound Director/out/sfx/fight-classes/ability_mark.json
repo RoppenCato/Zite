@@ -1,0 +1,13 @@
+{
+  "name": "ability_mark",
+  "category": "fight-classes",
+  "gain": 0.514,
+  "use": "Painted Target: a brush's stroke of breath, a knock and a thin note.",
+  "variations": [
+    {
+      "file": "ability_mark_1.wav",
+      "seconds": 0.395,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "tap_denied",
+  "category": "ui",
+  "gain": 0.296,
+  "use": "a dim button: softer than the tap",
+  "variations": [
+    {
+      "file": "tap_denied_1.wav",
+      "seconds": 0.121,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "tap_denied_2.wav",
+      "seconds": 0.118,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "tap_denied_3.wav",
+      "seconds": 0.122,
+      "peak_dbfs": -1
+    }
+  ]
+}

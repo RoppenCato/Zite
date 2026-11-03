@@ -1,0 +1,13 @@
+{
+  "name": "ability_trap",
+  "category": "fight-classes",
+  "gain": 0.903,
+  "use": "Tripwire: a small chain's jingle and the catch setting.",
+  "variations": [
+    {
+      "file": "ability_trap_1.wav",
+      "seconds": 0.378,
+      "peak_dbfs": -1
+    }
+  ]
+}

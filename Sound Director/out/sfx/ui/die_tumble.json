@@ -1,0 +1,23 @@
+{
+  "name": "die_tumble",
+  "category": "ui",
+  "gain": 0.709,
+  "use": "the die tumbling over the board, a 0.6 s loop: smaller knocks than the land",
+  "variations": [
+    {
+      "file": "die_tumble_1.wav",
+      "seconds": 0.519,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_tumble_2.wav",
+      "seconds": 0.53,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "die_tumble_3.wav",
+      "seconds": 0.544,
+      "peak_dbfs": -1
+    }
+  ]
+}

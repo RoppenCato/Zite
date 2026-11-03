@@ -1,0 +1,13 @@
+{
+  "name": "pirates_deckhand_die",
+  "category": "pirates",
+  "gain": 0.432,
+  "use": "deck-hand, die (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_deckhand_die_1.wav",
+      "seconds": 0.169,
+      "peak_dbfs": -1
+    }
+  ]
+}

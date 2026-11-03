@@ -1,0 +1,23 @@
+{
+  "name": "tap",
+  "category": "ui",
+  "gain": 0.31,
+  "use": "every button: heard constantly, so quiet",
+  "variations": [
+    {
+      "file": "tap_1.wav",
+      "seconds": 0.048,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "tap_2.wav",
+      "seconds": 0.053,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "tap_3.wav",
+      "seconds": 0.053,
+      "peak_dbfs": -1
+    }
+  ]
+}

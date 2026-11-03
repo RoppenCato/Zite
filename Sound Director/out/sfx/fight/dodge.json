@@ -1,0 +1,13 @@
+{
+  "name": "dodge",
+  "category": "fight",
+  "gain": 0.576,
+  "use": "a dodge pops on screen: a clear whoosh, louder than the guard row's",
+  "variations": [
+    {
+      "file": "dodge_1.wav",
+      "seconds": 0.217,
+      "peak_dbfs": -1
+    }
+  ]
+}

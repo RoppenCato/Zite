@@ -1,0 +1,297 @@
+{
+  "about": "The forest sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-02T08:39:22.154Z",
+  "sounds": {
+    "twigling_attack": {
+      "files": [
+        "twigling_attack_1.wav"
+      ],
+      "seconds": [
+        0.162
+      ],
+      "loud_db": -12.9,
+      "target_db": -4,
+      "use": "the Twigling: dry wood clacking twice.",
+      "gain": 0.557,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "twigling_hit": {
+      "files": [
+        "twigling_hit_1.wav"
+      ],
+      "seconds": [
+        0.209
+      ],
+      "loud_db": -7.9,
+      "target_db": -5,
+      "use": "the Twigling struck: a twig's snap, a small voice.",
+      "gain": 0.279,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "twigling_die": {
+      "files": [
+        "twigling_die_1.wav"
+      ],
+      "seconds": [
+        0.316
+      ],
+      "loud_db": -11.9,
+      "target_db": -2,
+      "use": "the Twigling falls: sticks clattering down.",
+      "gain": 0.625,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "goblin_attack": {
+      "files": [
+        "goblin_attack_1.wav"
+      ],
+      "seconds": [
+        0.337
+      ],
+      "loud_db": -12.3,
+      "target_db": -4,
+      "use": "the Moss Goblin: a nasal grunt.",
+      "gain": 0.52,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "goblin_hit": {
+      "files": [
+        "goblin_hit_1.wav"
+      ],
+      "seconds": [
+        0.298
+      ],
+      "loud_db": -12.8,
+      "target_db": -5,
+      "use": "the Moss Goblin struck: a yelp.",
+      "gain": 0.491,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "goblin_die": {
+      "files": [
+        "goblin_die_1.wav"
+      ],
+      "seconds": [
+        0.48
+      ],
+      "loud_db": -11.7,
+      "target_db": -2,
+      "use": "the Moss Goblin falls: a long small groan.",
+      "gain": 0.611,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "sporeling_attack": {
+      "files": [
+        "sporeling_attack_1.wav"
+      ],
+      "seconds": [
+        0.262
+      ],
+      "loud_db": -6.9,
+      "target_db": -4,
+      "use": "the Sporeling: a tiny voice and a puff.",
+      "gain": 0.279,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "sporeling_hit": {
+      "files": [
+        "sporeling_hit_1.wav"
+      ],
+      "seconds": [
+        0.221
+      ],
+      "loud_db": -7.4,
+      "target_db": -5,
+      "use": "the Sporeling struck: a squeak.",
+      "gain": 0.263,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "sporeling_die": {
+      "files": [
+        "sporeling_die_1.wav"
+      ],
+      "seconds": [
+        0.278
+      ],
+      "loud_db": -10.8,
+      "target_db": -2,
+      "use": "the Sporeling bursts: a pop and a puff of spores.",
+      "gain": 0.551,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "nutkin_attack": {
+      "files": [
+        "nutkin_attack_1.wav"
+      ],
+      "seconds": [
+        0.338
+      ],
+      "loud_db": -8.1,
+      "target_db": -4,
+      "use": "the Nutkin Thief: a chatter of small voices.",
+      "gain": 0.32,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "nutkin_hit": {
+      "files": [
+        "nutkin_hit_1.wav"
+      ],
+      "seconds": [
+        0.344
+      ],
+      "loud_db": -6.5,
+      "target_db": -5,
+      "use": "the Nutkin Thief struck: a squeak and a nut's knock.",
+      "gain": 0.238,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "nutkin_die": {
+      "files": [
+        "nutkin_die_1.wav"
+      ],
+      "seconds": [
+        0.401
+      ],
+      "loud_db": -6.7,
+      "target_db": -2,
+      "use": "the Nutkin Thief falls: a falling squeak, acorns dropping.",
+      "gain": 0.343,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "owlbear_attack": {
+      "files": [
+        "owlbear_attack_1.wav"
+      ],
+      "seconds": [
+        0.387
+      ],
+      "loud_db": -9.6,
+      "target_db": -3,
+      "use": "the Sleepy Owlbear Cub: a drowsy growl.",
+      "gain": 0.427,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+    },
+    "owlbear_hit": {
+      "files": [
+        "owlbear_hit_1.wav"
+      ],
+      "seconds": [
+        0.315
+      ],
+      "loud_db": -9,
+      "target_db": -4,
+      "use": "the Owlbear Cub struck: a hoot of surprise.",
+      "gain": 0.355,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "owlbear_die": {
+      "files": [
+        "owlbear_die_1.wav"
+      ],
+      "seconds": [
+        0.907
+      ],
+      "loud_db": -10,
+      "target_db": -2,
+      "use": "the Owlbear Cub goes to sleep: a long yawning groan and a snore.",
+      "gain": 0.502,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "grumblebark_attack": {
+      "files": [
+        "grumblebark_attack_1.wav"
+      ],
+      "seconds": [
+        0.605
+      ],
+      "loud_db": -7.5,
+      "target_db": -1,
+      "use": "Grumblebark: a huge groan: Kenney's creak slowed under a low grunt.",
+      "gain": 0.422,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+    },
+    "grumblebark_hit": {
+      "files": [
+        "grumblebark_hit_1.wav"
+      ],
+      "seconds": [
+        0.243
+      ],
+      "loud_db": -11.9,
+      "target_db": -2,
+      "use": "Grumblebark struck: heavy wood knocked, a creak.",
+      "gain": 0.625,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "grumblebark_die": {
+      "files": [
+        "grumblebark_die_1.wav"
+      ],
+      "seconds": [
+        2.4
+      ],
+      "loud_db": -14.1,
+      "target_db": 0,
+      "use": "Grumblebark falls: Robin's tree falling, cracking and crashing.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "step_roots": {
+      "files": [
+        "step_roots_1.wav",
+        "step_roots_2.wav",
+        "step_roots_3.wav"
+      ],
+      "seconds": [
+        0.07,
+        0.091,
+        0.07
+      ],
+      "loud_db": -13.7,
+      "target_db": -9,
+      "use": "a step on roots: a recorded wooden knock, dull and light.",
+      "gain": 0.343,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -9 dB relative to it"
+    },
+    "step_moss": {
+      "files": [
+        "step_moss_1.wav",
+        "step_moss_2.wav",
+        "step_moss_3.wav"
+      ],
+      "seconds": [
+        0.078,
+        0.149,
+        0.079
+      ],
+      "loud_db": -13.6,
+      "target_db": -11,
+      "use": "a step on moss: Kenney's grass footsteps, slower and dulled, very soft.",
+      "gain": 0.27,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -11 dB relative to it"
+    }
+  }
+}

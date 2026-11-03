@@ -1,0 +1,13 @@
+{
+  "name": "giants_snowmonster_hit",
+  "category": "giants",
+  "gain": 0.654,
+  "use": "snow-monster, hit (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_snowmonster_hit_1.wav",
+      "seconds": 0.37,
+      "peak_dbfs": -1
+    }
+  ]
+}

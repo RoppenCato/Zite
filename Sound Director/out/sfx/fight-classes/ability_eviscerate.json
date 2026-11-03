@@ -1,0 +1,13 @@
+{
+  "name": "ability_eviscerate",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Grand Finale: a whirl of three cuts and the heavy hit, a bell's flourish on top.",
+  "variations": [
+    {
+      "file": "ability_eviscerate_1.wav",
+      "seconds": 0.9,
+      "peak_dbfs": -1
+    }
+  ]
+}

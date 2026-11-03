@@ -1,0 +1,13 @@
+{
+  "name": "take_off",
+  "category": "ui",
+  "gain": 0.432,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "take_off_1.wav",
+      "seconds": 0.156,
+      "peak_dbfs": -1
+    }
+  ]
+}

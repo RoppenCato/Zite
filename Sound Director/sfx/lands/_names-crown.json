@@ -1,0 +1,82 @@
+[
+ {
+  "name": "creature/crypt-guard/attack",
+  "src": "crown_cryptguard_attack"
+ },
+ {
+  "name": "creature/crypt-guard/hit",
+  "src": "crown_cryptguard_hit"
+ },
+ {
+  "name": "creature/crypt-guard/die",
+  "src": "crown_cryptguard_die"
+ },
+ {
+  "name": "creature/gilded-wraith/attack",
+  "src": "crown_wraith_attack"
+ },
+ {
+  "name": "creature/gilded-wraith/hit",
+  "src": "crown_wraith_hit"
+ },
+ {
+  "name": "creature/gilded-wraith/die",
+  "src": "crown_wraith_die"
+ },
+ {
+  "name": "creature/stone-gargoyle/attack",
+  "src": "crown_gargoyle_attack"
+ },
+ {
+  "name": "creature/stone-gargoyle/hit",
+  "src": "crown_gargoyle_hit"
+ },
+ {
+  "name": "creature/stone-gargoyle/die",
+  "src": "crown_gargoyle_die"
+ },
+ {
+  "name": "creature/gold-mimic/attack",
+  "src": "crown_mimic_attack"
+ },
+ {
+  "name": "creature/gold-mimic/hit",
+  "src": "crown_mimic_hit"
+ },
+ {
+  "name": "creature/gold-mimic/die",
+  "src": "crown_mimic_die"
+ },
+ {
+  "name": "creature/last-steward/attack",
+  "src": "crown_steward_attack"
+ },
+ {
+  "name": "creature/last-steward/hit",
+  "src": "crown_steward_hit"
+ },
+ {
+  "name": "creature/last-steward/die",
+  "src": "crown_steward_die"
+ },
+ {
+  "name": "creature/hollow-king/attack",
+  "src": "crown_hollowking_attack"
+ },
+ {
+  "name": "creature/hollow-king/hit",
+  "src": "crown_hollowking_hit"
+ },
+ {
+  "name": "creature/hollow-king/die",
+  "src": "crown_hollowking_die"
+ },
+ {
+  "name": "creature/hollow-king/surge",
+  "src": "crown_hollowking_surge"
+ },
+ {
+  "name": "fight/ending-sting",
+  "src": "crown_ending_sting"
+ }
+]

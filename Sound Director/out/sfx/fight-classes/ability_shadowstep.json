@@ -1,0 +1,13 @@
+{
+  "name": "ability_shadowstep",
+  "category": "fight-classes",
+  "gain": 0.662,
+  "use": "Vanishing Act: the recorded shadowstep and three small bells falling away.",
+  "variations": [
+    {
+      "file": "ability_shadowstep_1.wav",
+      "seconds": 0.508,
+      "peak_dbfs": -1
+    }
+  ]
+}

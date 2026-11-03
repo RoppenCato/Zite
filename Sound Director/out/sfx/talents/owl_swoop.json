@@ -1,0 +1,13 @@
+{
+  "name": "owl_swoop",
+  "category": "talents",
+  "gain": 1,
+  "use": "the owl dives: wings (Robin's sail flap), a rush, a hard hit and a hoot.",
+  "variations": [
+    {
+      "file": "owl_swoop_1.wav",
+      "seconds": 0.598,
+      "peak_dbfs": -1
+    }
+  ]
+}

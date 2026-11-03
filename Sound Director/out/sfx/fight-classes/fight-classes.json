@@ -1,0 +1,317 @@
+{
+  "about": "The fight-classes sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-02T08:39:22.271Z",
+  "sounds": {
+    "ability_backstab": {
+      "files": [
+        "ability_backstab_1.wav"
+      ],
+      "seconds": [
+        0.216
+      ],
+      "loud_db": -13.7,
+      "target_db": 1,
+      "use": "Sneak Jab: a quick thin cut and the slap.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
+    },
+    "ability_poison_blade": {
+      "files": [
+        "ability_poison_blade_1.wav"
+      ],
+      "seconds": [
+        0.422
+      ],
+      "loud_db": -8.8,
+      "target_db": 0,
+      "use": "Nettle Knife: the cut, a drip and a thin hiss.",
+      "gain": 0.551,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_shadowstep": {
+      "files": [
+        "ability_shadowstep_1.wav"
+      ],
+      "seconds": [
+        0.508
+      ],
+      "loud_db": -11.4,
+      "target_db": -1,
+      "use": "Vanishing Act: the recorded shadowstep and three small bells falling away.",
+      "gain": 0.662,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+    },
+    "ability_smoke_bomb": {
+      "files": [
+        "ability_smoke_bomb_1.wav"
+      ],
+      "seconds": [
+        0.488
+      ],
+      "loud_db": -11.8,
+      "target_db": 0,
+      "use": "Puff of Smoke: a small pop on wood and a rush of smoke.",
+      "gain": 0.778,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_pickpocket": {
+      "files": [
+        "ability_pickpocket_1.wav"
+      ],
+      "seconds": [
+        0.275
+      ],
+      "loud_db": -14.6,
+      "target_db": 0,
+      "use": "Sticky Fingers: a quick cut and coins lifted.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_eviscerate": {
+      "files": [
+        "ability_eviscerate_1.wav"
+      ],
+      "seconds": [
+        0.9
+      ],
+      "loud_db": -13.4,
+      "target_db": 3,
+      "use": "Grand Finale: a whirl of three cuts and the heavy hit, a bell's flourish on top.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 3 dB relative to it"
+    },
+    "ability_fireball": {
+      "files": [
+        "ability_fireball_1.wav"
+      ],
+      "seconds": [
+        0.938
+      ],
+      "loud_db": -11.1,
+      "target_db": 3,
+      "use": "Firework: the recorded fire arrow goes up, a crack, a burst of sparks in small bells.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 3 dB relative to it"
+    },
+    "ability_frost_bolt": {
+      "files": [
+        "ability_frost_bolt_1.wav"
+      ],
+      "seconds": [
+        0.412
+      ],
+      "loud_db": -14.3,
+      "target_db": 0,
+      "use": "Snowball Hex: a soft crunch of recorded snow and glassy bells.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_arcane_shield": {
+      "files": [
+        "ability_arcane_shield_1.wav"
+      ],
+      "seconds": [
+        0.64
+      ],
+      "loud_db": -12.4,
+      "target_db": 0,
+      "use": "Bubble Shield: recorded drops rising as bubbles, a string swell closing round.",
+      "gain": 0.833,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_time_warp": {
+      "files": [
+        "ability_time_warp_1.wav"
+      ],
+      "seconds": [
+        1.2
+      ],
+      "loud_db": -10.2,
+      "target_db": 1,
+      "use": "Pocket Watch: four ticks of a small clock slowing to a stop, one long bell.",
+      "gain": 0.726,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
+    },
+    "ability_meteor": {
+      "files": [
+        "ability_meteor_1.wav"
+      ],
+      "seconds": [
+        0.932
+      ],
+      "loud_db": -10.5,
+      "target_db": 2,
+      "use": "Falling Star, the casting: bells falling from the top, a deep whoosh; the star lands two rounds later (a second name if the game wants one).",
+      "gain": 0.843,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    },
+    "meteor_land": {
+      "files": [
+        "meteor_land_1.wav"
+      ],
+      "seconds": [
+        0.933
+      ],
+      "loud_db": -10.8,
+      "target_db": 3,
+      "use": "Falling Star lands, two rounds after the cast (fight/meteor-land): a rush down, a crack and the heavy split, bells scattering. The biggest of the Wizard's.",
+      "gain": 0.979,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 3 dB relative to it"
+    },
+    "ability_mana_shield": {
+      "files": [
+        "ability_mana_shield_1.wav"
+      ],
+      "seconds": [
+        1.061
+      ],
+      "loud_db": -6.2,
+      "target_db": -1,
+      "use": "Moonlight Veil: high strings opening, slow bells, a pale chord.",
+      "gain": 0.364,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+    },
+    "ability_volley": {
+      "files": [
+        "ability_volley_1.wav"
+      ],
+      "seconds": [
+        0.319
+      ],
+      "loud_db": -17,
+      "target_db": 1,
+      "use": "Triple Shot: Robin's bow shot, three times, quick.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
+    },
+    "ability_aimed_shot": {
+      "files": [
+        "ability_aimed_shot_1.wav"
+      ],
+      "seconds": [
+        0.35
+      ],
+      "loud_db": -12.7,
+      "target_db": 2,
+      "use": "Bullseye: a long breath of the string, the recorded pinning shot, a glint.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    },
+    "ability_snare": {
+      "files": [
+        "ability_snare_1.wav"
+      ],
+      "seconds": [
+        0.283
+      ],
+      "loud_db": -9.4,
+      "target_db": 0,
+      "use": "Net Toss: a rush of air, the net's small weights landing.",
+      "gain": 0.59,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_trap": {
+      "files": [
+        "ability_trap_1.wav"
+      ],
+      "seconds": [
+        0.378
+      ],
+      "loud_db": -15.1,
+      "target_db": -2,
+      "use": "Tripwire: a small chain's jingle and the catch setting.",
+      "gain": 0.903,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "ability_hawk": {
+      "files": [
+        "ability_hawk_1.wav"
+      ],
+      "seconds": [
+        0.732
+      ],
+      "loud_db": -11,
+      "target_db": 0,
+      "use": "Owl Friend: a soft hoot, two notes, and wings (Robin's sail flap, quick).",
+      "gain": 0.709,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "ability_mark": {
+      "files": [
+        "ability_mark_1.wav"
+      ],
+      "seconds": [
+        0.395
+      ],
+      "loud_db": -10.2,
+      "target_db": -2,
+      "use": "Painted Target: a brush's stroke of breath, a knock and a thin note.",
+      "gain": 0.514,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "pip_trickster": {
+      "files": [
+        "pip_trickster_1.wav"
+      ],
+      "seconds": [
+        0.16
+      ],
+      "loud_db": -14.7,
+      "target_db": -8,
+      "use": "Mischief's pip: a finger's snap.",
+      "gain": 0.432,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -8 dB relative to it"
+    },
+    "pip_wizard": {
+      "files": [
+        "pip_wizard_1.wav"
+      ],
+      "seconds": [
+        0.227
+      ],
+      "loud_db": -5.2,
+      "target_db": -8,
+      "use": "Arcana's pip: one small bell.",
+      "gain": 0.145,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -8 dB relative to it"
+    },
+    "pip_archer": {
+      "files": [
+        "pip_archer_1.wav"
+      ],
+      "seconds": [
+        0.055
+      ],
+      "loud_db": -14.3,
+      "target_db": -8,
+      "use": "Aim's pip: a tick of the bowstring.",
+      "gain": 0.413,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -8 dB relative to it"
+    }
+  }
+}

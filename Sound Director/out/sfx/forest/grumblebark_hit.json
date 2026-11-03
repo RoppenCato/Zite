@@ -1,0 +1,13 @@
+{
+  "name": "grumblebark_hit",
+  "category": "forest",
+  "gain": 0.625,
+  "use": "Grumblebark struck: heavy wood knocked, a creak.",
+  "variations": [
+    {
+      "file": "grumblebark_hit_1.wav",
+      "seconds": 0.243,
+      "peak_dbfs": -1
+    }
+  ]
+}

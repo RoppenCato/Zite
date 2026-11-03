@@ -1,0 +1,13 @@
+{
+  "name": "flask",
+  "category": "talents",
+  "gain": 0.618,
+  "use": "a flask thrown and broken: the recorded poison pot, a wet splat, the hiss.",
+  "variations": [
+    {
+      "file": "flask_1.wav",
+      "seconds": 0.691,
+      "peak_dbfs": -1
+    }
+  ]
+}

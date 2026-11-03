@@ -1,0 +1,13 @@
+{
+  "name": "goo_attack",
+  "category": "creatures",
+  "gain": 0.364,
+  "use": "King Goo: a wobbling roar: a burp slowed under the slime's squelch.",
+  "variations": [
+    {
+      "file": "goo_attack_1.wav",
+      "seconds": 0.75,
+      "peak_dbfs": -1
+    }
+  ]
+}

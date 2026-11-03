@@ -1,0 +1,215 @@
+{
+  "about": "The talents sounds: 48 kHz 16-bit mono WAVs, every file's peak at -1 dBFS. Play a sound at its \"gain\" (multiply) so the set is levelled against itself: swings under hits, hits under heavy hits, the finishing blow the loudest. Pick one of the files at random each time. loud_db: the loudest 50 ms of the file before the gain; target_db: where it should sit (the sword's hit = about 0).",
+  "sample_rate": 48000,
+  "channels": 1,
+  "peak_dbfs": -1,
+  "made": "2026-11-03T12:06:56.509Z",
+  "sounds": {
+    "holy_hit": {
+      "files": [
+        "holy_hit_1.wav"
+      ],
+      "seconds": [
+        0.506
+      ],
+      "loud_db": -12.6,
+      "target_db": 2,
+      "use": "a holy blow: Robin's heavy hit with a bright chord of bells on it.",
+      "gain": 1
+    },
+    "holy_blast": {
+      "files": [
+        "holy_blast_1.wav"
+      ],
+      "seconds": [
+        0.885
+      ],
+      "loud_db": -10.1,
+      "target_db": 2,
+      "use": "a blast of light: strings opening fast, bells running up, a soft crack.",
+      "gain": 0.805
+    },
+    "roar": {
+      "files": [
+        "roar_1.wav"
+      ],
+      "seconds": [
+        0.574
+      ],
+      "loud_db": -10.1,
+      "target_db": 1,
+      "use": "a berserk's roar and a hit of the blood: the recorded roar, the drip.",
+      "gain": 0.717
+    },
+    "cleave": {
+      "files": [
+        "cleave_1.wav"
+      ],
+      "seconds": [
+        0.488
+      ],
+      "loud_db": -12.9,
+      "target_db": 3,
+      "use": "wild swings: the recorded sweep and two heavy hits close together.",
+      "gain": 1
+    },
+    "arcane_bolt": {
+      "files": [
+        "arcane_bolt_1.wav"
+      ],
+      "seconds": [
+        0.504
+      ],
+      "loud_db": -9.5,
+      "target_db": 1,
+      "use": "a bolt of magic: a quick run of bells and the recorded rune's front, a knock on arrival.",
+      "gain": 0.67
+    },
+    "fire_small": {
+      "files": [
+        "fire_small_1.wav"
+      ],
+      "seconds": [
+        0.502
+      ],
+      "loud_db": -17.2,
+      "target_db": 1,
+      "use": "a quick flame: a rush, the recorded fire arrow, a crackle.",
+      "gain": 1
+    },
+    "blade_charge": {
+      "files": [
+        "blade_charge_1.wav"
+      ],
+      "seconds": [
+        0.622
+      ],
+      "loud_db": -8.6,
+      "target_db": 0,
+      "use": "a blade charged with frost or storm: a small recorded lightning under rising bells and a string's edge.",
+      "gain": 0.538
+    },
+    "triple_cut": {
+      "files": [
+        "triple_cut_1.wav"
+      ],
+      "seconds": [
+        0.365
+      ],
+      "loud_db": -13.2,
+      "target_db": 2,
+      "use": "three quick cuts: the recorded riposte three times, a bright hit on the last; under 7 kHz (the first render centred at 5 kHz).",
+      "gain": 1
+    },
+    "thrown": {
+      "files": [
+        "thrown_1.wav"
+      ],
+      "seconds": [
+        0.384
+      ],
+      "loud_db": -11.9,
+      "target_db": 0,
+      "use": "thrown stars: four thin whooshes and little metal ticks.",
+      "gain": 0.787
+    },
+    "clone": {
+      "files": [
+        "clone_1.wav"
+      ],
+      "seconds": [
+        0.636
+      ],
+      "loud_db": -10.1,
+      "target_db": 0,
+      "use": "a copy of you: the recorded shadowstep twice, a shadow behind itself, a falling pair of bells.",
+      "gain": 0.639
+    },
+    "dark_cut": {
+      "files": [
+        "dark_cut_1.wav"
+      ],
+      "seconds": [
+        0.297
+      ],
+      "loud_db": -10.7,
+      "target_db": 3,
+      "use": "a hard cut from the dark: a breath drawn, the heavy hit and the edge.",
+      "gain": 0.968
+    },
+    "flask": {
+      "files": [
+        "flask_1.wav"
+      ],
+      "seconds": [
+        0.691
+      ],
+      "loud_db": -9.8,
+      "target_db": 0,
+      "use": "a flask thrown and broken: the recorded poison pot, a wet splat, the hiss.",
+      "gain": 0.618
+    },
+    "arrow_rain": {
+      "files": [
+        "arrow_rain_1.wav"
+      ],
+      "seconds": [
+        0.711
+      ],
+      "loud_db": -16.1,
+      "target_db": 1,
+      "use": "arrows from above: Robin's bow shot up, then five small thuds falling around.",
+      "gain": 1
+    },
+    "bow_ready": {
+      "files": [
+        "bow_ready_1.wav"
+      ],
+      "seconds": [
+        0.164
+      ],
+      "loud_db": -14.8,
+      "target_db": -3,
+      "use": "a bow held ready: the string drawn (the recorded trap's catch, low), a soft hum of the string.",
+      "gain": 0.778
+    },
+    "owl_swoop": {
+      "files": [
+        "owl_swoop_1.wav"
+      ],
+      "seconds": [
+        0.598
+      ],
+      "loud_db": -14.7,
+      "target_db": 3,
+      "use": "the owl dives: wings (Robin's sail flap), a rush, a hard hit and a hoot.",
+      "gain": 1
+    },
+    "blood": {
+      "files": [
+        "blood_1.wav"
+      ],
+      "seconds": [
+        0.295
+      ],
+      "loud_db": -14.2,
+      "target_db": 2,
+      "use": "a wet slash, Crimson Arc and Bleed Out: the riposte's edge, Robin's slap and a wet splat, the drip after.",
+      "gain": 1
+    },
+    "magic_power": {
+      "files": [
+        "magic_power_1.wav"
+      ],
+      "seconds": [
+        1.4
+      ],
+      "loud_db": -7.4,
+      "target_db": -1,
+      "use": "Magic Power: a rising, charging swell: strings climbing from low C, bells running up through two octaves faster and faster, the recorded rune waking at the top, a bright chord held. 1.3 s.",
+      "gain": 0.418,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+    }
+  }
+}

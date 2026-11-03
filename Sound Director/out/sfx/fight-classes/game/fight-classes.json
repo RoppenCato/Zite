@@ -1,0 +1,114 @@
+{
+  "spritemap": {
+    "fight/ability-backstab": {
+      "start": 0,
+      "end": 0.2158,
+      "loop": false
+    },
+    "fight/ability-poison-blade": {
+      "start": 0.2658,
+      "end": 0.6875,
+      "loop": false
+    },
+    "fight/ability-shadowstep": {
+      "start": 0.7375,
+      "end": 1.246,
+      "loop": false
+    },
+    "fight/ability-smoke-bomb": {
+      "start": 1.296,
+      "end": 1.7842,
+      "loop": false
+    },
+    "fight/ability-pickpocket": {
+      "start": 1.8342,
+      "end": 2.1089,
+      "loop": false
+    },
+    "fight/ability-eviscerate": {
+      "start": 2.1589,
+      "end": 3.0592,
+      "loop": false
+    },
+    "fight/ability-fireball": {
+      "start": 3.1092,
+      "end": 4.0476,
+      "loop": false
+    },
+    "fight/ability-frost-bolt": {
+      "start": 4.0976,
+      "end": 4.5099,
+      "loop": false
+    },
+    "fight/ability-arcane-shield": {
+      "start": 4.5599,
+      "end": 5.1996,
+      "loop": false
+    },
+    "fight/ability-time-warp": {
+      "start": 5.2496,
+      "end": 6.4496,
+      "loop": false
+    },
+    "fight/ability-meteor": {
+      "start": 6.4996,
+      "end": 7.432,
+      "loop": false
+    },
+    "fight/meteor-land": {
+      "start": 7.482,
+      "end": 8.4152,
+      "loop": false
+    },
+    "fight/ability-mana-shield": {
+      "start": 8.4652,
+      "end": 9.5263,
+      "loop": false
+    },
+    "fight/ability-volley": {
+      "start": 9.5763,
+      "end": 9.8953,
+      "loop": false
+    },
+    "fight/ability-aimed-shot": {
+      "start": 9.9453,
+      "end": 10.2955,
+      "loop": false
+    },
+    "fight/ability-snare": {
+      "start": 10.3455,
+      "end": 10.6284,
+      "loop": false
+    },
+    "fight/ability-trap": {
+      "start": 10.6784,
+      "end": 11.0567,
+      "loop": false
+    },
+    "fight/ability-hawk": {
+      "start": 11.1067,
+      "end": 11.8384,
+      "loop": false
+    },
+    "fight/ability-mark": {
+      "start": 11.8884,
+      "end": 12.2838,
+      "loop": false
+    },
+    "fight/meter-pip-trickster": {
+      "start": 12.3338,
+      "end": 12.4937,
+      "loop": false
+    },
+    "fight/meter-pip-wizard": {
+      "start": 12.5437,
+      "end": 12.7706,
+      "loop": false
+    },
+    "fight/meter-pip-archer": {
+      "start": 12.8206,
+      "end": 12.8756,
+      "loop": false
+    }
+  }
+}

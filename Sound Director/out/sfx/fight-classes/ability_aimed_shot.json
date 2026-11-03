@@ -1,0 +1,13 @@
+{
+  "name": "ability_aimed_shot",
+  "category": "fight-classes",
+  "gain": 1,
+  "use": "Bullseye: a long breath of the string, the recorded pinning shot, a glint.",
+  "variations": [
+    {
+      "file": "ability_aimed_shot_1.wav",
+      "seconds": 0.35,
+      "peak_dbfs": -1
+    }
+  ]
+}

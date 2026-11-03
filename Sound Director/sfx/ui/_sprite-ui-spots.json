@@ -1,0 +1,72 @@
+{
+ "name": "ui-spots",
+ "gap": 0.05,
+ "sounds": [
+  {
+   "name": "ui/arrive-town",
+   "file": "out/sfx/ui/arrive_town_1.wav",
+   "gain": 0.257,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-shop",
+   "file": "out/sfx/ui/arrive_shop_1.wav",
+   "gain": 0.276,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-spring",
+   "file": "out/sfx/ui/arrive_spring_1.wav",
+   "gain": 0.576,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-shrine",
+   "file": "out/sfx/ui/arrive_shrine_1.wav",
+   "gain": 0.282,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-chest",
+   "file": "out/sfx/ui/arrive_chest_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-wild",
+   "file": "out/sfx/ui/arrive_wild_1.wav",
+   "gain": 0.351,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-boss",
+   "file": "out/sfx/ui/arrive_boss_1.wav",
+   "gain": 0.59,
+   "loop": false
+  },
+  {
+   "name": "ui/spring-fill",
+   "file": "out/sfx/ui/spring_fill_1.wav",
+   "gain": 0.544,
+   "loop": false
+  },
+  {
+   "name": "ui/shrine-teach",
+   "file": "out/sfx/ui/shrine_teach_1.wav",
+   "gain": 0.324,
+   "loop": false
+  },
+  {
+   "name": "ui/spot-empty",
+   "file": "out/sfx/ui/spot_empty_1.wav",
+   "gain": 0.381,
+   "loop": false
+  },
+  {
+   "name": "ui/arrive-church",
+   "file": "out/sfx/ui/arrive_church_1.wav",
+   "gain": 0.273,
+   "loop": false
+  }
+ ]
+}

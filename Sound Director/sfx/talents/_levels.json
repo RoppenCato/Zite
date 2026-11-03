@@ -1,0 +1,87 @@
+{
+  "holy_hit": {
+    "target": 2,
+    "max": 0.8,
+    "use": "a holy blow: Robin's heavy hit with a bright chord of bells on it."
+  },
+  "holy_blast": {
+    "target": 2,
+    "max": 1.1,
+    "use": "a blast of light: strings opening fast, bells running up, a soft crack."
+  },
+  "roar": {
+    "target": 1,
+    "max": 0.9,
+    "use": "a berserk's roar and a hit of the blood: the recorded roar, the drip."
+  },
+  "cleave": {
+    "target": 3,
+    "max": 0.9,
+    "use": "wild swings: the recorded sweep and two heavy hits close together."
+  },
+  "arcane_bolt": {
+    "target": 1,
+    "max": 0.7,
+    "use": "a bolt of magic: a quick run of bells and the recorded rune's front, a knock on arrival."
+  },
+  "fire_small": {
+    "target": 1,
+    "max": 0.7,
+    "use": "a quick flame: a rush, the recorded fire arrow, a crackle."
+  },
+  "blade_charge": {
+    "target": 0,
+    "max": 1.0,
+    "use": "a blade charged with frost or storm: a small recorded lightning under rising bells and a string's edge."
+  },
+  "triple_cut": {
+    "target": 2,
+    "max": 0.7,
+    "use": "three quick cuts: the recorded riposte three times, a bright hit on the last; under 7 kHz (the first render centred at 5 kHz)."
+  },
+  "thrown": {
+    "target": 0,
+    "max": 0.7,
+    "use": "thrown stars: four thin whooshes and little metal ticks."
+  },
+  "clone": {
+    "target": 0,
+    "max": 0.9,
+    "use": "a copy of you: the recorded shadowstep twice, a shadow behind itself, a falling pair of bells."
+  },
+  "dark_cut": {
+    "target": 3,
+    "max": 0.7,
+    "use": "a hard cut from the dark: a breath drawn, the heavy hit and the edge."
+  },
+  "flask": {
+    "target": 0,
+    "max": 0.8,
+    "use": "a flask thrown and broken: the recorded poison pot, a wet splat, the hiss."
+  },
+  "arrow_rain": {
+    "target": 1,
+    "max": 1.0,
+    "use": "arrows from above: Robin's bow shot up, then five small thuds falling around."
+  },
+  "bow_ready": {
+    "target": -3,
+    "max": 0.6,
+    "use": "a bow held ready: the string drawn (the recorded trap's catch, low), a soft hum of the string."
+  },
+  "owl_swoop": {
+    "target": 3,
+    "max": 0.9,
+    "use": "the owl dives: wings (Robin's sail flap), a rush, a hard hit and a hoot."
+  },
+  "blood": {
+    "target": 2,
+    "max": 0.8,
+    "use": "a wet slash, Crimson Arc and Bleed Out: the riposte's edge, Robin's slap and a wet splat, the drip after."
+  },
+  "magic_power": {
+    "target": -1,
+    "max": 1.4,
+    "use": "Magic Power: a rising, charging swell: strings climbing from low C, bells running up through two octaves faster and faster, the recorded rune waking at the top, a bright chord held. 1.3 s."
+  }
+}

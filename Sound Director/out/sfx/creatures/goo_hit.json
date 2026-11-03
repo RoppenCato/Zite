@@ -1,0 +1,13 @@
+{
+  "name": "goo_hit",
+  "category": "creatures",
+  "gain": 0.685,
+  "use": "King Goo struck: a gloop.",
+  "variations": [
+    {
+      "file": "goo_hit_1.wav",
+      "seconds": 0.672,
+      "peak_dbfs": -1
+    }
+  ]
+}

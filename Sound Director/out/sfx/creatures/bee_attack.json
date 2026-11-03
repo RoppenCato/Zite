@@ -1,0 +1,13 @@
+{
+  "name": "bee_attack",
+  "category": "creatures",
+  "gain": 0.632,
+  "use": "the Bumbling Bee swoops: a buzz.",
+  "variations": [
+    {
+      "file": "bee_attack_1.wav",
+      "seconds": 0.272,
+      "peak_dbfs": -1
+    }
+  ]
+}

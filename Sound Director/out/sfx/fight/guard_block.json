@@ -1,0 +1,13 @@
+{
+  "name": "guard_block",
+  "category": "fight",
+  "gain": 0.551,
+  "use": "Block",
+  "variations": [
+    {
+      "file": "guard_block_1.wav",
+      "seconds": 0.288,
+      "peak_dbfs": -1
+    }
+  ]
+}

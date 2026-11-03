@@ -1,0 +1,13 @@
+{
+  "name": "pip_trickster",
+  "category": "fight-classes",
+  "gain": 0.432,
+  "use": "Mischief's pip: a finger's snap.",
+  "variations": [
+    {
+      "file": "pip_trickster_1.wav",
+      "seconds": 0.16,
+      "peak_dbfs": -1
+    }
+  ]
+}

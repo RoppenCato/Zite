@@ -1,0 +1,13 @@
+{
+  "name": "pirates_redwake_hit",
+  "category": "pirates",
+  "gain": 0.232,
+  "use": "first-mate-redwake, hit (The Pirate Isles).",
+  "variations": [
+    {
+      "file": "pirates_redwake_hit_1.wav",
+      "seconds": 0.408,
+      "peak_dbfs": -1
+    }
+  ]
+}

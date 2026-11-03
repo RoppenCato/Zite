@@ -1,0 +1,23 @@
+{
+  "name": "swing",
+  "category": "fight",
+  "gain": 0.27,
+  "use": "the Knight's swing, sent with the round",
+  "variations": [
+    {
+      "file": "swing_1.wav",
+      "seconds": 0.533,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "swing_2.wav",
+      "seconds": 0.518,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "swing_3.wav",
+      "seconds": 0.503,
+      "peak_dbfs": -1
+    }
+  ]
+}

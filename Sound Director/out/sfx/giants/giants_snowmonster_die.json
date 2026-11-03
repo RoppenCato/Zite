@@ -1,0 +1,13 @@
+{
+  "name": "giants_snowmonster_die",
+  "category": "giants",
+  "gain": 0.924,
+  "use": "snow-monster, die (The Giants' Land).",
+  "variations": [
+    {
+      "file": "giants_snowmonster_die_1.wav",
+      "seconds": 0.744,
+      "peak_dbfs": -1
+    }
+  ]
+}

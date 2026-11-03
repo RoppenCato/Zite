@@ -8,6 +8,14 @@ description: Make a sound effect for the board world game (the die rolled and la
 Never touch `C:\dev\Zite\Game Developer`. Read section 5 of `docs/sound-direction.md`, `docs/sfx-notes.md` (sections 6 to 12
 are what Robin's verdicts taught) and `docs/pipeline.md` first.
 
+## 0. The Survival game's library first (Robin, 2026-11-01)
+
+Before anything is made, look for the sound in `C:\dev\SG\Sound Director\out\sfx\` and the Survival game's
+`C:\dev\SG\Game Developer\assets\sfx\` (`keep.txt` there is what Robin picked by ear; `docs/survival-library.md` lists
+the sets). A sound that fits is **copied**, not remade: into `out/sfx/<category>/` under this game's name, re-levelled to this
+game's set, with its origin, Robin's verdict on it and its licence in `NOTES.md`. Say in the notes which sounds came from the
+library and which were made new. Only what the library lacks goes on to step 1.
+
 ## 1. What the sound must do, and its reference
 
 - Find the game's own version, if it has one (ask Miles, GD where the sounds live), and
@@ -51,6 +59,10 @@ are what Robin's verdicts taught) and `docs/pipeline.md` first.
 
 ## 5. Deliver
 
+- **Sizes are Miles, GD's to confirm** (Robin, 2026-11-01): the format, a sprite's size and the first load's weight
+  come from the game's `docs/sound-demands.md`, confirmed 2026-11-01 and written in `docs/game-notes.md`; ask before any
+  delivery that would not fit. Short sounds go to the game as an audio sprite (one OGG and a `spritemap` JSON) per wave; the
+  WAV masters stay in `work/`.
 - Copy to `out/sfx/<category>/`, write the level spec (`sfx/<category>/_levels.json`: targets in dB against the hit) and
   run `node tools\sfx-level.js out\sfx\<category> sfx\<category>\_levels.json --weighted` (the first set delivered becomes the anchor later sets are levelled against with `--anchor`; write which in `docs/pipeline.md`).
 - A preview on a timeline (`sfx/<category>/_tour.json`, `tools\sfx-preview.js`, `tools\mp3.js`) in the order the game would

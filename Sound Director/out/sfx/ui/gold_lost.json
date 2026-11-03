@@ -1,0 +1,13 @@
+{
+  "name": "gold_lost",
+  "category": "ui",
+  "gain": 0.538,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "gold_lost_1.wav",
+      "seconds": 0.522,
+      "peak_dbfs": -1
+    }
+  ]
+}

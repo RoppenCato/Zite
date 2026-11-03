@@ -1,0 +1,13 @@
+{
+  "name": "crown_hollowking_hit",
+  "category": "crown",
+  "gain": 0.39,
+  "use": "hollow-king, hit (The Buried Crown).",
+  "variations": [
+    {
+      "file": "crown_hollowking_hit_1.wav",
+      "seconds": 0.479,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "sprout_attack",
+  "category": "creatures",
+  "gain": 0.508,
+  "use": "the Grumpy Sprout: a small grumble, sped up.",
+  "variations": [
+    {
+      "file": "sprout_attack_1.wav",
+      "seconds": 0.286,
+      "peak_dbfs": -1
+    }
+  ]
+}

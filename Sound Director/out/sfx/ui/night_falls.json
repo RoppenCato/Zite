@@ -1,0 +1,13 @@
+{
+  "name": "night_falls",
+  "category": "ui",
+  "gain": 0.303,
+  "use": "night falls: a slow falling of soft bells (A5 F5 D5), a low warm string chord, a single far owl's hoot. 1.8 s.",
+  "variations": [
+    {
+      "file": "night_falls_1.wav",
+      "seconds": 1.705,
+      "peak_dbfs": -1
+    }
+  ]
+}

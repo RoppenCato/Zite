@@ -1,0 +1,23 @@
+{
+  "name": "hit_heavy",
+  "category": "fight",
+  "gain": 1,
+  "use": "a heavy hit",
+  "variations": [
+    {
+      "file": "hit_heavy_1.wav",
+      "seconds": 0.158,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "hit_heavy_2.wav",
+      "seconds": 0.181,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "hit_heavy_3.wav",
+      "seconds": 0.148,
+      "peak_dbfs": -1
+    }
+  ]
+}

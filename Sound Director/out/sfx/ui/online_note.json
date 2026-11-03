@@ -1,0 +1,13 @@
+{
+  "name": "online_note",
+  "category": "ui",
+  "gain": 0.252,
+  "use": "wave 1, the second half",
+  "variations": [
+    {
+      "file": "online_note_1.wav",
+      "seconds": 0.368,
+      "peak_dbfs": -1
+    }
+  ]
+}
