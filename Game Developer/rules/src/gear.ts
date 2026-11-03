@@ -3,7 +3,7 @@
 // evening). What is worn adds to the character's base numbers; the powers are read by the fight and the board.
 
 import { traitsOf } from './skills.ts';
-import { CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, TRINKET_DATA, TRINKET_IDS, TRINKETS, UNIQUE_IDS, UNIQUES, type KindData } from './data.ts';
+import { ABILITIES, CLASS_DATA, GEAR, PROGRESSION, SET_IDS, SETS, TRINKET_DATA, TRINKET_IDS, TRINKETS, UNIQUE_IDS, UNIQUES, type KindData } from './data.ts';
 import type { Rng } from './rng.ts';
 import { RARITIES, SLOTS, type Affix, type AffixKind, type Character, type ClassId, type GearItem, type GearLine, type GearStat, type PowerKind, type Rarity, type Slot } from './types.ts';
 
@@ -231,7 +231,11 @@ export function offhandGuard(g: GearItem | null | undefined): { block: number; d
 
 /** The guards as the hands give them: the off-hand's, or with none a two-hander's own (a great weapon blocks less and dodges more, Robin, 2026-11-03), or bare. */
 export function guardOf(c: Character): ReturnType<typeof offhandGuard> {
-  if (c.equipment.shield) return offhandGuard(c.equipment.shield);
+  if (c.equipment.shield) {
+    const o = offhandGuard(c.equipment.shield);
+    // A shield wards less in a Magician's hands than an orb (Robin, 2026-11-03: "Orbs ward better than shields").
+    return o.shield && traitsOf(c).ward ? { ...o, block: o.block * GEAR.kinds.shieldInWard } : o;
+  }
   const w = kindData('weapon', gearKind(c.equipment.weapon));
   const bare = offhandGuard(null);
   // A two-hander guards its own way: a great weapon dodges, a bow keeps its distance, a staff wards like bare hands (2026-11-03).
@@ -286,6 +290,25 @@ function lineNumbers(slot: Slot, rank: number, line: GearLine, mult: number): { 
 }
 
 /** A plain common piece of the rank and line: what a shop sells. */
+/**
+ * How far a class's own mana has grown since level 1 (Robin, 2026-11-03: "Spells cost more later"): an ability costs this many
+ * times its listed mana, and a round gives back this many times its mana, so mana is a budget at every level, as at level 1.
+ * Mana from gear still buys more casts.
+ */
+export function manaScale(c: Pick<Character, 'classId' | 'level'>): number {
+  const d = CLASS_DATA[c.classId];
+  if (!d?.mana) return 1;
+  return (d.mana + d.growth.mana * Math.max(0, c.level - 1)) / d.mana;
+}
+
+/** What an ability costs this character now: its listed mana grown with the level, less for the Arcane and Focus. */
+export function manaCost(c: Character, abilityId: string): number {
+  const a = ABILITIES[abilityId];
+  if (!a?.mana) return 0;
+  const s = stats(c);
+  return Math.ceil(a.mana * manaScale(c) * (s.powers.arcane ?? 1) * (1 - (s.bonus.focus ?? 0)));
+}
+
 /** A trinket as a piece to carry (Robin, 2026-11-03): no numbers of its own, only its passive. */
 export function makeTrinket(id: string, trinketId: string): GearItem {
   const t = TRINKETS[trinketId];

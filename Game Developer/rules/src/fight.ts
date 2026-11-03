@@ -9,7 +9,7 @@ import { noteBeaten } from './journal.ts';
 import { carriedLimit, pointsForLevel, pointsFree, traitsOf } from './skills.ts';
 import { ABILITIES, CLASS_DATA, ENEMIES, GEAR, ITEMS, ITEM_IDS, PROGRESSION, SPACE_KIND_DATA, ARENA, TRINKET_DATA } from './data.ts';
 import { flaskId, addLoot, gainXp, giveItem, heal, nextGearId, reject, restoreMana, spend, withCharacter, softcap } from './common.ts';
-import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, gearKind, guardOf } from './gear.ts';
+import { powers, rollGear, rollUnique, stats, type Stats, rollLegend, rollSetPiece, attackHitsOf, holdsFor, gearKind, guardOf, manaCost as costOf, manaScale } from './gear.ts';
 import { growBoard } from './generate.ts';
 import { nearestTown } from './paths.ts';
 import type { Rng } from './rng.ts';
@@ -124,7 +124,7 @@ export function fightOdds(c: Character): { crit: number; critPower: number; hits
     crit: Math.min(1, s.crit),
     critPower: PROGRESSION.critPower * (1 + (t.critPower ?? 0)),
     hits: attackHitsOf(c) ?? 1,
-    block: Math.max(0.15, 1 - o.block - (s.bonus.wall ?? 0) - (t.blockPower ?? 0)),
+    block: Math.max(g.blockFloor, 1 - o.block - (s.bonus.wall ?? 0) - (t.blockPower ?? 0)),
     shieldMana: t.shieldMana && !o.shield ? (o.mana ?? t.shieldMana) : 0,
     dodge: Math.min(1, o.dodge + s.dodge),
     brace: g.brace,
@@ -289,7 +289,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (r.c.carried.length >= carriedLimit(r.c.level) && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
       const meterCost = ability.meterAll ? f.meter : (ability.meter ?? 0);
       if ((ability.meter && f.meter < ability.meter) || (ability.meterAll && f.meter <= 0)) return reject(state, action, 'not enough meter');
-      const manaCost = Math.ceil((p.arcane ? ability.mana * p.arcane : ability.mana) * (1 - (r.s.bonus.focus ?? 0)));
+      const manaCost = costOf(r.c, move.ability);
       if (r.c.mana < manaCost) return reject(state, action, 'not enough mana');
       if (manaCost > 0) {
         r.c = { ...r.c, mana: r.c.mana - manaCost };
@@ -607,7 +607,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
             }
           }
         } else if (held === 'block') {
-          dealt = Math.ceil(dealt * Math.max(0.15, (f.blockUp?.mult ?? 1 - off.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
+          dealt = Math.ceil(dealt * Math.max(PROGRESSION.guards.blockFloor, (f.blockUp?.mult ?? 1 - off.block) - (r.s.bonus.wall ?? 0) - (traits.blockPower ?? 0)));
           // A Mirror Orb's ward sends part of what it stopped back (2026-11-03).
           if (off.mirror > 0 && beforeGuard > dealt) {
             hurtEnemy(r, Math.max(1, Math.round((beforeGuard - dealt) * off.mirror)));
@@ -703,7 +703,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   if (p.regen) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * p.regen)), action, events);
   if (r.s.bonus.mending) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * r.s.bonus.mending)), action, events);
   f.round += 1;
-  r.c = restoreMana(r.c, PROGRESSION.manaPerRound + (p.manaWell ?? 0) + (r.s.bonus.clarity ?? 0), action, events);
+  // The round's mana grows with the level as the costs do (Robin, 2026-11-03).
+  r.c = restoreMana(r.c, Math.round(PROGRESSION.manaPerRound * manaScale(r.c)) + (p.manaWell ?? 0) + (r.s.bonus.clarity ?? 0), action, events);
   f.enemy.next = pickMove(f.enemy, rng);
   bossTrick(r);
   events.push(intentEvent(f.enemy, id, player));

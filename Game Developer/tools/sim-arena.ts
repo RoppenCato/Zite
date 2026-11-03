@@ -2,7 +2,7 @@
 // (Robin, 2026-11-02: "not too easy and can be exploited"; three modes, one super hard). The player heals when low and takes nothing: it always goes on.
 //   node tools/sim-arena.ts [fights]
 
-import { ABILITIES, apply, ARENA, CLASS_DATA, ITEMS, makeRng, newGame, plainGear, stats, type ClassId, type GameState, type GearLine } from '../rules/src/index.ts';
+import { ABILITIES, manaCost, apply, ARENA, CLASS_DATA, ITEMS, makeRng, newGame, plainGear, stats, type ClassId, type GameState, type GearLine } from '../rules/src/index.ts';
 import type { Character } from '../rules/src/index.ts';
 
 const N = Number(process.argv[2]) || 200;
@@ -36,7 +36,7 @@ function choose(c: Character, potion: string): { move: unknown; guard: string } 
     const a = ABILITIES[id];
     if (!a || a.rule) return false;
     const rk = a.ranks[Math.min(c.abilities[id]!, a.ranks.length) - 1]!;
-    return !rk.flee && c.mana >= (a.mana ?? 0) && !f.used?.includes(id) && (a.meter ?? 0) <= (f.meter ?? 0);
+    return !rk.flee && c.mana >= manaCost(c, id) && !f.used?.includes(id) && (a.meter ?? 0) <= (f.meter ?? 0);
   });
   const pick = usable.length && c.mana / s.maxMana > 0.25 ? usable[0] : null;
   return { move: pick ? { kind: 'ability', ability: pick } : { kind: 'attack' }, guard: 'block' };

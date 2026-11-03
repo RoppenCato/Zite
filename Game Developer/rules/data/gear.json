@@ -1249,7 +1249,9 @@
         "bow",
         "dagger"
       ]
-    }
+    },
+    "shieldInWard": 0.75,
+    "_aboutShieldInWard": "A shield stops this share of what it would in a Magician’s hands: an orb wards better (Robin, 2026-11-03). Number mine."
   },
   "_aboutOrbs": "A Magician’s orb sets the Arcane Ward (Robin, 2026-11-03): how much of a blow it stops, and its dodge. The Mirror Orb sends back part of what the ward stops; the Storm Orb makes Channel give 1.3 times as much mana. Numbers mine."
 }

@@ -8,7 +8,7 @@
 
 import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
+import { ABILITIES, manaCost, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
@@ -322,7 +322,7 @@ export class FightScene extends Phaser.Scene {
     const options: Option[] = known.map((id) => {
       const rank = me.abilities[id] ?? 1;
       const a = ABILITIES[id];
-      const mana = a ? (arcane ? Math.ceil(a.mana * arcane) : a.mana) : 0;
+      const mana = a ? manaCost(me, id) : 0;
       const cost = a?.meterAll ? `all ${meterName}` : a?.meter ? `${a.meter} ${meterName}` : '';
       const used = !!a?.oncePerFight && !!f?.used?.includes(id);
       const meterOk = !a?.meter || (f?.meter ?? 0) >= a.meter;

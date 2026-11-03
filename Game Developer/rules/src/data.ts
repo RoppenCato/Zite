@@ -402,6 +402,7 @@ export interface GearData {
   setChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   legendChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   kinds: {
+    shieldInWard: number;
     weapon: Record<string, KindData>;
     offhand: Record<string, KindData>;
     bare: { block: number; dodge: number };
@@ -450,7 +451,7 @@ export interface ProgressionData {
   lootRoll: { need: number };
   /** The coach between towns: gold for each tier of where you are going. */
   travel: { perTier: number };
-  guards: { block: number; dodge: number; brace: number; braceMana: number; braceManaShare: number; counter: number };
+  guards: { block: number; dodge: number; brace: number; braceMana: number; braceManaShare: number; counter: number; blockFloor: number };
   chest: { gold: [number, number]; gearChance: number; consumableChance: number };
   gamble: { stakePerTier: number };
   spawns: { cap: number; chancePerTick: number; lifeMs: number; miniboss: number; elite: number };

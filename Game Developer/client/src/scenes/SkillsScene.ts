@@ -3,7 +3,7 @@
 // one does, with only the buttons that apply. In a town or a church, Reset gives every point back. Opened from the Hero sheet.
 
 import Phaser from 'phaser';
-import { ABILITIES, canLearn, CLASS_DATA, isOpen, MAX_CARRIED, pointsFree, specialization, type AbilityRank, type Action, type Character, carriedLimit, needsFor, TIER_POINTS } from '../../../rules/src/index.ts';
+import { ABILITIES, manaCost, canLearn, CLASS_DATA, isOpen, MAX_CARRIED, pointsFree, specialization, type AbilityRank, type Action, type Character, carriedLimit, needsFor, TIER_POINTS } from '../../../rules/src/index.ts';
 import { abilityIcon, freeTalentIconsAfter, preloadAbilityIcons, preloadTalentIcons } from '../effects.ts';
 import { feel, sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
@@ -265,7 +265,7 @@ export class SkillsScene extends Phaser.Scene {
     }
     const rank = me.abilities[id] ?? 0;
     const meter = cls.meter?.name ?? 'meter';
-    const cost = a.rule ? 'Always on' : [a.mana ? `${a.mana} mana` : '', a.meterAll ? `all ${meter}` : a.meter ? `${a.meter} ${meter}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ') || 'Free';
+    const cost = a.rule ? 'Always on' : [a.mana ? `${manaCost(this.game_.me, id)} mana` : '', a.meterAll ? `all ${meter}` : a.meter ? `${a.meter} ${meter}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ') || 'Free';
     if (kitReady(this)) this.rows.push(this.add.image(53, y + 28, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(46, 46));
     this.icon(id, 53, y + 28, 36, rank ? 1 : 0.62);
     this.wood(86, y + 7, a.name, 15);

@@ -44,7 +44,9 @@
     "brace": 0.75,
     "braceMana": 10,
     "braceManaShare": 0.2,
-    "counter": 0.5
+    "counter": 0.5,
+    "blockFloor": 0.25,
+    "_aboutBlockFloor": "The least of a blow a Block lets through, however good the shield and the talents (Robin, 2026-11-03: 25%, was 15%)."
   },
   "chest": {
     "gold": [

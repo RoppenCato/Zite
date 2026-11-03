@@ -2,10 +2,10 @@
 // board's points. The balance is the simulator's, `tools/sim-classes.ts`; these say the rules do what the words say.
 import { describe, expect, it } from 'vitest';
 import { ABILITIES, CLASS_DATA, PROGRESSION } from '../src/data.ts';
-import { startFight } from '../src/fight.ts';
+import { fightOdds, startFight } from '../src/fight.ts';
 import { apply, newGame } from '../src/game.ts';
 import { addLoot } from '../src/common.ts';
-import { gearKind, stats } from '../src/gear.ts';
+import { gearKind, guardOf, manaCost, manaScale, stats } from '../src/gear.ts';
 import { migrate } from '../src/save.ts';
 import { groundAt, inTownWalls, placeAt } from '../src/grounds.ts';
 import { makeRng } from '../src/rng.ts';
@@ -121,6 +121,28 @@ describe('the Warrior', () => {
 });
 
 describe('the Magician', () => {
+  it('spells cost more later: an ability at level 30 costs about four times what it does at level 1, and a round gives back as much more (Robin, 2026-11-03)', () => {
+    const s = newGame({ seed: 'm', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const at = (level: number): Character => ({ ...me(s), level, equipment: { ...me(s).equipment, weapon: null, shield: null } });
+    expect(manaCost(at(1), 'arcane-bolt')).toBe(ABILITIES['arcane-bolt']!.mana);
+    expect(manaCost(at(30), 'arcane-bolt')).toBe(Math.ceil(ABILITIES['arcane-bolt']!.mana * manaScale(at(30))));
+    expect(manaScale(at(30))).toBeGreaterThan(3.5);
+  });
+
+  it('a Block lets at least a quarter of the blow through, and a shield wards less than an orb in a Magician\u2019s hands', () => {
+    const s = newGame({ seed: 'm', player: P, name: 'Robin', classId: 'mage', board: ringBoard() });
+    const piece = (kind: string) => ({ id: 'o', slot: 'shield', rank: 9, rarity: 'legendary', name: kind, base: kind, kind, stats: {}, affixes: [], price: 1 }) as GearItem;
+    const holding = (kind: string, classId: ClassId = 'mage'): Character => {
+      const g = newGame({ seed: 'm', player: P, name: 'Robin', classId, board: ringBoard() });
+      return { ...me(g), equipment: { ...me(g).equipment, weapon: null, shield: piece(kind) } };
+    };
+    expect(guardOf(holding('ward_orb')).block).toBeGreaterThan(guardOf(holding('kite')).block);
+    expect(guardOf(holding('kite')).block).toBeCloseTo(guardOf(holding('kite', 'warrior')).block * 0.75, 5);
+    const tower = { ...me(s), classId: 'warrior' as const, equipment: { ...me(s).equipment, shield: piece('tower') }, abilities: { ...me(s).abilities } };
+    expect(fightOdds(tower).block).toBeGreaterThanOrEqual(PROGRESSION.guards.blockFloor);
+    expect(PROGRESSION.guards.blockFloor).toBe(0.25);
+  });
+
   it('Block is an Arcane Ward that costs no mana; Brace is Channel and gives half the mana back (Robin, 2026-11-03)', () => {
     const ward = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack, 'block'), makeRng('a'), NOW);
     const none = apply(versus('mage', 'bandit', { mana: 40 }, { ...tough, attack: 40 }), turn(attack), makeRng('a'), NOW);

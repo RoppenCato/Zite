@@ -5,7 +5,7 @@
 // shows here by itself.
 
 import Phaser from 'phaser';
-import { ABILITIES, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS, abilitiesFor, fightOdds, traitsOf } from '../../../rules/src/index.ts';
+import { ABILITIES, manaCost, CLASS_DATA, ITEMS, PROGRESSION, SPACE_KIND_DATA, SPACE_KINDS, abilitiesFor, fightOdds, traitsOf } from '../../../rules/src/index.ts';
 import type { GameHolder } from '../game-holder.ts';
 import { abilityIcon } from '../effects.ts';
 import { sfx } from '../feel.ts';
@@ -153,7 +153,7 @@ export class GuideScene extends Phaser.Scene {
     const line = (id: string): Entry => {
       const a = ABILITIES[id]!;
       const rank = me.abilities[id];
-      const cost = [a.mana ? `${a.mana} mana` : '', a.meter && meter ? `${a.meter} ${meter.name}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ');
+      const cost = [a.mana ? `${manaCost(this.game_.me, id)} mana` : '', a.meter && meter ? `${a.meter} ${meter.name}` : '', a.oncePerFight ? 'once a fight' : ''].filter(Boolean).join(', ');
       return { title: `${a.name}${rank ? ` · rank ${rank}` : ''}`, text: `${a.text}${cost ? ` Costs ${cost}.` : ''}`, dim: !rank, icon: id };
     };
     return [

@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
+import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -178,11 +178,11 @@ function tacticMove(c: Character, tactic: Tactic): { move: unknown; guard: strin
     // A talent it has never pressed this fight, while safe: the fall-through for abilities `choose` has no line for.
     const fresh = c.carried.find((id) => {
       const a = ABILITIES[id]!;
-      return !tried.has(id) && !f.used.includes(id) && !a.oncePerFight && !hurts(id) && !a.ranks[0]!.flee && holdsFor(c, a.needs) && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
+      return !tried.has(id) && !f.used.includes(id) && !a.oncePerFight && !hurts(id) && !a.ranks[0]!.flee && holdsFor(c, a.needs) && c.mana >= manaCost(c, id) && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
     });
     const big = c.carried.find((id) => {
       const a = ABILITIES[id]!;
-      return a.oncePerFight && !a.ranks[0]!.flee && !f.used.includes(id) && holdsFor(c, a.needs) && c.mana >= a.mana && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
+      return a.oncePerFight && !a.ranks[0]!.flee && !f.used.includes(id) && holdsFor(c, a.needs) && c.mana >= manaCost(c, id) && !(a.meter && f.meter < a.meter) && !(a.meterAll && f.meter < 3);
     });
     if (big && (share < 0.6 || f.enemy.role !== 'mob')) return { move: { kind: 'ability', ability: big }, guard: plan.guard };
     if (fresh && share > 0.6 && (plan.move as { kind: string }).kind === 'attack') {

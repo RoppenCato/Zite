@@ -144,3 +144,7 @@ Median hours to level 30, sensible player: Warrior 8.4, Rogue 8.2, Magician 7.1,
 ### With trinkets (2026-11-03, three seeds a build, all tactics)
 
 The trinket slot holds trinkets: no HP of its own, a passive instead. The bots wear the trinket of the highest land and rarity they find (they cannot judge a passive). Median hours to level 30, sensible player: Warrior 9.0, Rogue 8.4, Magician 8.1, Hunter 6.5, close to before. 100 of 108 runs finish everything; the 8 left are the Wizard who never opens Abilities (3), the Ninja who only presses Attack (3) and two Berserker+Knight Warriors who wander the Kingswood, the build the bots have always played worst.
+
+### Mana as a budget, the Block floor, the Magician's Ward and Channel (2026-11-03)
+
+Abilities cost more as you level (as your class's mana grows), a Block lets at least 25% through, a Magician wards and channels. Median hours to level 30, sensible player: Warrior 8.6, Rogue 8.6, Hunter 7.7, Magician 6.8; all 72 sensible runs finish every boss. In the Arena at level 30 the costs starved the classes with small mana pools over five fights, so their handicaps came down: Legend now clears 25 to 38% of the time for every class, Nightmare 43 to 65%, Normal 82 to 100%.
