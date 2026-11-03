@@ -1134,7 +1134,7 @@ function win(r: Round): ApplyResult {
     const got = nextGearId(s);
     s = got.state;
     const unique = (rng.next() < GEAR.legendChance[e.wanderer ? 'boss' : e.role] ? rollLegend(got.id, rank, rng, c.classId) : null) ?? (rng.next() < GEAR.uniqueChance[e.role] ? rollUnique(got.id, rank, rank, rng) : null);
-    const setPiece = !unique && rng.next() < GEAR.setChance[e.wanderer ? 'boss' : e.role] ? rollSetPiece(got.id, rank, rank, rng, c.classId) : null;
+    const setPiece = !unique && rng.next() < GEAR.setChance[e.wanderer ? 'boss' : e.role] ? rollSetPiece(got.id, rank, rank, rng, c.classId, c.equipment) : null;
     if (unique || setPiece) {
       next = addLoot(next, (unique ?? setPiece)!, action, events);
     } else {

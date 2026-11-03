@@ -25,6 +25,19 @@ describe('sets', () => {
     const mage = count('mage', 7);
     expect(mage.moonweave! + mage.sunsworn!).toBeGreaterThan(warrior.moonweave! + warrior.sunsworn!);
   });
+  it('leans to a set you wear, in a slot of it you do not have yet (2026-11-03)', () => {
+    const worn = wearing(piece('moonweave', 'helm'), piece('moonweave', 'gloves')).equipment;
+    let same = 0;
+    for (let i = 0; i < 1000; i++) {
+      const g = rollSetPiece(`s${i}`, 7, 7, makeRng(`lean-${i}`), 'mage', worn)!;
+      if (g.set === 'moonweave') {
+        same += 1;
+        expect(['helm', 'gloves']).not.toContain(g.slot);
+      }
+    }
+    // Bare, Moonweave is about one in seven for a Magician in the Giants' Land; two pieces worn make it about half.
+    expect(same / 1000).toBeGreaterThan(0.4);
+  });
   it('each has five pieces, no weapon, and a bonus at 2 and at 4', () => {
     expect(SET_IDS.length).toBeGreaterThanOrEqual(5);
     for (const id of SET_IDS) {

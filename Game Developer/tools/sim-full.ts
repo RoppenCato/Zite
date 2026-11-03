@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, shopStall, stallTaken, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES } from '../rules/src/index.ts';
+import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, shopStall, stallTaken, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES, setsWorn } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -72,6 +72,7 @@ interface Result {
   bought: number;
   fine: number;
   reforged: number;
+  manaDrunk: number;
   sold: number;
   travels: number;
   homes: number;
@@ -99,6 +100,11 @@ const thrown = new Map<string, number>();
 const note = (map: Map<string, number>, key: string): void => void map.set(key, (map.get(key) ?? 0) + 1);
 const wants = new Map<string, number>();
 const loot = { sets: 0, uniques: 0, runs: 0, wornSets: 0, wornUniques: 0 };
+const FIGHTLOG = process.env.FIGHTLOG ? process.env.FIGHTLOG.split('-').map(Number) : null;
+let fightLines: string[] = [];
+let fightsLogged = 0;
+// Along the way, levels 10 to 30, by class: levels seen, uniques worn, set pieces worn, levels with a 2-piece and a 4-piece bonus on (2026-11-03).
+const along = new Map<string, { levels: number; uniques: number; sets: number; two: number; four: number }>();
 const killers = new Map<string, number>();
 const questTimes = new Map<string, number[]>();
 let questsDropped = 0;
@@ -144,7 +150,9 @@ const score = (c: Character): number => {
   const might = c.classId === 'mage' ? (s.magic ?? 0) * 2.5 + s.attack * 0.5 : s.attack * 2;
   // Uniques and sets do more than their numbers say; about this much (mine).
   const worn = Object.values(c.equipment) as (GearItem | null)[];
-  const special = 1 + worn.reduce((sum, g) => sum + (g?.unique ? 0.06 : 0) + (g?.set ? 0.04 : 0), 0);
+  // A set bonus switched on is worth more than its numbers too (2026-11-03): its 2 and its 4.
+  const bonusesOn = Object.values(setsWorn(c)).reduce((n, k) => n + (k >= 2 ? 1 : 0) + (k >= 4 ? 1 : 0), 0);
+  const special = 1 + worn.reduce((sum, g) => sum + (g?.unique ? 0.06 : 0) + (g?.set ? 0.04 : 0), 0) + 0.05 * bonusesOn;
   // NOGREAT=1: never a great weapon, to measure what it costs (2026-11-03).
   if (process.env.NOGREAT && gearKind(c.equipment.weapon) === 'great') return -1e9;
   // A great weapon is the Berserker's way (Robin, 2026-11-03): a player of another tree keeps the shield.
@@ -219,7 +227,7 @@ function play(build: Build, seed: string): Result {
   let n = 0;
   const r: Result = {
     build, seed, level: 1, hours: 0, reached: { 1: 0 }, bosses: [], bossesLeft: [], bands: {}, deaths: 0, fights: 0, questsDone: 0, questsTaken: 0, arena: { runs: 0, waves: 0, wins: 0 }, rumours: 0, secrets: 0,
-    bought: 0, fine: 0, reforged: 0, sold: 0, travels: 0, homes: 0, gold: 0, flasksEnd: 0, flasksFound: 0, goldEarned: 0, stuck: null, used: {}, learned: [], gearRank: 0, rarities: {}, landSeconds: {},
+    bought: 0, fine: 0, reforged: 0, manaDrunk: 0, sold: 0, travels: 0, homes: 0, gold: 0, flasksEnd: 0, flasksFound: 0, goldEarned: 0, stuck: null, used: {}, learned: [], gearRank: 0, rarities: {}, landSeconds: {},
   };
   const me = (): Character => state.characters[P]!;
   const spaces = (): GameState['board']['spaces'] => state.board.spaces;
@@ -399,6 +407,17 @@ function play(build: Build, seed: string): Result {
   for (let step = 0; step < 600_000; step++) {
     const c = me();
     if (c.level > r.level) {
+      if (c.level >= 10) {
+        const a = along.get(classId) ?? { levels: 0, uniques: 0, sets: 0, two: 0, four: 0 };
+        const worn = Object.values(c.equipment) as (GearItem | null)[];
+        const sets = Object.values(setsWorn(c));
+        a.levels += 1;
+        a.uniques += worn.filter((g) => g?.unique).length;
+        a.sets += worn.filter((g) => g?.set).length;
+        if (sets.some((n) => n >= 2)) a.two += 1;
+        if (sets.some((n) => n >= 4)) a.four += 1;
+        along.set(classId, a);
+      }
       for (let l = r.level + 1; l <= c.level; l++) r.reached[l] = played / 3600;
       r.level = c.level;
     }
@@ -421,7 +440,21 @@ function play(build: Build, seed: string): Result {
       }
       const { move, guard } = tacticMove(c, tactic);
       const mv = move as { kind: string; ability?: string };
+      const before = { hp: c.hp, mana: c.mana, foe: e0.hp };
       let events = act({ type: 'fight', move, guard });
+      if (FIGHTLOG && c.level >= FIGHTLOG[0]! && c.level <= FIGHTLOG[1]!) {
+        if (c.fight.round <= 1) fightLines = [];
+        const hits = events.filter((e) => e.type === 'hit').map((e) => { const h = e as unknown as { by: string; move: string; damage: number; crit: boolean }; return `${h.by === 'enemy' ? '<' : '>'}${h.move} ${h.damage}${h.crit ? '!' : ''}`; });
+        const mv = move as { kind: string; ability?: string; item?: string };
+        const after = me();
+        fightLines.push(`    r${c.fight.round} ${mv.ability ?? mv.item ?? mv.kind}/${guard} me ${before.hp}->${after.hp} mana ${before.mana}->${after.mana} foe ${before.foe}->${after.fight?.enemy.hp ?? 0} ${hits.join(', ')}${events.some((e) => e.type === 'rejected') ? ' REJECTED' : ''}`);
+        if (events.some((e) => e.type === 'died') && fightsLogged < 12) {
+          fightsLogged += 1;
+          const st = stats(c);
+          console.log(`  lost L${c.level} to ${e0.name} L${e0.level} (maxHp ${e0.maxHp} atk ${e0.attack} def ${e0.defense}${e0.trick ? ' trick ' + e0.trick : ''}); me maxHp ${st.maxHp} maxMana ${st.maxMana} magic ${st.magic} def ${st.defense}; carried ${c.carried.join()}; items ${JSON.stringify(c.items)}`);
+          console.log(fightLines.join('\n'));
+        }
+      }
       if (events.some((e) => e.type === 'rejected')) events = act({ type: 'fight', move: { kind: 'attack' }, guard: 'block' });
       else if (mv.kind === 'ability' && mv.ability) r.used[mv.ability] = (r.used[mv.ability] ?? 0) + 1;
       fightStart.rounds += 1;
@@ -437,6 +470,11 @@ function play(build: Build, seed: string): Result {
           r.deaths += 1;
           band.deaths += 1;
           note(killers, `${classId}/${main}${second ? `+${second}` : ''} L${c.level} by ${e0.name} L${e0.level}${e0.wanderer ? ' (Dread)' : ''}`);
+          if (process.env.DEATHLOG) {
+            const st = stats(c);
+            const worn = SLOTS.map((x) => c.equipment[x]).filter((g): g is GearItem => !!g).map((g) => `${g.slot}:${g.rarity[0]}${g.rank}`).join(' ');
+            console.log(`  fell ${(played / 3600).toFixed(1)}h L${c.level} to ${e0.name} L${e0.level} (hp ${e0.hp}/${e0.maxHp}) round ${fightStart.rounds}; me hp ${st.maxHp} atk ${st.attack} magic ${st.magic} def ${st.defense} mana ${c.mana}; flasks ${flasks(c)} at start ${fightStart.flasks}; carried ${c.carried.join()}; worn ${worn}`);
+          }
         }
         const spot = c.fight.space;
         if (spaces()[spot]?.kind === 'boss' && spaces()[spot]?.boss === e0.id) {
@@ -547,6 +585,15 @@ function play(build: Build, seed: string): Result {
           continue;
         }
       }
+    }
+    // Mana from the bag before walking on (2026-11-03): a sensible player tops up, a potion that does not spill over.
+    for (let sip = 0; sip < 4; sip++) {
+      const c = me();
+      const missing = stats(c).maxMana - c.mana;
+      if (c.fight || c.mana >= stats(c).maxMana * 0.5) break;
+      const fits = Object.keys(c.items).filter((id) => (c.items[id] ?? 0) > 0 && ITEMS[id]?.mana && !ITEMS[id]?.heal && ITEMS[id]!.mana! <= missing).sort((a, b) => ITEMS[b]!.mana! - ITEMS[a]!.mana!)[0];
+      if (!fits || act({ type: 'use', item: fits }).some((e) => e.type === 'rejected')) break;
+      r.manaDrunk += 1;
     }
     const c3 = me();
     const here = spaces()[c3.space]!;
@@ -709,10 +756,12 @@ for (const classId of Object.keys(CLASS_DATA) as ClassId[]) {
 
 const results: Result[] = [];
 for (const b of builds) for (let i = 0; i < RUNS; i++) {
+  if (process.env.BUILD && process.env.BUILD !== b.main + (b.second ? `+${b.second}` : '')) continue;
+  if (process.env.FROM && i < Number(process.env.FROM)) continue;
   const res = play(b, `${b.classId}-${b.main}-${b.second ?? 'x'}-${b.tactic}-${i}`);
   results.push(res);
   const when = (l: number): string => (res.reached[l] === undefined ? '  - ' : res.reached[l]!.toFixed(1).padStart(4));
-  console.log(`${CLASS_DATA[b.classId]!.name.padEnd(9)} ${(b.main + (b.second ? `+${b.second}` : '')).padEnd(24)} ${b.tactic.padEnd(8)} L${String(res.level).padStart(2)} h ${when(5)} ${when(10)} ${when(15)} ${when(20)} ${when(25)} ${when(30)} deaths ${String(res.deaths).padStart(3)} fights ${String(res.fights).padStart(4)} bosses ${String(res.bosses.filter((x) => x.level).length).padStart(2)} left ${res.bossesLeft.length} quests ${String(res.questsDone).padStart(3)} arena ${res.arena.runs}/${res.arena.wins} gold ${String(res.gold).padStart(6)} rank ${res.gearRank.toFixed(1)} flasks ${res.flasksEnd}/${res.flasksFound} reforged ${res.reforged}${res.stuck ? ` STUCK ${res.stuck}` : ''}`);
+  console.log(`${CLASS_DATA[b.classId]!.name.padEnd(9)} ${(b.main + (b.second ? `+${b.second}` : '')).padEnd(24)} ${b.tactic.padEnd(8)} L${String(res.level).padStart(2)} h ${when(5)} ${when(10)} ${when(15)} ${when(20)} ${when(25)} ${when(30)} deaths ${String(res.deaths).padStart(3)} fights ${String(res.fights).padStart(4)} bosses ${String(res.bosses.filter((x) => x.level).length).padStart(2)} left ${res.bossesLeft.length} quests ${String(res.questsDone).padStart(3)} arena ${res.arena.runs}/${res.arena.wins} gold ${String(res.gold).padStart(6)} rank ${res.gearRank.toFixed(1)} flasks ${res.flasksEnd}/${res.flasksFound} mana drunk ${res.manaDrunk} reforged ${res.reforged}${res.stuck ? ` STUCK ${res.stuck}` : ''}`);
 }
 if (JSON_OUT) writeFileSync(JSON_OUT, JSON.stringify({ results, refused: [...refused], broken: [...broken], thrown: [...thrown] }));
 
@@ -749,6 +798,7 @@ console.log('\nHours by what it wanted (all builds, each):');
 console.log('  ' + [...wants].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(v / 3600 / results.length).toFixed(1)}`).join(', '));
 console.log(`\nGold a run, in: ${[...goldFrom].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${Math.round(v / results.length)}`).join(', ')}; out: ${[...goldTo].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${Math.round(v / results.length)}`).join(', ')}`);
 console.log(`\nLoot a run: ${(loot.sets / loot.runs).toFixed(1)} set pieces, ${(loot.uniques / loot.runs).toFixed(1)} uniques; worn at the end ${(loot.wornSets / loot.runs).toFixed(1)} and ${(loot.wornUniques / loot.runs).toFixed(1)}`);
+for (const [cid, a] of along) console.log(`  levels 10-30, ${cid}: worn ${(a.uniques / a.levels).toFixed(1)} uniques and ${(a.sets / a.levels).toFixed(1)} set pieces; a 2-piece bonus on ${Math.round((100 * a.two) / a.levels)}% of levels, a 4-piece ${Math.round((100 * a.four) / a.levels)}%`);
 console.log('\nRefused actions:');
 for (const [k, v] of [...refused].sort((a, b) => b[1] - a[1])) console.log(`  ${String(v).padStart(7)}  ${k}   e.g. ${samples.get(k)}`);
 console.log(`\nBroken state: ${broken.size ? '' : 'none'}`);

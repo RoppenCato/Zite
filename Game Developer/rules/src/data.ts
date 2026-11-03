@@ -408,6 +408,8 @@ export interface GearData {
   /** The chance a fallen creature's drop is a unique of its tier. */
   uniqueChance: Record<'mob' | 'mini' | 'boss', number>;
   setChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
+  /** How much more likely a set is to drop for each piece of it worn (2026-11-03). */
+  setLean: number;
   legendChance: Record<'mob' | 'mini' | 'boss' | 'chest', number>;
   kinds: {
     shieldInWard: number;

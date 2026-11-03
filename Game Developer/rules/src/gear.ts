@@ -484,16 +484,21 @@ export function rollUnique(id: string, tier: number, rank: number, rng: Rng): Ge
 /** The kind of gear a class wears best: a set of that line counts double when one is found. */
 export const CLASS_LINE: Record<ClassId, GearLine> = { warrior: 'heavy', mage: 'magic', rogue: 'light', ranger: 'light' };
 
-export function rollSetPiece(id: string, tier: number, rank: number, rng: Rng, classId: ClassId = 'warrior'): GearItem | null {
+export function rollSetPiece(id: string, tier: number, rank: number, rng: Rng, classId: ClassId = 'warrior', worn?: Partial<Record<Slot, GearItem | null>>): GearItem | null {
   const pool = SET_IDS.filter((s) => SETS[s]!.tier <= tier);
   if (!pool.length) return null;
   // A land's own set three times as often, your class's kind twice (2026-11-03: the bots found 13 pieces a run, scattered over nine sets, and wore none).
   const newest = Math.max(...pool.map((s) => SETS[s]!.tier));
-  const weight = (s: string): number => (SETS[s]!.tier === newest ? 3 : 1) * (SETS[s]!.line === CLASS_LINE[classId] ? 2 : 1);
+  // A set you wear comes again (2026-11-03): each piece of it worn, `GEAR.setLean` times more.
+  const have = (s: string): number => Object.values(worn ?? {}).filter((g) => g?.set === s).length;
+  const weight = (s: string): number => (SETS[s]!.tier === newest ? 3 : 1) * (SETS[s]!.line === CLASS_LINE[classId] ? 2 : 1) * (1 + GEAR.setLean * have(s));
   let pick = rng.next() * pool.reduce((n, s) => n + weight(s), 0);
   const setId = pool.find((s) => (pick -= weight(s)) < 0) ?? pool[pool.length - 1]!;
   const set = SETS[setId]!;
-  const slot = set.slots[rng.int(set.slots.length) - 1]!;
+  // In a slot of the set not yet worn, when there is one.
+  const open = set.slots.filter((x) => worn?.[x]?.set !== setId);
+  const slots = open.length ? open : set.slots;
+  const slot = slots[rng.int(slots.length) - 1]!;
   const piece = rollGear(id, slot, rank, GEAR.rarityBoost.boss, rng, set.line, classId);
   return { ...piece, name: `${set.word} ${GEAR.slots[slot].base}`, set: setId };
 }

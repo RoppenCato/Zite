@@ -74,6 +74,8 @@ Robin: "Level up each class naturally all the way to 30. Try different specs and
     node tools/sim-monkey.ts 20000                 everything tapped in no order
     node tools/enemy-curve.mjs                     enemies.json from enemy-base.json and the curve
 
+With the full sim (2026-11-03): `BUILD=wizard+cleric` plays one build, `FROM=2` starts at that run (same seeds), `DEATHLOG=1` prints the character at each fall, `FIGHTLOG=18-21` prints round by round the fights lost at those levels, `ENDSTATE=1` keeps the end state in the --json file. The report says how much special gear was worn along the way, levels 10 to 30, and how often a set bonus was on.
+
 Twelve playthroughs, nine builds a class: each tree alone, each with a second tree, and four tactics (sensible, all in, careful, Attack only). Each plays with an hour and a half a day on the calendar: every boss, quest boards, shops and the smith's fine piece, the Arena on its days, the Rootways, rumours, hidden places, the coach, Home, a respec at 15. These are rules played by a script, with time guessed from taps: how it feels is still Robin's to say.
 
 ### Found and fixed

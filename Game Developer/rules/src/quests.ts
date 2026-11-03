@@ -121,7 +121,7 @@ export function finishQuests(state: GameState, c: Character, action: Action, rng
     const got = nextGearId(s);
     s = got.state;
     const unique = q.unique > 0 && rng.next() < q.unique ? rollUnique(got.id, tier, tier, rng) : null;
-    const setPiece = !unique && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId) : null;
+    const setPiece = !unique && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId, c.equipment) : null;
     const ground = groundsOf(s.board, q.area).find((g) => g.id === q.ground) ?? null;
     next = addLoot(next, unique ?? setPiece ?? rollGear(got.id, dropSlot(ground, rng), tier, QUESTS.chestBoost, rng, rollLine(rng), c.classId), action, events);
   }

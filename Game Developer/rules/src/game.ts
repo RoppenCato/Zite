@@ -1037,7 +1037,7 @@ function openChest(state: GameState, c: Character, tier: number, areaId: string,
     const got = nextGearId(s);
     s = got.state;
     const unique = (rich && rng.next() < GEAR.legendChance.chest ? rollLegend(got.id, tier, rng, c.classId) : null) ?? (rich && rng.next() < 0.3 ? rollUnique(got.id, tier, tier, rng) : null);
-    const setPiece = !unique && rich && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId) : null;
+    const setPiece = !unique && rich && rng.next() < GEAR.setChance.chest ? rollSetPiece(got.id, tier, tier, rng, c.classId, c.equipment) : null;
     if (unique || setPiece) {
       next = addLoot(next, (unique ?? setPiece)!, action, events);
     } else {

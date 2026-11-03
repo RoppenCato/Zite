@@ -191,7 +191,7 @@ mini-boss 50 percent and **rare or better**, a boss always and **epic or better*
 limit yet.
 
 **Uniques** (Robin, 2026-10-31: loot with effects that change how you play; the pieces are mine, `uniques.json`, 23 of
-them): a rarity of their own, never rolled by chance, with a proper name, a unique's number (×1.9, swung), one affix and
+them): a rarity of their own, never rolled by chance, with a proper name, a unique's number (×2.2, swung), two affixes (2026-11-03, a legendary's count; was one) and
 a **power** the rules read by name. A fallen boss's drop is a unique half the time, a mini-boss's one in ten, from the
 pool of every unique whose tier is the area's or lower, rolled at the area's rank. Weapons: **Twinstinger** (Attack strikes
 twice at 0.6), **Hare's Edge** (the first hit of a fight is a sure crit and the enemy holds back that round),
@@ -583,5 +583,11 @@ Save version 42: the board is laid again, so every save gets the new spots; anyo
 - **Gold**: selling pays an eighth of a piece's worth (was a fifth); flasks drop from 5% of wins (was 8%). **Reforge**: a master smith raises an epic, legendary, unique or set piece one rank, up to the rank it makes, for the piece's new price (`reforged`, `canReforge`, `buy` with `reforge`).
 - **Special gear**: a unique is as strong as a legendary (rarity mult 2.2, was 1.9); a set piece is three times as likely to be of the land's newest set and twice as likely of your class's kind of gear.
 - **Skills lifted**: Firestorm (5.6 to 7.2 after its wind-up, and it burns), Judgement Day (1.6 to 2.0, more from what was healed), Bloodbath (2.0 to 2.4), Bullseye (1.7 to 2.1). The sims' fighter now presses dodges and skips against a winding blow, finishers on a low foe, Bloodbath when low, Judgement Day after much healing, Magic Power on a full meter, and carries one such skill.
+
+**Special gear, second look** (Robin, 2026-11-03: "Look into the Wizard+Cleric deaths and the special gear"; numbers mine):
+
+- **A set piece leans to the sets you wear** (`GEAR.setLean`, 3): each piece of a set worn makes that set 3 times more likely again (one worn: ×4, two: ×7), and the piece comes in a slot of the set you do not wear yet (`rollSetPiece` takes the equipment). The bots found 9 to 13 set pieces a run, scattered over nine sets, and had a 2-piece bonus on only 3 to 11% of their levels from 10 to 30, a 4-piece never.
+- **A unique carries two affixes**, a legendary's count, and its power on top: at the same rank it was weaker than a legendary (one affix, no prefix).
+- **The Wizard+Cleric's 55 falls were the bots', not the game's**: the sims' fighter never drank a mana potion (one run fell 24 times with 24 of them in its bag, going into fights with 9 of 176 mana), and its fight rules matched the fire rotation (Firework, then Detonate) before anything below it, so Sanctuary was never pressed. The bots now drink mana potions in a fight when no spell is affordable, top up from the bag on the board (a potion that does not spill over), and meet a blow winding up with a barrier, a step aside or an interrupt before the rotation. Firestorm and Meteor need a staff, so a Wizard with wand and orb cannot press them: that is the build, not a fault.
 
 **The stall** (Robin, 2026-11-03: the shops were overwhelming; he chose "Rotating stall"): a shop that sells gear (arms, magic, a merchant, a master smith's town) shows `shopStall`: 5 pieces for the buyer's class and kind of gear, of the shop's rank, from the seed, the shop and which stretch of 10 of the buyer's rolls it is (`GEAR.stall.everyRolls`; once a day at first, Robin: "Shouldnt the shops update more often?"). 65% plain, else uncommon (80%) or rare, never better. An arms shop leans to weapons and off-hands, a magic shop to what is worn (`GEAR.stall`). `buy` with `stall: i` buys place `i`, once (`c.stall`); buying any slot from a full list is gone. The Dreaming Isle counts as tier 8, so reaching it does not lift Crownhaven's shops past the Buried Crown's rank.

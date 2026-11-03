@@ -52,12 +52,12 @@ describe('the uniques', () => {
     for (const p of POWERS) expect(UNIQUE_IDS.some((id) => UNIQUES[id]!.power === p) || TRINKET_IDS.some((id) => TRINKETS[id]!.power === p), p).toBe(true);
   });
 
-  it('are made at a rank with a unique\'s number, one affix, their name and their text, never rolled by chance', () => {
+  it('are made at a rank with a unique\'s number, a legendary\'s two affixes (2026-11-03), their name and their text, never rolled by chance', () => {
     const g = makeUnique('x', 'twinfang', 3, makeRng('m'));
     expect(g).toMatchObject({ id: 'x', slot: 'weapon', rank: 3, rarity: 'unique', name: 'Twinstinger', base: 'iron sword', unique: 'twinfang', price: Math.round(rankPrice('weapon', 3) * GEAR.rarities.unique.priceMult) });
     expect(g.stats.attack).toBeGreaterThanOrEqual(Math.floor(rankStat('weapon', 3) * GEAR.rarities.unique.mult * (1 - GEAR.roll)));
     expect(g.stats.attack).toBeLessThanOrEqual(Math.ceil(rankStat('weapon', 3) * GEAR.rarities.unique.mult * (1 + GEAR.roll)));
-    expect(g.affixes).toHaveLength(1);
+    expect(g.affixes).toHaveLength(GEAR.rarities.unique.affixes);
     expect(describeGear(g)).toContain('Twinstinger, iron sword · unique');
     expect(describeGear(g)).toContain(UNIQUES.twinfang!.text);
     expect(() => makeUnique('x', 'excalibur', 1, makeRng('m'))).toThrow(/no such unique/);

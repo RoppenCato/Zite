@@ -170,7 +170,7 @@
       "mult": 2.2,
       "weight": 0,
       "priceMult": 8,
-      "affixes": 1,
+      "affixes": 2,
       "named": true,
       "prefix": false
     }
@@ -1273,5 +1273,7 @@
         "cape": 2
       }
     }
-  }
+  },
+  "setLean": 3,
+  "_aboutSetLean": "A set piece found leans to the sets you wear: each piece of a set worn makes that set `setLean` times more likely again, and the piece comes in a slot of it you do not wear yet (2026-11-03, mine: the bots found 9-13 set pieces a run, scattered over nine sets, and had a 2-piece bonus on about 5% of their levels)."
 }

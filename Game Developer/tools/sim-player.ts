@@ -1,5 +1,5 @@
 // The sensible fighter the sims play with: heals when low, keeps its buffs up, spends its meter, guards as its class wants. Not part of the game.
-import { ABILITIES, manaCost, holdsFor, stats, type Character } from '../rules/src/index.ts';
+import { ABILITIES, ITEMS, manaCost, holdsFor, stats, type Character } from '../rules/src/index.ts';
 
 /** What a sensible player does this round. */
 export function choose(c: Character): { move: unknown; guard: string } {
@@ -33,6 +33,23 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (healer && !(rank(healer).regen && f.regen)) return { move: { kind: 'ability', ability: healer }, guard };
   }
   if (hpShare < 0.35 && potion) return { move: { kind: 'item', item: potion[0] }, guard };
+  // Mana short for its spells, a mana potion (2026-11-03: a Wizard+Cleric fell 55 times with 24 in its bag): the biggest one it has.
+  const spells = c.carried.filter((id) => ABILITIES[id]!.ranks[0]!.power && holdsFor(c, ABILITIES[id]!.needs));
+  const short = spells.length > 0 && spells.every((id) => c.mana < manaCost(c, id)) && c.mana < s.maxMana * 0.3;
+  const manaFlask = Object.entries(c.items).filter(([id, n]) => n > 0 && ITEMS[id]?.mana && !ITEMS[id]?.heal).sort((a, b) => (ITEMS[b[0]]!.mana ?? 0) - (ITEMS[a[0]]!.mana ?? 0))[0];
+  if (c.classId === 'mage' && short && manaFlask && e.hp > e.maxHp * 0.25) return { move: { kind: 'item', item: manaFlask[0] }, guard };
+  // A blow winding up is met first: a barrier, a step aside, an interrupt (2026-11-03: below the rotation they were never reached).
+  if (e.charged) {
+    for (const id of usable) {
+      const r = rank(id);
+      if (r.interrupt) return { move: { kind: 'ability', ability: id }, guard };
+      if (r.barrierShare && f.barrier === 0) return { move: { kind: 'ability', ability: id }, guard };
+      if ((r.evade || r.skip) && !f.evade && !f.skip) return { move: { kind: 'ability', ability: id }, guard };
+    }
+  }
+  // A spell to wind up on a foe that will last: it lands on top of the next move.
+  const bigWindup = e.role !== 'mob' && e.hp > e.maxHp * 0.3 && !f.windup ? usable.find((id) => rank(id).windup) : undefined;
+  if (bigWindup) return { move: { kind: 'ability', ability: bigWindup }, guard };
   // Keep what lasts going.
   for (const id of usable) {
     const r = rank(id);
