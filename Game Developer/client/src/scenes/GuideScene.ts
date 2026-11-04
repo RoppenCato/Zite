@@ -192,7 +192,7 @@ export class GuideScene extends Phaser.Scene {
           { title: 'Your hits', text: `Attack strikes ${odds.hits === 1 ? 'once' : `${odds.hits} times`}. Each has a ${pct(odds.crit)} chance to crit, and a crit does ${Math.round(odds.critPower * 100)}% of a hit.${odds.autoCounter ? ` You shoot back at ${pct(odds.autoCounter)} of blows, whatever your guard.` : ''}${odds.taken !== 1 ? ` You take ${pct(odds.taken)} of what hits you.` : ''}` },
           { title: ward ? 'Ward' : 'Block', text: ward ? `Your Arcane Ward: you take ${pct(odds.block)} of the blow, and it costs no mana.` : `You take ${pct(odds.block)} of the blow. The safe choice.` },
           { title: 'Dodge', text: `A ${pct(odds.dodge)} chance that it misses altogether; if not, you take it all.` },
-          { title: 'Brace', text: `You take ${pct(odds.brace)} of the blow and get ${odds.braceMana} mana back.` },
+          { title: 'Brace', text: `You get ${odds.braceMana} mana every round you brace, hit or not, and take ${pct(odds.brace)} of a blow that lands.` },
           { title: 'Counter', text: `You hit back${odds.counterHits > 1 ? ` ${odds.counterHits} times` : ''} for ${pct(odds.counter)} of a plain hit, and take the blow in full.` },
           ...(meter ? [{ title: meter.name, text: `Your meter, the dots over your bars. ${meter.text}` }] : []),
         ],

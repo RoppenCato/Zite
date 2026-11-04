@@ -529,6 +529,14 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   }
 
   // ---- the enemy's turn -------------------------------------------------------------------------------------------
+  // Brace gives its mana every round it is chosen, whether a blow comes, lands or misses (Robin, 2026-11-04: "It should give
+  // mana even if theres no hit"): with the blow, after the guard is told; otherwise once the enemy's turn is over.
+  let braced = guard !== 'brace';
+  const brace = (): void => {
+    if (braced) return;
+    braced = true;
+    r.c = restoreMana(r.c, braceMana(r.s.maxMana, guardOf(r.c).brace, traits.channel), action, events);
+  };
   const firstStrike = f.round === 1 && (cls.firstStrike || traits.firstStrike || quick);
   if (f.skip > 0) {
     f.skip -= 1;
@@ -571,6 +579,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       const off = guardOf(r.c);
       // Shadow Dance's first round: the blow in full, whatever the guard.
       const held: Guard = exposed ? 'none' : guard;
+      brace();
       if (f.spike) {
         hurtEnemy(r, Math.max(1, Math.round(r.s.attack * f.spike.power)));
         if (r.done) return r.done;
@@ -623,10 +632,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
             if (r.done) return r.done;
           }
         }
-        if (held === 'brace') {
-          dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
-          r.c = restoreMana(r.c, braceMana(r.s.maxMana, off.brace, traits.channel), action, events);
-        }
+        if (held === 'brace') dealt = Math.ceil(dealt * PROGRESSION.guards.brace);
         let absorbed = 0;
         if (f.barrier > 0) {
           absorbed = Math.min(f.barrier, dealt);
@@ -666,6 +672,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (f.enemy.weakened.rounds <= 0) f.enemy.weakened = null;
     }
   }
+  brace();
 
   // ---- the round ends ---------------------------------------------------------------------------------------------
   if (f.companion && f.enemy.hp > 0) {

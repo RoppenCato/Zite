@@ -75,6 +75,18 @@ Each has moves with names the player reads a round ahead ("next: Sting"); an eff
 |  | Scarecrow Scrapper | mini 13 | Rake Swing, Crow Call, Straw Choke (weaken) |
 |  | Queen Bumble (at Queen Bumble's Hive) | boss 14 | Royal Sting, Swarm; under half HP "Queen Bumble's hive answers: the swarm thickens!" and Royal Jelly (armours itself), Hive Swarm |
 
+**The world bosses** (Robin, 2026-11-04: one per land; names mine), each met only as a world boss:
+
+| Land | World boss | Level | The great one of (its look until drawn) | Moves | Trick |
+| --- | --- | --- | --- | --- | --- |
+| Cloverfield Meadows | Old Bristleback, a giant boar | 6 | Wild Tusker | Tusk Gore, Stampede; Mud Kick (weaken) | winds up a charge every third round |
+| Wobblewood Forest | Mother Owlbear, the cub's mother | 10 | Sleepy Owlbear Cub | Maul, Great Hug; Feather Storm | a bear hug weakens you every third round |
+| Honeyhill Fields | Big Bramley, the orchard's apple giant | 14 | Apple Mimic | Vine Lash, Windfall; Seed Spit (poison) | grows back each round unless burning or poisoned |
+| Bogglemire | Grandfather Croak, a toad as big as a cottage | 17 | Bog Toad | Tongue Lash, Belly Bounce; Swamp Spit (poison) | the frogs of the bog gather: he hits harder each round |
+| The Frostcrown | Old Cragheart, a walking hill of stone | 21 | Pebble Golem | Boulder Fist, Rockslide; Gravel Spray (weaken) | curls into a boulder every fourth round |
+| The Pirate Isles | Old Clackclaw, a giant crab | 25 | Scuttle Crab | Pinch, Crushing Claw; Bubble Spray (weaken) | stinging brine poisons you every third round |
+| The Giants' Land | Frostgut, a hill ogre | 29 | Frost Ogre | Glacier Club, Hill Fall; Frost Belch (weaken) | lifts his club for a big blow every third round |
+
 Grown creatures use the four shapes' moves: Strike, Lunge, Venom; Swipe, Crush, …; the names are in `themes.json`
 (`archetypes`) and can be themed per creature later.
 

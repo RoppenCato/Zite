@@ -328,6 +328,24 @@ const CREATURES: Record<string, CreatureFiles> = {
   },
 };
 
+// Each land's world boss (Robin, 2026-11-04: one per land) wears the look of the creature it is the great one of, bigger,
+// until Mitch, AD draws its own (mine).
+const STAND_INS: Record<string, [string, number]> = {
+  bristleback: ['tusker', 0.9],
+  'mother-owlbear': ['spider-queen', 0.95],
+  bramley: ['ice-golem', 0.85],
+  'grandfather-croak': ['bog-toad', 1],
+  cragheart: ['pebble-golem', 1.1],
+  clackclaw: ['scuttle-crab', 0.9],
+  frostgut: ['frost-ogre', 1],
+};
+for (const [id, [as, scale]] of Object.entries(STAND_INS)) if (!CREATURES[id] && CREATURES[as]) CREATURES[id] = { ...CREATURES[as]!, scale };
+
+/** The creature whose sounds this one uses: a world boss's stand-in lends its voice too, until it has its own. */
+export function voiceOf(enemyId: string): string {
+  return STAND_INS[enemyId]?.[0] ?? enemyId;
+}
+
 /** Queue one creature's atlas; the fight's preload calls it, so only what you meet costs memory (chapter 2, step 1). */
 export function preloadCreature(scene: Phaser.Scene, enemyId: string): void {
   const c = CREATURES[enemyId];
@@ -339,10 +357,12 @@ export function preloadCreature(scene: Phaser.Scene, enemyId: string): void {
 /** Let go of every creature's atlas and clips but these: walking into another area frees the last one's. */
 export function releaseCreatures(game: Phaser.Game, keep: readonly string[]): void {
   const kept = new Set(keep);
+  // An atlas worn by two (a world boss's stand-in) stays while either is kept.
+  const keptKeys = new Set([...kept].flatMap((id) => (CREATURES[id] ? [CREATURES[id]!.key, ...(CREATURES[id]!.phase2 ? [CREATURES[id]!.phase2!.key] : [])] : [])));
   for (const [id, c] of Object.entries(CREATURES)) {
     if (kept.has(id)) continue;
     for (const atlas of c.phase2 ? [c, c.phase2] : [c]) {
-      if (!game.textures.exists(atlas.key)) continue;
+      if (keptKeys.has(atlas.key) || !game.textures.exists(atlas.key)) continue;
       for (const action of Object.keys(atlas.actions)) game.anims.remove(`${atlas.key}/${action}`);
       game.textures.remove(atlas.key);
     }

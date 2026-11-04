@@ -192,6 +192,23 @@ describe('a fight', () => {
     expect(apply(card, turn({ kind: 'item', item: 'reroll' }), makeRng('x'), NOW).events[0]).toMatchObject({ type: 'rejected', reason: 'not now' });
   });
 
+  it('Brace gives its mana with no hit: a miss, a wind-up, a stunned foe, the opening of a Shadow Dance (Robin, 2026-11-04)', () => {
+    const braceMana = (s: GameState) => apply(s, turn(attack, 'brace'), makeRng('b'), NOW).events.filter((e) => e.type === 'mana' && e.delta === 10);
+    const slipped = versus('rogue', 'slime', { mana: 0 }, { hp: 1000 });
+    me(slipped).fight!.evade = 1;
+    expect(apply(slipped, turn(attack, 'brace'), makeRng('b'), NOW).events.some((e) => e.type === 'missed')).toBe(true);
+    expect(braceMana(slipped)).toHaveLength(1);
+    const windup = versus('rogue', 'slime', { mana: 0 }, { hp: 1000, next: { name: 'Gather', power: 1.5, weight: 1, charge: true } });
+    expect(apply(windup, turn(attack, 'brace'), makeRng('b'), NOW).events.some((e) => e.type === 'charged')).toBe(true);
+    expect(braceMana(windup)).toHaveLength(1);
+    expect(braceMana(versus('rogue', 'slime', { mana: 0 }, { hp: 1000, stunned: 1 }))).toHaveLength(1);
+    const dance = versus('rogue', 'slime', { mana: 0 }, { hp: 1000 });
+    me(dance).fight!.dance = { exposed: true, rounds: 2, chance: 0.9 };
+    expect(braceMana(dance)).toHaveLength(1);
+    // Once a round, never twice; and nothing for another guard.
+    expect(apply(versus('rogue', 'slime', { mana: 0 }, { hp: 1000 }), turn(attack, 'block'), makeRng('b'), NOW).events.some((e) => e.type === 'mana' && e.delta === 10)).toBe(false);
+  });
+
   it('the guards: a block stops what the shield stops, brace takes three quarters and gives mana, dodge misses a third of the time, counter strikes back', () => {
     const tough = versus('warrior', 'slime', { mana: 10 }, { hp: 1000 });
     let misses = 0;

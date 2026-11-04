@@ -308,9 +308,9 @@ describe('the world\'s tick', () => {
           expect(spawn.until).toBe(NOW + PROGRESSION.wanderer.lifeMs);
           continue;
         } else if (spawn.kind === 'worldboss') {
-          // Now and then the world boss: the meadows' own boss, for longer, on top of the cap (coop.test.ts has the rest).
+          // Now and then the world boss: the meadows' own, Old Bristleback (Robin, 2026-11-04: not King Goo), for longer, on top of the cap (coop.test.ts has the rest).
           expect(spawn.until).toBe(NOW + PROGRESSION.worldBoss.lifeMs);
-          expect(spawn.enemy).toBe('thornwood-warden');
+          expect(spawn.enemy).toBe('bristleback');
           continue;
         }
         expect(spawn.until).toBe(NOW + 600000);

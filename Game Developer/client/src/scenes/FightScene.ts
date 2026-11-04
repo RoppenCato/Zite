@@ -12,7 +12,7 @@ import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, 
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { applyPalette, dreamOverlay, dreamPalette, tintOf } from '../dreamlook.ts';
-import { creatureReady, Figure, preloadCreature } from '../creatures.ts';
+import { creatureReady, Figure, preloadCreature, voiceOf } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
 import { abilityIcon, behind, fly, freeTalentIconsAfter, HeldEffects, Owl, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
@@ -142,6 +142,8 @@ export class FightScene extends Phaser.Scene {
   private pendingMove: FightMove | null = null;
   private enemyName = '';
   private enemyId = '';
+  /** Whose sounds it makes: its own, or its stand-in's (a world boss's, 2026-11-04). */
+  private voice = '';
   private enemyRole = 'mob';
   private enemyMaxHp = 1;
 
@@ -182,6 +184,7 @@ export class FightScene extends Phaser.Scene {
     this.hero = null;
     this.enemyName = enemy.name;
     this.enemyId = enemy.id;
+    this.voice = voiceOf(enemy.id);
     this.enemyRole = enemy.role;
     this.enemyMaxHp = enemy.maxHp;
 
@@ -509,7 +512,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
               // A spell lands with its element's sound (Nigel, SD, 2026-11-03).
               sfx.play(spell ? spell.sound : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
               if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
-              sfx.play(`creature/${this.enemyId}/hit`);
+              sfx.play(`creature/${this.voice}/hit`);
               this.flash(this.enemyBody, e.damage, e.crit);
               this.enemyBar.set(e.hp, this.enemyMaxHp);
             };
@@ -534,7 +537,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
           this.say(`${e.move}: ${e.damage} damage${e.crit ? ', a crit!' : '.'}`);
         } else {
           this.enemy?.play('attack1');
-          sfx.play(`creature/${this.enemyId}/attack`);
+          sfx.play(`creature/${this.voice}/attack`);
           this.step(this.enemyBody, -30);
           this.after(this.enemy?.blowMs() ?? 0, () => {
             this.hero?.play('hit1');
@@ -550,7 +553,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'missed':
         if (e.by === 'enemy') {
           this.enemy?.play('attack1');
-          sfx.play(`creature/${this.enemyId}/attack`);
+          sfx.play(`creature/${this.voice}/attack`);
           this.hero?.play('stand');
           this.showDodge();
         } else this.hero?.play('attack1');
@@ -619,7 +622,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         sfx.play('fight/phase');
         // Grumblebark's second phase: the whole forest shakes (art-demands, wave 4).
         if (this.enemyId === 'briar-king' && !settings.get().fewerEffects) this.cameras.main.shake(700, 0.006);
-        sfx.play(`creature/${this.enemyId}/surge`);
+        sfx.play(`creature/${this.voice}/surge`);
         this.say(e.text);
         this.refreshStatus();
         break;
@@ -651,7 +654,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
           playOnce(this, 'counter_flash', at.x, at.y);
           this.enemy?.play('hit1');
           sfx.play('fight/hit-light');
-          sfx.play(`creature/${this.enemyId}/hit`);
+          sfx.play(`creature/${this.voice}/hit`);
           this.flash(this.enemyBody, e.damage, false);
           this.enemyBar.set(e.hp, this.enemyMaxHp);
         });
@@ -689,7 +692,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'won': {
         this.hero?.play('stand');
         this.enemy?.play('die1');
-        sfx.play(`creature/${this.enemyId}/die`);
+        sfx.play(`creature/${this.voice}/die`);
         sfx.play('fight/victory');
         const tip = tips.take('won');
         this.end({ type: 'won', loot: [], enemy: this.enemyName, summary: this.game_.me.arena ? `Wave ${this.game_.me.arena.wave} won: +${e.xp} xp and +${e.gold} gold in the pot.` : `Beat ${this.enemyRole === 'boss' ? '' : 'the '}${this.enemyName}: +${e.xp} xp, +${e.gold} gold.${tip ? ` ${tip}` : ''}` }, `${this.enemyName} is beaten! +${e.xp} xp, +${e.gold} gold.`);

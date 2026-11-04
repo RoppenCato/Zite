@@ -81,7 +81,17 @@
     "chancePerTick": 0.02,
     "lifeMs": 1800000,
     "hpMult": 2.5,
-    "minShare": 0.25
+    "minShare": 0.25,
+    "lands": {
+      "meadows": "bristleback",
+      "thornwood": "mother-owlbear",
+      "frostpeak": "bramley",
+      "bogglemire": "grandfather-croak",
+      "frostcrown": "cragheart",
+      "pirateisles": "clackclaw",
+      "giantsland": "frostgut"
+    },
+    "_aboutLands": "Each land's own world boss (Robin, 2026-11-04: one per land; King Goo as the Meadows' world boss was weird, \"since he is also the boss at the end\"). It comes to the furthest open land that has one; a land with none (the city, the Kingswood, a grown land) never hosts one. The creatures and names are mine, with their land's gate boss's numbers."
   },
   "traces": {
     "perSpace": 3,

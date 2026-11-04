@@ -1615,8 +1615,9 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       events.push({ type: 'spawned', action: action.id, player: action.player, space: at.id, spawn });
     }
   }
-  // A world boss (mine, 2026-11-01): now and then, when none is about, the boss of the highest area anyone has opened
-  // rages on a wild spot there with HP for a crowd, for a while; everyone who lands there fights the same HP.
+  // A world boss (mine, 2026-11-01): now and then, when none is about, the world boss of the furthest land anyone has opened
+  // rages on a wild spot there with HP for a crowd, for a while; everyone who lands there fights the same HP. Each land has
+  // its own (Robin, 2026-11-04: not the land's gate boss, met again at the end); a land with none never hosts one.
   const wb = PROGRESSION.worldBoss;
   if (!Object.values(spawns).some((s) => s.kind === 'worldboss') && rng.next() < wb.chancePerTick) {
     const open = new Set<string>();
@@ -1625,9 +1626,8 @@ function tick(state: GameState, action: Action, rng: Rng, now: number): ApplyRes
       for (const a of c.opened) open.add(a);
       standing.add(c.space);
     }
-    const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a && !a.dungeon).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
-    const gate = frontier ? Object.values(state.board.spaces).find((s) => s.area === frontier.id && s.kind === 'boss' && s.boss) : undefined;
-    const enemy = gate?.boss ?? frontier?.miniBosses[0] ?? null;
+    const frontier = [...open].map((id) => state.board.areas[id]).filter((a): a is Area => !!a && !a.dungeon && !!wb.lands[a.id]).sort((a, b) => b.tier - a.tier || a.id.localeCompare(b.id))[0];
+    const enemy = frontier ? wb.lands[frontier.id]! : null;
     const wilds = frontier ? Object.values(state.board.spaces).filter((s) => s.area === frontier.id && s.kind === 'normal' && !s.hidden && !spawns[s.id] && !standing.has(s.id)).map((s) => s.id).sort() : [];
     if (enemy && wilds.length) {
       const space = wilds[rng.int(wilds.length) - 1]!;

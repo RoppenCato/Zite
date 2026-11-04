@@ -178,6 +178,23 @@ themes reuses the art under new names: nothing new to draw, a tint at most.
 | 8 | embercrown (Embercrown Range) | Embercrown Mountains | Emberling, Ash Drake, Magma Golem, Flamefang | Obsidian Guardian | Ignarox, the Crownfire Dragon |
 | 9 | shattered (The Shattered Crown) | The Shattered Crown | Crownless Knight, Royal Phantom, Mirror Beast, Celestial Sentinel | Rift Dragon | The Hollow King |
 
+## Wave 7b (asked 2026-11-04): a world boss for each land
+
+Robin, 2026-11-04: the world boss was the land's gate boss (King Goo in the Meadows), which he found weird; he chose one
+of its own for each land. Seven creatures, each the great one of a creature of its land, bigger than a gate boss on
+screen (they share HP with a crowd), the five monster actions and a second phase (`stand` and `attack1`) if it fits. Until
+each lands, the game draws its creature's look a size up. Ids are the rules' (`enemies.json`).
+
+| Id | Creature | Its land, level | Wears now |
+| --- | --- | --- | --- |
+| `bristleback` | Old Bristleback, a giant boar, bristles like a hedge, old scars | Cloverfield Meadows, 6 | Wild Tusker |
+| `mother-owlbear` | Mother Owlbear, the Sleepy Owlbear Cub's mother, wide awake and cross | Wobblewood Forest, 10 | Sleepy Owlbear Cub |
+| `bramley` | Big Bramley, an apple giant of the orchard, vines for arms | Honeyhill Fields, 14 | Apple Mimic |
+| `grandfather-croak` | Grandfather Croak, a toad as big as a cottage, lily pads on his back | Bogglemire, 17 | Bog Toad |
+| `cragheart` | Old Cragheart, a walking hill of stone, fire glowing in his cracks | The Frostcrown, 21 | Pebble Golem |
+| `clackclaw` | Old Clackclaw, a giant crab, barnacles and a ship's wheel on his shell | The Pirate Isles, 25 | Scuttle Crab |
+| `frostgut` | Frostgut, a hill ogre with a glacier for a club | The Giants' Land, 29 | Frost Ogre |
+
 ## Wave 8 (the proximity chapter): co-op and proximity pieces
 
 Nothing new for the world on the server: other players are their class sprite small with a name plate, the world boss its

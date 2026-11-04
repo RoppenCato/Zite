@@ -226,7 +226,9 @@ something (Robin, 2026-10-31: enemies that ask for the guard choice).
   try costs the blow).
 - **The guards**, chosen before the blow: `block` halves it (`guards.block` 0.5); `dodge` misses it `guards.dodge` 0.3
   plus the class's and the gear's dodge of the time (`missed`), else full (the Rogue's 0.25 makes dodging its guard);
-  `brace` takes three quarters and gives `braceMana` 4; `counter` takes it in full and strikes back at `guards.counter`
+  `brace` takes three quarters of a blow and gives the larger of `braceMana` 10 or `braceManaShare` 20% of your mana every
+  round it is chosen, whether a blow comes, lands or misses (Robin, 2026-11-04: "It should give mana even if theres no hit";
+  it came only with a blow that landed, so a Rogue's Shadowstep, Vanish or Shadow Dance, or a wind-up round, gave nothing); `counter` takes it in full and strikes back at `guards.counter`
   0.5 (`countered { damage, hp }`); `none` for a script. A barrier soaks first (`absorbed`); thorns bite back a share of
   what landed.
 - **The enemy's turn**: the move it told (the first chosen when the fight begins on the board, else by weight from
@@ -280,8 +282,8 @@ state back, so the actor's version does not move.
 ### The world boss (mine, 2026-11-01, from Robin's list: shared bosses; the gate bosses stay each player's own)
 
 Now and then a tick (`worldBoss.chancePerTick`, 2 in 100, so about once in fifty minutes) when none is about brings
-**the boss of the highest area anyone has opened** onto a free wild spot of that area, with **HP for a crowd**
-(`hpMult` 2.5 times the boss's) and a window (`lifeMs`, 30 minutes): `spawned` with `kind: 'worldboss'`, `hp`, `maxHp`
+**the world boss of the furthest land anyone has opened** (`worldBoss.lands`) onto a free wild spot of that land, with
+**HP for a crowd** (`hpMult` 2.5 times its own) and a window (`lifeMs`, 30 minutes): `spawned` with `kind: 'worldboss'`, `hp`, `maxHp`
 and an empty tally of `hitters`. **Everyone who lands there fights the same beast**: the fight is the usual one
 (`fight.shared`), but each round reads the HP from the spawn first (others may have hit it since) and writes it back
 after, with the damage dealt added to the player's tally; a round against a beast already gone ends the fight with
@@ -291,6 +293,23 @@ time), the picks owed by the levels crossed; the one who struck the last blow ge
 others' pieces change in the same action and their fights on it end; `worldBossDown { space, enemy, shares }` and
 `despawned`. **When its time is up** the tick takes it away and lets go whoever was still fighting it (`bossLeft { space,
 enemy, players }`). The bots meet it like any spawn. In solo play it comes just the same, a big fight for one.
+
+**Each land has its own** (Robin, 2026-11-04: King Goo as the Meadows' world boss was weird, "since he is also the boss
+at the end"; he chose one per land). Seven creatures met nowhere else, each the great one of a creature of its land,
+with that land's gate boss's numbers (level, HP, attack, defense, xp, gold), so it is as strong as before, and its own
+moves and trick (creatures, names and tricks mine; `docs/names.md`). A land with none (Crownhaven, the Kingswood, a grown
+land) never hosts one: the furthest open land that has one does. Until Mitch, AD draws them, each wears its creature's
+look a size up and makes its sounds (`STAND_INS` and `voiceOf` in `client/src/creatures.ts`).
+
+| Land | World boss | Level | The great one of (its look until drawn) | Moves | Trick |
+| --- | --- | --- | --- | --- | --- |
+| Cloverfield Meadows | Old Bristleback, a giant boar | 6 | Wild Tusker | Tusk Gore, Stampede; Mud Kick (weaken) | winds up a charge every third round |
+| Wobblewood Forest | Mother Owlbear, the cub's mother | 10 | Sleepy Owlbear Cub | Maul, Great Hug; Feather Storm | a bear hug weakens you every third round |
+| Honeyhill Fields | Big Bramley, the orchard's apple giant | 14 | Apple Mimic | Vine Lash, Windfall; Seed Spit (poison) | grows back each round unless burning or poisoned |
+| Bogglemire | Grandfather Croak, a toad as big as a cottage | 17 | Bog Toad | Tongue Lash, Belly Bounce; Swamp Spit (poison) | the frogs of the bog gather: he hits harder each round |
+| The Frostcrown | Old Cragheart, a walking hill of stone | 21 | Pebble Golem | Boulder Fist, Rockslide; Gravel Spray (weaken) | curls into a boulder every fourth round |
+| The Pirate Isles | Old Clackclaw, a giant crab | 25 | Scuttle Crab | Pinch, Crushing Claw; Bubble Spray (weaken) | stinging brine poisons you every third round |
+| The Giants' Land | Frostgut, a hill ogre | 29 | Frost Ogre | Glacier Club, Hill Fall; Frost Belch (weaken) | lifts his club for a big blow every third round |
 
 ## Hints (Robin, 2026-10-31: touching a spot tells what you could meet, not everything)
 

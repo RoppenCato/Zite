@@ -470,7 +470,7 @@ export interface ProgressionData {
   wanderer: { chancePerTick: number; lifeMs: number; moveChance: number; levelsOver: number; hp: number; attack: number; defense: number; xp: number; gold: number };
   /** The world boss (mine, 2026-11-01): how often a tick brings one when none is about, how long it stays, its HP against the area's boss, the least share a hitter gets. */
   link: { codeSeconds: number; linkMinutes: number };
-  worldBoss: { chancePerTick: number; lifeMs: number; hpMult: number; minShare: number };
+  worldBoss: { chancePerTick: number; lifeMs: number; hpMult: number; minShare: number; lands: Record<string, string> };
   /** The notes left on spots: how many a spot keeps, how long one lasts. */
   traces: { perSpace: number; lifeMs: number };
   /** The class meters' cap. */

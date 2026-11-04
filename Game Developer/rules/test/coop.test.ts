@@ -35,7 +35,22 @@ function ready(s: GameState, player: string, patch: Partial<Character> = {}): Ga
 const landOn = (s: GameState, player: string, id: string) => apply(s, { type: 'move', id, player, path: ['s1'] }, makeRng(id), NOW);
 
 describe('the world boss', () => {
-  it('comes with a tick now and then, when none is about: the boss of the highest area anyone has opened, on a wild spot there, with HP for a crowd, for a while', () => {
+  it('is each land\'s own: a boss met nowhere else, as strong as the land\'s gate boss (Robin, 2026-11-04)', () => {
+    const s = newGame({ seed: 'wb', player: 'p1', name: 'Robin', classId: 'warrior' });
+    const gates = new Set(Object.values(s.board.spaces).map((x) => x.boss).filter(Boolean));
+    const met = new Set(Object.values(s.board.areas).flatMap((a) => [...a.mobs, ...a.miniBosses]));
+    for (const [land, id] of Object.entries(WB.lands)) {
+      expect(s.board.areas[land], land).toBeDefined();
+      expect(ENEMIES[id]?.role, id).toBe('boss');
+      expect(gates.has(id), id).toBe(false);
+      expect(met.has(id), id).toBe(false);
+      const gate = Object.values(s.board.spaces).find((x) => x.area === land && x.kind === 'boss' && x.boss && ENEMIES[x.boss]?.role === 'boss')!;
+      expect(ENEMIES[id]!.hp, id).toBe(ENEMIES[gate.boss!]!.hp);
+    }
+    expect(Object.keys(WB.lands)).toHaveLength(7);
+  });
+
+  it('comes with a tick now and then, when none is about: the world boss of the furthest land anyone has opened, on a wild spot there, with HP for a crowd, for a while', () => {
     let s = newGame({ seed: 'wb', player: 'p1', name: 'Robin', classId: 'warrior' });
     s = { ...s, characters: { p1: { ...s.characters.p1!, opened: ['meadows', 'thornwood'] } } };
     const rng = makeRng('ticks');
@@ -52,8 +67,10 @@ describe('the world boss', () => {
     const space = s.board.spaces[found!.space]!;
     expect(space.kind).toBe('normal');
     expect(space.area).toBe('thornwood');
+    // The land's own, never its gate boss (Robin, 2026-11-04).
     const gate = Object.values(s.board.spaces).find((x) => x.area === 'thornwood' && x.kind === 'boss')!;
-    expect(found!.spawn.enemy).toBe(gate.boss);
+    expect(found!.spawn.enemy).toBe('mother-owlbear');
+    expect(found!.spawn.enemy).not.toBe(gate.boss);
     const hp = Math.round(makeEnemy(gate.boss!).maxHp * WB.hpMult);
     expect(found!.spawn).toMatchObject({ kind: 'worldboss', hp, maxHp: hp, hitters: {}, until: now + WB.lifeMs });
     // Only one at a time.

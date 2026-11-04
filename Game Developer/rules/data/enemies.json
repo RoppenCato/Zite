@@ -1806,5 +1806,371 @@
       "text": "Every third round Old Digby heaves his great pick high. Block it.",
       "line": "Old Digby heaves his pick."
     }
+  },
+  "bristleback": {
+    "name": "Old Bristleback",
+    "level": 6,
+    "role": "boss",
+    "hp": 540,
+    "attack": 27,
+    "defense": 11,
+    "xp": 105,
+    "gold": 75,
+    "moves": [
+      {
+        "name": "Tusk Gore",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Stampede",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Old Bristleback snorts: the whole meadow shakes!",
+      "moves": [
+        {
+          "name": "Tusk Gore",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Stampede",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Mud Kick",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round Old Bristleback lowers his tusks to charge. Block it.",
+      "line": "Old Bristleback lowers his tusks."
+    }
+  },
+  "mother-owlbear": {
+    "name": "Mother Owlbear",
+    "level": 10,
+    "role": "boss",
+    "hp": 1356,
+    "attack": 51,
+    "defense": 12,
+    "xp": 245,
+    "gold": 150,
+    "moves": [
+      {
+        "name": "Maul",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Great Hug",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Mother Owlbear rears up, hooting with fury!",
+      "moves": [
+        {
+          "name": "Maul",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Great Hug",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Feather Storm",
+          "power": 1.2,
+          "weight": 1
+        }
+      ]
+    },
+    "trick": {
+      "kind": "deathRoll",
+      "every": 3,
+      "text": "Every third round Mother Owlbear hugs you tight: your hits go soft.",
+      "line": "A bear hug: you are weakened."
+    }
+  },
+  "grandfather-croak": {
+    "name": "Grandfather Croak",
+    "level": 17,
+    "role": "boss",
+    "hp": 3420,
+    "attack": 111,
+    "defense": 20,
+    "xp": 770,
+    "gold": 315,
+    "moves": [
+      {
+        "name": "Tongue Lash",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Belly Bounce",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Grandfather Croak puffs up: the whole bog croaks with him!",
+      "moves": [
+        {
+          "name": "Tongue Lash",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Belly Bounce",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Swamp Spit",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "swarm",
+      "share": 0.03,
+      "max": 0.45,
+      "text": "Grandfather Croak calls the frogs of the bog: more hop in each round, and he hits harder the longer it lasts.",
+      "line": "More frogs hop in."
+    }
+  },
+  "cragheart": {
+    "name": "Old Cragheart",
+    "level": 21,
+    "role": "boss",
+    "hp": 5400,
+    "attack": 167,
+    "defense": 28,
+    "xp": 1190,
+    "gold": 490,
+    "moves": [
+      {
+        "name": "Boulder Fist",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Rockslide",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Old Cragheart cracks open: fire glows inside!",
+      "moves": [
+        {
+          "name": "Boulder Fist",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Rockslide",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Gravel Spray",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "iceShell",
+      "every": 4,
+      "rounds": 2,
+      "mult": 2.5,
+      "text": "Every fourth round Old Cragheart curls into a boulder: hits barely scratch him for two rounds.",
+      "line": "He curls into a boulder. Wait it out."
+    }
+  },
+  "clackclaw": {
+    "name": "Old Clackclaw",
+    "level": 25,
+    "role": "boss",
+    "hp": 6688,
+    "attack": 209,
+    "defense": 32,
+    "xp": 1500,
+    "gold": 620,
+    "moves": [
+      {
+        "name": "Pinch",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Crushing Claw",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Old Clackclaw's shell cracks: he snaps in a fury!",
+      "moves": [
+        {
+          "name": "Pinch",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Crushing Claw",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Bubble Spray",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "fumes",
+      "every": 3,
+      "text": "Every third round Old Clackclaw spits stinging brine: it poisons you.",
+      "line": "Stinging brine: you are poisoned."
+    }
+  },
+  "frostgut": {
+    "name": "Frostgut",
+    "level": 29,
+    "role": "boss",
+    "hp": 9600,
+    "attack": 232,
+    "defense": 40,
+    "xp": 2200,
+    "gold": 860,
+    "moves": [
+      {
+        "name": "Glacier Club",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Hill Fall",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Frostgut roars: the hill shakes under him!",
+      "moves": [
+        {
+          "name": "Glacier Club",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Hill Fall",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Frost Belch",
+          "power": 0.9,
+          "weight": 1,
+          "effect": "weaken"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "charger",
+      "every": 3,
+      "text": "Every third round Frostgut lifts his club high. Block it.",
+      "line": "Frostgut lifts his club."
+    }
+  },
+  "bramley": {
+    "name": "Big Bramley",
+    "level": 14,
+    "role": "boss",
+    "hp": 2178,
+    "attack": 74,
+    "defense": 15,
+    "xp": 490,
+    "gold": 300,
+    "moves": [
+      {
+        "name": "Vine Lash",
+        "power": 1,
+        "weight": 2
+      },
+      {
+        "name": "Windfall",
+        "power": 2,
+        "weight": 1,
+        "charge": true
+      }
+    ],
+    "phase2": {
+      "at": 0.5,
+      "text": "Big Bramley splits open: seeds everywhere!",
+      "moves": [
+        {
+          "name": "Vine Lash",
+          "power": 1,
+          "weight": 2
+        },
+        {
+          "name": "Windfall",
+          "power": 2,
+          "weight": 1,
+          "charge": true
+        },
+        {
+          "name": "Seed Spit",
+          "power": 0.8,
+          "weight": 1,
+          "effect": "poison"
+        }
+      ]
+    },
+    "trick": {
+      "kind": "regrow",
+      "share": 0.015,
+      "text": "Big Bramley grows back each round, unless it burns or is poisoned.",
+      "line": "Big Bramley grows back."
+    }
   }
 }
