@@ -298,10 +298,11 @@ enemy, players }`). The bots meet it like any spawn. In solo play it comes just 
 at the end"; he chose one per land). Seven creatures met nowhere else, each the great one of a creature of its land,
 with that land's gate boss's numbers (level, HP, attack, defense, xp, gold), so it is as strong as before, and its own
 moves and trick (creatures, names and tricks mine; `docs/names.md`). A land with none (Crownhaven, the Kingswood, a grown
-land) never hosts one: the furthest open land that has one does. Until Mitch, AD draws them, each wears its creature's
-look a size up and makes its sounds (`STAND_INS` and `voiceOf` in `client/src/creatures.ts`).
+land) never hosts one: the furthest open land that has one does. Mitch, AD drew them the same day (`assets/world_bosses`,
+each with a second look under half HP, at his scales, so the wide ones run past the screen's edge on purpose); they make
+the sounds of a creature in their land's voice pack (`voiceOf` in `client/src/creatures.ts`) until they have their own.
 
-| Land | World boss | Level | The great one of (its look until drawn) | Moves | Trick |
+| Land | World boss | Level | The great one of | Moves | Trick |
 | --- | --- | --- | --- | --- | --- |
 | Cloverfield Meadows | Old Bristleback, a giant boar | 6 | Wild Tusker | Tusk Gore, Stampede; Mud Kick (weaken) | winds up a charge every third round |
 | Wobblewood Forest | Mother Owlbear, the cub's mother | 10 | Sleepy Owlbear Cub | Maul, Great Hug; Feather Storm | a bear hug weakens you every third round |

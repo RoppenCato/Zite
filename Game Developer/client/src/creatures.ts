@@ -204,6 +204,48 @@ import queenBumblePng from '../../assets/harvest/queen_bumble/queen_bumble.png';
 import queenBumble2Data from '../../assets/harvest/queen_bumble2/queen_bumble2.json';
 import queenBumble2Json from '../../assets/harvest/queen_bumble2/queen_bumble2.json?url';
 import queenBumble2Png from '../../assets/harvest/queen_bumble2/queen_bumble2.png';
+import bristlebackData from '../../assets/world_bosses/bristleback/bristleback.json';
+import bristlebackJson from '../../assets/world_bosses/bristleback/bristleback.json?url';
+import bristlebackPng from '../../assets/world_bosses/bristleback/bristleback.png';
+import bristleback2Data from '../../assets/world_bosses/bristleback2/bristleback2.json';
+import bristleback2Json from '../../assets/world_bosses/bristleback2/bristleback2.json?url';
+import bristleback2Png from '../../assets/world_bosses/bristleback2/bristleback2.png';
+import motherOwlbearData from '../../assets/world_bosses/mother_owlbear/mother_owlbear.json';
+import motherOwlbearJson from '../../assets/world_bosses/mother_owlbear/mother_owlbear.json?url';
+import motherOwlbearPng from '../../assets/world_bosses/mother_owlbear/mother_owlbear.png';
+import motherOwlbear2Data from '../../assets/world_bosses/mother_owlbear2/mother_owlbear2.json';
+import motherOwlbear2Json from '../../assets/world_bosses/mother_owlbear2/mother_owlbear2.json?url';
+import motherOwlbear2Png from '../../assets/world_bosses/mother_owlbear2/mother_owlbear2.png';
+import bramleyData from '../../assets/world_bosses/bramley/bramley.json';
+import bramleyJson from '../../assets/world_bosses/bramley/bramley.json?url';
+import bramleyPng from '../../assets/world_bosses/bramley/bramley.png';
+import bramley2Data from '../../assets/world_bosses/bramley2/bramley2.json';
+import bramley2Json from '../../assets/world_bosses/bramley2/bramley2.json?url';
+import bramley2Png from '../../assets/world_bosses/bramley2/bramley2.png';
+import grandfatherCroakData from '../../assets/world_bosses/grandfather_croak/grandfather_croak.json';
+import grandfatherCroakJson from '../../assets/world_bosses/grandfather_croak/grandfather_croak.json?url';
+import grandfatherCroakPng from '../../assets/world_bosses/grandfather_croak/grandfather_croak.png';
+import grandfatherCroak2Data from '../../assets/world_bosses/grandfather_croak2/grandfather_croak2.json';
+import grandfatherCroak2Json from '../../assets/world_bosses/grandfather_croak2/grandfather_croak2.json?url';
+import grandfatherCroak2Png from '../../assets/world_bosses/grandfather_croak2/grandfather_croak2.png';
+import cragheartData from '../../assets/world_bosses/cragheart/cragheart.json';
+import cragheartJson from '../../assets/world_bosses/cragheart/cragheart.json?url';
+import cragheartPng from '../../assets/world_bosses/cragheart/cragheart.png';
+import cragheart2Data from '../../assets/world_bosses/cragheart2/cragheart2.json';
+import cragheart2Json from '../../assets/world_bosses/cragheart2/cragheart2.json?url';
+import cragheart2Png from '../../assets/world_bosses/cragheart2/cragheart2.png';
+import clackclawData from '../../assets/world_bosses/clackclaw/clackclaw.json';
+import clackclawJson from '../../assets/world_bosses/clackclaw/clackclaw.json?url';
+import clackclawPng from '../../assets/world_bosses/clackclaw/clackclaw.png';
+import clackclaw2Data from '../../assets/world_bosses/clackclaw2/clackclaw2.json';
+import clackclaw2Json from '../../assets/world_bosses/clackclaw2/clackclaw2.json?url';
+import clackclaw2Png from '../../assets/world_bosses/clackclaw2/clackclaw2.png';
+import frostgutData from '../../assets/world_bosses/frostgut/frostgut.json';
+import frostgutJson from '../../assets/world_bosses/frostgut/frostgut.json?url';
+import frostgutPng from '../../assets/world_bosses/frostgut/frostgut.png';
+import frostgut2Data from '../../assets/world_bosses/frostgut2/frostgut2.json';
+import frostgut2Json from '../../assets/world_bosses/frostgut2/frostgut2.json?url';
+import frostgut2Png from '../../assets/world_bosses/frostgut2/frostgut2.png';
 import { clipMs, ensureClips, msBefore, type ActionData } from './clips.ts';
 
 export type FigureAction = 'stand' | 'move' | 'attack1' | 'hit1' | 'die1' | 'defend';
@@ -326,24 +368,31 @@ const CREATURES: Record<string, CreatureFiles> = {
     hovers: true,
     phase2: { key: 'queen_bumble2', png: queenBumble2Png, json: queenBumble2Json, actions: actionsOf(queenBumble2Data) },
   },
+  // Each land's world boss (Mitch, AD, 2026-11-04, wave 7b): his scales, so the wide ones run past the screen's edge on purpose.
+  bristleback: { key: 'bristleback', png: bristlebackPng, json: bristlebackJson, actions: actionsOf(bristlebackData), scale: 1.1429, blowFrame: 5, phase2: { key: 'bristleback2', png: bristleback2Png, json: bristleback2Json, actions: actionsOf(bristleback2Data) } },
+  'mother-owlbear': { key: 'mother_owlbear', png: motherOwlbearPng, json: motherOwlbearJson, actions: actionsOf(motherOwlbearData), scale: 1, blowFrame: 5, phase2: { key: 'mother_owlbear2', png: motherOwlbear2Png, json: motherOwlbear2Json, actions: actionsOf(motherOwlbear2Data) } },
+  bramley: { key: 'bramley', png: bramleyPng, json: bramleyJson, actions: actionsOf(bramleyData), scale: 1.1429, blowFrame: 5, phase2: { key: 'bramley2', png: bramley2Png, json: bramley2Json, actions: actionsOf(bramley2Data) } },
+  'grandfather-croak': { key: 'grandfather_croak', png: grandfatherCroakPng, json: grandfatherCroakJson, actions: actionsOf(grandfatherCroakData), scale: 1.1429, blowFrame: 5, phase2: { key: 'grandfather_croak2', png: grandfatherCroak2Png, json: grandfatherCroak2Json, actions: actionsOf(grandfatherCroak2Data) } },
+  cragheart: { key: 'cragheart', png: cragheartPng, json: cragheartJson, actions: actionsOf(cragheartData), scale: 1.1429, blowFrame: 5, phase2: { key: 'cragheart2', png: cragheart2Png, json: cragheart2Json, actions: actionsOf(cragheart2Data) } },
+  clackclaw: { key: 'clackclaw', png: clackclawPng, json: clackclawJson, actions: actionsOf(clackclawData), scale: 1.1429, blowFrame: 5, phase2: { key: 'clackclaw2', png: clackclaw2Png, json: clackclaw2Json, actions: actionsOf(clackclaw2Data) } },
+  frostgut: { key: 'frostgut', png: frostgutPng, json: frostgutJson, actions: actionsOf(frostgutData), scale: 1.3333, blowFrame: 5, phase2: { key: 'frostgut2', png: frostgut2Png, json: frostgut2Json, actions: actionsOf(frostgut2Data) } },
 };
 
-// Each land's world boss (Robin, 2026-11-04: one per land) wears the look of the creature it is the great one of, bigger,
-// until Mitch, AD draws its own (mine).
-const STAND_INS: Record<string, [string, number]> = {
-  bristleback: ['tusker', 0.9],
-  'mother-owlbear': ['spider-queen', 0.95],
-  bramley: ['ice-golem', 0.85],
-  'grandfather-croak': ['bog-toad', 1],
-  cragheart: ['pebble-golem', 1.1],
-  clackclaw: ['scuttle-crab', 0.9],
-  frostgut: ['frost-ogre', 1],
+// Each land's world boss (2026-11-04) makes the sounds of a creature in its land's own voice pack, which is loaded where
+// it is met, until it has sounds of its own (mine).
+const VOICES: Record<string, string> = {
+  bristleback: 'wolf-alpha',
+  'mother-owlbear': 'spider-queen',
+  bramley: 'ice-golem',
+  'grandfather-croak': 'bog-toad',
+  cragheart: 'pebble-golem',
+  clackclaw: 'scuttle-crab',
+  frostgut: 'frost-ogre',
 };
-for (const [id, [as, scale]] of Object.entries(STAND_INS)) if (!CREATURES[id] && CREATURES[as]) CREATURES[id] = { ...CREATURES[as]!, scale };
 
-/** The creature whose sounds this one uses: a world boss's stand-in lends its voice too, until it has its own. */
+/** The creature whose sounds this one uses: its own, or the one a world boss borrows. */
 export function voiceOf(enemyId: string): string {
-  return STAND_INS[enemyId]?.[0] ?? enemyId;
+  return VOICES[enemyId] ?? enemyId;
 }
 
 /** Queue one creature's atlas; the fight's preload calls it, so only what you meet costs memory (chapter 2, step 1). */
@@ -357,7 +406,7 @@ export function preloadCreature(scene: Phaser.Scene, enemyId: string): void {
 /** Let go of every creature's atlas and clips but these: walking into another area frees the last one's. */
 export function releaseCreatures(game: Phaser.Game, keep: readonly string[]): void {
   const kept = new Set(keep);
-  // An atlas worn by two (a world boss's stand-in) stays while either is kept.
+  // An atlas worn by two stays while either is kept.
   const keptKeys = new Set([...kept].flatMap((id) => (CREATURES[id] ? [CREATURES[id]!.key, ...(CREATURES[id]!.phase2 ? [CREATURES[id]!.phase2!.key] : [])] : [])));
   for (const [id, c] of Object.entries(CREATURES)) {
     if (kept.has(id)) continue;

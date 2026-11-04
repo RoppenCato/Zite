@@ -1959,7 +1959,7 @@
       "kind": "swarm",
       "share": 0.03,
       "max": 0.45,
-      "text": "Grandfather Croak calls the frogs of the bog: more hop in each round, and he hits harder the longer it lasts.",
+      "text": "Grandfather Croak calls the frogs of the bog: he hits harder the longer it lasts.",
       "line": "More frogs hop in."
     }
   },
@@ -2013,7 +2013,7 @@
       "every": 4,
       "rounds": 2,
       "mult": 2.5,
-      "text": "Every fourth round Old Cragheart curls into a boulder: hits barely scratch him for two rounds.",
+      "text": "Every fourth round Old Cragheart curls up: hits barely scratch him for two rounds.",
       "line": "He curls into a boulder. Wait it out."
     }
   },

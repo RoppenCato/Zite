@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "bristleback2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 381,
+    "h": 234
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 381,
+    "h": 234
+   },
+   "sourceSize": {
+    "w": 381,
+    "h": 234
+   },
+   "pivot": {
+    "x": 0.6037,
+    "y": 0.9402
+   }
+  },
+  "bristleback2/attack1/0003": {
+   "frame": {
+    "x": 385,
+    "y": 2,
+    "w": 392,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 392,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 392,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.523,
+    "y": 0.9697
+   }
+  },
+  "bristleback2/attack1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 238,
+    "w": 382,
+    "h": 229
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 382,
+    "h": 229
+   },
+   "sourceSize": {
+    "w": 382,
+    "h": 229
+   },
+   "pivot": {
+    "x": 0.5733,
+    "y": 0.9651
+   }
+  },
+  "bristleback2/attack1/0002": {
+   "frame": {
+    "x": 386,
+    "y": 238,
+    "w": 388,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 388,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 388,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.5232,
+    "y": 0.9649
+   }
+  },
+  "bristleback2/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 469,
+    "w": 397,
+    "h": 227
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 397,
+    "h": 227
+   },
+   "sourceSize": {
+    "w": 397,
+    "h": 227
+   },
+   "pivot": {
+    "x": 0.597,
+    "y": 0.9604
+   }
+  },
+  "bristleback2/stand/0003": {
+   "frame": {
+    "x": 401,
+    "y": 469,
+    "w": 384,
+    "h": 223
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 223
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 223
+   },
+   "pivot": {
+    "x": 0.5573,
+    "y": 0.9776
+   }
+  },
+  "bristleback2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 698,
+    "w": 376,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 376,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 376,
+    "h": 221
+   },
+   "pivot": {
+    "x": 0.5266,
+    "y": 0.9683
+   }
+  },
+  "bristleback2/stand/0001": {
+   "frame": {
+    "x": 380,
+    "y": 698,
+    "w": 371,
+    "h": 219
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 371,
+    "h": 219
+   },
+   "sourceSize": {
+    "w": 371,
+    "h": 219
+   },
+   "pivot": {
+    "x": 0.5337,
+    "y": 0.9772
+   }
+  },
+  "bristleback2/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 921,
+    "w": 399,
+    "h": 219
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 399,
+    "h": 219
+   },
+   "sourceSize": {
+    "w": 399,
+    "h": 219
+   },
+   "pivot": {
+    "x": 0.5664,
+    "y": 0.9772
+   }
+  },
+  "bristleback2/attack1/0007": {
+   "frame": {
+    "x": 403,
+    "y": 921,
+    "w": 412,
+    "h": 216
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 412,
+    "h": 216
+   },
+   "sourceSize": {
+    "w": 412,
+    "h": 216
+   },
+   "pivot": {
+    "x": 0.5801,
+    "y": 0.9676
+   }
+  },
+  "bristleback2/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1142,
+    "w": 388,
+    "h": 215
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 388,
+    "h": 215
+   },
+   "sourceSize": {
+    "w": 388,
+    "h": 215
+   },
+   "pivot": {
+    "x": 0.549,
+    "y": 0.9767
+   }
+  }
+ },
+ "meta": {
+  "image": "bristleback2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bristleback2/stand/0001",
+     "w": 371,
+     "h": 219,
+     "origin": {
+      "x": 198,
+      "y": 214
+     },
+     "delay": 120,
+     "lt": {
+      "x": -198,
+      "y": -214
+     },
+     "rb": {
+      "x": 173,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -214
+     }
+    },
+    {
+     "name": "bristleback2/stand/0002",
+     "w": 388,
+     "h": 215,
+     "origin": {
+      "x": 213,
+      "y": 210
+     },
+     "delay": 120,
+     "lt": {
+      "x": -213,
+      "y": -210
+     },
+     "rb": {
+      "x": 175,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -210
+     }
+    },
+    {
+     "name": "bristleback2/stand/0003",
+     "w": 384,
+     "h": 223,
+     "origin": {
+      "x": 214,
+      "y": 218
+     },
+     "delay": 120,
+     "lt": {
+      "x": -214,
+      "y": -218
+     },
+     "rb": {
+      "x": 170,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -218
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bristleback2/attack1/0001",
+     "w": 376,
+     "h": 221,
+     "origin": {
+      "x": 198,
+      "y": 214
+     },
+     "delay": 90,
+     "lt": {
+      "x": -198,
+      "y": -214
+     },
+     "rb": {
+      "x": 178,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -214
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0002",
+     "w": 388,
+     "h": 228,
+     "origin": {
+      "x": 203,
+      "y": 220
+     },
+     "delay": 110,
+     "lt": {
+      "x": -203,
+      "y": -220
+     },
+     "rb": {
+      "x": 185,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -220
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0003",
+     "w": 392,
+     "h": 231,
+     "origin": {
+      "x": 205,
+      "y": 224
+     },
+     "delay": 110,
+     "lt": {
+      "x": -205,
+      "y": -224
+     },
+     "rb": {
+      "x": 187,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0004",
+     "w": 382,
+     "h": 229,
+     "origin": {
+      "x": 219,
+      "y": 221
+     },
+     "delay": 60,
+     "lt": {
+      "x": -219,
+      "y": -221
+     },
+     "rb": {
+      "x": 163,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0005",
+     "w": 381,
+     "h": 234,
+     "origin": {
+      "x": 230,
+      "y": 220
+     },
+     "delay": 190,
+     "lt": {
+      "x": -230,
+      "y": -220
+     },
+     "rb": {
+      "x": 151,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -220
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0006",
+     "w": 397,
+     "h": 227,
+     "origin": {
+      "x": 237,
+      "y": 218
+     },
+     "delay": 80,
+     "lt": {
+      "x": -237,
+      "y": -218
+     },
+     "rb": {
+      "x": 160,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -218
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0007",
+     "w": 412,
+     "h": 216,
+     "origin": {
+      "x": 239,
+      "y": 209
+     },
+     "delay": 80,
+     "lt": {
+      "x": -239,
+      "y": -209
+     },
+     "rb": {
+      "x": 173,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -209
+     }
+    },
+    {
+     "name": "bristleback2/attack1/0008",
+     "w": 399,
+     "h": 219,
+     "origin": {
+      "x": 226,
+      "y": 214
+     },
+     "delay": 80,
+     "lt": {
+      "x": -226,
+      "y": -214
+     },
+     "rb": {
+      "x": 173,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -214
+     }
+    }
+   ]
+  }
+ }
+}

@@ -77,7 +77,7 @@ Each has moves with names the player reads a round ahead ("next: Sting"); an eff
 
 **The world bosses** (Robin, 2026-11-04: one per land; names mine), each met only as a world boss:
 
-| Land | World boss | Level | The great one of (its look until drawn) | Moves | Trick |
+| Land | World boss | Level | The great one of | Moves | Trick |
 | --- | --- | --- | --- | --- | --- |
 | Cloverfield Meadows | Old Bristleback, a giant boar | 6 | Wild Tusker | Tusk Gore, Stampede; Mud Kick (weaken) | winds up a charge every third round |
 | Wobblewood Forest | Mother Owlbear, the cub's mother | 10 | Sleepy Owlbear Cub | Maul, Great Hug; Feather Storm | a bear hug weakens you every third round |

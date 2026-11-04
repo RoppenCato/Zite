@@ -1,0 +1,163 @@
+{
+ "bristleback": {
+  "id": "bristleback",
+  "title": "Old Bristleback",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 111,
+  "phase2": {
+   "atlas": "bristleback2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 84
+  }
+ },
+ "mother_owlbear": {
+  "id": "mother-owlbear",
+  "title": "Mother Owlbear",
+  "px": 1,
+  "scale": 1,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 141,
+  "phase2": {
+   "atlas": "mother_owlbear2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 98
+  }
+ },
+ "bramley": {
+  "id": "bramley",
+  "title": "Big Bramley",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 100,
+  "phase2": {
+   "atlas": "bramley2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 68
+  }
+ },
+ "grandfather_croak": {
+  "id": "grandfather-croak",
+  "title": "Grandfather Croak",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 129,
+  "phase2": {
+   "atlas": "grandfather_croak2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 96
+  }
+ },
+ "cragheart": {
+  "id": "cragheart",
+  "title": "Old Cragheart",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 127,
+  "phase2": {
+   "atlas": "cragheart2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 94
+  }
+ },
+ "clackclaw": {
+  "id": "clackclaw",
+  "title": "Old Clackclaw",
+  "px": 0.875,
+  "scale": 1.1429,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 113,
+  "phase2": {
+   "atlas": "clackclaw2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 74
+  }
+ },
+ "frostgut": {
+  "id": "frostgut",
+  "title": "Frostgut",
+  "px": 0.75,
+  "scale": 1.3333,
+  "blowFrame": 5,
+  "frames": {
+   "stand": 3,
+   "move": 3,
+   "attack1": 8,
+   "hit1": 1,
+   "die1": 5
+  },
+  "kb": 104,
+  "phase2": {
+   "atlas": "frostgut2",
+   "frames": {
+    "stand": 3,
+    "attack1": 8
+   },
+   "kb": 66
+  }
+ }
+}

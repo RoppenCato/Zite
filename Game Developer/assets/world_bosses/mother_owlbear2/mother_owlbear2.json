@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "mother_owlbear2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 331,
+    "h": 376
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 376
+   },
+   "sourceSize": {
+    "w": 331,
+    "h": 376
+   },
+   "pivot": {
+    "x": 0.713,
+    "y": 0.9495
+   }
+  },
+  "mother_owlbear2/attack1/0008": {
+   "frame": {
+    "x": 335,
+    "y": 2,
+    "w": 284,
+    "h": 371
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 371
+   },
+   "sourceSize": {
+    "w": 284,
+    "h": 371
+   },
+   "pivot": {
+    "x": 0.5669,
+    "y": 0.9811
+   }
+  },
+  "mother_owlbear2/stand/0003": {
+   "frame": {
+    "x": 621,
+    "y": 2,
+    "w": 279,
+    "h": 369
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 279,
+    "h": 369
+   },
+   "sourceSize": {
+    "w": 279,
+    "h": 369
+   },
+   "pivot": {
+    "x": 0.5663,
+    "y": 0.981
+   }
+  },
+  "mother_owlbear2/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 380,
+    "w": 336,
+    "h": 369
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 336,
+    "h": 369
+   },
+   "sourceSize": {
+    "w": 336,
+    "h": 369
+   },
+   "pivot": {
+    "x": 0.6845,
+    "y": 0.9702
+   }
+  },
+  "mother_owlbear2/attack1/0004": {
+   "frame": {
+    "x": 340,
+    "y": 380,
+    "w": 314,
+    "h": 363
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 314,
+    "h": 363
+   },
+   "sourceSize": {
+    "w": 314,
+    "h": 363
+   },
+   "pivot": {
+    "x": 0.6497,
+    "y": 0.9752
+   }
+  },
+  "mother_owlbear2/attack1/0007": {
+   "frame": {
+    "x": 656,
+    "y": 380,
+    "w": 318,
+    "h": 357
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 318,
+    "h": 357
+   },
+   "sourceSize": {
+    "w": 318,
+    "h": 357
+   },
+   "pivot": {
+    "x": 0.6164,
+    "y": 0.9776
+   }
+  },
+  "mother_owlbear2/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 751,
+    "w": 289,
+    "h": 344
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 289,
+    "h": 344
+   },
+   "sourceSize": {
+    "w": 289,
+    "h": 344
+   },
+   "pivot": {
+    "x": 0.5675,
+    "y": 0.9797
+   }
+  },
+  "mother_owlbear2/attack1/0003": {
+   "frame": {
+    "x": 293,
+    "y": 751,
+    "w": 269,
+    "h": 341
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 269,
+    "h": 341
+   },
+   "sourceSize": {
+    "w": 269,
+    "h": 341
+   },
+   "pivot": {
+    "x": 0.4684,
+    "y": 0.9824
+   }
+  },
+  "mother_owlbear2/stand/0001": {
+   "frame": {
+    "x": 564,
+    "y": 751,
+    "w": 284,
+    "h": 337
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 284,
+    "h": 337
+   },
+   "sourceSize": {
+    "w": 284,
+    "h": 337
+   },
+   "pivot": {
+    "x": 0.5669,
+    "y": 0.9792
+   }
+  },
+  "mother_owlbear2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1097,
+    "w": 258,
+    "h": 334
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 258,
+    "h": 334
+   },
+   "sourceSize": {
+    "w": 258,
+    "h": 334
+   },
+   "pivot": {
+    "x": 0.4961,
+    "y": 0.976
+   }
+  },
+  "mother_owlbear2/attack1/0002": {
+   "frame": {
+    "x": 262,
+    "y": 1097,
+    "w": 268,
+    "h": 333
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 268,
+    "h": 333
+   },
+   "sourceSize": {
+    "w": 268,
+    "h": 333
+   },
+   "pivot": {
+    "x": 0.4776,
+    "y": 0.979
+   }
+  }
+ },
+ "meta": {
+  "image": "mother_owlbear2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 1
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "mother_owlbear2/stand/0001",
+     "w": 284,
+     "h": 337,
+     "origin": {
+      "x": 161,
+      "y": 330
+     },
+     "delay": 120,
+     "lt": {
+      "x": -161,
+      "y": -330
+     },
+     "rb": {
+      "x": 123,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -330
+     }
+    },
+    {
+     "name": "mother_owlbear2/stand/0002",
+     "w": 289,
+     "h": 344,
+     "origin": {
+      "x": 164,
+      "y": 337
+     },
+     "delay": 120,
+     "lt": {
+      "x": -164,
+      "y": -337
+     },
+     "rb": {
+      "x": 125,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -337
+     }
+    },
+    {
+     "name": "mother_owlbear2/stand/0003",
+     "w": 279,
+     "h": 369,
+     "origin": {
+      "x": 158,
+      "y": 362
+     },
+     "delay": 120,
+     "lt": {
+      "x": -158,
+      "y": -362
+     },
+     "rb": {
+      "x": 121,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -362
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "mother_owlbear2/attack1/0001",
+     "w": 258,
+     "h": 334,
+     "origin": {
+      "x": 128,
+      "y": 326
+     },
+     "delay": 90,
+     "lt": {
+      "x": -128,
+      "y": -326
+     },
+     "rb": {
+      "x": 130,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -326
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0002",
+     "w": 268,
+     "h": 333,
+     "origin": {
+      "x": 128,
+      "y": 326
+     },
+     "delay": 110,
+     "lt": {
+      "x": -128,
+      "y": -326
+     },
+     "rb": {
+      "x": 140,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -326
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0003",
+     "w": 269,
+     "h": 341,
+     "origin": {
+      "x": 126,
+      "y": 335
+     },
+     "delay": 110,
+     "lt": {
+      "x": -126,
+      "y": -335
+     },
+     "rb": {
+      "x": 143,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -335
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0004",
+     "w": 314,
+     "h": 363,
+     "origin": {
+      "x": 204,
+      "y": 354
+     },
+     "delay": 60,
+     "lt": {
+      "x": -204,
+      "y": -354
+     },
+     "rb": {
+      "x": 110,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -354
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0005",
+     "w": 331,
+     "h": 376,
+     "origin": {
+      "x": 236,
+      "y": 357
+     },
+     "delay": 190,
+     "lt": {
+      "x": -236,
+      "y": -357
+     },
+     "rb": {
+      "x": 95,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -357
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0006",
+     "w": 336,
+     "h": 369,
+     "origin": {
+      "x": 230,
+      "y": 358
+     },
+     "delay": 80,
+     "lt": {
+      "x": -230,
+      "y": -358
+     },
+     "rb": {
+      "x": 106,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -358
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0007",
+     "w": 318,
+     "h": 357,
+     "origin": {
+      "x": 196,
+      "y": 349
+     },
+     "delay": 80,
+     "lt": {
+      "x": -196,
+      "y": -349
+     },
+     "rb": {
+      "x": 122,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -349
+     }
+    },
+    {
+     "name": "mother_owlbear2/attack1/0008",
+     "w": 284,
+     "h": 371,
+     "origin": {
+      "x": 161,
+      "y": 364
+     },
+     "delay": 80,
+     "lt": {
+      "x": -161,
+      "y": -364
+     },
+     "rb": {
+      "x": 123,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -364
+     }
+    }
+   ]
+  }
+ }
+}

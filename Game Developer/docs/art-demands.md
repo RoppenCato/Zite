@@ -182,10 +182,11 @@ themes reuses the art under new names: nothing new to draw, a tint at most.
 
 Robin, 2026-11-04: the world boss was the land's gate boss (King Goo in the Meadows), which he found weird; he chose one
 of its own for each land. Seven creatures, each the great one of a creature of its land, bigger than a gate boss on
-screen (they share HP with a crowd), the five monster actions and a second phase (`stand` and `attack1`) if it fits. Until
-each lands, the game draws its creature's look a size up. Ids are the rules' (`enemies.json`).
+screen (they share HP with a crowd), the five monster actions and a second phase (`stand` and `attack1`) if it fits. Ids
+are the rules' (`enemies.json`). **Delivered** by Mitch, AD the same day, all seven with a second look under half HP, the
+gate bosses' set of clips (`assets/world_bosses/NOTES.md`), and in the game.
 
-| Id | Creature | Its land, level | Wears now |
+| Id | Creature | Its land, level | Wore until drawn |
 | --- | --- | --- | --- |
 | `bristleback` | Old Bristleback, a giant boar, bristles like a hedge, old scars | Cloverfield Meadows, 6 | Wild Tusker |
 | `mother-owlbear` | Mother Owlbear, the Sleepy Owlbear Cub's mother, wide awake and cross | Wobblewood Forest, 10 | Sleepy Owlbear Cub |

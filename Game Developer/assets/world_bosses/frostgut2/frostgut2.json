@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "frostgut2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 227,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 227,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 227,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.3436,
+    "y": 0.975
+   }
+  },
+  "frostgut2/attack1/0005": {
+   "frame": {
+    "x": 231,
+    "y": 2,
+    "w": 343,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 343,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 343,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.7114,
+    "y": 0.9643
+   }
+  },
+  "frostgut2/attack1/0004": {
+   "frame": {
+    "x": 576,
+    "y": 2,
+    "w": 321,
+    "h": 276
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 321,
+    "h": 276
+   },
+   "sourceSize": {
+    "w": 321,
+    "h": 276
+   },
+   "pivot": {
+    "x": 0.6729,
+    "y": 0.971
+   }
+  },
+  "frostgut2/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 284,
+    "w": 242,
+    "h": 273
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 242,
+    "h": 273
+   },
+   "sourceSize": {
+    "w": 242,
+    "h": 273
+   },
+   "pivot": {
+    "x": 0.3264,
+    "y": 0.978
+   }
+  },
+  "frostgut2/attack1/0006": {
+   "frame": {
+    "x": 246,
+    "y": 284,
+    "w": 352,
+    "h": 273
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 352,
+    "h": 273
+   },
+   "sourceSize": {
+    "w": 352,
+    "h": 273
+   },
+   "pivot": {
+    "x": 0.7045,
+    "y": 0.9707
+   }
+  },
+  "frostgut2/attack1/0003": {
+   "frame": {
+    "x": 600,
+    "y": 284,
+    "w": 244,
+    "h": 272
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 244,
+    "h": 272
+   },
+   "sourceSize": {
+    "w": 244,
+    "h": 272
+   },
+   "pivot": {
+    "x": 0.3238,
+    "y": 0.9853
+   }
+  },
+  "frostgut2/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 559,
+    "w": 231,
+    "h": 269
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 231,
+    "h": 269
+   },
+   "sourceSize": {
+    "w": 231,
+    "h": 269
+   },
+   "pivot": {
+    "x": 0.5325,
+    "y": 0.974
+   }
+  },
+  "frostgut2/stand/0001": {
+   "frame": {
+    "x": 235,
+    "y": 559,
+    "w": 235,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5319,
+    "y": 0.9736
+   }
+  },
+  "frostgut2/attack1/0008": {
+   "frame": {
+    "x": 472,
+    "y": 559,
+    "w": 235,
+    "h": 265
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 235,
+    "h": 265
+   },
+   "sourceSize": {
+    "w": 235,
+    "h": 265
+   },
+   "pivot": {
+    "x": 0.5319,
+    "y": 0.9736
+   }
+  },
+  "frostgut2/stand/0002": {
+   "frame": {
+    "x": 709,
+    "y": 559,
+    "w": 239,
+    "h": 259
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 239,
+    "h": 259
+   },
+   "sourceSize": {
+    "w": 239,
+    "h": 259
+   },
+   "pivot": {
+    "x": 0.5356,
+    "y": 0.9768
+   }
+  },
+  "frostgut2/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 830,
+    "w": 303,
+    "h": 259
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 303,
+    "h": 259
+   },
+   "sourceSize": {
+    "w": 303,
+    "h": 259
+   },
+   "pivot": {
+    "x": 0.6337,
+    "y": 0.973
+   }
+  }
+ },
+ "meta": {
+  "image": "frostgut2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.75
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "frostgut2/stand/0001",
+     "w": 235,
+     "h": 265,
+     "origin": {
+      "x": 125,
+      "y": 258
+     },
+     "delay": 120,
+     "lt": {
+      "x": -125,
+      "y": -258
+     },
+     "rb": {
+      "x": 110,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -258
+     }
+    },
+    {
+     "name": "frostgut2/stand/0002",
+     "w": 239,
+     "h": 259,
+     "origin": {
+      "x": 128,
+      "y": 253
+     },
+     "delay": 120,
+     "lt": {
+      "x": -128,
+      "y": -253
+     },
+     "rb": {
+      "x": 111,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -253
+     }
+    },
+    {
+     "name": "frostgut2/stand/0003",
+     "w": 231,
+     "h": 269,
+     "origin": {
+      "x": 123,
+      "y": 262
+     },
+     "delay": 120,
+     "lt": {
+      "x": -123,
+      "y": -262
+     },
+     "rb": {
+      "x": 108,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -262
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "frostgut2/attack1/0001",
+     "w": 227,
+     "h": 280,
+     "origin": {
+      "x": 78,
+      "y": 273
+     },
+     "delay": 90,
+     "lt": {
+      "x": -78,
+      "y": -273
+     },
+     "rb": {
+      "x": 149,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -273
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0002",
+     "w": 242,
+     "h": 273,
+     "origin": {
+      "x": 79,
+      "y": 267
+     },
+     "delay": 110,
+     "lt": {
+      "x": -79,
+      "y": -267
+     },
+     "rb": {
+      "x": 163,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -267
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0003",
+     "w": 244,
+     "h": 272,
+     "origin": {
+      "x": 79,
+      "y": 268
+     },
+     "delay": 110,
+     "lt": {
+      "x": -79,
+      "y": -268
+     },
+     "rb": {
+      "x": 165,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -268
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0004",
+     "w": 321,
+     "h": 276,
+     "origin": {
+      "x": 216,
+      "y": 268
+     },
+     "delay": 60,
+     "lt": {
+      "x": -216,
+      "y": -268
+     },
+     "rb": {
+      "x": 105,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -268
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0005",
+     "w": 343,
+     "h": 280,
+     "origin": {
+      "x": 244,
+      "y": 270
+     },
+     "delay": 190,
+     "lt": {
+      "x": -244,
+      "y": -270
+     },
+     "rb": {
+      "x": 99,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -270
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0006",
+     "w": 352,
+     "h": 273,
+     "origin": {
+      "x": 248,
+      "y": 265
+     },
+     "delay": 80,
+     "lt": {
+      "x": -248,
+      "y": -265
+     },
+     "rb": {
+      "x": 104,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -265
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0007",
+     "w": 303,
+     "h": 259,
+     "origin": {
+      "x": 192,
+      "y": 252
+     },
+     "delay": 80,
+     "lt": {
+      "x": -192,
+      "y": -252
+     },
+     "rb": {
+      "x": 111,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -252
+     }
+    },
+    {
+     "name": "frostgut2/attack1/0008",
+     "w": 235,
+     "h": 265,
+     "origin": {
+      "x": 125,
+      "y": 258
+     },
+     "delay": 80,
+     "lt": {
+      "x": -125,
+      "y": -258
+     },
+     "rb": {
+      "x": 110,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -258
+     }
+    }
+   ]
+  }
+ }
+}

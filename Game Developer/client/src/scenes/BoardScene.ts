@@ -2693,9 +2693,10 @@ export class BoardScene extends Phaser.Scene {
     // A new area: what was only for the last one leaves memory (chapter 2, step 1). A fight loads its own.
     if (area && area.id !== this.artArea && !this.scene.isActive('fight')) {
       this.artArea = area.id;
-      // The land's voices, by its theme or its own name, whichever pack exists (2026-11-03).
+      // The land's voices, by its theme or its own name, whichever pack exists (2026-11-03). Honeyhill's pack goes by the
+      // land's name, not its id (2026-11-04: its creatures were silent).
       audio.ensure(this, `creatures-${area.theme}`);
-      audio.ensure(this, `creatures-${area.id}`);
+      audio.ensure(this, `creatures-${area.id === 'frostpeak' ? 'honeyhill' : area.id}`);
       releaseCreatures(this.game, [...area.mobs, ...area.miniBosses, ...Object.values(this.game_.state.board.spaces).filter((s) => s.area === area.id && s.boss).map((s) => s.boss!)]);
       releaseBackdrops(this.game, area.theme);
     }

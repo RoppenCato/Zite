@@ -1,0 +1,978 @@
+{
+ "frames": {
+  "clackclaw/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 331,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 331,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.4592,
+    "y": 0.9913
+   }
+  },
+  "clackclaw/attack1/0002": {
+   "frame": {
+    "x": 335,
+    "y": 2,
+    "w": 333,
+    "h": 230
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 230
+   },
+   "sourceSize": {
+    "w": 333,
+    "h": 230
+   },
+   "pivot": {
+    "x": 0.4625,
+    "y": 0.987
+   }
+  },
+  "clackclaw/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 235,
+    "w": 375,
+    "h": 224
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 375,
+    "h": 224
+   },
+   "sourceSize": {
+    "w": 375,
+    "h": 224
+   },
+   "pivot": {
+    "x": 0.5707,
+    "y": 0.9643
+   }
+  },
+  "clackclaw/attack1/0004": {
+   "frame": {
+    "x": 379,
+    "y": 235,
+    "w": 368,
+    "h": 217
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 368,
+    "h": 217
+   },
+   "sourceSize": {
+    "w": 368,
+    "h": 217
+   },
+   "pivot": {
+    "x": 0.5462,
+    "y": 0.9862
+   }
+  },
+  "clackclaw/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 461,
+    "w": 382,
+    "h": 216
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 382,
+    "h": 216
+   },
+   "sourceSize": {
+    "w": 382,
+    "h": 216
+   },
+   "pivot": {
+    "x": 0.5628,
+    "y": 0.9815
+   }
+  },
+  "clackclaw/stand/0003": {
+   "frame": {
+    "x": 386,
+    "y": 461,
+    "w": 350,
+    "h": 208
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 350,
+    "h": 208
+   },
+   "sourceSize": {
+    "w": 350,
+    "h": 208
+   },
+   "pivot": {
+    "x": 0.5143,
+    "y": 1.0048
+   }
+  },
+  "clackclaw/die1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 679,
+    "w": 357,
+    "h": 206
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 357,
+    "h": 206
+   },
+   "sourceSize": {
+    "w": 357,
+    "h": 206
+   },
+   "pivot": {
+    "x": 0.5154,
+    "y": 1.0049
+   }
+  },
+  "clackclaw/stand/0001": {
+   "frame": {
+    "x": 361,
+    "y": 679,
+    "w": 357,
+    "h": 204
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 357,
+    "h": 204
+   },
+   "sourceSize": {
+    "w": 357,
+    "h": 204
+   },
+   "pivot": {
+    "x": 0.5154,
+    "y": 1.0049
+   }
+  },
+  "clackclaw/move/0001": {
+   "frame": {
+    "x": 2,
+    "y": 887,
+    "w": 357,
+    "h": 204
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 357,
+    "h": 204
+   },
+   "sourceSize": {
+    "w": 357,
+    "h": 204
+   },
+   "pivot": {
+    "x": 0.5154,
+    "y": 1.0196
+   }
+  },
+  "clackclaw/attack1/0008": {
+   "frame": {
+    "x": 361,
+    "y": 887,
+    "w": 357,
+    "h": 204
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 357,
+    "h": 204
+   },
+   "sourceSize": {
+    "w": 357,
+    "h": 204
+   },
+   "pivot": {
+    "x": 0.5154,
+    "y": 1.0049
+   }
+  },
+  "clackclaw/move/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1093,
+    "w": 358,
+    "h": 203
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 358,
+    "h": 203
+   },
+   "sourceSize": {
+    "w": 358,
+    "h": 203
+   },
+   "pivot": {
+    "x": 0.5251,
+    "y": 0.9951
+   }
+  },
+  "clackclaw/move/0003": {
+   "frame": {
+    "x": 362,
+    "y": 1093,
+    "w": 374,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 374,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 374,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.5134,
+    "y": 1
+   }
+  },
+  "clackclaw/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1298,
+    "w": 342,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 342,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 342,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4883,
+    "y": 0.995
+   }
+  },
+  "clackclaw/attack1/0007": {
+   "frame": {
+    "x": 346,
+    "y": 1298,
+    "w": 380,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 380,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 380,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.5395,
+    "y": 0.995
+   }
+  },
+  "clackclaw/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1502,
+    "w": 363,
+    "h": 201
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 363,
+    "h": 201
+   },
+   "sourceSize": {
+    "w": 363,
+    "h": 201
+   },
+   "pivot": {
+    "x": 0.5179,
+    "y": 1.005
+   }
+  },
+  "clackclaw/hit1/0001": {
+   "frame": {
+    "x": 367,
+    "y": 1502,
+    "w": 379,
+    "h": 201
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 379,
+    "h": 201
+   },
+   "sourceSize": {
+    "w": 379,
+    "h": 201
+   },
+   "pivot": {
+    "x": 0.5172,
+    "y": 0.9552
+   }
+  },
+  "clackclaw/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1705,
+    "w": 406,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 406,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 406,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5271,
+    "y": 0.959
+   }
+  },
+  "clackclaw/die1/0003": {
+   "frame": {
+    "x": 410,
+    "y": 1705,
+    "w": 455,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 455,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 455,
+    "h": 132
+   },
+   "pivot": {
+    "x": 0.5363,
+    "y": 0.8561
+   }
+  },
+  "clackclaw/die1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 1902,
+    "w": 274,
+    "h": 45
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 274,
+    "h": 45
+   },
+   "sourceSize": {
+    "w": 274,
+    "h": 45
+   },
+   "pivot": {
+    "x": 0.3613,
+    "y": 0.1111
+   }
+  },
+  "clackclaw/die1/0004": {
+   "frame": {
+    "x": 278,
+    "y": 1902,
+    "w": 274,
+    "h": 41
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 274,
+    "h": 41
+   },
+   "sourceSize": {
+    "w": 274,
+    "h": 41
+   },
+   "pivot": {
+    "x": 0.3504,
+    "y": 0.7805
+   }
+  }
+ },
+ "meta": {
+  "image": "clackclaw.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 220,
+   "loop": true,
+   "frames": [
+    {
+     "name": "clackclaw/stand/0001",
+     "w": 357,
+     "h": 204,
+     "origin": {
+      "x": 184,
+      "y": 205
+     },
+     "delay": 220,
+     "lt": {
+      "x": -184,
+      "y": -205
+     },
+     "rb": {
+      "x": 173,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -205
+     }
+    },
+    {
+     "name": "clackclaw/stand/0002",
+     "w": 363,
+     "h": 201,
+     "origin": {
+      "x": 188,
+      "y": 202
+     },
+     "delay": 220,
+     "lt": {
+      "x": -188,
+      "y": -202
+     },
+     "rb": {
+      "x": 175,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -202
+     }
+    },
+    {
+     "name": "clackclaw/stand/0003",
+     "w": 350,
+     "h": 208,
+     "origin": {
+      "x": 180,
+      "y": 209
+     },
+     "delay": 220,
+     "lt": {
+      "x": -180,
+      "y": -209
+     },
+     "rb": {
+      "x": 170,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -209
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 160,
+   "loop": true,
+   "frames": [
+    {
+     "name": "clackclaw/move/0001",
+     "w": 357,
+     "h": 204,
+     "origin": {
+      "x": 184,
+      "y": 208
+     },
+     "delay": 160,
+     "lt": {
+      "x": -184,
+      "y": -208
+     },
+     "rb": {
+      "x": 173,
+      "y": -4
+     },
+     "head": {
+      "x": 0,
+      "y": -208
+     }
+    },
+    {
+     "name": "clackclaw/move/0002",
+     "w": 358,
+     "h": 203,
+     "origin": {
+      "x": 188,
+      "y": 202
+     },
+     "delay": 160,
+     "lt": {
+      "x": -188,
+      "y": -202
+     },
+     "rb": {
+      "x": 170,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -202
+     }
+    },
+    {
+     "name": "clackclaw/move/0003",
+     "w": 374,
+     "h": 202,
+     "origin": {
+      "x": 192,
+      "y": 202
+     },
+     "delay": 160,
+     "lt": {
+      "x": -192,
+      "y": -202
+     },
+     "rb": {
+      "x": 182,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -202
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "clackclaw/attack1/0001",
+     "w": 342,
+     "h": 202,
+     "origin": {
+      "x": 167,
+      "y": 201
+     },
+     "delay": 120,
+     "lt": {
+      "x": -167,
+      "y": -201
+     },
+     "rb": {
+      "x": 175,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -201
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0002",
+     "w": 333,
+     "h": 230,
+     "origin": {
+      "x": 154,
+      "y": 227
+     },
+     "delay": 140,
+     "lt": {
+      "x": -154,
+      "y": -227
+     },
+     "rb": {
+      "x": 179,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -227
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0003",
+     "w": 331,
+     "h": 231,
+     "origin": {
+      "x": 152,
+      "y": 229
+     },
+     "delay": 150,
+     "lt": {
+      "x": -152,
+      "y": -229
+     },
+     "rb": {
+      "x": 179,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0004",
+     "w": 368,
+     "h": 217,
+     "origin": {
+      "x": 201,
+      "y": 214
+     },
+     "delay": 67,
+     "lt": {
+      "x": -201,
+      "y": -214
+     },
+     "rb": {
+      "x": 167,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -214
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0005",
+     "w": 375,
+     "h": 224,
+     "origin": {
+      "x": 214,
+      "y": 216
+     },
+     "delay": 220,
+     "lt": {
+      "x": -214,
+      "y": -216
+     },
+     "rb": {
+      "x": 161,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -216
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0006",
+     "w": 382,
+     "h": 216,
+     "origin": {
+      "x": 215,
+      "y": 212
+     },
+     "delay": 90,
+     "lt": {
+      "x": -215,
+      "y": -212
+     },
+     "rb": {
+      "x": 167,
+      "y": 4
+     },
+     "head": {
+      "x": 0,
+      "y": -212
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0007",
+     "w": 380,
+     "h": 202,
+     "origin": {
+      "x": 205,
+      "y": 201
+     },
+     "delay": 90,
+     "lt": {
+      "x": -205,
+      "y": -201
+     },
+     "rb": {
+      "x": 175,
+      "y": 1
+     },
+     "head": {
+      "x": 0,
+      "y": -201
+     }
+    },
+    {
+     "name": "clackclaw/attack1/0008",
+     "w": 357,
+     "h": 204,
+     "origin": {
+      "x": 184,
+      "y": 205
+     },
+     "delay": 90,
+     "lt": {
+      "x": -184,
+      "y": -205
+     },
+     "rb": {
+      "x": 173,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -205
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "clackclaw/hit1/0001",
+     "w": 379,
+     "h": 201,
+     "origin": {
+      "x": 196,
+      "y": 192
+     },
+     "delay": 600,
+     "lt": {
+      "x": -196,
+      "y": -192
+     },
+     "rb": {
+      "x": 183,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -192
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 110,
+   "loop": false,
+   "frames": [
+    {
+     "name": "clackclaw/die1/0001",
+     "w": 357,
+     "h": 206,
+     "origin": {
+      "x": 184,
+      "y": 207
+     },
+     "delay": 110,
+     "lt": {
+      "x": -184,
+      "y": -207
+     },
+     "rb": {
+      "x": 173,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -207
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "clackclaw/die1/0002",
+     "w": 406,
+     "h": 195,
+     "origin": {
+      "x": 214,
+      "y": 187
+     },
+     "delay": 110,
+     "lt": {
+      "x": -214,
+      "y": -187
+     },
+     "rb": {
+      "x": 192,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -187
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "clackclaw/die1/0003",
+     "w": 455,
+     "h": 132,
+     "origin": {
+      "x": 244,
+      "y": 113
+     },
+     "delay": 110,
+     "lt": {
+      "x": -244,
+      "y": -113
+     },
+     "rb": {
+      "x": 211,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -113
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "clackclaw/die1/0004",
+     "w": 274,
+     "h": 41,
+     "origin": {
+      "x": 96,
+      "y": 32
+     },
+     "delay": 110,
+     "lt": {
+      "x": -96,
+      "y": -32
+     },
+     "rb": {
+      "x": 178,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -32
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "clackclaw/die1/0005",
+     "w": 274,
+     "h": 45,
+     "origin": {
+      "x": 99,
+      "y": 5
+     },
+     "delay": 110,
+     "lt": {
+      "x": -99,
+      "y": -5
+     },
+     "rb": {
+      "x": 175,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -5
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

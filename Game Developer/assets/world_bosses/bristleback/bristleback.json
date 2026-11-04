@@ -1,0 +1,978 @@
+{
+ "frames": {
+  "bristleback/attack1/0003": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 338,
+    "h": 231
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 338,
+    "h": 231
+   },
+   "sourceSize": {
+    "w": 338,
+    "h": 231
+   },
+   "pivot": {
+    "x": 0.4467,
+    "y": 0.9697
+   }
+  },
+  "bristleback/attack1/0002": {
+   "frame": {
+    "x": 342,
+    "y": 2,
+    "w": 339,
+    "h": 228
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 339,
+    "h": 228
+   },
+   "sourceSize": {
+    "w": 339,
+    "h": 228
+   },
+   "pivot": {
+    "x": 0.4543,
+    "y": 0.9649
+   }
+  },
+  "bristleback/attack1/0005": {
+   "frame": {
+    "x": 683,
+    "y": 2,
+    "w": 332,
+    "h": 219
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 332,
+    "h": 219
+   },
+   "sourceSize": {
+    "w": 332,
+    "h": 219
+   },
+   "pivot": {
+    "x": 0.5452,
+    "y": 0.9361
+   }
+  },
+  "bristleback/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 235,
+    "w": 333,
+    "h": 213
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 213
+   },
+   "sourceSize": {
+    "w": 333,
+    "h": 213
+   },
+   "pivot": {
+    "x": 0.4655,
+    "y": 0.9671
+   }
+  },
+  "bristleback/attack1/0004": {
+   "frame": {
+    "x": 337,
+    "y": 235,
+    "w": 332,
+    "h": 212
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 332,
+    "h": 212
+   },
+   "sourceSize": {
+    "w": 332,
+    "h": 212
+   },
+   "pivot": {
+    "x": 0.509,
+    "y": 0.9623
+   }
+  },
+  "bristleback/attack1/0006": {
+   "frame": {
+    "x": 671,
+    "y": 235,
+    "w": 341,
+    "h": 211
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 341,
+    "h": 211
+   },
+   "sourceSize": {
+    "w": 341,
+    "h": 211
+   },
+   "pivot": {
+    "x": 0.5308,
+    "y": 0.9573
+   }
+  },
+  "bristleback/stand/0003": {
+   "frame": {
+    "x": 2,
+    "y": 450,
+    "w": 322,
+    "h": 205
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 322,
+    "h": 205
+   },
+   "sourceSize": {
+    "w": 322,
+    "h": 205
+   },
+   "pivot": {
+    "x": 0.472,
+    "y": 0.9756
+   }
+  },
+  "bristleback/stand/0001": {
+   "frame": {
+    "x": 326,
+    "y": 450,
+    "w": 328,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 328,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 328,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4726,
+    "y": 0.9752
+   }
+  },
+  "bristleback/move/0001": {
+   "frame": {
+    "x": 656,
+    "y": 450,
+    "w": 328,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 328,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 328,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4726,
+    "y": 0.9901
+   }
+  },
+  "bristleback/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 657,
+    "w": 328,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 328,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 328,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4726,
+    "y": 0.9752
+   }
+  },
+  "bristleback/die1/0001": {
+   "frame": {
+    "x": 332,
+    "y": 657,
+    "w": 328,
+    "h": 202
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 328,
+    "h": 202
+   },
+   "sourceSize": {
+    "w": 328,
+    "h": 202
+   },
+   "pivot": {
+    "x": 0.4726,
+    "y": 0.9752
+   }
+  },
+  "bristleback/move/0002": {
+   "frame": {
+    "x": 662,
+    "y": 657,
+    "w": 336,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 336,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 336,
+    "h": 200
+   },
+   "pivot": {
+    "x": 0.4673,
+    "y": 0.97
+   }
+  },
+  "bristleback/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 861,
+    "w": 345,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 345,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 345,
+    "h": 200
+   },
+   "pivot": {
+    "x": 0.4986,
+    "y": 0.965
+   }
+  },
+  "bristleback/move/0003": {
+   "frame": {
+    "x": 349,
+    "y": 861,
+    "w": 336,
+    "h": 199
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 336,
+    "h": 199
+   },
+   "sourceSize": {
+    "w": 336,
+    "h": 199
+   },
+   "pivot": {
+    "x": 0.4851,
+    "y": 0.9698
+   }
+  },
+  "bristleback/hit1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 1063,
+    "w": 352,
+    "h": 199
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 352,
+    "h": 199
+   },
+   "sourceSize": {
+    "w": 352,
+    "h": 199
+   },
+   "pivot": {
+    "x": 0.4574,
+    "y": 0.9347
+   }
+  },
+  "bristleback/stand/0002": {
+   "frame": {
+    "x": 356,
+    "y": 1063,
+    "w": 333,
+    "h": 198
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 198
+   },
+   "sourceSize": {
+    "w": 333,
+    "h": 198
+   },
+   "pivot": {
+    "x": 0.4745,
+    "y": 0.9747
+   }
+  },
+  "bristleback/die1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1264,
+    "w": 375,
+    "h": 182
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 375,
+    "h": 182
+   },
+   "sourceSize": {
+    "w": 375,
+    "h": 182
+   },
+   "pivot": {
+    "x": 0.4747,
+    "y": 0.9396
+   }
+  },
+  "bristleback/die1/0003": {
+   "frame": {
+    "x": 379,
+    "y": 1264,
+    "w": 419,
+    "h": 147
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 419,
+    "h": 147
+   },
+   "sourceSize": {
+    "w": 419,
+    "h": 147
+   },
+   "pivot": {
+    "x": 0.4821,
+    "y": 0.8707
+   }
+  },
+  "bristleback/die1/0004": {
+   "frame": {
+    "x": 2,
+    "y": 1448,
+    "w": 273,
+    "h": 58
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 273,
+    "h": 58
+   },
+   "sourceSize": {
+    "w": 273,
+    "h": 58
+   },
+   "pivot": {
+    "x": 0.2271,
+    "y": 0.7414
+   }
+  },
+  "bristleback/die1/0005": {
+   "frame": {
+    "x": 277,
+    "y": 1448,
+    "w": 247,
+    "h": 45
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 247,
+    "h": 45
+   },
+   "sourceSize": {
+    "w": 247,
+    "h": 45
+   },
+   "pivot": {
+    "x": 0.2713,
+    "y": 0.1111
+   }
+  }
+ },
+ "meta": {
+  "image": "bristleback.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 220,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bristleback/stand/0001",
+     "w": 328,
+     "h": 202,
+     "origin": {
+      "x": 155,
+      "y": 197
+     },
+     "delay": 220,
+     "lt": {
+      "x": -155,
+      "y": -197
+     },
+     "rb": {
+      "x": 173,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -197
+     }
+    },
+    {
+     "name": "bristleback/stand/0002",
+     "w": 333,
+     "h": 198,
+     "origin": {
+      "x": 158,
+      "y": 193
+     },
+     "delay": 220,
+     "lt": {
+      "x": -158,
+      "y": -193
+     },
+     "rb": {
+      "x": 175,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -193
+     }
+    },
+    {
+     "name": "bristleback/stand/0003",
+     "w": 322,
+     "h": 205,
+     "origin": {
+      "x": 152,
+      "y": 200
+     },
+     "delay": 220,
+     "lt": {
+      "x": -152,
+      "y": -200
+     },
+     "rb": {
+      "x": 170,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -200
+     }
+    }
+   ]
+  },
+  "move": {
+   "delay": 160,
+   "loop": true,
+   "frames": [
+    {
+     "name": "bristleback/move/0001",
+     "w": 328,
+     "h": 202,
+     "origin": {
+      "x": 155,
+      "y": 200
+     },
+     "delay": 160,
+     "lt": {
+      "x": -155,
+      "y": -200
+     },
+     "rb": {
+      "x": 173,
+      "y": 2
+     },
+     "head": {
+      "x": 0,
+      "y": -200
+     }
+    },
+    {
+     "name": "bristleback/move/0002",
+     "w": 336,
+     "h": 200,
+     "origin": {
+      "x": 157,
+      "y": 194
+     },
+     "delay": 160,
+     "lt": {
+      "x": -157,
+      "y": -194
+     },
+     "rb": {
+      "x": 179,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -194
+     }
+    },
+    {
+     "name": "bristleback/move/0003",
+     "w": 336,
+     "h": 199,
+     "origin": {
+      "x": 163,
+      "y": 193
+     },
+     "delay": 160,
+     "lt": {
+      "x": -163,
+      "y": -193
+     },
+     "rb": {
+      "x": 173,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -193
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 90,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bristleback/attack1/0001",
+     "w": 333,
+     "h": 213,
+     "origin": {
+      "x": 155,
+      "y": 206
+     },
+     "delay": 120,
+     "lt": {
+      "x": -155,
+      "y": -206
+     },
+     "rb": {
+      "x": 178,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -206
+     }
+    },
+    {
+     "name": "bristleback/attack1/0002",
+     "w": 339,
+     "h": 228,
+     "origin": {
+      "x": 154,
+      "y": 220
+     },
+     "delay": 140,
+     "lt": {
+      "x": -154,
+      "y": -220
+     },
+     "rb": {
+      "x": 185,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -220
+     }
+    },
+    {
+     "name": "bristleback/attack1/0003",
+     "w": 338,
+     "h": 231,
+     "origin": {
+      "x": 151,
+      "y": 224
+     },
+     "delay": 150,
+     "lt": {
+      "x": -151,
+      "y": -224
+     },
+     "rb": {
+      "x": 187,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -224
+     }
+    },
+    {
+     "name": "bristleback/attack1/0004",
+     "w": 332,
+     "h": 212,
+     "origin": {
+      "x": 169,
+      "y": 204
+     },
+     "delay": 67,
+     "lt": {
+      "x": -169,
+      "y": -204
+     },
+     "rb": {
+      "x": 163,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -204
+     }
+    },
+    {
+     "name": "bristleback/attack1/0005",
+     "w": 332,
+     "h": 219,
+     "origin": {
+      "x": 181,
+      "y": 205
+     },
+     "delay": 220,
+     "lt": {
+      "x": -181,
+      "y": -205
+     },
+     "rb": {
+      "x": 151,
+      "y": 14
+     },
+     "head": {
+      "x": 0,
+      "y": -205
+     }
+    },
+    {
+     "name": "bristleback/attack1/0006",
+     "w": 341,
+     "h": 211,
+     "origin": {
+      "x": 181,
+      "y": 202
+     },
+     "delay": 90,
+     "lt": {
+      "x": -181,
+      "y": -202
+     },
+     "rb": {
+      "x": 160,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -202
+     }
+    },
+    {
+     "name": "bristleback/attack1/0007",
+     "w": 345,
+     "h": 200,
+     "origin": {
+      "x": 172,
+      "y": 193
+     },
+     "delay": 90,
+     "lt": {
+      "x": -172,
+      "y": -193
+     },
+     "rb": {
+      "x": 173,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -193
+     }
+    },
+    {
+     "name": "bristleback/attack1/0008",
+     "w": 328,
+     "h": 202,
+     "origin": {
+      "x": 155,
+      "y": 197
+     },
+     "delay": 90,
+     "lt": {
+      "x": -155,
+      "y": -197
+     },
+     "rb": {
+      "x": 173,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -197
+     }
+    }
+   ]
+  },
+  "hit1": {
+   "delay": 600,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bristleback/hit1/0001",
+     "w": 352,
+     "h": 199,
+     "origin": {
+      "x": 161,
+      "y": 186
+     },
+     "delay": 600,
+     "lt": {
+      "x": -161,
+      "y": -186
+     },
+     "rb": {
+      "x": 191,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -186
+     }
+    }
+   ]
+  },
+  "die1": {
+   "delay": 110,
+   "loop": false,
+   "frames": [
+    {
+     "name": "bristleback/die1/0001",
+     "w": 328,
+     "h": 202,
+     "origin": {
+      "x": 155,
+      "y": 197
+     },
+     "delay": 110,
+     "lt": {
+      "x": -155,
+      "y": -197
+     },
+     "rb": {
+      "x": 173,
+      "y": 5
+     },
+     "head": {
+      "x": 0,
+      "y": -197
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bristleback/die1/0002",
+     "w": 375,
+     "h": 182,
+     "origin": {
+      "x": 178,
+      "y": 171
+     },
+     "delay": 110,
+     "lt": {
+      "x": -178,
+      "y": -171
+     },
+     "rb": {
+      "x": 197,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -171
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bristleback/die1/0003",
+     "w": 419,
+     "h": 147,
+     "origin": {
+      "x": 202,
+      "y": 128
+     },
+     "delay": 110,
+     "lt": {
+      "x": -202,
+      "y": -128
+     },
+     "rb": {
+      "x": 217,
+      "y": 19
+     },
+     "head": {
+      "x": 0,
+      "y": -128
+     },
+     "a0": 255,
+     "a1": 255
+    },
+    {
+     "name": "bristleback/die1/0004",
+     "w": 273,
+     "h": 58,
+     "origin": {
+      "x": 62,
+      "y": 43
+     },
+     "delay": 110,
+     "lt": {
+      "x": -62,
+      "y": -43
+     },
+     "rb": {
+      "x": 211,
+      "y": 15
+     },
+     "head": {
+      "x": 0,
+      "y": -43
+     },
+     "a0": 255,
+     "a1": 140
+    },
+    {
+     "name": "bristleback/die1/0005",
+     "w": 247,
+     "h": 45,
+     "origin": {
+      "x": 67,
+      "y": 5
+     },
+     "delay": 110,
+     "lt": {
+      "x": -67,
+      "y": -5
+     },
+     "rb": {
+      "x": 180,
+      "y": 40
+     },
+     "head": {
+      "x": 0,
+      "y": -5
+     },
+     "a0": 140,
+     "a1": 0
+    }
+   ]
+  }
+ }
+}

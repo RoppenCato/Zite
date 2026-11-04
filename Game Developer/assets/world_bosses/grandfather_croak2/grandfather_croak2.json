@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "grandfather_croak2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 526,
+    "h": 261
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 526,
+    "h": 261
+   },
+   "sourceSize": {
+    "w": 526,
+    "h": 261
+   },
+   "pivot": {
+    "x": 0.6084,
+    "y": 0.9502
+   }
+  },
+  "grandfather_croak2/attack1/0004": {
+   "frame": {
+    "x": 530,
+    "y": 2,
+    "w": 435,
+    "h": 252
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 435,
+    "h": 252
+   },
+   "sourceSize": {
+    "w": 435,
+    "h": 252
+   },
+   "pivot": {
+    "x": 0.508,
+    "y": 0.9643
+   }
+  },
+  "grandfather_croak2/attack1/0006": {
+   "frame": {
+    "x": 2,
+    "y": 265,
+    "w": 503,
+    "h": 251
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 503,
+    "h": 251
+   },
+   "sourceSize": {
+    "w": 503,
+    "h": 251
+   },
+   "pivot": {
+    "x": 0.5746,
+    "y": 0.9641
+   }
+  },
+  "grandfather_croak2/stand/0003": {
+   "frame": {
+    "x": 507,
+    "y": 265,
+    "w": 364,
+    "h": 244
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 364,
+    "h": 244
+   },
+   "sourceSize": {
+    "w": 364,
+    "h": 244
+   },
+   "pivot": {
+    "x": 0.4011,
+    "y": 0.9672
+   }
+  },
+  "grandfather_croak2/stand/0001": {
+   "frame": {
+    "x": 2,
+    "y": 518,
+    "w": 371,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 371,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 371,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.4016,
+    "y": 0.9667
+   }
+  },
+  "grandfather_croak2/attack1/0008": {
+   "frame": {
+    "x": 375,
+    "y": 518,
+    "w": 371,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 371,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 371,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.4016,
+    "y": 0.9667
+   }
+  },
+  "grandfather_croak2/attack1/0007": {
+   "frame": {
+    "x": 2,
+    "y": 760,
+    "w": 414,
+    "h": 237
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 414,
+    "h": 237
+   },
+   "sourceSize": {
+    "w": 414,
+    "h": 237
+   },
+   "pivot": {
+    "x": 0.4565,
+    "y": 0.9662
+   }
+  },
+  "grandfather_croak2/stand/0002": {
+   "frame": {
+    "x": 418,
+    "y": 760,
+    "w": 378,
+    "h": 236
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 378,
+    "h": 236
+   },
+   "sourceSize": {
+    "w": 378,
+    "h": 236
+   },
+   "pivot": {
+    "x": 0.4048,
+    "y": 0.9661
+   }
+  },
+  "grandfather_croak2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 999,
+    "w": 377,
+    "h": 235
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 377,
+    "h": 235
+   },
+   "sourceSize": {
+    "w": 377,
+    "h": 235
+   },
+   "pivot": {
+    "x": 0.4032,
+    "y": 0.9617
+   }
+  },
+  "grandfather_croak2/attack1/0003": {
+   "frame": {
+    "x": 381,
+    "y": 999,
+    "w": 384,
+    "h": 230
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 384,
+    "h": 230
+   },
+   "sourceSize": {
+    "w": 384,
+    "h": 230
+   },
+   "pivot": {
+    "x": 0.3984,
+    "y": 0.9609
+   }
+  },
+  "grandfather_croak2/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 1236,
+    "w": 386,
+    "h": 229
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 386,
+    "h": 229
+   },
+   "sourceSize": {
+    "w": 386,
+    "h": 229
+   },
+   "pivot": {
+    "x": 0.4016,
+    "y": 0.9563
+   }
+  }
+ },
+ "meta": {
+  "image": "grandfather_croak2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "grandfather_croak2/stand/0001",
+     "w": 371,
+     "h": 240,
+     "origin": {
+      "x": 149,
+      "y": 232
+     },
+     "delay": 120,
+     "lt": {
+      "x": -149,
+      "y": -232
+     },
+     "rb": {
+      "x": 222,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -232
+     }
+    },
+    {
+     "name": "grandfather_croak2/stand/0002",
+     "w": 378,
+     "h": 236,
+     "origin": {
+      "x": 153,
+      "y": 228
+     },
+     "delay": 120,
+     "lt": {
+      "x": -153,
+      "y": -228
+     },
+     "rb": {
+      "x": 225,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -228
+     }
+    },
+    {
+     "name": "grandfather_croak2/stand/0003",
+     "w": 364,
+     "h": 244,
+     "origin": {
+      "x": 146,
+      "y": 236
+     },
+     "delay": 120,
+     "lt": {
+      "x": -146,
+      "y": -236
+     },
+     "rb": {
+      "x": 218,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -236
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "grandfather_croak2/attack1/0001",
+     "w": 377,
+     "h": 235,
+     "origin": {
+      "x": 152,
+      "y": 226
+     },
+     "delay": 90,
+     "lt": {
+      "x": -152,
+      "y": -226
+     },
+     "rb": {
+      "x": 225,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -226
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0002",
+     "w": 386,
+     "h": 229,
+     "origin": {
+      "x": 155,
+      "y": 219
+     },
+     "delay": 110,
+     "lt": {
+      "x": -155,
+      "y": -219
+     },
+     "rb": {
+      "x": 231,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -219
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0003",
+     "w": 384,
+     "h": 230,
+     "origin": {
+      "x": 153,
+      "y": 221
+     },
+     "delay": 110,
+     "lt": {
+      "x": -153,
+      "y": -221
+     },
+     "rb": {
+      "x": 231,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -221
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0004",
+     "w": 435,
+     "h": 252,
+     "origin": {
+      "x": 221,
+      "y": 243
+     },
+     "delay": 60,
+     "lt": {
+      "x": -221,
+      "y": -243
+     },
+     "rb": {
+      "x": 214,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -243
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0005",
+     "w": 526,
+     "h": 261,
+     "origin": {
+      "x": 320,
+      "y": 248
+     },
+     "delay": 190,
+     "lt": {
+      "x": -320,
+      "y": -248
+     },
+     "rb": {
+      "x": 206,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -248
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0006",
+     "w": 503,
+     "h": 251,
+     "origin": {
+      "x": 289,
+      "y": 242
+     },
+     "delay": 80,
+     "lt": {
+      "x": -289,
+      "y": -242
+     },
+     "rb": {
+      "x": 214,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -242
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0007",
+     "w": 414,
+     "h": 237,
+     "origin": {
+      "x": 189,
+      "y": 229
+     },
+     "delay": 80,
+     "lt": {
+      "x": -189,
+      "y": -229
+     },
+     "rb": {
+      "x": 225,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -229
+     }
+    },
+    {
+     "name": "grandfather_croak2/attack1/0008",
+     "w": 371,
+     "h": 240,
+     "origin": {
+      "x": 149,
+      "y": 232
+     },
+     "delay": 80,
+     "lt": {
+      "x": -149,
+      "y": -232
+     },
+     "rb": {
+      "x": 222,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -232
+     }
+    }
+   ]
+  }
+ }
+}

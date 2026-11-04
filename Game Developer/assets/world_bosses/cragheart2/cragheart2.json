@@ -1,0 +1,536 @@
+{
+ "frames": {
+  "cragheart2/attack1/0005": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 340,
+    "h": 341
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 340,
+    "h": 341
+   },
+   "sourceSize": {
+    "w": 340,
+    "h": 341
+   },
+   "pivot": {
+    "x": 0.7147,
+    "y": 0.9472
+   }
+  },
+  "cragheart2/stand/0001": {
+   "frame": {
+    "x": 344,
+    "y": 2,
+    "w": 308,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 308,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 308,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.5487,
+    "y": 0.9717
+   }
+  },
+  "cragheart2/attack1/0004": {
+   "frame": {
+    "x": 654,
+    "y": 2,
+    "w": 313,
+    "h": 318
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 313,
+    "h": 318
+   },
+   "sourceSize": {
+    "w": 313,
+    "h": 318
+   },
+   "pivot": {
+    "x": 0.6613,
+    "y": 0.9654
+   }
+  },
+  "cragheart2/attack1/0001": {
+   "frame": {
+    "x": 2,
+    "y": 345,
+    "w": 240,
+    "h": 315
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 315
+   },
+   "sourceSize": {
+    "w": 240,
+    "h": 315
+   },
+   "pivot": {
+    "x": 0.4708,
+    "y": 0.9683
+   }
+  },
+  "cragheart2/attack1/0006": {
+   "frame": {
+    "x": 244,
+    "y": 345,
+    "w": 338,
+    "h": 315
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 338,
+    "h": 315
+   },
+   "sourceSize": {
+    "w": 338,
+    "h": 315
+   },
+   "pivot": {
+    "x": 0.6953,
+    "y": 0.9651
+   }
+  },
+  "cragheart2/stand/0003": {
+   "frame": {
+    "x": 584,
+    "y": 345,
+    "w": 303,
+    "h": 309
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 303,
+    "h": 309
+   },
+   "sourceSize": {
+    "w": 303,
+    "h": 309
+   },
+   "pivot": {
+    "x": 0.5479,
+    "y": 0.9709
+   }
+  },
+  "cragheart2/attack1/0008": {
+   "frame": {
+    "x": 2,
+    "y": 662,
+    "w": 308,
+    "h": 304
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 308,
+    "h": 304
+   },
+   "sourceSize": {
+    "w": 308,
+    "h": 304
+   },
+   "pivot": {
+    "x": 0.5487,
+    "y": 0.9704
+   }
+  },
+  "cragheart2/stand/0002": {
+   "frame": {
+    "x": 312,
+    "y": 662,
+    "w": 314,
+    "h": 299
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 314,
+    "h": 299
+   },
+   "sourceSize": {
+    "w": 314,
+    "h": 299
+   },
+   "pivot": {
+    "x": 0.5478,
+    "y": 0.9699
+   }
+  },
+  "cragheart2/attack1/0007": {
+   "frame": {
+    "x": 628,
+    "y": 662,
+    "w": 325,
+    "h": 299
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 325,
+    "h": 299
+   },
+   "sourceSize": {
+    "w": 325,
+    "h": 299
+   },
+   "pivot": {
+    "x": 0.6185,
+    "y": 0.9666
+   }
+  },
+  "cragheart2/attack1/0002": {
+   "frame": {
+    "x": 2,
+    "y": 968,
+    "w": 249,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 249,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 249,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.4378,
+    "y": 0.9727
+   }
+  },
+  "cragheart2/attack1/0003": {
+   "frame": {
+    "x": 253,
+    "y": 968,
+    "w": 250,
+    "h": 293
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 250,
+    "h": 293
+   },
+   "sourceSize": {
+    "w": 250,
+    "h": 293
+   },
+   "pivot": {
+    "x": 0.428,
+    "y": 0.9761
+   }
+  }
+ },
+ "meta": {
+  "image": "cragheart2.png",
+  "size": {
+   "w": 1024,
+   "h": 2048
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 0.875
+ },
+ "actions": {
+  "stand": {
+   "delay": 120,
+   "loop": true,
+   "frames": [
+    {
+     "name": "cragheart2/stand/0001",
+     "w": 308,
+     "h": 318,
+     "origin": {
+      "x": 169,
+      "y": 309
+     },
+     "delay": 120,
+     "lt": {
+      "x": -169,
+      "y": -309
+     },
+     "rb": {
+      "x": 139,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -309
+     }
+    },
+    {
+     "name": "cragheart2/stand/0002",
+     "w": 314,
+     "h": 299,
+     "origin": {
+      "x": 172,
+      "y": 290
+     },
+     "delay": 120,
+     "lt": {
+      "x": -172,
+      "y": -290
+     },
+     "rb": {
+      "x": 142,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -290
+     }
+    },
+    {
+     "name": "cragheart2/stand/0003",
+     "w": 303,
+     "h": 309,
+     "origin": {
+      "x": 166,
+      "y": 300
+     },
+     "delay": 120,
+     "lt": {
+      "x": -166,
+      "y": -300
+     },
+     "rb": {
+      "x": 137,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -300
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "cragheart2/attack1/0001",
+     "w": 240,
+     "h": 315,
+     "origin": {
+      "x": 113,
+      "y": 305
+     },
+     "delay": 90,
+     "lt": {
+      "x": -113,
+      "y": -305
+     },
+     "rb": {
+      "x": 127,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -305
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0002",
+     "w": 249,
+     "h": 293,
+     "origin": {
+      "x": 109,
+      "y": 285
+     },
+     "delay": 110,
+     "lt": {
+      "x": -109,
+      "y": -285
+     },
+     "rb": {
+      "x": 140,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -285
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0003",
+     "w": 250,
+     "h": 293,
+     "origin": {
+      "x": 107,
+      "y": 286
+     },
+     "delay": 110,
+     "lt": {
+      "x": -107,
+      "y": -286
+     },
+     "rb": {
+      "x": 143,
+      "y": 7
+     },
+     "head": {
+      "x": 0,
+      "y": -286
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0004",
+     "w": 313,
+     "h": 318,
+     "origin": {
+      "x": 207,
+      "y": 307
+     },
+     "delay": 60,
+     "lt": {
+      "x": -207,
+      "y": -307
+     },
+     "rb": {
+      "x": 106,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -307
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0005",
+     "w": 340,
+     "h": 341,
+     "origin": {
+      "x": 243,
+      "y": 323
+     },
+     "delay": 190,
+     "lt": {
+      "x": -243,
+      "y": -323
+     },
+     "rb": {
+      "x": 97,
+      "y": 18
+     },
+     "head": {
+      "x": 0,
+      "y": -323
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0006",
+     "w": 338,
+     "h": 315,
+     "origin": {
+      "x": 235,
+      "y": 304
+     },
+     "delay": 80,
+     "lt": {
+      "x": -235,
+      "y": -304
+     },
+     "rb": {
+      "x": 103,
+      "y": 11
+     },
+     "head": {
+      "x": 0,
+      "y": -304
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0007",
+     "w": 325,
+     "h": 299,
+     "origin": {
+      "x": 201,
+      "y": 289
+     },
+     "delay": 80,
+     "lt": {
+      "x": -201,
+      "y": -289
+     },
+     "rb": {
+      "x": 124,
+      "y": 10
+     },
+     "head": {
+      "x": 0,
+      "y": -289
+     }
+    },
+    {
+     "name": "cragheart2/attack1/0008",
+     "w": 308,
+     "h": 304,
+     "origin": {
+      "x": 169,
+      "y": 295
+     },
+     "delay": 80,
+     "lt": {
+      "x": -169,
+      "y": -295
+     },
+     "rb": {
+      "x": 139,
+      "y": 9
+     },
+     "head": {
+      "x": 0,
+      "y": -295
+     }
+    }
+   ]
+  }
+ }
+}
