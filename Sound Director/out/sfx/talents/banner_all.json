@@ -1,0 +1,13 @@
+{
+  "name": "banner_all",
+  "category": "talents",
+  "gain": 0.924,
+  "use": "Raise Every Banner, the capstone: three banners planted one after another, the cloth snapping wide, a horn chord rising over them. 1.3 s.",
+  "variations": [
+    {
+      "file": "banner_all_1.wav",
+      "seconds": 1.303,
+      "peak_dbfs": -1
+    }
+  ]
+}

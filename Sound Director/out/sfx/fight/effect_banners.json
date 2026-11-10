@@ -1,0 +1,13 @@
+{
+  "name": "effect_banners",
+  "category": "fight",
+  "gain": 0.57,
+  "use": "banners standing: two flaps and two bells.",
+  "variations": [
+    {
+      "file": "effect_banners_1.wav",
+      "seconds": 0.421,
+      "peak_dbfs": -1
+    }
+  ]
+}

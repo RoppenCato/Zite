@@ -30,3 +30,6 @@
 - 2026-11-03: committed on main (Robin's yes), not pushed.
 - 2026-11-03: fill the holes (`sfx/lands2/`): 90 voices and surges, 9 effects, board and steps; nine rebuilt (too low, too high, too thin); a wrong path to the wet splats (`oga_wet_squish/files/impsplat/`) had silenced the splat in the slime's and King Goo's deaths and the blood slash: fixed and re-rendered. Packed by `sfx/lands2/_pack.js`. First load about 650 KB.
 - 2026-11-03: the music unblocked by Robin's keep: `meadows-fight`, `king-goo`, `title` (`music/meadows/`), and the Dream (`music/dream/dream.rb`) with its five sounds in ui-spots; all at -17 to -18 LUFS.
+- 2026-11-03, evening: committed on main, not pushed.
+- 2026-11-03: Robin: "fight good, Goo good, title good, Dream good". All four kept.
+- 2026-11-10: the Warlord tree (Robin's yes, Miles, GD's ask): seven talent sounds, three cues, the map's Paladin ids replaced by the Warlord's; all passed on the first render.

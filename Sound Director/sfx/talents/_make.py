@@ -98,8 +98,9 @@ MAP = {
   # their own sounds, already in the game
   **{i: A + i for i in ["heavy-blow", "execute", "shield-bash", "shield-wall", "backstab", "eviscerate", "shadowstep", "pickpocket", "arcane-shield", "fireball", "meteor", "volley", "aimed-shot", "trap", "hawk", "mark"]},
   # the Knight's trees (fight and fight-talents only: fight-classes does not load for him)
-  "holy-strike": T + "holy-hit", "judgement": T + "holy-hit", "pal-avenger": T + "holy-hit", "pal-exorcism": T + "holy-blast", "pal-consecrate": T + "holy-hit", "pal-miracle": "fight/revive",
-  "last-light": "fight/revive", "reckless": T + "cleave", "blood-price": T + "roar", "bloodbath": T + "cleave", "ber-cleave": T + "cleave", "ber-frenzy": T + "roar", "ber-rampage": T + "cleave",
+  "war-valor": T + "banner-valor", "war-dread": T + "banner-dread", "war-war": T + "banner-war", "war-all": T + "banner-all",
+  "war-cry": T + "war-cry", "war-hold": T + "hold", "war-roar": T + "roar",   # the Warlord, replacing the Paladin (Robin, 2026-11-10)
+  "reckless": T + "cleave", "blood-price": T + "roar", "bloodbath": T + "cleave", "ber-cleave": T + "cleave", "ber-frenzy": T + "roar", "ber-rampage": T + "cleave",
   "shield-slam": A + "shield-bash", "kni-charge": A + "shield-bash", "iron-retort": "fight/guard-counter", "bulwark": A + "shield-wall", "kni-rampart": A + "shield-wall", "kni-fortress": A + "shield-wall", "kni-taunt": A + "war-cry",
   # the Wizard's
   "arcane-bolt": T + "arcane-bolt", "overflow": A + "mana-shield", "spl-thrust": T + "arcane-bolt", "detonate": T + "fire-small", "wiz-scorch": T + "fire-small", "wiz-pillar": A + "fireball", "wiz-firestorm": A + "meteor", "wiz-phoenix": "fight/revive",
@@ -122,7 +123,8 @@ items = data if isinstance(data, list) else data.get("abilities", [dict(id=k, **
 pressed = {x["id"] for x in items if not x.get("rule")}
 print("pressed", len(pressed), "mapped", len(MAP), "missing:", sorted(pressed - set(MAP)), "not in the game:", sorted(set(MAP) - pressed))
 used = {v for v in MAP.values() if v.startswith(T)}
-fams = {T + k.replace("_", "-") for k in F} | {T + "blood", T + "magic-power"}                 # blood is written outside this spec (sfx/talents/blood.rb)
+EXTRA = ["blood", "magic_power", "banner_valor", "banner_dread", "banner_war", "banner_all", "war_cry", "hold", "roar"]   # written outside this spec
+fams = {T + k.replace("_", "-") for k in F} | {T + k.replace("_", "-") for k in EXTRA}                 # blood is written outside this spec (sfx/talents/blood.rb)
 assert used <= fams, used - fams
 if fams - used: print("families no talent uses now (kept in the sprite):", sorted(fams - used))
 for k, (name, s) in enumerate(F.items()):
@@ -130,7 +132,7 @@ for k, (name, s) in enumerate(F.items()):
 open(os.path.join(HERE, "_list.txt"), "w").write("\n".join(F) + "\n")
 lv = {n: {"target": s["target"], "max": s["max"], "use": s["desc"]} for n, s in F.items()}
 old = json.load(open(os.path.join(HERE, "_levels.json")))
-for k in ("blood", "magic_power"): lv[k] = old[k]
+for k in EXTRA: lv[k] = old[k]
 json.dump(lv, open(os.path.join(HERE, "_levels.json"), "w"), indent=2)
 os.makedirs(os.path.join(ROOT, "out", "sfx", "talents", "game"), exist_ok=True)
 json.dump(dict(sorted(MAP.items())), open(os.path.join(ROOT, "out", "sfx", "talents", "game", "talent-map.json"), "w"), indent=1)

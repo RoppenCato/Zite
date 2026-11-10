@@ -1,0 +1,13 @@
+{
+  "name": "war_cry",
+  "category": "talents",
+  "gain": 0.677,
+  "use": "War Cry: Robin's war cry pick from the Survival game, a rallying shout, with a heavy hit under it.",
+  "variations": [
+    {
+      "file": "war_cry_1.wav",
+      "seconds": 0.757,
+      "peak_dbfs": -1
+    }
+  ]
+}

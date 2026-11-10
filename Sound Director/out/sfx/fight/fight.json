@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-03T16:38:57.748Z",
+  "made": "2026-11-10T18:41:27.204Z",
   "sounds": {
     "swing": {
       "files": [
@@ -691,9 +691,7 @@
       "loud_db": -17,
       "target_db": -4,
       "use": "burning: a flame catching, the recorded fire's crackle, 0.4 s.",
-      "gain": 0.893,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+      "gain": 0.893
     },
     "effect_bleed": {
       "files": [
@@ -705,9 +703,7 @@
       "loud_db": -9.7,
       "target_db": -4,
       "use": "bleeding: a thin wet cut and a drip, 0.35 s.",
-      "gain": 0.385,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+      "gain": 0.385
     },
     "effect_sunder": {
       "files": [
@@ -719,9 +715,7 @@
       "loud_db": -10.9,
       "target_db": -2,
       "use": "armour sundered: iron cracking, a plate knocked loose, 0.5 s.",
-      "gain": 0.557,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+      "gain": 0.557
     },
     "effect_interrupt": {
       "files": [
@@ -733,9 +727,7 @@
       "loud_db": -13.5,
       "target_db": -3,
       "use": "a wind-up broken: the Survival game's broken (a crack and a reel), quicker, 0.4 s.",
-      "gain": 0.67,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+      "gain": 0.67
     },
     "effect_guardian": {
       "files": [
@@ -747,9 +739,7 @@
       "loud_db": -9.9,
       "target_db": -3,
       "use": "a guardian steps in: a shield's wooden knock, an open chord of bells, a breath of strings, 0.6 s.",
-      "gain": 0.442,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+      "gain": 0.442
     },
     "effect_clone": {
       "files": [
@@ -761,9 +751,49 @@
       "loud_db": -9.5,
       "target_db": -3,
       "use": "a copy appears: the recorded shadowstep, its echo, a falling pair of bells, 0.5 s.",
-      "gain": 0.422,
+      "gain": 0.422
+    },
+    "effect_banner": {
+      "files": [
+        "effect_banner_1.wav"
+      ],
+      "seconds": [
+        0.311
+      ],
+      "loud_db": -13.7,
+      "target_db": -6,
+      "use": "a banner standing: a small cloth flap and one bell.",
+      "gain": 0.485,
       "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+      "anchor": "die_land_a_1.wav at gain 1; target -6 dB relative to it"
+    },
+    "effect_banners": {
+      "files": [
+        "effect_banners_1.wav"
+      ],
+      "seconds": [
+        0.421
+      ],
+      "loud_db": -14.1,
+      "target_db": -5,
+      "use": "banners standing: two flaps and two bells.",
+      "gain": 0.57,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+    },
+    "effect_valorup": {
+      "files": [
+        "effect_valorup_1.wav"
+      ],
+      "seconds": [
+        0.5
+      ],
+      "loud_db": -9.7,
+      "target_db": -4,
+      "use": "Valor up: a drum tap and two horn notes rising.",
+      "gain": 0.385,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
     }
   }
 }

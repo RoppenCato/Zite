@@ -1,0 +1,13 @@
+{
+  "name": "banner_valor",
+  "category": "talents",
+  "gain": 0.979,
+  "use": "a banner of valor planted: the pole knocked in twice, the cloth snapping open, a bright bell.",
+  "variations": [
+    {
+      "file": "banner_valor_1.wav",
+      "seconds": 0.647,
+      "peak_dbfs": -1
+    }
+  ]
+}

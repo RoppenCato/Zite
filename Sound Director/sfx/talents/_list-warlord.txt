@@ -1,0 +1,10 @@
+talents/banner_valor
+talents/banner_dread
+talents/banner_war
+talents/banner_all
+talents/war_cry
+talents/hold
+talents/roar
+fight/effect_banner
+fight/effect_banners
+fight/effect_valorup

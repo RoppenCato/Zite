@@ -1,0 +1,13 @@
+{
+  "name": "banner_dread",
+  "category": "talents",
+  "gain": 0.979,
+  "use": "a banner of dread planted: the pole knocked in, the cloth snapping, a dark low string.",
+  "variations": [
+    {
+      "file": "banner_dread_1.wav",
+      "seconds": 0.75,
+      "peak_dbfs": -1
+    }
+  ]
+}

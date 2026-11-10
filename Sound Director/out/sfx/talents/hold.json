@@ -1,0 +1,13 @@
+{
+  "name": "hold",
+  "category": "talents",
+  "gain": 0.693,
+  "use": "Hold the Line: a firm short command, a shield knocked once.",
+  "variations": [
+    {
+      "file": "hold_1.wav",
+      "seconds": 0.358,
+      "peak_dbfs": -1
+    }
+  ]
+}

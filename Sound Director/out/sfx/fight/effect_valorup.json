@@ -1,0 +1,13 @@
+{
+  "name": "effect_valorup",
+  "category": "fight",
+  "gain": 0.385,
+  "use": "Valor up: a drum tap and two horn notes rising.",
+  "variations": [
+    {
+      "file": "effect_valorup_1.wav",
+      "seconds": 0.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

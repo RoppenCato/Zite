@@ -1,8 +1,8 @@
 {
   "name": "roar",
   "category": "talents",
-  "gain": 0.717,
-  "use": "a berserk's roar and a hit of the blood: the recorded roar, the drip.",
+  "gain": 0.805,
+  "use": "Terrifying Roar: the recorded berserk roar over a deeper roar, high-passed so a phone carries it, heavier than the war cry.",
   "variations": [
     {
       "file": "roar_1.wav",

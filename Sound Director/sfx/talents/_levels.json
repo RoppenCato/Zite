@@ -10,9 +10,9 @@
     "use": "a blast of light: strings opening fast, bells running up, a soft crack."
   },
   "roar": {
-    "target": 1,
-    "max": 0.9,
-    "use": "a berserk's roar and a hit of the blood: the recorded roar, the drip."
+    "target": 3,
+    "max": 1.1,
+    "use": "Terrifying Roar: the recorded berserk roar over a deeper roar, high-passed so a phone carries it, heavier than the war cry."
   },
   "cleave": {
     "target": 3,
@@ -83,5 +83,35 @@
     "target": -1,
     "max": 1.4,
     "use": "Magic Power: a rising, charging swell: strings climbing from low C, bells running up through two octaves faster and faster, the recorded rune waking at the top, a bright chord held. 1.3 s."
+  },
+  "banner_valor": {
+    "target": 1,
+    "max": 0.8,
+    "use": "a banner of valor planted: the pole knocked in twice, the cloth snapping open, a bright bell."
+  },
+  "banner_dread": {
+    "target": 1,
+    "max": 0.8,
+    "use": "a banner of dread planted: the pole knocked in, the cloth snapping, a dark low string."
+  },
+  "banner_war": {
+    "target": 1,
+    "max": 0.8,
+    "use": "a banner of war planted: the pole knocked in, the cloth snapping, a horn stab."
+  },
+  "banner_all": {
+    "target": 3,
+    "max": 1.4,
+    "use": "Raise Every Banner, the capstone: three banners planted one after another, the cloth snapping wide, a horn chord rising over them. 1.3 s."
+  },
+  "war_cry": {
+    "target": 2,
+    "max": 1.0,
+    "use": "War Cry: Robin's war cry pick from the Survival game, a rallying shout, with a heavy hit under it."
+  },
+  "hold": {
+    "target": 0,
+    "max": 0.6,
+    "use": "Hold the Line: a firm short command, a shield knocked once."
   }
 }

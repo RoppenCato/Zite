@@ -298,5 +298,20 @@
     "target": -3,
     "max": 0.6,
     "use": "a copy appears: the recorded shadowstep, its echo, a falling pair of bells, 0.5 s."
+  },
+  "effect_banner": {
+    "target": -6,
+    "max": 0.4,
+    "use": "a banner standing: a small cloth flap and one bell."
+  },
+  "effect_banners": {
+    "target": -5,
+    "max": 0.5,
+    "use": "banners standing: two flaps and two bells."
+  },
+  "effect_valorup": {
+    "target": -4,
+    "max": 0.5,
+    "use": "Valor up: a drum tap and two horn notes rising."
   }
 }

@@ -1,0 +1,13 @@
+{
+  "name": "effect_banner",
+  "category": "fight",
+  "gain": 0.485,
+  "use": "a banner standing: a small cloth flap and one bell.",
+  "variations": [
+    {
+      "file": "effect_banner_1.wav",
+      "seconds": 0.311,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -17,7 +17,7 @@
   {
    "name": "fight/talent-roar",
    "file": "out/sfx/talents/roar_1.wav",
-   "gain": 0.717,
+   "gain": 0.805,
    "loop": false
   },
   {
@@ -102,6 +102,42 @@
    "name": "fight/talent-magic-power",
    "file": "out/sfx/talents/magic_power_1.wav",
    "gain": 0.418,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-banner-valor",
+   "file": "out/sfx/talents/banner_valor_1.wav",
+   "gain": 0.979,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-banner-dread",
+   "file": "out/sfx/talents/banner_dread_1.wav",
+   "gain": 0.979,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-banner-war",
+   "file": "out/sfx/talents/banner_war_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-banner-all",
+   "file": "out/sfx/talents/banner_all_1.wav",
+   "gain": 0.924,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-war-cry",
+   "file": "out/sfx/talents/war_cry_1.wav",
+   "gain": 0.677,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-hold",
+   "file": "out/sfx/talents/hold_1.wav",
+   "gain": 0.693,
    "loop": false
   }
  ]

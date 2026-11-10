@@ -1,0 +1,13 @@
+{
+  "name": "banner_war",
+  "category": "talents",
+  "gain": 1,
+  "use": "a banner of war planted: the pole knocked in, the cloth snapping, a horn stab.",
+  "variations": [
+    {
+      "file": "banner_war_1.wav",
+      "seconds": 0.599,
+      "peak_dbfs": -1
+    }
+  ]
+}
