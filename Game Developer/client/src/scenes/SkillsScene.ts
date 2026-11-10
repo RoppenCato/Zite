@@ -94,6 +94,8 @@ export class SkillsScene extends Phaser.Scene {
   private dragFrom: number | null = null;
   private downAt = 0;
   private dragged = false;
+  /** Close answers on the press; the lift of that same finger must not tap the talent that now lies under it. */
+  private swallow = false;
 
   constructor(deps: { game: GameHolder; log: GameLog }) {
     super('skills');
@@ -133,6 +135,9 @@ export class SkillsScene extends Phaser.Scene {
       this.scrollY -= y - this.dragFrom;
       this.dragFrom = y;
       this.layout();
+    });
+    this.input.on('pointerup', () => {
+      this.swallow = false;
     });
     this.input.on('wheel', (_p: unknown, _o: unknown, _x: number, dy: number) => {
       this.scrollY += dy;
@@ -315,7 +320,7 @@ export class SkillsScene extends Phaser.Scene {
   }
 
   private tap(id: string): void {
-    if (this.dragged) return;
+    if (this.dragged || this.swallow) return;
     this.picked = id;
     this.note = '';
     feel.buzz();
@@ -343,6 +348,7 @@ export class SkillsScene extends Phaser.Scene {
     this.rows.push(makeButton(this, 360, y + 22, 56, 30, 'Close', COLORS.log, '13px', () => {
       this.picked = null;
       this.note = '';
+      this.swallow = true;
       this.refresh();
     }).button);
     const slip = (top: number, h: number): void => {
