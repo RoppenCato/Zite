@@ -555,6 +555,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           hurtEnemy(r, Math.max(1, Math.round(r.s.attack * traits.trapHit)));
           if (r.done) return r.done;
         }
+        trapPoison(r);
       } else {
         f.enemy.charged = mv.name;
         events.push({ type: 'charged', action: id, player, by: 'enemy', move: mv.name });
@@ -583,6 +584,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (f.spike) {
         hurtEnemy(r, Math.max(1, Math.round(r.s.attack * f.spike.power)));
         if (r.done) return r.done;
+        trapPoison(r);
       }
       if (heavy && p.ward && !f.used.includes('ward')) {
         f.used.push('ward');
@@ -677,7 +679,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   // ---- the round ends ---------------------------------------------------------------------------------------------
   if (f.companion && f.enemy.hp > 0) {
     for (let i = 0; i < (f.companion.hits ?? 1) && f.enemy.hp > 0; i++) {
-      const b = blow(r.s.attack, f.companion.power * (traits.companionPower ?? 1), enemyDefense(f.enemy), 0, rng);
+      const b = blow(r.s.attack, f.companion.power * (traits.companionPower ?? 1) * (f.enemy.sunder?.mult ?? 1), enemyDefense(f.enemy), 0, rng);
       f.enemy.hp = Math.max(0, f.enemy.hp - b.damage);
       events.push({ type: 'hit', action: id, player, by: 'player', move: f.companion.name, damage: b.damage, crit: false, hp: f.enemy.hp, absorbed: 0 });
     }
@@ -765,6 +767,14 @@ function gainMeterFlat(r: Round, n: number): void {
   r.events.push({ type: 'meter', action: r.action.id, player: r.action.player, name: meter.name, value: r.f.meter, max: PROGRESSION.meterMax });
 }
 
+/** Venom on the Spikes (2026-11-10): what a tripwire catches or spikes sting is poisoned for three rounds; a stronger poison already there stays. */
+function trapPoison(r: Round): void {
+  const t = traitsOf(r.c);
+  if (!t.trapPoison || r.f.enemy.hp <= 0) return;
+  const damage = Math.max(1, Math.round(r.s.attack * t.trapPoison * (t.poisonPower ?? 1)));
+  r.f.enemy.poison = { rounds: Math.max(3, r.f.enemy.poison?.rounds ?? 0), damage: Math.max(r.f.enemy.poison?.damage ?? 0, damage) };
+}
+
 /**
  * The player hits the enemy `hits` times at `power`; a held charge, a war cry and a mark multiply; a weakening divides;
  * sure crits, Stormcaller's third hits and the Sunblade apply; lifesteal heals; Frostbrand chills and Venomtooth poisons.
@@ -786,6 +796,10 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
   if (traits.poisonedDamage && f.enemy.poison) power *= traits.poisonedDamage;
   if (traits.weakenedDamage && f.enemy.weakened) power *= traits.weakenedDamage;
   if (traits.stunnedDamage && f.enemy.stunned > 0) power *= traits.stunnedDamage;
+  // The bridges between trees (2026-11-10).
+  if (traits.barrierDamage && f.barrier > 0) power *= traits.barrierDamage;
+  if (traits.bleedingDamage && f.enemy.bleed) power *= traits.bleedingDamage;
+  if (traits.companionDamage && f.companion) power *= traits.companionDamage;
   if (spell && f.nextSpell) {
     power *= f.nextSpell;
     f.nextSpell = 0;

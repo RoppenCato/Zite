@@ -85,6 +85,49 @@ describe('the talent data', () => {
       }
     }
   });
+  // The bridges between trees (mine, 2026-11-10): a passive in one tree pays for what another tree does.
+  const dealt = (s: GameState, move: unknown = { kind: 'attack' }) => total(s, 'none', (a) => 5000 - (me(a).fight?.enemy.hp ?? 0), move);
+  const withFight = (s: GameState, f: Record<string, unknown>, enemy: Record<string, unknown> = {}): GameState => ({ ...s, characters: { [P]: { ...me(s), fight: { ...me(s).fight!, ...f, enemy: { ...me(s).fight!.enemy, ...enemy } } } } });
+  it('Bastion and Enchanted Mail: more dealt while a barrier holds, and only then', () => {
+    for (const [classId, talent] of [['warrior', 'kni-bastion'], ['mage', 'spl-plate']] as const) {
+      const bare = fighter(classId, {});
+      const has = fighter(classId, { [talent]: 3 });
+      expect(dealt(withFight(has, { barrier: 500 })), talent).toBeGreaterThan(dealt(withFight(bare, { barrier: 500 })));
+      expect(dealt(withFight(has, { barrier: 0 })), talent).toBe(dealt(withFight(bare, { barrier: 0 })));
+    }
+  });
+  it('Patient Blade: a bleeding foe takes more', () => {
+    const bleed = { bleed: { rounds: 3, damage: 1 } };
+    // Its growing crit chance is the same for both, so only the bleed tells them apart.
+    const has = fighter('rogue', { 'sha-streak': 3 });
+    expect(dealt(withFight(has, {}, bleed))).toBeGreaterThan(dealt(withFight(has, {}, {})) + 60 * 3);
+  });
+  it('Hunting Pair: your own arrows hit harder while the owl is out', () => {
+    const owl = { companion: { name: 'Owl Friend', rounds: 5, power: 0.6 } };
+    expect(dealt(withFight(fighter('ranger', { 'bea-pack': 3 }), owl))).toBeGreaterThan(dealt(withFight(fighter('ranger', {}), owl)));
+    expect(dealt(fighter('ranger', { 'bea-pack': 3 }))).toBe(dealt(fighter('ranger', {})));
+  });
+  it('the owl strikes harder at a foe that takes more', () => {
+    const owl = { companion: { name: 'Owl Friend', rounds: 5, power: 0.6 } };
+    const owlHits = (s: GameState) => { let sum = 0; for (let i = 0; i < 40; i++) for (const e of round(s, 'none', { kind: 'attack' }, `o${i}`).events) if (e.type === 'hit' && e.by === 'player' && e.move === 'Owl Friend') sum += e.damage; return sum; };
+    expect(owlHits(withFight(fighter('ranger', {}), owl, { sunder: { rounds: 3, mult: 1.5 } }))).toBeGreaterThan(owlHits(withFight(fighter('ranger', {}), owl)) * 1.3);
+  });
+  it('Venom on the Spikes: a tripwire that catches and spikes that go off poison; without it they do not', () => {
+    const lunge = { next: { name: 'Lunge', power: 2, weight: 1, charge: true } };
+    const caught = (talents: Record<string, number>) => me(round(withFight(fighter('ranger', talents), { trap: 1, round: 2 }, lunge), 'none').state).fight!.enemy.poison;
+    expect(caught({ 'tra-venom': 2 })).toBeTruthy();
+    expect(caught({})).toBeFalsy();
+    const spiked = (talents: Record<string, number>) => me(round(withFight(fighter('ranger', talents), { spike: { rounds: 3, power: 1 }, round: 2 }, { next: { name: 'Bite', power: 1, weight: 1 } }), 'none').state).fight!.enemy.poison;
+    expect(spiked({ 'tra-venom': 3 })).toBeTruthy();
+    expect(spiked({})).toBeFalsy();
+    // A rank is another helping.
+    expect(spiked({ 'tra-venom': 3 })!.damage).toBeGreaterThan(spiked({ 'tra-venom': 1 })!.damage);
+  });
+  it('Taunting Shout hits as well as weakens', () => {
+    const r = round(fighter('warrior', { 'kni-taunt': 1 }, 1), 'none', { kind: 'ability', ability: 'kni-taunt' });
+    expect(r.events.some((e) => e.type === 'hit' && e.by === 'player')).toBe(true);
+    expect(me(r.state).fight!.enemy.weakened).toBeTruthy();
+  });
   it('no two talents of a class share a name', () => {
     const names = new Set<string>();
     for (const a of Object.values(ABILITIES)) {

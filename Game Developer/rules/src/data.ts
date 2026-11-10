@@ -170,6 +170,12 @@ export interface ClassTraits {
   weakenedDamage?: number;
   stunnedDamage?: number;
   burnPower?: number;
+  /** Bridges between trees (mine, 2026-11-10): more dealt while you hold a barrier, to a bleeding foe, and by your own hits while the owl is out. */
+  barrierDamage?: number;
+  bleedingDamage?: number;
+  companionDamage?: number;
+  /** A tripwire that catches and spikes that go off poison: this share of attack a round, for three rounds. */
+  trapPoison?: number;
 }
 
 /** One rank of an ability: what it does. Fields left out do nothing. */

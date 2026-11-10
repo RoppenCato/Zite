@@ -57,8 +57,9 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.infuse && !f.infuse) return { move: { kind: 'ability', ability: id }, guard };
     if (r.coat && !f.coat) return { move: { kind: 'ability', ability: id }, guard };
     if (r.mark && !f.mark) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.thornsUp && !f.thornsUp) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.blockUp && !f.blockUp) return { move: { kind: 'ability', ability: id }, guard };
+    // A wall against a creature that barely scratches is a round lost (2026-11-10: the Knight bot spent most rounds on them).
+    if (r.thornsUp && !f.thornsUp && (e.role !== 'mob' || hpShare < 0.7)) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.blockUp && !f.blockUp && (e.role !== 'mob' || hpShare < 0.7)) return { move: { kind: 'ability', ability: id }, guard };
     if (r.counterUp && !r.power && !f.counterUp) return { move: { kind: 'ability', ability: id }, guard };
     if (r.spike && !f.spike) return { move: { kind: 'ability', ability: id }, guard };
     if (r.companion && !f.companion) return { move: { kind: 'ability', ability: id }, guard };

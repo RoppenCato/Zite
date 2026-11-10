@@ -567,11 +567,11 @@
         "healDealt": 0.25
       },
       {
-        "power": 1.85,
+        "power": 1.8,
         "healDealt": 0.25
       },
       {
-        "power": 2.1,
+        "power": 2,
         "healDealt": 0.35
       }
     ]
@@ -1929,22 +1929,25 @@
   },
   "kni-taunt": {
     "name": "Taunting Shout",
-    "text": "The foe swings wild: its blows are weaker for a few rounds.",
+    "text": "A shove and a shout: a hit, and its blows are weaker for a few rounds.",
     "mana": 4,
     "ranks": [
       {
+        "power": 1.1,
         "weaken": {
           "rounds": 3,
           "mult": 0.75
         }
       },
       {
+        "power": 1.25,
         "weaken": {
           "rounds": 3,
           "mult": 0.7
         }
       },
       {
+        "power": 1.4,
         "weaken": {
           "rounds": 4,
           "mult": 0.65
@@ -1970,10 +1973,11 @@
   },
   "kni-bastion": {
     "name": "Bastion",
-    "text": "Start each fight with a barrier of 6% of your HP, a rank.",
+    "text": "Start each fight with a barrier of 6% of your HP, a rank. While any barrier holds, you deal 4% more a rank.",
     "mana": 0,
     "rule": {
-      "barrierStart": 0.06
+      "barrierStart": 0.06,
+      "barrierDamage": 1.04
     },
     "ranks": [
       {},
@@ -2391,10 +2395,10 @@
   },
   "cle-radiance": {
     "name": "Radiance",
-    "text": "Above 80% HP you deal 4% more a rank.",
+    "text": "Above 80% HP you deal 3% more a rank.",
     "mana": 0,
     "rule": {
-      "highHpDamage": 1.04
+      "highHpDamage": 1.03
     },
     "ranks": [
       {},
@@ -2429,11 +2433,11 @@
         "healDealt": 0.4
       },
       {
-        "power": 2.4,
+        "power": 2.3,
         "healDealt": 0.4
       },
       {
-        "power": 2.7,
+        "power": 2.5,
         "healDealt": 0.5
       }
     ],
@@ -2525,10 +2529,11 @@
   },
   "spl-plate": {
     "name": "Enchanted Mail",
-    "text": "4% more defense a rank.",
+    "text": "4% more defense a rank. While a barrier holds, you deal 3% more a rank.",
     "mana": 0,
     "rule": {
-      "defenseMult": 1.04
+      "defenseMult": 1.04,
+      "barrierDamage": 1.03
     },
     "ranks": [
       {},
@@ -3026,10 +3031,11 @@
   },
   "sha-streak": {
     "name": "Patient Blade",
-    "text": "Every hit adds 1% more to your growing crit chance, a rank.",
+    "text": "Every hit adds 1% more to your growing crit chance, a rank. A bleeding foe takes 4% more a rank.",
     "mana": 0,
     "rule": {
-      "critStreak": 0.01
+      "critStreak": 0.01,
+      "bleedingDamage": 1.04
     },
     "ranks": [
       {},
@@ -3624,10 +3630,10 @@
   },
   "bea-pack": {
     "name": "Hunting Pair",
-    "text": "3% more attack a rank.",
+    "text": "While your owl is out, your own arrows hit 5% harder a rank.",
     "mana": 0,
     "rule": {
-      "attackMult": 1.03
+      "companionDamage": 1.05
     },
     "ranks": [
       {},
@@ -3778,10 +3784,11 @@
   },
   "tra-barb": {
     "name": "Barbs",
-    "text": "A stunned foe takes 6% more a rank.",
+    "text": "A stunned foe takes 6% more a rank, a weakened one 3%.",
     "mana": 0,
     "rule": {
-      "stunnedDamage": 1.06
+      "stunnedDamage": 1.06,
+      "weakenedDamage": 1.03
     },
     "ranks": [
       {},
@@ -3862,10 +3869,11 @@
   },
   "tra-venom": {
     "name": "Venom on the Spikes",
-    "text": "A poisoned foe takes 5% more a rank.",
+    "text": "Your tripwire and your spikes poison: 10% of your attack a round for three rounds, a rank. A poisoned foe takes 4% more a rank.",
     "mana": 0,
     "rule": {
-      "poisonedDamage": 1.05
+      "trapPoison": 0.1,
+      "poisonedDamage": 1.04
     },
     "ranks": [
       {},

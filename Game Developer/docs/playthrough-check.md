@@ -150,3 +150,24 @@ The trinket slot holds trinkets: no HP of its own, a passive instead. The bots w
 ### Mana as a budget, the Block floor, the Magician's Ward and Channel (2026-11-03)
 
 Abilities cost more as you level (as your class's mana grows), a Block lets at least 25% through, a Magician wards and channels. Median hours to level 30, sensible player: Warrior 8.6, Rogue 8.6, Hunter 7.7, Magician 6.8; all 72 sensible runs finish every boss. In the Arena at level 30 the costs starved the classes with small mana pools over five fights, so their handicaps came down: Legend now clears 25 to 38% of the time for every class, Nightmare 43 to 65%, Normal 82 to 100%.
+
+### Class balance and the bridges (2026-11-10, eight seeds a build, sensible player)
+
+Hours to level 30 (the average of the six builds' medians), falls a run, rounds a fight at levels 21 to 30:
+
+| Class | Before | After | Falls | Rounds |
+| --- | --- | --- | --- | --- |
+| Warrior | 7.8 | 7.6 | 0.7 | 5.2 |
+| Magician | 7.1 | 7.5 | 2.4 | 3.7 |
+| Rogue | 7.1 | 7.1 | 3.8 | 4.9 |
+| Hunter | 7.7 | 7.5 | 5.6 | 4.5 |
+
+By tree, alone: Paladin 6.4, Berserker 6.7, Knight 7.5 (was 8.6); Wizard 6.1, Cleric 7.2 (was 5.9), Spellsword 8.2; Ninja 6.1, Shadow 6.9, Alchemist 6.2; Ranger 7.3, Beastmaster 7.1, Trapper 6.6 (falls 8.4 to 3.0). One seed moves a build by about an hour, so differences under that are noise.
+
+Still open:
+
+- **A hero of two trees is about an hour slower than one of a single tree** (the bots put every fourth point in the second tree). The bridges are a first answer; not yet shown in the numbers.
+- **Berserker with Knight** takes 11 hours: it hurts itself for Valor and has nothing that heals. The bot's doing in part.
+- **Shadow with Alchemist** falls most (11 a run): the bot dances in shadow, taking a blow in full, more than a player would.
+- **The Warrior hardly ever falls** (0.7 a run, bosses first try) and its boss fights are the longest (17 to 21 rounds, the Hollow King about 30).
+- The Arena and the Dream at level 30 were not replayed in this pass.
