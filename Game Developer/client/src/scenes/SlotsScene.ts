@@ -12,6 +12,7 @@ import { INK, kitReady, plate, preloadKit } from '../kit.ts';
 import { COLORS, DESIGN_HEIGHT, DESIGN_WIDTH, FONT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import { MAX_SLOTS, type Slot } from '../slots.ts';
 import { makeButton } from '../ui.ts';
+import { canMoveFrom, moveAll, takeMovedLine } from '../move.ts';
 
 export interface SlotsSceneDeps {
   log: GameLog;
@@ -58,7 +59,19 @@ export class SlotsScene extends Phaser.Scene {
     const below = FIRST_Y + slots.length * CARD_STEP - 8;
     if (slots.length < MAX_SLOTS) makeButton(this, CENTRE, below, 240, 54, 'New character', COLORS.button, '20px', () => this.deps.make());
     else this.add.text(CENTRE, below - 14, `${MAX_SLOTS} is all a phone holds. Take one off to make room.`, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
-    this.deps.log.note(`characters: ${slots.length}`);
+    // Moving the characters to the online app (Robin, 2026-11-10): one tap packs every save into the public site's address.
+    const moving = slots.length > 0 && !this.deps.online && canMoveFrom(location.origin, location.search);
+    if (moving) {
+      const y = below + (slots.length < MAX_SLOTS ? 64 : 24);
+      makeButton(this, CENTRE, y, 300, 50, 'Move all to the online app', COLORS.log, '17px', () => {
+        this.deps.log.note('moving the characters to the online app');
+        void moveAll(window.localStorage, location.search);
+      });
+      this.add.text(CENTRE, y + 40, 'Takes every character here to the app you can play anywhere.', { fontFamily: FONT, fontSize: '12px', fontStyle: 'bold', color: '#ffffff', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
+    }
+    const moved = takeMovedLine();
+    if (moved) this.add.text(CENTRE, below + (slots.length < MAX_SLOTS ? 64 : 24) + (moving ? 64 : 0), moved, { fontFamily: FONT, fontSize: '14px', fontStyle: 'bold', color: '#ffe9a0', stroke: '#15102a', strokeThickness: 4 }).setOrigin(0.5);
+    this.deps.log.note(`characters: ${slots.length}${moved ? '; ' + moved : ''}`);
   }
 
   private card(slot: Slot, y: number): void {

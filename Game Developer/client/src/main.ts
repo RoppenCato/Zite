@@ -12,6 +12,7 @@ import { CreateScene } from './scenes/CreateScene.ts';
 import { SlotsScene } from './scenes/SlotsScene.ts';
 import { activeSave, flow, forgetAccount, freeSaveKey, localSlots, onlineSlots, rememberAccount, removeSave, setActiveSave, setFlow, stepOutOfAccount, useAccount } from './slots.ts';
 import { playScenes } from './scenes/play.ts';
+import { moveAll, receiveMove } from './move.ts';
 
 const log = new GameLog();
 log.attach(window);
@@ -169,10 +170,11 @@ const phaser = new Phaser.Game({
 // state or look a creature up). `game` is null on the character screen and while connecting.
 declare global {
   interface Window {
-    boardWorld: { game: GameHolder | null; log: GameLog; phaser: Phaser.Game; rules: typeof rules; server: string | null; audio: typeof audio };
+    boardWorld: { game: GameHolder | null; log: GameLog; phaser: Phaser.Game; rules: typeof rules; server: string | null; audio: typeof audio; move: { moveAll: typeof moveAll; receiveMove: typeof receiveMove } };
   }
 }
-window.boardWorld = { game: saved, log, phaser, rules, server, audio };
+// move: the characters' move to the online app, reachable from the browser pane for a test (2026-11-10).
+window.boardWorld = { game: saved, log, phaser, rules, server, audio, move: { moveAll, receiveMove } };
 
 // The world ticks once a minute while the page is open, and when it comes back to the front: spawns come and go (solo);
 // with a server the tick only checks the link, and a socket the phone killed in the background is replaced.

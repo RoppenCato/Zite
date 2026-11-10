@@ -373,6 +373,17 @@ the vibration setting.
 
 ## The save (`local-game.ts`) and the account (`remote-game.ts`)
 
+**Moving the characters to the online app** (Robin, 2026-11-10: "1 now, 3 later"; his characters were solo saves on the
+home link's origin, invisible to the public site). `move.ts`: the character list (`SlotsScene`) shows **Move all to the
+online app** when the page is not the public site itself (`PUBLIC_SITE`, `https://zite-game.pages.dev`; `?site=` overrides
+it for a test between two local origins) and the phone plays solo. One tap packs every solo save on the phone (JSON, gzip
+through `CompressionStream`, base64url; about 46 KB a save) into the public site's address as `#move=…` and goes there
+(`?mute=1` travels along). `boot.ts`, the page's entry since then, unpacks it before `main.ts` runs: each save's state
+through `migrate`, under a free key, a character already there with the same seed and name replaced rather than doubled;
+the last becomes the active save, the flow is set to the list, and the list says once how many came
+(`sessionStorage["boardworld.moved"]`). The address is cleared with `replaceState`, so a reload moves nothing twice. The
+copies on the home link stay as they were. `window.boardWorld.move` exposes `moveAll` and `receiveMove` for the pane.
+
 **Solo**: `localStorage['boardworld.save']` = `{ version: 1, state, rng }` where `rng` is the random stream's position. On
 load a save of version 1 passes its state through `migrate`, which brings any older state up to the current version; no
 save, or one we cannot read, gives null and the character screen comes up, and `create` makes the game from the name and

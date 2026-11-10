@@ -47,7 +47,8 @@ export function setFlow(next: Flow): void {
   }
 }
 
-function saveKeys(storage: Storage): string[] {
+/** Every solo save's key on this phone, in order. */
+export function saveKeys(storage: Storage): string[] {
   const keys: string[] = [];
   for (let i = 0; i < storage.length; i++) {
     const key = storage.key(i);
