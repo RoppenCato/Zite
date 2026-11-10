@@ -316,7 +316,14 @@ function play(build: Build, seed: string): Result {
     if (learnedAny) {
       const c = me();
       const known = (t: string): string[] => treeNodes(t).filter((id) => c.abilities[id] && !ABILITIES[id]!.rule).reverse();
-      const want = [...new Set([...known(main), ...(second ? known(second) : []), ...cls.core.filter((id) => c.abilities[id])])].slice(0, carriedLimit(c.level));
+      // One banner is carried, the newest, and Hold the Line stays home: a sensible Warlord keeps its hard hits (2026-11-10).
+      let banners = 0;
+      const sensible = (id: string): boolean => {
+        const r0 = ABILITIES[id]!.ranks[0]!;
+        if (r0.valorUp || r0.allBanners) return false;
+        return !r0.banner || ++banners === 1;
+      };
+      const want = [...new Set([...known(main), ...(second ? known(second) : []), ...cls.core.filter((id) => c.abilities[id])])].filter(sensible).slice(0, carriedLimit(c.level));
       // One slot for the best situational skill known, so the sims press them too (2026-11-03): a sensible player keeps one.
       const situational = (id: string): boolean => {
         const r = ABILITIES[id]!.ranks[0]!;

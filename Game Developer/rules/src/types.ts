@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 45;
+export const STATE_VERSION = 46;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
@@ -474,6 +474,15 @@ export interface Fight {
   guardian: number;
   /** All healed this fight (Judgement Day). */
   healed: number;
+  /** The Warlord's banner, standing for the whole fight, and the rounds it has stood (Robin, 2026-11-10). */
+  banner?: { kind: 'valor' | 'dread' | 'war'; every?: number; weaken?: number; sunder?: number; grow?: number; cap?: number; age: number } | null;
+  /** Raise Every Banner: all three for these rounds. */
+  allBanners?: { rounds: number; age: number } | null;
+  /** Hold the Line: each Block gives more Valor. */
+  valorUp?: { rounds: number; extra: number } | null;
+  /** Battle Rhythm: hits in a row, up to five; a Block ends it. Pain Feeds Anger: a blow was taken since the last hit. */
+  rhythm?: number;
+  anger?: boolean;
 }
 
 /** Something that turned up on a normal spot for a while: a mini-boss prowling, or a merchant camped. */
@@ -710,7 +719,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit'; rounds: number }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp'; rounds: number; name?: string }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */

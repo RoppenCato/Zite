@@ -13,6 +13,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
     // The Ward costs nothing (2026-11-03).
     if (c.classId === 'mage') return 'block';
     if (c.classId === 'ranger') return e.charged ? 'block' : hpShare > 0.5 ? 'counter' : 'block';
+    // Battle Rhythm: a Berserker keeps its shield down while it can afford to, or the streak ends (2026-11-10).
+    if (c.abilities['ber-fury'] && !e.charged && hpShare > 0.45) return 'brace';
     return 'block';
   };
   const guard = guardFor();
@@ -53,6 +55,14 @@ export function choose(c: Character): { move: unknown; guard: string } {
   // Keep what lasts going.
   for (const id of usable) {
     const r = rank(id);
+    // A banner where the fight will last, or at once when it costs no turn; the one for the foe (2026-11-10).
+    if (r.banner && !f.banner && (e.role !== 'mob' || c.abilities['war-tactics'] || e.hp > e.maxHp * 0.8)) {
+      const want = e.role === 'mob' ? ['war-dread', 'war-valor', 'war-war'] : ['war-war', 'war-dread', 'war-valor'];
+      const best = want.find((b) => usable.includes(b)) ?? id;
+      return { move: { kind: 'ability', ability: best }, guard };
+    }
+    if (r.allBanners && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
+    if (r.valorUp && !f.valorUp && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
     if (r.attackUp && !f.attackUp) return { move: { kind: 'ability', ability: id }, guard };
     if (r.infuse && !f.infuse) return { move: { kind: 'ability', ability: id }, guard };
     if (r.coat && !f.coat) return { move: { kind: 'ability', ability: id }, guard };
@@ -74,7 +84,7 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.barrierShare && f.barrier === 0 && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     if (r.trap && !f.trap && e.next?.charge) return { move: { kind: 'ability', ability: id }, guard };
     if (r.manaPerMeter && c.mana < s.maxMana * 0.5 && f.meter >= 3) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.meterGain && !f.attackUp && hpShare > 0.6) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.meterGain && !r.banner && !f.attackUp && hpShare > 0.6) return { move: { kind: 'ability', ability: id }, guard };
     // When the situational ones pay (2026-11-03): a blow winding up is dodged or stopped, or met with a shot that hurts more for it;
     // a foe low is finished; a hero low hits back with what was lost; one who healed much turns it to light; a full meter makes spells stronger.
     if ((r.evade || r.skip) && (e.charged || e.next?.charge) && !f.evade && !f.skip) return { move: { kind: 'ability', ability: id }, guard };

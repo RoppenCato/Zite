@@ -17,15 +17,11 @@ const A = {
   execute: { name: 'Finishing Flourish', classId: 'warrior', text: 'Spend 3 Valor: a big hit, far harder on a foe under a third of its HP.', mana: 0, meter: 3, level: 1, ranks: up({ power: 2, executeBelow: 0.34, executePower: 3.2 }, { power: 2.3, executePower: 3.6 }, { power: 2.6, executePower: 4 }) },
   'shield-bash': { name: 'Shield Bonk', classId: 'warrior', text: 'A hit that breaks any wind-up it has gathered, and stuns a lesser foe.', mana: 6, level: 2, ranks: up({ power: 0.8, stun: 1, interrupt: true }, { power: 1 }, { power: 1.2, stun: 2 }) },
   'shield-wall': { name: 'Castle Stance', classId: 'warrior', text: 'Spend 2 Valor: a barrier worth a share of your HP.', mana: 2, meter: 2, level: 3, ranks: up({ barrierShare: 0.2 }, { barrierShare: 0.26 }, { barrierShare: 0.32 }) },
-  // Paladin
-  'holy-strike': { name: 'Holy Strike', classId: 'warrior', text: 'A hit that heals you for part of the damage.', mana: 5, level: 3, ranks: up({ power: 1.25, healDealt: 0.35 }, { power: 1.4, healDealt: 0.42 }, { power: 1.55, healDealt: 0.5 }) },
-  'paladin-oath': rule('Blessed Guard', 'warrior', 'Each blow you Block heals you a little.', { blockHeal: 0.02 }),
-  judgement: { name: 'Judgement', classId: 'warrior', text: 'A hit that weakens its blows and makes it take more damage.', mana: 7, level: 8, ranks: up({ power: 1, weaken: { rounds: 3, mult: 0.75 }, sunder: { rounds: 3, mult: 1.15 } }, { power: 1.15, sunder: { rounds: 3, mult: 1.2 } }, { power: 1.3, weaken: { rounds: 3, mult: 0.65 }, sunder: { rounds: 4, mult: 1.25 } }) },
-  'last-light': { name: 'Last Light', classId: 'warrior', text: 'Spend 3 Valor: the next blow that would fell you leaves you standing instead. Once a fight.', mana: 4, meter: 3, oncePerFight: true, level: 12, ranks: up({ guardian: 0.3 }, { guardian: 0.4 }, { guardian: 0.5 }) },
+  // Warlord (Robin, 2026-11-10: the Paladin gives way; "Warrior is a bit boring. It feels like everything ia about healing."): its talents are all below.
   // Berserker
-  reckless: { name: 'Reckless Swing', classId: 'warrior', text: 'A huge hit that costs you some of your own HP.', mana: 5, level: 3, ranks: up({ power: 2, selfHurt: 0.08 }, { power: 2.25 }, { power: 2.5 }) },
+  reckless: { name: 'Reckless Swing', classId: 'warrior', text: 'A huge hit that costs you some of your own HP.', mana: 5, level: 3, ranks: up({ power: 2, selfHurt: 0.06 }, { power: 2.25 }, { power: 2.5 }) },
   'berserker-rage': rule('Rage', 'warrior', 'You deal more damage, and take more.', { damageDealt: 1.15, damageTaken: 1.1 }),
-  'blood-price': { name: 'Blood Price', classId: 'warrior', text: 'Lose some of your HP: gain 2 Valor at once, and your hits land much harder for a few rounds.', mana: 0, level: 8, ranks: up({ selfHurt: 0.08, meterGain: 2, attackUp: { rounds: 3, mult: 1.35 } }, { attackUp: { rounds: 3, mult: 1.45 } }, { attackUp: { rounds: 4, mult: 1.55 } }) },
+  'blood-price': { name: 'Blood Price', classId: 'warrior', text: 'Lose some of your HP: gain 2 Valor at once, and your hits land much harder for a few rounds.', mana: 0, level: 8, ranks: up({ selfHurt: 0.06, meterGain: 2, attackUp: { rounds: 3, mult: 1.35 } }, { attackUp: { rounds: 3, mult: 1.45 } }, { attackUp: { rounds: 4, mult: 1.55 } }) },
   bloodbath: { name: 'Bloodbath', classId: 'warrior', text: 'A hit that grows with all the HP you have lost: the nearer the end, the harder.', mana: 6, level: 12, ranks: up({ power: 2.0, missingPower: 1.5 }, { power: 2.2, missingPower: 1.7 }, { power: 2.4, missingPower: 2.0 }) },
   // Knight
   'shield-slam': { name: 'Shield Slam', classId: 'warrior', text: 'A hit that grows with your defense.', mana: 5, level: 3, ranks: up({ power: 1.1, defensePower: 1.4 }, { defensePower: 1.7 }, { defensePower: 2 }) },
@@ -103,7 +99,7 @@ const C = {
     kit: ['heavy-blow', 'execute'], core: ['heavy-blow', 'execute', 'shield-bash', 'shield-wall'],
     meter: { name: 'Valor', gain: 'block', text: 'Valor builds when you Block a blow, more from a wound-up one.' },
     trees: {
-      paladin: { name: 'Paladin', text: 'Heals as it fights and wears the enemy down.', nodes: ['holy-strike', 'paladin-oath', 'judgement', 'last-light'] },
+      warlord: { name: 'Warlord', text: 'Plants a banner for the fight and shouts it its way.', nodes: [] },
       berserker: { name: 'Berserker', text: 'Hits harder and takes more for it.', nodes: ['reckless', 'berserker-rage', 'blood-price', 'bloodbath'] },
       knight: { name: 'Knight', text: 'More defense, and what hits it gets hurt.', nodes: ['shield-slam', 'knight-oath', 'iron-retort', 'bulwark'] },
     },
@@ -153,8 +149,8 @@ const pas = (name, text, traits, n = 3) => ({ name, text, mana: 0, rule: traits,
 const act = (name, text, mana, ranks, extra = {}) => ({ name, text, mana, ranks, ...extra });
 const TALENTS = {
   warrior: {
-    paladin: [
-      ['holy-strike', 'pal-devotion'], ['paladin-oath', 'pal-steadfast'], ['judgement', 'pal-mercy'], ['pal-consecrate', 'pal-wrath'], ['last-light', 'pal-aura'], ['pal-avenger', 'pal-faith'], ['pal-exorcism', 'pal-zeal'], ['pal-miracle'],
+    warlord: [
+      ['war-valor', 'war-voice'], ['war-bearer', 'war-first'], ['war-cry', 'war-breath'], ['war-dread', 'war-nerve'], ['war-hold', 'war-seize'], ['war-war', 'war-tactics'], ['war-roar', 'war-veteran'], ['war-all'],
     ],
     berserker: [
       ['reckless', 'ber-fury'], ['berserker-rage', 'ber-thirst'], ['blood-price', 'ber-savage'], ['ber-cleave', 'ber-wounds'], ['bloodbath', 'ber-keen'], ['ber-frenzy', 'ber-drink'], ['ber-rampage', 'ber-iron'], ['ber-deathwish'],
@@ -198,35 +194,42 @@ const TALENTS = {
   },
 };
 const NEW = {
-  // Warrior / Paladin: heals through it, and wears the enemy down. Pairs with Knight's blocks and Berserker's last stand.
-  'pal-devotion': pas('Devotion', 'Your healing is 6% stronger a rank.', { healPower: 1.06 }),
-  'pal-steadfast': pas('Steadfast', '3% more HP a rank.', { hpMult: 1.03 }),
-  'pal-mercy': pas('Mercy', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
-  'pal-consecrate': act('Holy Ground', 'A hit that leaves you healing each round for a while.', 6, up({ power: 0.9, regen: { rounds: 4, share: 0.04 } }, { power: 1, regen: { rounds: 4, share: 0.05 } }, { power: 1.1, regen: { rounds: 5, share: 0.06 } })),
-  'pal-wrath': pas('Righteous Wrath', 'A weakened foe takes 6% more a rank.', { weakenedDamage: 1.06 }),
-  'pal-aura': pas('Warm Aura', 'You heal 1% of your HP each round, a rank.', { hpRegen: 0.01 }, 2),
-  'pal-avenger': act('Avenging Strike', 'Spend 2 Valor: a heavy hit that heals you for much of it.', 6, up({ power: 2, healDealt: 0.5 }, { power: 2.3 }, { power: 2.6, healDealt: 0.6 }), { meter: 2 }),
-  'pal-faith': pas('Shield of Faith', 'Start each fight with a barrier of 5% of your HP, a rank.', { barrierStart: 0.05 }),
-  'pal-exorcism': act('Exorcism', 'A blast of light that leaves the foe taking more damage.', 9, up({ power: 2.4, sunder: { rounds: 3, mult: 1.2 } }, { power: 2.7 }, { power: 3, sunder: { rounds: 4, mult: 1.25 } })),
-  'pal-zeal': pas('Zeal', 'Above 80% HP you deal 5% more a rank.', { highHpDamage: 1.05 }),
-  'pal-miracle': act('Miracle', 'Once a fight: back to most of your HP, cured of everything.', 8, [{ healShare: 0.7, cure: true }], { oncePerFight: true }),
+  // Warrior / Warlord (Robin, 2026-11-10: "Yes" to the list; every number mine): the plan. One banner stands for the whole fight, and
+  // planting another takes its place; shouts last a few rounds. Nothing here heals. Banners: Valor for a long fight, Dread against a hard
+  // hitter, War for a foe you can outlast.
+  'war-valor': act('Banner of Valor', 'Plant a banner for the whole fight: a point of Valor every second round, and at higher ranks some at once, the first time in a fight. Only one banner stands at a time.', 4, up({ banner: { kind: 'valor', every: 2 } }, { meterGain: 1 }, { meterGain: 2 })),
+  'war-voice': pas('Commanding Voice', 'Your banners and shouts are 5% stronger a rank.', { voice: 1.05 }),
+  'war-bearer': pas('Standard Bearer', 'While a banner stands, you deal 3% more a rank.', { bannerDamage: 1.03 }),
+  'war-first': pas('First Blood', 'Your first hit of a fight lands 10% harder a rank.', { firstHitDamage: 1.1 }),
+  'war-cry': act('War Cry', 'A shout and a hit: your hits land harder for three rounds.', 5, up({ power: 1, shout: true, attackUp: { rounds: 3, mult: 1.25 } }, { power: 1.1, attackUp: { rounds: 3, mult: 1.3 } }, { power: 1.2, attackUp: { rounds: 3, mult: 1.35 } })),
+  'war-breath': pas('Long Breath', 'Your shouts last a round longer.', { shoutRounds: 1 }, 1),
+  'war-dread': act('Banner of Dread', 'Plant a banner for the whole fight: the foe hits softer and takes more damage. Only one banner stands at a time.', 4, up({ banner: { kind: 'dread', weaken: 0.88, sunder: 1.08 } }, { banner: { kind: 'dread', weaken: 0.85, sunder: 1.11 } }, { banner: { kind: 'dread', weaken: 0.82, sunder: 1.14 } })),
+  'war-nerve': pas('Break Their Nerve', 'A weakened foe takes 6% more a rank.', { weakenedDamage: 1.06 }),
+  'war-hold': act('Hold the Line', 'A shout: a small barrier, and for a few rounds each Block gives a point more Valor.', 3, up({ shout: true, barrierShare: 0.08, valorUp: { rounds: 3, extra: 1 } }, { barrierShare: 0.1, valorUp: { rounds: 4, extra: 1 } }, { barrierShare: 0.12, valorUp: { rounds: 5, extra: 1 } })),
+  'war-seize': pas('Seize the Moment', 'While the foe winds up a blow, your hits land 8% harder a rank.', { windupDamage: 1.08 }),
+  'war-war': act('Banner of War', 'Plant a banner for the whole fight: your hits grow harder every round it stands. Only one banner stands at a time.', 4, up({ banner: { kind: 'war', grow: 0.04, cap: 0.4 } }, { banner: { kind: 'war', grow: 0.05, cap: 0.5 } }, { banner: { kind: 'war', grow: 0.06, cap: 0.6 } })),
+  'war-tactics': pas('Field Tactics', 'Your first banner of a fight goes up as you strike: you Attack in the same turn.', { freeBanner: true }, 1),
+  'war-roar': act('Terrifying Roar', 'Spend 2 Valor: a shout and a hit that breaks a wind-up and stuns a lesser foe. Once a fight it makes a boss lose its turn.', 5, up({ power: 1, shout: true, interrupt: true, stun: 1, daze: 1 }, { power: 1.2 }, { power: 1.4, stun: 2 }), { meter: 2 }),
+  'war-veteran': pas('Old Campaigner', 'From the fifth round on, you deal 4% more a rank.', { lateDamage: 1.04 }),
+  'war-all': act('Raise Every Banner', 'Once a fight, spend 3 Valor: a hit, and all three banners stand at once for four rounds.', 6, [{ power: 1.5, allBanners: 4 }], { meter: 3, oncePerFight: true }),
   // Warrior / Berserker: the nearer the end, the harder it hits.
-  'ber-fury': pas('Bloodlust', 'With a great weapon, your hits heal you 3% of the damage they deal, a rank.', { greatLifesteal: 0.03 }),
-  'ber-thirst': pas('Blood Thirst', 'Each win heals 4% of your HP a rank.', { winHeal: 0.04 }),
+  // The healing out, but for what it draws in blood (Robin, 2026-11-10: "Cant you add some healing to the berserkwr with blood?"): crit, bleed, heal. The ids stay, so points spent stay spent.
+  'ber-fury': pas('Battle Rhythm', 'Each hit in a row lands 2% harder a rank, up to five hits. A Block ends the streak.', { hitStreak: 0.02 }),
+  'ber-thirst': pas('Pain Feeds Anger', 'Each blow you take makes your next hit 4% harder a rank.', { painDamage: 0.04 }),
   'ber-savage': pas('Savage Hits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
   'ber-cleave': act('Cleave', 'Two wild hits.', 6, up({ power: 1.9, hits: 2, split: true }, { power: 2.2 }, { power: 2.5 })),
   'ber-wounds': pas('Open Wounds', 'Under a third of your HP you deal 6% more a rank.', { lowHpDamage: 1.06 }),
-  'ber-keen': pas('Second Wind', 'Once a fight, when a blow leaves you under a quarter of your HP, you get back 8% of it, a rank.', { secondWind: 0.08 }),
-  'ber-frenzy': act('Frenzy', 'Lose some HP: your hits land far harder for a few rounds.', 4, up({ selfHurt: 0.1, attackUp: { rounds: 3, mult: 1.4 } }, { attackUp: { rounds: 3, mult: 1.5 } }, { attackUp: { rounds: 4, mult: 1.6 } })),
-  'ber-drink': pas('Drink Deep', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
-  'ber-rampage': act('Rampage', 'Four huge swings, at a cost.', 8, up({ power: 3, hits: 4, split: true, selfHurt: 0.08 }, { power: 3.4 }, { power: 3.8 })),
+  'ber-keen': pas('Bloodied Edge', 'A crit makes the foe bleed for three rounds, harder a rank.', { critBleed: 0.15 }),
+  'ber-frenzy': act('Frenzy', 'Lose some HP: your hits land far harder for a few rounds.', 4, up({ selfHurt: 0.08, attackUp: { rounds: 3, mult: 1.4 } }, { attackUp: { rounds: 3, mult: 1.5 } }, { attackUp: { rounds: 4, mult: 1.6 } })),
+  'ber-drink': pas('Drink Deep', 'While the foe bleeds, you heal for 30% of what the bleed takes from it, a rank.', { bleedDrink: 0.3 }),
+  'ber-rampage': act('Rampage', 'Four huge swings, at a cost.', 8, up({ power: 3, hits: 4, split: true, selfHurt: 0.06 }, { power: 3.4 }, { power: 3.8 })),
   'ber-iron': pas('Iron Will', 'Under a third of your HP you take 7% less a rank.', { lowHpTaken: 0.93 }),
   'ber-deathwish': pas('Death Wish', 'Under a third of your HP: a quarter more damage dealt, 15% less taken.', { lowHpDamage: 1.25, lowHpTaken: 0.85 }, 1),
   // Warrior / Knight: stands there, and what hits it gets hurt.
   'kni-plate': pas('Heavy Plate', '4% more defense a rank.', { defenseMult: 1.04 }),
   'kni-guard': pas('Practised Guard', 'A Block stops 5% more a rank.', { blockPower: 0.05 }),
   'kni-spikes': pas('Spiked Plate', '5% more of each blow goes back, a rank.', { thorns: 0.05 }),
-  'kni-taunt': act('Taunting Shout', 'A shove and a shout: a hit, and its blows are weaker for a few rounds.', 4, up({ power: 1.1, weaken: { rounds: 3, mult: 0.75 } }, { power: 1.25, weaken: { rounds: 3, mult: 0.7 } }, { power: 1.4, weaken: { rounds: 4, mult: 0.65 } })),
+  'kni-taunt': act('Taunting Shout', 'A shove and a shout: a hit, and its blows are weaker for a few rounds.', 4, up({ power: 1.1, shout: true, weaken: { rounds: 3, mult: 0.75 } }, { power: 1.25, weaken: { rounds: 3, mult: 0.7 } }, { power: 1.4, weaken: { rounds: 4, mult: 0.65 } })),
   'kni-resolve': pas('Resolve', 'Start each fight with a point of Valor, a rank.', { meterStart: 1 }, 2),
   'kni-bastion': pas('Bastion', 'Start each fight with a barrier of 6% of your HP, a rank. While any barrier holds, you deal 4% more a rank.', { barrierStart: 0.06, barrierDamage: 1.04 }),
   'kni-charge': act('Shield Charge', 'A hit that grows with your defense and stuns a lesser foe.', 7, up({ power: 1.4, defensePower: 1.2, stun: 1 }, { defensePower: 1.5 }, { defensePower: 1.8 })),
@@ -386,10 +389,10 @@ const WORDS = {
     "tagline": "Takes the hits up front. Every blow it blocks comes back harder.",
     "story": "The hardest class to knock down, with the most HP and armour. Its power comes from the fight itself: block a blow to build Valor, then spend it on a huge swing or a wall of steel. For you if you like to stand your ground and outlast anything.",
     "showcase": {
-      "paladin": [
-        "holy-strike",
-        "last-light",
-        "pal-miracle"
+      "warlord": [
+        "war-valor",
+        "war-cry",
+        "war-all"
       ],
       "berserker": [
         "reckless",

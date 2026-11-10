@@ -306,6 +306,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (ability.oncePerFight) f.used.push(move.ability);
       const rk = ability.ranks[Math.min(rank, ability.ranks.length) - 1]!;
       const powerMult = p.arcane ? 0.8 : 1;
+      // A shout is stronger with Commanding Voice and a round longer with Long Breath (Robin, 2026-11-10).
+      const voice = rk.shout ? (traits.voice ?? 1) : 1;
+      const longer = rk.shout ? (traits.shoutRounds ?? 0) : 0;
       if (rk.flee) {
         events.push({ type: 'fled', action: id, player, ok: true });
         return { state: withCharacter(state, outOfArena({ ...lingering(r.c, f), fight: null })), events };
@@ -315,7 +318,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         events.push({ type: 'selfHurt', action: id, player, amount: r.c.hp - hp, hp });
         r.c = { ...r.c, hp };
       }
-      if (rk.meterGain) gainMeterFlat(r, rk.meterGain);
+      // A banner's gift of Valor comes once a fight, or planting it again and again would be a well of it (2026-11-10).
+      if (rk.meterGain && !(rk.banner && f.used.includes('bannerGift'))) {
+        if (rk.banner) f.used.push('bannerGift');
+        gainMeterFlat(r, rk.meterGain);
+      }
       // Overflow grows with the level as the costs do (2026-11-03).
       if (rk.manaPerMeter) r.c = restoreMana(r.c, Math.round(rk.manaPerMeter * meterCost * manaScale(r.c)), action, events);
       if (rk.nextSpell) f.nextSpell = rk.nextSpell;
@@ -357,8 +364,20 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'spellUp', rounds: rk.spellUp.rounds });
       }
       if (rk.attackUp) {
-        f.attackUp = { ...rk.attackUp };
-        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'attackUp', rounds: rk.attackUp.rounds });
+        f.attackUp = { rounds: rk.attackUp.rounds + longer, mult: 1 + (rk.attackUp.mult - 1) * voice };
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'attackUp', rounds: f.attackUp.rounds });
+      }
+      if (rk.valorUp) {
+        f.valorUp = { rounds: rk.valorUp.rounds + longer, extra: rk.valorUp.extra };
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'valorUp', rounds: f.valorUp.rounds });
+      }
+      if (rk.banner) {
+        f.banner = { ...rk.banner, age: 0 };
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'banner', rounds: 0, name: ability.name });
+      }
+      if (rk.allBanners) {
+        f.allBanners = { rounds: rk.allBanners, age: 0 };
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'banners', rounds: rk.allBanners });
       }
       let barrier = rk.barrier ?? 0;
       if (rk.barrierShare) barrier += Math.round(r.s.maxHp * rk.barrierShare);
@@ -441,7 +460,12 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           f.enemy.charged = null;
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'interrupt', rounds: 1 });
         }
-        if (rk.stun) {
+        if (rk.daze && f.enemy.role !== 'mob' && !f.used.includes('daze')) {
+          // Terrifying Roar: what a stun cannot hold loses a turn, once a fight.
+          f.used.push('daze');
+          f.skip += rk.daze;
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'skip', rounds: rk.daze });
+        } else if (rk.stun) {
           // Mobs are stunned; minis and bosses shrug it off, or a stun every other round would rob them of the fight.
           if (f.enemy.role === 'mob') {
             f.enemy.stunned += rk.stun;
@@ -459,8 +483,14 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'sunder', rounds: rk.sunder.rounds });
         }
         if (rk.weaken) {
-          f.enemy.weakened = { ...rk.weaken };
-          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: rk.weaken.rounds });
+          f.enemy.weakened = { rounds: rk.weaken.rounds + longer, mult: 1 - (1 - rk.weaken.mult) * voice };
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: f.enemy.weakened.rounds });
+        }
+        // Field Tactics: the first banner of a fight goes up as you strike.
+        if (rk.banner && traits.freeBanner && !f.used.includes('freeBanner')) {
+          f.used.push('freeBanner');
+          strike(r, 'Attack', 1, 1, r.s.crit, false, { melee: true });
+          if (r.done) return r.done;
         }
         if (rk.poison) {
           f.enemy.poison = { rounds: Math.max(rk.poison.rounds, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(r.s.attack * rk.poison.power * (traits.poisonPower ?? 1)))) };
@@ -515,6 +545,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     f.enemy.hp = Math.max(0, f.enemy.hp - bleed.damage * twice);
     events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: bleed.damage * twice, hp: f.enemy.hp, bleed: true });
     f.enemy.bleed = bleed.rounds > 1 ? { ...bleed, rounds: bleed.rounds - 1 } : null;
+    if (traits.bleedDrink) healing(r, Math.max(1, Math.round(bleed.damage * twice * traits.bleedDrink * (traits.healPower ?? 1))));
     if (f.enemy.hp <= 0) return win(r);
     phaseCheck(r);
   }
@@ -538,6 +569,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     r.c = restoreMana(r.c, braceMana(r.s.maxMana, guardOf(r.c).brace, traits.channel), action, events);
   };
   const firstStrike = f.round === 1 && (cls.firstStrike || traits.firstStrike || quick);
+  // Battle Rhythm: raising the shield ends the streak.
+  if (guard === 'block' && f.rhythm) f.rhythm = 0;
   if (f.skip > 0) {
     f.skip -= 1;
     events.push({ type: 'skipped', action: id, player, by: 'enemy', reason: 'warped' });
@@ -567,7 +600,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (guard !== 'none') events.push({ type: 'guarded', action: id, player, guard });
       const name = f.enemy.charged ?? mv.name;
       const heavy = f.enemy.charged !== null;
-      let mult = mv.power * (heavy ? PROGRESSION.enemyCharge : 1) * (f.enemy.weakened ? f.enemy.weakened.mult : 1);
+      let mult = mv.power * (heavy ? PROGRESSION.enemyCharge : 1) * (f.enemy.weakened ? f.enemy.weakened.mult : 1) * (bannerOf(r.c, f, 'dread')?.weaken ?? 1);
       if (heavy && r.s.bonus.warding && !f.used.includes('warding')) {
         f.used.push('warding');
         mult *= 1 - r.s.bonus.warding;
@@ -644,6 +677,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         r.c = { ...r.c, hp: Math.max(0, r.c.hp - dealt) };
         events.push({ type: 'hit', action: id, player, by: 'enemy', move: name, damage: dealt, crit, hp: r.c.hp, absorbed });
         if (held === 'block') gainMeter(r, 'block', heavy ? 2 : 1);
+        if (traits.painDamage) f.anger = true;
         if (!survive(r)) return r.done!;
         if (held === 'block' && traits.blockHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.blockHeal)));
         if (held === 'block' && p.mirror && beforeGuard > dealt + absorbed) {
@@ -718,6 +752,13 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   if (f.counterUp) f.counterUp = f.counterUp.rounds > 1 ? { ...f.counterUp, rounds: f.counterUp.rounds - 1 } : null;
   if (f.spike) f.spike = f.spike.rounds > 1 ? { ...f.spike, rounds: f.spike.rounds - 1 } : null;
   if (f.clone) f.clone = f.clone.rounds > 1 ? { ...f.clone, rounds: f.clone.rounds - 1 } : null;
+  // The banners: a round older; Valor's point when its round comes.
+  if (f.banner) f.banner = { ...f.banner, age: f.banner.age + 1 };
+  if (f.allBanners) f.allBanners = { rounds: f.allBanners.rounds, age: f.allBanners.age + 1 };
+  const valor = bannerOf(r.c, f, 'valor');
+  if (valor && valor.every > 0 && valor.age % valor.every === 0) gainMeterFlat(r, 1);
+  if (f.allBanners) f.allBanners = f.allBanners.rounds > 1 ? { ...f.allBanners, rounds: f.allBanners.rounds - 1 } : null;
+  if (f.valorUp) f.valorUp = f.valorUp.rounds > 1 ? { ...f.valorUp, rounds: f.valorUp.rounds - 1 } : null;
   if (f.enemy.sunder) f.enemy.sunder = f.enemy.sunder.rounds > 1 ? { ...f.enemy.sunder, rounds: f.enemy.sunder.rounds - 1 } : null;
   if (f.dance) f.dance = f.dance.exposed ? { ...f.dance, exposed: false } : f.dance.rounds > 1 ? { ...f.dance, rounds: f.dance.rounds - 1 } : null;
   gainMeter(r, 'round', 1);
@@ -743,6 +784,7 @@ function gainMeter(r: Round, gain: 'block' | 'hit' | 'round' | 'miss', n: number
   const meter = CLASS_DATA[r.c.classId].meter;
   if (!meter || meter.gain !== gain || n <= 0) return;
   let add = n;
+  if (gain === 'block' && r.f.valorUp) add += r.f.valorUp.extra;
   const fury = (r.s.powers.fury ?? 0) + (r.s.bonus.resolve ?? 0);
   if (fury && r.rng.next() < fury) add += 1;
   const before = r.f.meter;
@@ -765,6 +807,25 @@ function gainMeterFlat(r: Round, n: number): void {
   if (!meter) return;
   r.f.meter = Math.min(PROGRESSION.meterMax, r.f.meter + n);
   r.events.push({ type: 'meter', action: r.action.id, player: r.action.player, name: meter.name, value: r.f.meter, max: PROGRESSION.meterMax });
+}
+
+/** The Warlord's banners by kind (Robin, 2026-11-10). */
+const BANNERS = { valor: 'war-valor', dread: 'war-dread', war: 'war-war' } as const;
+
+/**
+ * The banner of this kind if it stands: the one planted, or under Raise Every Banner each of the three at the rank known (the first
+ * if not known). Commanding Voice makes what it does stronger.
+ */
+function bannerOf(c: Character, f: Fight, kind: keyof typeof BANNERS): { weaken: number; sunder: number; grow: number; cap: number; every: number; age: number } | null {
+  let b: NonNullable<Fight['banner']> | null = f.banner?.kind === kind ? f.banner : null;
+  if (!b && f.allBanners) {
+    const id = BANNERS[kind];
+    const rank = ABILITIES[id]?.ranks[Math.max(1, c.abilities[id] ?? 1) - 1]?.banner;
+    if (rank) b = { ...rank, age: f.allBanners.age };
+  }
+  if (!b) return null;
+  const voice = traitsOf(c).voice ?? 1;
+  return { weaken: 1 - (1 - (b.weaken ?? 1)) * voice, sunder: 1 + ((b.sunder ?? 1) - 1) * voice, grow: (b.grow ?? 0) * voice, cap: (b.cap ?? 0) * voice, every: b.every ?? 0, age: b.age };
 }
 
 /** Venom on the Spikes (2026-11-10): what a tripwire catches or spikes sting is poisoned for three rounds; a stronger poison already there stays. */
@@ -794,12 +855,29 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
   if (traits.firstRoundDamage && f.round === 1) power *= traits.firstRoundDamage;
   if (traits.burningDamage && f.enemy.burn) power *= traits.burningDamage;
   if (traits.poisonedDamage && f.enemy.poison) power *= traits.poisonedDamage;
-  if (traits.weakenedDamage && f.enemy.weakened) power *= traits.weakenedDamage;
+  const dread = bannerOf(r.c, f, 'dread');
+  const war = bannerOf(r.c, f, 'war');
+  if (traits.weakenedDamage && (f.enemy.weakened || dread)) power *= traits.weakenedDamage;
   if (traits.stunnedDamage && f.enemy.stunned > 0) power *= traits.stunnedDamage;
   // The bridges between trees (2026-11-10).
   if (traits.barrierDamage && f.barrier > 0) power *= traits.barrierDamage;
   if (traits.bleedingDamage && f.enemy.bleed) power *= traits.bleedingDamage;
   if (traits.companionDamage && f.companion) power *= traits.companionDamage;
+  // The Warlord (Robin, 2026-11-10): a banner standing, the foe winding up, a fight grown long; Dread and War themselves.
+  if (traits.bannerDamage && (f.banner || f.allBanners)) power *= traits.bannerDamage;
+  if (traits.windupDamage && (f.enemy.charged || f.enemy.next?.charge)) power *= traits.windupDamage;
+  if (traits.lateDamage && f.round >= 5) power *= traits.lateDamage;
+  if (dread) power *= dread.sunder;
+  if (war) power *= 1 + Math.min(war.cap, war.grow * war.age);
+  // The Berserker: hits in a row, and the hit after a blow taken.
+  if (traits.hitStreak) {
+    power *= 1 + traits.hitStreak * Math.min(5, f.rhythm ?? 0);
+    f.rhythm = Math.min(5, (f.rhythm ?? 0) + 1);
+  }
+  if (traits.painDamage && f.anger) {
+    power *= 1 + traits.painDamage;
+    f.anger = false;
+  }
   if (spell && f.nextSpell) {
     power *= f.nextSpell;
     f.nextSpell = 0;
@@ -831,6 +909,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
       f.mark.hits -= 1;
       if (f.mark.hits <= 0) f.mark = null;
     }
+    if (f.strikes === 0 && traits.firstHitDamage) hitPower *= traits.firstHitDamage;
     f.strikes += 1;
     if (f.sureCrit > 0) {
       f.sureCrit -= 1;
@@ -848,6 +927,8 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     events.push({ type: 'hit', action: id, player, by: 'player', move, damage: b.damage, crit: b.crit, hp: f.enemy.hp, absorbed: 0 });
     if (b.crit) gainMeter(r, 'miss', 1);
     if (b.crit && traits.critHeal) healing(r, Math.max(1, Math.round(s.maxHp * traits.critHeal)));
+    // Bloodied Edge: a crit opens a bleed.
+    if (b.crit && traits.critBleed && f.enemy.hp > 0) openBleed(r, Math.max(1, Math.round(s.attack * traits.critBleed)), 3);
     if (b.crit && traits.critMana) r.c = restoreMana(r.c, Math.max(1, Math.round(s.maxMana * traits.critMana)), r.action, events);
     // Bloodlust: a great weapon drinks too (Robin, 2026-11-03).
     const drink = s.lifesteal + (traits.greatLifesteal && gearKind(r.c.equipment.weapon) === 'great' ? traits.greatLifesteal : 0);

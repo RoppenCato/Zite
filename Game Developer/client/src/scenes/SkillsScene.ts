@@ -75,6 +75,11 @@ function rankLine(r: AbilityRank): string {
   if (r.thornsUp) bits.push(`${pct(r.thornsUp.share)} sent back for ${r.thornsUp.rounds} rounds`);
   if (r.blockUp) bits.push(`Block lets ${pct(r.blockUp.mult)} through for ${r.blockUp.rounds} rounds`);
   if (r.spike) bits.push(`${r.spike.rounds} rounds of spikes`);
+  if (r.banner?.kind === 'valor') bits.push(`a Valor every ${r.banner.every} rounds${r.meterGain ? `, ${r.meterGain} at once` : ''}`);
+  if (r.banner?.kind === 'dread') bits.push(`its blows ${pct(1 - (r.banner.weaken ?? 1))} softer, ${pct((r.banner.sunder ?? 1) - 1)} more taken`);
+  if (r.banner?.kind === 'war') bits.push(`${pct(r.banner.grow ?? 0)} harder a round, up to ${pct(r.banner.cap ?? 0)}`);
+  if (r.valorUp) bits.push(`${r.valorUp.rounds} rounds of more Valor`);
+  if (r.allBanners) bits.push(`every banner for ${r.allBanners} rounds`);
   return bits.slice(0, 2).join(', ');
 }
 

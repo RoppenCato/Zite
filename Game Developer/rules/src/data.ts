@@ -172,6 +172,19 @@ export interface ClassTraits {
   burnPower?: number;
   /** Bridges between trees (mine, 2026-11-10): more dealt while you hold a barrier, to a bleeding foe, and by your own hits while the owl is out. */
   barrierDamage?: number;
+  /** The Warlord (Robin, 2026-11-10): banners and shouts this much stronger; more dealt while a banner stands, by the fight's first hit, while the foe winds up, and from round five; shouts a round longer; the first banner goes up with an Attack. */
+  voice?: number;
+  bannerDamage?: number;
+  firstHitDamage?: number;
+  windupDamage?: number;
+  lateDamage?: number;
+  shoutRounds?: number;
+  freeBanner?: boolean;
+  /** The Berserker without its healing (Robin, 2026-11-10): more a hit in a row (a Block ends it), more on the hit after a blow taken, a crit opens a bleed of this share of attack, and a bleed heals this share of what it takes. */
+  hitStreak?: number;
+  painDamage?: number;
+  critBleed?: number;
+  bleedDrink?: number;
   bleedingDamage?: number;
   companionDamage?: number;
   /** A tripwire that catches and spikes that go off poison: this share of attack a round, for three rounds. */
@@ -179,7 +192,27 @@ export interface ClassTraits {
 }
 
 /** One rank of an ability: what it does. Fields left out do nothing. */
+/** A Warlord's banner: Valor a point every `every` rounds; Dread the foe's blows times `weaken` and what it takes times `sunder`; War `grow` more a round stood, up to `cap`. */
+export interface Banner {
+  kind: 'valor' | 'dread' | 'war';
+  every?: number;
+  weaken?: number;
+  sunder?: number;
+  grow?: number;
+  cap?: number;
+}
+
 export interface AbilityRank {
+  /** Plants a banner for the whole fight, in place of any other (Robin, 2026-11-10). */
+  banner?: Banner;
+  /** All three banners at once for this many rounds. */
+  allBanners?: number;
+  /** A shout: Commanding Voice strengthens it and Long Breath lengthens it. */
+  shout?: boolean;
+  /** For some rounds each Block gives this much more of the meter. */
+  valorUp?: { rounds: number; extra: number };
+  /** Once a fight, a foe a stun cannot hold loses this many turns instead. */
+  daze?: number;
   power?: number;
   hits?: number;
   crit?: number;

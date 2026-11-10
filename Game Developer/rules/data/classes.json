@@ -33,57 +33,57 @@
       "text": "Valor builds when you Block a blow, more from a wound-up one."
     },
     "trees": {
-      "paladin": {
-        "name": "Paladin",
-        "text": "Heals as it fights and wears the enemy down.",
+      "warlord": {
+        "name": "Warlord",
+        "text": "Plants a banner for the fight and shouts it its way.",
         "nodes": [
-          "holy-strike",
-          "pal-devotion",
-          "paladin-oath",
-          "pal-steadfast",
-          "judgement",
-          "pal-mercy",
-          "pal-consecrate",
-          "pal-wrath",
-          "last-light",
-          "pal-aura",
-          "pal-avenger",
-          "pal-faith",
-          "pal-exorcism",
-          "pal-zeal",
-          "pal-miracle"
+          "war-valor",
+          "war-voice",
+          "war-bearer",
+          "war-first",
+          "war-cry",
+          "war-breath",
+          "war-dread",
+          "war-nerve",
+          "war-hold",
+          "war-seize",
+          "war-war",
+          "war-tactics",
+          "war-roar",
+          "war-veteran",
+          "war-all"
         ],
         "tiers": [
           [
-            "holy-strike",
-            "pal-devotion"
+            "war-valor",
+            "war-voice"
           ],
           [
-            "paladin-oath",
-            "pal-steadfast"
+            "war-bearer",
+            "war-first"
           ],
           [
-            "judgement",
-            "pal-mercy"
+            "war-cry",
+            "war-breath"
           ],
           [
-            "pal-consecrate",
-            "pal-wrath"
+            "war-dread",
+            "war-nerve"
           ],
           [
-            "last-light",
-            "pal-aura"
+            "war-hold",
+            "war-seize"
           ],
           [
-            "pal-avenger",
-            "pal-faith"
+            "war-war",
+            "war-tactics"
           ],
           [
-            "pal-exorcism",
-            "pal-zeal"
+            "war-roar",
+            "war-veteran"
           ],
           [
-            "pal-miracle"
+            "war-all"
           ]
         ]
       },
@@ -199,10 +199,10 @@
     "tagline": "Takes the hits up front. Every blow it blocks comes back harder.",
     "story": "The hardest class to knock down, with the most HP and armour. Its power comes from the fight itself: block a blow to build Valor, then spend it on a huge swing or a wall of steel. For you if you like to stand your ground and outlast anything.",
     "showcase": {
-      "paladin": [
-        "holy-strike",
-        "last-light",
-        "pal-miracle"
+      "warlord": [
+        "war-valor",
+        "war-cry",
+        "war-all"
       ],
       "berserker": [
         "reckless",

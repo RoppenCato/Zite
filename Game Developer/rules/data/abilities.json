@@ -94,102 +94,6 @@
       "shield"
     ]
   },
-  "holy-strike": {
-    "name": "Holy Strike",
-    "classId": "warrior",
-    "text": "A hit that heals you for part of the damage.",
-    "mana": 5,
-    "level": 2,
-    "ranks": [
-      {
-        "power": 1.25,
-        "healDealt": 0.35
-      },
-      {
-        "power": 1.4,
-        "healDealt": 0.42
-      },
-      {
-        "power": 1.55,
-        "healDealt": 0.5
-      }
-    ]
-  },
-  "paladin-oath": {
-    "name": "Blessed Guard",
-    "classId": "warrior",
-    "text": "Each blow you Block heals you a little.",
-    "mana": 0,
-    "level": 5,
-    "rule": {
-      "blockHeal": 0.02
-    },
-    "ranks": [
-      {}
-    ]
-  },
-  "judgement": {
-    "name": "Judgement",
-    "classId": "warrior",
-    "text": "A hit that weakens its blows and makes it take more damage.",
-    "mana": 7,
-    "level": 9,
-    "ranks": [
-      {
-        "power": 1,
-        "weaken": {
-          "rounds": 3,
-          "mult": 0.75
-        },
-        "sunder": {
-          "rounds": 3,
-          "mult": 1.15
-        }
-      },
-      {
-        "power": 1.15,
-        "weaken": {
-          "rounds": 3,
-          "mult": 0.75
-        },
-        "sunder": {
-          "rounds": 3,
-          "mult": 1.2
-        }
-      },
-      {
-        "power": 1.3,
-        "weaken": {
-          "rounds": 3,
-          "mult": 0.65
-        },
-        "sunder": {
-          "rounds": 4,
-          "mult": 1.25
-        }
-      }
-    ]
-  },
-  "last-light": {
-    "name": "Last Light",
-    "classId": "warrior",
-    "text": "Spend 3 Valor: the next blow that would fell you leaves you standing instead. Once a fight.",
-    "mana": 4,
-    "meter": 3,
-    "oncePerFight": true,
-    "level": 17,
-    "ranks": [
-      {
-        "guardian": 0.3
-      },
-      {
-        "guardian": 0.4
-      },
-      {
-        "guardian": 0.5
-      }
-    ]
-  },
   "reckless": {
     "name": "Reckless Swing",
     "classId": "warrior",
@@ -199,15 +103,15 @@
     "ranks": [
       {
         "power": 2,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       },
       {
         "power": 2.25,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       },
       {
         "power": 2.5,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       }
     ]
   },
@@ -233,7 +137,7 @@
     "level": 9,
     "ranks": [
       {
-        "selfHurt": 0.08,
+        "selfHurt": 0.06,
         "meterGain": 2,
         "attackUp": {
           "rounds": 3,
@@ -241,7 +145,7 @@
         }
       },
       {
-        "selfHurt": 0.08,
+        "selfHurt": 0.06,
         "meterGain": 2,
         "attackUp": {
           "rounds": 3,
@@ -249,7 +153,7 @@
         }
       },
       {
-        "selfHurt": 0.08,
+        "selfHurt": 0.06,
         "meterGain": 2,
         "attackUp": {
           "rounds": 4,
@@ -1482,12 +1386,41 @@
       }
     ]
   },
-  "pal-devotion": {
-    "name": "Devotion",
-    "text": "Your healing is 6% stronger a rank.",
+  "war-valor": {
+    "name": "Banner of Valor",
+    "text": "Plant a banner for the whole fight: a point of Valor every second round, and at higher ranks some at once, the first time in a fight. Only one banner stands at a time.",
+    "mana": 4,
+    "ranks": [
+      {
+        "banner": {
+          "kind": "valor",
+          "every": 2
+        }
+      },
+      {
+        "banner": {
+          "kind": "valor",
+          "every": 2
+        },
+        "meterGain": 1
+      },
+      {
+        "banner": {
+          "kind": "valor",
+          "every": 2
+        },
+        "meterGain": 2
+      }
+    ],
+    "classId": "warrior",
+    "level": 2
+  },
+  "war-voice": {
+    "name": "Commanding Voice",
+    "text": "Your banners and shouts are 5% stronger a rank.",
     "mana": 0,
     "rule": {
-      "healPower": 1.06
+      "voice": 1.05
     },
     "ranks": [
       {},
@@ -1497,12 +1430,12 @@
     "classId": "warrior",
     "level": 2
   },
-  "pal-steadfast": {
-    "name": "Steadfast",
-    "text": "3% more HP a rank.",
+  "war-bearer": {
+    "name": "Standard Bearer",
+    "text": "While a banner stands, you deal 3% more a rank.",
     "mana": 0,
     "rule": {
-      "hpMult": 1.03
+      "bannerDamage": 1.03
     },
     "ranks": [
       {},
@@ -1512,12 +1445,12 @@
     "classId": "warrior",
     "level": 5
   },
-  "pal-mercy": {
-    "name": "Mercy",
-    "text": "Each win heals 5% of your HP a rank.",
+  "war-first": {
+    "name": "First Blood",
+    "text": "Your first hit of a fight lands 10% harder a rank.",
     "mana": 0,
     "rule": {
-      "winHeal": 0.05
+      "firstHitDamage": 1.1
     },
     "ranks": [
       {},
@@ -1525,40 +1458,86 @@
       {}
     ],
     "classId": "warrior",
-    "level": 9
+    "level": 5
   },
-  "pal-consecrate": {
-    "name": "Holy Ground",
-    "text": "A hit that leaves you healing each round for a while.",
-    "mana": 6,
+  "war-cry": {
+    "name": "War Cry",
+    "text": "A shout and a hit: your hits land harder for three rounds.",
+    "mana": 5,
     "ranks": [
       {
-        "power": 0.9,
-        "regen": {
-          "rounds": 4,
-          "share": 0.04
-        }
-      },
-      {
         "power": 1,
-        "regen": {
-          "rounds": 4,
-          "share": 0.05
+        "shout": true,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.25
         }
       },
       {
         "power": 1.1,
-        "regen": {
-          "rounds": 5,
-          "share": 0.06
+        "shout": true,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.3
+        }
+      },
+      {
+        "power": 1.2,
+        "shout": true,
+        "attackUp": {
+          "rounds": 3,
+          "mult": 1.35
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 9
+  },
+  "war-breath": {
+    "name": "Long Breath",
+    "text": "Your shouts last a round longer.",
+    "mana": 0,
+    "rule": {
+      "shoutRounds": 1
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "warrior",
+    "level": 9
+  },
+  "war-dread": {
+    "name": "Banner of Dread",
+    "text": "Plant a banner for the whole fight: the foe hits softer and takes more damage. Only one banner stands at a time.",
+    "mana": 4,
+    "ranks": [
+      {
+        "banner": {
+          "kind": "dread",
+          "weaken": 0.88,
+          "sunder": 1.08
+        }
+      },
+      {
+        "banner": {
+          "kind": "dread",
+          "weaken": 0.85,
+          "sunder": 1.11
+        }
+      },
+      {
+        "banner": {
+          "kind": "dread",
+          "weaken": 0.82,
+          "sunder": 1.14
         }
       }
     ],
     "classId": "warrior",
     "level": 13
   },
-  "pal-wrath": {
-    "name": "Righteous Wrath",
+  "war-nerve": {
+    "name": "Break Their Nerve",
     "text": "A weakened foe takes 6% more a rank.",
     "mana": 0,
     "rule": {
@@ -1572,93 +1551,134 @@
     "classId": "warrior",
     "level": 13
   },
-  "pal-aura": {
-    "name": "Warm Aura",
-    "text": "You heal 1% of your HP each round, a rank.",
+  "war-hold": {
+    "name": "Hold the Line",
+    "text": "A shout: a small barrier, and for a few rounds each Block gives a point more Valor.",
+    "mana": 3,
+    "ranks": [
+      {
+        "shout": true,
+        "barrierShare": 0.08,
+        "valorUp": {
+          "rounds": 3,
+          "extra": 1
+        }
+      },
+      {
+        "shout": true,
+        "barrierShare": 0.1,
+        "valorUp": {
+          "rounds": 4,
+          "extra": 1
+        }
+      },
+      {
+        "shout": true,
+        "barrierShare": 0.12,
+        "valorUp": {
+          "rounds": 5,
+          "extra": 1
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 17
+  },
+  "war-seize": {
+    "name": "Seize the Moment",
+    "text": "While the foe winds up a blow, your hits land 8% harder a rank.",
     "mana": 0,
     "rule": {
-      "hpRegen": 0.01
+      "windupDamage": 1.08
     },
     "ranks": [
+      {},
       {},
       {}
     ],
     "classId": "warrior",
     "level": 17
   },
-  "pal-avenger": {
-    "name": "Avenging Strike",
-    "text": "Spend 2 Valor: a heavy hit that heals you for much of it.",
-    "mana": 6,
+  "war-war": {
+    "name": "Banner of War",
+    "text": "Plant a banner for the whole fight: your hits grow harder every round it stands. Only one banner stands at a time.",
+    "mana": 4,
     "ranks": [
       {
-        "power": 2,
-        "healDealt": 0.5
+        "banner": {
+          "kind": "war",
+          "grow": 0.04,
+          "cap": 0.4
+        }
       },
       {
-        "power": 2.3,
-        "healDealt": 0.5
+        "banner": {
+          "kind": "war",
+          "grow": 0.05,
+          "cap": 0.5
+        }
       },
       {
-        "power": 2.6,
-        "healDealt": 0.6
+        "banner": {
+          "kind": "war",
+          "grow": 0.06,
+          "cap": 0.6
+        }
+      }
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "war-tactics": {
+    "name": "Field Tactics",
+    "text": "Your first banner of a fight goes up as you strike: you Attack in the same turn.",
+    "mana": 0,
+    "rule": {
+      "freeBanner": true
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "warrior",
+    "level": 21
+  },
+  "war-roar": {
+    "name": "Terrifying Roar",
+    "text": "Spend 2 Valor: a shout and a hit that breaks a wind-up and stuns a lesser foe. Once a fight it makes a boss lose its turn.",
+    "mana": 5,
+    "ranks": [
+      {
+        "power": 1,
+        "shout": true,
+        "interrupt": true,
+        "stun": 1,
+        "daze": 1
+      },
+      {
+        "power": 1.2,
+        "shout": true,
+        "interrupt": true,
+        "stun": 1,
+        "daze": 1
+      },
+      {
+        "power": 1.4,
+        "shout": true,
+        "interrupt": true,
+        "stun": 2,
+        "daze": 1
       }
     ],
     "meter": 2,
     "classId": "warrior",
-    "level": 21
-  },
-  "pal-faith": {
-    "name": "Shield of Faith",
-    "text": "Start each fight with a barrier of 5% of your HP, a rank.",
-    "mana": 0,
-    "rule": {
-      "barrierStart": 0.05
-    },
-    "ranks": [
-      {},
-      {},
-      {}
-    ],
-    "classId": "warrior",
-    "level": 21
-  },
-  "pal-exorcism": {
-    "name": "Exorcism",
-    "text": "A blast of light that leaves the foe taking more damage.",
-    "mana": 9,
-    "ranks": [
-      {
-        "power": 2.4,
-        "sunder": {
-          "rounds": 3,
-          "mult": 1.2
-        }
-      },
-      {
-        "power": 2.7,
-        "sunder": {
-          "rounds": 3,
-          "mult": 1.2
-        }
-      },
-      {
-        "power": 3,
-        "sunder": {
-          "rounds": 4,
-          "mult": 1.25
-        }
-      }
-    ],
-    "classId": "warrior",
     "level": 25
   },
-  "pal-zeal": {
-    "name": "Zeal",
-    "text": "Above 80% HP you deal 5% more a rank.",
+  "war-veteran": {
+    "name": "Old Campaigner",
+    "text": "From the fifth round on, you deal 4% more a rank.",
     "mana": 0,
     "rule": {
-      "highHpDamage": 1.05
+      "lateDamage": 1.04
     },
     "ranks": [
       {},
@@ -1668,26 +1688,27 @@
     "classId": "warrior",
     "level": 25
   },
-  "pal-miracle": {
-    "name": "Miracle",
-    "text": "Once a fight: back to most of your HP, cured of everything.",
-    "mana": 8,
+  "war-all": {
+    "name": "Raise Every Banner",
+    "text": "Once a fight, spend 3 Valor: a hit, and all three banners stand at once for four rounds.",
+    "mana": 6,
     "ranks": [
       {
-        "healShare": 0.7,
-        "cure": true
+        "power": 1.5,
+        "allBanners": 4
       }
     ],
+    "meter": 3,
     "oncePerFight": true,
     "classId": "warrior",
     "level": 30
   },
   "ber-fury": {
-    "name": "Bloodlust",
-    "text": "With a great weapon, your hits heal you 3% of the damage they deal, a rank.",
+    "name": "Battle Rhythm",
+    "text": "Each hit in a row lands 2% harder a rank, up to five hits. A Block ends the streak.",
     "mana": 0,
     "rule": {
-      "greatLifesteal": 0.03
+      "hitStreak": 0.02
     },
     "ranks": [
       {},
@@ -1698,11 +1719,11 @@
     "level": 2
   },
   "ber-thirst": {
-    "name": "Blood Thirst",
-    "text": "Each win heals 4% of your HP a rank.",
+    "name": "Pain Feeds Anger",
+    "text": "Each blow you take makes your next hit 4% harder a rank.",
     "mana": 0,
     "rule": {
-      "winHeal": 0.04
+      "painDamage": 0.04
     },
     "ranks": [
       {},
@@ -1767,11 +1788,11 @@
     "level": 13
   },
   "ber-keen": {
-    "name": "Second Wind",
-    "text": "Once a fight, when a blow leaves you under a quarter of your HP, you get back 8% of it, a rank.",
+    "name": "Bloodied Edge",
+    "text": "A crit makes the foe bleed for three rounds, harder a rank.",
     "mana": 0,
     "rule": {
-      "secondWind": 0.08
+      "critBleed": 0.15
     },
     "ranks": [
       {},
@@ -1787,21 +1808,21 @@
     "mana": 4,
     "ranks": [
       {
-        "selfHurt": 0.1,
+        "selfHurt": 0.08,
         "attackUp": {
           "rounds": 3,
           "mult": 1.4
         }
       },
       {
-        "selfHurt": 0.1,
+        "selfHurt": 0.08,
         "attackUp": {
           "rounds": 3,
           "mult": 1.5
         }
       },
       {
-        "selfHurt": 0.1,
+        "selfHurt": 0.08,
         "attackUp": {
           "rounds": 4,
           "mult": 1.6
@@ -1813,10 +1834,10 @@
   },
   "ber-drink": {
     "name": "Drink Deep",
-    "text": "A crit heals you 2% of your HP, a rank.",
+    "text": "While the foe bleeds, you heal for 30% of what the bleed takes from it, a rank.",
     "mana": 0,
     "rule": {
-      "critHeal": 0.02
+      "bleedDrink": 0.3
     },
     "ranks": [
       {},
@@ -1835,19 +1856,19 @@
         "power": 3,
         "hits": 4,
         "split": true,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       },
       {
         "power": 3.4,
         "hits": 4,
         "split": true,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       },
       {
         "power": 3.8,
         "hits": 4,
         "split": true,
-        "selfHurt": 0.08
+        "selfHurt": 0.06
       }
     ],
     "classId": "warrior",
@@ -1934,6 +1955,7 @@
     "ranks": [
       {
         "power": 1.1,
+        "shout": true,
         "weaken": {
           "rounds": 3,
           "mult": 0.75
@@ -1941,6 +1963,7 @@
       },
       {
         "power": 1.25,
+        "shout": true,
         "weaken": {
           "rounds": 3,
           "mult": 0.7
@@ -1948,6 +1971,7 @@
       },
       {
         "power": 1.4,
+        "shout": true,
         "weaken": {
           "rounds": 4,
           "mult": 0.65

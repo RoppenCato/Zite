@@ -28,7 +28,7 @@ export function pointsFree(c: Character): number {
 }
 
 /** These multiply when two rules both have them; other numbers add. */
-const MULTIPLIED = new Set(['attackMult', 'manaMult', 'lowHpDamage', 'highHpDamage', 'lowHpTaken', 'executeDamage', 'firstRoundDamage', 'burningDamage', 'poisonedDamage', 'weakenedDamage', 'stunnedDamage', 'burnPower', 'barrierDamage', 'bleedingDamage', 'companionDamage', 'damageDealt', 'damageTaken', 'defenseMult', 'hpMult', 'spellPower', 'healPower', 'poisonPower', 'potionPower', 'companionPower', 'dreamDust']);
+const MULTIPLIED = new Set(['attackMult', 'manaMult', 'lowHpDamage', 'highHpDamage', 'lowHpTaken', 'executeDamage', 'firstRoundDamage', 'burningDamage', 'poisonedDamage', 'weakenedDamage', 'stunnedDamage', 'burnPower', 'voice', 'bannerDamage', 'firstHitDamage', 'windupDamage', 'lateDamage', 'barrierDamage', 'bleedingDamage', 'companionDamage', 'damageDealt', 'damageTaken', 'defenseMult', 'hpMult', 'spellPower', 'healPower', 'poisonPower', 'potionPower', 'companionPower', 'dreamDust']);
 
 /** The class's always-on rules, with those of the tree rules it has learned. */
 /** How many pieces of each set are worn. */

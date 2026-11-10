@@ -95,16 +95,15 @@ describe('the Warrior', () => {
     expect(fight(full.state).meter).toBeLessThanOrEqual(1);
   });
 
-  it('Paladin: a Block heals; Berserker: more dealt and more taken; Knight: more defense and blows go back', () => {
-    const base = versus('warrior', 'slime', { hp: 50 }, tough);
-    const paladin = versus('warrior', 'slime', { hp: 50, abilities: { 'paladin-oath': 1 } }, tough);
-    expect(me(apply(paladin, turn(attack, 'block'), makeRng('a'), NOW).state).hp).toBeGreaterThan(me(apply(base, turn(attack, 'block'), makeRng('a'), NOW).state).hp);
+  it('Warlord: a banner stands for the fight; Berserker: more dealt and more taken; Knight: more defense and blows go back', () => {
+    const planted = apply(versus('warrior', 'slime', { abilities: { 'war-valor': 1 } }, tough), turn(ability('war-valor'), 'block'), makeRng('a'), NOW);
+    expect(me(planted.state).fight!.banner).toMatchObject({ kind: 'valor', age: 1 });
     const plain = apply(versus('warrior', 'slime', {}, tough), turn(attack), makeRng('a'), NOW);
     const mad = apply(versus('warrior', 'slime', { abilities: { 'berserker-rage': 1 } }, tough), turn(attack), makeRng('a'), NOW);
     expect(hits(mad.events, 'player')[0]!.damage).toBeGreaterThan(hits(plain.events, 'player')[0]!.damage);
     expect(hits(mad.events, 'enemy')[0]!.damage).toBeGreaterThan(hits(plain.events, 'enemy')[0]!.damage);
     const knight = versus('warrior', 'slime', { abilities: { 'knight-oath': 1 } }, tough);
-    expect(stats(me(knight)).defense).toBeGreaterThan(stats(me(base)).defense);
+    expect(stats(me(knight)).defense).toBeGreaterThan(stats(me(versus('warrior', 'slime', {}, tough))).defense);
     expect(apply(knight, turn(attack), makeRng('a'), NOW).events.some((e) => e.type === 'countered')).toBe(true);
   });
 
@@ -302,11 +301,7 @@ describe('the signature abilities', () => {
     expect(hits(r.events, 'enemy')[0]?.move).not.toBe('Slam');
   });
 
-  it('Last Light stands you back up once; Bloodbath is harder the less HP is left', () => {
-    const lit = versus('warrior', 'bandit', { hp: 1, abilities: { 'last-light': 1 } }, { ...tough, attack: 200 }, { meter: 3 });
-    const r = apply(lit, turn(ability('last-light')), makeRng('z'), NOW);
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'revived', by: 'guardian' }));
-    expect(me(r.state).fight).not.toBeNull();
+  it('Bloodbath is harder the less HP is left', () => {
     const healthy = apply(versus('warrior', 'slime', { abilities: { bloodbath: 1 } }, tough), turn(ability('bloodbath')), makeRng('z'), NOW);
     const hurt = apply(versus('warrior', 'slime', { hp: 12, abilities: { bloodbath: 1 } }, tough), turn(ability('bloodbath')), makeRng('z'), NOW);
     expect(hits(hurt.events, 'player')[0]!.damage).toBeGreaterThan(hits(healthy.events, 'player')[0]!.damage * 1.5);
@@ -449,7 +444,7 @@ describe('the skill board', () => {
     expect(apply(s, skill({ op: 'carry', ability: 'knight-oath' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
     expect(needsFor(me(s), 'iron-retort')).toEqual({ level: 0, points: 2 });
     expect(learn('iron-retort')).toMatchObject({ type: 'rejected' });
-    expect(learn('holy-strike')).toMatchObject({ type: 'learned' });
+    expect(learn('war-valor')).toMatchObject({ type: 'learned' });
     expect(specialization(me(s))).toBe('Knight');
     expect(traitsOf(me(s)).defenseMult).toBeCloseTo(1.04 * 1.04 * 1.2);
   });
@@ -485,7 +480,7 @@ describe('the skill board', () => {
   });
 
   it('a reset gives every point back, only in a town or a church', () => {
-    const spent = at({ level: 8, abilities: { 'heavy-blow': 3, execute: 1, 'holy-strike': 2 }, carried: ['heavy-blow', 'execute', 'holy-strike'] });
+    const spent = at({ level: 8, abilities: { 'heavy-blow': 3, execute: 1, reckless: 2 }, carried: ['heavy-blow', 'execute', 'reckless'] });
     const start = me(spent).space;
     expect(apply({ ...spent, characters: { [P]: { ...me(spent), space: 's1' } } }, skill({ op: 'reset' }), makeRng('a'), NOW).events[0]).toMatchObject({ type: 'rejected' });
     const reset = apply({ ...spent, characters: { [P]: { ...me(spent), space: start } } }, skill({ op: 'reset' }), makeRng('a'), NOW);
