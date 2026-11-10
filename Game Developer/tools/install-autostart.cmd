@@ -2,7 +2,7 @@
 rem Makes the PC start the world by itself when Robin logs in (Robin, 2026-11-10): a scheduled task "Zite world" that
 rem runs tools\online-loop.cmd hidden (the server, the tunnel, started again if they stop). Run this once, as yourself;
 rem no admin is needed for a task of your own. It also starts the task right away.
-rem   To stop the world for now:   schtasks /end /tn "Zite world"   (then taskkill /im cloudflared.exe /f  and the node server)
+rem   To stop the world for now:   tools\stop-world.cmd   (it comes back at the next logon)
 rem   To remove the task:          schtasks /delete /tn "Zite world" /f
 set "HERE=%~dp0"
 schtasks /create /f /tn "Zite world" /sc onlogon /rl limited /tr "wscript.exe \"%HERE%online-hidden.vbs\""
