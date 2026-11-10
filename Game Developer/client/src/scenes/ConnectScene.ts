@@ -85,7 +85,9 @@ export class ConnectScene extends Phaser.Scene {
           return;
         }
         const wait = RETRY_S[Math.min(this.tries - 1, RETRY_S.length - 1)]!;
-        this.status.setText(`${why === 'no connection' ? 'The world did not answer' : why}. Trying again in ${wait} s (try ${this.tries}).`);
+        // A quick tunnel's address changes when it restarts (2026-11-10): after a few tries, say where the new link comes from.
+        const moved = this.tries >= 3 ? '\nIf the world moved, open the newest link from Miles, GD; it remembers the new address.' : '';
+        this.status.setText(`${why === 'no connection' ? 'The world did not answer' : why}. Trying again in ${wait} s (try ${this.tries}).${moved}`);
         this.time.delayedCall(wait * 1000, () => this.attempt());
       });
   }

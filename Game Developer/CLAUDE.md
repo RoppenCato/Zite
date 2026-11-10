@@ -147,7 +147,9 @@ One npm project at this folder's root (Node 22.12 or newer; built with 24). `REA
 - `npm run server`: the Node server (ws://localhost:8787, SQLite in `server/data/world.db`); Node runs the TypeScript
   straight, no build.
 - `npm run typecheck`: TypeScript strict, `rules/tsconfig.json` (no DOM) then `tsconfig.json` (everything).
-- `npm run tunnel`: cloudflared in front of the server (not used yet). The app icons are Mitch, AD's brand art (`client/public`); the old placeholder maker is in `archive/`.
+- `npm run online`: the world for play away from home (Robin, 2026-11-10): the server and a Cloudflare quick tunnel in front of
+  it (`tools/online.mjs`, needs `tools/bin/cloudflared.exe`); it prints the phone's link and writes it to `server/data/online.json`.
+  `tools/install-autostart.cmd` (Robin runs it once) makes a logon task that keeps it up. `npm run tunnel`: the tunnel alone. The app icons are Mitch, AD's brand art (`client/public`); the old placeholder maker is in `archive/`.
 
 ## Things to know before changing code
 

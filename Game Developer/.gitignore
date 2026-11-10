@@ -6,3 +6,7 @@ server/data/*.db
 server/data/*.db-*
 tools/out/
 docs/refs/
+# The world online (tools/online.mjs): the tunnel exe Robin puts in place, and what it writes
+tools/bin/
+server/data/online.json
+server/data/online.log

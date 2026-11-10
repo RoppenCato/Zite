@@ -91,15 +91,31 @@ silently); `maxPayload` is 1 MB. `npm run tunnel` runs `cloudflared tunnel --url
 is installed; the address it prints (`https://….trycloudflare.com`) is opened on the phone as
 `https://<the client's host>/?server=wss://….trycloudflare.com`.
 
-## Running it for friends (how Robin tests it)
+## The world online: play away from home (Robin, 2026-11-10)
 
-1. `npm run server` on the PC (the database is made on the first run).
-2. `npm run tunnel` in a second window; copy the `https://….trycloudflare.com` address.
-3. Serve the built client (`npm run build && npm run preview` on the PC and a second tunnel to port 4173, or Cloudflare
-   Pages later), and open it on the phone once as `…/?server=wss://<the server's tunnel address>`. The character screen
-   says "the world at …"; Begin makes the account; the address is remembered, so later opens connect on their own.
-4. A second phone does the same with its own name: both see each other on the board. The same character on a second
-   phone: Settings → Account → the code, typed on the other phone's character screen ("I have a code from another phone").
+Robin chose the free way first: a **Cloudflare quick tunnel** in front of the server, and Miles, GD hands him the link; a
+stable address (Tailscale Funnel, or a named tunnel on a domain) is the next step when he wants it. No domain for now.
+
+1. `cloudflared.exe` lives in `tools/bin/` (ignored by git; Robin puts it there from Cloudflare's GitHub release; no
+   install). `CLOUDFLARED=<path>` points elsewhere.
+2. **`npm run online`** (`tools/online.mjs`) starts the server and `cloudflared tunnel --url http://localhost:8787`,
+   reads the `https://….trycloudflare.com` address from cloudflared's log, and prints the phone's link:
+   `https://zite-game.pages.dev/?server=wss://….trycloudflare.com`. It writes `server/data/online.json` (`url`, `link`,
+   `since`), so a session can read the link and send it to Robin. The tunnel is started again if it drops (a new
+   address, written again); stopping the script stops the server too. `TUNNEL=none` runs the server alone; `SITE=`
+   changes the client's address in the link.
+3. **Autostart**: `tools/install-autostart.cmd` (Robin runs it once, no admin) makes the scheduled task "Zite world"
+   at logon, running `tools/online-loop.cmd` hidden (`online-hidden.vbs`): `npm run online`, again after 15 s if it
+   stops; the log is `server/data/online.log`. `schtasks /end /tn "Zite world"` pauses it; `/delete` removes it.
+4. **The phone** opens the link once; the address is remembered (`serverUrl`) and the account token with it, so later
+   opens connect on their own. When the address changes, the connect screen says after three tries that the world
+   may have moved and the newest link is the way in; `?server=off` goes back to solo.
+5. The public site is the client (Cloudflare Pages); the LAN link (`http://192.168.0.43:5173/`) still works at home.
+   A second phone opens the same link with its own name; the same character on a second phone: Settings → Account →
+   the code, typed on the other phone's character screen.
+
+The way without a PC, planned by the brief for later: the actors as Cloudflare Durable Objects (the server's shape was
+chosen for that move); a migration, not a rewrite, but days of work.
 5. `node tools/drive-coop.mjs` does all of this headless with two phones and a server of its own (`docs/state/pages.md`).
 
 ## Not here yet
