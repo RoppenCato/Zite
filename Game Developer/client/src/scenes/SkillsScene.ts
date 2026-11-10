@@ -9,27 +9,38 @@ import { feel, sfx } from '../feel.ts';
 import type { GameHolder } from '../game-holder.ts';
 import type { GameLog } from '../game-log.ts';
 import { CREAM, KIT, kitReady, plate, sheet } from '../kit.ts';
-import { COLORS, FONT, FONT_DISPLAY } from '../layout.ts';
+import { COLORS, DESIGN_WIDTH, DPR, FONT, FONT_DISPLAY, SCREEN_WIDTH } from '../layout.ts';
 import { makeButton } from '../ui.ts';
 
 const WOOD_INK = '#3a2410';
 const RUST = '#a23c2c';
 const GOLD = 0xf4c14a;
 const CLASS_X = [66, 159, 252, 345] as const;
-const TREE_X = [84, 206, 328] as const;
-const FIRST_TIER = 354;
-const TIER_H = 39;
-const COLUMN_W = 114;
-const COLUMN_TOP = 306;
-const COLUMN_H = 340;
+const TREE_X = [82, 206, 330] as const;
+// Robin, 2026-11-10: "The talent trees are too small in the menu. Its too hard to see and click." So (mine): every talent stands
+// half again as large (34 to 50) with a whole 60 by 60 to tap, and the page under the header is dragged with a finger, through a
+// camera of its own. The card only rises when a talent is tapped; until then a slim strip leaves the trees the room.
+const PAGE_TOP = 160;
+const PAGE_END = 848;
+const CORE_Y = 264;
+const TREES_TOP = 312;
+const SLIP_Y = 333;
+const FIRST_TIER = 384;
+const TIER_H = 60;
+const COLUMN_W = 120;
+const COLUMN_TOP = 318;
+const COLUMN_H = 524;
 /** How far either side of its branch a talent stands. */
-const TWIG = 27;
-const NODE = 40;
-const TREE_NODE = 34;
+const TWIG = 30;
+const NODE = 52;
+const TREE_NODE = 50;
 /** The capstone at a tree's foot stands larger. */
-const SIGNATURE = 40;
-/** The card, below the board. */
+const SIGNATURE = 56;
+/** The card, over the foot of the page while a talent is picked; the strip, when none is. */
 const CARD_Y = 656;
+const STRIP_Y = 774;
+/** The header's title opens the words about the class. */
+const ABOUT = '@class';
 
 /** The numbers worth showing on a rank. */
 function rankLine(r: AbilityRank): string {
@@ -74,6 +85,15 @@ export class SkillsScene extends Phaser.Scene {
   private picked: string | null = null;
   private note = '';
   private inFlight = false;
+  /** The page's own camera, how far it is dragged, how tall its window is, and where each talent stands on it. */
+  private page!: Phaser.Cameras.Scene2D.Camera;
+  private scrollY = 0;
+  private room = 0;
+  private where = new Map<string, number>();
+  private thumb!: Phaser.GameObjects.Graphics;
+  private dragFrom: number | null = null;
+  private downAt = 0;
+  private dragged = false;
 
   constructor(deps: { game: GameHolder; log: GameLog }) {
     super('skills');
@@ -91,9 +111,54 @@ export class SkillsScene extends Phaser.Scene {
     this.picked = null;
     this.note = '';
     this.rows = [];
+    this.scrollY = 0;
     sheet(this);
+    // The parchment ends above the strip and the card: a dark foot behind them, so the board does not show through.
+    this.add.rectangle(206, 778, 388, 92, 0x1c130b, 1);
+    this.thumb = this.add.graphics().setDepth(5);
+    this.page = this.cameras.add(0, 0, 10, 10);
+    this.page.ignore(this.children.list.slice());
+    // A finger on the page drags it; a drag is not a tap.
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      const y = p.y / DPR;
+      this.dragged = false;
+      this.downAt = y;
+      this.dragFrom = y >= PAGE_TOP && y < PAGE_TOP + this.room ? y : null;
+    });
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (this.dragFrom === null || !p.isDown) return;
+      const y = p.y / DPR;
+      if (!this.dragged && Math.abs(y - this.downAt) < 8) return;
+      this.dragged = true;
+      this.scrollY -= y - this.dragFrom;
+      this.dragFrom = y;
+      this.layout();
+    });
+    this.input.on('wheel', (_p: unknown, _o: unknown, _x: number, dy: number) => {
+      this.scrollY += dy;
+      this.layout();
+    });
     this.refresh();
     this.log.note('skills open');
+  }
+
+  /** The page's window: down to the card when a talent is picked, to the strip when not; the drag kept inside what there is. */
+  private layout(): void {
+    const h = (this.picked ? CARD_Y : STRIP_Y) - 4 - PAGE_TOP;
+    const most = Math.max(0, PAGE_END - PAGE_TOP - h);
+    this.room = h;
+    this.scrollY = Math.max(0, Math.min(most, this.scrollY));
+    const off = (SCREEN_WIDTH - DESIGN_WIDTH) / 2;
+    this.page.setViewport(Math.round((14 + off) * DPR), PAGE_TOP * DPR, 384 * DPR, h * DPR);
+    this.page.setZoom(DPR);
+    this.page.centerOn(206, PAGE_TOP + h / 2 + this.scrollY);
+    // A thumb at the right edge says there is more.
+    this.thumb.clear();
+    if (most > 0) {
+      const len = (h * h) / (PAGE_END - PAGE_TOP);
+      this.thumb.fillStyle(0x2a1a0c, 0.35).fillRoundedRect(396, PAGE_TOP, 4, h, 2);
+      this.thumb.fillStyle(GOLD, 1).fillRoundedRect(396, PAGE_TOP + (this.scrollY / most) * (h - len), 4, len, 2);
+    }
   }
 
   private board(x: number, y: number, w: number, h: number): void {
@@ -142,6 +207,11 @@ export class SkillsScene extends Phaser.Scene {
     this.rows.push(pill);
     this.rows.push(this.add.text(265, 136, free === 1 ? '1 point' : `${free} points`, { fontFamily: FONT_DISPLAY, fontSize: '13px', fontStyle: 'bold', color: free > 0 ? WOOD_INK : CREAM }).setOrigin(0.5));
     this.rows.push(makeButton(this, 350, 136, 76, 36, 'Back', COLORS.log, '15px', () => this.back()).button);
+    const about = this.add.zone(120, 136, 200, 40).setInteractive({ useHandCursor: true });
+    about.on('pointerup', () => this.tap(ABOUT));
+    this.rows.push(about);
+    const pageFrom = this.rows.length;
+    this.where.clear();
 
     // The belt: what goes into a fight.
     this.board(18, 160, 376, 58);
@@ -161,48 +231,61 @@ export class SkillsScene extends Phaser.Scene {
     }
 
     // The class's own four.
-    this.board(18, 222, 376, 74);
-    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, 257, me));
+    this.board(18, 222, 376, 86);
+    cls.core.forEach((id, i) => this.node(id, CLASS_X[i]!, CORE_Y, me));
 
     // The three trees, read downwards (Mitch, AD's layout): a dark column each, the name on a slip at its crown, a branch down through its
     // tiers, gold as far as you have gone, with a leaf at each lit joint. Each tier stands either side of the branch, the capstone on it.
-    this.board(18, 300, 376, 350);
+    this.board(18, TREES_TOP, 376, PAGE_END - TREES_TOP);
     Object.values(cls.trees).forEach((tree, col) => {
       const x = TREE_X[col]!;
       const spent = tree.nodes.reduce((sum, id) => sum + (me.abilities[id] ?? 0), 0);
       const column = this.add.graphics();
       column.fillStyle(0x7a5030, 1).fillRoundedRect(x - COLUMN_W / 2, COLUMN_TOP, COLUMN_W, COLUMN_H, 8).lineStyle(1.5, 0x6a4628, 1).strokeRoundedRect(x - COLUMN_W / 2, COLUMN_TOP, COLUMN_W, COLUMN_H, 8);
       this.rows.push(column);
-      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, 321, 104, 22));
-      this.rows.push(this.add.text(x, 320, `${tree.name} ${spent}`, { fontFamily: FONT_DISPLAY, fontSize: tree.name.length > 9 ? '11px' : '12px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
+      if (kitReady(this)) this.rows.push(plate(this, 'board_slip', x, SLIP_Y, 112, 24));
+      this.rows.push(this.add.text(x, SLIP_Y - 1, `${tree.name} ${spent}`, { fontFamily: FONT_DISPLAY, fontSize: tree.name.length > 9 ? '13px' : '14px', fontStyle: 'bold', color: WOOD_INK }).setOrigin(0.5));
       const branch = this.add.graphics();
       this.rows.push(branch);
       // From the slip's foot down, each stretch bending a little to alternate sides; gold where the tier at its lower end is open.
       tree.tiers.forEach((row, tier) => {
-        const from = tier === 0 ? 332 : FIRST_TIER + (tier - 1) * TIER_H;
+        const from = tier === 0 ? SLIP_Y + 11 : FIRST_TIER + (tier - 1) * TIER_H;
         const to = FIRST_TIER + tier * TIER_H;
         const lit = spent >= tier * TIER_POINTS;
         const bend = x + (tier % 2 ? 3 : -3);
         const mid = (from + to) / 2;
         const points = [new Phaser.Math.Vector2(x, from), new Phaser.Math.Vector2(bend, mid), new Phaser.Math.Vector2(x, to)];
-        branch.lineStyle(6.4, 0x2a1a0c, 1).strokePoints(points);
-        branch.lineStyle(3.6, lit ? GOLD : 0x6a4630, 1).strokePoints(points);
-        if (lit && tier > 0) branch.fillStyle(0x7ccf6a, 1).fillEllipse(bend + 6, mid, 9, 5);
+        branch.lineStyle(8, 0x2a1a0c, 1).strokePoints(points);
+        branch.lineStyle(4.6, lit ? GOLD : 0x6a4630, 1).strokePoints(points);
+        if (lit && tier > 0) branch.fillStyle(0x7ccf6a, 1).fillEllipse(bend + 7, mid, 11, 6);
       });
       tree.tiers.forEach((row, tier) => {
         const y = FIRST_TIER + tier * TIER_H;
-        row.forEach((id, i) => this.node(id, row.length === 1 ? x : x + (i ? TWIG : -TWIG), y, me, row.length === 1 ? SIGNATURE : TREE_NODE, false));
+        row.forEach((id, i) => this.node(id, row.length === 1 ? x : x + (i ? TWIG : -TWIG), y, me, row.length === 1 ? SIGNATURE : TREE_NODE, false, row.length === 1 ? COLUMN_W - 8 : TWIG * 2, TIER_H));
         const need = ABILITIES[row[0]!]!.level;
         if (me.level < need) this.rows.push(this.add.text(x, row.length === 1 ? y + SIGNATURE / 2 - 3 : y, `${need}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 1 } }).setOrigin(0.5));
       });
     });
 
+    const paged = this.rows.slice(pageFrom);
     this.card(me);
+    // The page's things are the page camera's alone; everything else the main one's.
+    const set = new Set(paged);
+    this.cameras.main.ignore(paged);
+    this.page.ignore(this.rows.filter((r) => !set.has(r)));
+    // The talent just tapped stays in sight above the card.
+    const at = this.picked ? this.where.get(this.picked) : undefined;
+    if (at !== undefined) {
+      const h = CARD_Y - 4 - PAGE_TOP;
+      this.scrollY = Math.max(at + 40 - PAGE_TOP - h, Math.min(at - 40 - PAGE_TOP, this.scrollY));
+    }
+    this.layout();
   }
 
   /** A slot: its cubby and icon, its rank's dots, a ring when carried, a + when a point can go here, the level when it is out of reach. */
-  private node(id: string, cx: number, cy: number, me: Character, size = NODE, levelTag = true): void {
+  private node(id: string, cx: number, cy: number, me: Character, size = NODE, levelTag = true, hitW = size + 36, hitH = size + 26): void {
     const a = ABILITIES[id]!;
+    this.where.set(id, cy);
     const rank = me.abilities[id] ?? 0;
     const open = isOpen(me, id);
     const can = canLearn(me, id);
@@ -213,25 +296,26 @@ export class SkillsScene extends Phaser.Scene {
     }
     // A rule is a crest on the branch, not a slot: something you are, not something you press.
     if (kitReady(this) && !a.rule) this.rows.push(this.add.image(cx, cy, KIT, rank ? 'cubby_plain' : 'cubby_empty').setDisplaySize(size, size));
-    this.icon(id, cx, cy, a.rule ? size + 2 : size - 8, rank ? 1 : open ? 0.76 : a.rule ? 0.58 : 0.4);
+    this.icon(id, cx, cy, a.rule ? size + 2 : Math.round(size * 0.78), rank ? 1 : open ? 0.76 : a.rule ? 0.58 : 0.4);
     if (me.carried.includes(id)) {
       const ring = this.add.graphics();
-      ring.lineStyle(2.5, GOLD, 1).strokeRoundedRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4, 6);
+      ring.lineStyle(3, GOLD, 1).strokeRoundedRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4, 7);
       this.rows.push(ring);
     }
     if (a.ranks.length > 1 && rank > 0 && kitReady(this)) {
-      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx + (i - (a.ranks.length - 1) / 2) * 7, cy + size / 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(7.5 / 24));
+      for (let i = 0; i < a.ranks.length; i++) this.rows.push(this.add.image(cx + (i - (a.ranks.length - 1) / 2) * 10, cy + size / 2, KIT, i < rank ? 'pip_full' : 'pip_empty').setScale(10.5 / 24));
     }
-    if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 2, cy + size / 2 - 4, KIT, 'badge_plus').setDisplaySize(17, 17));
+    if (can && kitReady(this)) this.rows.push(this.add.image(cx + size / 2 - 4, cy + size / 2 - 7, KIT, 'badge_plus').setDisplaySize(22, 22));
     if (levelTag && !rank && me.level < a.level) {
       this.rows.push(this.add.text(cx, cy + size / 2 - 3, `Lv ${a.level}`, { fontFamily: FONT, fontSize: '10px', fontStyle: 'bold', color: CREAM, backgroundColor: '#3a2410', padding: { x: 3, y: 0 } }).setOrigin(0.5));
     }
-    const zone = this.add.zone(cx, cy, size + 14, size + 5).setInteractive({ useHandCursor: true });
+    const zone = this.add.zone(cx, cy, hitW, hitH).setInteractive({ useHandCursor: true });
     zone.on('pointerup', () => this.tap(id));
     this.rows.push(zone);
   }
 
   private tap(id: string): void {
+    if (this.dragged) return;
     this.picked = id;
     this.note = '';
     feel.buzz();
@@ -242,7 +326,25 @@ export class SkillsScene extends Phaser.Scene {
   private card(me: Character): void {
     const y = CARD_Y;
     const cls = CLASS_DATA[me.classId]!;
+    const kind = this.game_.state.board.spaces[me.space]?.kind;
+    const town = kind === 'town' || kind === 'church';
+    const reset = (bx: number, by: number): void => {
+      this.rows.push(makeButton(this, bx, by, 96, 34, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
+    };
+    if (!this.picked) {
+      // Nothing picked: a slim strip, so the trees keep the room.
+      const free = pointsFree(me);
+      this.board(18, STRIP_Y, 376, 46);
+      this.wood(32, STRIP_Y + 23, this.note || (free ? `${free} to spend: tap a talent with a gold +.` : 'Tap a talent to read it. Drag to see more.'), 13, town ? 244 : 350).setOrigin(0, 0.5);
+      if (town) reset(336, STRIP_Y + 23);
+      return;
+    }
     this.board(18, y, 376, 164);
+    this.rows.push(makeButton(this, 360, y + 22, 56, 30, 'Close', COLORS.log, '13px', () => {
+      this.picked = null;
+      this.note = '';
+      this.refresh();
+    }).button);
     const slip = (top: number, h: number): void => {
       if (kitReady(this)) this.rows.push(plate(this, 'board_slip', 28, top, 356, h).setOrigin(0, 0));
     };
@@ -254,13 +356,10 @@ export class SkillsScene extends Phaser.Scene {
     const id = this.picked;
     const a = id ? ABILITIES[id] : null;
     if (!id || !a) {
-      this.wood(30, y + 8, this.note ? 'Done' : 'Your skills', 15);
+      this.wood(30, y + 8, this.note ? 'Done' : cls.name, 15);
       slip(y + 28, 128);
-      const free = pointsFree(me);
-      const line = free ? `You have ${free} to spend: a gold + marks where. Go mainly down one tree, and take some from the others.` : 'A point comes with each level. Each tier of a tree asks for 3 more points in that tree.';
-      words(y + 33, [this.note, cls.about, cls.meter?.text ?? '', line].filter(Boolean).join('\n'), 12);
-      const kind = this.game_.state.board.spaces[me.space]?.kind;
-      if (kind === 'town' || kind === 'church') this.rows.push(makeButton(this, 332, y + 136, 96, 34, 'Reset all', 0xd9534f, '13px', () => this.send({ type: 'skill', op: 'reset' } as never, 'Every point is yours to spend again.')).button);
+      words(y + 33, [this.note, cls.about, cls.meter?.text ?? '', 'A point comes with each level. Each tier of a tree asks for 3 more points in that tree.'].filter(Boolean).join('\n'), 12);
+      if (town) reset(332, y + 136);
       return;
     }
     const rank = me.abilities[id] ?? 0;

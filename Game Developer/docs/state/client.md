@@ -622,3 +622,7 @@ The installed app is named Zite (the PWA manifest said Board World); its icons a
 **Reforge** (2026-11-03): a master smith's first tab, Smith, holds the day's fine piece and under it Reforge: the worn pieces then the bag's that it can raise, each shown one rank up with its price; tapping compares, Buy reforges.
 
 **The shop's Gear tab** (Robin, 2026-11-03: "Rotating stall"): today's five pieces for you in place of the Light, Heavy and Magic tabs; one sold to you shows Sold till the pieces change, every 10 rolls; a line says how many rolls until then.
+
+## The talent page, larger and dragged (Robin, 2026-11-10: "The talent trees are too small in the menu. Its too hard to see and click."; the layout mine)
+
+`SkillsScene`: the same page as before (the belt, the class's four, three trees side by side), every talent half again as large (34 to 50, the capstone 56) with a 60 by 60 tap zone. It no longer fits, so the page under the header belongs to a second camera (`page`, its viewport set in `layout()`) and is dragged with a finger; a drag of 8 px or more is not a tap; a gold thumb at the right edge shows where you are. The card rises only while a talent is picked (Close puts it away) and the page scrolls to keep that talent above it; with nothing picked a slim strip says how many points are free and holds Reset all in a town or church. The header's title opens the words about the class. Page things are ignored by the main camera, the rest by the page camera.
