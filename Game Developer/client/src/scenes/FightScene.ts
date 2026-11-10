@@ -105,9 +105,6 @@ interface Option {
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
-/** The Warlord's sounds until Nigel, SD's own arrive (mine, 2026-11-10): a shout is the war cry, a banner the wall going up. */
-const WARLORD_SOUNDS: Record<string, string> = { 'war-cry': 'fight/ability-war-cry', 'war-roar': 'fight/ability-war-cry', 'war-hold': 'fight/ability-war-cry', 'war-valor': 'fight/ability-shield-wall', 'war-dread': 'fight/ability-shield-wall', 'war-war': 'fight/ability-shield-wall', 'war-all': 'fight/ability-war-cry' };
-
 export class FightScene extends Phaser.Scene {
   private combo: { move: string; at: number; n: number } | null = null;
   private dripIn = 400;
@@ -401,7 +398,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       this.after(this.hero?.blowMs(1) ?? 0, () => playOnce(this, 'holy_burst', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells'));
     }
     // A Magician's spell with no sound of its own sounds like magic, not a swing (2026-11-03).
-    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? WARLORD_SOUNDS[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
+    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
     else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
@@ -588,7 +585,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
-        sfx.play(`fight/effect-${e.kind === 'spellUp' || e.kind === 'banner' || e.kind === 'banners' || e.kind === 'valorUp' ? 'attackUp' : e.kind}`);
+        sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');

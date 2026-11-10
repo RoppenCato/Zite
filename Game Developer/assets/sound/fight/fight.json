@@ -369,6 +369,21 @@
       "start": 38.7906,
       "end": 39.303,
       "loop": false
+    },
+    "fight/effect-banner": {
+      "start": 39.353,
+      "end": 39.6637,
+      "loop": false
+    },
+    "fight/effect-banners": {
+      "start": 39.7137,
+      "end": 40.1347,
+      "loop": false
+    },
+    "fight/effect-valorUp": {
+      "start": 40.1847,
+      "end": 40.6847,
+      "loop": false
     }
   }
 }

@@ -84,6 +84,36 @@
       "start": 9.4126,
       "end": 10.8126,
       "loop": false
+    },
+    "fight/talent-banner-valor": {
+      "start": 10.8626,
+      "end": 11.5101,
+      "loop": false
+    },
+    "fight/talent-banner-dread": {
+      "start": 11.5601,
+      "end": 12.3099,
+      "loop": false
+    },
+    "fight/talent-banner-war": {
+      "start": 12.3599,
+      "end": 12.9589,
+      "loop": false
+    },
+    "fight/talent-banner-all": {
+      "start": 13.0089,
+      "end": 14.3116,
+      "loop": false
+    },
+    "fight/talent-war-cry": {
+      "start": 14.3616,
+      "end": 15.1188,
+      "loop": false
+    },
+    "fight/talent-hold": {
+      "start": 15.1688,
+      "end": 15.5264,
+      "loop": false
     }
   }
 }
