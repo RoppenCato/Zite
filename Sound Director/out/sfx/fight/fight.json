@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-10T18:41:27.204Z",
+  "made": "2026-11-11T13:27:17.278Z",
   "sounds": {
     "swing": {
       "files": [
@@ -763,9 +763,7 @@
       "loud_db": -13.7,
       "target_db": -6,
       "use": "a banner standing: a small cloth flap and one bell.",
-      "gain": 0.485,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -6 dB relative to it"
+      "gain": 0.485
     },
     "effect_banners": {
       "files": [
@@ -777,9 +775,7 @@
       "loud_db": -14.1,
       "target_db": -5,
       "use": "banners standing: two flaps and two bells.",
-      "gain": 0.57,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -5 dB relative to it"
+      "gain": 0.57
     },
     "effect_valorup": {
       "files": [
@@ -791,9 +787,49 @@
       "loud_db": -9.7,
       "target_db": -4,
       "use": "Valor up: a drum tap and two horn notes rising.",
-      "gain": 0.385,
+      "gain": 0.385
+    },
+    "effect_stance": {
+      "files": [
+        "effect_stance_1.wav"
+      ],
+      "seconds": [
+        0.483
+      ],
+      "loud_db": -6.5,
+      "target_db": -4,
+      "use": "a stance taken up (Frost Blade or Storm Blade): the Wizard's charge, an open fifth under it, one bell.",
+      "gain": 0.267,
       "loudness": "weighted",
       "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+    },
+    "effect_both": {
+      "files": [
+        "effect_both_1.wav"
+      ],
+      "seconds": [
+        0.7
+      ],
+      "loud_db": -8.5,
+      "target_db": -2,
+      "use": "both blades at once, the Spellsword's once-a-fight moment: frost falling in bells while the storm rises, a wide chord.",
+      "gain": 0.422,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+    },
+    "effect_light": {
+      "files": [
+        "effect_light_1.wav"
+      ],
+      "seconds": [
+        0.297
+      ],
+      "loud_db": -6,
+      "target_db": -6,
+      "use": "a charge of Light gained by the Cleric: two soft bells, 0.3 s, so three in a row stay light.",
+      "gain": 0.2,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -6 dB relative to it"
     }
   }
 }

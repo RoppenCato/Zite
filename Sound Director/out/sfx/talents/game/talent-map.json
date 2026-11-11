@@ -74,7 +74,7 @@
  "snare": "fight/ability-aimed-shot",
  "spike-trap": "fight/ability-trap",
  "spl-avatar": "fight/talent-blade-charge",
- "spl-tempest": "fight/talent-blade-charge",
+ "spl-shift": "fight/talent-shift",
  "spl-thrust": "fight/talent-arcane-bolt",
  "spl-whirl": "fight/talent-triple-cut",
  "storm-blade": "fight/talent-blade-charge",
@@ -94,8 +94,8 @@
  "war-roar": "fight/talent-roar",
  "war-valor": "fight/talent-banner-valor",
  "war-war": "fight/talent-banner-war",
+ "wiz-combust": "fight/talent-flare",
  "wiz-firestorm": "fight/ability-meteor",
  "wiz-phoenix": "fight/revive",
- "wiz-pillar": "fight/ability-fireball",
  "wiz-scorch": "fight/talent-fire-small"
 }

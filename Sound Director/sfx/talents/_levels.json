@@ -113,5 +113,15 @@
     "target": 0,
     "max": 0.6,
     "use": "Hold the Line: a firm short command, a shield knocked once."
+  },
+  "flare": {
+    "target": 1,
+    "max": 0.7,
+    "use": "Combust: the fire on the foe flares up, no hit. The recorded burning swells open, the fire arrow's rush over it."
+  },
+  "shift": {
+    "target": 1,
+    "max": 0.9,
+    "use": "Shift: a blade changes stance with a strike. The frost shatters and falls, the storm lets go, then the blow; it fits both ways round."
   }
 }

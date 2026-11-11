@@ -1,0 +1,13 @@
+{
+  "name": "effect_light",
+  "category": "fight",
+  "gain": 0.2,
+  "use": "a charge of Light gained by the Cleric: two soft bells, 0.3 s, so three in a row stay light.",
+  "variations": [
+    {
+      "file": "effect_light_1.wav",
+      "seconds": 0.297,
+      "peak_dbfs": -1
+    }
+  ]
+}

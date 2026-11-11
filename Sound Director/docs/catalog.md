@@ -25,3 +25,4 @@
 | `music/meadows-fight` (E minor, 140, 0:55), `music/king-goo` (C minor 3/4, 132, 1:03), `music/title` (G, 108, 0:36), `music/dream` (D Lydian, 96, 1:20) | `out/music/<name>/` | in the game; Robin, 2026-11-03: all four good | the fight's seam measures 0.82 %FS on the war drum |
 | The Dream's sounds: `ui/ferry`, `ui/dreamgate`, `ui/wake`, `ui/dreamdust`, `ui/dreamdust-buy` | `out/sfx/ui/`, in `ui-spots` | delivered 2026-11-03 | |
 | The Warlord's banners and shouts (7) and cues (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-10 | |
+| The Magician's Combust and Shift (2) and cues stance, both, Light (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-11 | Robin's ear |

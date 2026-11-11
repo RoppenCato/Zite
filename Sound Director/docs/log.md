@@ -33,3 +33,5 @@
 - 2026-11-03, evening: committed on main, not pushed.
 - 2026-11-03: Robin: "fight good, Goo good, title good, Dream good". All four kept.
 - 2026-11-10: the Warlord tree (Robin's yes, Miles, GD's ask): seven talent sounds, three cues, the map's Paladin ids replaced by the Warlord's; all passed on the first render.
+- 2026-11-10: Miles, GD has the Warlord's sounds in the game (his commit bcef0fc); his check: 99 talents, none missing.
+- 2026-11-11: the Magician's reworked trees (Robin's yes, Miles, GD's ask): Combust (talent-flare) and Shift (talent-shift) for the map, the cues effect-stance, effect-both, effect-light; wiz-pillar and spl-tempest off the map. Shift's first render was 58 % low (the library's lightning is thunder): the game's own lightning instead.

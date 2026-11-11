@@ -463,6 +463,24 @@
    "file": "out/sfx/fight/effect_valorup_1.wav",
    "gain": 0.385,
    "loop": false
+  },
+  {
+   "name": "fight/effect-stance",
+   "file": "out/sfx/fight/effect_stance_1.wav",
+   "gain": 0.267,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-both",
+   "file": "out/sfx/fight/effect_both_1.wav",
+   "gain": 0.422,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-light",
+   "file": "out/sfx/fight/effect_light_1.wav",
+   "gain": 0.2,
+   "loop": false
   }
  ]
 }

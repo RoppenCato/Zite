@@ -103,9 +103,9 @@ MAP = {
   "reckless": T + "cleave", "blood-price": T + "roar", "bloodbath": T + "cleave", "ber-cleave": T + "cleave", "ber-frenzy": T + "roar", "ber-rampage": T + "cleave",
   "shield-slam": A + "shield-bash", "kni-charge": A + "shield-bash", "iron-retort": "fight/guard-counter", "bulwark": A + "shield-wall", "kni-rampart": A + "shield-wall", "kni-fortress": A + "shield-wall", "kni-taunt": A + "war-cry",
   # the Wizard's
-  "arcane-bolt": T + "arcane-bolt", "overflow": A + "mana-shield", "spl-thrust": T + "arcane-bolt", "detonate": T + "fire-small", "wiz-scorch": T + "fire-small", "wiz-pillar": A + "fireball", "wiz-firestorm": A + "meteor", "wiz-phoenix": "fight/revive",
+  "arcane-bolt": T + "arcane-bolt", "overflow": A + "mana-shield", "spl-thrust": T + "arcane-bolt", "detonate": T + "fire-small", "wiz-scorch": T + "fire-small", "wiz-combust": T + "flare", "wiz-firestorm": A + "meteor", "wiz-phoenix": "fight/revive",
   "smite": T + "holy-blast", "mend": "fight/heal", "judgement-day": T + "holy-blast", "cle-renew": "fight/heal", "cle-lance": T + "holy-blast", "cle-sanctuary": A + "arcane-shield", "cle-ascend": "fight/revive",
-  "frost-blade": A + "frost-bolt", "storm-blade": T + "blade-charge", "spl-tempest": T + "blade-charge", "spl-avatar": T + "blade-charge", "arc-slash": T + "triple-cut", "spl-whirl": T + "triple-cut",
+  "frost-blade": A + "frost-bolt", "storm-blade": T + "blade-charge", "spl-shift": T + "shift", "spl-avatar": T + "blade-charge", "arc-slash": T + "triple-cut", "spl-whirl": T + "triple-cut",
   # the Trickster's
   "smoke-escape": A + "smoke-bomb", "nin-vanish": A + "smoke-bomb", "sha-blind": A + "smoke-bomb", "shadow-dance": A + "shadowstep",
   "clone": T + "clone", "nin-army": T + "clone", "ambush": T + "dark-cut", "assassinate": T + "dark-cut", "sha-gloom": T + "dark-cut", "sha-reaper": T + "dark-cut", "sha-cut": A + "backstab",
@@ -123,7 +123,7 @@ items = data if isinstance(data, list) else data.get("abilities", [dict(id=k, **
 pressed = {x["id"] for x in items if not x.get("rule")}
 print("pressed", len(pressed), "mapped", len(MAP), "missing:", sorted(pressed - set(MAP)), "not in the game:", sorted(set(MAP) - pressed))
 used = {v for v in MAP.values() if v.startswith(T)}
-EXTRA = ["blood", "magic_power", "banner_valor", "banner_dread", "banner_war", "banner_all", "war_cry", "hold", "roar"]   # written outside this spec
+EXTRA = ["blood", "magic_power", "banner_valor", "banner_dread", "banner_war", "banner_all", "war_cry", "hold", "roar", "flare", "shift"]   # written outside this spec
 fams = {T + k.replace("_", "-") for k in F} | {T + k.replace("_", "-") for k in EXTRA}                 # blood is written outside this spec (sfx/talents/blood.rb)
 assert used <= fams, used - fams
 if fams - used: print("families no talent uses now (kept in the sprite):", sorted(fams - used))

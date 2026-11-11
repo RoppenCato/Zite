@@ -1,0 +1,13 @@
+{
+  "name": "effect_both",
+  "category": "fight",
+  "gain": 0.422,
+  "use": "both blades at once, the Spellsword's once-a-fight moment: frost falling in bells while the storm rises, a wide chord.",
+  "variations": [
+    {
+      "file": "effect_both_1.wav",
+      "seconds": 0.7,
+      "peak_dbfs": -1
+    }
+  ]
+}

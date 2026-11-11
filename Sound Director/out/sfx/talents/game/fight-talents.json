@@ -114,6 +114,16 @@
       "start": 15.1688,
       "end": 15.5264,
       "loop": false
+    },
+    "fight/talent-flare": {
+      "start": 15.5764,
+      "end": 16.03,
+      "loop": false
+    },
+    "fight/talent-shift": {
+      "start": 16.08,
+      "end": 16.6456,
+      "loop": false
     }
   }
 }

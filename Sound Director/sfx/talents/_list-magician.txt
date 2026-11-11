@@ -1,0 +1,5 @@
+talents/flare
+talents/shift
+fight/effect_stance
+fight/effect_both
+fight/effect_light

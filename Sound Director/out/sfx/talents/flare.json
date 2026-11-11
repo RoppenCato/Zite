@@ -1,0 +1,13 @@
+{
+  "name": "flare",
+  "category": "talents",
+  "gain": 1,
+  "use": "Combust: the fire on the foe flares up, no hit. The recorded burning swells open, the fire arrow's rush over it.",
+  "variations": [
+    {
+      "file": "flare_1.wav",
+      "seconds": 0.454,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -313,5 +313,20 @@
     "target": -4,
     "max": 0.5,
     "use": "Valor up: a drum tap and two horn notes rising."
+  },
+  "effect_stance": {
+    "target": -4,
+    "max": 0.5,
+    "use": "a stance taken up (Frost Blade or Storm Blade): the Wizard's charge, an open fifth under it, one bell."
+  },
+  "effect_both": {
+    "target": -2,
+    "max": 0.7,
+    "use": "both blades at once, the Spellsword's once-a-fight moment: frost falling in bells while the storm rises, a wide chord."
+  },
+  "effect_light": {
+    "target": -6,
+    "max": 0.35,
+    "use": "a charge of Light gained by the Cleric: two soft bells, 0.3 s, so three in a row stay light."
   }
 }

@@ -1,0 +1,13 @@
+{
+  "name": "shift",
+  "category": "talents",
+  "gain": 1,
+  "use": "Shift: a blade changes stance with a strike. The frost shatters and falls, the storm lets go, then the blow; it fits both ways round.",
+  "variations": [
+    {
+      "file": "shift_1.wav",
+      "seconds": 0.566,
+      "peak_dbfs": -1
+    }
+  ]
+}

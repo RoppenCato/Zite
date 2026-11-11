@@ -1,0 +1,13 @@
+{
+  "name": "effect_stance",
+  "category": "fight",
+  "gain": 0.267,
+  "use": "a stance taken up (Frost Blade or Storm Blade): the Wizard's charge, an open fifth under it, one bell.",
+  "variations": [
+    {
+      "file": "effect_stance_1.wav",
+      "seconds": 0.483,
+      "peak_dbfs": -1
+    }
+  ]
+}
