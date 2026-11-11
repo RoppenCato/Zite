@@ -62,7 +62,7 @@
  "return-fire": "fight/talent-bow-ready",
  "sha-blind": "fight/ability-smoke-bomb",
  "sha-cut": "fight/ability-backstab",
- "sha-gloom": "fight/talent-dark-cut",
+ "sha-gloom": "fight/talent-night-cut",
  "sha-reaper": "fight/talent-dark-cut",
  "shadow-dance": "fight/ability-shadowstep",
  "shadowstep": "fight/ability-shadowstep",

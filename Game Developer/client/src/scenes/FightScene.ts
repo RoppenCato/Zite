@@ -594,7 +594,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         break;
       case 'effect':
         // The Light sounds when a charge comes, not when it is spent: the holy hit has its own sound.
-        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind === 'dark' ? 'evade' : e.kind === 'reaction' ? 'burn' : e.kind}`);
+        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');

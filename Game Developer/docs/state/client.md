@@ -635,4 +635,4 @@ The Magician wears her marks over her head (Mitch, AD, 2026-11-11; `showMarks` i
 
 ## The Rogue's new trees on the screen (2026-11-11, mine)
 
-The status line says "in the dark" and "lurking +30%". Assassinate's button reads "free from the dark" there and can be pressed without Mischief (`inDark` from the rules). The effect words: "You are gone: in the dark for the next round." and "The flasks react!". Until Nigel, SD's own sounds the dark borrows `effect-evade` and a reaction `effect-burn`. The eight new passives show the star until Mitch, AD's icons.
+The status line says "in the dark" and "lurking +30%". Assassinate's button reads "free from the dark" there and can be pressed without Mischief (`inDark` from the rules). The effect words: "You are gone: in the dark for the next round." and "The flasks react!". The dark and a reaction have their own sounds from Nigel, SD (`effect-dark`, `effect-reaction`), and Night Cut its own cut. The eight new passives show the star until Mitch, AD's icons.
