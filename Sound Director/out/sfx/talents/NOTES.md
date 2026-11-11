@@ -26,3 +26,15 @@ Robin, 2026-11-11: "Yes" to Miles, GD's list. Made by `sfx/talents/_make_magicia
 
 Mine: the library's lightning recordings are thunder (57 to 97 % under 250 Hz), which a phone loses, so Shift and Both use the game's own lightning (fight/lightning) instead.
 Sprites: fight-talents.ogg 25 sounds, 135 KB; fight.ogg 80 sounds, 42 s, 311 KB. The map drops wiz-pillar and spl-tempest; 99 talents, none missing.
+
+# The Rogue rework (2026-11-11)
+
+Robin, 2026-11-11: yes to the Rogue's new talents; Miles, GD asked for two cues. Made by `sfx/talents/_make_rogue.py`; the Survival game's recordings (CC0).
+
+| game name | file | what it is | length | phone |
+|---|---|---|---|---|
+| fight/talent-night-cut (sha-gloom) | talents/night_cut_1.wav | a quick shadowstep, riposte_a and the light slap hit_w: a lighter cut, no crit (mine: the vanish is the effect-dark cue after it) | 0.24 s | 5 % low, 33 % high |
+| fight/effect-dark | fight/effect_dark_1.wav | shadowstep_a slowed and dulled, a soft low minor third; no bell | 0.47 s | 16 % low |
+| fight/effect-reaction | fight/effect_reaction_1.wav | trap_poison_a's hiss, fire_arrow_a's rush, the recorded burning | 0.50 s | 26 % low |
+
+Sprites: fight-talents.ogg 26 sounds, 137 KB; fight.ogg 82 sounds, 43 s, 319 KB. The map: 99 talents, none missing.

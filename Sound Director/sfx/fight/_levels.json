@@ -328,5 +328,15 @@
     "target": -6,
     "max": 0.35,
     "use": "a charge of Light gained by the Cleric: two soft bells, 0.3 s, so three in a row stay light."
+  },
+  "effect_dark": {
+    "target": -6,
+    "max": 0.4,
+    "use": "in the dark for a round: the recorded shadowstep slowed and dulled, a soft low minor third under it. Short and quiet, no bell (the evade and the clone have one)."
+  },
+  "effect_reaction": {
+    "target": -3,
+    "max": 0.6,
+    "use": "two flasks react on the foe: the poison's hiss, then the fire catching it with a rush and a crackle."
   }
 }

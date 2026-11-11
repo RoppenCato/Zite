@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-11T13:27:17.278Z",
+  "made": "2026-11-11T17:28:14.707Z",
   "sounds": {
     "swing": {
       "files": [
@@ -799,9 +799,7 @@
       "loud_db": -6.5,
       "target_db": -4,
       "use": "a stance taken up (Frost Blade or Storm Blade): the Wizard's charge, an open fifth under it, one bell.",
-      "gain": 0.267,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+      "gain": 0.267
     },
     "effect_both": {
       "files": [
@@ -813,9 +811,7 @@
       "loud_db": -8.5,
       "target_db": -2,
       "use": "both blades at once, the Spellsword's once-a-fight moment: frost falling in bells while the storm rises, a wide chord.",
-      "gain": 0.422,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+      "gain": 0.422
     },
     "effect_light": {
       "files": [
@@ -827,9 +823,35 @@
       "loud_db": -6,
       "target_db": -6,
       "use": "a charge of Light gained by the Cleric: two soft bells, 0.3 s, so three in a row stay light.",
-      "gain": 0.2,
+      "gain": 0.2
+    },
+    "effect_dark": {
+      "files": [
+        "effect_dark_1.wav"
+      ],
+      "seconds": [
+        0.4
+      ],
+      "loud_db": -9.7,
+      "target_db": -6,
+      "use": "in the dark for a round: the recorded shadowstep slowed and dulled, a soft low minor third under it. Short and quiet, no bell (the evade and the clone have one).",
+      "gain": 0.306,
       "loudness": "weighted",
       "anchor": "die_land_a_1.wav at gain 1; target -6 dB relative to it"
+    },
+    "effect_reaction": {
+      "files": [
+        "effect_reaction_1.wav"
+      ],
+      "seconds": [
+        0.501
+      ],
+      "loud_db": -15.2,
+      "target_db": -3,
+      "use": "two flasks react on the foe: the poison's hiss, then the fire catching it with a rush and a crackle.",
+      "gain": 0.814,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
     }
   }
 }

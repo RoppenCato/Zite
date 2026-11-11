@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-11T13:27:17.181Z",
+  "made": "2026-11-11T17:28:14.628Z",
   "sounds": {
     "holy_hit": {
       "files": [
@@ -291,9 +291,7 @@
       "loud_db": -15.6,
       "target_db": 1,
       "use": "Combust: the fire on the foe flares up, no hit. The recorded burning swells open, the fire arrow's rush over it.",
-      "gain": 1,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
+      "gain": 1
     },
     "shift": {
       "files": [
@@ -305,7 +303,19 @@
       "loud_db": -14.5,
       "target_db": 1,
       "use": "Shift: a blade changes stance with a strike. The frost shatters and falls, the storm lets go, then the blow; it fits both ways round.",
-      "gain": 1,
+      "gain": 1
+    },
+    "night_cut": {
+      "files": [
+        "night_cut_1.wav"
+      ],
+      "seconds": [
+        0.236
+      ],
+      "loud_db": -11.4,
+      "target_db": 1,
+      "use": "Night Cut: a lighter cut than the dark cut, a quick edge and a slap, no crit; the vanish after it is the effect-dark cue.",
+      "gain": 0.833,
       "loudness": "weighted",
       "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
     }

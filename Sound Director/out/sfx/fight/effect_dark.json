@@ -1,0 +1,13 @@
+{
+  "name": "effect_dark",
+  "category": "fight",
+  "gain": 0.306,
+  "use": "in the dark for a round: the recorded shadowstep slowed and dulled, a soft low minor third under it. Short and quiet, no bell (the evade and the clone have one).",
+  "variations": [
+    {
+      "file": "effect_dark_1.wav",
+      "seconds": 0.4,
+      "peak_dbfs": -1
+    }
+  ]
+}

@@ -399,6 +399,16 @@
       "start": 42.0174,
       "end": 42.314,
       "loop": false
+    },
+    "fight/effect-dark": {
+      "start": 42.364,
+      "end": 42.764,
+      "loop": false
+    },
+    "fight/effect-reaction": {
+      "start": 42.814,
+      "end": 43.3154,
+      "loop": false
     }
   }
 }

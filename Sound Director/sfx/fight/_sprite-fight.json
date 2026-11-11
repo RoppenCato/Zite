@@ -481,6 +481,18 @@
    "file": "out/sfx/fight/effect_light_1.wav",
    "gain": 0.2,
    "loop": false
+  },
+  {
+   "name": "fight/effect-dark",
+   "file": "out/sfx/fight/effect_dark_1.wav",
+   "gain": 0.306,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-reaction",
+   "file": "out/sfx/fight/effect_reaction_1.wav",
+   "gain": 0.814,
+   "loop": false
   }
  ]
 }

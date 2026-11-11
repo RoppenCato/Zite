@@ -1,0 +1,3 @@
+talents/night_cut
+fight/effect_dark
+fight/effect_reaction

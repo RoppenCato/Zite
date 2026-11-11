@@ -1,0 +1,13 @@
+{
+  "name": "effect_reaction",
+  "category": "fight",
+  "gain": 0.814,
+  "use": "two flasks react on the foe: the poison's hiss, then the fire catching it with a rush and a crackle.",
+  "variations": [
+    {
+      "file": "effect_reaction_1.wav",
+      "seconds": 0.501,
+      "peak_dbfs": -1
+    }
+  ]
+}

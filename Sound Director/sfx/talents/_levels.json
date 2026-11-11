@@ -123,5 +123,10 @@
     "target": 1,
     "max": 0.9,
     "use": "Shift: a blade changes stance with a strike. The frost shatters and falls, the storm lets go, then the blow; it fits both ways round."
+  },
+  "night_cut": {
+    "target": 1,
+    "max": 0.6,
+    "use": "Night Cut: a lighter cut than the dark cut, a quick edge and a slap, no crit; the vanish after it is the effect-dark cue."
   }
 }

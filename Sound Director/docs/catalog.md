@@ -26,3 +26,4 @@
 | The Dream's sounds: `ui/ferry`, `ui/dreamgate`, `ui/wake`, `ui/dreamdust`, `ui/dreamdust-buy` | `out/sfx/ui/`, in `ui-spots` | delivered 2026-11-03 | |
 | The Warlord's banners and shouts (7) and cues (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-10 | |
 | The Magician's Combust and Shift (2) and cues stance, both, Light (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-11 | Robin's ear |
+| The Rogue's Night Cut (1) and cues dark, reaction (2) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-11 | Robin's ear |

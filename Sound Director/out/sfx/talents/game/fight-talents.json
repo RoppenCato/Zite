@@ -124,6 +124,11 @@
       "start": 16.08,
       "end": 16.6456,
       "loop": false
+    },
+    "fight/talent-night-cut": {
+      "start": 16.6956,
+      "end": 16.9312,
+      "loop": false
     }
   }
 }

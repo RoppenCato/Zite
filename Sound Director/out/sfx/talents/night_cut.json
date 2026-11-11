@@ -1,0 +1,13 @@
+{
+  "name": "night_cut",
+  "category": "talents",
+  "gain": 0.833,
+  "use": "Night Cut: a lighter cut than the dark cut, a quick edge and a slap, no crit; the vanish after it is the effect-dark cue.",
+  "variations": [
+    {
+      "file": "night_cut_1.wav",
+      "seconds": 0.236,
+      "peak_dbfs": -1
+    }
+  ]
+}
