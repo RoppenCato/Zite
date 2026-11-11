@@ -8,6 +8,8 @@
 
 import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
+import magicMarksPng from '../../../assets/magic_marks/magic_marks.png';
+import magicMarksJson from '../../../assets/magic_marks/magic_marks.json?url';
 import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
@@ -127,6 +129,9 @@ export class FightScene extends Phaser.Scene {
   /** The clips held while a state lasts, and the Archer's owl while it fights. */
   private held!: HeldEffects;
   private owl: Owl | null = null;
+  /** The Magician's marks over her head (Mitch, AD, 2026-11-11): the stance's badge, or a star for each charge of Light. */
+  private marks: Phaser.GameObjects.Image[] = [];
+  private marksShown = '';
   private feetY = 0;
   private heroBar!: Bar;
   private manaBar!: Bar;
@@ -165,6 +170,7 @@ export class FightScene extends Phaser.Scene {
     // Lightning only for one who can call it: a trinket's, or the storm blade (2026-11-03).
     preloadEffects(this, me.classId === 'ranger', me.classId === 'rogue', !!traitsOf(me).lightning || !!me.abilities['storm-blade'], me.classId === 'mage');
     preloadCarriedIcons(this, me.carried);
+    if (me.classId === 'mage' && !this.textures.exists('magic_marks')) this.load.atlas('magic_marks', magicMarksPng, magicMarksJson);
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
 
@@ -862,6 +868,31 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     this.tweens.add({ targets: body, x: home - 30, alpha: 0.45, duration: 110, ease: 'Quad.easeOut', yoyo: true, hold: 170 });
   }
 
+  /**
+   * The marks over the Magician (Mitch, AD's placement, 2026-11-11): 17 px above her head, the stance's badge with a small pop when it
+   * changes, the charges of Light 23 px apart with the middle of three lifted 5. With both, the badge sits above the stars (mine).
+   */
+  private showMarks(stance: 'frost' | 'storm' | null, light: number): void {
+    const key = `${stance ?? ''}:${light}`;
+    if (key === this.marksShown) return;
+    const stanceBefore = this.marksShown.split(':')[0];
+    this.marksShown = key;
+    for (const m of this.marks) m.destroy();
+    this.marks = [];
+    if (!this.textures.exists('magic_marks')) return;
+    const x = FIGHT_LAYOUT.heroX;
+    const y = this.feetY - 150 - 27; // 17 above her hair, which stands 10 over the figure's 150
+    for (let i = 0; i < light; i++) {
+      const lift = light === 3 && i === 1 ? 5 : 0;
+      this.marks.push(this.add.image(x + (i - (light - 1) / 2) * 23, y - lift, 'magic_marks', 'light-charge').setScale(0.5).setDepth(30));
+    }
+    if (stance) {
+      const badge = this.add.image(x, y - (light ? 26 : 0), 'magic_marks', `stance-${stance}`).setScale(0.5).setDepth(30);
+      this.marks.push(badge);
+      if (stance !== stanceBefore && !settings.get().fewerEffects) this.tweens.add({ targets: badge, scale: { from: 0.65, to: 0.5 }, duration: 120 });
+    }
+  }
+
   /** Where an effect goes on a figure. */
   private spot(who: 'hero' | 'enemy', where: 'chest' | 'head'): { x: number; y: number } {
     const height = who === 'hero' ? 150 : (this.enemy?.headHeight() ?? 56);
@@ -877,6 +908,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       this.held.clear();
       this.owl?.destroy();
       this.owl = null;
+      this.showMarks(null, 0);
       return;
     }
     const e = f.enemy;
@@ -941,6 +973,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     ].filter(Boolean);
     this.heroBoard.setWords(heroBits);
     // What lasts is seen on the figure (Mitch, AD's clips). No clip of its own: burn; Firework hits as a plain hit for now.
+    this.showMarks(f.both ? 'storm' : f.infuse?.kind === 'ice' ? 'frost' : f.infuse?.kind === 'storm' ? 'storm' : null, f.light ?? 0);
     const heroChest = this.spot('hero', 'chest');
     const heroHead = this.spot('hero', 'head');
     const foeChest = this.spot('enemy', 'chest');

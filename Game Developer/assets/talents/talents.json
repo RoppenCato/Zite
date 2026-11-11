@@ -912,7 +912,7 @@
     "y": 0.5
    }
   },
-  "wiz-focus": {
+  "wiz-ash": {
    "frame": {
     "x": 170,
     "y": 254,
@@ -1008,7 +1008,7 @@
     "y": 0.5
    }
   },
-  "wiz-clarity": {
+  "wiz-conjunction": {
    "frame": {
     "x": 506,
     "y": 254,
@@ -1032,7 +1032,7 @@
     "y": 0.5
    }
   },
-  "wiz-pillar": {
+  "wiz-combust": {
    "frame": {
     "x": 590,
     "y": 254,
@@ -1056,7 +1056,7 @@
     "y": 0.5
    }
   },
-  "wiz-sear": {
+  "wiz-streak": {
    "frame": {
     "x": 674,
     "y": 254,
@@ -1176,7 +1176,7 @@
     "y": 0.5
    }
   },
-  "cle-calm": {
+  "cle-brimming": {
    "frame": {
     "x": 86,
     "y": 338,
@@ -1272,7 +1272,7 @@
     "y": 0.5
    }
   },
-  "cle-ward": {
+  "cle-faith": {
    "frame": {
     "x": 422,
     "y": 338,
@@ -1368,7 +1368,7 @@
     "y": 0.5
    }
   },
-  "cle-zeal": {
+  "cle-bright": {
    "frame": {
     "x": 758,
     "y": 338,
@@ -1416,7 +1416,7 @@
     "y": 0.5
    }
   },
-  "spl-edge": {
+  "spl-rime": {
    "frame": {
     "x": 926,
     "y": 338,
@@ -1464,7 +1464,7 @@
     "y": 0.5
    }
   },
-  "spl-eye": {
+  "spl-static": {
    "frame": {
     "x": 86,
     "y": 422,
@@ -1536,7 +1536,7 @@
     "y": 0.5
    }
   },
-  "spl-parry": {
+  "spl-winds": {
    "frame": {
     "x": 338,
     "y": 422,
@@ -1608,7 +1608,7 @@
     "y": 0.5
    }
   },
-  "spl-tempest": {
+  "spl-shift": {
    "frame": {
     "x": 590,
     "y": 422,
@@ -1632,7 +1632,7 @@
     "y": 0.5
    }
   },
-  "spl-hunger": {
+  "spl-grounded": {
    "frame": {
     "x": 674,
     "y": 422,

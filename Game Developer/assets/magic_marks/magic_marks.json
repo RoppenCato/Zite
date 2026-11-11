@@ -1,0 +1,87 @@
+{
+ "frames": {
+  "stance-frost": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 48,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "stance-storm": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 48,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "light-charge": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 48,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "image": "magic_marks.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "filePx": 2,
+  "app": "Art Director/tools/kit/magic_marks.js"
+ }
+}
