@@ -167,7 +167,7 @@ export class FightScene extends Phaser.Scene {
     // Lightning only for one who can call it: a trinket's, or the storm blade (2026-11-03).
     preloadEffects(this, me.classId === 'ranger', me.classId === 'rogue', !!traitsOf(me).lightning || !!me.abilities['storm-blade'], me.classId === 'mage');
     preloadCarriedIcons(this, me.carried);
-    if (me.classId === 'mage' && !this.textures.exists('magic_marks')) this.load.atlas('magic_marks', magicMarksPng, magicMarksJson);
+    if ((me.classId === 'mage' || me.classId === 'rogue') && !this.textures.exists('magic_marks')) this.load.atlas('magic_marks', magicMarksPng, magicMarksJson);
     preloadBackdrop(this, board.areas[board.spaces[me.fight.space]?.area ?? '']?.theme ?? board.areas[board.spaces[me.space]?.area ?? '']?.theme ?? 'meadow');
   }
 
@@ -871,9 +871,11 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
    * The marks over the Magician (Mitch, AD's placement, 2026-11-11): 17 px above her head, the stance's badge with a small pop when it
    * changes, the charges of Light 23 px apart with the middle of three lifted 5. With both, the badge sits above the stars (mine).
    */
-  private showMarks(stance: 'frost' | 'storm' | null, light: number): void {
-    const key = `${stance ?? ''}:${light}`;
+  private showMarks(stance: 'frost' | 'storm' | null, light: number, dark = false): void {
+    const key = `${stance ?? ''}:${light}:${dark}`;
     if (key === this.marksShown) return;
+    // A Rogue in the dark (Mitch, AD, 2026-11-11): the night badge, and every part of the hero tinted, solid.
+    this.hero?.shade(dark ? 0x8a84b8 : null);
     const stanceBefore = this.marksShown.split(':')[0];
     this.marksShown = key;
     for (const m of this.marks) m.destroy();
@@ -884,6 +886,11 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     for (let i = 0; i < light; i++) {
       const lift = light === 3 && i === 1 ? 5 : 0;
       this.marks.push(this.add.image(x + (i - (light - 1) / 2) * 23, y - lift, 'magic_marks', 'light-charge').setScale(0.5).setDepth(30));
+    }
+    if (dark) {
+      const badge = this.add.image(x, y, 'magic_marks', 'in-dark').setScale(0.5).setDepth(30);
+      this.marks.push(badge);
+      if (!settings.get().fewerEffects) this.tweens.add({ targets: badge, scale: { from: 0.65, to: 0.5 }, duration: 120 });
     }
     if (stance) {
       const badge = this.add.image(x, y - (light ? 26 : 0), 'magic_marks', `stance-${stance}`).setScale(0.5).setDepth(30);
@@ -975,7 +982,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     ].filter(Boolean);
     this.heroBoard.setWords(heroBits);
     // What lasts is seen on the figure (Mitch, AD's clips). No clip of its own: burn; Firework hits as a plain hit for now.
-    this.showMarks(f.both ? 'storm' : f.infuse?.kind === 'ice' ? 'frost' : f.infuse?.kind === 'storm' ? 'storm' : null, f.light ?? 0);
+    this.showMarks(f.both ? 'storm' : f.infuse?.kind === 'ice' ? 'frost' : f.infuse?.kind === 'storm' ? 'storm' : null, f.light ?? 0, this.game_.me.classId === 'rogue' && inDark(f));
     const heroChest = this.spot('hero', 'chest');
     const heroHead = this.spot('hero', 'head');
     const foeChest = this.spot('enemy', 'chest');

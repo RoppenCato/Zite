@@ -429,6 +429,7 @@ export class Hero {
   private readonly scale: number;
   private right = false;
   private layers: { sprite: Phaser.GameObjects.Sprite; key: string; piece: string; tint?: number }[] = [];
+  private shadeTint: number | undefined;
   /** This class's own atlas: a frame found there overrides the shared one (the Wizard's and Archer's hands move differently). */
   private bodyKey = '';
   private classId: ClassId = 'warrior';
@@ -473,7 +474,8 @@ export class Hero {
     for (const l of this.layers) l.sprite.destroy();
     this.layers = wanted.map((l) => {
       const sprite = this.scene.add.sprite(0, 0, l.key, has(this.scene, l.key, `${l.piece}/stand/0001`) ? `${l.piece}/stand/0001` : undefined).setVisible(false);
-      if (l.tint !== undefined) sprite.setTint(l.tint);
+      const tint = this.shadeTint ?? l.tint;
+      if (tint !== undefined) sprite.setTint(tint);
       return { ...l, sprite };
     });
     this.root.add(this.layers.map((l) => l.sprite));
@@ -481,6 +483,17 @@ export class Hero {
   }
 
   /** Files face left; true turns the hero to face right. */
+/** Every part in one tint, or back to its own with null (Mitch, AD, 2026-11-11: a Rogue in the dark, solid and not faded). */
+  shade(tint: number | null): void {
+    if ((tint ?? undefined) === this.shadeTint) return;
+    this.shadeTint = tint ?? undefined;
+    for (const l of this.layers) {
+      const t = this.shadeTint ?? l.tint;
+      if (t !== undefined) l.sprite.setTint(t);
+      else l.sprite.clearTint();
+    }
+  }
+
   face(right: boolean): void {
     this.right = right;
     this.root.setScale(right ? -this.scale : this.scale, this.scale);

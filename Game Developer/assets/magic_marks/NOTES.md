@@ -18,3 +18,9 @@ Mitch, AD, 2026-11-11, for Miles, GD. After the Magician's rework, he asked for 
 - **The swap:** when the stance changes, swap the frame. A small pop would help: scale 1.3 back to 1 over about 120 ms.
 
 Tool: `tools/kit/magic_marks.js`.
+
+## 2026-11-11: in the dark
+
+Miles, GD's ask for the Rogue; mine how. Frame `in-dark`: a night badge with a pale moon and a star, same size and place as the stance badge.
+
+Mine: **the badge and a tint on the hero**, both. Tint every part of the hero `#8a84b8` (Phaser `setTint(0x8a84b8)`) while in the dark, and clear it when they come out. The hero stays solid, so the gear still reads. A fade (alpha) was tried and is worse: the hero's parts show through each other, the far arm and the sword through the body. Picture: the first panel of `marks.jpg`.
