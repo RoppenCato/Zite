@@ -14,7 +14,7 @@ Mitch, AD, 2026-11-11, for Miles, GD. After the Magician's rework, he asked for 
 - **Placement (mine):**
   - Put the marks about 17 design px above the top of the hero's head, centred on him.
   - Space the charges 23 px apart. With three, lift the middle one 5 px.
-  - The stance badge sits in the same place, because a hero never has both.
+  - The stance badge sits in the same place. In the game (Miles, GD, fdf2f16) the marks sit 27 px above the figure's 150, clear of the hair. A Spellsword who heals can have a stance and Light at once; then the badge sits 26 px above the stars.
 - **The swap:** when the stance changes, swap the frame. A small pop would help: scale 1.3 back to 1 over about 120 ms.
 
 Tool: `tools/kit/magic_marks.js`.
