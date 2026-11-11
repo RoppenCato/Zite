@@ -384,6 +384,21 @@
       "start": 40.1847,
       "end": 40.6847,
       "loop": false
+    },
+    "fight/effect-stance": {
+      "start": 40.7347,
+      "end": 41.2174,
+      "loop": false
+    },
+    "fight/effect-both": {
+      "start": 41.2674,
+      "end": 41.9674,
+      "loop": false
+    },
+    "fight/effect-light": {
+      "start": 42.0174,
+      "end": 42.314,
+      "loop": false
     }
   }
 }

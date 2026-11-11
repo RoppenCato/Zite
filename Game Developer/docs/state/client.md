@@ -629,6 +629,6 @@ The installed app is named Zite (the PWA manifest said Board World); its icons a
 
 ## The Magician on the fight screen (Robin, 2026-11-11; the words mine)
 
-The status line shows the stance ("frost stance", "storm stance", "both blades 4"), the Light ("light 2"), every spell in the air with its rounds, and "next spell cheaper" after a Hot Streak. A stance says its name and that it stands for the whole fight. The Light is quiet; a stance sounds like `effect-attackUp`, and Combust and Shift borrow a fire and a blade sound (`MAGE_SOUNDS` in `FightScene.ts`) until Nigel, SD delivers their own. A talent with no icon yet shows a star or its first letter, as before.
+The status line shows the stance ("frost stance", "storm stance", "both blades 4"), the Light ("light 2"), every spell in the air with its rounds, and "next spell cheaper" after a Hot Streak. A stance says its name and that it stands for the whole fight. Nigel, SD's sounds (2026-11-11): `effect-stance`, `effect-both`, and `effect-light` when a charge comes (not when it is spent); Combust and Shift have their own in the talent map. A talent with no icon yet shows a star or its first letter, as before.
 
 The Magician wears her marks over her head (Mitch, AD, 2026-11-11; `showMarks` in `FightScene.ts`, atlas `assets/magic_marks`): the stance badge, which pops when it changes, and a star for each charge of Light. With both, the badge sits above the stars (mine).

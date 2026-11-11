@@ -107,9 +107,6 @@ interface Option {
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
-/** The Magician's two new buttons until Nigel, SD's own sounds arrive (mine, 2026-11-11). */
-const MAGE_SOUNDS: Record<string, string> = { 'wiz-combust': 'fight/ability-fireball', 'spl-shift': 'fight/talent-blade-charge' };
-
 export class FightScene extends Phaser.Scene {
   private combo: { move: string; at: number; n: number } | null = null;
   private dripIn = 400;
@@ -407,7 +404,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       this.after(this.hero?.blowMs(1) ?? 0, () => playOnce(this, 'holy_burst', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells'));
     }
     // A Magician's spell with no sound of its own sounds like magic, not a swing (2026-11-03).
-    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? MAGE_SOUNDS[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
+    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
     else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
@@ -594,8 +591,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
-        // A stance sounds like a blade charged until Nigel, SD's own (mine, 2026-11-11); the Light is quiet.
-        if (e.kind !== 'light') sfx.play(`fight/effect-${e.kind === 'spellUp' || e.kind === 'stance' || e.kind === 'both' ? 'attackUp' : e.kind}`);
+        // The Light sounds when a charge comes, not when it is spent: the holy hit has its own sound.
+        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');
