@@ -1,5 +1,5 @@
 // The sensible fighter the sims play with: heals when low, keeps its buffs up, spends its meter, guards as its class wants. Not part of the game.
-import { ABILITIES, ITEMS, manaCost, holdsFor, stats, type Character } from '../rules/src/index.ts';
+import { ABILITIES, ITEMS, manaCost, holdsFor, stats, inDark, bloodMax, type Character } from '../rules/src/index.ts';
 
 /** What a sensible player does this round. */
 export function choose(c: Character): { move: unknown; guard: string } {
@@ -22,7 +22,7 @@ export function choose(c: Character): { move: unknown; guard: string } {
   const usable = c.carried.filter((id) => {
     const a = ABILITIES[id]!;
     if (a.oncePerFight && f.used.includes(id)) return false;
-    if (a.meter && f.meter < a.meter) return false;
+    if (a.meter && f.meter < a.meter && !(a.darkFree && inDark(f))) return false;
     if (a.meterAll && f.meter < 3) return false;
     // A skill tied to a weapon not in hand is not pressed (2026-11-03).
     if (!holdsFor(c, a.needs)) return false;
@@ -48,6 +48,25 @@ export function choose(c: Character): { move: unknown; guard: string } {
       if (r.barrierShare && f.barrier === 0) return { move: { kind: 'ability', ability: id }, guard };
       if ((r.evade || r.skip) && !f.evade && !f.skip) return { move: { kind: 'ability', ability: id }, guard };
     }
+  }
+  // The Rogue (2026-11-11). In the dark: the free Assassinate, the kill under half, the Ambush. Out of it, with something to
+  // use there, a Night Cut to get in. Blood is held until the blade is full (or the foe nearly down), then spent.
+  const dark = inDark(f);
+  const payoff = usable.filter((id) => ABILITIES[id]!.darkFree || rank(id).darkBonus || rank(id).darkExecute);
+  if (dark) {
+    const kill = payoff.find((id) => rank(id).darkExecute && e.hp < e.maxHp * rank(id).darkExecute!);
+    const best = kill ?? payoff.find((id) => ABILITIES[id]!.darkFree) ?? payoff.find((id) => rank(id).darkBonus);
+    if (best) return { move: { kind: 'ability', ability: best }, guard };
+  } else if (payoff.length > 0 && e.hp > e.maxHp * 0.2) {
+    const way = usable.find((id) => rank(id).dark && rank(id).power);
+    if (way) return { move: { kind: 'ability', ability: way }, guard };
+  }
+  const blood = f.blood ?? 0;
+  const cup = bloodMax(c);
+  if (cup > 0 && blood >= cup) {
+    const spend = usable.filter((id) => rank(id).spendBlood);
+    const cut = spend.find((id) => rank(id).bleed && !e.bleed && e.role !== 'mob') ?? spend.find((id) => rank(id).perBlood) ?? spend[0];
+    if (cut) return { move: { kind: 'ability', ability: cut }, guard };
   }
   // A spell to wind up on a foe that will last: it lands on top of the next move.
   // Two can be in the air (2026-11-11): the Falling Star first, the Firestorm a round later, and they land together.
@@ -86,6 +105,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.clone && !f.clone) return { move: { kind: 'ability', ability: id }, guard };
     if (r.consume && (r.consume.kind === 'burn' ? e.burn : e.poison) && (r.consume.kind === 'burn' ? e.burn : e.poison)!.damage * (r.consume.kind === 'burn' ? e.burn : e.poison)!.rounds * r.consume.mult > s.attack * 2) return { move: { kind: 'ability', ability: id }, guard };
     if (r.interrupt && e.charged) return { move: { kind: 'ability', ability: id }, guard };
+    // A cloud on a foe that will last: fresh poison, or a Caustic about to run out kept going.
+    if (r.flask && r.poison && e.role !== 'mob' && (!e.poison || (e.sunder && e.sunder.rounds <= 1))) return { move: { kind: 'ability', ability: id }, guard };
     if (r.sunder && !e.sunder) return { move: { kind: 'ability', ability: id }, guard };
     if (r.burn && !e.burn) return { move: { kind: 'ability', ability: id }, guard };
     if (r.weaken && !e.weakened && e.charged) return { move: { kind: 'ability', ability: id }, guard };
@@ -104,7 +125,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
   }
   // The hardest hit there is.
   // A Spellsword fights with the blade; its only spells are what it infuses it with.
-  const hitters = usable.filter((id) => rank(id).power && !rank(id).windup && (!c.abilities['spellsword-bond'] || rank(id).melee));
+  // A cut that spends blood waits for a full blade; a way into the dark is not a plain hit.
+  const hitters = usable.filter((id) => rank(id).power && !rank(id).windup && (!c.abilities['spellsword-bond'] || rank(id).melee) && !(rank(id).spendBlood && cup > 0 && blood < cup && e.hp > e.maxHp * 0.15));
   const windup = usable.find(callable);
   if (windup) return { move: { kind: 'ability', ability: windup }, guard };
   hitters.sort((a, b) => (rank(b).power ?? 0) - (rank(a).power ?? 0));

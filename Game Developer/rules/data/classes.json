@@ -476,20 +476,20 @@
     "trees": {
       "ninja": {
         "name": "Ninja",
-        "text": "Strikes first and can always get away.",
+        "text": "Blood on the blade: hold it to cut sharper, or spend it.",
         "nodes": [
           "blood-on-the-blade",
-          "nin-hands",
+          "nin-wet",
           "ninja-step",
           "blood-finale",
           "smoke-escape",
-          "nin-first",
+          "nin-start",
           "crimson-arc",
           "red-mist",
           "clone",
-          "nin-edge",
+          "nin-thirst",
           "nin-vanish",
-          "nin-grip",
+          "nin-cup",
           "bleed-out",
           "black-blood",
           "nin-army"
@@ -497,7 +497,7 @@
         "tiers": [
           [
             "blood-on-the-blade",
-            "nin-hands"
+            "nin-wet"
           ],
           [
             "ninja-step",
@@ -505,7 +505,7 @@
           ],
           [
             "smoke-escape",
-            "nin-first"
+            "nin-start"
           ],
           [
             "crimson-arc",
@@ -513,11 +513,11 @@
           ],
           [
             "clone",
-            "nin-edge"
+            "nin-thirst"
           ],
           [
             "nin-vanish",
-            "nin-grip"
+            "nin-cup"
           ],
           [
             "bleed-out",
@@ -530,7 +530,7 @@
       },
       "shadow": {
         "name": "Shadow",
-        "text": "Takes one blow in full, then almost nothing can touch it.",
+        "text": "In and out of the dark: every skill is another thing from inside it.",
         "nodes": [
           "shadow-dance",
           "sha-dark",
@@ -541,7 +541,7 @@
           "sha-cut",
           "sha-streak",
           "assassinate",
-          "sha-finish",
+          "sha-lurk",
           "sha-blind",
           "sha-sight",
           "sha-gloom",
@@ -567,7 +567,7 @@
           ],
           [
             "assassinate",
-            "sha-finish"
+            "sha-lurk"
           ],
           [
             "sha-blind",
@@ -584,12 +584,12 @@
       },
       "alchemist": {
         "name": "Alchemist",
-        "text": "Poison on the blade, and better potions.",
+        "text": "Poison on the blade, and flasks that react with each other.",
         "nodes": [
           "poison-coat",
           "alc-toxin",
           "alchemist-brew",
-          "alc-flask",
+          "alc-volatile",
           "caustic-flask",
           "alc-fumes",
           "toxic-jab",
@@ -597,9 +597,9 @@
           "bitter-end",
           "alc-mend",
           "alc-bomb",
-          "alc-salve",
+          "alc-linger",
           "alc-plague",
-          "alc-tonic",
+          "alc-reagents",
           "alc-philosopher"
         ],
         "tiers": [
@@ -609,7 +609,7 @@
           ],
           [
             "alchemist-brew",
-            "alc-flask"
+            "alc-volatile"
           ],
           [
             "caustic-flask",
@@ -625,11 +625,11 @@
           ],
           [
             "alc-bomb",
-            "alc-salve"
+            "alc-linger"
           ],
           [
             "alc-plague",
-            "alc-tonic"
+            "alc-reagents"
           ],
           [
             "alc-philosopher"

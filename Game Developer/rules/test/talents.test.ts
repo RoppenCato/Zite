@@ -40,15 +40,6 @@ describe('the talents that wait for their moment', () => {
     expect(fighter('mage', { 'spl-surge': 2 }).characters[P]!.fight!.meter).toBe(2);
     expect(fighter('ranger', { 'tra-cunning': 2 }).characters[P]!.fight!.meter).toBe(2);
   });
-  it('Better Flasks heal more', () => {
-    const hp = (a: GameState) => me(a).hp;
-    const drink = { kind: 'item', item: 'potion' };
-    const off = (s: GameState): GameState => {
-      const c = me(s);
-      return { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, enemy: { ...c.fight!.enemy, attack: 1 } } } } };
-    };
-    expect(total(off(fighter('rogue', { 'alc-flask': 3 }, 0.2)), 'block', hp, drink)).toBeGreaterThan(total(off(fighter('rogue', {}, 0.2)), 'block', hp, drink));
-  });
   it('Opportunist: after a dodge the next hit is a sure crit', () => {
     const crits = (a: GameState) => me(a).fight?.sureCrit ?? 0;
     expect(total(fighter('rogue', { 'shadow-pact': 1 }), 'dodge', crits)).toBeGreaterThan(total(fighter('rogue', {}), 'dodge', crits));
@@ -223,7 +214,7 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'warrior' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'holy-strike': 3, 'pal-devotion': 3, 'paladin-oath': 1, reckless: 2 }, carried: ['heavy-blow', 'execute', 'holy-strike', 'reckless'] };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 45, characters: { [P]: c } })))!;
-    expect(up.version).toBe(47);
+    expect(up.version).toBe(48);
     expect(Object.keys(me(up).abilities).sort()).toEqual(['execute', 'heavy-blow', 'reckless']);
     expect(me(up).carried).toEqual(['heavy-blow', 'execute', 'reckless']);
     expect(pointsFree(me(up))).toBe(19 - 2);
@@ -326,11 +317,124 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'mage' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, fireball: 2, 'wiz-focus': 3, 'spl-tempest': 2 }, carried: ['arcane-bolt', 'overflow', 'fireball', 'spl-tempest'] };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 46, characters: { [P]: c } })))!;
-    expect(up.version).toBe(47);
+    expect(up.version).toBe(48);
     expect(me(up).abilities['wiz-focus']).toBeUndefined();
     expect(me(up).abilities['spl-tempest']).toBeUndefined();
     expect(me(up).abilities.fireball).toBe(2);
     expect(me(up).carried).toEqual(['arcane-bolt', 'overflow', 'fireball']);
+  });
+
+  // The Rogue: blood held or spent, the dark, flasks that react (Robin, 2026-11-11).
+  const ninja = (talents: Record<string, number>) => fighter('rogue', { 'blood-on-the-blade': 1, ...talents });
+  const full = (s: GameState): GameState => ({ ...s, characters: { [P]: { ...me(s), mana: 999 } } });
+  it('blood held sharpens the blade, and Wet Blade more', () => {
+    expect(dealt(withFight(ninja({}), { blood: 3 }))).toBeGreaterThan(dealt(withFight(fighter('rogue', {}), { blood: 3 })));
+    expect(dealt(withFight(ninja({ 'nin-wet': 3 }), { blood: 3 }))).toBeGreaterThan(dealt(withFight(ninja({}), { blood: 3 })) * 1.1);
+  });
+  it('First Blood starts a fight with drops, and Deep Cup holds more', () => {
+    expect(me(ninja({ 'nin-start': 2 })).fight!.blood).toBe(2);
+    expect(me(round(withFight(ninja({ 'nin-cup': 2 }), { blood: 4 }), 'none').state).fight!.blood).toBe(5);
+    expect(me(round(withFight(ninja({}), { blood: 3 }), 'none').state).fight!.blood).toBe(3);
+  });
+  it('Bloodthirst: a crit leaves a second drop', () => {
+    expect(me(round(withFight(ninja({ 'nin-thirst': 3 }), { sureCrit: 1 }), 'none').state).fight!.blood).toBeGreaterThan(1);
+    expect(me(round(withFight(ninja({}), { sureCrit: 1 }), 'none').state).fight!.blood).toBe(1);
+  });
+  it('Vanish spends the blood for sure crits, and the Army of One keeps it', () => {
+    const s = full(withFight(ninja({ 'nin-vanish': 1, 'crimson-arc': 1 }), { blood: 3 }));
+    const gone = me(round(s, 'none', use('nin-vanish')).state).fight!;
+    expect(gone.blood).toBe(0);
+    expect(gone.sureCrit).toBe(4);
+    const army = withFight(s, { clone: { rounds: 5, power: 0.9, keepBlood: true } });
+    expect(me(round(army, 'none', use('crimson-arc')).state).fight!.blood).toBe(3);
+  });
+  it('the dark: Ambush lands harder from it, however you got there', () => {
+    const s = full(fighter('rogue', { ambush: 1 }));
+    expect(dealt(withFight(s, { dark: 1 }), use('ambush'))).toBeGreaterThan(dealt(s, use('ambush')) * 1.3);
+    expect(dealt(withFight(s, { dance: { exposed: false, rounds: 2, chance: 0.9 } }), use('ambush'))).toBeGreaterThan(dealt(s, use('ambush')) * 1.3);
+    // The round Shadow Dance is pressed is not yet the dark.
+    expect(dealt(withFight(s, { dance: { exposed: true, rounds: 2, chance: 0.9 } }), use('ambush'))).toBe(dealt(s, use('ambush')));
+  });
+  it('Assassinate costs no Mischief from the dark', () => {
+    const s = full(withFight(fighter('rogue', { assassinate: 1 }), { meter: 0 }));
+    expect(round(s, 'none', use('assassinate')).events.some((e) => e.type === 'rejected')).toBe(true);
+    expect(round(withFight(s, { dark: 1 }), 'none', use('assassinate')).events.some((e) => e.type === 'rejected')).toBe(false);
+    expect(me(round(withFight(s, { dark: 1, meter: 3 }), 'none', use('assassinate')).state).fight!.meter).toBeGreaterThanOrEqual(3);
+  });
+  it('Night Cut: in the dark for the next round, and no longer', () => {
+    const s = full(fighter('rogue', { 'sha-gloom': 1 }));
+    const cut = round(s, 'none', use('sha-gloom')).state;
+    expect(me(cut).fight!.dark).toBe(1);
+    expect(me(round(cut, 'none').state).fight!.dark).toBe(0);
+  });
+  it('Thousand Cuts: outside the dark a crit is a point of Mischief', () => {
+    const s = full(withFight(fighter('rogue', { 'thousand-cuts': 1 }), { sureCrit: 6, meter: 0 }));
+    expect(me(round(s, 'none', use('thousand-cuts')).state).fight!.meter).toBe(5);
+    expect(me(round(withFight(s, { dark: 1 }), 'none', use('thousand-cuts')).state).fight!.meter).toBe(1);
+  });
+  it('Lurk: a round in the dark without a strike makes the next hit harder', () => {
+    const s = full(fighter('rogue', { 'sha-lurk': 3, 'poison-coat': 1 }));
+    const waited = round(withFight(s, { dark: 2 }), 'none', use('poison-coat')).state;
+    expect(me(waited).fight!.lurk).toBeCloseTo(0.45);
+    expect(me(round(waited, 'none').state).fight!.lurk).toBe(0);
+    expect(me(round(s, 'none', use('poison-coat')).state).fight!.lurk ?? 0).toBe(0);
+    expect(me(round(withFight(s, { dark: 2 }), 'none').state).fight!.lurk ?? 0).toBe(0);
+  });
+  it('Dark Sight crits more in the dark; Reaper kills under half from it', () => {
+    const crits = (s: GameState) => total(s, 'none', (a) => 5000 - (me(a).fight?.enemy.hp ?? 0));
+    expect(crits(withFight(fighter('rogue', { 'sha-sight': 3 }), { dark: 1 }))).toBeGreaterThan(crits(withFight(fighter('rogue', {}), { dark: 1 })));
+    const s = full(withFight(fighter('rogue', { 'sha-reaper': 1 }), {}, { hp: 2400 }));
+    const cut = (a: GameState) => total(a, 'none', (after) => 2400 - (me(after).fight?.enemy.hp ?? 0), use('sha-reaper'));
+    expect(cut(withFight(s, { dark: 1 }))).toBeGreaterThan(cut(s) * 1.5);
+  });
+  it('Fire Flask on a poisoned foe: the poison stings half again as hard while it burns', () => {
+    const s = full(withFight(fighter('rogue', { 'alc-bomb': 1 }), {}, { poison: { rounds: 5, damage: 100 } }));
+    const thrown = round(s, 'none', use('alc-bomb'));
+    expect(me(thrown.state).fight!.enemy.burn!.kindles).toBeCloseTo(1.5);
+    expect(thrown.events.some((e) => e.type === 'poisoned' && e.target === 'enemy' && !e.burn && e.damage === 150)).toBe(true);
+    expect(thrown.events.some((e) => e.type === 'effect' && e.kind === 'reaction')).toBe(true);
+  });
+  it('Caustic Flask on a burning foe: the fire bursts at once, harder with Volatile', () => {
+    const burst = (talents: Record<string, number>) => {
+      const s = full(withFight(fighter('rogue', { 'caustic-flask': 1, ...talents }), {}, { burn: { rounds: 3, damage: 100 } }));
+      const thrown = round(s, 'none', use('caustic-flask'));
+      expect(me(thrown.state).fight!.enemy.burn).toBeNull();
+      return (thrown.events.find((e) => e.type === 'countered') as unknown as { damage: number }).damage;
+    };
+    expect(burst({})).toBe(300);
+    expect(burst({ 'alc-volatile': 3 })).toBe(435);
+  });
+  it('Plague Cloud on a foe under Caustic: the Caustic lasts as long as the cloud', () => {
+    const s = full(withFight(fighter('rogue', { 'alc-plague': 1 }), {}, { sunder: { rounds: 2, mult: 1.25 } }));
+    const e = me(round(s, 'none', use('alc-plague')).state).fight!.enemy;
+    expect(e.sunder!.rounds).toBe(e.poison!.rounds);
+  });
+  it('Reagents and Lingering', () => {
+    const poisoned = { poison: { rounds: 5, damage: 1 } };
+    const meter = (talents: Record<string, number>) => me(round(full(withFight(fighter('rogue', { 'alc-bomb': 1, ...talents }), { meter: 0 }, poisoned)), 'none', use('alc-bomb')).state).fight!.meter;
+    expect(meter({ 'alc-reagents': 3 })).toBe(meter({}) + 1);
+    const lasts = (talents: Record<string, number>) => me(round(full(fighter('rogue', { 'caustic-flask': 1, ...talents })), 'none', use('caustic-flask')).state).fight!.enemy.sunder!.rounds;
+    expect(lasts({ 'alc-linger': 2 })).toBe(lasts({}) + 2);
+  });
+  it('Fumes: a poisoned foe sometimes misses', () => {
+    const misses = (s: GameState) => {
+      let n = 0;
+      for (let i = 0; i < 200; i++) n += round(s, 'none', { kind: 'attack' }, 'm' + i).events.filter((e) => e.type === 'missed' && e.by === 'enemy').length;
+      return n;
+    };
+    const poisoned = { poison: { rounds: 5, damage: 1 } };
+    expect(misses(withFight(fighter('rogue', { 'alc-fumes': 3 }), {}, poisoned))).toBeGreaterThan(5);
+    expect(misses(withFight(fighter('rogue', {}), {}, poisoned))).toBe(0);
+    expect(misses(fighter('rogue', { 'alc-fumes': 3 }))).toBe(0);
+  });
+  it('a save from before the new Rogue: the talents that went give their points back', () => {
+    const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'rogue' });
+    const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'nin-hands': 3, 'alc-salve': 2, 'sha-sight': 2 } };
+    const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 47, characters: { [P]: c } })))!;
+    expect(up.version).toBe(48);
+    expect(me(up).abilities['nin-hands']).toBeUndefined();
+    expect(me(up).abilities['alc-salve']).toBeUndefined();
+    expect(me(up).abilities['sha-sight']).toBe(2);
   });
 
   it('no two talents of a class share a name', () => {

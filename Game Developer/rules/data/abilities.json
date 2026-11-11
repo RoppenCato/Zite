@@ -857,30 +857,31 @@
   "ambush": {
     "name": "Ambush",
     "classId": "rogue",
-    "text": "A hard hit from the dark; far harder while you dance in shadow.",
+    "text": "A hard hit; far harder from the dark, however you got there.",
     "mana": 5,
     "level": 9,
     "ranks": [
       {
         "power": 1.2,
-        "danceBonus": 1.5
+        "darkBonus": 1.5
       },
       {
         "power": 1.35,
-        "danceBonus": 1.5
+        "darkBonus": 1.5
       },
       {
         "power": 1.5,
-        "danceBonus": 1.7
+        "darkBonus": 1.7
       }
     ]
   },
   "assassinate": {
     "name": "Assassinate",
     "classId": "rogue",
-    "text": "Spend 3 Mischief: a sure crit, far harder on a foe under a third of its HP.",
+    "text": "Spend 3 Mischief: a sure crit, far harder on a foe under a third of its HP. From the dark it costs no Mischief.",
     "mana": 3,
     "meter": 3,
+    "darkFree": true,
     "level": 17,
     "ranks": [
       {
@@ -953,12 +954,13 @@
   "caustic-flask": {
     "name": "Caustic Flask",
     "classId": "rogue",
-    "text": "A thrown flask: it takes more damage for a few rounds.",
+    "text": "A thrown flask: it takes more damage for a few rounds. On a burning foe the fire bursts at once.",
     "mana": 6,
     "level": 9,
     "ranks": [
       {
         "power": 0.7,
+        "flask": true,
         "sunder": {
           "rounds": 3,
           "mult": 1.25
@@ -966,6 +968,7 @@
       },
       {
         "power": 0.7,
+        "flask": true,
         "sunder": {
           "rounds": 3,
           "mult": 1.32
@@ -973,6 +976,7 @@
       },
       {
         "power": 0.7,
+        "flask": true,
         "sunder": {
           "rounds": 4,
           "mult": 1.4
@@ -2751,10 +2755,11 @@
   },
   "blood-on-the-blade": {
     "name": "Blood on the Blade",
-    "text": "With a blade, each attack that lands leaves a drop of blood on it, up to three. Ninja skills spend it.",
+    "text": "With a blade, each attack that lands leaves a drop of blood on it, up to three. Each drop held is 3% more crit. Ninja skills spend it.",
     "mana": 0,
     "rule": {
-      "blood": 3
+      "blood": 3,
+      "bloodCrit": 0.03
     },
     "ranks": [
       {}
@@ -2762,12 +2767,12 @@
     "classId": "rogue",
     "level": 2
   },
-  "nin-hands": {
-    "name": "Quick Hands",
-    "text": "2% more crit a rank.",
+  "nin-wet": {
+    "name": "Wet Blade",
+    "text": "Each drop of blood held makes you hit 2% harder, a rank.",
     "mana": 0,
     "rule": {
-      "crit": 0.02
+      "bloodDamage": 0.02
     },
     "ranks": [
       {},
@@ -2792,15 +2797,14 @@
     "classId": "rogue",
     "level": 5
   },
-  "nin-first": {
+  "nin-start": {
     "name": "First Blood",
-    "text": "In the first round you deal 10% more a rank.",
+    "text": "You start a fight with a drop of blood on the blade, a rank.",
     "mana": 0,
     "rule": {
-      "firstRoundDamage": 1.1
+      "startBlood": 1
     },
     "ranks": [
-      {},
       {},
       {}
     ],
@@ -2849,12 +2853,12 @@
     "classId": "rogue",
     "level": 13
   },
-  "nin-edge": {
-    "name": "Razor Edge",
-    "text": "Your crits hit 10% harder a rank.",
+  "nin-thirst": {
+    "name": "Bloodthirst",
+    "text": "A crit leaves a second drop on the blade: a 35% chance a rank.",
     "mana": 0,
     "rule": {
-      "critPower": 0.1
+      "critBlood": 0.35
     },
     "ranks": [
       {},
@@ -2866,34 +2870,36 @@
   },
   "nin-vanish": {
     "name": "Vanish",
-    "text": "The next two blows miss, and your next hit is a sure crit.",
+    "text": "The next two blows miss and your next hit is a sure crit. It spends your blood: one more sure crit a drop.",
     "mana": 7,
     "ranks": [
       {
         "evade": 2,
-        "sureCrit": 1
+        "sureCrit": 1,
+        "bloodCrits": true
       },
       {
         "evade": 2,
-        "sureCrit": 2
+        "sureCrit": 2,
+        "bloodCrits": true
       },
       {
         "evade": 3,
-        "sureCrit": 2
+        "sureCrit": 2,
+        "bloodCrits": true
       }
     ],
     "classId": "rogue",
     "level": 21
   },
-  "nin-grip": {
-    "name": "Sure Grip",
-    "text": "3% more attack a rank.",
+  "nin-cup": {
+    "name": "Deep Cup",
+    "text": "The blade holds one more drop of blood, a rank.",
     "mana": 0,
     "rule": {
-      "attackMult": 1.03
+      "bloodCap": 1
     },
     "ranks": [
-      {},
       {},
       {}
     ],
@@ -2954,13 +2960,14 @@
   },
   "nin-army": {
     "name": "Army of One",
-    "text": "Once a fight: copies of you join in, and every attack strikes again and again.",
+    "text": "Once a fight: copies of you join in, every attack strikes again and again, and while they stand no blood is spent.",
     "mana": 10,
     "ranks": [
       {
         "clone": {
           "rounds": 6,
-          "power": 0.9
+          "power": 0.9,
+          "keepBlood": true
         }
       }
     ],
@@ -3000,23 +3007,26 @@
   },
   "thousand-cuts": {
     "name": "Thousand Cuts",
-    "text": "Six quick cuts, each with its own chance to crit.",
+    "text": "Six quick cuts, each with its own chance to crit. Outside the dark each crit is a point of Mischief.",
     "mana": 6,
     "ranks": [
       {
         "power": 1.5,
         "hits": 6,
-        "split": true
+        "split": true,
+        "critMeter": 1
       },
       {
         "power": 1.7,
         "hits": 6,
-        "split": true
+        "split": true,
+        "critMeter": 1
       },
       {
         "power": 1.9,
         "hits": 6,
-        "split": true
+        "split": true,
+        "critMeter": 1
       }
     ],
     "needs": [
@@ -3071,12 +3081,12 @@
     "classId": "rogue",
     "level": 13
   },
-  "sha-finish": {
-    "name": "Finisher",
-    "text": "A foe under a third of its HP takes 8% more a rank.",
+  "sha-lurk": {
+    "name": "Lurk",
+    "text": "A round in the dark without striking makes your next hit 15% harder, a rank. Two rounds at most.",
     "mana": 0,
     "rule": {
-      "executeDamage": 1.08
+      "lurk": 0.15
     },
     "ranks": [
       {},
@@ -3088,14 +3098,16 @@
   },
   "sha-blind": {
     "name": "Blinding Powder",
-    "text": "The enemy loses its next turn, boss or not.",
+    "text": "The enemy loses its next turn, boss or not, and you are in the dark for a round.",
     "mana": 8,
     "ranks": [
       {
-        "skip": 1
+        "skip": 1,
+        "dark": 1
       },
       {
         "skip": 1,
+        "dark": 1,
         "sureCrit": 1
       }
     ],
@@ -3104,10 +3116,10 @@
   },
   "sha-sight": {
     "name": "Dark Sight",
-    "text": "2% more crit a rank.",
+    "text": "In the dark, 5% more crit a rank.",
     "mana": 0,
     "rule": {
-      "crit": 0.02
+      "darkCrit": 0.05
     },
     "ranks": [
       {},
@@ -3119,20 +3131,20 @@
   },
   "sha-gloom": {
     "name": "Night Cut",
-    "text": "A sure crit from nowhere.",
-    "mana": 9,
+    "text": "A cut, and you are gone: in the dark for the next round.",
+    "mana": 6,
     "ranks": [
       {
-        "power": 2.6,
-        "sureCrit": 1
+        "power": 1.6,
+        "dark": 1
       },
       {
-        "power": 3,
-        "sureCrit": 1
+        "power": 1.8,
+        "dark": 1
       },
       {
-        "power": 3.4,
-        "sureCrit": 1
+        "power": 2,
+        "dark": 1
       }
     ],
     "classId": "rogue",
@@ -3155,12 +3167,13 @@
   },
   "sha-reaper": {
     "name": "Reaper",
-    "text": "A hard cut, and a killing one on a foe under 40% of its HP.",
+    "text": "A hard cut, and a killing one on a foe under 40% of its HP: under half from the dark.",
     "mana": 12,
     "ranks": [
       {
         "power": 2.2,
         "executeBelow": 0.4,
+        "darkExecute": 0.5,
         "executePower": 5.5
       }
     ],
@@ -3182,12 +3195,12 @@
     "classId": "rogue",
     "level": 2
   },
-  "alc-flask": {
-    "name": "Better Flasks",
-    "text": "Your flasks work 10% better a rank.",
+  "alc-volatile": {
+    "name": "Volatile",
+    "text": "A reaction between your flasks hits 15% harder a rank.",
     "mana": 0,
     "rule": {
-      "potionPower": 1.1
+      "volatile": 0.15
     },
     "ranks": [
       {},
@@ -3199,10 +3212,11 @@
   },
   "alc-fumes": {
     "name": "Fumes",
-    "text": "A poisoned foe takes 5% more a rank.",
+    "text": "A poisoned foe takes 5% more a rank, and its blows miss you 3% more often a rank.",
     "mana": 0,
     "rule": {
-      "poisonedDamage": 1.05
+      "poisonedDamage": 1.05,
+      "poisonedMiss": 0.03
     },
     "ranks": [
       {},
@@ -3267,11 +3281,12 @@
   },
   "alc-bomb": {
     "name": "Fire Flask",
-    "text": "A burst of flame that leaves it burning.",
+    "text": "A burst of flame that leaves it burning. On a poisoned foe the poison catches fire: half again as strong while it burns.",
     "mana": 8,
     "ranks": [
       {
         "power": 2,
+        "flask": true,
         "burn": {
           "rounds": 3,
           "power": 0.35
@@ -3279,6 +3294,7 @@
       },
       {
         "power": 2.3,
+        "flask": true,
         "burn": {
           "rounds": 3,
           "power": 0.35
@@ -3286,6 +3302,7 @@
       },
       {
         "power": 2.6,
+        "flask": true,
         "burn": {
           "rounds": 3,
           "power": 0.35
@@ -3295,15 +3312,14 @@
     "classId": "rogue",
     "level": 21
   },
-  "alc-salve": {
-    "name": "Salve",
-    "text": "Each win heals 5% of your HP a rank.",
+  "alc-linger": {
+    "name": "Lingering",
+    "text": "What your flasks leave lasts a round longer, a rank.",
     "mana": 0,
     "rule": {
-      "winHeal": 0.05
+      "flaskRounds": 1
     },
     "ranks": [
-      {},
       {},
       {}
     ],
@@ -3312,10 +3328,11 @@
   },
   "alc-plague": {
     "name": "Plague Cloud",
-    "text": "A choking cloud: long poison, and weaker blows.",
+    "text": "A choking cloud: long poison, and weaker blows. On a foe under Caustic, the Caustic lasts as long as the cloud.",
     "mana": 10,
     "ranks": [
       {
+        "flask": true,
         "poison": {
           "rounds": 6,
           "power": 0.55
@@ -3326,6 +3343,7 @@
         }
       },
       {
+        "flask": true,
         "poison": {
           "rounds": 6,
           "power": 0.65
@@ -3336,6 +3354,7 @@
         }
       },
       {
+        "flask": true,
         "poison": {
           "rounds": 7,
           "power": 0.75
@@ -3349,12 +3368,12 @@
     "classId": "rogue",
     "level": 25
   },
-  "alc-tonic": {
-    "name": "Tonic",
-    "text": "You regain 1% of your mana each round, a rank.",
+  "alc-reagents": {
+    "name": "Reagents",
+    "text": "A reaction gives you a point of Mischief, and 3% of your mana a rank.",
     "mana": 0,
     "rule": {
-      "manaRegen": 0.01
+      "reagents": 0.03
     },
     "ranks": [
       {},

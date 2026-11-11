@@ -10,7 +10,7 @@ import Phaser from 'phaser';
 import talentSounds from '../../../assets/sound/talents/talent-map.json';
 import magicMarksPng from '../../../assets/magic_marks/magic_marks.png';
 import magicMarksJson from '../../../assets/magic_marks/magic_marks.json?url';
-import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight } from '../../../rules/src/index.ts';
+import { ABILITIES, manaCost, gearKind, CLASS_DATA, ITEMS, PROGRESSION, powers, stats, type Enemy, type FightMove, type GameEvent, type Guard, traitsOf, ARENA, holdsFor, needsWords, isNight, inDark } from '../../../rules/src/index.ts';
 import type { ClassId } from '../../../rules/src/index.ts';
 import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { applyPalette, dreamOverlay, dreamPalette, tintOf } from '../dreamlook.ts';
@@ -349,9 +349,11 @@ export class FightScene extends Phaser.Scene {
       const rank = me.abilities[id] ?? 1;
       const a = ABILITIES[id];
       const mana = a ? manaCost(me, id) : 0;
-      const cost = a?.meterAll ? `all ${meterName}` : a?.meter ? `${a.meter} ${meterName}` : '';
+      // Assassinate from the dark costs no Mischief (Robin, 2026-11-11).
+      const freeDark = !!a?.darkFree && !!f && inDark(f);
+      const cost = a?.meterAll ? `all ${meterName}` : freeDark ? 'free from the dark' : a?.meter ? `${a.meter} ${meterName}` : '';
       const used = !!a?.oncePerFight && !!f?.used?.includes(id);
-      const meterOk = !a?.meter || (f?.meter ?? 0) >= a.meter;
+      const meterOk = !a?.meter || freeDark || (f?.meter ?? 0) >= a.meter;
       const meterAllOk = !a?.meterAll || (f?.meter ?? 0) > 0;
       const held = holdsFor(me, a?.needs);
       return {
@@ -592,7 +594,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         break;
       case 'effect':
         // The Light sounds when a charge comes, not when it is spent: the holy hit has its own sound.
-        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
+        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind === 'dark' ? 'evade' : e.kind === 'reaction' ? 'burn' : e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');
@@ -933,6 +935,9 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     const meter = CLASS_DATA[this.game_.me.classId].meter;
     if (meter) this.heroBoard.setMeter(this, meter.name, f.meter ?? 0, PROGRESSION.meterMax);
     const heroBits = [
+      // The dark comes first: it changes what the buttons do (2026-11-11).
+      inDark(f) ? 'in the dark' : '',
+      f.lurk ? `lurking +${Math.round(f.lurk * 100)}%` : '',
       f.charged ? 'charged' : '',
       f.attackUp ? `hits harder ${f.attackUp.rounds}` : '',
       f.allBanners ? `every banner ${f.allBanners.rounds}` : f.banner ? `banner of ${f.banner.kind}` : '',
@@ -1031,6 +1036,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'valorUp': return `You hold the line: each Block gives more Valor for ${rounds} rounds.`;
       case 'spellUp': return `Magic Power: your spells hit harder for ${rounds} rounds.`;
       case 'both': return `Frost and storm in one blade for ${rounds} rounds!`;
+      case 'dark': return 'You are gone: in the dark for the next round.';
+      case 'reaction': return 'The flasks react!';
       case 'light': return rounds > 0 ? `Light ${rounds} of 3: your next holy hit lands harder.` : 'Your Light goes into the blow.';
       case 'barrier': return `A barrier of ${rounds} forms round you.`;
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;

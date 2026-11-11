@@ -94,6 +94,7 @@ export function startFight(c: Character, enemyId: string, space: string, spawn: 
   const talents = traitsOf(c);
   if (talents.barrierStart) fight.barrier += Math.round(stats(c).maxHp * talents.barrierStart);
   if (talents.meterStart) fight.meter += talents.meterStart;
+  if (talents.startBlood && talents.blood) fight.blood = Math.min(bloodMax(c), talents.startBlood);
   if (p.windstep) fight.evade += p.windstep;
   if (rng) fight.enemy.next = pickMove(fight.enemy, rng);
   // Weakness carried from the last fight takes hold here, and is used up by it.
@@ -171,6 +172,9 @@ interface Round {
   conj?: number;
   brimmed?: boolean;
   grounded?: boolean;
+  /** The Rogue (Robin, 2026-11-11): in the dark as the move was made; the strikes there were before it (Lurk). */
+  dark?: boolean;
+  struck?: number;
 }
 
 /**
@@ -244,6 +248,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   const traits = traitsOf(r.c);
   const guard: Guard = action.guard;
   let quick = false;
+  r.dark = inDark(f);
+  r.struck = f.strikes;
 
   // ---- a spell in the air lands --------------------------------------------------------------------------------------
   // More than one can be on its way (Robin, 2026-11-11): a Falling Star and a Firestorm timed to land together.
@@ -306,8 +312,10 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (ability.oncePerFight && f.used.includes(move.ability)) return reject(state, action, 'already used');
       // Four go into a fight; with fewer carried, nothing known is left behind.
       if (r.c.carried.length >= carriedLimit(r.c.level) && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
-      const meterCost = ability.meterAll ? f.meter : (ability.meter ?? 0);
-      if ((ability.meter && f.meter < ability.meter) || (ability.meterAll && f.meter <= 0)) return reject(state, action, 'not enough meter');
+      // Assassinate from the dark costs no Mischief.
+      const freeDark = !!ability.darkFree && !!r.dark;
+      const meterCost = ability.meterAll ? f.meter : freeDark ? 0 : (ability.meter ?? 0);
+      if ((ability.meter && !freeDark && f.meter < ability.meter) || (ability.meterAll && f.meter <= 0)) return reject(state, action, 'not enough meter');
       const manaCost = costOf(r.c, move.ability);
       if (r.c.mana < manaCost) return reject(state, action, 'not enough mana');
       if (manaCost > 0) {
@@ -443,6 +451,12 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         f.barrier += barrier;
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'barrier', rounds: barrier });
       }
+      // Vanish spends the blood: a sure crit more a drop.
+      if (rk.bloodCrits && (f.blood ?? 0) > 0) {
+        const drops = f.blood!;
+        f.sureCrit += drops;
+        spendBlood(r, drops);
+      }
       if (rk.evade) {
         f.evade += rk.evade;
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'evade', rounds: rk.evade });
@@ -467,6 +481,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         f.skip += rk.skip;
         events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'skip', rounds: rk.skip });
       }
+      // Gone into the dark for the rounds after this one.
+      if (rk.dark) {
+        f.dark = rk.dark + 1;
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'dark', rounds: rk.dark });
+      }
       if (rk.windup && rk.power) {
         const called = { name: ability.name, power: rk.power * powerMult, rounds: rk.windup };
         if (f.windup) f.air = [...(f.air ?? []), called];
@@ -474,10 +493,10 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'windup', rounds: rk.windup });
       } else if (rk.power) {
         let power = rk.power;
-        if (rk.executeBelow && rk.executePower && f.enemy.hp < f.enemy.maxHp * rk.executeBelow) power = rk.executePower;
+        if (rk.executeBelow && rk.executePower && f.enemy.hp < f.enemy.maxHp * (r.dark && rk.darkExecute ? rk.darkExecute : rk.executeBelow)) power = rk.executePower;
         if (ability.meterAll && rk.perMeter) power += rk.perMeter * meterCost;
         if (rk.burnBonus && f.enemy.burn) power *= rk.burnBonus;
-        if (rk.danceBonus && f.dance && !f.dance.exposed) power *= rk.danceBonus;
+        if (rk.darkBonus && r.dark) power *= rk.darkBonus;
         if (rk.defensePower) power += (rk.defensePower * r.s.defense) / Math.max(1, r.s.attack);
         if (rk.perHeldMeter) power += rk.perHeldMeter * f.meter;
         if (rk.manaPower) power += (rk.manaPower * r.c.mana) / Math.max(1, r.s.maxMana);
@@ -499,7 +518,13 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         const finale = move.ability === 'eviscerate';
         const shadow = finale && traits.shadowFinale ? traits.shadowFinale : 0;
         const before = f.enemy.hp;
+        const eventsBefore = events.length;
         strike(r, ability.name, power * powerMult, shadow ? 3 : (rk.hits ?? 1), (rk.crit ?? r.s.crit) + shadow * meterCost, true, { split: shadow ? true : rk.split, melee: rk.melee, ignoreDefense: rk.ignoreDefense, noBlood: !!rk.spendBlood || finale });
+        // Thousand Cuts outside the dark: a point of Mischief a crit.
+        if (!r.done && rk.critMeter && !r.dark) {
+          const crits = events.slice(eventsBefore).filter((e) => e.type === 'hit' && e.by === 'player' && e.crit && e.move === ability.name).length;
+          if (crits) gainMeterFlat(r, crits * rk.critMeter);
+        }
         if (!r.done && finale && traits.venomFinale && f.enemy.poison && meterCost > 0) {
           hurtEnemy(r, Math.max(1, Math.round(f.enemy.poison.damage * meterCost * traits.venomFinale)));
           if (r.done) return r.done;
@@ -534,16 +559,32 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
             events.push({ type: 'resisted', action: id, player, kind: 'stunned' });
           }
         }
+        // The Alchemist's flasks (Robin, 2026-11-11): Lingering keeps them a round longer, and one thrown on another's work reacts.
+        const linger = rk.flask ? (traits.flaskRounds ?? 0) : 0;
+        const volatile = 1 + (traits.volatile ?? 0);
+        const burning = f.enemy.burn;
         if (rk.burn) {
-          f.enemy.burn = { rounds: rk.burn.rounds, damage: Math.max(1, Math.round((r.s.attack + r.s.magic) * rk.burn.power * (traits.burnPower ?? 1))) };
-          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'burn', rounds: rk.burn.rounds });
+          f.enemy.burn = { rounds: rk.burn.rounds + linger, damage: Math.max(1, Math.round((r.s.attack + r.s.magic) * rk.burn.power * (traits.burnPower ?? 1))) };
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'burn', rounds: f.enemy.burn.rounds });
+          // Fire on a poisoned foe: the poison catches, and stings half again as hard while it burns.
+          if (rk.flask && f.enemy.poison) {
+            f.enemy.burn.kindles = 1 + 0.5 * volatile;
+            reaction(r);
+          }
         }
         if (rk.sunder) {
-          f.enemy.sunder = { ...rk.sunder };
-          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'sunder', rounds: rk.sunder.rounds });
+          f.enemy.sunder = { ...rk.sunder, rounds: rk.sunder.rounds + linger };
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'sunder', rounds: f.enemy.sunder.rounds });
+          // Caustic on a burning foe: the fire bursts, all its rounds at once.
+          if (rk.flask && burning && !rk.burn) {
+            f.enemy.burn = null;
+            reaction(r);
+            hurtEnemy(r, Math.max(1, Math.round(burning.damage * burning.rounds * volatile)));
+            if (r.done) return r.done;
+          }
         }
         if (rk.weaken) {
-          f.enemy.weakened = { rounds: rk.weaken.rounds + longer, mult: 1 - (1 - rk.weaken.mult) * voice };
+          f.enemy.weakened = { rounds: rk.weaken.rounds + longer + linger, mult: 1 - (1 - rk.weaken.mult) * voice };
           events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: f.enemy.weakened.rounds });
         }
         // Field Tactics: the first banner of a fight goes up as you strike.
@@ -553,8 +594,13 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
           if (r.done) return r.done;
         }
         if (rk.poison) {
-          f.enemy.poison = { rounds: Math.max(rk.poison.rounds, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(r.s.attack * rk.poison.power * (traits.poisonPower ?? 1)))) };
-          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: rk.poison.rounds });
+          f.enemy.poison = { rounds: Math.max(rk.poison.rounds + linger, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(r.s.attack * rk.poison.power * (traits.poisonPower ?? 1)))) };
+          events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: f.enemy.poison.rounds });
+          // The cloud on a foe under Caustic: the Caustic lasts as long as the cloud.
+          if (rk.flask && f.enemy.sunder && !rk.sunder && f.enemy.sunder.rounds < f.enemy.poison.rounds) {
+            f.enemy.sunder = { ...f.enemy.sunder, rounds: f.enemy.poison.rounds };
+            reaction(r);
+          }
         }
       }
       break;
@@ -592,8 +638,10 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   // Black Blood (Robin, 2026-11-03: "combining blood and poison"): a foe both poisoned and bleeding takes each sting twice.
   const twice = traitsOf(r.c).blackBlood && f.enemy.poison && f.enemy.bleed ? 2 : 1;
   if (f.enemy.poison) {
-    f.enemy.hp = Math.max(0, f.enemy.hp - f.enemy.poison.damage * twice);
-    events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: f.enemy.poison.damage * twice, hp: f.enemy.hp });
+    // A Fire Flask's burn makes the poison under it sting harder.
+    const sting = Math.round(f.enemy.poison.damage * (f.enemy.burn?.kindles ?? 1)) * twice;
+    f.enemy.hp = Math.max(0, f.enemy.hp - sting);
+    events.push({ type: 'poisoned', action: id, player, target: 'enemy', damage: sting, hp: f.enemy.hp });
     f.enemy.poison.rounds -= 1;
     if (f.enemy.poison.rounds <= 0) f.enemy.poison = null;
     if (f.enemy.hp <= 0) return win(r);
@@ -695,6 +743,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
         if (traits.dodgeCrit) f.sureCrit = Math.max(f.sureCrit, 1);
         if (traits.dodgeHeal) healing(r, Math.max(1, Math.round(r.s.maxHp * traits.dodgeHeal)));
+      } else if (traits.poisonedMiss && f.enemy.poison && rng.next() < traits.poisonedMiss) {
+        // Fumes: a poisoned foe swings wide.
+        events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
       } else {
         landed = true;
         let dealt = b.damage;
@@ -825,6 +876,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   if (f.valorUp) f.valorUp = f.valorUp.rounds > 1 ? { ...f.valorUp, rounds: f.valorUp.rounds - 1 } : null;
   if (f.enemy.sunder) f.enemy.sunder = f.enemy.sunder.rounds > 1 ? { ...f.enemy.sunder, rounds: f.enemy.sunder.rounds - 1 } : null;
   if (f.dance) f.dance = f.dance.exposed ? { ...f.dance, exposed: false } : f.dance.rounds > 1 ? { ...f.dance, rounds: f.dance.rounds - 1 } : null;
+  if (f.dark) f.dark -= 1;
+  // Lurk: a round in the dark without a strike, two at most.
+  if (traits.lurk && r.dark && f.strikes === r.struck) f.lurk = Math.min(traits.lurk * 2, (f.lurk ?? 0) + traits.lurk);
   gainMeter(r, 'round', 1);
   if (p.regen) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * p.regen)), action, events);
   if (r.s.bonus.mending) r.c = heal(r.c, Math.max(1, Math.round(r.s.maxHp * r.s.bonus.mending)), action, events);
@@ -964,6 +1018,15 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     f.shifted = false;
   }
   if (traits.stormCrit && bladesOf(r.c, f).some((b) => b.kind === 'storm')) crit += traits.stormCrit;
+  // The Rogue (Robin, 2026-11-11): blood held sharpens the blade; the dark; the hit after lurking.
+  const drops = f.blood ?? 0;
+  if (drops && traits.bloodCrit) crit += traits.bloodCrit * drops;
+  if (drops && traits.bloodDamage) power *= 1 + traits.bloodDamage * drops;
+  if (r.dark && traits.darkCrit) crit += traits.darkCrit;
+  if (f.lurk) {
+    power *= 1 + f.lurk;
+    f.lurk = 0;
+  }
   // The talents: where you stand, and what state it is in.
   const share = r.c.hp / Math.max(1, s.maxHp);
   if (traits.lowHpDamage && share < 1 / 3) power *= traits.lowHpDamage;
@@ -1046,6 +1109,8 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     if (b.crit && traits.critHeal) healing(r, Math.max(1, Math.round(s.maxHp * traits.critHeal)));
     // Bloodied Edge: a crit opens a bleed.
     if (b.crit && traits.critBleed && f.enemy.hp > 0) openBleed(r, Math.max(1, Math.round(s.attack * traits.critBleed)), 3);
+    // Bloodthirst: a crit may leave a second drop.
+    if (b.crit && traits.critBlood && traits.blood && !how.noBlood && holdsFor(r.c, ['blade']) && rng.next() < traits.critBlood) f.blood = Math.min(bloodMax(r.c), (f.blood ?? 0) + 1);
     if (b.crit && spell && traits.hotStreak) f.cheap = Math.min(0.6, traits.hotStreak);
     if (b.crit && traits.critMana) r.c = restoreMana(r.c, Math.max(1, Math.round(s.maxMana * traits.critMana)), r.action, events);
     // Bloodlust: a great weapon drinks too (Robin, 2026-11-03).
@@ -1106,7 +1171,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     }
   }
   // Blood on the blade: a drop for each move that lands with a blade, up to the talent's (Robin, 2026-11-03).
-  if (traits.blood && !how.noBlood && f.enemy.hp < (f.enemy.maxHp ?? Infinity) && holdsFor(r.c, ['blade'])) f.blood = Math.min(traits.blood, (f.blood ?? 0) + 1);
+  if (traits.blood && !how.noBlood && f.enemy.hp < (f.enemy.maxHp ?? Infinity) && holdsFor(r.c, ['blade'])) f.blood = Math.min(bloodMax(r.c), (f.blood ?? 0) + 1);
   // Frost: a move that hit gives a little barrier.
   if (ice?.barrier && f.enemy.hp < foeBefore) addBarrier(r, Math.round(s.maxHp * ice.barrier));
   gainMeter(r, 'hit', 1);
@@ -1121,9 +1186,29 @@ function openBleed(r: Round, damage: number, rounds: number): void {
   r.events.push({ type: 'effect', action: r.action.id, player: r.action.player, target: 'enemy', kind: 'bleed', rounds: r.f.enemy.bleed.rounds });
 }
 
-/** The blood on the blade spent; Red Mist heals for it. */
+/** In the dark (Robin, 2026-11-11): while the foe cannot reach you: dancing in shadow, its blows set to miss, or gone for a round. */
+export function inDark(f: Fight): boolean {
+  return (!!f.dance && !f.dance.exposed) || f.evade > 0 || (f.dark ?? 0) > 0;
+}
+
+/** The drops a blade can hold: Blood on the Blade's, and Deep Cup's. */
+export function bloodMax(c: Character): number {
+  const t = traitsOf(c);
+  return t.blood ? t.blood + (t.bloodCap ?? 0) : 0;
+}
+
+/** Two flasks reacted: Reagents gives a point of Mischief and a little mana. */
+function reaction(r: Round): void {
+  r.events.push({ type: 'effect', action: r.action.id, player: r.action.player, target: 'enemy', kind: 'reaction', rounds: 0 });
+  const reagents = traitsOf(r.c).reagents;
+  if (!reagents) return;
+  gainMeterFlat(r, 1);
+  r.c = restoreMana(r.c, Math.max(1, Math.round(r.s.maxMana * reagents)), r.action, r.events);
+}
+
+/** The blood on the blade spent; Red Mist heals for it. While the Army of One stands the blade keeps it. */
 function spendBlood(r: Round, drops: number): void {
-  r.f.blood = 0;
+  if (!r.f.clone?.keepBlood) r.f.blood = 0;
   const mist = traitsOf(r.c).redMist;
   if (mist) healing(r, Math.max(1, Math.round(r.s.maxHp * mist * drops)));
 }

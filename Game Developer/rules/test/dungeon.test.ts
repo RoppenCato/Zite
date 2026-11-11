@@ -75,7 +75,7 @@ describe('dungeons (Robin, 2026-11-02)', () => {
     const areas = Object.fromEntries(Object.entries(now.board.areas).filter(([id]) => id !== D.area.id));
     delete spaces[D.outside.spot]!.door;
     const up = migrate(JSON.parse(JSON.stringify({ ...now, version: 24, board: { ...now.board, spaces, areas } })))!;
-    expect(up.version).toBe(47);
+    expect(up.version).toBe(48);
     expect(up.characters[P]!.gold).toBe(321);
     expect(up.board.spaces[D.outside.spot]).toMatchObject({ kind: 'door', door: D.inside });
     expect(up.board.spaces[D.inside]!.door).toBe(D.outside.spot);

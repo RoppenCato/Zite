@@ -134,6 +134,22 @@ export interface ClassTraits {
   bloodFinale?: number;
   redMist?: number;
   blackBlood?: boolean;
+  /**
+   * The Rogue's three ways to fight (Robin, 2026-11-11). Ninja: crit and damage a drop of blood held, drops at the start, a crit's
+   * chance of a second drop, more drops held. Shadow: a round in the dark without a strike makes the next hit harder; crit in the dark.
+   * Alchemist: a reaction between flasks hits harder; a poisoned foe misses; flasks last longer; a reaction's mana.
+   */
+  bloodCrit?: number;
+  bloodDamage?: number;
+  startBlood?: number;
+  critBlood?: number;
+  bloodCap?: number;
+  lurk?: number;
+  darkCrit?: number;
+  volatile?: number;
+  poisonedMiss?: number;
+  flaskRounds?: number;
+  reagents?: number;
   shadowFinale?: number;
   venomFinale?: number;
   /** With a great weapon, this share of the damage dealt heals you (Bloodlust). */
@@ -286,9 +302,15 @@ export interface AbilityRank {
   /** The enemy takes this much more for a while. */
   sunder?: { rounds: number; mult: number };
   burn?: { rounds: number; power: number };
-  /** This much harder on a burning foe, or while dancing in shadow. */
+  /** This much harder on a burning foe, or from the dark. */
   burnBonus?: number;
-  danceBonus?: number;
+  darkBonus?: number;
+  /** The Rogue (Robin, 2026-11-11): in the dark for this many rounds after; `executeBelow` from the dark; a point of Mischief a crit outside it; the blood spent for a sure crit a drop; a flask, which reacts with another. */
+  dark?: number;
+  darkExecute?: number;
+  critMeter?: number;
+  bloodCrits?: boolean;
+  flask?: boolean;
   regen?: { rounds: number; share: number };
   infuse?: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number; stance?: boolean; barrier?: number };
   /** Hits share out the power, and count as melee for an infusion. */
@@ -322,7 +344,7 @@ export interface AbilityRank {
   /** The next blow that would fell you leaves you with this share of HP. */
   guardian?: number;
   /** For a few rounds each attack strikes again at this power. */
-  clone?: { rounds: number; power: number };
+  clone?: { rounds: number; power: number; keepBlood?: boolean };
 }
 
 /** A weapon's or an off-hand's type, from gear.json (Robin, 2026-11-03). */
@@ -357,6 +379,8 @@ export interface AbilityData {
   meter?: number;
   meterAll?: boolean;
   oncePerFight?: boolean;
+  /** From the dark it costs no meter (Assassinate, Robin, 2026-11-11). */
+  darkFree?: boolean;
   /** What must be held to use it: a weapon kind, `shield` or `blade`; any one will do (Robin, 2026-11-03). */
   needs?: string[];
   ranks: AbilityRank[];

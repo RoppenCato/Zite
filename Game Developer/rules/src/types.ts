@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 47;
+export const STATE_VERSION = 48;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
@@ -402,7 +402,7 @@ export interface Enemy {
   /** Player hits that will miss it. */
   evade: number;
   /** Burning, as poison but from fire; taking more damage. */
-  burn?: { rounds: number; damage: number } | null;
+  burn?: { rounds: number; damage: number; kindles?: number } | null;
   sunder?: { rounds: number; mult: number } | null;
   /** 1 until a boss's second phase begins, then 2. */
   phase: number;
@@ -473,13 +473,16 @@ export interface Fight {
   /** Shadow Dance: this round's blow in full, then `rounds` rounds at this dodge. */
   dance: { exposed: boolean; rounds: number; chance: number } | null;
   coat: { hits: number; power: number; rounds: number } | null;
-  /** Drops of blood on a Ninja's blade, up to three (Robin, 2026-11-03). */
+  /** Drops of blood on a Ninja's blade, up to three and Deep Cup's (Robin, 2026-11-03). */
   blood?: number;
+  /** Rounds still in the dark after a Night Cut or Blinding Powder; what Lurk has gathered for the next hit (Robin, 2026-11-11). */
+  dark?: number;
+  lurk?: number;
   blockUp: { rounds: number; mult: number } | null;
   thornsUp: { rounds: number; share: number } | null;
   counterUp: { rounds: number; chance: number } | null;
   spike: { rounds: number; power: number } | null;
-  clone: { rounds: number; power: number } | null;
+  clone: { rounds: number; power: number; keepBlood?: boolean } | null;
   /** Last Light: the next fatal blow leaves this share of HP. */
   guardian: number;
   /** All healed this fight (Judgement Day). */
@@ -729,7 +732,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp' | 'light' | 'stance' | 'both'; rounds: number; name?: string }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp' | 'light' | 'stance' | 'both' | 'dark' | 'reaction'; rounds: number; name?: string }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */

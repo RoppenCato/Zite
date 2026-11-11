@@ -53,6 +53,10 @@ function rankLine(r: AbilityRank): string {
   if (r.missingPower) bits.push(`up to +${pct(r.missingPower)} near the end`);
   if (r.windupBonus) bits.push(`${pct(r.windupBonus)} on a wind-up`);
   if (r.executePower) bits.push(`${pct(r.executePower)} when it is low`);
+  if (r.darkBonus) bits.push(`${pct(r.darkBonus - 1)} harder from the dark`);
+  if (r.dark) bits.push(`in the dark for ${r.dark} round after`);
+  if (r.critMeter) bits.push('a point of Mischief a crit outside the dark');
+  if (r.bloodCrits) bits.push('a sure crit more a drop of blood');
   if (r.healedPower) bits.push(`+${pct(r.healedPower)} of all healed`);
   if (r.healShare) bits.push(`heals ${pct(r.healShare)} of HP`);
   if (r.healDealt) bits.push(`heals ${pct(r.healDealt)} of the damage`);
