@@ -255,20 +255,20 @@
     "trees": {
       "wizard": {
         "name": "Wizard",
-        "text": "Fire: huge hits that leave the target burning.",
+        "text": "Fire, and spells timed to land together.",
         "nodes": [
           "fireball",
           "wiz-ember",
           "wizard-flame",
-          "wiz-focus",
+          "wiz-ash",
           "detonate",
           "wiz-well",
           "wiz-scorch",
           "wiz-kindling",
           "meteor",
-          "wiz-clarity",
-          "wiz-pillar",
-          "wiz-sear",
+          "wiz-conjunction",
+          "wiz-combust",
+          "wiz-streak",
           "wiz-firestorm",
           "wiz-heart",
           "wiz-phoenix"
@@ -280,7 +280,7 @@
           ],
           [
             "wizard-flame",
-            "wiz-focus"
+            "wiz-ash"
           ],
           [
             "detonate",
@@ -292,11 +292,11 @@
           ],
           [
             "meteor",
-            "wiz-clarity"
+            "wiz-conjunction"
           ],
           [
-            "wiz-pillar",
-            "wiz-sear"
+            "wiz-combust",
+            "wiz-streak"
           ],
           [
             "wiz-firestorm",
@@ -309,22 +309,22 @@
       },
       "cleric": {
         "name": "Cleric",
-        "text": "Heals itself and strikes with holy light.",
+        "text": "The healer: each heal charges its Light, and a holy hit spends it.",
         "nodes": [
           "smite",
           "cle-prayer",
           "cleric-grace",
-          "cle-calm",
+          "cle-brimming",
           "mend",
           "cle-halo",
           "cle-renew",
           "cle-radiance",
           "judgement-day",
-          "cle-ward",
+          "cle-faith",
           "cle-lance",
           "cle-rest",
           "cle-sanctuary",
-          "cle-zeal",
+          "cle-bright",
           "cle-ascend"
         ],
         "tiers": [
@@ -334,7 +334,7 @@
           ],
           [
             "cleric-grace",
-            "cle-calm"
+            "cle-brimming"
           ],
           [
             "mend",
@@ -346,7 +346,7 @@
           ],
           [
             "judgement-day",
-            "cle-ward"
+            "cle-faith"
           ],
           [
             "cle-lance",
@@ -354,7 +354,7 @@
           ],
           [
             "cle-sanctuary",
-            "cle-zeal"
+            "cle-bright"
           ],
           [
             "cle-ascend"
@@ -363,28 +363,28 @@
       },
       "spellsword": {
         "name": "Spellsword",
-        "text": "Ice or lightning in every melee hit.",
+        "text": "Two stances, frost and storm, and the change between them.",
         "nodes": [
           "frost-blade",
-          "spl-edge",
+          "spl-rime",
           "spellsword-bond",
           "spl-plate",
           "storm-blade",
-          "spl-eye",
+          "spl-static",
           "spl-thrust",
           "spl-flow",
           "arc-slash",
-          "spl-parry",
+          "spl-winds",
           "spl-whirl",
           "spl-surge",
-          "spl-tempest",
-          "spl-hunger",
+          "spl-shift",
+          "spl-grounded",
           "spl-avatar"
         ],
         "tiers": [
           [
             "frost-blade",
-            "spl-edge"
+            "spl-rime"
           ],
           [
             "spellsword-bond",
@@ -392,7 +392,7 @@
           ],
           [
             "storm-blade",
-            "spl-eye"
+            "spl-static"
           ],
           [
             "spl-thrust",
@@ -400,15 +400,15 @@
           ],
           [
             "arc-slash",
-            "spl-parry"
+            "spl-winds"
           ],
           [
             "spl-whirl",
             "spl-surge"
           ],
           [
-            "spl-tempest",
-            "spl-hunger"
+            "spl-shift",
+            "spl-grounded"
           ],
           [
             "spl-avatar"

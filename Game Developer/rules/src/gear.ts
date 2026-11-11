@@ -323,7 +323,8 @@ export function manaCost(c: Character, abilityId: string): number {
   const a = ABILITIES[abilityId];
   if (!a?.mana) return 0;
   const s = stats(c);
-  return Math.ceil(a.mana * manaScale(c) * (s.powers.arcane ?? 1) * (1 - (s.bonus.focus ?? 0)));
+  // Hot Streak (Robin, 2026-11-11): a spell's crit makes the next one cheaper.
+  return Math.ceil(a.mana * manaScale(c) * (s.powers.arcane ?? 1) * (1 - (s.bonus.focus ?? 0)) * (1 - (c.fight?.cheap ?? 0)));
 }
 
 /** A trinket as a piece to carry (Robin, 2026-11-03): no numbers of its own, only its passive. */

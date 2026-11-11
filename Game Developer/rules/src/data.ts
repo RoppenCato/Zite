@@ -172,6 +172,19 @@ export interface ClassTraits {
   burnPower?: number;
   /** Bridges between trees (mine, 2026-11-10): more dealt while you hold a barrier, to a bleeding foe, and by your own hits while the owl is out. */
   barrierDamage?: number;
+  /** The Magician (Robin, 2026-11-11). Wizard: two spells landing in one round hit this much harder; the Ward stops this much more while the foe burns; a spell's crit makes the next spell this much cheaper. */
+  conjunction?: number;
+  ashWard?: number;
+  hotStreak?: number;
+  /** Cleric: healing past full gives a charge of Light and this share of mana, once a round; this much less taken behind a barrier; each charge of Light worth this much more. */
+  brimming?: number;
+  barrierGuard?: number;
+  lightPower?: number;
+  /** Spellsword: a Block in Frost gives this share of HP as a barrier; this much more crit in Storm; the first hit after a change of stance this much harder; a second strike in Storm gives a point of the meter. */
+  frostBlock?: number;
+  stormCrit?: number;
+  shiftDamage?: number;
+  stormMeter?: boolean;
   /** The Warlord (Robin, 2026-11-10): banners and shouts this much stronger; more dealt while a banner stands, by the fight's first hit, while the foe winds up, and from round five; shouts a round longer; the first banner goes up with an Attack. */
   voice?: number;
   bannerDamage?: number;
@@ -203,6 +216,14 @@ export interface Banner {
 }
 
 export interface AbilityRank {
+  /** A holy hit: it spends the Cleric's charges of Light, each making it land harder (Robin, 2026-11-11). */
+  holy?: boolean;
+  /** The foe's burn times `mult`, and `rounds` longer. */
+  combust?: { mult: number; rounds: number };
+  /** Changes the Spellsword's stance as it strikes; leaving Storm, the hit lands this much harder. */
+  shift?: number;
+  /** Both stances at once for this many rounds. */
+  bothBlades?: number;
   /** Plants a banner for the whole fight, in place of any other (Robin, 2026-11-10). */
   banner?: Banner;
   /** All three banners at once for this many rounds. */
@@ -269,7 +290,7 @@ export interface AbilityRank {
   burnBonus?: number;
   danceBonus?: number;
   regen?: { rounds: number; share: number };
-  infuse?: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number };
+  infuse?: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number; stance?: boolean; barrier?: number };
   /** Hits share out the power, and count as melee for an infusion. */
   split?: boolean;
   melee?: boolean;

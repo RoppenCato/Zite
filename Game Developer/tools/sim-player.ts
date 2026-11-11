@@ -50,7 +50,10 @@ export function choose(c: Character): { move: unknown; guard: string } {
     }
   }
   // A spell to wind up on a foe that will last: it lands on top of the next move.
-  const bigWindup = e.role !== 'mob' && e.hp > e.maxHp * 0.3 && !f.windup ? usable.find((id) => rank(id).windup) : undefined;
+  // Two can be in the air (2026-11-11): the Falling Star first, the Firestorm a round later, and they land together.
+  const inAir = [f.windup?.name, ...(f.air ?? []).map((w) => w.name)];
+  const callable = (id: string): boolean => !!rank(id).windup && !inAir.includes(ABILITIES[id]!.name);
+  const bigWindup = e.role !== 'mob' && e.hp > e.maxHp * 0.3 ? usable.filter(callable).sort((a, b) => (rank(b).windup ?? 0) - (rank(a).windup ?? 0))[0] : undefined;
   if (bigWindup) return { move: { kind: 'ability', ability: bigWindup }, guard };
   // Keep what lasts going.
   for (const id of usable) {
@@ -64,7 +67,12 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.allBanners && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
     if (r.valorUp && !f.valorUp && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
     if (r.attackUp && !f.attackUp) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.infuse && !f.infuse) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.infuse && !f.infuse && !f.both) return { move: { kind: 'ability', ability: id }, guard };
+    // The Magician (2026-11-11): both blades for a foe that lasts; the storm let go, or frost broken on a wind-up; a fresh fire fed.
+    if (r.bothBlades && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
+    if (r.shift && f.infuse && (f.infuse.kind === 'storm' || e.charged || e.role === 'mob')) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.combust && e.burn && e.burn.rounds >= 3 && e.hp > e.maxHp * 0.4) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.regen && !f.regen && e.role !== 'mob' && hpShare < 0.85) return { move: { kind: 'ability', ability: id }, guard };
     if (r.coat && !f.coat) return { move: { kind: 'ability', ability: id }, guard };
     if (r.mark && !f.mark) return { move: { kind: 'ability', ability: id }, guard };
     // A wall against a creature that barely scratches is a round lost (2026-11-10: the Knight bot spent most rounds on them).
@@ -97,7 +105,7 @@ export function choose(c: Character): { move: unknown; guard: string } {
   // The hardest hit there is.
   // A Spellsword fights with the blade; its only spells are what it infuses it with.
   const hitters = usable.filter((id) => rank(id).power && !rank(id).windup && (!c.abilities['spellsword-bond'] || rank(id).melee));
-  const windup = usable.find((id) => rank(id).windup && !f.windup);
+  const windup = usable.find(callable);
   if (windup) return { move: { kind: 'ability', ability: windup }, guard };
   hitters.sort((a, b) => (rank(b).power ?? 0) - (rank(a).power ?? 0));
   if (hitters[0] && (rank(hitters[0]).power ?? 0) * 1 > 1) return { move: { kind: 'ability', ability: hitters[0] }, guard };

@@ -105,6 +105,9 @@ interface Option {
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
+/** The Magician's two new buttons until Nigel, SD's own sounds arrive (mine, 2026-11-11). */
+const MAGE_SOUNDS: Record<string, string> = { 'wiz-combust': 'fight/ability-fireball', 'spl-shift': 'fight/talent-blade-charge' };
+
 export class FightScene extends Phaser.Scene {
   private combo: { move: string; at: number; n: number } | null = null;
   private dripIn = 400;
@@ -398,7 +401,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       this.after(this.hero?.blowMs(1) ?? 0, () => playOnce(this, 'holy_burst', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells'));
     }
     // A Magician's spell with no sound of its own sounds like magic, not a swing (2026-11-03).
-    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
+    if (move.kind === 'ability') sfx.playOr((talentSounds as Record<string, string>)[move.ability] ?? MAGE_SOUNDS[move.ability] ?? `fight/ability-${move.ability}`, ABILITIES[move.ability]?.classId === 'mage' ? 'fight/talent-arcane-bolt' : 'fight/swing');
     else sfx.play(move.kind === 'attack' ? 'fight/swing' : move.kind === 'charge' ? 'fight/charge' : move.kind === 'flee' ? 'fight/flee' : `fight/${move.item === 'mana-potion' ? 'mana-potion' : 'potion'}`);
     this.game_.act({ type: 'fight', player: this.game_.player, move, guard }).then(
       (events) => {
@@ -585,13 +588,14 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         this.say(e.kind === 'crit' ? 'Ironbrow turns the crit aside: only a hit.' : e.kind === 'stunned' ? `${this.enemyName} shrugs it off.` : 'Ironbrow shrugs it off.');
         break;
       case 'effect':
-        sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
+        // A stance sounds like a blade charged until Nigel, SD's own (mine, 2026-11-11); the Light is quiet.
+        if (e.kind !== 'light') sfx.play(`fight/effect-${e.kind === 'spellUp' || e.kind === 'stance' || e.kind === 'both' ? 'attackUp' : e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');
           if (on) behind(this, on, this.heroBody as Phaser.GameObjects.GameObject & { depth: number });
         }
-        this.say(this.effectText(e.target, e.kind, e.rounds));
+        this.say(e.kind === 'stance' ? `${e.name ?? 'A stance'}: it stands for the whole fight.` : this.effectText(e.target, e.kind, e.rounds));
         this.refreshStatus();
         break;
       case 'selfHurt':
@@ -913,11 +917,14 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       f.mark ? `marked ${f.mark.hits}` : '',
       f.companion ? `${f.companion.name.toLowerCase()} ${f.companion.rounds}` : '',
       f.windup ? `${f.windup.name.toLowerCase()} in ${f.windup.rounds}` : '',
+      ...(f.air ?? []).map((w) => `${w.name.toLowerCase()} in ${w.rounds}`),
+      f.light ? `light ${f.light}` : '',
+      f.cheap ? 'next spell cheaper' : '',
       f.trap ? 'trap set' : '',
       f.skip ? `time bent ${f.skip}` : '',
       f.poisoned ? `poisoned ${f.poisoned.rounds}` : '',
       f.streak && traitsOf(this.game_.me).critStreak ? `crit +${Math.round(f.streak * (traitsOf(this.game_.me).critStreak ?? 0) * 100)}%` : '',
-      f.infuse ? `${f.infuse.kind === 'ice' ? 'frost' : 'storm'} ${f.infuse.rounds}` : '',
+      f.both ? `both blades ${f.both.rounds}` : f.infuse ? `${f.infuse.kind === 'ice' ? 'frost' : 'storm'} ${f.infuse.stance ? 'stance' : f.infuse.rounds}` : '',
       f.dance ? (f.dance.exposed ? 'open' : `shadow ${f.dance.rounds}`) : '',
       f.coat ? `coated ${f.coat.hits}` : '',
       f.blood ? `blood ${f.blood}` : '',
@@ -947,8 +954,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     this.held.set('windup_tell', !!e.charged, foeHead.x, Math.max(foeHead.y - 14, FIGHT_LAYOUT.historyY + 34));
     this.held.set('poison_drip', !!e.poison, foeHead.x, foeHead.y + 20);
     this.held.set('burn', !!e.burn, this.spot('enemy', 'chest').x, this.feetY - 10);
-    this.held.set('frost_edge', f.infuse?.kind === 'ice', heroChest.x + 26, heroChest.y + 6);
-    this.held.set('storm_edge', f.infuse?.kind === 'storm', heroChest.x + 26, heroChest.y + 6);
+    this.held.set('frost_edge', !f.both && f.infuse?.kind === 'ice', heroChest.x + 26, heroChest.y + 6);
+    this.held.set('storm_edge', !!f.both || f.infuse?.kind === 'storm', heroChest.x + 26, heroChest.y + 6);
     this.held.set('weaken', !!e.weakened, foeChest.x, foeChest.y);
     this.held.set('chill', !!e.stunned, foeChest.x, foeChest.y);
     if (f.companion && !this.owl && this.game_.me.classId === 'ranger' && !settings.get().fewerEffects) this.owl = new Owl(this, FIGHT_LAYOUT.heroX + 84, this.feetY - 70);
@@ -993,11 +1000,13 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'banners': return `Every banner is raised for ${rounds} rounds!`;
       case 'valorUp': return `You hold the line: each Block gives more Valor for ${rounds} rounds.`;
       case 'spellUp': return `Magic Power: your spells hit harder for ${rounds} rounds.`;
+      case 'both': return `Frost and storm in one blade for ${rounds} rounds!`;
+      case 'light': return rounds > 0 ? `Light ${rounds} of 3: your next holy hit lands harder.` : 'Your Light goes into the blow.';
       case 'barrier': return `A barrier of ${rounds} forms round you.`;
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
       case 'companion': return `Your owl takes wing: it strikes at the end of every round for ${rounds} rounds.`;
-      case 'windup': return `A star is called: it lands in ${rounds} rounds, whatever you do.`;
+      case 'windup': return `It is called: it lands in ${rounds} ${rounds === 1 ? 'round' : 'rounds'}, whatever you do.`;
       case 'clone': return `A copy of you joins in for ${rounds} rounds.`;
       case 'guardian': return 'A last light stands over you.';
       case 'poison': return `You are poisoned for ${rounds} rounds.`;
@@ -1064,7 +1073,6 @@ const SPELL_ELEMENT: Record<string, 'arcane' | 'fire' | 'holy'> = {
   fireball: 'fire',
   detonate: 'fire',
   'wiz-scorch': 'fire',
-  'wiz-pillar': 'fire',
   'wiz-firestorm': 'fire',
   'wiz-phoenix': 'fire',
   smite: 'holy',

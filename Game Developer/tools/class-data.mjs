@@ -40,14 +40,15 @@ const A = {
   detonate: { name: 'Detonate', classId: 'mage', text: 'Set off the fire: all the burning it has left lands at once, and stronger.', mana: 3, level: 8, ranks: up({ consume: { kind: 'burn', mult: 2.2 } }, { consume: { kind: 'burn', mult: 2.6 } }, { consume: { kind: 'burn', mult: 3 } }) },
   meteor: { name: 'Falling Star', classId: 'mage', text: 'Call down a star: it lands two rounds later for a huge hit, whatever you do meanwhile.', mana: 10, level: 12, ranks: up({ windup: 2, power: 3 }, { power: 3.4 }, { power: 3.8 }) },
   // Cleric
-  smite: { name: 'Smite', classId: 'mage', text: 'Holy light: a strong hit that heals you a little.', mana: 6, level: 3, ranks: up({ power: 1.6, healDealt: 0.25 }, { power: 1.8 }, { power: 2.0, healDealt: 0.35 }) },
+  smite: { name: 'Smite', classId: 'mage', text: 'Holy light: a strong hit that heals you a little. It spends your Light.', mana: 6, level: 3, ranks: up({ power: 1.6, holy: true, healDealt: 0.25 }, { power: 1.8 }, { power: 2.0, healDealt: 0.35 }) },
   'cleric-grace': rule('Grace', 'mage', 'Your healing is stronger, your defense too, and healing past full becomes a barrier.', { healPower: 1.25, defenseMult: 1.15, healOverflow: 0.5 }),
-  mend: { name: 'Mend', classId: 'mage', text: 'Heal a share of your HP, and clear poison and weakness.', mana: 7, level: 8, ranks: up({ healShare: 0.28, cure: true }, { healShare: 0.35 }, { healShare: 0.42 }) },
-  'judgement-day': { name: 'Judgement Day', classId: 'mage', text: 'A blast of light that grows with all you have healed this fight.', mana: 9, level: 12, ranks: up({ power: 1.6, healedPower: 1.0 }, { power: 1.8, healedPower: 1.2 }, { power: 2.0, healedPower: 1.4 }) },
+  mend: { name: 'Mend', classId: 'mage', text: 'Heal a share of your HP, and clear poison and weakness. A charge of Light.', mana: 7, level: 8, ranks: up({ healShare: 0.28, cure: true }, { healShare: 0.35 }, { healShare: 0.42 }) },
+  'judgement-day': { name: 'Judgement Day', classId: 'mage', text: 'A blast of light that grows with all you have healed this fight. It spends your Light.', mana: 9, level: 12, ranks: up({ power: 1.6, holy: true, healedPower: 1.0 }, { power: 1.8, healedPower: 1.2 }, { power: 2.0, healedPower: 1.4 }) },
   // Spellsword
-  'frost-blade': { name: 'Frost Blade', classId: 'mage', text: 'For a few rounds your attacks chill: harder, and its blows weaken.', mana: 6, level: 3, ranks: up({ infuse: { kind: 'ice', rounds: 4, power: 0.45, mult: 0.8 } }, { infuse: { kind: 'ice', rounds: 5, power: 0.5, mult: 0.75 } }, { infuse: { kind: 'ice', rounds: 6, power: 0.55, mult: 0.7 } }) },
+  // The Spellsword's two stances (Robin, 2026-11-11: "Yes" to the list; every number mine): a blade stands for the whole fight, and taking up the other puts this one down.
+  'frost-blade': { name: 'Frost Blade', classId: 'mage', text: 'A stance for the whole fight: your attacks chill, its blows weaken, and each move of yours that hits gives a small barrier. One stance at a time.', mana: 6, level: 3, ranks: up({ infuse: { kind: 'ice', stance: true, rounds: 0, power: 0.25, mult: 0.8, barrier: 0.03 } }, { infuse: { kind: 'ice', stance: true, rounds: 0, power: 0.3, mult: 0.75, barrier: 0.04 } }, { infuse: { kind: 'ice', stance: true, rounds: 0, power: 0.35, mult: 0.7, barrier: 0.05 } }) },
   'spellsword-bond': rule('Spell and Steel', 'mage', 'Your plain attacks use your magic too, and you are as sturdy as a fighter.', { plainMagic: true, hpMult: 1.25, defenseMult: 1.3, damageDealt: 1.4 }),
-  'storm-blade': { name: 'Storm Blade', classId: 'mage', text: 'For a few rounds lightning jumps from your attacks: much harder, and a chance of a second strike.', mana: 6, level: 8, ranks: up({ infuse: { kind: 'storm', rounds: 4, power: 0.6, chance: 0.3 } }, { infuse: { kind: 'storm', rounds: 5, power: 0.65, chance: 0.35 } }, { infuse: { kind: 'storm', rounds: 6, power: 0.7, chance: 0.4 } }) },
+  'storm-blade': { name: 'Storm Blade', classId: 'mage', text: 'A stance for the whole fight: lightning in your attacks, much harder, with a chance of a second strike. No barrier. One stance at a time.', mana: 6, level: 8, ranks: up({ infuse: { kind: 'storm', stance: true, rounds: 0, power: 0.45, chance: 0.3 } }, { infuse: { kind: 'storm', stance: true, rounds: 0, power: 0.5, chance: 0.35 } }, { infuse: { kind: 'storm', stance: true, rounds: 0, power: 0.55, chance: 0.4 } }) },
   'arc-slash': { name: 'Arc Slash', classId: 'mage', text: 'Three quick cuts, far harder while your blade is infused.', mana: 7, level: 12, ranks: up({ power: 0.9, hits: 3, split: true, melee: true, infuseBonus: 1.3 }, { power: 1 }, { power: 1.1 }) },
   // ---- Rogue: the chain: push your luck for one more hit, cash in, slip away ------------------------------------------------
   backstab: { name: 'Sneak Jab', classId: 'rogue', text: 'A hit that crits half the time.', mana: 4, level: 1, ranks: up({ power: 1.2, crit: 0.55 }, { power: 1.3, crit: 0.65 }, { power: 1.4, crit: 0.75 }) },
@@ -112,9 +113,9 @@ const C = {
     kit: ['arcane-bolt', 'overflow'], core: ['arcane-bolt', 'overflow', 'arcane-shield', 'magic-power'],
     meter: { name: 'Arcana', gain: 'round', text: 'Arcana builds a point every round.' },
     trees: {
-      wizard: { name: 'Wizard', text: 'Fire: huge hits that leave the target burning.', nodes: ['fireball', 'wizard-flame', 'detonate', 'meteor'] },
-      cleric: { name: 'Cleric', text: 'Heals itself and strikes with holy light.', nodes: ['smite', 'cleric-grace', 'mend', 'judgement-day'] },
-      spellsword: { name: 'Spellsword', text: 'Ice or lightning in every melee hit.', nodes: ['frost-blade', 'spellsword-bond', 'storm-blade', 'arc-slash'] },
+      wizard: { name: 'Wizard', text: 'Fire, and spells timed to land together.', nodes: ['fireball', 'wizard-flame', 'detonate', 'meteor'] },
+      cleric: { name: 'Cleric', text: 'The healer: each heal charges its Light, and a holy hit spends it.', nodes: ['smite', 'cleric-grace', 'mend', 'judgement-day'] },
+      spellsword: { name: 'Spellsword', text: 'Two stances, frost and storm, and the change between them.', nodes: ['frost-blade', 'spellsword-bond', 'storm-blade', 'arc-slash'] },
     },
   },
   rogue: {
@@ -161,13 +162,13 @@ const TALENTS = {
   },
   mage: {
     wizard: [
-      ['fireball', 'wiz-ember'], ['wizard-flame', 'wiz-focus'], ['detonate', 'wiz-well'], ['wiz-scorch', 'wiz-kindling'], ['meteor', 'wiz-clarity'], ['wiz-pillar', 'wiz-sear'], ['wiz-firestorm', 'wiz-heart'], ['wiz-phoenix'],
+      ['fireball', 'wiz-ember'], ['wizard-flame', 'wiz-ash'], ['detonate', 'wiz-well'], ['wiz-scorch', 'wiz-kindling'], ['meteor', 'wiz-conjunction'], ['wiz-combust', 'wiz-streak'], ['wiz-firestorm', 'wiz-heart'], ['wiz-phoenix'],
     ],
     cleric: [
-      ['smite', 'cle-prayer'], ['cleric-grace', 'cle-calm'], ['mend', 'cle-halo'], ['cle-renew', 'cle-radiance'], ['judgement-day', 'cle-ward'], ['cle-lance', 'cle-rest'], ['cle-sanctuary', 'cle-zeal'], ['cle-ascend'],
+      ['smite', 'cle-prayer'], ['cleric-grace', 'cle-brimming'], ['mend', 'cle-halo'], ['cle-renew', 'cle-radiance'], ['judgement-day', 'cle-faith'], ['cle-lance', 'cle-rest'], ['cle-sanctuary', 'cle-bright'], ['cle-ascend'],
     ],
     spellsword: [
-      ['frost-blade', 'spl-edge'], ['spellsword-bond', 'spl-plate'], ['storm-blade', 'spl-eye'], ['spl-thrust', 'spl-flow'], ['arc-slash', 'spl-parry'], ['spl-whirl', 'spl-surge'], ['spl-tempest', 'spl-hunger'], ['spl-avatar'],
+      ['frost-blade', 'spl-rime'], ['spellsword-bond', 'spl-plate'], ['storm-blade', 'spl-static'], ['spl-thrust', 'spl-flow'], ['arc-slash', 'spl-winds'], ['spl-whirl', 'spl-surge'], ['spl-shift', 'spl-grounded'], ['spl-avatar'],
     ],
   },
   rogue: {
@@ -239,40 +240,43 @@ const NEW = {
   'kni-fortress': act('Living Fortress', 'Once a fight: a huge barrier, and for a while your Block stops nearly all.', 8, [{ barrierShare: 0.6, blockUp: { rounds: 5, mult: 0.15 } }], { oncePerFight: true }),
   // Magician / Wizard: fire and huge hits, and a mana problem.
   'wiz-ember': pas('Embers', 'Your burns hurt 8% more a rank.', { burnPower: 1.08 }),
-  'wiz-focus': pas('Focus', 'Your spells are 3% stronger a rank.', { spellPower: 1.03 }),
+  // (Robin, 2026-11-11: "Yes" to the list; every number mine) Timing: spells that land later, a reward for landing two together, and Arcana for the fire as well as for mana.
+  'wiz-conjunction': pas('Conjunction', 'Two of your spells landing in the same round hit 8% harder a rank.', { conjunction: 1.08 }),
   'wiz-well': pas('Deep Well', '5% more mana and 4% more HP a rank.', { manaMult: 1.05, hpMult: 1.04 }),
   'wiz-scorch': act('Scorch', 'A cheap, quick flame that sets it burning.', 4, up({ power: 0.9, burn: { rounds: 3, power: 0.25 } }, { power: 1 }, { power: 1.1, burn: { rounds: 4, power: 0.3 } })),
-  'wiz-kindling': pas('Kindling', 'A burning foe takes 6% more a rank.', { burningDamage: 1.06 }),
-  'wiz-clarity': pas('Clarity', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
-  'wiz-pillar': act('Pillar of Fire', 'Three bursts of flame.', 12, up({ power: 2.4, hits: 3, split: true, burn: { rounds: 3, power: 0.3 } }, { power: 2.8 }, { power: 3.2 })),
-  'wiz-sear': pas('Searing Crits', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
-  'wiz-firestorm': act('Firestorm', 'A round to call it, then the sky falls and the ground burns.', 16, up({ windup: 1, power: 5.6, burn: { rounds: 3, power: 0.3 } }, { power: 6.4 }, { power: 7.2, burn: { rounds: 3, power: 0.35 } })),
+  'wiz-kindling': pas('Kindling', 'A burning foe takes 8% more a rank.', { burningDamage: 1.08 }),
+  'wiz-ash': pas('Ward of Ash', 'While the foe burns, your Ward stops 7% more a rank.', { ashWard: 0.07 }),
+  'wiz-combust': act('Combust', 'Spend 2 Arcana: the fire on the foe burns twice as hard, and longer.', 3, up({ combust: { mult: 2, rounds: 2 } }, { combust: { mult: 2.3, rounds: 2 } }, { combust: { mult: 2.6, rounds: 3 } }), { meter: 2 }),
+  'wiz-streak': pas('Hot Streak', 'A crit with a spell makes your next spell cost 15% less a rank.', { hotStreak: 0.15 }),
+  'wiz-firestorm': act('Firestorm', 'Spend 3 Arcana: a round to call it, then the sky falls and the ground burns.', 6, up({ windup: 1, power: 5.6, burn: { rounds: 3, power: 0.3 } }, { power: 6.4 }, { power: 7.2, burn: { rounds: 3, power: 0.35 } }), { meter: 3 }),
   'wiz-heart': pas('Heart of Flame', 'Each win gives back 5% of your mana a rank.', { winMana: 0.05 }),
   'wiz-phoenix': act('Phoenix', 'Once a fight: a great blast, and the next blow that would fell you leaves you standing.', 14, [{ power: 2.5, guardian: 0.4, burn: { rounds: 4, power: 0.4 } }], { oncePerFight: true }),
   // Magician / Cleric: outlasts everything with holy light.
   'cle-prayer': pas('Prayer', 'Your healing is 6% stronger a rank.', { healPower: 1.06 }),
-  'cle-calm': pas('Calm Mind', 'You regain 1% of your mana each round, a rank.', { manaRegen: 0.01 }),
+  // (Robin, 2026-11-11: "Yes" to the list; every number mine) Heal first, then strike: a heal gives a charge of Light, up to three, and a holy hit spends them all.
+  'cle-brimming': pas('Brimming', 'Healing past full gives a charge of Light, and 1% of your mana a rank. Once a round.', { brimming: 0.01 }),
   'cle-halo': pas('Halo', 'Start each fight with a barrier of 5% of your HP, a rank.', { barrierStart: 0.05 }),
-  'cle-renew': act('Renew', 'You heal a share of your HP each round for a while.', 7, up({ regen: { rounds: 5, share: 0.05 } }, { regen: { rounds: 5, share: 0.06 } }, { regen: { rounds: 6, share: 0.07 } })),
+  'cle-renew': act('Renew', 'You heal a share of your HP each round for a while. A charge of Light.', 7, up({ regen: { rounds: 5, share: 0.05 } }, { regen: { rounds: 5, share: 0.06 } }, { regen: { rounds: 6, share: 0.07 } })),
   'cle-radiance': pas('Radiance', 'Above 80% HP you deal 3% more a rank.', { highHpDamage: 1.03 }),
-  'cle-ward': pas('Holy Ward', 'You take 3% less a rank.', { damageTaken: 0.97 }),
-  'cle-lance': act('Lance of Light', 'A beam that heals you for part of it.', 9, up({ power: 2.1, healDealt: 0.4 }, { power: 2.3 }, { power: 2.5, healDealt: 0.5 })),
+  'cle-faith': pas('Shielded Faith', 'While a barrier holds, you take 3% less a rank.', { barrierGuard: 0.97 }),
+  'cle-lance': act('Lance of Light', 'A beam that heals you for part of it. It spends your Light.', 9, up({ power: 2.1, holy: true, healDealt: 0.4 }, { power: 2.3 }, { power: 2.5, healDealt: 0.5 })),
   'cle-rest': pas('Blessed Rest', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
-  'cle-sanctuary': act('Sanctuary', 'A great barrier, and cured of everything.', 12, up({ barrierShare: 0.45, cure: true }, { barrierShare: 0.55 }, { barrierShare: 0.65 })),
-  'cle-zeal': pas('Holy Zeal', 'Your spells are 3% stronger a rank.', { spellPower: 1.03 }),
-  'cle-ascend': act('Ascension', 'Once a fight: healed of most wounds, and your hits land far harder for a while.', 12, [{ healShare: 0.7, attackUp: { rounds: 4, mult: 1.35 } }], { oncePerFight: true }),
+  'cle-sanctuary': act('Sanctuary', 'Spend 3 Arcana: a great barrier, and cured of everything.', 0, up({ barrierShare: 0.45, cure: true }, { barrierShare: 0.55 }, { barrierShare: 0.65 }), { meter: 3 }),
+  'cle-bright': pas('Bright Light', 'Each charge of Light is worth 2% more a rank.', { lightPower: 0.02 }),
+  'cle-ascend': act('Ascension', 'Once a fight: healed of most wounds, a charge of Light, and your hits land far harder for a while.', 12, [{ healShare: 0.7, attackUp: { rounds: 4, mult: 1.35 } }], { oncePerFight: true }),
   // Magician / Spellsword: a mage in the thick of it, with a blade.
-  'spl-edge': pas('Honed Edge', '3% more attack a rank.', { attackMult: 1.03 }),
+  // (Robin, 2026-11-11: "Yes" to the list; every number mine) Frost is the safe stance, Storm the fast one, and changing between them is the play. Nothing here heals: that is the Cleric's.
+  'spl-rime': pas('Rime', 'In the Frost stance, a Block gives a barrier of 3% of your HP a rank.', { frostBlock: 0.03 }),
   'spl-plate': pas('Enchanted Mail', '4% more defense a rank. While a barrier holds, you deal 3% more a rank.', { defenseMult: 1.04, barrierDamage: 1.03 }),
-  'spl-eye': pas('Duelling Eye', '2% more crit a rank.', { crit: 0.02 }),
+  'spl-static': pas('Static', 'In the Storm stance, 3% more crit a rank.', { stormCrit: 0.03 }),
   'spl-thrust': act('Spell Thrust', 'A clean thrust, charged with whatever the blade holds.', 5, up({ power: 1.7, melee: true }, { power: 1.95 }, { power: 2.2 })),
   'spl-flow': pas('Flow', 'A crit gives back 2% of your mana, a rank.', { critMana: 0.02 }),
-  'spl-parry': pas('Parry', '2% more dodge a rank.', { dodge: 0.02 }),
+  'spl-winds': pas('Changing Winds', 'Your first hit after a change of stance lands 8% harder a rank.', { shiftDamage: 1.08 }),
   'spl-whirl': act('Blade Whirl', 'Three quick cuts, all charged.', 9, up({ power: 2.2, hits: 3, split: true, melee: true }, { power: 2.5 }, { power: 2.8 })),
   'spl-surge': pas('Surge', 'Start each fight with a point of Arcana, a rank.', { meterStart: 1 }, 2),
-  'spl-tempest': act('Tempest Blade', 'The blade holds the storm longer, and bites harder.', 10, up({ infuse: { kind: 'storm', rounds: 6, power: 0.5 } }, { infuse: { kind: 'storm', rounds: 6, power: 0.6 } }, { infuse: { kind: 'storm', rounds: 7, power: 0.7 } })),
-  'spl-hunger': pas('Hungry Blade', 'A crit heals you 2% of your HP, a rank.', { critHeal: 0.02 }),
-  'spl-avatar': act('Avatar of War', 'Once a fight: for a while, every hit lands far harder.', 12, [{ attackUp: { rounds: 5, mult: 1.6 } }], { oncePerFight: true }),
+  'spl-shift': act('Shift', 'Spend 2 Arcana: change stance and strike in the same turn. Leaving Frost shatters it: a lesser foe is stunned, a greater one loses its wind-up. Leaving Storm lets it go: a far harder hit.', 4, up({ power: 1.2, melee: true, shift: 1.5 }, { power: 1.4, shift: 1.6 }, { power: 1.6, shift: 1.7 }), { meter: 2 }),
+  'spl-grounded': pas('Grounded', 'In the Storm stance, a second strike gives a point of Arcana. Once a round.', { stormMeter: true }, 1),
+  'spl-avatar': act('Avatar of War', 'Once a fight: both stances at once for five rounds.', 12, [{ bothBlades: 5 }], { oncePerFight: true }),
   // Rogue / Ninja: swords and daggers, and blood (Robin, 2026-11-03: "its main thing being blood. Blood is an effect where your blade gets bloody after you have attacked").
   'blood-on-the-blade': pas('Blood on the Blade', 'With a blade, each attack that lands leaves a drop of blood on it, up to three. Ninja skills spend it.', { blood: 3 }, 1),
   'blood-finale': pas('Blood Finale', 'Grand Finale spends your blood: each drop opens a bleed of 12% of your attack for three rounds, a rank.', { bloodFinale: 0.12 }),
@@ -373,7 +377,7 @@ for (const [classId, trees] of Object.entries(TALENTS)) {
 // The skills tied to a weapon (Robin, 2026-11-03: "Skills that are obvious weapon focused ... only usable when correct weapon equipped").
 const NEEDS = { shield: ['shield-bash', 'shield-wall', 'shield-slam', 'kni-charge', 'kni-rampart'], staff: ['meteor', 'wiz-firestorm'], bow: ['volley', 'aimed-shot', 'rain-arrows', 'ran-pin', 'ran-snipe', 'ran-barrage', 'snare'], dagger: ['poison-coat'] };
 for (const [need, ids] of Object.entries(NEEDS)) for (const id of ids) A[id] = { ...A[id], needs: [need] };
-for (const id of ['frost-blade', 'storm-blade', 'spl-thrust', 'arc-slash', 'spl-whirl', 'spl-tempest']) A[id] = { ...A[id], needs: ['wand', 'sword'] };
+for (const id of ['frost-blade', 'storm-blade', 'spl-thrust', 'arc-slash', 'spl-whirl', 'spl-shift']) A[id] = { ...A[id], needs: ['wand', 'sword'] };
 delete A.shuriken;
 // Spells cost more, so Overflow is how a Magician keeps casting (Robin, 2026-11-03: "make spells cost more to encourage using the
 // overflow to get mana back"): half as much again, Overflow itself free.

@@ -65,7 +65,11 @@ function rankLine(r: AbilityRank): string {
   if (r.skip) bits.push(`${r.skip} turns lost`);
   if (r.attackUp) bits.push(`${pct(r.attackUp.mult - 1)} harder for ${r.attackUp.rounds} rounds`);
   if (r.regen) bits.push(`${pct(r.regen.share)} of HP a round for ${r.regen.rounds}`);
-  if (r.infuse) bits.push(`${pct(r.infuse.power)} harder for ${r.infuse.rounds} rounds`);
+  if (r.infuse) bits.push(r.infuse.stance ? `${pct(r.infuse.power)} harder${r.infuse.mult ? `, its blows ${pct(1 - r.infuse.mult)} softer` : ''}${r.infuse.barrier ? `, a barrier of ${pct(r.infuse.barrier)} of HP a hit` : ''}${r.infuse.chance ? `, ${pct(r.infuse.chance)} second strike` : ''}` : `${pct(r.infuse.power)} harder for ${r.infuse.rounds} rounds`);
+  if (r.combust) bits.push(`the burn ${r.combust.mult} times as hard, ${r.combust.rounds} rounds longer`);
+  if (r.shift) bits.push(`${pct(r.shift - 1)} harder leaving Storm`);
+  if (r.bothBlades) bits.push(`both stances for ${r.bothBlades} rounds`);
+  if (r.holy) bits.push('15% harder a charge of Light');
   if (r.dance) bits.push(`${pct(r.dance.chance)} dodge for ${r.dance.rounds} rounds`);
   if (r.coat) bits.push(`${r.coat.hits} poisoned hits`);
   if (r.clone) bits.push(`${pct(r.clone.power)} again for ${r.clone.rounds} rounds`);

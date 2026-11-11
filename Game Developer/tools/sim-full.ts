@@ -318,9 +318,12 @@ function play(build: Build, seed: string): Result {
       const known = (t: string): string[] => treeNodes(t).filter((id) => c.abilities[id] && !ABILITIES[id]!.rule).reverse();
       // One banner is carried, the newest, and Hold the Line stays home: a sensible Warlord keeps its hard hits (2026-11-10).
       let banners = 0;
+      let stances = 0;
       const sensible = (id: string): boolean => {
         const r0 = ABILITIES[id]!.ranks[0]!;
         if (r0.valorUp || r0.allBanners) return false;
+        // One stance is carried: Shift brings the other (2026-11-11).
+        if (r0.infuse) return ++stances === 1;
         return !r0.banner || ++banners === 1;
       };
       const want = [...new Set([...known(main), ...(second ? known(second) : []), ...cls.core.filter((id) => c.abilities[id])])].filter(sensible).slice(0, carriedLimit(c.level));

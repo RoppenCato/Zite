@@ -1,6 +1,6 @@
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 46;
+export const STATE_VERSION = 47;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
@@ -459,7 +459,17 @@ export interface Fight {
   /** The next spell lands this much harder (Overflow). */
   nextSpell: number;
   regen: { rounds: number; share: number } | null;
-  infuse: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number } | null;
+  /** The Spellsword's blade: a stance (`stance`) stands for the whole fight (Robin, 2026-11-11); an older one counts its rounds down. */
+  infuse: { kind: 'ice' | 'storm'; rounds: number; power: number; mult?: number; chance?: number; stance?: boolean; barrier?: number } | null;
+  /** Avatar of War: both stances for these rounds. The first hit after a change of stance (Changing Winds). */
+  both?: { rounds: number } | null;
+  shifted?: boolean;
+  /** More spells in the air than the first (`windup`): a Falling Star and a Firestorm can be on their way together. */
+  air?: { name: string; power: number; rounds: number }[];
+  /** The Cleric's charges of Light, up to three: a heal gives one, a holy hit spends them all. */
+  light?: number;
+  /** Hot Streak: the next spell costs this share less. */
+  cheap?: number;
   /** Shadow Dance: this round's blow in full, then `rounds` rounds at this dodge. */
   dance: { exposed: boolean; rounds: number; chance: number } | null;
   coat: { hits: number; power: number; rounds: number } | null;
@@ -719,7 +729,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp'; rounds: number; name?: string }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp' | 'light' | 'stance' | 'both'; rounds: number; name?: string }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */

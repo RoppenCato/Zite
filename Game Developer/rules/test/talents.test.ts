@@ -223,10 +223,114 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'warrior' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'holy-strike': 3, 'pal-devotion': 3, 'paladin-oath': 1, reckless: 2 }, carried: ['heavy-blow', 'execute', 'holy-strike', 'reckless'] };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 45, characters: { [P]: c } })))!;
-    expect(up.version).toBe(46);
+    expect(up.version).toBe(47);
     expect(Object.keys(me(up).abilities).sort()).toEqual(['execute', 'heavy-blow', 'reckless']);
     expect(me(up).carried).toEqual(['heavy-blow', 'execute', 'reckless']);
     expect(pointsFree(me(up))).toBe(19 - 2);
+  });
+
+  // The Magician: timing, Light and two stances (Robin, 2026-11-11).
+  const ICE = { kind: 'ice', stance: true, rounds: 0, power: 0.25, mult: 0.8, barrier: 0.03 };
+  const STORM = { kind: 'storm', stance: true, rounds: 0, power: 0.45, chance: 0.3 };
+  it('two spells can be in the air, and land in the same round', () => {
+    const s0 = withFight(fighter('mage', { meteor: 1, 'wiz-firestorm': 1 }), { meter: 5 });
+    const s = { ...s0, characters: { [P]: { ...me(s0), mana: stats(me(s0)).maxMana, equipment: { ...me(s0).equipment, weapon: { ...me(s0).equipment.weapon!, kind: 'staff' }, shield: null } } } };
+    const one = round(s, 'none', use('meteor')).state;
+    const twoR = round(one, 'none', use('wiz-firestorm'));
+    const two = twoR.state;
+    expect(me(two).fight!.windup).toMatchObject({ name: 'Falling Star', rounds: 1 });
+    expect(me(two).fight!.air).toMatchObject([{ name: 'Firestorm', rounds: 1 }]);
+    const landed = round(two, 'none').events.filter((e) => e.type === 'hit' && e.by === 'player').map((e) => (e as { move: string }).move);
+    expect(landed).toEqual(expect.arrayContaining(['Falling Star', 'Firestorm']));
+  });
+  it('Conjunction: two landing together hit harder, one alone does not', () => {
+    const both = { windup: { name: 'A', power: 2, rounds: 1 }, air: [{ name: 'B', power: 2, rounds: 1 }] };
+    const alone = { windup: { name: 'A', power: 2, rounds: 1 } };
+    expect(dealt(withFight(fighter('mage', { 'wiz-conjunction': 3 }), both))).toBeGreaterThan(dealt(withFight(fighter('mage', {}), both)) * 1.1);
+    expect(dealt(withFight(fighter('mage', { 'wiz-conjunction': 3 }), alone))).toBe(dealt(withFight(fighter('mage', {}), alone)));
+    // A spell cast as one lands counts as the second.
+    const cast = withFight(fighter('mage', { 'wiz-conjunction': 3, fireball: 1 }), alone);
+    expect(dealt(cast, use('fireball'))).toBeGreaterThan(dealt(withFight(fighter('mage', { fireball: 1 }), alone), use('fireball')) * 1.1);
+  });
+  it('Combust: the fire burns twice as hard and two rounds longer, for 2 Arcana', () => {
+    const s = withFight(fighter('mage', { 'wiz-combust': 1 }), { meter: 2 }, { burn: { rounds: 3, damage: 100 } });
+    const after = me(round(s, 'none', use('wiz-combust')).state).fight!;
+    expect(after.enemy.burn).toMatchObject({ damage: 200, rounds: 4 });
+    expect(round(withFight(s, { meter: 1 }), 'none', use('wiz-combust')).events.some((e) => e.type === 'rejected')).toBe(true);
+  });
+  it('Ward of Ash: the Ward stops more while the foe burns, and only then', () => {
+    const hp = (a: GameState) => me(a).hp;
+    const burning = { burn: { rounds: 3, damage: 1 } };
+    expect(total(withFight(fighter('mage', { 'wiz-ash': 3 }), {}, burning), 'block', hp)).toBeGreaterThan(total(withFight(fighter('mage', {}), {}, burning), 'block', hp));
+    expect(total(fighter('mage', { 'wiz-ash': 3 }), 'block', hp)).toBe(total(fighter('mage', {}), 'block', hp));
+  });
+  it('Hot Streak: a spell that crits makes the next one cheaper', () => {
+    const s = withFight(fighter('mage', { 'wiz-streak': 2, fireball: 1 }), { sureCrit: 1 });
+    const paid = (r: { events: { type: string }[] }) => -(r.events.find((e) => e.type === 'mana') as unknown as { delta: number }).delta;
+    const first = round(s, 'none', use('fireball'));
+    expect(me(first.state).fight!.cheap).toBeCloseTo(0.3);
+    const second = round(withFight(first.state, { sureCrit: 0 }), 'none', use('fireball'));
+    expect(paid(second)).toBeLessThan(paid(first));
+  });
+  it('Light: a heal charges it, a holy hit spends it and lands harder', () => {
+    const s = fighter('mage', { mend: 1, smite: 1 });
+    expect(me(round(s, 'none', use('mend')).state).fight!.light).toBe(1);
+    expect(dealt(withFight(s, { light: 3 }), use('smite'))).toBeGreaterThan(dealt(s, use('smite')) * 1.35);
+    expect(me(round(withFight(s, { light: 3 }), 'none', use('smite')).state).fight!.light).toBe(0);
+    // Bright Light: each charge worth more.
+    expect(dealt(withFight(fighter('mage', { smite: 1, 'cle-bright': 3 }), { light: 3 }), use('smite'))).toBeGreaterThan(dealt(withFight(s, { light: 3 }), use('smite')) * 1.08);
+  });
+  it('Brimming: healing past full is a second charge', () => {
+    const full = fighter('mage', { mend: 1, 'cle-brimming': 3 }, 1);
+    expect(me(round(withFight(full, { skip: 1 }), 'none', use('mend')).state).fight!.light).toBe(2);
+  });
+  it('Shielded Faith: less taken behind a barrier', () => {
+    const left = (a: GameState) => me(a).fight?.barrier ?? 0;
+    const behind = { barrier: 5000 };
+    expect(total(withFight(fighter('mage', { 'cle-faith': 3 }), behind), 'none', left)).toBeGreaterThan(total(withFight(fighter('mage', {}), behind), 'none', left));
+  });
+  it('a stance stands for the whole fight, and the other takes its place', () => {
+    const s = fighter('mage', { 'frost-blade': 1, 'storm-blade': 1 });
+    let after = round(s, 'none', use('frost-blade')).state;
+    for (let i = 0; i < 8; i++) after = round(withFight(after, {}, { hp: 5000 }), 'block', { kind: 'attack' }, 'r' + i).state;
+    expect(me(after).fight!.infuse).toMatchObject({ kind: 'ice', stance: true });
+    expect(me(round(after, 'none', use('storm-blade')).state).fight!.infuse).toMatchObject({ kind: 'storm', stance: true });
+  });
+  it('Frost gives a little barrier a hit, and Rime one a Block, up to a share of HP', () => {
+    const s = withFight(fighter('mage', { 'spl-rime': 3 }), { infuse: ICE, skip: 1 });
+    const maxHp = stats(me(s)).maxHp;
+    expect(me(round(s, 'block').state).fight!.barrier).toBe(Math.round(maxHp * 0.09) + Math.round(maxHp * 0.03));
+    expect(me(round(withFight(s, { barrier: Math.round(maxHp * 0.3) }), 'block').state).fight!.barrier).toBe(Math.round(maxHp * 0.3));
+  });
+  it('Shift: leaving Frost stuns a lesser foe, leaving Storm lands far harder', () => {
+    const s = (blade: unknown) => withFight(fighter('mage', { 'spl-shift': 1, 'frost-blade': 1 }), { meter: 2, infuse: blade });
+    const fromFrost = round(s(ICE), 'none', use('spl-shift'));
+    expect(me(fromFrost.state).fight!.infuse).toMatchObject({ kind: 'storm' });
+    expect(fromFrost.events.some((e) => e.type === 'skipped' && e.reason === 'stunned')).toBe(true);
+    expect(me(round(s(STORM), 'none', use('spl-shift')).state).fight!.infuse).toMatchObject({ kind: 'ice' });
+    expect(dealt(s(STORM), use('spl-shift'))).toBeGreaterThan(dealt(s(null), use('spl-shift')) * 1.15);
+  });
+  it('Changing Winds, Static and Grounded', () => {
+    expect(dealt(withFight(fighter('mage', { 'spl-winds': 3 }), { shifted: true }))).toBeGreaterThan(dealt(withFight(fighter('mage', {}), { shifted: true })) * 1.2);
+    expect(dealt(withFight(fighter('mage', { 'spl-static': 3 }), { infuse: STORM }))).toBeGreaterThan(dealt(withFight(fighter('mage', {}), { infuse: STORM })));
+    const sure = { infuse: { ...STORM, chance: 1 } };
+    expect(me(round(withFight(fighter('mage', { 'spl-grounded': 1 }), sure), 'none').state).fight!.meter).toBe(2);
+    expect(me(round(withFight(fighter('mage', {}), sure), 'none').state).fight!.meter).toBe(1);
+  });
+  it('Avatar of War: both stances at once for five rounds', () => {
+    const s = fighter('mage', { 'spl-avatar': 1 });
+    expect(me(round(s, 'none', use('spl-avatar')).state).fight!.both).toEqual({ rounds: 4 });
+    expect(dealt(withFight(s, { both: { rounds: 3 } }))).toBeGreaterThan(dealt(withFight(s, { infuse: STORM })) * 1.15);
+  });
+  it('a save from before the new Magician: the talents that went give their points back', () => {
+    const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'mage' });
+    const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, fireball: 2, 'wiz-focus': 3, 'spl-tempest': 2 }, carried: ['arcane-bolt', 'overflow', 'fireball', 'spl-tempest'] };
+    const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 46, characters: { [P]: c } })))!;
+    expect(up.version).toBe(47);
+    expect(me(up).abilities['wiz-focus']).toBeUndefined();
+    expect(me(up).abilities['spl-tempest']).toBeUndefined();
+    expect(me(up).abilities.fireball).toBe(2);
+    expect(me(up).carried).toEqual(['arcane-bolt', 'overflow', 'fireball']);
   });
 
   it('no two talents of a class share a name', () => {

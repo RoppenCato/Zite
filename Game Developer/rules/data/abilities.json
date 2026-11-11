@@ -462,20 +462,23 @@
   "smite": {
     "name": "Smite",
     "classId": "mage",
-    "text": "Holy light: a strong hit that heals you a little.",
+    "text": "Holy light: a strong hit that heals you a little. It spends your Light.",
     "mana": 9,
     "level": 2,
     "ranks": [
       {
         "power": 1.6,
+        "holy": true,
         "healDealt": 0.25
       },
       {
         "power": 1.8,
+        "holy": true,
         "healDealt": 0.25
       },
       {
         "power": 2,
+        "holy": true,
         "healDealt": 0.35
       }
     ]
@@ -498,7 +501,7 @@
   "mend": {
     "name": "Mend",
     "classId": "mage",
-    "text": "Heal a share of your HP, and clear poison and weakness.",
+    "text": "Heal a share of your HP, and clear poison and weakness. A charge of Light.",
     "mana": 11,
     "level": 9,
     "ranks": [
@@ -519,20 +522,23 @@
   "judgement-day": {
     "name": "Judgement Day",
     "classId": "mage",
-    "text": "A blast of light that grows with all you have healed this fight.",
+    "text": "A blast of light that grows with all you have healed this fight. It spends your Light.",
     "mana": 14,
     "level": 17,
     "ranks": [
       {
         "power": 1.6,
+        "holy": true,
         "healedPower": 1
       },
       {
         "power": 1.8,
+        "holy": true,
         "healedPower": 1.2
       },
       {
         "power": 2,
+        "holy": true,
         "healedPower": 1.4
       }
     ]
@@ -540,32 +546,38 @@
   "frost-blade": {
     "name": "Frost Blade",
     "classId": "mage",
-    "text": "For a few rounds your attacks chill: harder, and its blows weaken.",
+    "text": "A stance for the whole fight: your attacks chill, its blows weaken, and each move of yours that hits gives a small barrier. One stance at a time.",
     "mana": 9,
     "level": 2,
     "ranks": [
       {
         "infuse": {
           "kind": "ice",
-          "rounds": 4,
-          "power": 0.45,
-          "mult": 0.8
+          "stance": true,
+          "rounds": 0,
+          "power": 0.25,
+          "mult": 0.8,
+          "barrier": 0.03
         }
       },
       {
         "infuse": {
           "kind": "ice",
-          "rounds": 5,
-          "power": 0.5,
-          "mult": 0.75
+          "stance": true,
+          "rounds": 0,
+          "power": 0.3,
+          "mult": 0.75,
+          "barrier": 0.04
         }
       },
       {
         "infuse": {
           "kind": "ice",
-          "rounds": 6,
-          "power": 0.55,
-          "mult": 0.7
+          "stance": true,
+          "rounds": 0,
+          "power": 0.35,
+          "mult": 0.7,
+          "barrier": 0.05
         }
       }
     ],
@@ -593,31 +605,34 @@
   "storm-blade": {
     "name": "Storm Blade",
     "classId": "mage",
-    "text": "For a few rounds lightning jumps from your attacks: much harder, and a chance of a second strike.",
+    "text": "A stance for the whole fight: lightning in your attacks, much harder, with a chance of a second strike. No barrier. One stance at a time.",
     "mana": 9,
     "level": 9,
     "ranks": [
       {
         "infuse": {
           "kind": "storm",
-          "rounds": 4,
-          "power": 0.6,
+          "stance": true,
+          "rounds": 0,
+          "power": 0.45,
           "chance": 0.3
         }
       },
       {
         "infuse": {
           "kind": "storm",
-          "rounds": 5,
-          "power": 0.65,
+          "stance": true,
+          "rounds": 0,
+          "power": 0.5,
           "chance": 0.35
         }
       },
       {
         "infuse": {
           "kind": "storm",
-          "rounds": 6,
-          "power": 0.7,
+          "stance": true,
+          "rounds": 0,
+          "power": 0.55,
           "chance": 0.4
         }
       }
@@ -2134,12 +2149,12 @@
     "classId": "mage",
     "level": 2
   },
-  "wiz-focus": {
-    "name": "Focus",
-    "text": "Your spells are 3% stronger a rank.",
+  "wiz-ash": {
+    "name": "Ward of Ash",
+    "text": "While the foe burns, your Ward stops 7% more a rank.",
     "mana": 0,
     "rule": {
-      "spellPower": 1.03
+      "ashWard": 0.07
     },
     "ranks": [
       {},
@@ -2197,10 +2212,10 @@
   },
   "wiz-kindling": {
     "name": "Kindling",
-    "text": "A burning foe takes 6% more a rank.",
+    "text": "A burning foe takes 8% more a rank.",
     "mana": 0,
     "rule": {
-      "burningDamage": 1.06
+      "burningDamage": 1.08
     },
     "ranks": [
       {},
@@ -2210,12 +2225,12 @@
     "classId": "mage",
     "level": 13
   },
-  "wiz-clarity": {
-    "name": "Clarity",
-    "text": "You regain 1% of your mana each round, a rank.",
+  "wiz-conjunction": {
+    "name": "Conjunction",
+    "text": "Two of your spells landing in the same round hit 8% harder a rank.",
     "mana": 0,
     "rule": {
-      "manaRegen": 0.01
+      "conjunction": 1.08
     },
     "ranks": [
       {},
@@ -2225,48 +2240,40 @@
     "classId": "mage",
     "level": 17
   },
-  "wiz-pillar": {
-    "name": "Pillar of Fire",
-    "text": "Three bursts of flame.",
-    "mana": 18,
+  "wiz-combust": {
+    "name": "Combust",
+    "text": "Spend 2 Arcana: the fire on the foe burns twice as hard, and longer.",
+    "mana": 5,
     "ranks": [
       {
-        "power": 2.4,
-        "hits": 3,
-        "split": true,
-        "burn": {
-          "rounds": 3,
-          "power": 0.3
+        "combust": {
+          "mult": 2,
+          "rounds": 2
         }
       },
       {
-        "power": 2.8,
-        "hits": 3,
-        "split": true,
-        "burn": {
-          "rounds": 3,
-          "power": 0.3
+        "combust": {
+          "mult": 2.3,
+          "rounds": 2
         }
       },
       {
-        "power": 3.2,
-        "hits": 3,
-        "split": true,
-        "burn": {
-          "rounds": 3,
-          "power": 0.3
+        "combust": {
+          "mult": 2.6,
+          "rounds": 3
         }
       }
     ],
+    "meter": 2,
     "classId": "mage",
     "level": 21
   },
-  "wiz-sear": {
-    "name": "Searing Crits",
-    "text": "Your crits hit 10% harder a rank.",
+  "wiz-streak": {
+    "name": "Hot Streak",
+    "text": "A crit with a spell makes your next spell cost 15% less a rank.",
     "mana": 0,
     "rule": {
-      "critPower": 0.1
+      "hotStreak": 0.15
     },
     "ranks": [
       {},
@@ -2278,8 +2285,8 @@
   },
   "wiz-firestorm": {
     "name": "Firestorm",
-    "text": "A round to call it, then the sky falls and the ground burns.",
-    "mana": 24,
+    "text": "Spend 3 Arcana: a round to call it, then the sky falls and the ground burns.",
+    "mana": 9,
     "ranks": [
       {
         "windup": 1,
@@ -2306,6 +2313,7 @@
         }
       }
     ],
+    "meter": 3,
     "classId": "mage",
     "level": 25,
     "needs": [
@@ -2360,12 +2368,12 @@
     "classId": "mage",
     "level": 2
   },
-  "cle-calm": {
-    "name": "Calm Mind",
-    "text": "You regain 1% of your mana each round, a rank.",
+  "cle-brimming": {
+    "name": "Brimming",
+    "text": "Healing past full gives a charge of Light, and 1% of your mana a rank. Once a round.",
     "mana": 0,
     "rule": {
-      "manaRegen": 0.01
+      "brimming": 0.01
     },
     "ranks": [
       {},
@@ -2392,7 +2400,7 @@
   },
   "cle-renew": {
     "name": "Renew",
-    "text": "You heal a share of your HP each round for a while.",
+    "text": "You heal a share of your HP each round for a while. A charge of Light.",
     "mana": 11,
     "ranks": [
       {
@@ -2432,12 +2440,12 @@
     "classId": "mage",
     "level": 13
   },
-  "cle-ward": {
-    "name": "Holy Ward",
-    "text": "You take 3% less a rank.",
+  "cle-faith": {
+    "name": "Shielded Faith",
+    "text": "While a barrier holds, you take 3% less a rank.",
     "mana": 0,
     "rule": {
-      "damageTaken": 0.97
+      "barrierGuard": 0.97
     },
     "ranks": [
       {},
@@ -2449,19 +2457,22 @@
   },
   "cle-lance": {
     "name": "Lance of Light",
-    "text": "A beam that heals you for part of it.",
+    "text": "A beam that heals you for part of it. It spends your Light.",
     "mana": 14,
     "ranks": [
       {
         "power": 2.1,
+        "holy": true,
         "healDealt": 0.4
       },
       {
         "power": 2.3,
+        "holy": true,
         "healDealt": 0.4
       },
       {
         "power": 2.5,
+        "holy": true,
         "healDealt": 0.5
       }
     ],
@@ -2485,8 +2496,8 @@
   },
   "cle-sanctuary": {
     "name": "Sanctuary",
-    "text": "A great barrier, and cured of everything.",
-    "mana": 18,
+    "text": "Spend 3 Arcana: a great barrier, and cured of everything.",
+    "mana": 0,
     "ranks": [
       {
         "barrierShare": 0.45,
@@ -2501,15 +2512,16 @@
         "cure": true
       }
     ],
+    "meter": 3,
     "classId": "mage",
     "level": 25
   },
-  "cle-zeal": {
-    "name": "Holy Zeal",
-    "text": "Your spells are 3% stronger a rank.",
+  "cle-bright": {
+    "name": "Bright Light",
+    "text": "Each charge of Light is worth 2% more a rank.",
     "mana": 0,
     "rule": {
-      "spellPower": 1.03
+      "lightPower": 0.02
     },
     "ranks": [
       {},
@@ -2521,7 +2533,7 @@
   },
   "cle-ascend": {
     "name": "Ascension",
-    "text": "Once a fight: healed of most wounds, and your hits land far harder for a while.",
+    "text": "Once a fight: healed of most wounds, a charge of Light, and your hits land far harder for a while.",
     "mana": 18,
     "ranks": [
       {
@@ -2536,12 +2548,12 @@
     "classId": "mage",
     "level": 30
   },
-  "spl-edge": {
-    "name": "Honed Edge",
-    "text": "3% more attack a rank.",
+  "spl-rime": {
+    "name": "Rime",
+    "text": "In the Frost stance, a Block gives a barrier of 3% of your HP a rank.",
     "mana": 0,
     "rule": {
-      "attackMult": 1.03
+      "frostBlock": 0.03
     },
     "ranks": [
       {},
@@ -2567,12 +2579,12 @@
     "classId": "mage",
     "level": 5
   },
-  "spl-eye": {
-    "name": "Duelling Eye",
-    "text": "2% more crit a rank.",
+  "spl-static": {
+    "name": "Static",
+    "text": "In the Storm stance, 3% more crit a rank.",
     "mana": 0,
     "rule": {
-      "crit": 0.02
+      "stormCrit": 0.03
     },
     "ranks": [
       {},
@@ -2622,12 +2634,12 @@
     "classId": "mage",
     "level": 13
   },
-  "spl-parry": {
-    "name": "Parry",
-    "text": "2% more dodge a rank.",
+  "spl-winds": {
+    "name": "Changing Winds",
+    "text": "Your first hit after a change of stance lands 8% harder a rank.",
     "mana": 0,
     "rule": {
-      "dodge": 0.02
+      "shiftDamage": 1.08
     },
     "ranks": [
       {},
@@ -2682,33 +2694,28 @@
     "classId": "mage",
     "level": 21
   },
-  "spl-tempest": {
-    "name": "Tempest Blade",
-    "text": "The blade holds the storm longer, and bites harder.",
-    "mana": 15,
+  "spl-shift": {
+    "name": "Shift",
+    "text": "Spend 2 Arcana: change stance and strike in the same turn. Leaving Frost shatters it: a lesser foe is stunned, a greater one loses its wind-up. Leaving Storm lets it go: a far harder hit.",
+    "mana": 6,
     "ranks": [
       {
-        "infuse": {
-          "kind": "storm",
-          "rounds": 6,
-          "power": 0.5
-        }
+        "power": 1.2,
+        "melee": true,
+        "shift": 1.5
       },
       {
-        "infuse": {
-          "kind": "storm",
-          "rounds": 6,
-          "power": 0.6
-        }
+        "power": 1.4,
+        "melee": true,
+        "shift": 1.6
       },
       {
-        "infuse": {
-          "kind": "storm",
-          "rounds": 7,
-          "power": 0.7
-        }
+        "power": 1.6,
+        "melee": true,
+        "shift": 1.7
       }
     ],
+    "meter": 2,
     "classId": "mage",
     "level": 25,
     "needs": [
@@ -2716,16 +2723,14 @@
       "sword"
     ]
   },
-  "spl-hunger": {
-    "name": "Hungry Blade",
-    "text": "A crit heals you 2% of your HP, a rank.",
+  "spl-grounded": {
+    "name": "Grounded",
+    "text": "In the Storm stance, a second strike gives a point of Arcana. Once a round.",
     "mana": 0,
     "rule": {
-      "critHeal": 0.02
+      "stormMeter": true
     },
     "ranks": [
-      {},
-      {},
       {}
     ],
     "classId": "mage",
@@ -2733,14 +2738,11 @@
   },
   "spl-avatar": {
     "name": "Avatar of War",
-    "text": "Once a fight: for a while, every hit lands far harder.",
+    "text": "Once a fight: both stances at once for five rounds.",
     "mana": 18,
     "ranks": [
       {
-        "attackUp": {
-          "rounds": 5,
-          "mult": 1.6
-        }
+        "bothBlades": 5
       }
     ],
     "oncePerFight": true,
