@@ -1,0 +1,490 @@
+{
+ "frames": {
+  "wolf/stand/0002": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 191,
+    "h": 136
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 136
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 136
+   },
+   "pivot": {
+    "x": 0.5288,
+    "y": 0.9779
+   }
+  },
+  "wolf/attack1/0002": {
+   "frame": {
+    "x": 195,
+    "y": 2,
+    "w": 201,
+    "h": 135
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 201,
+    "h": 135
+   },
+   "sourceSize": {
+    "w": 201,
+    "h": 135
+   },
+   "pivot": {
+    "x": 0.4826,
+    "y": 0.9407
+   }
+  },
+  "wolf/stand/0001": {
+   "frame": {
+    "x": 398,
+    "y": 2,
+    "w": 192,
+    "h": 134
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 134
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 134
+   },
+   "pivot": {
+    "x": 0.5313,
+    "y": 0.9776
+   }
+  },
+  "wolf/stand/0003": {
+   "frame": {
+    "x": 592,
+    "y": 2,
+    "w": 192,
+    "h": 134
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 134
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 134
+   },
+   "pivot": {
+    "x": 0.5313,
+    "y": 0.9776
+   }
+  },
+  "wolf/attack1/0001": {
+   "frame": {
+    "x": 786,
+    "y": 2,
+    "w": 194,
+    "h": 134
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 194,
+    "h": 134
+   },
+   "sourceSize": {
+    "w": 194,
+    "h": 134
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9552
+   }
+  },
+  "wolf/stand/0004": {
+   "frame": {
+    "x": 2,
+    "y": 140,
+    "w": 192,
+    "h": 132
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 132
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 132
+   },
+   "pivot": {
+    "x": 0.5313,
+    "y": 0.9773
+   }
+  },
+  "wolf/attack1/0005": {
+   "frame": {
+    "x": 196,
+    "y": 140,
+    "w": 198,
+    "h": 131
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 198,
+    "h": 131
+   },
+   "sourceSize": {
+    "w": 198,
+    "h": 131
+   },
+   "pivot": {
+    "x": 0.5455,
+    "y": 1
+   }
+  },
+  "wolf/attack1/0006": {
+   "frame": {
+    "x": 396,
+    "y": 140,
+    "w": 191,
+    "h": 131
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 191,
+    "h": 131
+   },
+   "sourceSize": {
+    "w": 191,
+    "h": 131
+   },
+   "pivot": {
+    "x": 0.5288,
+    "y": 0.9771
+   }
+  },
+  "wolf/attack1/0004": {
+   "frame": {
+    "x": 589,
+    "y": 140,
+    "w": 210,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 210,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 210,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.6333,
+    "y": 1.0078
+   }
+  },
+  "wolf/attack1/0003": {
+   "frame": {
+    "x": 801,
+    "y": 140,
+    "w": 220,
+    "h": 125
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 220,
+    "h": 125
+   },
+   "sourceSize": {
+    "w": 220,
+    "h": 125
+   },
+   "pivot": {
+    "x": 0.5909,
+    "y": 1.152
+   }
+  }
+ },
+ "meta": {
+  "image": "wolf.png",
+  "size": {
+   "w": 1024,
+   "h": 512
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "stand": {
+   "delay": 140,
+   "loop": true,
+   "frames": [
+    {
+     "name": "wolf/stand/0001",
+     "w": 192,
+     "h": 134,
+     "origin": {
+      "x": 102,
+      "y": 131
+     },
+     "delay": 140,
+     "lt": {
+      "x": -102,
+      "y": -131
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -131
+     }
+    },
+    {
+     "name": "wolf/stand/0002",
+     "w": 191,
+     "h": 136,
+     "origin": {
+      "x": 101,
+      "y": 133
+     },
+     "delay": 140,
+     "lt": {
+      "x": -101,
+      "y": -133
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -133
+     }
+    },
+    {
+     "name": "wolf/stand/0003",
+     "w": 192,
+     "h": 134,
+     "origin": {
+      "x": 102,
+      "y": 131
+     },
+     "delay": 140,
+     "lt": {
+      "x": -102,
+      "y": -131
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -131
+     }
+    },
+    {
+     "name": "wolf/stand/0004",
+     "w": 192,
+     "h": 132,
+     "origin": {
+      "x": 102,
+      "y": 129
+     },
+     "delay": 140,
+     "lt": {
+      "x": -102,
+      "y": -129
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -129
+     }
+    }
+   ]
+  },
+  "attack1": {
+   "delay": 80,
+   "loop": false,
+   "frames": [
+    {
+     "name": "wolf/attack1/0001",
+     "w": 194,
+     "h": 134,
+     "origin": {
+      "x": 97,
+      "y": 128
+     },
+     "delay": 80,
+     "lt": {
+      "x": -97,
+      "y": -128
+     },
+     "rb": {
+      "x": 97,
+      "y": 6
+     },
+     "head": {
+      "x": 0,
+      "y": -128
+     }
+    },
+    {
+     "name": "wolf/attack1/0002",
+     "w": 201,
+     "h": 135,
+     "origin": {
+      "x": 97,
+      "y": 127
+     },
+     "delay": 90,
+     "lt": {
+      "x": -97,
+      "y": -127
+     },
+     "rb": {
+      "x": 104,
+      "y": 8
+     },
+     "head": {
+      "x": 0,
+      "y": -127
+     }
+    },
+    {
+     "name": "wolf/attack1/0003",
+     "w": 220,
+     "h": 125,
+     "origin": {
+      "x": 130,
+      "y": 144
+     },
+     "delay": 50,
+     "lt": {
+      "x": -130,
+      "y": -144
+     },
+     "rb": {
+      "x": 90,
+      "y": -19
+     },
+     "head": {
+      "x": 0,
+      "y": -144
+     }
+    },
+    {
+     "name": "wolf/attack1/0004",
+     "w": 210,
+     "h": 128,
+     "origin": {
+      "x": 133,
+      "y": 129
+     },
+     "delay": 120,
+     "lt": {
+      "x": -133,
+      "y": -129
+     },
+     "rb": {
+      "x": 77,
+      "y": -1
+     },
+     "head": {
+      "x": 0,
+      "y": -129
+     }
+    },
+    {
+     "name": "wolf/attack1/0005",
+     "w": 198,
+     "h": 131,
+     "origin": {
+      "x": 108,
+      "y": 131
+     },
+     "delay": 70,
+     "lt": {
+      "x": -108,
+      "y": -131
+     },
+     "rb": {
+      "x": 90,
+      "y": 0
+     },
+     "head": {
+      "x": 0,
+      "y": -131
+     }
+    },
+    {
+     "name": "wolf/attack1/0006",
+     "w": 191,
+     "h": 131,
+     "origin": {
+      "x": 101,
+      "y": 128
+     },
+     "delay": 80,
+     "lt": {
+      "x": -101,
+      "y": -128
+     },
+     "rb": {
+      "x": 90,
+      "y": 3
+     },
+     "head": {
+      "x": 0,
+      "y": -128
+     }
+    }
+   ]
+  }
+ }
+}

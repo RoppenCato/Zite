@@ -1,6 +1,7 @@
+import type { PetData } from './data.ts';
 // The shape of the game. Nothing here renders, talks to a socket or reads a clock.
 
-export const STATE_VERSION = 48;
+export const STATE_VERSION = 49;
 
 /** The kinds of spot (Robin, 2026-10-31): towns and shops, the wilds, chests, springs, shrines, and bosses on the board. */
 export type SpaceKind = 'town' | 'shop' | 'normal' | 'chest' | 'potion' | 'spell' | 'church' | 'boss' | 'board' | 'gear' | 'arena' | 'door' | 'dream';
@@ -414,6 +415,18 @@ export interface Enemy {
   regrown?: number;
 }
 
+/** A pet beside the Hunter: the ability's name, and what its rank gave. */
+export interface Pet extends PetData {
+  name: string;
+}
+
+/** A trap lying in wait: the ability and rank it was laid at, and the rounds it has waited. */
+export interface Trap {
+  ability: string;
+  rank: number;
+  age: number;
+}
+
 export interface Fight {
   enemy: Enemy;
   /** The round about to be fought, from 1. */
@@ -441,12 +454,16 @@ export interface Fight {
   sureCrit: number;
   /** A spell in the air (Meteor): it lands when `rounds` reaches 0. */
   windup: { name: string; power: number; rounds: number } | null;
-  /** A companion striking at the end of each round. */
-  companion: { name: string; rounds: number; power: number; hits?: number } | null;
+  /** The Beastmaster's pets (Robin, 2026-11-12), oldest first: they stay for the fight and strike when the Hunter does damage. */
+  pets?: Pet[];
+  /** Rounds a Stampede still runs: every pet strikes twice. */
+  stampede?: number;
+  /** Survival's traps lying in wait, oldest first: one springs each time the foe attacks. */
+  traps?: Trap[];
+  /** Follow Up: the next hit this much harder, after a trap sprang. */
+  follow?: number;
   /** The next `hits` player hits land `mult` times as hard. */
   mark: { hits: number; mult: number } | null;
-  /** Enemy wind-ups that will fail. */
-  trap: number;
   /** Enemy turns lost to Time Warp: nothing resists it. */
   skip: number;
   /** The player's poison and weakening, from the enemy's moves. */
@@ -480,8 +497,6 @@ export interface Fight {
   lurk?: number;
   blockUp: { rounds: number; mult: number } | null;
   thornsUp: { rounds: number; share: number } | null;
-  counterUp: { rounds: number; chance: number } | null;
-  spike: { rounds: number; power: number } | null;
   clone: { rounds: number; power: number; keepBlood?: boolean } | null;
   /** Last Light: the next fatal blow leaves this share of HP. */
   guardian: number;
@@ -732,7 +747,7 @@ export type GameEvent =
   | { type: 'skipped'; action: string; player: string; by: 'enemy'; reason: 'stunned' | 'warped' | 'trapped' }
   /** A mini-boss or a boss shrugged an effect off; or Ironbrow shrugged one off the player. */
   | { type: 'resisted'; action: string; player: string; kind: 'stunned' | 'weakened' | 'poison' | 'crit' }
-  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'companion' | 'windup' | 'skip' | 'trap' | 'sureCrit' | 'banner' | 'banners' | 'valorUp' | 'light' | 'stance' | 'both' | 'dark' | 'reaction'; rounds: number; name?: string }
+  | { type: 'effect'; action: string; player: string; target: 'player' | 'enemy'; kind: 'burn' | 'bleed' | 'sunder' | 'interrupt' | 'guardian' | 'clone' | 'attackUp' | 'spellUp' | 'weakened' | 'stunned' | 'poison' | 'barrier' | 'evade' | 'armoured' | 'mark' | 'pet' | 'stampede' | 'windup' | 'skip' | 'trap' | 'sprung' | 'sureCrit' | 'banner' | 'banners' | 'valorUp' | 'light' | 'stance' | 'both' | 'dark' | 'reaction'; rounds: number; name?: string }
   /** A poison bit; `hp` is what it left. */
   | { type: 'poisoned'; action: string; player: string; target: 'player' | 'enemy'; damage: number; hp: number; burn?: boolean; storm?: boolean; bleed?: boolean }
   /** What the enemy will do next round. */

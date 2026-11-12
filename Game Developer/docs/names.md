@@ -99,7 +99,7 @@ Themed on 2026-11-01 (mine, at Robin's ask). The ids (`warrior`, `heavy-blow`, â
 | Warrior | Blocks to build Valor, then hits hard. Trees: Warlord, Berserker, Knight. | Valor: builds when you Block. |
 | Magician | Arcane Ward, weak staff, strong spells. Trees: Wizard (fire and timing), Cleric (the healer, Light), Spellsword (Frost and Storm stances). | Arcana: builds a point every round. |
 | Rogue | Three quick hits, crits that build. Trees: Ninja (blood held or spent), Shadow (in and out of the dark), Alchemist (poison, and flasks that react). | Mischief: builds each time you attack. |
-| Hunter | Bows only, strikes first, shoots back. Trees: Ranger, Beastmaster, Trapper. | Aim: builds when a blow misses you and when you crit. |
+| Hunter | Bows only, strikes first, shoots back. Trees: Ranger (crits that bleed), Beastmaster (pets that stay: owl, wolf, bear, viper), Survival (traps that spring when the foe attacks). | Aim: builds when a blow misses you and when you crit. |
 
 Six abilities a class; the first two are known from the start, the rest learnt at shrines, trainers and level picks.
 

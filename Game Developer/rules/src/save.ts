@@ -127,7 +127,8 @@ export function migrate(raw: unknown): GameState | null {
   // 45 → 46 (Robin, 2026-11-10): the Warlord stands where the Paladin stood; a talent that is gone gives its points back (in withArena).
   // 46 → 47 (Robin, 2026-11-11): the Magician's trees reworked; the talents that went give their points back the same way.
   // 47 → 48 (Robin, 2026-11-11): the Rogue's trees reworked, the same way.
-  if (version === 45 || version === 46 || version === 47) return withArena(up);
+  // 48 → 49 (Robin, 2026-11-12): the Hunter's trees reworked, the same way.
+  if (version === 45 || version === 46 || version === 47 || version === 48) return withArena(up);
   if (version === 44) return withArena(up);
   // 43 → 44: the Dream: the Ferry, the Dreaming Isle (the board is laid again in relay).
   if (version === 43) return withArena(up);
@@ -326,7 +327,7 @@ function migrateOlder(raw: unknown): GameState | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const candidate = raw as { version?: unknown };
   if (candidate.version === STATE_VERSION) return raw as GameState;
-  if (candidate.version === 47 || candidate.version === 46 || candidate.version === 45 || candidate.version === 44 || candidate.version === 43 || candidate.version === 42 || candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
+  if (candidate.version === 48 || candidate.version === 47 || candidate.version === 46 || candidate.version === 45 || candidate.version === 44 || candidate.version === 43 || candidate.version === 42 || candidate.version === 41 || candidate.version === 40 || candidate.version === 39 || candidate.version === 38 || candidate.version === 37 || candidate.version === 36 || candidate.version === 35 || candidate.version === 34 || candidate.version === 33 || candidate.version === 32 || candidate.version === 31 || candidate.version === 30 || candidate.version === 29 || candidate.version === 28 || candidate.version === 27 || candidate.version === 26 || candidate.version === 25 || candidate.version === 24 || candidate.version === 23 || candidate.version === 22 || candidate.version === 21 || candidate.version === 20 || candidate.version === 19 || candidate.version === 18 || candidate.version === 12 || candidate.version === 13 || candidate.version === 14 || candidate.version === 15 || candidate.version === 16 || candidate.version === 17) return relay(fillSlots(raw as GameState));
   if (candidate.version === 11) return fillSlots({ ...(raw as StateV11), version: STATE_VERSION });
   if (candidate.version === 10) return fillSlots(fromVersion10(raw as StateV10));
   if (candidate.version === 9) return fillSlots(relay(fromVersion9(raw as StateV9)));

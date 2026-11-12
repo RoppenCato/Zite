@@ -256,13 +256,13 @@ describe('a version-6 save', () => {
     const v6 = { ...structuredClone(today), version: 6, characters: { [P]: { ...me(today), equipment: { ...NO_GEAR, weapon: oldSword }, bag: [oldHelm], fight: oldFight, gold: 77 } } };
     const s = migrate(structuredClone(v6));
     expect(s).not.toBeNull();
-    expect(s!.version).toBe(48);
+    expect(s!.version).toBe(49);
     expect(me(s!).quests).toEqual([]);
     expect(me(s!).keys).toEqual({});
     expect(me(s!).equipment.weapon).toEqual({ id: 'g1', slot: 'weapon', rank: 2, rarity: 'rare', name: 'Copper Sword', base: 'copper sword', stats: { attack: 10 }, affixes: [{ kind: 'crit', value: 0.1 }], price: 200 });
     expect(me(s!).bag[0]!.affixes).toEqual([]);
     expect(me(s!).bag[0]).not.toHaveProperty('affix');
-    expect(me(s!).fight).toMatchObject({ round: 3, charged: true, barrier: 5, meter: 0, strikes: 0, sureCrit: 0, windup: null, companion: null, mark: null, trap: 0, skip: 0, poisoned: null, weak: null, used: [] });
+    expect(me(s!).fight).toMatchObject({ round: 3, charged: true, barrier: 5, meter: 0, strikes: 0, sureCrit: 0, windup: null, mark: null, skip: 0, poisoned: null, weak: null, used: [] });
     expect(me(s!).fight!.enemy).toMatchObject({ id: 'spider', next: null, armoured: null, evade: 0, phase: 1, phase2: null });
     expect(me(s!).gold).toBe(77);
     expect(s!.board).toEqual(makeBoard());

@@ -6,7 +6,7 @@
 //   node tools/sim-full.ts [runs a build] [class] [--tactics] [--json file]
 
 import { writeFileSync } from 'node:fs';
-import { ABILITIES, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, shopStall, stallTaken, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES, setsWorn } from '../rules/src/index.ts';
+import { ABILITIES, traitsOf, manaCost, apply, arenaFee, arenaOpen, arenaSpot, arenaTried, bossKnown, canLearn, groundsOf, carriedLimit, CLASS_DATA, dailyPiece, canReforge, reforged, shopStall, stallTaken, ENEMIES, hubOf, ITEMS, makeRng, newGame, plainGear, pointsFree, reachable, shopOffer, SLOTS, stats, travelOptions, walkable, type Character, type ClassId, type GameEvent, type GameState, type GearItem, type GearLine, guardOf, PROGRESSION, holdsFor, gearKind, isNight, twoHanded, RARITIES, setsWorn } from '../rules/src/index.ts';
 import { choose } from './sim-player.ts';
 
 const args = process.argv.slice(2);
@@ -319,9 +319,17 @@ function play(build: Build, seed: string): Result {
       // One banner is carried, the newest, and Hold the Line stays home: a sensible Warlord keeps its hard hits (2026-11-10).
       let banners = 0;
       let stances = 0;
+      // The Hunter (2026-11-12): no more pets carried than can stand beside it, the hardest hitters first; one command; two traps.
+      const room = 1 + (traitsOf(c).petSlots ?? 0);
+      const pack = Object.keys(c.abilities).filter((id) => c.abilities[id] && ABILITIES[id]?.ranks[0]?.pet).sort((a, b) => ABILITIES[b]!.ranks[0]!.pet!.power - ABILITIES[a]!.ranks[0]!.pet!.power).slice(0, room);
+      let commands = 0;
+      let traps = 0;
       const sensible = (id: string): boolean => {
         const r0 = ABILITIES[id]!.ranks[0]!;
         if (r0.valorUp || r0.allBanners) return false;
+        if (r0.pet) return pack.includes(id);
+        if (r0.petStrike || r0.stampede) return ++commands === 1;
+        if (r0.laid || r0.layAll) return ++traps <= 2;
         // One stance is carried: Shift brings the other (2026-11-11).
         if (r0.infuse) return ++stances === 1;
         return !r0.banner || ++banners === 1;

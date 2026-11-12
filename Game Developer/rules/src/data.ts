@@ -113,11 +113,10 @@ export interface ClassTraits {
   counterHits?: number;
   /** A counter's power, instead of the guard's. */
   counterPower?: number;
+  /** A pet's hits, times this. */
   companionPower?: number;
   /** After a dodge, the next hit is a sure crit. */
   dodgeCrit?: boolean;
-  /** An enemy caught in a tripwire takes this times your attack. */
-  trapHit?: number;
   /** Healing past full becomes a barrier, this share of it. */
   healOverflow?: number;
   /** Only bows may be worn. */
@@ -216,8 +215,31 @@ export interface ClassTraits {
   bleedDrink?: number;
   bleedingDamage?: number;
   companionDamage?: number;
-  /** A tripwire that catches and spikes that go off poison: this share of attack a round, for three rounds. */
-  trapPoison?: number;
+  /**
+   * The Hunter's three trees (Robin, 2026-11-12). Ranger: a crit bleeds for this share of the hit over two rounds; bleeds stronger and a
+   * round longer; a Brace makes the next arrow a sure crit; a bleeding foe hits weaker and is crit more.
+   */
+  critBleedShare?: number;
+  bleedPower?: number;
+  bleedRounds?: number;
+  braceCrit?: number;
+  bleedingWeak?: number;
+  bleedingCrit?: number;
+  /** Beastmaster: pets beyond the first; pets crit as the Hunter does; a pet's gift this much stronger. */
+  petSlots?: number;
+  petCrit?: number;
+  petGift?: number;
+  /**
+   * Survival: traps hit harder; a foe that springs one takes this much more for two rounds; a point of Aim a trap; the next shot harder;
+   * traps beyond the first; a Spike Trap laid as the fight starts; a trap that waited a round hits harder.
+   */
+  trapPower?: number;
+  trapSunder?: number;
+  trapAim?: number;
+  trapFollow?: number;
+  trapSlots?: number;
+  trapStart?: number;
+  trapPatient?: number;
 }
 
 /** One rank of an ability: what it does. Fields left out do nothing. */
@@ -229,6 +251,27 @@ export interface Banner {
   sunder?: number;
   grow?: number;
   cap?: number;
+}
+
+/** A Beastmaster's pet: its share of a plain hit, and its gift (more crit, less damage taken, the foe weaker, a poison of this share of attack). */
+export interface PetData {
+  kind: 'owl' | 'wolf' | 'bear' | 'viper';
+  power: number;
+  crit?: number;
+  taken?: number;
+  weaken?: number;
+  poison?: number;
+}
+
+/** What a Survival trap does as it springs. */
+export interface TrapData {
+  power?: number;
+  miss?: boolean;
+  weaken?: { rounds: number; mult: number };
+  burn?: { rounds: number; power: number };
+  poison?: { rounds: number; power: number };
+  sunder?: { rounds: number; mult: number };
+  skip?: number;
 }
 
 export interface AbilityRank {
@@ -286,9 +329,17 @@ export interface AbilityRank {
   skip?: number;
   /** Rounds until the spell lands with `power`. */
   windup?: number;
-  /** Enemy wind-ups that will fail. */
-  trap?: number;
-  companion?: { rounds: number; power: number; hits?: number };
+  /** A pet called (Robin, 2026-11-12): it stays for the fight and strikes for this share of a plain hit; its gift to the Hunter or on the foe. */
+  pet?: PetData;
+  /** Every pet strikes now, this many times as hard; pets strike this many times with the shot; a Stampede's rounds. */
+  petStrike?: number;
+  petHits?: number;
+  stampede?: number;
+  /** A trap laid: what it does when the foe's next attack springs it. Every trap known laid at once. */
+  laid?: TrapData;
+  layAll?: boolean;
+  /** The bleed a crit of this shot opens lasts this many rounds (Rend), with or without Open Wound. */
+  bleedRounds?: number;
   mark?: { hits: number; mult: number };
   /** Heal a share of the damage this hit dealt. */
   healDealt?: number;
@@ -324,8 +375,6 @@ export interface AbilityRank {
   coat?: { hits: number; power: number; rounds: number };
   blockUp?: { rounds: number; mult: number };
   thornsUp?: { rounds: number; share: number };
-  counterUp?: { rounds: number; chance: number };
-  spike?: { rounds: number; power: number };
   /** Power for each point of meter held, not spent. */
   perHeldMeter?: number;
   /** Power at full mana, less as it runs out. */
@@ -339,8 +388,8 @@ export interface AbilityRank {
   healedPower?: number;
   /** Breaks a wind-up the enemy has gathered. */
   interrupt?: boolean;
-  /** All of a poison or a burn lands now, times this. */
-  consume?: { kind: 'burn' | 'poison'; mult: number };
+  /** All of a poison, a burn or a bleed lands now, times this. */
+  consume?: { kind: 'burn' | 'poison' | 'bleed'; mult: number };
   /** The next blow that would fell you leaves you with this share of HP. */
   guardian?: number;
   /** For a few rounds each attack strikes again at this power. */

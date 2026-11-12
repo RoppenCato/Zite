@@ -1,0 +1,444 @@
+{
+ "frames": {
+  "trap/spring/0004": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 119,
+    "h": 122
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 122
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 122
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.8934
+   }
+  },
+  "trap/spring/0003": {
+   "frame": {
+    "x": 123,
+    "y": 2,
+    "w": 119,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.8839
+   }
+  },
+  "trap/spring/0002": {
+   "frame": {
+    "x": 244,
+    "y": 2,
+    "w": 119,
+    "h": 95
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 95
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 95
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.8632
+   }
+  },
+  "trap/spring/0005": {
+   "frame": {
+    "x": 365,
+    "y": 2,
+    "w": 119,
+    "h": 75
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 75
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 75
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.8267
+   }
+  },
+  "trap/spring/0001": {
+   "frame": {
+    "x": 486,
+    "y": 2,
+    "w": 119,
+    "h": 73
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 73
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 73
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.8219
+   }
+  },
+  "trap/wait/0001": {
+   "frame": {
+    "x": 607,
+    "y": 2,
+    "w": 119,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.7045
+   }
+  },
+  "trap/wait/0002": {
+   "frame": {
+    "x": 728,
+    "y": 2,
+    "w": 119,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.7045
+   }
+  },
+  "trap/wait/0003": {
+   "frame": {
+    "x": 849,
+    "y": 2,
+    "w": 119,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.7045
+   }
+  },
+  "trap/wait/0004": {
+   "frame": {
+    "x": 2,
+    "y": 126,
+    "w": 119,
+    "h": 44
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 119,
+    "h": 44
+   },
+   "sourceSize": {
+    "w": 119,
+    "h": 44
+   },
+   "pivot": {
+    "x": 0.5042,
+    "y": 0.7045
+   }
+  }
+ },
+ "meta": {
+  "image": "trap.png",
+  "size": {
+   "w": 1024,
+   "h": 256
+  },
+  "scale": "1",
+  "format": "RGBA8888",
+  "app": "Art Director/tools/pack.js",
+  "facing": "left",
+  "filePx": 2
+ },
+ "actions": {
+  "wait": {
+   "delay": 200,
+   "loop": true,
+   "frames": [
+    {
+     "name": "trap/wait/0001",
+     "w": 119,
+     "h": 44,
+     "origin": {
+      "x": 60,
+      "y": 31
+     },
+     "delay": 200,
+     "lt": {
+      "x": -60,
+      "y": -31
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -31
+     }
+    },
+    {
+     "name": "trap/wait/0002",
+     "w": 119,
+     "h": 44,
+     "origin": {
+      "x": 60,
+      "y": 31
+     },
+     "delay": 200,
+     "lt": {
+      "x": -60,
+      "y": -31
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -31
+     }
+    },
+    {
+     "name": "trap/wait/0003",
+     "w": 119,
+     "h": 44,
+     "origin": {
+      "x": 60,
+      "y": 31
+     },
+     "delay": 200,
+     "lt": {
+      "x": -60,
+      "y": -31
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -31
+     }
+    },
+    {
+     "name": "trap/wait/0004",
+     "w": 119,
+     "h": 44,
+     "origin": {
+      "x": 60,
+      "y": 31
+     },
+     "delay": 200,
+     "lt": {
+      "x": -60,
+      "y": -31
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -31
+     }
+    }
+   ]
+  },
+  "spring": {
+   "delay": 50,
+   "loop": false,
+   "frames": [
+    {
+     "name": "trap/spring/0001",
+     "w": 119,
+     "h": 73,
+     "origin": {
+      "x": 60,
+      "y": 60
+     },
+     "delay": 50,
+     "lt": {
+      "x": -60,
+      "y": -60
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -60
+     }
+    },
+    {
+     "name": "trap/spring/0002",
+     "w": 119,
+     "h": 95,
+     "origin": {
+      "x": 60,
+      "y": 82
+     },
+     "delay": 60,
+     "lt": {
+      "x": -60,
+      "y": -82
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -82
+     }
+    },
+    {
+     "name": "trap/spring/0003",
+     "w": 119,
+     "h": 112,
+     "origin": {
+      "x": 60,
+      "y": 99
+     },
+     "delay": 120,
+     "lt": {
+      "x": -60,
+      "y": -99
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -99
+     }
+    },
+    {
+     "name": "trap/spring/0004",
+     "w": 119,
+     "h": 122,
+     "origin": {
+      "x": 60,
+      "y": 109
+     },
+     "delay": 90,
+     "lt": {
+      "x": -60,
+      "y": -109
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -109
+     }
+    },
+    {
+     "name": "trap/spring/0005",
+     "w": 119,
+     "h": 75,
+     "origin": {
+      "x": 60,
+      "y": 62
+     },
+     "delay": 120,
+     "lt": {
+      "x": -60,
+      "y": -62
+     },
+     "rb": {
+      "x": 59,
+      "y": 13
+     },
+     "head": {
+      "x": 0,
+      "y": -62
+     }
+    }
+   ]
+  }
+ }
+}

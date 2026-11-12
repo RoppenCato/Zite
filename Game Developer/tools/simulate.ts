@@ -93,10 +93,10 @@ function fightMove(me: Character): { move: FightMove; guard: Guard } {
       const r = a.ranks[Math.min(rank, a.ranks.length) - 1]!;
       const low = e.hp < e.maxHp * (r.executeBelow ?? 0);
       let value = (low && r.executePower ? r.executePower : (r.power ?? 0)) * (r.hits ?? 1) + (r.perMeter ?? 0) * f.meter;
-      value += (r.stun && e.role === 'mob' ? 1.2 : 0) + (r.poison ? 1.0 : 0) + (r.weaken && e.role !== 'mob' ? 0.8 : 0) + (r.skip ? 1.5 : 0) + (r.mark && !f.mark ? 1.2 : 0) + (r.companion && !f.companion ? 1.4 : 0);
+      value += (r.stun && e.role === 'mob' ? 1.2 : 0) + (r.poison ? 1.0 : 0) + (r.weaken && e.role !== 'mob' ? 0.8 : 0) + (r.skip ? 1.5 : 0) + (r.mark && !f.mark ? 1.2 : 0) + (r.pet && !f.pets?.length ? 1.4 : 0);
       value += r.healShare && me.hp < s.maxHp * 0.6 ? 2 : 0;
       value += (r.barrierShare || r.barrierPerMana) && me.hp < s.maxHp * 0.5 && !f.barrier ? 1.3 : 0;
-      value += r.trap && !f.trap && e.role !== 'mob' ? 1.1 : 0;
+      value += r.laid && !f.traps?.length && e.role !== 'mob' ? 1.1 : 0;
       value += r.windup ? 0.6 : 0; // a meteor two rounds out is worth less than its power says
       value += r.steal ? 0.5 : 0;
       if (value > 1.05 && (!best || value > best.value)) best = { id, value };

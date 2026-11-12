@@ -17,7 +17,7 @@ import type { Rng } from './rng.ts';
 import { dropSlot, groundAt, rollLine } from './grounds.ts';
 import { finishQuests, questProgress } from './quests.ts';
 import { FINAL_BOSS, sealAt, sealCount, SEALS_COMING } from './seals.ts';
-import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Spawn } from './types.ts';
+import { SLOTS, type Action, type ApplyResult, type Character, type Enemy, type EnemyData, type EnemyMove, type Fight, type GameEvent, type GameState, type Guard, type Pet, type Spawn } from './types.ts';
 
 type FightAction = Extract<Action, { type: 'fight' }>;
 
@@ -81,7 +81,7 @@ function lingering(c: Character, f: Fight): Character {
 
 /** A fight with nothing on either side yet. */
 export function freshFight(enemy: Enemy, space: string, spawn: boolean): Fight {
-  return { enemy, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn, meter: 0, strikes: 0, sureCrit: 0, windup: null, companion: null, mark: null, trap: 0, skip: 0, streak: 0, nextSpell: 0, regen: null, infuse: null, dance: null, coat: null, blockUp: null, thornsUp: null, counterUp: null, spike: null, clone: null, guardian: 0, healed: 0, poisoned: null, weak: null, used: [] };
+  return { enemy, round: 1, charged: false, attackUp: null, barrier: 0, evade: 0, space, spawn, meter: 0, strikes: 0, sureCrit: 0, windup: null, mark: null, skip: 0, streak: 0, nextSpell: 0, regen: null, infuse: null, dance: null, coat: null, blockUp: null, thornsUp: null, clone: null, guardian: 0, healed: 0, poisoned: null, weak: null, used: [] };
 }
 
 /**
@@ -95,6 +95,8 @@ export function startFight(c: Character, enemyId: string, space: string, spawn: 
   if (talents.barrierStart) fight.barrier += Math.round(stats(c).maxHp * talents.barrierStart);
   if (talents.meterStart) fight.meter += talents.meterStart;
   if (talents.startBlood && talents.blood) fight.blood = Math.min(bloodMax(c), talents.startBlood);
+  // Prepared: a Spike Trap already lies there.
+  if (talents.trapStart && ABILITIES['spike-trap']) fight.traps = [{ ability: 'spike-trap', rank: Math.max(1, c.abilities['spike-trap'] ?? 0), age: 0 }];
   if (p.windstep) fight.evade += p.windstep;
   if (rng) fight.enemy.next = pickMove(fight.enemy, rng);
   // Weakness carried from the last fight takes hold here, and is used up by it.
@@ -237,7 +239,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     air: (old.air ?? []).map((w) => ({ ...w })),
     infuse: old.infuse ? { ...old.infuse } : null,
     both: old.both ? { ...old.both } : null,
-    companion: old.companion ? { ...old.companion } : null,
+    pets: (old.pets ?? []).map((x) => ({ ...x })),
+    traps: (old.traps ?? []).map((x) => ({ ...x })),
     mark: old.mark ? { ...old.mark } : null,
     poisoned: old.poisoned ? { ...old.poisoned } : null,
     weak: old.weak ? { ...old.weak } : null,
@@ -272,6 +275,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
 
   // ---- the player's move ------------------------------------------------------------------------------------------
   const move = action.move;
+  /** How many times each pet strikes with this move (Stoop: twice). */
+  let petTimes = 1;
   switch (move.kind) {
     case 'attack': {
       // Twin Fangs (Robin, 2026-11-03): twice the hits at half the damage, so a Rogue's three become six.
@@ -312,6 +317,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (ability.oncePerFight && f.used.includes(move.ability)) return reject(state, action, 'already used');
       // Four go into a fight; with fewer carried, nothing known is left behind.
       if (r.c.carried.length >= carriedLimit(r.c.level) && !r.c.carried.includes(move.ability)) return reject(state, action, 'not now');
+      // Kill Command and Stampede need a pet to command.
+      const asked = ability.ranks[Math.min(rank, ability.ranks.length) - 1]!;
+      if ((asked.petStrike || asked.stampede) && !f.pets?.length) return reject(state, action, 'not now');
       // Assassinate from the dark costs no Mischief.
       const freeDark = !!ability.darkFree && !!r.dark;
       const meterCost = ability.meterAll ? f.meter : freeDark ? 0 : (ability.meter ?? 0);
@@ -390,8 +398,6 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (rk.coat) f.coat = { ...rk.coat };
       if (rk.blockUp) f.blockUp = { ...rk.blockUp };
       if (rk.thornsUp) f.thornsUp = { ...rk.thornsUp };
-      if (rk.counterUp) f.counterUp = { ...rk.counterUp };
-      if (rk.spike) f.spike = { ...rk.spike };
       if (rk.clone) {
         f.clone = { ...rk.clone };
         events.push({ type: 'effect', action: id, player, target: 'player', kind: 'clone', rounds: rk.clone.rounds });
@@ -469,14 +475,39 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         f.mark = { ...rk.mark };
         events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'mark', rounds: rk.mark.hits });
       }
-      if (rk.companion) {
-        f.companion = { name: ability.name, ...rk.companion };
-        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'companion', rounds: rk.companion.rounds });
+      // A pet comes and stays (Robin, 2026-11-12): the same kind again takes its own place, one too many sends the oldest away.
+      if (rk.pet) {
+        const pets = (f.pets ?? []).filter((x) => x.kind !== rk.pet!.kind);
+        pets.push({ name: ability.name, ...rk.pet });
+        f.pets = pets.slice(-(1 + (traits.petSlots ?? 0)));
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'pet', rounds: 0, name: ability.name });
+        // It strikes as it arrives, twice as hard, so the call is not a round lost (mine, 2026-11-12, after the bots).
+        petsStrike(r, 1, PET_ARRIVES, f.pets[f.pets.length - 1]);
+        if (r.done) return r.done;
       }
-      if (rk.trap) {
-        f.trap += rk.trap;
-        events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'trap', rounds: rk.trap });
+      // A trap laid: with no room, the oldest gives way. Master of Snares lays every trap known, room or not.
+      if (rk.laid) {
+        const room = 1 + (traits.trapSlots ?? 0);
+        const traps = f.traps ?? [];
+        f.traps = [...(traps.length >= room ? traps.slice(1) : traps), { ability: move.ability, rank: Math.min(rank, ability.ranks.length), age: 0 }];
+        events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'trap', rounds: f.traps.length, name: ability.name });
       }
+      if (rk.layAll) {
+        const known = Object.entries(r.c.abilities).filter(([k, n]) => n > 0 && ABILITIES[k]?.ranks[Math.min(n, ABILITIES[k]!.ranks.length) - 1]?.laid);
+        f.traps = [...(f.traps ?? []), ...known.map(([k, n]) => ({ ability: k, rank: Math.min(n, ABILITIES[k]!.ranks.length), age: 0 }))];
+        events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'trap', rounds: f.traps.length, name: ability.name });
+      }
+      if (rk.stampede) {
+        f.stampede = rk.stampede;
+        events.push({ type: 'effect', action: id, player, target: 'player', kind: 'stampede', rounds: rk.stampede });
+        petsStrike(r);
+        if (r.done) return r.done;
+      }
+      if (rk.petStrike) {
+        petsStrike(r, 1, rk.petStrike);
+        if (r.done) return r.done;
+      }
+      if (rk.petHits) petTimes = rk.petHits;
       if (rk.skip) {
         f.skip += rk.skip;
         events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'skip', rounds: rk.skip });
@@ -519,7 +550,7 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         const shadow = finale && traits.shadowFinale ? traits.shadowFinale : 0;
         const before = f.enemy.hp;
         const eventsBefore = events.length;
-        strike(r, ability.name, power * powerMult, shadow ? 3 : (rk.hits ?? 1), (rk.crit ?? r.s.crit) + shadow * meterCost, true, { split: shadow ? true : rk.split, melee: rk.melee, ignoreDefense: rk.ignoreDefense, noBlood: !!rk.spendBlood || finale });
+        strike(r, ability.name, power * powerMult, shadow ? 3 : (rk.hits ?? 1), (rk.crit ?? r.s.crit) + shadow * meterCost, true, { split: shadow ? true : rk.split, melee: rk.melee, ignoreDefense: rk.ignoreDefense, noBlood: !!rk.spendBlood || finale, bleedRounds: rk.bleedRounds });
         // Thousand Cuts outside the dark: a point of Mischief a crit.
         if (!r.done && rk.critMeter && !r.dark) {
           const crits = events.slice(eventsBefore).filter((e) => e.type === 'hit' && e.by === 'player' && e.crit && e.move === ability.name).length;
@@ -628,6 +659,11 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   }
   if (r.done) return r.done;
   if (f.enemy.hp <= 0) return win(r);
+  // The pets strike whenever the Hunter did damage this round (Robin, 2026-11-12).
+  if (f.pets?.length && f.strikes > (r.struck ?? 0)) {
+    petsStrike(r, petTimes);
+    if (r.done) return r.done;
+  }
   // A weakening on the player counts down once its round of hits has been softened.
   if (f.weak) {
     f.weak.rounds -= 1;
@@ -674,6 +710,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   const brace = (): void => {
     if (braced) return;
     braced = true;
+    // Steady Breath: the first arrow of the next round surely crits.
+    if (traits.braceCrit) f.sureCrit = Math.max(f.sureCrit, traits.braceCrit);
     r.c = restoreMana(r.c, braceMana(r.s.maxMana, guardOf(r.c).brace, traits.channel), action, events);
   };
   const firstStrike = f.round === 1 && (cls.firstStrike || traits.firstStrike || quick);
@@ -691,18 +729,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
     const mv = f.enemy.next ?? pickMove(f.enemy, rng);
     f.enemy.next = null;
     if (mv.charge && !f.enemy.charged) {
-      if (f.trap > 0) {
-        f.trap -= 1;
-        events.push({ type: 'skipped', action: id, player, by: 'enemy', reason: 'trapped' });
-        if (traits.trapHit) {
-          hurtEnemy(r, Math.max(1, Math.round(r.s.attack * traits.trapHit)));
-          if (r.done) return r.done;
-        }
-        trapPoison(r);
-      } else {
-        f.enemy.charged = mv.name;
-        events.push({ type: 'charged', action: id, player, by: 'enemy', move: mv.name });
-      }
+      f.enemy.charged = mv.name;
+      events.push({ type: 'charged', action: id, player, by: 'enemy', move: mv.name });
     } else if (mv.power === 0 && mv.effect) {
       // A move that is all effect: no blow to guard against.
       enemyEffect(r, mv);
@@ -710,7 +738,13 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       if (guard !== 'none') events.push({ type: 'guarded', action: id, player, guard });
       const name = f.enemy.charged ?? mv.name;
       const heavy = f.enemy.charged !== null;
+      // The oldest trap springs as it attacks (Robin, 2026-11-12); a Snare makes this very blow miss.
+      const snared = spring(r);
+      if (r.done) return r.done;
       let mult = mv.power * (heavy ? PROGRESSION.enemyCharge : 1) * (f.enemy.weakened ? f.enemy.weakened.mult : 1) * (bannerOf(r.c, f, 'dread')?.weaken ?? 1);
+      // Hamstrung: a bleeding foe hits weaker. The viper's gift: so does any foe.
+      if (traits.bleedingWeak && f.enemy.bleed) mult *= 1 - traits.bleedingWeak;
+      for (const pet of f.pets ?? []) if (pet.weaken) mult *= 1 - petGift(r, pet.weaken);
       if (heavy && r.s.bonus.warding && !f.used.includes('warding')) {
         f.used.push('warding');
         mult *= 1 - r.s.bonus.warding;
@@ -724,12 +758,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
       // Shadow Dance's first round: the blow in full, whatever the guard.
       const held: Guard = exposed ? 'none' : guard;
       brace();
-      if (f.spike) {
-        hurtEnemy(r, Math.max(1, Math.round(r.s.attack * f.spike.power)));
-        if (r.done) return r.done;
-        trapPoison(r);
-      }
-      if (heavy && p.ward && !f.used.includes('ward')) {
+      if (snared) {
+        events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
+      } else if (heavy && p.ward && !f.used.includes('ward')) {
         f.used.push('ward');
         events.push({ type: 'missed', action: id, player, by: 'enemy', move: name });
       } else if (f.evade > 0 && !exposed) {
@@ -759,6 +790,8 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         if (traits.damageTaken) dealt = Math.ceil(dealt * traits.damageTaken);
         if (traits.barrierGuard && f.barrier > 0) dealt = Math.ceil(dealt * traits.barrierGuard);
         if (traits.lowHpTaken && r.c.hp < r.s.maxHp / 3) dealt = Math.ceil(dealt * traits.lowHpTaken);
+        // The bear's gift: less of every blow.
+        for (const pet of f.pets ?? []) if (pet.taken) dealt = Math.ceil(dealt * (1 - petGift(r, pet.taken)));
         const beforeGuard = dealt;
         if (held === 'block' && traits.shieldMana && !off.shield) {
           // The Magician's Mana Shield (Robin, 2026-11-02): part of the blow is paid in mana while there is any; an orb sets how much (2026-11-03).
@@ -805,12 +838,14 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
         }
       }
       // A counter: always under that guard, if the blow landed; for a Hunter also by chance, whether it landed or not.
-      const chance = (traits.counterChance ?? 0) + (f.counterUp?.chance ?? 0);
+      const chance = traits.counterChance ?? 0;
       if ((held === 'counter' && landed) || (chance > 0 && rng.next() < chance)) {
         for (let i = 0; i < (traits.counterHits ?? 1) && f.enemy.hp > 0; i++) {
           const back = blow(r.s.attack, traits.counterPower ?? PROGRESSION.guards.counter, enemyDefense(f.enemy), r.s.crit, rng);
           hurtEnemy(r, back.damage);
           if (r.done) return r.done;
+          // A shot back that crits opens the wound too.
+          if (back.crit) critBleed(r, back.damage);
         }
         gainMeter(r, 'hit', 1);
       }
@@ -825,17 +860,9 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   brace();
 
   // ---- the round ends ---------------------------------------------------------------------------------------------
-  if (f.companion && f.enemy.hp > 0) {
-    for (let i = 0; i < (f.companion.hits ?? 1) && f.enemy.hp > 0; i++) {
-      const b = blow(r.s.attack, f.companion.power * (traits.companionPower ?? 1) * (f.enemy.sunder?.mult ?? 1), enemyDefense(f.enemy), 0, rng);
-      f.enemy.hp = Math.max(0, f.enemy.hp - b.damage);
-      events.push({ type: 'hit', action: id, player, by: 'player', move: f.companion.name, damage: b.damage, crit: false, hp: f.enemy.hp, absorbed: 0 });
-    }
-    f.companion.rounds -= 1;
-    if (f.companion.rounds <= 0) f.companion = null;
-    if (f.enemy.hp <= 0) return win(r);
-    phaseCheck(r);
-  }
+  // A Stampede a round shorter; every trap still lying has waited a round.
+  if (f.stampede) f.stampede -= 1;
+  if (f.traps?.length) f.traps = f.traps.map((x) => ({ ...x, age: x.age + 1 }));
   if (f.poisoned) {
     r.c = { ...r.c, hp: Math.max(0, r.c.hp - f.poisoned.damage) };
     events.push({ type: 'poisoned', action: id, player, target: 'player', damage: f.poisoned.damage, hp: r.c.hp });
@@ -864,8 +891,6 @@ function fightRoundOf(state: GameState, action: FightAction, character: Characte
   if (f.both) f.both = f.both.rounds > 1 ? { rounds: f.both.rounds - 1 } : null;
   if (f.blockUp) f.blockUp = f.blockUp.rounds > 1 ? { ...f.blockUp, rounds: f.blockUp.rounds - 1 } : null;
   if (f.thornsUp) f.thornsUp = f.thornsUp.rounds > 1 ? { ...f.thornsUp, rounds: f.thornsUp.rounds - 1 } : null;
-  if (f.counterUp) f.counterUp = f.counterUp.rounds > 1 ? { ...f.counterUp, rounds: f.counterUp.rounds - 1 } : null;
-  if (f.spike) f.spike = f.spike.rounds > 1 ? { ...f.spike, rounds: f.spike.rounds - 1 } : null;
   if (f.clone) f.clone = f.clone.rounds > 1 ? { ...f.clone, rounds: f.clone.rounds - 1 } : null;
   // The banners: a round older; Valor's point when its round comes.
   if (f.banner) f.banner = { ...f.banner, age: f.banner.age + 1 };
@@ -989,12 +1014,106 @@ function bannerOf(c: Character, f: Fight, kind: keyof typeof BANNERS): { weaken:
   return { weaken: 1 - (1 - (b.weaken ?? 1)) * voice, sunder: 1 + ((b.sunder ?? 1) - 1) * voice, grow: (b.grow ?? 0) * voice, cap: (b.cap ?? 0) * voice, every: b.every ?? 0, age: b.age };
 }
 
-/** Venom on the Spikes (2026-11-10): what a tripwire catches or spikes sting is poisoned for three rounds; a stronger poison already there stays. */
-function trapPoison(r: Round): void {
+/** How hard a pet strikes as it is called. */
+const PET_ARRIVES = 2;
+
+/** A pet's gift, as strong as Well Fed makes it. */
+function petGift(r: Round, gift: number): number {
+  return gift * (1 + (traitsOf(r.c).petGift ?? 0));
+}
+
+/**
+ * The pets strike (Robin, 2026-11-12: "The pet does a % of the hunters attack, depending on pet"): each for its share of a plain hit of
+ * the Hunter's, `times` over (twice in a Stampede), `mult` as hard (Kill Command). A viper's bite poisons; a stronger poison stays.
+ */
+function petsStrike(r: Round, times = 1, mult = 1, only?: Pet): void {
+  const { f, rng, events } = r;
   const t = traitsOf(r.c);
-  if (!t.trapPoison || r.f.enemy.hp <= 0) return;
-  const damage = Math.max(1, Math.round(r.s.attack * t.trapPoison * (t.poisonPower ?? 1)));
-  r.f.enemy.poison = { rounds: Math.max(3, r.f.enemy.poison?.rounds ?? 0), damage: Math.max(r.f.enemy.poison?.damage ?? 0, damage) };
+  const n = times * (f.stampede ? 2 : 1);
+  for (const pet of only ? [only] : (f.pets ?? [])) {
+    for (let i = 0; i < n && f.enemy.hp > 0; i++) {
+      const b = blow(r.s.attack, mult * (t.companionPower ?? 1) * (f.enemy.sunder?.mult ?? 1), enemyDefense(f.enemy), t.petCrit ? r.s.crit : 0, rng);
+      const damage = Math.max(1, Math.round(b.damage * pet.power));
+      f.enemy.hp = Math.max(0, f.enemy.hp - damage);
+      events.push({ type: 'hit', action: r.action.id, player: r.action.player, by: 'player', move: pet.name, damage, crit: b.crit, hp: f.enemy.hp, absorbed: 0 });
+      if (pet.poison && f.enemy.hp > 0) {
+        const sting = Math.max(1, Math.round(r.s.attack * petGift(r, pet.poison) * (t.poisonPower ?? 1)));
+        if (!f.enemy.poison) events.push({ type: 'effect', action: r.action.id, player: r.action.player, target: 'enemy', kind: 'poison', rounds: 3 });
+        f.enemy.poison = { rounds: Math.max(3, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, sting) };
+      }
+    }
+  }
+  if (f.enemy.hp <= 0) r.done = win(r);
+  else phaseCheck(r);
+}
+
+/**
+ * The oldest trap springs as the foe attacks (Robin, 2026-11-12: "activated when the enemy attacks next time"). True when the blow that
+ * sprang it misses (a Snare). The fight may end here: `r.done`.
+ */
+function spring(r: Round): boolean {
+  const { f, events } = r;
+  const trap = f.traps?.[0];
+  if (!trap) return false;
+  f.traps = f.traps!.slice(1);
+  const ability = ABILITIES[trap.ability];
+  const laid = ability?.ranks[trap.rank - 1]?.laid;
+  if (!ability || !laid) return false;
+  const t = traitsOf(r.c);
+  const id = r.action.id;
+  const player = r.action.player;
+  events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'sprung', rounds: 0, name: ability.name });
+  // Barbed, and Patient for a trap that has waited a round.
+  const harder = (1 + (t.trapPower ?? 0)) * (trap.age > 0 ? 1 + (t.trapPatient ?? 0) : 1);
+  if (laid.power) {
+    hurtEnemy(r, Math.max(1, Math.round(r.s.attack * laid.power * harder * (f.enemy.sunder?.mult ?? 1))));
+    if (r.done || f.enemy.hp <= 0) return false;
+  }
+  if (laid.burn) {
+    f.enemy.burn = { rounds: Math.max(laid.burn.rounds, f.enemy.burn?.rounds ?? 0), damage: Math.max(f.enemy.burn?.damage ?? 0, Math.max(1, Math.round((r.s.attack + r.s.magic) * laid.burn.power * harder * (t.burnPower ?? 1)))) };
+    events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'burn', rounds: f.enemy.burn.rounds });
+  }
+  if (laid.poison) {
+    f.enemy.poison = { rounds: Math.max(laid.poison.rounds, f.enemy.poison?.rounds ?? 0), damage: Math.max(f.enemy.poison?.damage ?? 0, Math.max(1, Math.round(r.s.attack * laid.poison.power * harder * (t.poisonPower ?? 1)))) };
+    events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'poison', rounds: f.enemy.poison.rounds });
+  }
+  // It takes more: the trap's own, or Cruel Traps for two rounds after this one; the stronger stays.
+  const cruel = t.trapSunder ? { rounds: 3, mult: t.trapSunder } : null;
+  const more = laid.sunder && (!cruel || laid.sunder.mult >= cruel.mult) ? { rounds: laid.sunder.rounds + 1, mult: laid.sunder.mult } : cruel;
+  if (more && (!f.enemy.sunder || f.enemy.sunder.mult <= more.mult)) {
+    f.enemy.sunder = { rounds: Math.max(more.rounds, f.enemy.sunder?.rounds ?? 0), mult: more.mult };
+    events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'sunder', rounds: f.enemy.sunder.rounds - 1 });
+  }
+  // A round more than it says: this turn's own count comes off as the turn ends.
+  if (laid.weaken) {
+    f.enemy.weakened = { rounds: laid.weaken.rounds + 1, mult: Math.min(laid.weaken.mult, f.enemy.weakened?.mult ?? 1) };
+    events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'weakened', rounds: laid.weaken.rounds });
+  }
+  if (laid.skip) {
+    f.skip += laid.skip;
+    events.push({ type: 'effect', action: id, player, target: 'enemy', kind: 'skip', rounds: laid.skip });
+  }
+  if (t.trapAim) gainMeterFlat(r, t.trapAim);
+  if (t.trapFollow) f.follow = t.trapFollow;
+  return !!laid.miss;
+}
+
+/**
+ * Open Wound (Robin, 2026-11-12: "whenever the hunter crits the target bleeds for 1/4 of the damage over two turns"): a crit's share
+ * of the hit again as a bleed, added to what already bleeds so nothing of either is lost. Deep Cuts makes it stronger; Long Bleed and
+ * Rend keep the sting and add rounds. `rounds` is set by a shot that bleeds on its own (Rend).
+ */
+function critBleed(r: Round, hit: number, rounds?: number): void {
+  const t = traitsOf(r.c);
+  const share = t.critBleedShare ?? (rounds ? 0.25 : 0);
+  if (!share || r.f.enemy.hp <= 0) return;
+  const sting = (hit * share * (1 + (t.bleedPower ?? 0))) / 2;
+  const lasts = (rounds ?? 2) + (t.bleedRounds ?? 0);
+  const old = r.f.enemy.bleed;
+  const longest = Math.max(lasts, old?.rounds ?? 0);
+  const damage = Math.max(1, Math.round((sting * lasts + (old ? old.damage * old.rounds : 0)) / longest));
+  if (!old) r.events.push({ type: 'effect', action: r.action.id, player: r.action.player, target: 'enemy', kind: 'bleed', rounds: longest });
+  r.f.enemy.bleed = { rounds: longest, damage };
 }
 
 /**
@@ -1002,7 +1121,7 @@ function trapPoison(r: Round): void {
  * sure crits, Stormcaller's third hits and the Sunblade apply; lifesteal heals; Frostbrand chills and Venomtooth poisons.
  * Ends the fight (sets `done`) when the enemy falls.
  */
-function strike(r: Round, move: string, power: number, hits: number, crit: number, spell = false, how: { split?: boolean; melee?: boolean; ignoreDefense?: boolean; noBlood?: boolean } = {}): void {
+function strike(r: Round, move: string, power: number, hits: number, crit: number, spell = false, how: { split?: boolean; melee?: boolean; ignoreDefense?: boolean; noBlood?: boolean; bleedRounds?: number } = {}): void {
   const { f, s, rng, events } = r;
   const traits = traitsOf(r.c);
   const blades = how.melee ? bladesOf(r.c, f) : [];
@@ -1027,6 +1146,13 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     power *= 1 + f.lurk;
     f.lurk = 0;
   }
+  // The Hunter (Robin, 2026-11-12): the owl's gift, a bleeding foe, the shot after a trap sprang.
+  for (const pet of f.pets ?? []) if (pet.crit) crit += petGift(r, pet.crit);
+  if (traits.bleedingCrit && f.enemy.bleed) crit += traits.bleedingCrit;
+  if (f.follow) {
+    power *= 1 + f.follow;
+    f.follow = 0;
+  }
   // The talents: where you stand, and what state it is in.
   const share = r.c.hp / Math.max(1, s.maxHp);
   if (traits.lowHpDamage && share < 1 / 3) power *= traits.lowHpDamage;
@@ -1042,7 +1168,7 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
   // The bridges between trees (2026-11-10).
   if (traits.barrierDamage && f.barrier > 0) power *= traits.barrierDamage;
   if (traits.bleedingDamage && f.enemy.bleed) power *= traits.bleedingDamage;
-  if (traits.companionDamage && f.companion) power *= traits.companionDamage;
+  if (traits.companionDamage && f.pets?.length) power *= traits.companionDamage;
   // The Warlord (Robin, 2026-11-10): a banner standing, the foe winding up, a fight grown long; Dread and War themselves.
   if (traits.bannerDamage && (f.banner || f.allBanners)) power *= traits.bannerDamage;
   if (traits.windupDamage && (f.enemy.charged || f.enemy.next?.charge)) power *= traits.windupDamage;
@@ -1107,6 +1233,8 @@ function strike(r: Round, move: string, power: number, hits: number, crit: numbe
     events.push({ type: 'hit', action: id, player, by: 'player', move, damage: b.damage, crit: b.crit, hp: f.enemy.hp, absorbed: 0 });
     if (b.crit) gainMeter(r, 'miss', 1);
     if (b.crit && traits.critHeal) healing(r, Math.max(1, Math.round(s.maxHp * traits.critHeal)));
+    // Open Wound, or a Rend with or without it: a crit bleeds.
+    if (b.crit) critBleed(r, b.damage, how.bleedRounds);
     // Bloodied Edge: a crit opens a bleed.
     if (b.crit && traits.critBleed && f.enemy.hp > 0) openBleed(r, Math.max(1, Math.round(s.attack * traits.critBleed)), 3);
     // Bloodthirst: a crit may leave a second drop.

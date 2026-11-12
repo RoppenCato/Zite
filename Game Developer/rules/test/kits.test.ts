@@ -324,14 +324,12 @@ describe('the signature abilities', () => {
     expect(fight(mended.state).barrier).toBeGreaterThan(0);
   });
 
-  it('Shadow Clone strikes again; Bullseye is harder on a foe winding up; Great Owl strikes twice', () => {
+  it('Shadow Clone strikes again; Bullseye is harder on a foe winding up', () => {
     const cloned = apply(versus('rogue', 'slime', {}, tough, { clone: { rounds: 2, power: 0.6 } }), turn(attack), makeRng('z'), NOW);
     expect(hits(cloned.events, 'player')).toHaveLength(6);
     const calm = apply(versus('ranger', 'slime', { abilities: { 'aimed-shot': 1 } }, tough, { round: 2 }), turn(ability('aimed-shot')), makeRng('q'), NOW);
     const winding = apply(versus('ranger', 'slime', { abilities: { 'aimed-shot': 1 } }, { ...tough, charged: 'Slam' }, { round: 2 }), turn(ability('aimed-shot')), makeRng('q'), NOW);
     expect(hits(winding.events, 'player')[0]!.damage).toBeGreaterThan(hits(calm.events, 'player')[0]!.damage);
-    const owl = apply(versus('ranger', 'slime', { abilities: { 'great-owl': 1 } }, tough, { meter: 3 }), turn(ability('great-owl')), makeRng('z'), NOW);
-    expect(hits(owl.events, 'player').filter((h) => h.move === 'Great Owl')).toHaveLength(2);
   });
 });
 
@@ -347,18 +345,13 @@ describe('the Hunter', () => {
     expect(hits(apply(versus('ranger', 'slime', {}, tough), turn(attack), makeRng('a'), NOW).events, 'enemy')).toHaveLength(0);
   });
 
-  it('Ranger: every counter is two arrows; a Counter guard always shoots back', () => {
-    const r = apply(versus('ranger', 'slime', { abilities: { 'ranger-eye': 1 } }, tough, { round: 2 }), turn(attack, 'counter'), makeRng('a'), NOW);
-    expect(r.events.filter((e) => e.type === 'countered')).toHaveLength(2);
-  });
-
-  it('Beastmaster: the owl strikes every round; Trapper: a tripped wind-up hurts it', () => {
-    const owl = apply(versus('ranger', 'slime', { abilities: { hawk: 1 } }, tough, { meter: 2 }), turn(ability('hawk')), makeRng('a'), NOW);
-    expect(hits(owl.events, 'player').some((h) => h.move === 'Owl Friend')).toBe(true);
-    const trap = versus('ranger', 'bandit', { abilities: { trap: 1, 'trapper-craft': 1 } }, { ...tough, next: { name: 'Lunge', power: 2, weight: 1, charge: true } }, { round: 2 });
-    const r = apply(trap, turn(ability('trap')), makeRng('a'), NOW);
-    expect(r.events).toContainEqual(expect.objectContaining({ type: 'skipped', reason: 'trapped' }));
+  it('a Counter guard always shoots back; the owl called stays and strikes when the Hunter does', () => {
+    const r = apply(versus('ranger', 'slime', {}, tough, { round: 2 }), turn(attack, 'counter'), makeRng('a'), NOW);
     expect(r.events.some((e) => e.type === 'countered')).toBe(true);
+    const called = apply(versus('ranger', 'slime', { abilities: { hawk: 1 } }, tough), turn(ability('hawk')), makeRng('a'), NOW);
+    expect(hits(called.events, 'player').map((h) => h.move)).toEqual(['Owl']);
+    const shot = apply(called.state, turn(attack), makeRng('b'), NOW);
+    expect(hits(shot.events, 'player').some((h) => h.move === 'Owl')).toBe(true);
   });
 
   const staffed = (s: GameState): GameState => ({ ...s, characters: { [P]: { ...me(s), equipment: { ...me(s).equipment, weapon: plainGear('st', 'weapon', 1, 'heavy', 'mage', 'staff'), shield: null } } } });

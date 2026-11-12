@@ -1,5 +1,5 @@
 // The sensible fighter the sims play with: heals when low, keeps its buffs up, spends its meter, guards as its class wants. Not part of the game.
-import { ABILITIES, ITEMS, manaCost, holdsFor, stats, inDark, bloodMax, type Character } from '../rules/src/index.ts';
+import { ABILITIES, ITEMS, manaCost, holdsFor, stats, inDark, bloodMax, traitsOf, type Character } from '../rules/src/index.ts';
 
 /** What a sensible player does this round. */
 export function choose(c: Character): { move: unknown; guard: string } {
@@ -12,6 +12,8 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (c.classId === 'rogue') return e.charged ? 'block' : 'dodge';
     // The Ward costs nothing (2026-11-03).
     if (c.classId === 'mage') return 'block';
+    // Steady Breath (2026-11-12): a Brace is the next round's sure crit.
+    if (c.classId === 'ranger' && c.abilities['ran-breath']) return e.charged || hpShare < (e.role === 'mob' ? 0.35 : 0.6) ? 'block' : 'brace';
     if (c.classId === 'ranger') return e.charged ? 'block' : hpShare > 0.5 ? 'counter' : 'block';
     // Battle Rhythm: a Berserker keeps its shield down while it can afford to, or the streak ends (2026-11-10).
     if (c.abilities['ber-fury'] && !e.charged && hpShare > 0.45) return 'brace';
@@ -97,13 +99,19 @@ export function choose(c: Character): { move: unknown; guard: string } {
     // A wall against a creature that barely scratches is a round lost (2026-11-10: the Knight bot spent most rounds on them).
     if (r.thornsUp && !f.thornsUp && (e.role !== 'mob' || hpShare < 0.7)) return { move: { kind: 'ability', ability: id }, guard };
     if (r.blockUp && !f.blockUp && (e.role !== 'mob' || hpShare < 0.7)) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.counterUp && !r.power && !f.counterUp) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.spike && !f.spike) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.companion && !f.companion) return { move: { kind: 'ability', ability: id }, guard };
+    // The Hunter (2026-11-12). A pet for a fight that will last, until the pack is full; then its commands. A trap when none lies:
+    // as the foe winds up (it waits, and Patient pays), else every other round, so there is a shot between for Follow Up.
+    const lasts = e.role !== 'mob' || e.hp > s.attack * 3;
+    const pets = f.pets ?? [];
+    if (r.pet && lasts && pets.length < 1 + (traitsOf(c).petSlots ?? 0) && !pets.some((x) => x.kind === r.pet!.kind)) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.stampede && pets.length > 0 && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
+    if (r.petStrike && pets.length > 0) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.layAll && e.role !== 'mob') return { move: { kind: 'ability', ability: id }, guard };
+    if (r.laid && lasts && !(f.traps ?? []).length && (e.next?.charge || f.round % 2 === 1)) return { move: { kind: 'ability', ability: id }, guard };
     if (r.dance && !f.dance && hpShare > 0.5) return { move: { kind: 'ability', ability: id }, guard };
     if (r.guardian && !f.guardian && hpShare < 0.6) return { move: { kind: 'ability', ability: id }, guard };
     if (r.clone && !f.clone) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.consume && (r.consume.kind === 'burn' ? e.burn : e.poison) && (r.consume.kind === 'burn' ? e.burn : e.poison)!.damage * (r.consume.kind === 'burn' ? e.burn : e.poison)!.rounds * r.consume.mult > s.attack * 2) return { move: { kind: 'ability', ability: id }, guard };
+    if (r.consume && e[r.consume.kind] && e[r.consume.kind]!.damage * e[r.consume.kind]!.rounds * r.consume.mult > s.attack * 2) return { move: { kind: 'ability', ability: id }, guard };
     if (r.interrupt && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     // A cloud on a foe that will last: fresh poison, or a Caustic about to run out kept going.
     if (r.flask && r.poison && e.role !== 'mob' && (!e.poison || (e.sunder && e.sunder.rounds <= 1))) return { move: { kind: 'ability', ability: id }, guard };
@@ -111,7 +119,6 @@ export function choose(c: Character): { move: unknown; guard: string } {
     if (r.burn && !e.burn) return { move: { kind: 'ability', ability: id }, guard };
     if (r.weaken && !e.weakened && e.charged) return { move: { kind: 'ability', ability: id }, guard };
     if (r.barrierShare && f.barrier === 0 && e.charged) return { move: { kind: 'ability', ability: id }, guard };
-    if (r.trap && !f.trap && e.next?.charge) return { move: { kind: 'ability', ability: id }, guard };
     if (r.manaPerMeter && c.mana < s.maxMana * 0.5 && f.meter >= 3) return { move: { kind: 'ability', ability: id }, guard };
     if (r.meterGain && !r.banner && !f.attackUp && hpShare > 0.6) return { move: { kind: 'ability', ability: id }, guard };
     // When the situational ones pay (2026-11-03): a blow winding up is dodged or stopped, or met with a shot that hurts more for it;

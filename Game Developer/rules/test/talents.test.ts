@@ -36,23 +36,20 @@ describe('the talents that wait for their moment', () => {
     expect(me(won('mage', { 'wiz-heart': 3 })).mana).toBeGreaterThan(me(won('mage', {})).mana);
     expect(me(won('mage', { 'cle-rest': 3 })).hp).toBeGreaterThan(me(won('mage', {})).hp);
   });
-  it('Surge and Cunning start a fight with a point of the meter', () => {
+  it('Surge starts a fight with a point of the meter', () => {
     expect(fighter('mage', { 'spl-surge': 2 }).characters[P]!.fight!.meter).toBe(2);
-    expect(fighter('ranger', { 'tra-cunning': 2 }).characters[P]!.fight!.meter).toBe(2);
   });
   it('Opportunist: after a dodge the next hit is a sure crit', () => {
     const crits = (a: GameState) => me(a).fight?.sureCrit ?? 0;
     expect(total(fighter('rogue', { 'shadow-pact': 1 }), 'dodge', crits)).toBeGreaterThan(total(fighter('rogue', {}), 'dodge', crits));
   });
-  it('Barbs and Venom on the Spikes: a stunned or poisoned foe takes more', () => {
+  it('Barbs: a stunned foe takes more', () => {
     const left = (a: GameState) => -(me(a).fight?.enemy.hp ?? 0);
     const on = (talents: Record<string, number>, foe: Record<string, unknown>): GameState => {
       const s = fighter('ranger', talents);
       const c = me(s);
       return { ...s, characters: { [P]: { ...c, fight: { ...c.fight!, enemy: { ...c.fight!.enemy, ...foe } } } } };
     };
-    const poisoned = { poison: { rounds: 5, damage: 1 } };
-    expect(total(on({ 'tra-venom': 3 }, poisoned), 'none', left)).toBeGreaterThan(total(on({}, poisoned), 'none', left));
     const stunned = { stunned: 2 };
     expect(total(on({ 'tra-barb': 3 }, stunned), 'none', left)).toBeGreaterThan(total(on({}, stunned), 'none', left));
   });
@@ -88,27 +85,6 @@ describe('the talent data', () => {
     // Its growing crit chance is the same for both, so only the bleed tells them apart.
     const has = fighter('rogue', { 'sha-streak': 3 });
     expect(dealt(withFight(has, {}, bleed))).toBeGreaterThan(dealt(withFight(has, {}, {})) + 60 * 3);
-  });
-  it('Hunting Pair: your own arrows hit harder while the owl is out', () => {
-    const owl = { companion: { name: 'Owl Friend', rounds: 5, power: 0.6 } };
-    expect(dealt(withFight(fighter('ranger', { 'bea-pack': 3 }), owl))).toBeGreaterThan(dealt(withFight(fighter('ranger', {}), owl)));
-    expect(dealt(fighter('ranger', { 'bea-pack': 3 }))).toBe(dealt(fighter('ranger', {})));
-  });
-  it('the owl strikes harder at a foe that takes more', () => {
-    const owl = { companion: { name: 'Owl Friend', rounds: 5, power: 0.6 } };
-    const owlHits = (s: GameState) => { let sum = 0; for (let i = 0; i < 40; i++) for (const e of round(s, 'none', { kind: 'attack' }, `o${i}`).events) if (e.type === 'hit' && e.by === 'player' && e.move === 'Owl Friend') sum += e.damage; return sum; };
-    expect(owlHits(withFight(fighter('ranger', {}), owl, { sunder: { rounds: 3, mult: 1.5 } }))).toBeGreaterThan(owlHits(withFight(fighter('ranger', {}), owl)) * 1.3);
-  });
-  it('Venom on the Spikes: a tripwire that catches and spikes that go off poison; without it they do not', () => {
-    const lunge = { next: { name: 'Lunge', power: 2, weight: 1, charge: true } };
-    const caught = (talents: Record<string, number>) => me(round(withFight(fighter('ranger', talents), { trap: 1, round: 2 }, lunge), 'none').state).fight!.enemy.poison;
-    expect(caught({ 'tra-venom': 2 })).toBeTruthy();
-    expect(caught({})).toBeFalsy();
-    const spiked = (talents: Record<string, number>) => me(round(withFight(fighter('ranger', talents), { spike: { rounds: 3, power: 1 }, round: 2 }, { next: { name: 'Bite', power: 1, weight: 1 } }), 'none').state).fight!.enemy.poison;
-    expect(spiked({ 'tra-venom': 3 })).toBeTruthy();
-    expect(spiked({})).toBeFalsy();
-    // A rank is another helping.
-    expect(spiked({ 'tra-venom': 3 })!.damage).toBeGreaterThan(spiked({ 'tra-venom': 1 })!.damage);
   });
   it('Taunting Shout hits as well as weakens', () => {
     const r = round(fighter('warrior', { 'kni-taunt': 1 }, 1), 'none', { kind: 'ability', ability: 'kni-taunt' });
@@ -214,7 +190,7 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'warrior' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'holy-strike': 3, 'pal-devotion': 3, 'paladin-oath': 1, reckless: 2 }, carried: ['heavy-blow', 'execute', 'holy-strike', 'reckless'] };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 45, characters: { [P]: c } })))!;
-    expect(up.version).toBe(48);
+    expect(up.version).toBe(49);
     expect(Object.keys(me(up).abilities).sort()).toEqual(['execute', 'heavy-blow', 'reckless']);
     expect(me(up).carried).toEqual(['heavy-blow', 'execute', 'reckless']);
     expect(pointsFree(me(up))).toBe(19 - 2);
@@ -317,7 +293,7 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'mage' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, fireball: 2, 'wiz-focus': 3, 'spl-tempest': 2 }, carried: ['arcane-bolt', 'overflow', 'fireball', 'spl-tempest'] };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 46, characters: { [P]: c } })))!;
-    expect(up.version).toBe(48);
+    expect(up.version).toBe(49);
     expect(me(up).abilities['wiz-focus']).toBeUndefined();
     expect(me(up).abilities['spl-tempest']).toBeUndefined();
     expect(me(up).abilities.fireball).toBe(2);
@@ -431,10 +407,178 @@ describe('the talent data', () => {
     const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'rogue' });
     const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'nin-hands': 3, 'alc-salve': 2, 'sha-sight': 2 } };
     const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 47, characters: { [P]: c } })))!;
-    expect(up.version).toBe(48);
+    expect(up.version).toBe(49);
     expect(me(up).abilities['nin-hands']).toBeUndefined();
     expect(me(up).abilities['alc-salve']).toBeUndefined();
     expect(me(up).abilities['sha-sight']).toBe(2);
+  });
+
+  // The Hunter (Robin, 2026-11-12): crits that bleed, pets that stay, traps that wait.
+  const hunter = (talents: Record<string, number>) => full(fighter('ranger', talents));
+  const wolf = { kind: 'wolf', name: 'Wolf', power: 0.45 };
+  const owl = { kind: 'owl', name: 'Owl', power: 0.3, crit: 0.08 };
+  const bite = { next: { name: 'Bite', power: 1, weight: 1 } };
+  const by = (events: { type: string }[], name: string) => (events as { type: string; by?: string; move?: string; damage: number }[]).filter((e) => e.type === 'hit' && e.by === 'player' && e.move === name);
+  const foe = (s: GameState) => me(s).fight!.enemy;
+  it('Open Wound: a crit bleeds for a quarter of the hit over two rounds, and not without it', () => {
+    const r = round(withFight(hunter({ 'ran-wound': 1 }), { sureCrit: 1 }), 'none');
+    const crits = (r.events as { type: string; by?: string; crit?: boolean; damage: number }[]).filter((e) => e.type === 'hit' && e.by === 'player' && e.crit);
+    const quarter = crits.reduce((sum, e) => sum + e.damage, 0) * 0.25;
+    // One of its two rounds has stung already.
+    expect(foe(r.state).bleed!.rounds).toBe(1);
+    expect(Math.abs(foe(r.state).bleed!.damage - quarter / 2)).toBeLessThanOrEqual(crits.length);
+    expect(r.events.some((e) => e.type === 'poisoned' && e.target === 'enemy' && e.bleed)).toBe(true);
+    expect(foe(round(withFight(hunter({}), { sureCrit: 1 }), 'none').state).bleed ?? null).toBeNull();
+  });
+  it('a new bleed adds to the old one; Deep Cuts is stronger; Long Bleed a round longer', () => {
+    const old = { bleed: { rounds: 2, damage: 500 } };
+    const added = foe(round(withFight(hunter({ 'ran-wound': 1 }), { sureCrit: 1 }, old), 'none').state).bleed!;
+    expect(added.damage).toBeGreaterThan(500);
+    const sting = (talents: Record<string, number>) => foe(round(withFight(hunter({ 'ran-wound': 1, ...talents }), { sureCrit: 1 }), 'none', { kind: 'attack' }, 'one').state).bleed!;
+    expect(sting({ 'ran-deep': 3 }).damage).toBeGreaterThan(sting({}).damage * 1.1);
+    expect(sting({ 'ran-long': 1 }).rounds).toBe(2);
+  });
+  it('Steady Breath: a Brace makes the next arrow a sure crit', () => {
+    expect(me(round(hunter({ 'ran-breath': 1 }), 'brace').state).fight!.sureCrit).toBe(1);
+    expect(me(round(hunter({ 'ran-breath': 1 }), 'block').state).fight!.sureCrit).toBe(0);
+    expect(me(round(hunter({}), 'brace').state).fight!.sureCrit).toBe(0);
+  });
+  it('Hamstrung: a bleeding foe hits weaker', () => {
+    const bleeding = { bleed: { rounds: 9, damage: 1 }, ...bite };
+    const hp = (a: GameState) => me(a).hp;
+    expect(total(withFight(hunter({ 'ran-hamstrung': 3 }), { round: 2 }, bleeding), 'none', hp)).toBeGreaterThan(total(withFight(hunter({}), { round: 2 }, bleeding), 'none', hp));
+    expect(total(withFight(hunter({ 'ran-hamstrung': 3 }), { round: 2 }, bite), 'none', hp)).toBe(total(withFight(hunter({}), { round: 2 }, bite), 'none', hp));
+  });
+  it('Rend bleeds for four rounds, with or without Open Wound; Bleed Dry lands all the bleeding at once, doubled', () => {
+    const rent = foe(round(withFight(hunter({ 'ran-rend': 1 }), { meter: 2 }), 'none', use('ran-rend')).state).bleed!;
+    expect(rent.rounds).toBe(3);
+    const dry = round(withFight(hunter({ 'ran-bleed-dry': 1 }), {}, { bleed: { rounds: 3, damage: 100 } }), 'none', use('ran-bleed-dry'));
+    expect(by(dry.events, 'Bleed Dry')[0]!.damage).toBe(600);
+    expect(foe(dry.state).bleed ?? null).toBeNull();
+  });
+  it('a pet stays for the fight, strikes when the Hunter does damage, and a new one sends it away', () => {
+    const s = hunter({ hawk: 1, 'bea-wolf': 1 });
+    const called = round(s, 'none', use('hawk'));
+    expect(me(called.state).fight!.pets!.map((x) => x.kind)).toEqual(['owl']);
+    // It strikes as it arrives.
+    expect(by(called.events, 'Owl')).toHaveLength(1);
+    let after = called.state;
+    for (let i = 0; i < 3; i++) after = round(after, 'block', { kind: 'attack' }, 'r' + i).state;
+    expect(me(after).fight!.pets!.map((x) => x.kind)).toEqual(['owl']);
+    expect(by(round(after, 'none').events, 'Owl')).toHaveLength(1);
+    expect(me(round(after, 'none', use('bea-wolf')).state).fight!.pets!.map((x) => x.kind)).toEqual(['wolf']);
+  });
+  it('Pack of Two: two pets at once, and a third sends the oldest away', () => {
+    const s = withFight(hunter({ hawk: 1, 'bea-wolf': 1, 'bea-bear': 1, 'bea-two': 1 }), { pets: [owl] });
+    const two = round(s, 'none', use('bea-wolf')).state;
+    expect(me(two).fight!.pets!.map((x) => x.kind)).toEqual(['owl', 'wolf']);
+    expect(me(round(two, 'none', use('bea-bear')).state).fight!.pets!.map((x) => x.kind)).toEqual(['wolf', 'bear']);
+    const both = round(two, 'none');
+    expect(by(both.events, 'Owl')).toHaveLength(1);
+    expect(by(both.events, 'Wolf')).toHaveLength(1);
+  });
+  it('a pet strikes for its share of a plain hit; Close Bond and a foe that takes more make it harder', () => {
+    const bites = (s: GameState) => { let sum = 0; for (let i = 0; i < 40; i++) for (const e of by(round(s, 'none', { kind: 'attack' }, 'w' + i).events, 'Wolf')) sum += e.damage; return sum; };
+    const plain = bites(withFight(hunter({}), { pets: [wolf] }));
+    const shots = (() => { let sum = 0; for (let i = 0; i < 40; i++) for (const e of by(round(hunter({}), 'none', { kind: 'attack' }, 'w' + i).events, 'Attack')) sum += e.damage; return sum; })();
+    expect(plain / shots).toBeGreaterThan(0.35);
+    expect(plain / shots).toBeLessThan(0.55);
+    expect(bites(withFight(hunter({ 'bea-bond': 3 }), { pets: [wolf] }))).toBeGreaterThan(plain * 1.2);
+    expect(bites(withFight(hunter({}), { pets: [wolf] }, { sunder: { rounds: 3, mult: 1.5 } }))).toBeGreaterThan(plain * 1.3);
+  });
+  it('Hunting Pair: your own arrows hit harder with a pet out, and only then', () => {
+    const arrows = (s: GameState) => { let sum = 0; for (let i = 0; i < 40; i++) for (const e of by(round(s, 'none', { kind: 'attack' }, 'a' + i).events, 'Attack')) sum += e.damage; return sum; };
+    expect(arrows(withFight(hunter({ 'bea-pack': 3 }), { pets: [wolf] }))).toBeGreaterThan(arrows(withFight(hunter({}), { pets: [wolf] })));
+    expect(arrows(hunter({ 'bea-pack': 3 }))).toBe(arrows(hunter({})));
+  });
+  it('the gifts: the bear takes part of each blow, the viper poisons and weakens, Well Fed makes a gift stronger', () => {
+    const hp = (a: GameState) => me(a).hp;
+    const bear = { kind: 'bear', name: 'Bear', power: 0.25, taken: 0.15 };
+    const viper = { kind: 'viper', name: 'Viper', power: 0.2, weaken: 0.1, poison: 0.12 };
+    const struck = (talents: Record<string, number>, pets: unknown[]) => total(withFight(hunter(talents), { round: 2, pets }, bite), 'none', hp);
+    expect(struck({}, [bear])).toBeGreaterThan(struck({}, []));
+    expect(struck({ 'bea-fed': 3 }, [bear])).toBeGreaterThan(struck({}, [bear]));
+    expect(struck({}, [viper])).toBeGreaterThan(struck({}, []));
+    expect(foe(round(withFight(hunter({}), { pets: [viper] }), 'none').state).poison).toBeTruthy();
+  });
+  it('Kill Command needs a pet, and its strike is far harder; Stoop: the pets strike twice; Stampede: twice for a while', () => {
+    const s = withFight(hunter({ 'bea-kill': 1, 'bea-stoop': 1, 'bea-stampede': 1 }), { meter: 2 });
+    expect(round(s, 'none', use('bea-kill')).events.some((e) => e.type === 'rejected')).toBe(true);
+    const pack = withFight(s, { pets: [wolf] });
+    const command = by(round(pack, 'none', use('bea-kill')).events, 'Wolf');
+    expect(command).toHaveLength(1);
+    expect(command[0]!.damage).toBeGreaterThan(by(round(pack, 'none').events, 'Wolf')[0]!.damage * 2);
+    expect(by(round(pack, 'none', use('bea-stoop')).events, 'Wolf')).toHaveLength(2);
+    const run = round(pack, 'none', use('bea-stampede'));
+    expect(by(run.events, 'Wolf')).toHaveLength(2);
+    expect(me(run.state).fight!.stampede).toBe(2);
+    expect(by(round(run.state, 'none').events, 'Wolf')).toHaveLength(2);
+  });
+  it('a trap waits for an attack: not sprung in the first round or by a wind-up, sprung by the next blow', () => {
+    const s = hunter({ 'spike-trap': 1 });
+    const laid = round(s, 'none', use('spike-trap'));
+    expect(me(laid.state).fight!.traps).toEqual([{ ability: 'spike-trap', rank: 1, age: 1 }]);
+    const winding = round(withFight(s, { round: 2 }, { next: { name: 'Lunge', power: 2, weight: 1, charge: true } }), 'none', use('spike-trap'));
+    expect(me(winding.state).fight!.traps).toHaveLength(1);
+    const sprung = round(withFight(s, { round: 2 }, bite), 'none', use('spike-trap'));
+    expect(me(sprung.state).fight!.traps).toHaveLength(0);
+    expect(sprung.events.some((e) => e.type === 'effect' && e.kind === 'sprung')).toBe(true);
+    expect((sprung.events.find((e) => e.type === 'countered') as unknown as { damage: number }).damage).toBe(Math.round(stats(me(s)).attack * 1.8));
+  });
+  it('one trap lies at a time, two with Second Trap, and each attack springs one', () => {
+    const lunge = { charged: null, next: { name: 'Lunge', power: 2, weight: 1, charge: true } };
+    const s = hunter({ 'spike-trap': 1, snare: 1 });
+    const one = round(withFight(round(s, 'none', use('spike-trap')).state, {}, lunge), 'none', use('snare')).state;
+    expect(me(one).fight!.traps!.map((x) => x.ability)).toEqual(['snare']);
+    const t = hunter({ 'spike-trap': 1, snare: 1, 'tra-second': 1 });
+    const two = round(withFight(round(t, 'none', use('spike-trap')).state, {}, lunge), 'none', use('snare')).state;
+    expect(me(two).fight!.traps!.map((x) => x.ability)).toEqual(['spike-trap', 'snare']);
+    const after = round(withFight(two, { round: 4 }, { charged: null, ...bite }), 'none').state;
+    expect(me(after).fight!.traps!.map((x) => x.ability)).toEqual(['snare']);
+  });
+  it('Snare: the blow that springs it misses and the next are weaker; the Net costs it its next turn', () => {
+    const s = withFight(hunter({ snare: 1, 'tra-net': 1 }), { round: 2 }, bite);
+    const snared = round(s, 'none', use('snare'));
+    expect(snared.events.some((e) => e.type === 'missed' && e.by === 'enemy')).toBe(true);
+    expect(snared.events.some((e) => e.type === 'hit' && e.by === 'enemy')).toBe(false);
+    expect(foe(snared.state).weakened).toMatchObject({ rounds: 2, mult: 0.75 });
+    expect(me(round(s, 'none', use('tra-net')).state).fight!.skip).toBe(1);
+  });
+  it('Fire Pot burns and the Venom Trap poisons, and the foe takes more', () => {
+    const s = withFight(hunter({ 'tra-mine': 1, 'tra-venom': 1 }), { round: 2 }, bite);
+    expect(foe(round(s, 'none', use('tra-mine')).state).burn).toBeTruthy();
+    const venom = foe(round(s, 'none', use('tra-venom')).state);
+    expect(venom.poison!.rounds).toBe(4);
+    expect(venom.sunder).toMatchObject({ rounds: 4, mult: 1.1 });
+  });
+  it('the passives: Cruel Traps, Cunning, Follow Up, Barbed, Patient, Prepared', () => {
+    const sprung = (talents: Record<string, number>, round_ = 2) => round(withFight(hunter({ 'spike-trap': 1, ...talents }), { round: round_, meter: 0 }, bite), 'none', use('spike-trap'));
+    const hit = (r: { events: { type: string }[] }) => (r.events.find((e) => e.type === 'countered') as unknown as { damage: number }).damage;
+    expect(foe(sprung({ 'trapper-craft': 1 }).state).sunder).toMatchObject({ rounds: 2, mult: 1.15 });
+    expect(me(sprung({ 'tra-aim': 1 }).state).fight!.meter).toBeGreaterThanOrEqual(1);
+    expect(me(sprung({}).state).fight!.follow ?? 0).toBe(0);
+    expect(me(sprung({ 'tra-follow': 3 }).state).fight!.follow).toBeCloseTo(0.3);
+    expect(hit(sprung({ 'tra-wire': 3 }))).toBeGreaterThan(hit(sprung({})) * 1.15);
+    // Patient: only a trap that has waited a round.
+    expect(hit(sprung({ 'tra-patient': 3 }))).toBe(hit(sprung({})));
+    const ready = fighter('ranger', { 'spike-trap': 2, 'tra-ready': 1, 'tra-patient': 3 });
+    expect(me(ready).fight!.traps).toEqual([{ ability: 'spike-trap', rank: 2, age: 0 }]);
+    const waited = round(round(ready, 'none').state, 'none');
+    const plain = round(withFight(fighter('ranger', { 'spike-trap': 2 }), { round: 2, traps: [{ ability: 'spike-trap', rank: 2, age: 0 }] }, bite), 'none');
+    expect(hit(waited)).toBeGreaterThan(hit(plain) * 1.25);
+  });
+  it('Master of Snares lays every trap known at once', () => {
+    const s = hunter({ 'spike-trap': 1, snare: 1, 'tra-mine': 1, 'tra-master': 1 });
+    expect(me(round(s, 'none', use('tra-master')).state).fight!.traps!.map((x) => x.ability).sort()).toEqual(['snare', 'spike-trap', 'tra-mine']);
+  });
+  it('a save from before the new Hunter: the talents that went give their points back', () => {
+    const s = newGame({ seed: 'talents', player: P, name: 'Robin', classId: 'ranger' });
+    const c = { ...me(s), level: 20, abilities: { ...me(s).abilities, 'quick-reflex': 3, 'great-owl': 2, hawk: 2 } };
+    const up = migrate(JSON.parse(JSON.stringify({ ...s, version: 48, characters: { [P]: c } })))!;
+    expect(up.version).toBe(49);
+    expect(me(up).abilities['quick-reflex']).toBeUndefined();
+    expect(me(up).abilities['great-owl']).toBeUndefined();
+    expect(me(up).abilities.hawk).toBe(2);
   });
 
   it('no two talents of a class share a name', () => {

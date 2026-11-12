@@ -660,7 +660,7 @@
   "ranger": {
     "name": "Hunter",
     "style": "Bows only, strikes first, shoots back.",
-    "about": "Bows only. Often shoots back when struck, strikes first, and is at its best when it reads what comes next.",
+    "about": "Bows only. Strikes first and often shoots back when struck. Its trees: crits that bleed, pets that stay, traps that wait.",
     "hp": 100,
     "mana": 25,
     "attack": 10,
@@ -697,77 +697,77 @@
     "trees": {
       "ranger": {
         "name": "Ranger",
-        "text": "Every counterattack is two arrows.",
+        "text": "Crits that make the foe bleed.",
         "nodes": [
-          "quick-reflex",
-          "ran-draw",
-          "ranger-eye",
+          "ran-wound",
           "ran-hawkeye",
+          "ran-breath",
+          "ran-deep",
           "rain-arrows",
-          "ran-quick",
+          "ran-hamstrung",
           "ran-pin",
-          "ran-steady",
-          "return-fire",
           "ran-lethal",
+          "ran-rend",
+          "ran-scent",
           "ran-snipe",
-          "ran-reflex",
+          "ran-long",
           "ran-barrage",
           "ran-opening",
-          "ran-master"
+          "ran-bleed-dry"
         ],
         "tiers": [
           [
-            "quick-reflex",
-            "ran-draw"
-          ],
-          [
-            "ranger-eye",
+            "ran-wound",
             "ran-hawkeye"
           ],
           [
+            "ran-breath",
+            "ran-deep"
+          ],
+          [
             "rain-arrows",
-            "ran-quick"
+            "ran-hamstrung"
           ],
           [
             "ran-pin",
-            "ran-steady"
-          ],
-          [
-            "return-fire",
             "ran-lethal"
           ],
           [
+            "ran-rend",
+            "ran-scent"
+          ],
+          [
             "ran-snipe",
-            "ran-reflex"
+            "ran-long"
           ],
           [
             "ran-barrage",
             "ran-opening"
           ],
           [
-            "ran-master"
+            "ran-bleed-dry"
           ]
         ]
       },
       "beastmaster": {
         "name": "Beastmaster",
-        "text": "Fights beside its owl.",
+        "text": "Pets that stay for the fight and strike when you do.",
         "nodes": [
           "hawk",
           "bea-bond",
-          "beast-bond",
+          "bea-wolf",
           "bea-feathers",
-          "owl-swoop",
-          "bea-keen",
-          "bea-call",
+          "bea-kill",
+          "bea-keen-beasts",
+          "bea-bear",
           "bea-pack",
-          "great-owl",
-          "bea-mend",
+          "bea-viper",
+          "bea-fed",
           "bea-stoop",
-          "bea-fierce",
-          "bea-flock",
           "bea-care",
-          "bea-king"
+          "bea-two",
+          "bea-fierce",
+          "bea-stampede"
         ],
         "tiers": [
           [
@@ -775,57 +775,57 @@
             "bea-bond"
           ],
           [
-            "beast-bond",
+            "bea-wolf",
             "bea-feathers"
           ],
           [
-            "owl-swoop",
-            "bea-keen"
+            "bea-kill",
+            "bea-keen-beasts"
           ],
           [
-            "bea-call",
+            "bea-bear",
             "bea-pack"
           ],
           [
-            "great-owl",
-            "bea-mend"
+            "bea-viper",
+            "bea-fed"
           ],
           [
             "bea-stoop",
-            "bea-fierce"
-          ],
-          [
-            "bea-flock",
             "bea-care"
           ],
           [
-            "bea-king"
+            "bea-two",
+            "bea-fierce"
+          ],
+          [
+            "bea-stampede"
           ]
         ]
       },
       "trapper": {
-        "name": "Trapper",
-        "text": "Reads what comes next and has a trap waiting.",
+        "name": "Survival",
+        "text": "Traps that spring when the foe attacks.",
         "nodes": [
-          "trap",
+          "spike-trap",
           "tra-wire",
           "trapper-craft",
           "tra-read",
           "snare",
           "tra-barb",
-          "tra-pit",
-          "tra-prepared",
-          "spike-trap",
-          "tra-cunning",
-          "tra-net",
-          "tra-venom",
           "tra-mine",
+          "tra-ready",
+          "tra-venom",
+          "tra-aim",
+          "tra-net",
+          "tra-follow",
+          "tra-second",
           "tra-patient",
           "tra-master"
         ],
         "tiers": [
           [
-            "trap",
+            "spike-trap",
             "tra-wire"
           ],
           [
@@ -837,19 +837,19 @@
             "tra-barb"
           ],
           [
-            "tra-pit",
-            "tra-prepared"
+            "tra-mine",
+            "tra-ready"
           ],
           [
-            "spike-trap",
-            "tra-cunning"
+            "tra-venom",
+            "tra-aim"
           ],
           [
             "tra-net",
-            "tra-venom"
+            "tra-follow"
           ],
           [
-            "tra-mine",
+            "tra-second",
             "tra-patient"
           ],
           [
@@ -859,21 +859,21 @@
       }
     },
     "tagline": "Strikes first and shoots back. Enemies pay for every swing they take.",
-    "story": "Bows only. It acts first in every fight and often shoots back when struck, so the fight is half won before it reaches you. Aim builds when a blow misses you and when you crit. For you if you like to read the fight and let it come to you.",
+    "story": "Bows only. It acts first in every fight and often shoots back when struck. Aim builds when a blow misses you and when you crit. Make the foe bleed with every crit, fight beside a pet that stays, or lay traps and let it walk in. For you if you like to read the fight and let it come to you.",
     "showcase": {
       "ranger": [
-        "quick-reflex",
         "rain-arrows",
-        "ran-master"
+        "ran-rend",
+        "ran-bleed-dry"
       ],
       "beastmaster": [
         "hawk",
-        "great-owl",
-        "bea-king"
+        "bea-wolf",
+        "bea-stampede"
       ],
       "trapper": [
-        "trap",
         "spike-trap",
+        "snare",
         "tra-master"
       ]
     }

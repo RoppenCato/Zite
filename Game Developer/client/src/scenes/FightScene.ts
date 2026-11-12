@@ -16,7 +16,7 @@ import { Backdrop, preloadBackdrop } from '../backdrop.ts';
 import { applyPalette, dreamOverlay, dreamPalette, tintOf } from '../dreamlook.ts';
 import { creatureReady, Figure, preloadCreature, voiceOf } from '../creatures.ts';
 import type { GameLog } from '../game-log.ts';
-import { abilityIcon, behind, fly, freeTalentIconsAfter, HeldEffects, Owl, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
+import { abilityIcon, behind, fly, freeTalentIconsAfter, HeldEffects, Owl, type PetKind, playOnce, preloadCarriedIcons, preloadEffects } from '../effects.ts';
 import { sfx } from '../feel.ts';
 import { audio } from '../audio.ts';
 import { Hero, HERO_FIGHT_SCALE, heroReady } from '../hero.ts';
@@ -107,6 +107,10 @@ interface Option {
 
 type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObjects.Container;
 
+/** The pets by the name their hits carry, and the sound an effect borrows until it has its own. */
+const PET_KINDS = new Map(Object.values(ABILITIES).flatMap((a) => (a.ranks[0]?.pet ? [[a.name, a.ranks[0].pet.kind] as const] : [])));
+const EFFECT_SOUND: Record<string, string> = { spellUp: 'attackUp', pet: 'companion', stampede: 'companion', sprung: 'trap' };
+
 export class FightScene extends Phaser.Scene {
   private combo: { move: string; at: number; n: number } | null = null;
   private dripIn = 400;
@@ -125,7 +129,7 @@ export class FightScene extends Phaser.Scene {
   private hero: Hero | null = null;
   /** The clips held while a state lasts, and the Archer's owl while it fights. */
   private held!: HeldEffects;
-  private owl: Owl | null = null;
+  private pets = new Map<PetKind, Owl>();
   /** The Magician's marks over her head (Mitch, AD, 2026-11-11): the stance's badge, or a star for each charge of Light. */
   private marks: Phaser.GameObjects.Image[] = [];
   private marksShown = '';
@@ -216,7 +220,7 @@ export class FightScene extends Phaser.Scene {
     const feetY = this.backdrop.feetY;
     this.feetY = feetY;
     this.held = new HeldEffects(this);
-    this.owl = null;
+    this.pets = new Map();
 
     const title = this.add.text(TITLE_X, L.titleY, `${enemy.name} · level ${enemy.level}${fight.shared ? ' · world boss' : enemy.role === 'boss' ? ' · boss' : enemy.role === 'mini' ? ' · mini-boss' : ''}`, { fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#ffffff', stroke: '#1a2030', strokeThickness: 5 }).setOrigin(0.5);
     // A long name must not run under the ? (mine, 2026-11-01: the Sleepy Owlbear Cub did).
@@ -355,6 +359,9 @@ export class FightScene extends Phaser.Scene {
       const used = !!a?.oncePerFight && !!f?.used?.includes(id);
       const meterOk = !a?.meter || freeDark || (f?.meter ?? 0) >= a.meter;
       const meterAllOk = !a?.meterAll || (f?.meter ?? 0) > 0;
+      // Kill Command and Stampede need a pet beside you.
+      const first = a?.ranks[0];
+      const petOk = !(first?.petStrike || first?.stampede) || !!f?.pets?.length;
       const held = holdsFor(me, a?.needs);
       return {
         text: `${a?.name ?? id}${rank > 1 ? ` R${rank}` : ''}
@@ -362,7 +369,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         size: '14px',
         icon: id,
         color: 0x8e6ad9,
-        enabled: !!a && me.mana >= mana && meterOk && meterAllOk && !used && held,
+        enabled: !!a && me.mana >= mana && meterOk && meterAllOk && petOk && !used && held,
         onTap: () => this.pick({ kind: 'ability', ability: id }),
       };
     });
@@ -496,22 +503,26 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         if (e.by === 'player') {
           const combo = this.comboStep(e.move);
           // The hero swings; the blow lands on his clip's frame, and the enemy takes it then.
-          const byOwl = e.move === ABILITIES.hawk?.name;
+          // A pet's strike (Robin, 2026-11-12): it dashes at the foe as the owl always did. With fewer effects the hit just lands.
+          const petKind = PET_KINDS.get(e.move);
+          const byPet = !!petKind;
+          const pet = petKind ? this.pets.get(petKind) : undefined;
+          const byOwl = !!pet;
           const star = e.move === ABILITIES.meteor?.name;
           // A spell is cast and a bow shot from where the hero stands (Robin, 2026-11-03: "not hitting melee", "There should be ranged attack").
           // A Magician with a staff or a wand casts even her plain Attack, a small arcane bolt (Mitch, AD's cast pose, 2026-11-03).
           const plainCast = this.game_.me.classId === 'mage' && e.move === 'Attack' && gearKind(this.game_.me.equipment.weapon) !== 'sword';
           const spell = spellLook(e.move) ?? (plainCast ? SPELL_LOOKS.arcane : null);
-          const bowShot = this.game_.me.classId === 'ranger' && gearKind(this.game_.me.equipment.weapon) === 'bow' && !byOwl;
-          if (byOwl) this.owl?.strike(FIGHT_LAYOUT.enemyX - 70);
-          else {
+          const bowShot = this.game_.me.classId === 'ranger' && gearKind(this.game_.me.equipment.weapon) === 'bow' && !byPet;
+          if (pet) pet.strike(FIGHT_LAYOUT.enemyX - (petKind === 'owl' ? 70 : 62));
+          else if (!byPet) {
             // In a combo the hero swings fast and steps in once; a caster and an archer stay put.
             // A Magician who is not casting swings her sword on her own melee frames (Mitch, AD, 2026-11-03).
             const mageSwing = this.game_.me.classId === 'mage' && !spell && !star;
             this.hero?.play('attack1', false, combo > 0 ? 2.2 : 1, mageSwing);
             if (combo <= 1 && !spell && !star && !bowShot) this.step(this.heroBody, 34);
           }
-          this.after(byOwl ? (this.owl?.blowMs() ?? 0) : (this.hero?.blowMs(combo > 0 ? 2.2 : 1) ?? 0), () => {
+          this.after(pet ? pet.blowMs() : byPet ? 0 : (this.hero?.blowMs(combo > 0 ? 2.2 : 1) ?? 0), () => {
             const at = this.spot('enemy', 'chest');
             if (combo > 0 && this.game_.me.classId === 'rogue') this.slash(combo);
             // The foe feels it when the bolt, the star or the arrow arrives, not when it leaves.
@@ -594,13 +605,13 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         break;
       case 'effect':
         // The Light sounds when a charge comes, not when it is spent: the holy hit has its own sound.
-        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${e.kind === 'spellUp' ? 'attackUp' : e.kind}`);
+        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${EFFECT_SOUND[e.kind] ?? e.kind}`);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');
           if (on) behind(this, on, this.heroBody as Phaser.GameObjects.GameObject & { depth: number });
         }
-        this.say(e.kind === 'stance' ? `${e.name ?? 'A stance'}: it stands for the whole fight.` : this.effectText(e.target, e.kind, e.rounds));
+        this.say(e.kind === 'stance' ? `${e.name ?? 'A stance'}: it stands for the whole fight.` : this.effectText(e.target, e.kind, e.rounds, e.name));
         this.refreshStatus();
         break;
       case 'selfHurt':
@@ -912,8 +923,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       this.enemyBoard.setWords([]);
       this.heroBoard.setWords([]);
       this.held.clear();
-      this.owl?.destroy();
-      this.owl = null;
+      for (const pet of this.pets.values()) pet.destroy();
+      this.pets.clear();
       this.showMarks(null, 0);
       return;
     }
@@ -944,6 +955,11 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     const heroBits = [
       // The dark comes first: it changes what the buttons do (2026-11-11).
       inDark(f) ? 'in the dark' : '',
+      // The Hunter's pets and traps (2026-11-12): they decide the next move too.
+      f.traps?.length ? (f.traps.length === 1 ? `${(ABILITIES[f.traps[0]!.ability]?.name ?? 'trap').toLowerCase()} laid` : `${f.traps.length} traps laid`) : '',
+      f.pets?.length ? f.pets.map((x) => x.name.toLowerCase()).join(' and ') : '',
+      f.stampede ? `stampede ${f.stampede}` : '',
+      f.follow ? `next shot +${Math.round(f.follow * 100)}%` : '',
       f.lurk ? `lurking +${Math.round(f.lurk * 100)}%` : '',
       f.charged ? 'charged' : '',
       f.attackUp ? `hits harder ${f.attackUp.rounds}` : '',
@@ -956,12 +972,10 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       f.evade ? `evading ${f.evade}` : '',
       f.sureCrit ? `sure crit ${f.sureCrit}` : '',
       f.mark ? `marked ${f.mark.hits}` : '',
-      f.companion ? `${f.companion.name.toLowerCase()} ${f.companion.rounds}` : '',
       f.windup ? `${f.windup.name.toLowerCase()} in ${f.windup.rounds}` : '',
       ...(f.air ?? []).map((w) => `${w.name.toLowerCase()} in ${w.rounds}`),
       f.light ? `light ${f.light}` : '',
       f.cheap ? 'next spell cheaper' : '',
-      f.trap ? 'trap set' : '',
       f.skip ? `time bent ${f.skip}` : '',
       f.poisoned ? `poisoned ${f.poisoned.rounds}` : '',
       f.streak && traitsOf(this.game_.me).critStreak ? `crit +${Math.round(f.streak * (traitsOf(this.game_.me).critStreak ?? 0) * 100)}%` : '',
@@ -974,8 +988,6 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       f.regen ? `healing ${f.regen.rounds}` : '',
       f.blockUp ? `bulwark ${f.blockUp.rounds}` : '',
       f.thornsUp ? `retort ${f.thornsUp.rounds}` : '',
-      f.counterUp ? `reflexes ${f.counterUp.rounds}` : '',
-      f.spike ? `spikes ${f.spike.rounds}` : '',
       f.weak ? `weakened ${f.weak.rounds}` : '',
       this.game_.me.elixirs?.vigor ? 'vigor' : '',
       this.game_.me.elixirs?.arcana ? 'arcana' : '',
@@ -1000,11 +1012,24 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     this.held.set('storm_edge', !!f.both || f.infuse?.kind === 'storm', heroChest.x + 26, heroChest.y + 6);
     this.held.set('weaken', !!e.weakened, foeChest.x, foeChest.y);
     this.held.set('chill', !!e.stunned, foeChest.x, foeChest.y);
-    if (f.companion && !this.owl && this.game_.me.classId === 'ranger' && !settings.get().fewerEffects) this.owl = new Owl(this, FIGHT_LAYOUT.heroX + 84, this.feetY - 70);
-    else if (!f.companion && this.owl) {
-      this.owl.destroy();
-      this.owl = null;
+    // The pets beside her (Mitch, AD, 2026-11-12): the owl in the air; the ground pets in two places, in the order they were called.
+    const out = this.game_.me.classId === 'ranger' && !settings.get().fewerEffects ? (f.pets ?? []) : [];
+    for (const [kind, pet] of this.pets) {
+      if (out.some((x) => x.kind === kind)) continue;
+      pet.destroy();
+      this.pets.delete(kind);
     }
+    let ground = 0;
+    for (const x of out) {
+      const air = x.kind === 'owl';
+      const at = air ? { x: FIGHT_LAYOUT.heroX + 84, y: this.feetY - 70, depth: 50 } : ground++ === 0 ? { x: FIGHT_LAYOUT.heroX + 56, y: this.feetY + 6, depth: 50 } : { x: FIGHT_LAYOUT.heroX + 104, y: this.feetY - 2, depth: 49 };
+      let pet = this.pets.get(x.kind);
+      if (!pet) this.pets.set(x.kind, (pet = new Owl(this, at.x, at.y, x.kind)));
+      pet.place(at.x, at.y, at.depth);
+    }
+    // The traps lying in wait in front of the foe; each snaps shut as it goes.
+    const lying = this.game_.me.classId === 'ranger' ? (f.traps?.length ?? 0) : 0;
+    for (let i = 0; i < 2; i++) this.held.set('wait', lying > i, FIGHT_LAYOUT.enemyX - 70 - 22 * i, this.feetY + 8, 'trap', 'spring');
   }
 
   /** What the enemy will do next, from its intent: the thing to pick a guard for (mine, 2026-11-01). */
@@ -1017,7 +1042,7 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
     return `next: ${mv.name}${effect ? ` (${effect})` : ''}`;
   }
 
-  private effectText(target: 'player' | 'enemy', kind: string, rounds: number): string {
+  private effectText(target: 'player' | 'enemy', kind: string, rounds: number, name?: string): string {
     const n = this.enemyName;
     if (target === 'enemy') {
       switch (kind) {
@@ -1031,7 +1056,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         case 'armoured': return `${n} hardens: its hide is thicker for ${rounds} rounds.`;
         case 'evade': return `${n} fades: your next hit will miss.`;
         case 'mark': return `${n} is marked: your next ${rounds} hits land harder.`;
-        case 'trap': return 'A trap is set: its next wind-up will fail.';
+        case 'trap': return rounds > 2 ? 'Every trap you know lies in wait. Each attack springs one.' : `Your ${name ?? 'trap'} lies in wait. It springs when ${n} attacks.`;
+        case 'sprung': return `${n} springs your ${name ?? 'trap'}!`;
         case 'skip': return `Time bends round ${n}: it loses ${rounds} ${rounds === 1 ? 'turn' : 'turns'}.`;
         default: return '';
       }
@@ -1049,7 +1075,8 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
       case 'barrier': return `A barrier of ${rounds} forms round you.`;
       case 'evade': return `You slip into the shadows: the next ${rounds} ${rounds === 1 ? 'blow misses' : 'blows miss'}.`;
       case 'sureCrit': return `Your next ${rounds === 1 ? 'hit is a sure crit' : `${rounds} hits are sure crits`}.`;
-      case 'companion': return `Your owl takes wing: it strikes at the end of every round for ${rounds} rounds.`;
+      case 'pet': return `Your ${(name ?? 'pet').toLowerCase()} comes to your side. It stays for the fight.`;
+      case 'stampede': return 'Stampede! Your pets strike twice.';
       case 'windup': return `It is called: it lands in ${rounds} ${rounds === 1 ? 'round' : 'rounds'}, whatever you do.`;
       case 'clone': return `A copy of you joins in for ${rounds} rounds.`;
       case 'guardian': return 'A last light stands over you.';

@@ -44,3 +44,33 @@ Robin's yes to the Rogue's new talents, through Miles, GD. Designs mine. Picture
 | `alc-reagents` | Reagents | a reaction's burst giving a gold pip (Mischief) and a blue drop (mana) |
 
 The retired ids (`nin-hands`, `nin-first`, `nin-edge`, `nin-grip`, `sha-finish`, `alc-flask`, `alc-salve`, `alc-tonic`) are no longer in the atlas, since the tool only draws what `abilities.json` lists. Still 127 frames, 1024 square, 122 KB.
+
+## 2026-11-12: the Hunter's 20, and two redrawn
+
+Robin's design and his "Yes" to the talent list, through Miles, GD. Designs mine. Picture: `hunter.jpg`.
+
+- **Ranger, crits that bleed:** the arrow and red drops.
+  - Open Wound: an arrow into a burst, dripping.
+  - Steady Breath: a target, an arrow and a breath.
+  - Deep Cuts: a drop and an up arrow.
+  - Hamstrung: a sword, a drop and a down arrow.
+  - Rend: an arrow trailing drops.
+  - Blood Scent: a red eye and a drop.
+  - Long Bleed: a drop and an hourglass.
+  - Bleed Dry: a red burst spraying drops.
+- **Beastmaster, pets that stay:**
+  - Wolf, Bear and Viper: each pet's head, the same three as in the fight.
+  - Kill Command: a paw and three claw marks.
+  - Keen Beasts: a paw and sparks.
+  - Well Fed: a joint of meat and a heart.
+  - Pack of Two: two paws.
+  - Stampede: a trail of paws.
+- **Survival, traps:** the spike trap with a mark.
+  - Prepared: sparks.
+  - Cunning: a target, which is Aim.
+  - Follow Up: an arrow over it.
+  - Second Trap: two traps.
+  - Barbed (redrawn, was a tripwire): an up arrow.
+  - Patient (redrawn, was a bare hourglass): an hourglass over the trap.
+- **Kept as they are:** Owl, Spike Trap, Snare and Venom Trap (in `assets/abilities`), and Stoop. They still read right with the new meanings.
+- **The atlas:** 134 frames, 1024 square, 128 KB. The retired ids are no longer in it.

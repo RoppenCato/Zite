@@ -23,6 +23,18 @@ import effectsPng from '../../assets/effects/effects.png';
 import owlData from '../../assets/effects/owl/owl.json';
 import owlJson from '../../assets/effects/owl/owl.json?url';
 import owlPng from '../../assets/effects/owl/owl.png';
+import wolfData from '../../assets/pets/wolf/wolf.json';
+import wolfJson from '../../assets/pets/wolf/wolf.json?url';
+import wolfPng from '../../assets/pets/wolf/wolf.png';
+import bearData from '../../assets/pets/bear/bear.json';
+import bearJson from '../../assets/pets/bear/bear.json?url';
+import bearPng from '../../assets/pets/bear/bear.png';
+import viperData from '../../assets/pets/viper/viper.json';
+import viperJson from '../../assets/pets/viper/viper.json?url';
+import viperPng from '../../assets/pets/viper/viper.png';
+import trapData from '../../assets/pets/trap/trap.json';
+import trapJson from '../../assets/pets/trap/trap.json?url';
+import trapPng from '../../assets/pets/trap/trap.png';
 import rogueData from '../../assets/fx_rogue/fx_rogue.json';
 import lightningData from '../../assets/trinkets/fx_lightning.json';
 import spellsData from '../../assets/fx_spells/fx_spells.json';
@@ -40,6 +52,11 @@ const ATLASES = {
   effects: { png: effectsPng, json: effectsJson, actions: actionsOf(effectsData), scale: 0.5 },
   bubble: { png: bubblePng, json: bubbleJson, actions: actionsOf(bubbleData), scale: 1 },
   owl: { png: owlPng, json: owlJson, actions: actionsOf(owlData), scale: 0.5 },
+  // The Beastmaster's ground pets and Survival's trap (Mitch, AD, 2026-11-12): built like the owl, stand and attack1; the trap waits and springs.
+  wolf: { png: wolfPng, json: wolfJson, actions: actionsOf(wolfData), scale: 0.5 },
+  bear: { png: bearPng, json: bearJson, actions: actionsOf(bearData), scale: 0.5 },
+  viper: { png: viperPng, json: viperJson, actions: actionsOf(viperData), scale: 0.5 },
+  trap: { png: trapPng, json: trapJson, actions: actionsOf(trapData), scale: 0.5 },
   // The Rogue's slashes and the poisoned blade's drip (Mitch, AD, 2026-11-03).
   fx_rogue: { png: roguePng, json: rogueJson, actions: actionsOf(rogueData), scale: 0.5 },
   // Blood on a Ninja's blade (Mitch, AD, 2026-11-03).
@@ -97,7 +114,7 @@ export function abilityIcon(scene: Phaser.Scene, ability: string, x: number, y: 
 
 /** The clips for a fight; call from its preload. The owl is only for an Archer. */
 export function preloadEffects(scene: Phaser.Scene, withOwl: boolean, withRogue = false, withLightning = false, withSpells = false): void {
-  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : []), ...(withLightning ? (['fx_lightning'] as const) : []), ...(withSpells ? (['fx_spells'] as const) : [])]) {
+  for (const name of [...(['effects', 'bubble'] as const), ...(withOwl ? (['owl', 'wolf', 'bear', 'viper', 'trap'] as const) : []), ...(withRogue ? (['fx_rogue', 'fx_blood'] as const) : []), ...(withLightning ? (['fx_lightning'] as const) : []), ...(withSpells ? (['fx_spells'] as const) : [])]) {
     if (!scene.textures.exists(name)) scene.load.atlas(name, ATLASES[name].png, ATLASES[name].json);
   }
 }
@@ -185,29 +202,44 @@ export class HeldEffects {
   }
 }
 
-/** The Archer's owl beside the hero while it fights with her. */
+export type PetKind = 'owl' | 'wolf' | 'bear' | 'viper';
+
+/** A Hunter's pet beside the hero while it fights with her: the owl in the air, the others on the ground (Mitch, AD's places). */
 export class Owl {
   private readonly sprite: Phaser.GameObjects.Sprite | null;
   private readonly scene: Phaser.Scene;
+  private readonly kind: PetKind;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, kind: PetKind = 'owl') {
     this.scene = scene;
-    this.sprite = sprite(scene, 'owl', 'stand', x, y);
-    this.sprite?.setFlipX(true).play('owl/stand');
+    this.kind = kind;
+    this.sprite = sprite(scene, kind, 'stand', x, y);
+    this.sprite?.setFlipX(true).play(`${kind}/stand`);
   }
+
+  /** Where it stands, and how far forward it is drawn. */
+  place(x: number, y: number, depth: number): void {
+    if (this.home === x) return;
+    this.home = x;
+    this.sprite?.setPosition(x, y).setDepth(depth);
+  }
+  private home: number | null = null;
 
   /** How long until the blow lands: frame 4. */
   blowMs(): number {
-    return msBefore(ATLASES.owl.actions.attack1!, 4);
+    return msBefore(ATLASES[this.kind].actions.attack1!, 4);
   }
 
   /** It dives at the enemy and comes back. */
   strike(toX: number): void {
     const s = this.sprite;
     if (!s) return;
-    s.play('owl/attack1');
-    s.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => s.play('owl/stand'));
-    this.scene.tweens.add({ targets: s, x: toX, duration: this.blowMs(), ease: 'Quad.easeIn', yoyo: true, hold: 60 });
+    const home = s.x;
+    s.play(`${this.kind}/attack1`);
+    s.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => s.play(`${this.kind}/stand`));
+    // Back to where it stood, even if it is asked to strike again mid-leap.
+    this.scene.tweens.killTweensOf(s);
+    this.scene.tweens.add({ targets: s, x: toX, duration: this.blowMs(), ease: 'Quad.easeIn', yoyo: true, hold: 60, onComplete: () => s.setX(this.home ?? home), onStop: () => s.setX(this.home ?? home) });
   }
 
   destroy(): void {

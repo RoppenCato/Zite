@@ -1111,46 +1111,6 @@
       }
     ]
   },
-  "quick-reflex": {
-    "name": "Quick Reflexes",
-    "classId": "ranger",
-    "text": "For a few rounds you shoot back far more often.",
-    "mana": 5,
-    "level": 2,
-    "ranks": [
-      {
-        "counterUp": {
-          "rounds": 3,
-          "chance": 0.4
-        }
-      },
-      {
-        "counterUp": {
-          "rounds": 3,
-          "chance": 0.55
-        }
-      },
-      {
-        "counterUp": {
-          "rounds": 4,
-          "chance": 0.7
-        }
-      }
-    ]
-  },
-  "ranger-eye": {
-    "name": "Double Nock",
-    "classId": "ranger",
-    "text": "Whenever you shoot back, you shoot twice.",
-    "mana": 0,
-    "level": 5,
-    "rule": {
-      "counterHits": 2
-    },
-    "ranks": [
-      {}
-    ]
-  },
   "rain-arrows": {
     "name": "Rain of Arrows",
     "classId": "ranger",
@@ -1176,233 +1136,6 @@
     ],
     "needs": [
       "bow"
-    ]
-  },
-  "return-fire": {
-    "name": "Overwatch",
-    "classId": "ranger",
-    "text": "Spend 2 Aim: for a few rounds you shoot back every time it strikes, hit or miss.",
-    "mana": 4,
-    "meter": 2,
-    "level": 17,
-    "ranks": [
-      {
-        "counterUp": {
-          "rounds": 2,
-          "chance": 1
-        }
-      },
-      {
-        "counterUp": {
-          "rounds": 3,
-          "chance": 1
-        }
-      },
-      {
-        "counterUp": {
-          "rounds": 4,
-          "chance": 1
-        }
-      }
-    ]
-  },
-  "hawk": {
-    "name": "Owl Friend",
-    "classId": "ranger",
-    "text": "Spend 2 Aim: your owl strikes on its own at the end of every round for a while.",
-    "mana": 4,
-    "meter": 2,
-    "level": 2,
-    "ranks": [
-      {
-        "companion": {
-          "rounds": 4,
-          "power": 0.5
-        }
-      },
-      {
-        "companion": {
-          "rounds": 5,
-          "power": 0.55
-        }
-      },
-      {
-        "companion": {
-          "rounds": 6,
-          "power": 0.6
-        }
-      }
-    ]
-  },
-  "beast-bond": {
-    "name": "Bonded",
-    "classId": "ranger",
-    "text": "Your owl strikes harder.",
-    "mana": 0,
-    "level": 5,
-    "rule": {
-      "companionPower": 1.3
-    },
-    "ranks": [
-      {}
-    ]
-  },
-  "owl-swoop": {
-    "name": "Owl Swoop",
-    "classId": "ranger",
-    "text": "Spend 3 Aim: the owl dives, a big hit that ignores its defense.",
-    "mana": 3,
-    "meter": 3,
-    "level": 9,
-    "ranks": [
-      {
-        "power": 2.2,
-        "ignoreDefense": true
-      },
-      {
-        "power": 2.5,
-        "ignoreDefense": true
-      },
-      {
-        "power": 2.8,
-        "ignoreDefense": true
-      }
-    ]
-  },
-  "great-owl": {
-    "name": "Great Owl",
-    "classId": "ranger",
-    "text": "Spend 3 Aim: the owl strikes twice every round, for longer.",
-    "mana": 6,
-    "meter": 3,
-    "level": 17,
-    "ranks": [
-      {
-        "companion": {
-          "rounds": 5,
-          "power": 0.5,
-          "hits": 2
-        }
-      },
-      {
-        "companion": {
-          "rounds": 6,
-          "power": 0.55,
-          "hits": 2
-        }
-      },
-      {
-        "companion": {
-          "rounds": 7,
-          "power": 0.6,
-          "hits": 2
-        }
-      }
-    ]
-  },
-  "trap": {
-    "name": "Tripwire",
-    "classId": "ranger",
-    "text": "Lay a tripwire: the enemy's next wind-up fails.",
-    "mana": 6,
-    "level": 2,
-    "ranks": [
-      {
-        "trap": 1
-      },
-      {
-        "trap": 1,
-        "power": 0.6
-      },
-      {
-        "trap": 2,
-        "power": 0.8
-      }
-    ]
-  },
-  "trapper-craft": {
-    "name": "Cruel Traps",
-    "classId": "ranger",
-    "text": "An enemy caught in your tripwire takes a hard hit.",
-    "mana": 0,
-    "level": 5,
-    "rule": {
-      "trapHit": 1.5
-    },
-    "ranks": [
-      {}
-    ]
-  },
-  "snare": {
-    "name": "Pinning Shot",
-    "classId": "ranger",
-    "text": "A hit, and its next blows are much weaker.",
-    "mana": 5,
-    "level": 9,
-    "ranks": [
-      {
-        "power": 1,
-        "weaken": {
-          "rounds": 1,
-          "mult": 0.5
-        }
-      },
-      {
-        "power": 1.15,
-        "weaken": {
-          "rounds": 2,
-          "mult": 0.5
-        }
-      },
-      {
-        "power": 1.3,
-        "weaken": {
-          "rounds": 2,
-          "mult": 0.4
-        }
-      }
-    ],
-    "needs": [
-      "bow"
-    ]
-  },
-  "spike-trap": {
-    "name": "Killing Ground",
-    "classId": "ranger",
-    "text": "For a few rounds each blow it tries sets off spikes, and it takes more damage.",
-    "mana": 7,
-    "level": 17,
-    "ranks": [
-      {
-        "spike": {
-          "rounds": 3,
-          "power": 1
-        },
-        "sunder": {
-          "rounds": 3,
-          "mult": 1.15
-        }
-      },
-      {
-        "spike": {
-          "rounds": 4,
-          "power": 1.2
-        },
-        "sunder": {
-          "rounds": 4,
-          "mult": 1.15
-        }
-      },
-      {
-        "spike": {
-          "rounds": 5,
-          "power": 1.4
-        },
-        "sunder": {
-          "rounds": 5,
-          "mult": 1.2
-        }
-      }
     ]
   },
   "war-valor": {
@@ -3401,16 +3134,14 @@
     "classId": "rogue",
     "level": 30
   },
-  "ran-draw": {
-    "name": "Strong Draw",
-    "text": "3% more attack a rank.",
+  "ran-wound": {
+    "name": "Open Wound",
+    "text": "A crit makes the foe bleed: a quarter of the hit again, over two rounds. New bleeds add to the old.",
     "mana": 0,
     "rule": {
-      "attackMult": 1.03
+      "critBleedShare": 0.25
     },
     "ranks": [
-      {},
-      {},
       {}
     ],
     "classId": "ranger",
@@ -3429,14 +3160,42 @@
       {}
     ],
     "classId": "ranger",
-    "level": 5
+    "level": 2
   },
-  "ran-quick": {
-    "name": "Quick Nock",
-    "text": "A 3% better chance a rank to shoot back.",
+  "ran-breath": {
+    "name": "Steady Breath",
+    "text": "After a Brace, your first arrow of the next round surely crits.",
     "mana": 0,
     "rule": {
-      "counterChance": 0.03
+      "braceCrit": 1
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
+  },
+  "ran-deep": {
+    "name": "Deep Cuts",
+    "text": "Your bleeds are 6% stronger a rank.",
+    "mana": 0,
+    "rule": {
+      "bleedPower": 0.06
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
+  },
+  "ran-hamstrung": {
+    "name": "Hamstrung",
+    "text": "A bleeding foe hits 4% weaker a rank.",
+    "mana": 0,
+    "rule": {
+      "bleedingWeak": 0.04
     },
     "ranks": [
       {},
@@ -3470,12 +3229,12 @@
       "bow"
     ]
   },
-  "ran-steady": {
-    "name": "Steady Return",
-    "text": "Your shots back are 6% stronger a rank.",
+  "ran-lethal": {
+    "name": "Lethal Shots",
+    "text": "Your crits hit 7% harder a rank.",
     "mana": 0,
     "rule": {
-      "counterPower": 0.06
+      "critPower": 0.07
     },
     "ranks": [
       {},
@@ -3485,12 +3244,40 @@
     "classId": "ranger",
     "level": 13
   },
-  "ran-lethal": {
-    "name": "Lethal Shots",
-    "text": "Your crits hit 10% harder a rank.",
+  "ran-rend": {
+    "name": "Rend",
+    "text": "Spend 2 Aim: an arrow that surely crits, and its bleed lasts four rounds.",
+    "mana": 4,
+    "ranks": [
+      {
+        "power": 1.3,
+        "crit": 1,
+        "bleedRounds": 4
+      },
+      {
+        "power": 1.5,
+        "crit": 1,
+        "bleedRounds": 4
+      },
+      {
+        "power": 1.7,
+        "crit": 1,
+        "bleedRounds": 4
+      }
+    ],
+    "meter": 2,
+    "classId": "ranger",
+    "level": 17,
+    "needs": [
+      "bow"
+    ]
+  },
+  "ran-scent": {
+    "name": "Blood Scent",
+    "text": "2% more crit a rank against a bleeding foe.",
     "mana": 0,
     "rule": {
-      "critPower": 0.1
+      "bleedingCrit": 0.02
     },
     "ranks": [
       {},
@@ -3524,16 +3311,14 @@
       "bow"
     ]
   },
-  "ran-reflex": {
-    "name": "Light Step",
-    "text": "2% more dodge a rank.",
+  "ran-long": {
+    "name": "Long Bleed",
+    "text": "Your bleeds last a round longer.",
     "mana": 0,
     "rule": {
-      "dodge": 0.02
+      "bleedRounds": 1
     },
     "ranks": [
-      {},
-      {},
       {}
     ],
     "classId": "ranger",
@@ -3581,29 +3366,59 @@
     "classId": "ranger",
     "level": 25
   },
-  "ran-master": {
-    "name": "Master Archer",
-    "text": "Once a fight: for a while you shoot back at nearly everything, and shoot harder.",
+  "ran-bleed-dry": {
+    "name": "Bleed Dry",
+    "text": "Once a fight: all the bleeding left lands at once, doubled, and an arrow after it.",
     "mana": 8,
     "ranks": [
       {
-        "counterUp": {
-          "rounds": 6,
-          "chance": 0.5
+        "consume": {
+          "kind": "bleed",
+          "mult": 2
         },
-        "attackUp": {
-          "rounds": 6,
-          "mult": 1.3
-        }
+        "power": 1.5
       }
     ],
     "oncePerFight": true,
     "classId": "ranger",
-    "level": 30
+    "level": 30,
+    "needs": [
+      "bow"
+    ]
+  },
+  "hawk": {
+    "name": "Owl",
+    "text": "Call your owl. It stays for the fight and strikes whenever you do damage, for 30% of your attack. With it you crit 8% more. It strikes hard as it arrives. A new pet sends the old one away.",
+    "mana": 5,
+    "ranks": [
+      {
+        "pet": {
+          "kind": "owl",
+          "power": 0.3,
+          "crit": 0.08
+        }
+      },
+      {
+        "pet": {
+          "kind": "owl",
+          "power": 0.34,
+          "crit": 0.08
+        }
+      },
+      {
+        "pet": {
+          "kind": "owl",
+          "power": 0.38,
+          "crit": 0.08
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 2
   },
   "bea-bond": {
     "name": "Close Bond",
-    "text": "Your owl hits 8% harder a rank.",
+    "text": "Your pets hit 8% harder a rank.",
     "mana": 0,
     "rule": {
       "companionPower": 1.08
@@ -3615,6 +3430,33 @@
     ],
     "classId": "ranger",
     "level": 2
+  },
+  "bea-wolf": {
+    "name": "Wolf",
+    "text": "Call a wolf. It stays for the fight and strikes whenever you do damage, for 45% of your attack. It strikes hard as it arrives. A new pet sends the old one away.",
+    "mana": 5,
+    "ranks": [
+      {
+        "pet": {
+          "kind": "wolf",
+          "power": 0.45
+        }
+      },
+      {
+        "pet": {
+          "kind": "wolf",
+          "power": 0.5
+        }
+      },
+      {
+        "pet": {
+          "kind": "wolf",
+          "power": 0.55
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 5
   },
   "bea-feathers": {
     "name": "Thick Coat",
@@ -3631,42 +3473,62 @@
     "classId": "ranger",
     "level": 5
   },
-  "bea-keen": {
-    "name": "Keen Sight",
-    "text": "2% more crit a rank.",
+  "bea-kill": {
+    "name": "Kill Command",
+    "text": "Spend 2 Aim: every pet strikes now, three times as hard.",
+    "mana": 3,
+    "ranks": [
+      {
+        "petStrike": 3
+      },
+      {
+        "petStrike": 3.5
+      },
+      {
+        "petStrike": 4
+      }
+    ],
+    "meter": 2,
+    "classId": "ranger",
+    "level": 9
+  },
+  "bea-keen-beasts": {
+    "name": "Keen Beasts",
+    "text": "Your pets crit as often as you do.",
     "mana": 0,
     "rule": {
-      "crit": 0.02
+      "petCrit": 1
     },
     "ranks": [
-      {},
-      {},
       {}
     ],
     "classId": "ranger",
     "level": 9
   },
-  "bea-call": {
-    "name": "Call the Owl",
-    "text": "The owl comes for a long while, no Aim asked.",
-    "mana": 6,
+  "bea-bear": {
+    "name": "Bear",
+    "text": "Call a bear. It stays for the fight and strikes whenever you do damage, for 25% of your attack. With it you take 15% less damage. It strikes hard as it arrives. A new pet sends the old one away.",
+    "mana": 5,
     "ranks": [
       {
-        "companion": {
-          "rounds": 5,
-          "power": 0.6
+        "pet": {
+          "kind": "bear",
+          "power": 0.25,
+          "taken": 0.15
         }
       },
       {
-        "companion": {
-          "rounds": 5,
-          "power": 0.7
+        "pet": {
+          "kind": "bear",
+          "power": 0.28,
+          "taken": 0.15
         }
       },
       {
-        "companion": {
-          "rounds": 6,
-          "power": 0.8
+        "pet": {
+          "kind": "bear",
+          "power": 0.31,
+          "taken": 0.15
         }
       }
     ],
@@ -3675,7 +3537,7 @@
   },
   "bea-pack": {
     "name": "Hunting Pair",
-    "text": "While your owl is out, your own arrows hit 5% harder a rank.",
+    "text": "With a pet out, your own arrows hit 5% harder a rank.",
     "mana": 0,
     "rule": {
       "companionDamage": 1.05
@@ -3688,14 +3550,48 @@
     "classId": "ranger",
     "level": 13
   },
-  "bea-mend": {
-    "name": "Preening",
-    "text": "You heal 1% of your HP each round, a rank.",
+  "bea-viper": {
+    "name": "Viper",
+    "text": "Call a viper. It stays for the fight and strikes whenever you do damage, for 20% of your attack. Its bite poisons, and the foe hits 10% weaker. It strikes hard as it arrives. A new pet sends the old one away.",
+    "mana": 5,
+    "ranks": [
+      {
+        "pet": {
+          "kind": "viper",
+          "power": 0.2,
+          "weaken": 0.1,
+          "poison": 0.12
+        }
+      },
+      {
+        "pet": {
+          "kind": "viper",
+          "power": 0.23,
+          "weaken": 0.1,
+          "poison": 0.12
+        }
+      },
+      {
+        "pet": {
+          "kind": "viper",
+          "power": 0.26,
+          "weaken": 0.1,
+          "poison": 0.12
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 17
+  },
+  "bea-fed": {
+    "name": "Well Fed",
+    "text": "A pet's gift is 10% stronger a rank.",
     "mana": 0,
     "rule": {
-      "hpRegen": 0.01
+      "petGift": 0.1
     },
     "ranks": [
+      {},
       {},
       {}
     ],
@@ -3704,66 +3600,27 @@
   },
   "bea-stoop": {
     "name": "Stoop",
-    "text": "The owl dives with your arrow: a very hard hit.",
+    "text": "A hard shot, and your pets strike twice with it.",
     "mana": 8,
     "ranks": [
       {
-        "power": 2.4
+        "power": 2.4,
+        "petHits": 2
       },
       {
-        "power": 2.8
+        "power": 2.8,
+        "petHits": 2
       },
       {
-        "power": 3.2
+        "power": 3.2,
+        "petHits": 2
       }
     ],
     "classId": "ranger",
-    "level": 21
-  },
-  "bea-fierce": {
-    "name": "Fierce Owl",
-    "text": "Your owl hits 8% harder a rank.",
-    "mana": 0,
-    "rule": {
-      "companionPower": 1.08
-    },
-    "ranks": [
-      {},
-      {},
-      {}
-    ],
-    "classId": "ranger",
-    "level": 21
-  },
-  "bea-flock": {
-    "name": "The Flock",
-    "text": "Three strikes from the owl every round, for a while.",
-    "mana": 11,
-    "ranks": [
-      {
-        "companion": {
-          "rounds": 4,
-          "power": 0.6,
-          "hits": 3
-        }
-      },
-      {
-        "companion": {
-          "rounds": 4,
-          "power": 0.7,
-          "hits": 3
-        }
-      },
-      {
-        "companion": {
-          "rounds": 5,
-          "power": 0.75,
-          "hits": 3
-        }
-      }
-    ],
-    "classId": "ranger",
-    "level": 25
+    "level": 21,
+    "needs": [
+      "bow"
+    ]
   },
   "bea-care": {
     "name": "Kindly Care",
@@ -3778,31 +3635,79 @@
       {}
     ],
     "classId": "ranger",
+    "level": 21
+  },
+  "bea-two": {
+    "name": "Pack of Two",
+    "text": "Two pets stay with you at once. A third sends the oldest away.",
+    "mana": 0,
+    "rule": {
+      "petSlots": 1
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "ranger",
     "level": 25
   },
-  "bea-king": {
-    "name": "King of the Air",
-    "text": "Once a fight: the greatest owl there is, hitting twice a round, for a long while.",
+  "bea-fierce": {
+    "name": "Fierce",
+    "text": "Your pets hit 8% harder a rank.",
+    "mana": 0,
+    "rule": {
+      "companionPower": 1.08
+    },
+    "ranks": [
+      {},
+      {},
+      {}
+    ],
+    "classId": "ranger",
+    "level": 25
+  },
+  "bea-stampede": {
+    "name": "Stampede",
+    "text": "Once a fight: every pet strikes twice now, and twice each time for two rounds more.",
     "mana": 10,
     "ranks": [
       {
-        "companion": {
-          "rounds": 8,
-          "power": 1.3,
-          "hits": 2
-        }
+        "stampede": 3
       }
     ],
     "oncePerFight": true,
     "classId": "ranger",
     "level": 30
   },
+  "spike-trap": {
+    "name": "Spike Trap",
+    "text": "Lay a trap. The next time the foe attacks it springs, for 180% of your attack.",
+    "mana": 5,
+    "ranks": [
+      {
+        "laid": {
+          "power": 1.8
+        }
+      },
+      {
+        "laid": {
+          "power": 2
+        }
+      },
+      {
+        "laid": {
+          "power": 2.2
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 2
+  },
   "tra-wire": {
-    "name": "Barbed Wire",
-    "text": "A foe caught by a trap also takes 15% of your attack, a rank.",
+    "name": "Barbed",
+    "text": "Your traps hit 6% harder a rank.",
     "mana": 0,
     "rule": {
-      "trapHit": 0.15
+      "trapPower": 0.06
     },
     "ranks": [
       {},
@@ -3811,6 +3716,19 @@
     ],
     "classId": "ranger",
     "level": 2
+  },
+  "trapper-craft": {
+    "name": "Cruel Traps",
+    "text": "A foe that springs a trap takes 15% more for two rounds.",
+    "mana": 0,
+    "rule": {
+      "trapSunder": 1.15
+    },
+    "ranks": [
+      {}
+    ],
+    "classId": "ranger",
+    "level": 5
   },
   "tra-read": {
     "name": "Read the Ground",
@@ -3827,13 +3745,49 @@
     "classId": "ranger",
     "level": 5
   },
+  "snare": {
+    "name": "Snare",
+    "text": "Lay a trap. The blow that springs it misses, and its next blows are weaker.",
+    "mana": 6,
+    "ranks": [
+      {
+        "laid": {
+          "miss": true,
+          "weaken": {
+            "rounds": 2,
+            "mult": 0.75
+          }
+        }
+      },
+      {
+        "laid": {
+          "miss": true,
+          "weaken": {
+            "rounds": 2,
+            "mult": 0.65
+          }
+        }
+      },
+      {
+        "laid": {
+          "miss": true,
+          "weaken": {
+            "rounds": 3,
+            "mult": 0.6
+          }
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 9
+  },
   "tra-barb": {
     "name": "Barbs",
-    "text": "A stunned foe takes 6% more a rank, a weakened one 3%.",
+    "text": "A stunned foe takes 6% more a rank, a weakened one 5%.",
     "mana": 0,
     "rule": {
       "stunnedDamage": 1.06,
-      "weakenedDamage": 1.03
+      "weakenedDamage": 1.05
     },
     "ranks": [
       {},
@@ -3843,51 +3797,108 @@
     "classId": "ranger",
     "level": 9
   },
-  "tra-pit": {
-    "name": "Pit",
-    "text": "It falls in: stunned for two rounds, if it is a lesser foe.",
-    "mana": 6,
+  "tra-mine": {
+    "name": "Fire Pot",
+    "text": "Lay a trap. Sprung, it blasts the foe and leaves it burning for three rounds.",
+    "mana": 8,
     "ranks": [
       {
-        "power": 0.6,
-        "stun": 2
+        "laid": {
+          "power": 1.4,
+          "burn": {
+            "rounds": 3,
+            "power": 0.35
+          }
+        }
       },
       {
-        "power": 0.8,
-        "stun": 2
+        "laid": {
+          "power": 1.6,
+          "burn": {
+            "rounds": 3,
+            "power": 0.4
+          }
+        }
       },
       {
-        "power": 1,
-        "stun": 2
+        "laid": {
+          "power": 1.8,
+          "burn": {
+            "rounds": 3,
+            "power": 0.45
+          }
+        }
       }
     ],
     "classId": "ranger",
     "level": 13
   },
-  "tra-prepared": {
+  "tra-ready": {
     "name": "Prepared",
-    "text": "In the first round you deal 10% more a rank.",
+    "text": "You start each fight with a Spike Trap laid.",
     "mana": 0,
     "rule": {
-      "firstRoundDamage": 1.1
+      "trapStart": 1
     },
     "ranks": [
-      {},
-      {},
       {}
     ],
     "classId": "ranger",
     "level": 13
   },
-  "tra-cunning": {
+  "tra-venom": {
+    "name": "Venom Trap",
+    "text": "Lay a trap. Sprung, it poisons the foe for four rounds, and the foe takes more damage.",
+    "mana": 6,
+    "ranks": [
+      {
+        "laid": {
+          "poison": {
+            "rounds": 4,
+            "power": 0.35
+          },
+          "sunder": {
+            "rounds": 4,
+            "mult": 1.1
+          }
+        }
+      },
+      {
+        "laid": {
+          "poison": {
+            "rounds": 4,
+            "power": 0.4
+          },
+          "sunder": {
+            "rounds": 4,
+            "mult": 1.12
+          }
+        }
+      },
+      {
+        "laid": {
+          "poison": {
+            "rounds": 4,
+            "power": 0.45
+          },
+          "sunder": {
+            "rounds": 4,
+            "mult": 1.15
+          }
+        }
+      }
+    ],
+    "classId": "ranger",
+    "level": 17
+  },
+  "tra-aim": {
     "name": "Cunning",
-    "text": "Start each fight with a point of Aim, a rank.",
+    "text": "A sprung trap gives a point of Aim.",
     "mana": 0,
     "rule": {
-      "meterStart": 1
+      "trapAim": 1
     },
     "ranks": [
-      {},
       {}
     ],
     "classId": "ranger",
@@ -3895,30 +3906,33 @@
   },
   "tra-net": {
     "name": "Weighted Net",
-    "text": "It loses its next turn and hits weaker after.",
+    "text": "Lay a trap. Sprung, the foe loses its next turn; at the second rank it hits weaker after.",
     "mana": 8,
     "ranks": [
       {
-        "skip": 1
+        "laid": {
+          "skip": 1
+        }
       },
       {
-        "skip": 1,
-        "weaken": {
-          "rounds": 3,
-          "mult": 0.75
+        "laid": {
+          "skip": 1,
+          "weaken": {
+            "rounds": 3,
+            "mult": 0.75
+          }
         }
       }
     ],
     "classId": "ranger",
     "level": 21
   },
-  "tra-venom": {
-    "name": "Venom on the Spikes",
-    "text": "Your tripwire and your spikes poison: 10% of your attack a round for three rounds, a rank. A poisoned foe takes 4% more a rank.",
+  "tra-follow": {
+    "name": "Follow Up",
+    "text": "Your next shot after a trap springs hits 10% harder a rank.",
     "mana": 0,
     "rule": {
-      "trapPoison": 0.1,
-      "poisonedDamage": 1.04
+      "trapFollow": 0.1
     },
     "ranks": [
       {},
@@ -3928,42 +3942,25 @@
     "classId": "ranger",
     "level": 21
   },
-  "tra-mine": {
-    "name": "Fire Pot",
-    "text": "A buried pot goes off: a hard blast that leaves it burning.",
-    "mana": 10,
+  "tra-second": {
+    "name": "Second Trap",
+    "text": "Two traps can lie in wait. Each attack springs one.",
+    "mana": 0,
+    "rule": {
+      "trapSlots": 1
+    },
     "ranks": [
-      {
-        "power": 2.6,
-        "burn": {
-          "rounds": 3,
-          "power": 0.35
-        }
-      },
-      {
-        "power": 3,
-        "burn": {
-          "rounds": 3,
-          "power": 0.35
-        }
-      },
-      {
-        "power": 3.4,
-        "burn": {
-          "rounds": 3,
-          "power": 0.35
-        }
-      }
+      {}
     ],
     "classId": "ranger",
     "level": 25
   },
   "tra-patient": {
     "name": "Patient",
-    "text": "A 3% better chance a rank to shoot back.",
+    "text": "A trap that has waited a round hits 10% harder a rank.",
     "mana": 0,
     "rule": {
-      "counterChance": 0.03
+      "trapPatient": 0.1
     },
     "ranks": [
       {},
@@ -3975,12 +3972,11 @@
   },
   "tra-master": {
     "name": "Master of Snares",
-    "text": "Once a fight: its next three wind-ups fail, and it loses its next turn.",
+    "text": "Once a fight: every trap you know is laid at once. Each attack springs one.",
     "mana": 9,
     "ranks": [
       {
-        "trap": 3,
-        "skip": 1
+        "layAll": true
       }
     ],
     "oncePerFight": true,

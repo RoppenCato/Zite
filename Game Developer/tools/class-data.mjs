@@ -75,21 +75,7 @@ const A = {
   'sure-shot': { name: 'Sure Shot', classId: 'ranger', text: 'Spend 2 Aim: an arrow that surely crits.', mana: 0, meter: 2, level: 1, ranks: up({ power: 1, sureCrit: 1 }, { power: 1.15 }, { power: 1.3 }) },
   'aimed-shot': { name: 'Bullseye', classId: 'ranger', text: 'One careful arrow, far harder on a foe that is winding up.', mana: 5, level: 2, ranks: up({ power: 1.7, windupBonus: 1.6 }, { power: 1.9, windupBonus: 1.7 }, { power: 2.1, windupBonus: 1.8 }) },
   mark: { name: 'Painted Target', classId: 'ranger', text: 'Paint a target on the enemy: your next hits land harder.', mana: 4, level: 3, ranks: up({ mark: { hits: 3, mult: 1.3 } }, { mark: { hits: 3, mult: 1.4 } }, { mark: { hits: 4, mult: 1.5 } }) },
-  // Ranger
-  'quick-reflex': { name: 'Quick Reflexes', classId: 'ranger', text: 'For a few rounds you shoot back far more often.', mana: 5, level: 3, ranks: up({ counterUp: { rounds: 3, chance: 0.4 } }, { counterUp: { rounds: 3, chance: 0.55 } }, { counterUp: { rounds: 4, chance: 0.7 } }) },
-  'ranger-eye': rule('Double Nock', 'ranger', 'Whenever you shoot back, you shoot twice.', { counterHits: 2 }),
   'rain-arrows': { name: 'Rain of Arrows', classId: 'ranger', text: 'Five arrows from above.', mana: 8, level: 8, ranks: up({ power: 2.8, hits: 5, split: true }, { power: 3.1 }, { power: 3.4 }) },
-  'return-fire': { name: 'Overwatch', classId: 'ranger', text: 'Spend 2 Aim: for a few rounds you shoot back every time it strikes, hit or miss.', mana: 4, meter: 2, level: 12, ranks: up({ counterUp: { rounds: 2, chance: 1 } }, { counterUp: { rounds: 3, chance: 1 } }, { counterUp: { rounds: 4, chance: 1 } }) },
-  // Beastmaster
-  hawk: { name: 'Owl Friend', classId: 'ranger', text: 'Spend 2 Aim: your owl strikes on its own at the end of every round for a while.', mana: 4, meter: 2, level: 3, ranks: up({ companion: { rounds: 4, power: 0.5 } }, { companion: { rounds: 5, power: 0.55 } }, { companion: { rounds: 6, power: 0.6 } }) },
-  'beast-bond': rule('Bonded', 'ranger', 'Your owl strikes harder.', { companionPower: 1.3 }),
-  'owl-swoop': { name: 'Owl Swoop', classId: 'ranger', text: 'Spend 3 Aim: the owl dives, a big hit that ignores its defense.', mana: 3, meter: 3, level: 8, ranks: up({ power: 2.2, ignoreDefense: true }, { power: 2.5 }, { power: 2.8 }) },
-  'great-owl': { name: 'Great Owl', classId: 'ranger', text: 'Spend 3 Aim: the owl strikes twice every round, for longer.', mana: 6, meter: 3, level: 12, ranks: up({ companion: { rounds: 5, power: 0.5, hits: 2 } }, { companion: { rounds: 6, power: 0.55, hits: 2 } }, { companion: { rounds: 7, power: 0.6, hits: 2 } }) },
-  // Trapper
-  trap: { name: 'Tripwire', classId: 'ranger', text: "Lay a tripwire: the enemy's next wind-up fails.", mana: 6, level: 3, ranks: up({ trap: 1 }, { trap: 1, power: 0.6 }, { trap: 2, power: 0.8 }) },
-  'trapper-craft': rule('Cruel Traps', 'ranger', 'An enemy caught in your tripwire takes a hard hit.', { trapHit: 1.5 }),
-  snare: { name: 'Pinning Shot', classId: 'ranger', text: 'A hit, and its next blows are much weaker.', mana: 5, level: 8, ranks: up({ power: 1, weaken: { rounds: 1, mult: 0.5 } }, { power: 1.15, weaken: { rounds: 2, mult: 0.5 } }, { power: 1.3, weaken: { rounds: 2, mult: 0.4 } }) },
-  'spike-trap': { name: 'Killing Ground', classId: 'ranger', text: 'For a few rounds each blow it tries sets off spikes, and it takes more damage.', mana: 7, level: 12, ranks: up({ spike: { rounds: 3, power: 1 }, sunder: { rounds: 3, mult: 1.15 } }, { spike: { rounds: 4, power: 1.2 }, sunder: { rounds: 4, mult: 1.15 } }, { spike: { rounds: 5, power: 1.4 }, sunder: { rounds: 5, mult: 1.2 } }) },
 };
 
 const C = {
@@ -131,15 +117,15 @@ const C = {
     },
   },
   ranger: {
-    name: 'Hunter', style: 'Bows only, strikes first, shoots back.', about: 'Bows only. Often shoots back when struck, strikes first, and is at its best when it reads what comes next.',
+    name: 'Hunter', style: 'Bows only, strikes first, shoots back.', about: 'Bows only. Strikes first and often shoots back when struck. Its trees: crits that bleed, pets that stay, traps that wait.',
     hp: 100, mana: 25, attack: 10, defense: 6, gold: 50, crit: 0.15, dodge: 0.05, firstStrike: true, growth: { hp: 10, mana: 3, attack: 2, defense: 1 },
     traits: { counterChance: 0.25, counterPower: 0.8 },
     kit: ['volley', 'sure-shot'], core: ['volley', 'sure-shot', 'aimed-shot', 'mark'],
     meter: { name: 'Aim', gain: 'miss', text: 'Aim builds when a blow misses you and when you crit.' },
     trees: {
-      ranger: { name: 'Ranger', text: 'Every counterattack is two arrows.', nodes: ['quick-reflex', 'ranger-eye', 'rain-arrows', 'return-fire'] },
-      beastmaster: { name: 'Beastmaster', text: 'Fights beside its owl.', nodes: ['hawk', 'beast-bond', 'owl-swoop', 'great-owl'] },
-      trapper: { name: 'Trapper', text: 'Reads what comes next and has a trap waiting.', nodes: ['trap', 'trapper-craft', 'snare', 'spike-trap'] },
+      ranger: { name: 'Ranger', text: 'Crits that make the foe bleed.', nodes: [] },
+      beastmaster: { name: 'Beastmaster', text: 'Pets that stay for the fight and strike when you do.', nodes: [] },
+      trapper: { name: 'Survival', text: 'Traps that spring when the foe attacks.', nodes: [] },
     },
   },
 };
@@ -184,13 +170,13 @@ const TALENTS = {
   },
   ranger: {
     ranger: [
-      ['quick-reflex', 'ran-draw'], ['ranger-eye', 'ran-hawkeye'], ['rain-arrows', 'ran-quick'], ['ran-pin', 'ran-steady'], ['return-fire', 'ran-lethal'], ['ran-snipe', 'ran-reflex'], ['ran-barrage', 'ran-opening'], ['ran-master'],
+      ['ran-wound', 'ran-hawkeye'], ['ran-breath', 'ran-deep'], ['rain-arrows', 'ran-hamstrung'], ['ran-pin', 'ran-lethal'], ['ran-rend', 'ran-scent'], ['ran-snipe', 'ran-long'], ['ran-barrage', 'ran-opening'], ['ran-bleed-dry'],
     ],
     beastmaster: [
-      ['hawk', 'bea-bond'], ['beast-bond', 'bea-feathers'], ['owl-swoop', 'bea-keen'], ['bea-call', 'bea-pack'], ['great-owl', 'bea-mend'], ['bea-stoop', 'bea-fierce'], ['bea-flock', 'bea-care'], ['bea-king'],
+      ['hawk', 'bea-bond'], ['bea-wolf', 'bea-feathers'], ['bea-kill', 'bea-keen-beasts'], ['bea-bear', 'bea-pack'], ['bea-viper', 'bea-fed'], ['bea-stoop', 'bea-care'], ['bea-two', 'bea-fierce'], ['bea-stampede'],
     ],
     trapper: [
-      ['trap', 'tra-wire'], ['trapper-craft', 'tra-read'], ['snare', 'tra-barb'], ['tra-pit', 'tra-prepared'], ['spike-trap', 'tra-cunning'], ['tra-net', 'tra-venom'], ['tra-mine', 'tra-patient'], ['tra-master'],
+      ['spike-trap', 'tra-wire'], ['trapper-craft', 'tra-read'], ['snare', 'tra-barb'], ['tra-mine', 'tra-ready'], ['tra-venom', 'tra-aim'], ['tra-net', 'tra-follow'], ['tra-second', 'tra-patient'], ['tra-master'],
     ],
   },
 };
@@ -323,42 +309,55 @@ const NEW = {
   'alc-plague': act('Plague Cloud', 'A choking cloud: long poison, and weaker blows. On a foe under Caustic, the Caustic lasts as long as the cloud.', 10, up({ flask: true, poison: { rounds: 6, power: 0.55 }, weaken: { rounds: 3, mult: 0.8 } }, { poison: { rounds: 6, power: 0.65 } }, { poison: { rounds: 7, power: 0.75 } })),
   'alc-reagents': pas('Reagents', 'A reaction gives you a point of Mischief, and 3% of your mana a rank.', { reagents: 0.03 }),
   'alc-philosopher': act("Philosopher's Draught", 'Once a fight: most of your wounds healed, and your hits land harder for a while.', 8, [{ healShare: 0.6, cure: true, attackUp: { rounds: 4, mult: 1.3 } }], { oncePerFight: true }),
-  // Hunter / Ranger: shoots back, and back again.
-  'ran-draw': pas('Strong Draw', '3% more attack a rank.', { attackMult: 1.03 }),
+  // The Hunter (Robin, 2026-11-12: his three trees, "Yes" to the list; every number mine).
+  // Ranger: crits and bleeding. A crit bleeds for a quarter of the hit over two rounds, and bleeds add up.
+  'ran-wound': pas('Open Wound', 'A crit makes the foe bleed: a quarter of the hit again, over two rounds. New bleeds add to the old.', { critBleedShare: 0.25 }, 1),
   'ran-hawkeye': pas('Hawk Eye', '2% more crit a rank.', { crit: 0.02 }),
-  'ran-quick': pas('Quick Nock', 'A 3% better chance a rank to shoot back.', { counterChance: 0.03 }),
+  'ran-breath': pas('Steady Breath', 'After a Brace, your first arrow of the next round surely crits.', { braceCrit: 1 }, 1),
+  'ran-deep': pas('Deep Cuts', 'Your bleeds are 6% stronger a rank.', { bleedPower: 0.06 }),
+  'ran-hamstrung': pas('Hamstrung', 'A bleeding foe hits 4% weaker a rank.', { bleedingWeak: 0.04 }),
   'ran-pin': act('Hobbling Shot', 'A shot that stuns a lesser foe.', 5, up({ power: 1.3, stun: 1 }, { power: 1.5 }, { power: 1.7 })),
-  'ran-steady': pas('Steady Return', 'Your shots back are 6% stronger a rank.', { counterPower: 0.06 }),
-  'ran-lethal': pas('Lethal Shots', 'Your crits hit 10% harder a rank.', { critPower: 0.1 }),
+  'ran-lethal': pas('Lethal Shots', 'Your crits hit 7% harder a rank.', { critPower: 0.07 }),
+  'ran-rend': act('Rend', 'Spend 2 Aim: an arrow that surely crits, and its bleed lasts four rounds.', 4, up({ power: 1.3, crit: 1, bleedRounds: 4 }, { power: 1.5 }, { power: 1.7 }), { meter: 2 }),
+  'ran-scent': pas('Blood Scent', '2% more crit a rank against a bleeding foe.', { bleedingCrit: 0.02 }),
   'ran-snipe': act('Long Shot', 'A round to aim, then a very hard shot.', 8, up({ windup: 1, power: 3.2 }, { power: 3.7 }, { power: 4.2 })),
-  'ran-reflex': pas('Light Step', '2% more dodge a rank.', { dodge: 0.02 }),
+  'ran-long': pas('Long Bleed', 'Your bleeds last a round longer.', { bleedRounds: 1 }, 1),
   'ran-barrage': act('Barrage', 'Six arrows at once.', 10, up({ power: 3, hits: 6, split: true }, { power: 3.4 }, { power: 3.8 })),
   'ran-opening': pas('Opening Shot', 'In the first round you deal 12% more a rank.', { firstRoundDamage: 1.12 }),
-  'ran-master': act('Master Archer', 'Once a fight: for a while you shoot back at nearly everything, and shoot harder.', 8, [{ counterUp: { rounds: 6, chance: 0.5 }, attackUp: { rounds: 6, mult: 1.3 } }], { oncePerFight: true }),
-  // Hunter / Beastmaster: the owl does half the work.
-  'bea-bond': pas('Close Bond', 'Your owl hits 8% harder a rank.', { companionPower: 1.08 }),
+  'ran-bleed-dry': act('Bleed Dry', 'Once a fight: all the bleeding left lands at once, doubled, and an arrow after it.', 8, [{ consume: { kind: 'bleed', mult: 2 }, power: 1.5 }], { oncePerFight: true }),
+  // Beastmaster: pets that stay. A pet is called with an ability and stays for the fight; a new one sends the old one away. It strikes
+  // whenever the Hunter does damage, for its share of a plain hit.
+  hawk: act('Owl', 'Call your owl. It stays for the fight and strikes whenever you do damage, for 30% of your attack. With it you crit 8% more. It strikes hard as it arrives. A new pet sends the old one away.', 5, up({ pet: { kind: 'owl', power: 0.3, crit: 0.08 } }, { pet: { kind: 'owl', power: 0.34, crit: 0.08 } }, { pet: { kind: 'owl', power: 0.38, crit: 0.08 } })),
+  'bea-bond': pas('Close Bond', 'Your pets hit 8% harder a rank.', { companionPower: 1.08 }),
+  'bea-wolf': act('Wolf', 'Call a wolf. It stays for the fight and strikes whenever you do damage, for 45% of your attack. It strikes hard as it arrives. A new pet sends the old one away.', 5, up({ pet: { kind: 'wolf', power: 0.45 } }, { pet: { kind: 'wolf', power: 0.5 } }, { pet: { kind: 'wolf', power: 0.55 } })),
   'bea-feathers': pas('Thick Coat', '3% more HP a rank.', { hpMult: 1.03 }),
-  'bea-keen': pas('Keen Sight', '2% more crit a rank.', { crit: 0.02 }),
-  'bea-call': act('Call the Owl', 'The owl comes for a long while, no Aim asked.', 6, up({ companion: { rounds: 5, power: 0.6 } }, { companion: { rounds: 5, power: 0.7 } }, { companion: { rounds: 6, power: 0.8 } })),
-  'bea-pack': pas('Hunting Pair', 'While your owl is out, your own arrows hit 5% harder a rank.', { companionDamage: 1.05 }),
-  'bea-mend': pas('Preening', 'You heal 1% of your HP each round, a rank.', { hpRegen: 0.01 }, 2),
-  'bea-stoop': act('Stoop', 'The owl dives with your arrow: a very hard hit.', 8, up({ power: 2.4 }, { power: 2.8 }, { power: 3.2 })),
-  'bea-fierce': pas('Fierce Owl', 'Your owl hits 8% harder a rank.', { companionPower: 1.08 }),
-  'bea-flock': act('The Flock', 'Three strikes from the owl every round, for a while.', 11, up({ companion: { rounds: 4, power: 0.6, hits: 3 } }, { companion: { rounds: 4, power: 0.7, hits: 3 } }, { companion: { rounds: 5, power: 0.75, hits: 3 } })),
+  'bea-kill': act('Kill Command', 'Spend 2 Aim: every pet strikes now, three times as hard.', 3, up({ petStrike: 3 }, { petStrike: 3.5 }, { petStrike: 4 }), { meter: 2 }),
+  'bea-keen-beasts': pas('Keen Beasts', 'Your pets crit as often as you do.', { petCrit: 1 }, 1),
+  'bea-bear': act('Bear', 'Call a bear. It stays for the fight and strikes whenever you do damage, for 25% of your attack. With it you take 15% less damage. It strikes hard as it arrives. A new pet sends the old one away.', 5, up({ pet: { kind: 'bear', power: 0.25, taken: 0.15 } }, { pet: { kind: 'bear', power: 0.28, taken: 0.15 } }, { pet: { kind: 'bear', power: 0.31, taken: 0.15 } })),
+  'bea-pack': pas('Hunting Pair', 'With a pet out, your own arrows hit 5% harder a rank.', { companionDamage: 1.05 }),
+  'bea-viper': act('Viper', 'Call a viper. It stays for the fight and strikes whenever you do damage, for 20% of your attack. Its bite poisons, and the foe hits 10% weaker. It strikes hard as it arrives. A new pet sends the old one away.', 5, up({ pet: { kind: 'viper', power: 0.2, weaken: 0.1, poison: 0.12 } }, { pet: { kind: 'viper', power: 0.23, weaken: 0.1, poison: 0.12 } }, { pet: { kind: 'viper', power: 0.26, weaken: 0.1, poison: 0.12 } })),
+  'bea-fed': pas('Well Fed', "A pet's gift is 10% stronger a rank.", { petGift: 0.1 }),
+  'bea-stoop': act('Stoop', 'A hard shot, and your pets strike twice with it.', 8, up({ power: 2.4, petHits: 2 }, { power: 2.8 }, { power: 3.2 })),
   'bea-care': pas('Kindly Care', 'Each win heals 5% of your HP a rank.', { winHeal: 0.05 }),
-  'bea-king': act('King of the Air', 'Once a fight: the greatest owl there is, hitting twice a round, for a long while.', 10, [{ companion: { rounds: 8, power: 1.3, hits: 2 } }], { oncePerFight: true }),
-  // Hunter / Trapper: knows what comes next.
-  'tra-wire': pas('Barbed Wire', 'A foe caught by a trap also takes 15% of your attack, a rank.', { trapHit: 0.15 }),
+  'bea-two': pas('Pack of Two', 'Two pets stay with you at once. A third sends the oldest away.', { petSlots: 1 }, 1),
+  'bea-fierce': pas('Fierce', 'Your pets hit 8% harder a rank.', { companionPower: 1.08 }),
+  'bea-stampede': act('Stampede', 'Once a fight: every pet strikes twice now, and twice each time for two rounds more.', 10, [{ stampede: 3 }], { oncePerFight: true }),
+  // Survival: traps. Laying one is the round's move; it springs the next time the foe attacks. One lies at a time.
+  'spike-trap': act('Spike Trap', 'Lay a trap. The next time the foe attacks it springs, for 180% of your attack.', 5, up({ laid: { power: 1.8 } }, { laid: { power: 2 } }, { laid: { power: 2.2 } })),
+  'tra-wire': pas('Barbed', 'Your traps hit 6% harder a rank.', { trapPower: 0.06 }),
+  'trapper-craft': pas('Cruel Traps', 'A foe that springs a trap takes 15% more for two rounds.', { trapSunder: 1.15 }, 1),
   'tra-read': pas('Read the Ground', '2% more dodge a rank.', { dodge: 0.02 }),
-  'tra-barb': pas('Barbs', 'A stunned foe takes 6% more a rank, a weakened one 3%.', { stunnedDamage: 1.06, weakenedDamage: 1.03 }),
-  'tra-pit': act('Pit', 'It falls in: stunned for two rounds, if it is a lesser foe.', 6, up({ power: 0.6, stun: 2 }, { power: 0.8 }, { power: 1 })),
-  'tra-prepared': pas('Prepared', 'In the first round you deal 10% more a rank.', { firstRoundDamage: 1.1 }),
-  'tra-cunning': pas('Cunning', 'Start each fight with a point of Aim, a rank.', { meterStart: 1 }, 2),
-  'tra-net': act('Weighted Net', 'It loses its next turn and hits weaker after.', 8, [{ skip: 1 }, { skip: 1, weaken: { rounds: 3, mult: 0.75 } }]),
-  'tra-venom': pas('Venom on the Spikes', 'Your tripwire and your spikes poison: 10% of your attack a round for three rounds, a rank. A poisoned foe takes 4% more a rank.', { trapPoison: 0.1, poisonedDamage: 1.04 }),
-  'tra-mine': act('Fire Pot', 'A buried pot goes off: a hard blast that leaves it burning.', 10, up({ power: 2.6, burn: { rounds: 3, power: 0.35 } }, { power: 3 }, { power: 3.4 })),
-  'tra-patient': pas('Patient', 'A 3% better chance a rank to shoot back.', { counterChance: 0.03 }),
-  'tra-master': act('Master of Snares', 'Once a fight: its next three wind-ups fail, and it loses its next turn.', 9, [{ trap: 3, skip: 1 }], { oncePerFight: true }),
+  snare: act('Snare', 'Lay a trap. The blow that springs it misses, and its next blows are weaker.', 6, up({ laid: { miss: true, weaken: { rounds: 2, mult: 0.75 } } }, { laid: { miss: true, weaken: { rounds: 2, mult: 0.65 } } }, { laid: { miss: true, weaken: { rounds: 3, mult: 0.6 } } })),
+  'tra-barb': pas('Barbs', 'A stunned foe takes 6% more a rank, a weakened one 5%.', { stunnedDamage: 1.06, weakenedDamage: 1.05 }),
+  'tra-mine': act('Fire Pot', 'Lay a trap. Sprung, it blasts the foe and leaves it burning for three rounds.', 8, up({ laid: { power: 1.4, burn: { rounds: 3, power: 0.35 } } }, { laid: { power: 1.6, burn: { rounds: 3, power: 0.4 } } }, { laid: { power: 1.8, burn: { rounds: 3, power: 0.45 } } })),
+  'tra-ready': pas('Prepared', 'You start each fight with a Spike Trap laid.', { trapStart: 1 }, 1),
+  'tra-venom': act('Venom Trap', 'Lay a trap. Sprung, it poisons the foe for four rounds, and the foe takes more damage.', 6, up({ laid: { poison: { rounds: 4, power: 0.35 }, sunder: { rounds: 4, mult: 1.1 } } }, { laid: { poison: { rounds: 4, power: 0.4 }, sunder: { rounds: 4, mult: 1.12 } } }, { laid: { poison: { rounds: 4, power: 0.45 }, sunder: { rounds: 4, mult: 1.15 } } })),
+  'tra-aim': pas('Cunning', 'A sprung trap gives a point of Aim.', { trapAim: 1 }, 1),
+  'tra-net': act('Weighted Net', 'Lay a trap. Sprung, the foe loses its next turn; at the second rank it hits weaker after.', 8, [{ laid: { skip: 1 } }, { laid: { skip: 1, weaken: { rounds: 3, mult: 0.75 } } }]),
+  'tra-follow': pas('Follow Up', 'Your next shot after a trap springs hits 10% harder a rank.', { trapFollow: 0.1 }),
+  'tra-second': pas('Second Trap', 'Two traps can lie in wait. Each attack springs one.', { trapSlots: 1 }, 1),
+  'tra-patient': pas('Patient', 'A trap that has waited a round hits 10% harder a rank.', { trapPatient: 0.1 }),
+  'tra-master': act('Master of Snares', 'Once a fight: every trap you know is laid at once. Each attack springs one.', 9, [{ layAll: true }], { oncePerFight: true }),
 };
 const TIER_LEVELS = [2, 5, 9, 13, 17, 21, 25, 30];
 for (const [classId, trees] of Object.entries(TALENTS)) {
@@ -375,7 +374,7 @@ for (const [classId, trees] of Object.entries(TALENTS)) {
 }
 
 // The skills tied to a weapon (Robin, 2026-11-03: "Skills that are obvious weapon focused ... only usable when correct weapon equipped").
-const NEEDS = { shield: ['shield-bash', 'shield-wall', 'shield-slam', 'kni-charge', 'kni-rampart'], staff: ['meteor', 'wiz-firestorm'], bow: ['volley', 'aimed-shot', 'rain-arrows', 'ran-pin', 'ran-snipe', 'ran-barrage', 'snare'], dagger: ['poison-coat'] };
+const NEEDS = { shield: ['shield-bash', 'shield-wall', 'shield-slam', 'kni-charge', 'kni-rampart'], staff: ['meteor', 'wiz-firestorm'], bow: ['volley', 'aimed-shot', 'rain-arrows', 'ran-pin', 'ran-snipe', 'ran-barrage', 'ran-rend', 'ran-bleed-dry', 'bea-stoop'], dagger: ['poison-coat'] };
 for (const [need, ids] of Object.entries(NEEDS)) for (const id of ids) A[id] = { ...A[id], needs: [need] };
 for (const id of ['frost-blade', 'storm-blade', 'spl-thrust', 'arc-slash', 'spl-whirl', 'spl-shift']) A[id] = { ...A[id], needs: ['wand', 'sword'] };
 delete A.shuriken;
@@ -454,21 +453,21 @@ const WORDS = {
   },
   "ranger": {
     "tagline": "Strikes first and shoots back. Enemies pay for every swing they take.",
-    "story": "Bows only. It acts first in every fight and often shoots back when struck, so the fight is half won before it reaches you. Aim builds when a blow misses you and when you crit. For you if you like to read the fight and let it come to you.",
+    "story": "Bows only. It acts first in every fight and often shoots back when struck. Aim builds when a blow misses you and when you crit. Make the foe bleed with every crit, fight beside a pet that stays, or lay traps and let it walk in. For you if you like to read the fight and let it come to you.",
     "showcase": {
       "ranger": [
-        "quick-reflex",
         "rain-arrows",
-        "ran-master"
+        "ran-rend",
+        "ran-bleed-dry"
       ],
       "beastmaster": [
         "hawk",
-        "great-owl",
-        "bea-king"
+        "bea-wolf",
+        "bea-stampede"
       ],
       "trapper": [
-        "trap",
         "spike-trap",
+        "snare",
         "tra-master"
       ]
     }
