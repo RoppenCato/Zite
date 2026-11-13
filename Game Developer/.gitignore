@@ -10,3 +10,7 @@ docs/refs/
 tools/bin/
 server/data/online.json
 server/data/online.log
+# The world on Cloudflare (server-workers/): wrangler's local state and the dev secrets
+.wrangler/
+server-workers/.wrangler/
+server-workers/.dev.vars

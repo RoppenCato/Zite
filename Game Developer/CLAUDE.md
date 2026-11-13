@@ -66,7 +66,9 @@ exactly the shape of a Cloudflare Durable Object (the research's pick for a host
 requests and 13,000 GB-s a day, $5 a month after) and of a Colyseus room (on a small VPS, or Colyseus Cloud at $15 a
 month), so moving later is a migration, not a rewrite. PartyKit's hosted platform shuts down in October 2026; its code lives
 on as PartyServer. Supabase is a good database and auth but not a game server (free: 200 connections, 100 messages a
-second). **Keep the transport thin and the rules pure.**
+second). **Keep the transport thin and the rules pure.** **Since 2026-11-13 the same world runs on Cloudflare Workers**
+(`server-workers/`: one Durable Object per region, one for the accounts, the tick as an alarm, the same protocol, an import
+of the Node database; `docs/state/server.md`, "The world on Cloudflare"). The Node server stays until Robin switches.
 
 **Shared state, the rules** (the skill `shared-world`): one owner per piece of state; intents, not results; every action
 carries a client-made id, and a repeat gets the stored answer (a phone retrying on a bad network never rolls twice); the
@@ -139,14 +141,20 @@ passing. A cloud session cannot see Robin's PC: no Sonic Pi, no Blender, no runn
 One npm project at this folder's root (Node 22.12 or newer; built with 24). `README.md` says the same at more length.
 
 - `npm install`: the dependencies; `better-sqlite3`'s native build is allowed in `package.json` (`allowScripts`).
-- `npm test`: Vitest over `rules/test` and `server/test`, headless in Node. `npm run test:watch` keeps it running.
+- `npm test`: Vitest over `rules/test`, `server/test` and `server-workers/test`, headless in Node. `npm run test:watch`
+  keeps it running.
 - `npm run dev`: Vite at http://localhost:5173/ (and on the LAN for a phone); in the browser pane through
   `.claude/launch.json`, entry `game`, when the session's folder is this one; otherwise start it yourself and open the URL.
 - `npm run build`: the PWA into `dist/` (manifest, icons, service worker); `npm run preview` serves it at
   http://localhost:4173/, the build that installs on a phone.
 - `npm run server`: the Node server (ws://localhost:8787, SQLite in `server/data/world.db`); Node runs the TypeScript
   straight, no build.
-- `npm run typecheck`: TypeScript strict, `rules/tsconfig.json` (no DOM) then `tsconfig.json` (everything).
+- `npm run typecheck`: TypeScript strict, `rules/tsconfig.json` (no DOM), `tsconfig.json` (everything but the worker)
+  and `server-workers/tsconfig.json` (the worker, with Cloudflare's types).
+- `npm run world:dev`: the world on Cloudflare, locally (`wrangler dev`, ws://localhost:8787, the Node server's port: one or
+  the other). `npm run world:deploy` puts it on Robin's account (he runs it; `npx wrangler login` first); `npm run
+  world:import -- --to <worker url> --secret <IMPORT_SECRET>` brings `server/data/world.db` across once; `npm run world:tail`
+  shows its log. The steps and the free plan's limits: `docs/state/server.md`, "The world on Cloudflare".
 - `npm run online`: the world for play away from home (Robin, 2026-11-10): the server and a Cloudflare quick tunnel in front of
   it (`tools/online.mjs`, needs `tools/bin/cloudflared.exe`); it prints the phone's link and writes it to `server/data/online.json`.
   `tools/install-autostart.cmd` (Robin runs it once) makes a logon task that keeps it up. `npm run tunnel`: the tunnel alone. The app icons are Mitch, AD's brand art (`client/public`); the old placeholder maker is in `archive/`.
@@ -186,6 +194,7 @@ docs/state/               how each system stands now (rules, client, server, wor
 rules/                    the game as a pure function: board, dice, spaces, fights, items, world generation; its tests
 client/                   the Phaser PWA
 server/                   the Node server: the region actors, the fight rooms, presence, the SQLite schema, the tunnel config
+server-workers/           the same world on Cloudflare Workers: the region and accounts objects, the hub over hibernating sockets, wrangler.jsonc
 assets/                   what the studios delivered and Robin chose (sprites, backgrounds, music, sfx)
 tools/                    scripts: build helpers, frame-log readers, test drivers for the browser pane
 archive/                  code and assets no longer used, kept with a README of what and why

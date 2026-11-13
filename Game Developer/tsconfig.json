@@ -17,5 +17,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["client", "server", "rules", "tools", "vite.config.ts", "vitest.config.ts"]
+  "include": ["client", "server", "server-workers/test", "rules", "tools", "vite.config.ts", "vitest.config.ts"]
 }

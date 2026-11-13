@@ -2,7 +2,7 @@
   "name": "zite-game",
   "private": true,
   "version": "0.1.0",
-  "description": "Robin's board world game: the rules, the Phaser client, the Node server.",
+  "description": "Robin's board world game: the rules, the Phaser client, the Node server, the world on Cloudflare Workers.",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,10 +10,14 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p rules/tsconfig.json && tsc -p tsconfig.json",
+    "typecheck": "tsc -p rules/tsconfig.json && tsc -p tsconfig.json && tsc -p server-workers/tsconfig.json",
     "server": "node server/src/index.ts",
     "tunnel": "cloudflared tunnel --url http://localhost:8787",
-    "online": "node tools/online.mjs"
+    "online": "node tools/online.mjs",
+    "world:dev": "wrangler dev -c server-workers/wrangler.jsonc",
+    "world:deploy": "wrangler deploy -c server-workers/wrangler.jsonc",
+    "world:tail": "wrangler tail -c server-workers/wrangler.jsonc",
+    "world:import": "node tools/import-world.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
@@ -24,13 +28,15 @@
     "ws": "^8.22.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261113.1",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.6.6",
     "@types/ws": "^8.18.2",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "wrangler": "^4.161.0"
   },
   "allowScripts": {
     "better-sqlite3@13.0.3": true

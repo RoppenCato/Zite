@@ -8,6 +8,8 @@ Three packages in one npm project:
 - `rules/`: the game as a pure function, `apply(state, action, rng) → { state, events }`, numbers in `rules/data/*.json`
 - `client/`: the Phaser 4 PWA for phones (TypeScript, Vite)
 - `server/`: the Node server for Robin's PC (`ws`, SQLite): one region actor, the accounts, the hub speaking `docs/state/protocol.md`
+- `server-workers/`: the same world on Cloudflare Workers with Durable Objects, always on, no PC: the same actor, accounts
+  and hub over the object's SQLite, the same protocol
 
 ## Run it
 
@@ -62,8 +64,19 @@ node tools/drive-coop.mjs
 
 plays two headless phones against a server of its own (needs the built client at http://localhost:4173/).
 
-Also: `npm run typecheck` (TypeScript, strict, both configs), `npm run icons` (remakes the placeholder icons),
-`npm run tunnel` (cloudflared, once installed).
+```bash
+npm run world:dev
+```
+
+runs the world on Cloudflare locally (`wrangler dev`, ws://localhost:8787, the Node server's port: run one or the other).
+The same client addresses work against it; a second window on `http://127.0.0.1:5173/?server=ws://localhost:8787` is a
+second account, since it is another origin. `npm run world:deploy` puts it on Robin's Cloudflare account (after `npx
+wrangler login`); `npm run world:import -- --to <worker url> --secret <IMPORT_SECRET>` carries `server/data/world.db`
+across once; the phones then open `https://zite-game.pages.dev/?server=wss://<worker>.workers.dev`. The steps, the
+secret and the free plan's limits are in `docs/state/server.md`, "The world on Cloudflare".
+
+Also: `npm run typecheck` (TypeScript, strict, all three configs), `npm run icons` (remakes the placeholder icons),
+`npm run tunnel` (cloudflared, once installed), `npm run world:tail` (the worker's log).
 
 ## Where things are
 
@@ -75,6 +88,7 @@ client/src       main, layout, ui, game-holder, local-game, remote-game, game-lo
 client/public    icon.svg, pwa-192x192.png, pwa-512x512.png
 server/src       db, region-actor, accounts, hub, index
 server/test      region-actor, hub
-tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size), drive-coop.mjs (two phones and a server), simulate.ts (the balance bots)
+server-workers/  wrangler.jsonc; src: sql, region-actor, accounts, hub, index (the worker and its two objects); test: memory-sql, region-actor, accounts, hub
+tools/           make-icons.mjs, drive-board.mjs (the headless check of the client at phone size), drive-coop.mjs (two phones and a server), import-world.mjs (the Node database into the worker), simulate.ts (the balance bots)
 docs/state/      rules.md, world.md, client.md, server.md, protocol.md, pages.md, art.md
 ```

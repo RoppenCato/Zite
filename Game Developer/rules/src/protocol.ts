@@ -27,4 +27,4 @@ export type ServerMessage =
   | { type: 'result'; action: string; version: number; serverTime: number; events: GameEvent[]; replayed: boolean; delta?: Delta }
   | { type: 'event'; version: number; serverTime: number; events: GameEvent[]; delta?: Delta; online?: string[] }
   | { type: 'error'; reason: string; action?: string }
-  | { type: 'pong'; serverTime: number };
+  | { type: 'pong'; serverTime?: number };

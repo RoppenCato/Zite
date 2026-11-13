@@ -2,8 +2,8 @@
 
 Every message between the client and the server, written before it was built (the skill `shared-world`, rule 8). One
 WebSocket per client, JSON text frames, one message a frame, a `type` in each. Protocol version **1** (mine, 2026-11-01).
-A change here changes both sides (`client/src/remote-game.ts`, `server/src/session.ts`) in the same commit and bumps
-`PROTOCOL_VERSION` in `rules/src/protocol.ts`, which both import.
+A change here changes both sides (`client/src/remote-game.ts`; `server/src/hub.ts` and `server-workers/src/hub.ts`) in
+the same commit and bumps `PROTOCOL_VERSION` in `rules/src/protocol.ts`, which all import.
 
 The server is the one owner of the world's state: it rolls every die, it applies every action, it answers with what
 happened. The client sends intents, never results. Solo play is the same client with `LocalGame` holding the state instead
@@ -19,7 +19,8 @@ happened. The client sends intents, never results. Solo play is the same client 
 | `event` | server | when another player or the world changed the state, or someone came or went | — |
 | `leave` | client | when the player signs out on purpose | the server closes the socket |
 
-And two small ones: `ping` (client) → `pong { serverTime }` (server); `error` (server) for anything refused.
+And two small ones: `ping` (client) → `pong { serverTime? }` (server; the Node server puts its time in, the Cloudflare
+runtime answers in the object's sleep without it, 2026-11-13); `error` (server) for anything refused.
 
 ## Identity: the account is the save
 
@@ -58,7 +59,7 @@ snapshot { type: 'snapshot', version, serverTime, player, token?, recovery, stat
 result   { type: 'result', action: string, version, serverTime, events, replayed: boolean, delta? }
 event    { type: 'event', version, serverTime, events, delta?, online? }
 error    { type: 'error', reason: string, action?: string }
-pong     { type: 'pong', serverTime }
+pong     { type: 'pong', serverTime? }
 ```
 
 - `snapshot` is the **whole state** with its **version** (the region's action counter), the player's own id, the
@@ -72,8 +73,8 @@ pong     { type: 'pong', serverTime }
   deltas merged, the events in order, the version the latest. `online` is in it when someone came or went. Only the
   events worth a line travel to others: joined, moved, won, died, opened, bossDown, levelled, spawned, despawned,
   questDone, traced, worldBossDown, bossLeft; a fight's blows stay with the fighter (the delta carries the pieces).
-- `serverTime` is in every answer so the client can draw its countdowns (spawns leave at `until`, spots give again at
-  their time) from the server's clock, never from a countdown sent down (rule 6). There are no turn deadlines yet: no
+- `serverTime` is in every answer (but a pong from Cloudflare) so the client can draw its countdowns (spawns leave at
+  `until`, spots give again at their time) from the server's clock, never from a countdown sent down (rule 6). There are no turn deadlines yet: no
   fight is timed (the brief: no timers, no punishment for being away).
 
 ## The delta
@@ -100,9 +101,12 @@ server's state, so a mutation in place would be caught the day it is written.
   2, 4, 8, up to 15 s between tries, forever (rule 7: never give up for good). On `visibilitychange` back to visible and on
   `pageshow` it does the same at once. After the snapshot it resends the intent that was in flight, same id: the server
   answers from its store if it had already applied it.
-- The server pings every socket every 25 s at the WebSocket level and drops one that does not answer; a dropped socket
-  takes the player off `online` and the others hear it in an `event`.
-- The world keeps moving while nobody is connected: the server ticks its region once a minute (`index.ts`).
+- The Node server pings every socket every 25 s at the WebSocket level and drops one that does not answer; the Cloudflare
+  world answers the client's pings in its sleep and its alarm drops a socket silent for 90 s. A dropped socket takes the
+  player off `online` and the others hear it in an `event`.
+- The world keeps moving while nobody is connected: the Node server ticks its region once a minute (`index.ts`); the
+  Cloudflare world once a minute while someone plays and every ten minutes otherwise, with a tick before each join
+  (`docs/state/server.md`, "The world on Cloudflare").
 
 ## Limits
 

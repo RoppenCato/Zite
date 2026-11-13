@@ -1,0 +1,22 @@
+// Zite's world on Cloudflare Workers (docs/state/server.md, "The world on Cloudflare"). Robin runs the wrangler
+// commands himself from Game Developer/: npm run world:dev (local, ws://localhost:8787), npm run world:deploy (his account).
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "zite-world",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "durable_objects": {
+    "bindings": [
+      { "name": "REGIONS", "class_name": "RegionObject" },
+      { "name": "ACCOUNTS", "class_name": "AccountsObject" }
+    ]
+  },
+  // SQLite-backed objects: the only kind the free plan has, and the kind that holds the world's rows.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RegionObject", "AccountsObject"] }],
+  "vars": {
+    // The client's address, for the front page's link; the import's secret is not here (wrangler secret put IMPORT_SECRET).
+    "SITE": "https://zite-game.pages.dev"
+  },
+  "observability": { "enabled": true },
+  "dev": { "port": 8787 }
+}

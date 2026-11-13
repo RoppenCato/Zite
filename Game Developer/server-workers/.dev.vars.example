@@ -1,0 +1,2 @@
+# Copy this file to .dev.vars (ignored by git) for wrangler dev. The import (tools/import-world.mjs) must show this secret.
+IMPORT_SECRET=change-me
