@@ -1,0 +1,23 @@
+{
+  "name": "pet_wolf",
+  "category": "fight",
+  "gain": 0.833,
+  "use": "the wolf bites: a snarl, the jaws snapping, a slap. Short, it sounds most turns.",
+  "variations": [
+    {
+      "file": "pet_wolf_1.wav",
+      "seconds": 0.157,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_wolf_2.wav",
+      "seconds": 0.134,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_wolf_3.wav",
+      "seconds": 0.149,
+      "peak_dbfs": -1
+    }
+  ]
+}

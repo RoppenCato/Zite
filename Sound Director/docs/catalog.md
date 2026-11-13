@@ -27,3 +27,4 @@
 | The Warlord's banners and shouts (7) and cues (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-10 | |
 | The Magician's Combust and Shift (2) and cues stance, both, Light (3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-11 | Robin's ear |
 | The Rogue's Night Cut (1) and cues dark, reaction (2) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-11 | Robin's ear |
+| The Hunter's talents (8), pet cues (4), sprung, stampede, pet strikes (3 x 3) | `out/sfx/talents/`, `out/sfx/fight/`, in their sprites; map in `talents/game/talent-map.json` | delivered 2026-11-13 | Robin's ear |

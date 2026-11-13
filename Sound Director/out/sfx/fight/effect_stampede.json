@@ -1,0 +1,13 @@
+{
+  "name": "effect_stampede",
+  "category": "fight",
+  "gain": 0.893,
+  "use": "Stampede, once a fight: running feet quickening, the howl, the roar and the hiss over them, then the blows land together.",
+  "variations": [
+    {
+      "file": "effect_stampede_1.wav",
+      "seconds": 0.8,
+      "peak_dbfs": -1
+    }
+  ]
+}

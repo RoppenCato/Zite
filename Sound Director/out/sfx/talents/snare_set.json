@@ -1,0 +1,13 @@
+{
+  "name": "snare_set",
+  "category": "talents",
+  "gain": 0.743,
+  "use": "Snare laid: the trap set down, the cord whipping taut, the catch.",
+  "variations": [
+    {
+      "file": "snare_set_1.wav",
+      "seconds": 0.234,
+      "peak_dbfs": -1
+    }
+  ]
+}

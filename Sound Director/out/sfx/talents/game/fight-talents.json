@@ -129,6 +129,46 @@
       "start": 16.6956,
       "end": 16.9312,
       "loop": false
+    },
+    "fight/talent-rend": {
+      "start": 16.9812,
+      "end": 17.8148,
+      "loop": false
+    },
+    "fight/talent-bleed-dry": {
+      "start": 17.8648,
+      "end": 18.7219,
+      "loop": false
+    },
+    "fight/talent-call": {
+      "start": 18.7719,
+      "end": 19.314,
+      "loop": false
+    },
+    "fight/talent-kill-command": {
+      "start": 19.364,
+      "end": 19.9768,
+      "loop": false
+    },
+    "fight/talent-snare-set": {
+      "start": 20.0268,
+      "end": 20.2612,
+      "loop": false
+    },
+    "fight/talent-fire-pot": {
+      "start": 20.3112,
+      "end": 20.8611,
+      "loop": false
+    },
+    "fight/talent-venom-trap": {
+      "start": 20.9111,
+      "end": 21.3004,
+      "loop": false
+    },
+    "fight/talent-traps-all": {
+      "start": 21.3504,
+      "end": 22.0394,
+      "loop": false
     }
   }
 }

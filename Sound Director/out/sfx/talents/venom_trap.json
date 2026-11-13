@@ -1,0 +1,13 @@
+{
+  "name": "venom_trap",
+  "category": "talents",
+  "gain": 0.743,
+  "use": "Venom Trap laid: the trap set, the catch, the venom's hiss and a drip.",
+  "variations": [
+    {
+      "file": "venom_trap_1.wav",
+      "seconds": 0.389,
+      "peak_dbfs": -1
+    }
+  ]
+}

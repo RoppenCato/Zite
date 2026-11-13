@@ -1,0 +1,13 @@
+{
+  "name": "kill_command",
+  "category": "talents",
+  "gain": 0.924,
+  "use": "Kill Command: one sharp whistle, then the bite, the swipe and the strike close together.",
+  "variations": [
+    {
+      "file": "kill_command_1.wav",
+      "seconds": 0.613,
+      "peak_dbfs": -1
+    }
+  ]
+}

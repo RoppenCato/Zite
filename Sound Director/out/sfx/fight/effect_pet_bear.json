@@ -1,0 +1,13 @@
+{
+  "name": "effect_pet_bear",
+  "category": "fight",
+  "gain": 0.453,
+  "use": "the bear comes: two heavy steps and a roar, high-passed so a phone carries it.",
+  "variations": [
+    {
+      "file": "effect_pet_bear_1.wav",
+      "seconds": 0.578,
+      "peak_dbfs": -1
+    }
+  ]
+}

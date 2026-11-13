@@ -1,0 +1,17 @@
+talents/rend
+talents/bleed_dry
+talents/call
+talents/kill_command
+talents/snare_set
+talents/fire_pot
+talents/venom_trap
+talents/traps_all
+fight/effect_pet_owl
+fight/effect_pet_wolf
+fight/effect_pet_bear
+fight/effect_pet_viper
+fight/effect_sprung
+fight/effect_stampede
+fight/pet_wolf
+fight/pet_bear
+fight/pet_viper

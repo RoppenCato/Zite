@@ -1,0 +1,13 @@
+{
+  "name": "traps_all",
+  "category": "talents",
+  "gain": 0.805,
+  "use": "Master of Snares: every trap laid at once, three set down and caught in a run, then two bells.",
+  "variations": [
+    {
+      "file": "traps_all_1.wav",
+      "seconds": 0.689,
+      "peak_dbfs": -1
+    }
+  ]
+}

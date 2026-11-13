@@ -1,0 +1,13 @@
+{
+  "name": "fire_pot",
+  "category": "talents",
+  "gain": 0.442,
+  "use": "Fire Pot laid: a clay pot set down, a fuse catching.",
+  "variations": [
+    {
+      "file": "fire_pot_1.wav",
+      "seconds": 0.55,
+      "peak_dbfs": -1
+    }
+  ]
+}

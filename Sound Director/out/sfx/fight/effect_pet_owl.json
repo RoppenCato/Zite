@@ -1,0 +1,13 @@
+{
+  "name": "effect_pet_owl",
+  "category": "fight",
+  "gain": 0.273,
+  "use": "the owl comes: wings, then a soft two-note hoot.",
+  "variations": [
+    {
+      "file": "effect_pet_owl_1.wav",
+      "seconds": 0.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

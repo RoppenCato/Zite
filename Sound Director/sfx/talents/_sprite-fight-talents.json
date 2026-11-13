@@ -157,6 +157,54 @@
    "file": "out/sfx/talents/night_cut_1.wav",
    "gain": 0.833,
    "loop": false
+  },
+  {
+   "name": "fight/talent-rend",
+   "file": "out/sfx/talents/rend_1.wav",
+   "gain": 1,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-bleed-dry",
+   "file": "out/sfx/talents/bleed_dry_1.wav",
+   "gain": 0.778,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-call",
+   "file": "out/sfx/talents/call_1.wav",
+   "gain": 0.289,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-kill-command",
+   "file": "out/sfx/talents/kill_command_1.wav",
+   "gain": 0.924,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-snare-set",
+   "file": "out/sfx/talents/snare_set_1.wav",
+   "gain": 0.743,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-fire-pot",
+   "file": "out/sfx/talents/fire_pot_1.wav",
+   "gain": 0.442,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-venom-trap",
+   "file": "out/sfx/talents/venom_trap_1.wav",
+   "gain": 0.743,
+   "loop": false
+  },
+  {
+   "name": "fight/talent-traps-all",
+   "file": "out/sfx/talents/traps_all_1.wav",
+   "gain": 0.805,
+   "loop": false
   }
  ]
 }

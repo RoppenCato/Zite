@@ -1,0 +1,13 @@
+{
+  "name": "effect_pet_wolf",
+  "category": "fight",
+  "gain": 0.273,
+  "use": "the wolf comes: a short howl and one bark.",
+  "variations": [
+    {
+      "file": "effect_pet_wolf_1.wav",
+      "seconds": 0.6,
+      "peak_dbfs": -1
+    }
+  ]
+}

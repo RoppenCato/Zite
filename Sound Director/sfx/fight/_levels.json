@@ -338,5 +338,50 @@
     "target": -3,
     "max": 0.6,
     "use": "two flasks react on the foe: the poison's hiss, then the fire catching it with a rush and a crackle."
+  },
+  "effect_pet_owl": {
+    "target": -4,
+    "max": 0.5,
+    "use": "the owl comes: wings, then a soft two-note hoot."
+  },
+  "effect_pet_wolf": {
+    "target": -3,
+    "max": 0.6,
+    "use": "the wolf comes: a short howl and one bark."
+  },
+  "effect_pet_bear": {
+    "target": -3,
+    "max": 0.6,
+    "use": "the bear comes: two heavy steps and a roar, high-passed so a phone carries it."
+  },
+  "effect_pet_viper": {
+    "target": -4,
+    "max": 0.5,
+    "use": "the viper comes: Robin's snake cry as a hiss, then a dry rattle."
+  },
+  "effect_sprung": {
+    "target": -2,
+    "max": 0.6,
+    "use": "a trap springs on the foe: the jaws snapping shut, a chain, a hit."
+  },
+  "effect_stampede": {
+    "target": -1,
+    "max": 0.8,
+    "use": "Stampede, once a fight: running feet quickening, the howl, the roar and the hiss over them, then the blows land together."
+  },
+  "pet_wolf": {
+    "target": -2,
+    "max": 0.6,
+    "use": "the wolf bites: a snarl, the jaws snapping, a slap. Short, it sounds most turns."
+  },
+  "pet_bear": {
+    "target": -2,
+    "max": 0.6,
+    "use": "the bear swipes: a heavy rush of air, a grunt and the heavy hit."
+  },
+  "pet_viper": {
+    "target": -2,
+    "max": 0.6,
+    "use": "the viper strikes: a quick hiss and a fast, light hit."
   }
 }

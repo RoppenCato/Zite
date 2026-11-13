@@ -1,0 +1,23 @@
+{
+  "name": "pet_viper",
+  "category": "fight",
+  "gain": 0.625,
+  "use": "the viper strikes: a quick hiss and a fast, light hit.",
+  "variations": [
+    {
+      "file": "pet_viper_1.wav",
+      "seconds": 0.191,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_viper_2.wav",
+      "seconds": 0.165,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_viper_3.wav",
+      "seconds": 0.187,
+      "peak_dbfs": -1
+    }
+  ]
+}

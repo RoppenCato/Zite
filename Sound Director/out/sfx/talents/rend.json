@@ -1,0 +1,13 @@
+{
+  "name": "rend",
+  "category": "talents",
+  "gain": 1,
+  "use": "Rend: an arrow that surely crits and tears, the blood starting to run.",
+  "variations": [
+    {
+      "file": "rend_1.wav",
+      "seconds": 0.834,
+      "peak_dbfs": -1
+    }
+  ]
+}

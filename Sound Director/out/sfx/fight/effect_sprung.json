@@ -1,0 +1,13 @@
+{
+  "name": "effect_sprung",
+  "category": "fight",
+  "gain": 0.76,
+  "use": "a trap springs on the foe: the jaws snapping shut, a chain, a hit.",
+  "variations": [
+    {
+      "file": "effect_sprung_1.wav",
+      "seconds": 0.339,
+      "peak_dbfs": -1
+    }
+  ]
+}

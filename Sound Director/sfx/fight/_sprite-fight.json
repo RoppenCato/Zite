@@ -493,6 +493,96 @@
    "file": "out/sfx/fight/effect_reaction_1.wav",
    "gain": 0.814,
    "loop": false
+  },
+  {
+   "name": "fight/effect-pet-owl",
+   "file": "out/sfx/fight/effect_pet_owl_1.wav",
+   "gain": 0.273,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-pet-wolf",
+   "file": "out/sfx/fight/effect_pet_wolf_1.wav",
+   "gain": 0.273,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-pet-bear",
+   "file": "out/sfx/fight/effect_pet_bear_1.wav",
+   "gain": 0.453,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-pet-viper",
+   "file": "out/sfx/fight/effect_pet_viper_1.wav",
+   "gain": 0.313,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-sprung",
+   "file": "out/sfx/fight/effect_sprung_1.wav",
+   "gain": 0.76,
+   "loop": false
+  },
+  {
+   "name": "fight/effect-stampede",
+   "file": "out/sfx/fight/effect_stampede_1.wav",
+   "gain": 0.893,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-wolf-1",
+   "file": "out/sfx/fight/pet_wolf_1.wav",
+   "gain": 0.833,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-wolf-2",
+   "file": "out/sfx/fight/pet_wolf_2.wav",
+   "gain": 0.833,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-wolf-3",
+   "file": "out/sfx/fight/pet_wolf_3.wav",
+   "gain": 0.833,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-bear-1",
+   "file": "out/sfx/fight/pet_bear_1.wav",
+   "gain": 0.677,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-bear-2",
+   "file": "out/sfx/fight/pet_bear_2.wav",
+   "gain": 0.677,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-bear-3",
+   "file": "out/sfx/fight/pet_bear_3.wav",
+   "gain": 0.677,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-viper-1",
+   "file": "out/sfx/fight/pet_viper_1.wav",
+   "gain": 0.625,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-viper-2",
+   "file": "out/sfx/fight/pet_viper_2.wav",
+   "gain": 0.625,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-viper-3",
+   "file": "out/sfx/fight/pet_viper_3.wav",
+   "gain": 0.625,
+   "loop": false
   }
  ]
 }

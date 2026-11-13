@@ -1,0 +1,23 @@
+{
+  "name": "pet_bear",
+  "category": "fight",
+  "gain": 0.677,
+  "use": "the bear swipes: a heavy rush of air, a grunt and the heavy hit.",
+  "variations": [
+    {
+      "file": "pet_bear_1.wav",
+      "seconds": 0.425,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_bear_2.wav",
+      "seconds": 0.425,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_bear_3.wav",
+      "seconds": 0.408,
+      "peak_dbfs": -1
+    }
+  ]
+}

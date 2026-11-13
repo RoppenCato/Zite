@@ -37,3 +37,5 @@
 - 2026-11-11: the Magician's reworked trees (Robin's yes, Miles, GD's ask): Combust (talent-flare) and Shift (talent-shift) for the map, the cues effect-stance, effect-both, effect-light; wiz-pillar and spl-tempest off the map. Shift's first render was 58 % low (the library's lightning is thunder): the game's own lightning instead.
 - 2026-11-11: Miles, GD has the Magician's sounds in the game; his check: 99 talents, all mapped. His choice: effect-light plays when a charge comes, not when the charges are spent.
 - 2026-11-11: the Rogue rework (Robin's yes, Miles, GD's ask): the cues effect-dark and effect-reaction; Night Cut (sha-gloom) gets its own lighter sound, talent-night-cut (mine). All passed on the first render.
+- 2026-11-11: Miles, GD has the Rogue's sounds in the game; his check: 99 talents, none missing; 546 tests pass.
+- 2026-11-13: the Hunter rebuilt (Robin's yes 2026-11-12, Miles, GD's ask): eight talent sounds, four pet cues, the sprung trap, the stampede, three pet strikes in three variations; the gone ids off the map. Renders waited a day for a playback device (the screens asleep). The stampede and the viper fixed for the phone.

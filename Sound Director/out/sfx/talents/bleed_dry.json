@@ -1,0 +1,13 @@
+{
+  "name": "bleed_dry",
+  "category": "talents",
+  "gain": 0.778,
+  "use": "Bleed Dry: all the bleeding lands at once, four wet bursts quickening, then the arrow after it.",
+  "variations": [
+    {
+      "file": "bleed_dry_1.wav",
+      "seconds": 0.857,
+      "peak_dbfs": -1
+    }
+  ]
+}

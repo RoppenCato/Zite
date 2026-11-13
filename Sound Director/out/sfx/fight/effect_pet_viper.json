@@ -1,0 +1,13 @@
+{
+  "name": "effect_pet_viper",
+  "category": "fight",
+  "gain": 0.313,
+  "use": "the viper comes: Robin's snake cry as a hiss, then a dry rattle.",
+  "variations": [
+    {
+      "file": "effect_pet_viper_1.wav",
+      "seconds": 0.5,
+      "peak_dbfs": -1
+    }
+  ]
+}

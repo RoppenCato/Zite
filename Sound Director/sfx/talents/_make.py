@@ -96,7 +96,7 @@ T = "fight/talent-"
 A = "fight/ability-"
 MAP = {
   # their own sounds, already in the game
-  **{i: A + i for i in ["heavy-blow", "execute", "shield-bash", "shield-wall", "backstab", "eviscerate", "shadowstep", "pickpocket", "arcane-shield", "fireball", "meteor", "volley", "aimed-shot", "trap", "hawk", "mark"]},
+  **{i: A + i for i in ["heavy-blow", "execute", "shield-bash", "shield-wall", "backstab", "eviscerate", "shadowstep", "pickpocket", "arcane-shield", "fireball", "meteor", "volley", "aimed-shot", "hawk", "mark"]},
   # the Knight's trees (fight and fight-talents only: fight-classes does not load for him)
   "war-valor": T + "banner-valor", "war-dread": T + "banner-dread", "war-war": T + "banner-war", "war-all": T + "banner-all",
   "war-cry": T + "war-cry", "war-hold": T + "hold", "war-roar": T + "roar",   # the Warlord, replacing the Paladin (Robin, 2026-11-10)
@@ -114,16 +114,19 @@ MAP = {
   "thousand-cuts": T + "triple-cut", "toxic-jab": A + "poison-blade",
   "poison-coat": A + "poison-blade", "bitter-end": A + "poison-blade", "caustic-flask": T + "flask", "alc-plague": T + "flask", "alc-bomb": T + "fire-small", "alc-philosopher": "fight/revive",
   # the Archer's
-  "sure-shot": A + "aimed-shot", "snare": A + "aimed-shot", "ran-pin": A + "aimed-shot", "ran-snipe": A + "aimed-shot", "ran-barrage": A + "volley", "rain-arrows": T + "arrow-rain",
-  "quick-reflex": T + "bow-ready", "return-fire": T + "bow-ready", "ran-master": T + "bow-ready", "owl-swoop": T + "owl-swoop", "bea-stoop": T + "owl-swoop", "great-owl": A + "hawk", "bea-call": A + "hawk", "bea-flock": A + "hawk", "bea-king": A + "hawk",
-  "spike-trap": A + "trap", "tra-pit": A + "trap", "tra-master": A + "trap", "tra-net": A + "snare", "tra-mine": T + "fire-small",
+  "sure-shot": A + "aimed-shot", "ran-pin": A + "aimed-shot", "ran-snipe": A + "aimed-shot", "ran-barrage": A + "volley", "rain-arrows": T + "arrow-rain",
+  # the Hunter rebuilt (Robin, 2026-11-12): pets, traps, bleeds
+  "ran-rend": T + "rend", "ran-bleed-dry": T + "bleed-dry",
+  "bea-wolf": T + "call", "bea-bear": T + "call", "bea-viper": T + "call", "bea-stampede": T + "call",   # the whistle; the cue (effect-pet-<pet>, effect-stampede) follows
+  "bea-kill": T + "kill-command", "bea-stoop": T + "owl-swoop",
+  "spike-trap": A + "trap", "snare": T + "snare-set", "tra-mine": T + "fire-pot", "tra-venom": T + "venom-trap", "tra-net": A + "snare", "tra-master": T + "traps-all",
 }
 data = json.load(open(GAME, encoding="utf-8"))
 items = data if isinstance(data, list) else data.get("abilities", [dict(id=k, **v) for k, v in data.items()])
 pressed = {x["id"] for x in items if not x.get("rule")}
 print("pressed", len(pressed), "mapped", len(MAP), "missing:", sorted(pressed - set(MAP)), "not in the game:", sorted(set(MAP) - pressed))
 used = {v for v in MAP.values() if v.startswith(T)}
-EXTRA = ["blood", "magic_power", "banner_valor", "banner_dread", "banner_war", "banner_all", "war_cry", "hold", "roar", "flare", "shift", "night_cut"]   # written outside this spec
+EXTRA = ["blood", "magic_power", "banner_valor", "banner_dread", "banner_war", "banner_all", "war_cry", "hold", "roar", "flare", "shift", "night_cut", "rend", "bleed_dry", "call", "kill_command", "snare_set", "fire_pot", "venom_trap", "traps_all"]   # written outside this spec
 fams = {T + k.replace("_", "-") for k in F} | {T + k.replace("_", "-") for k in EXTRA}                 # blood is written outside this spec (sfx/talents/blood.rb)
 assert used <= fams, used - fams
 if fams - used: print("families no talent uses now (kept in the sprite):", sorted(fams - used))

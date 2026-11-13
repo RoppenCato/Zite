@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-11T17:28:14.628Z",
+  "made": "2026-11-13T19:48:12.642Z",
   "sounds": {
     "holy_hit": {
       "files": [
@@ -315,7 +315,117 @@
       "loud_db": -11.4,
       "target_db": 1,
       "use": "Night Cut: a lighter cut than the dark cut, a quick edge and a slap, no crit; the vanish after it is the effect-dark cue.",
-      "gain": 0.833,
+      "gain": 0.833
+    },
+    "rend": {
+      "files": [
+        "rend_1.wav"
+      ],
+      "seconds": [
+        0.834
+      ],
+      "loud_db": -12.5,
+      "target_db": 2,
+      "use": "Rend: an arrow that surely crits and tears, the blood starting to run.",
+      "gain": 1,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    },
+    "bleed_dry": {
+      "files": [
+        "bleed_dry_1.wav"
+      ],
+      "seconds": [
+        0.857
+      ],
+      "loud_db": -9.8,
+      "target_db": 2,
+      "use": "Bleed Dry: all the bleeding lands at once, four wet bursts quickening, then the arrow after it.",
+      "gain": 0.778,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    },
+    "call": {
+      "files": [
+        "call_1.wav"
+      ],
+      "seconds": [
+        0.542
+      ],
+      "loud_db": -3.2,
+      "target_db": 0,
+      "use": "a pet called: the Hunter's two-note whistle, up and then falling. The pet's own cue (effect-pet-<pet>) follows it.",
+      "gain": 0.289,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "kill_command": {
+      "files": [
+        "kill_command_1.wav"
+      ],
+      "seconds": [
+        0.613
+      ],
+      "loud_db": -11.3,
+      "target_db": 2,
+      "use": "Kill Command: one sharp whistle, then the bite, the swipe and the strike close together.",
+      "gain": 0.924,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 2 dB relative to it"
+    },
+    "snare_set": {
+      "files": [
+        "snare_set_1.wav"
+      ],
+      "seconds": [
+        0.234
+      ],
+      "loud_db": -11.4,
+      "target_db": 0,
+      "use": "Snare laid: the trap set down, the cord whipping taut, the catch.",
+      "gain": 0.743,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "fire_pot": {
+      "files": [
+        "fire_pot_1.wav"
+      ],
+      "seconds": [
+        0.55
+      ],
+      "loud_db": -6.9,
+      "target_db": 0,
+      "use": "Fire Pot laid: a clay pot set down, a fuse catching.",
+      "gain": 0.442,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "venom_trap": {
+      "files": [
+        "venom_trap_1.wav"
+      ],
+      "seconds": [
+        0.389
+      ],
+      "loud_db": -11.4,
+      "target_db": 0,
+      "use": "Venom Trap laid: the trap set, the catch, the venom's hiss and a drip.",
+      "gain": 0.743,
+      "loudness": "weighted",
+      "anchor": "die_land_a_1.wav at gain 1; target 0 dB relative to it"
+    },
+    "traps_all": {
+      "files": [
+        "traps_all_1.wav"
+      ],
+      "seconds": [
+        0.689
+      ],
+      "loud_db": -11.1,
+      "target_db": 1,
+      "use": "Master of Snares: every trap laid at once, three set down and caught in a run, then two bells.",
+      "gain": 0.805,
       "loudness": "weighted",
       "anchor": "die_land_a_1.wav at gain 1; target 1 dB relative to it"
     }

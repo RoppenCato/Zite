@@ -128,5 +128,45 @@
     "target": 1,
     "max": 0.6,
     "use": "Night Cut: a lighter cut than the dark cut, a quick edge and a slap, no crit; the vanish after it is the effect-dark cue."
+  },
+  "rend": {
+    "target": 2,
+    "max": 0.9,
+    "use": "Rend: an arrow that surely crits and tears, the blood starting to run."
+  },
+  "bleed_dry": {
+    "target": 2,
+    "max": 0.9,
+    "use": "Bleed Dry: all the bleeding lands at once, four wet bursts quickening, then the arrow after it."
+  },
+  "call": {
+    "target": 0,
+    "max": 0.6,
+    "use": "a pet called: the Hunter's two-note whistle, up and then falling. The pet's own cue (effect-pet-<pet>) follows it."
+  },
+  "kill_command": {
+    "target": 2,
+    "max": 0.9,
+    "use": "Kill Command: one sharp whistle, then the bite, the swipe and the strike close together."
+  },
+  "snare_set": {
+    "target": 0,
+    "max": 0.6,
+    "use": "Snare laid: the trap set down, the cord whipping taut, the catch."
+  },
+  "fire_pot": {
+    "target": 0,
+    "max": 0.6,
+    "use": "Fire Pot laid: a clay pot set down, a fuse catching."
+  },
+  "venom_trap": {
+    "target": 0,
+    "max": 0.6,
+    "use": "Venom Trap laid: the trap set, the catch, the venom's hiss and a drip."
+  },
+  "traps_all": {
+    "target": 1,
+    "max": 0.8,
+    "use": "Master of Snares: every trap laid at once, three set down and caught in a run, then two bells."
   }
 }

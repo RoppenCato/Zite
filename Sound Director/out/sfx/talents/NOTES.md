@@ -38,3 +38,16 @@ Robin, 2026-11-11: yes to the Rogue's new talents; Miles, GD asked for two cues.
 | fight/effect-reaction | fight/effect_reaction_1.wav | trap_poison_a's hiss, fire_arrow_a's rush, the recorded burning | 0.50 s | 26 % low |
 
 Sprites: fight-talents.ogg 26 sounds, 137 KB; fight.ogg 82 sounds, 43 s, 319 KB. The map: 99 talents, none missing.
+
+# The Hunter rebuilt (2026-11-13)
+
+Robin, 2026-11-12: his design, yes to Miles, GD's talent list. Made by `sfx/talents/_make_hunter.py`. Recordings CC0: the Survival studio's sets, and its creature packs oga_creature1 and 2 (howl, barking_02, roar_04, attack_01, attack_05).
+
+Talents (fight-talents): talent-rend (ran-rend), talent-bleed-dry (ran-bleed-dry), talent-call (bea-wolf, bea-bear, bea-viper, bea-stampede: the whistle; the cue follows), talent-kill-command (bea-kill), talent-snare-set (snare), talent-fire-pot (tra-mine), talent-venom-trap (tra-venom), talent-traps-all (tra-master). Kept: bea-stoop on talent-owl-swoop, spike-trap on ability-trap, tra-net on ability-snare (Net Toss).
+
+Cues (fight): effect-pet-owl, effect-pet-wolf, effect-pet-bear, effect-pet-viper (mine: one per pet), effect-sprung, effect-stampede.
+
+Pet strikes (fight), three variations each since they sound most turns: pet-wolf-1..3 (a bite: a snarl, the trap's jaws as teeth, a slap), pet-bear-1..3 (a swipe: a heavy rush, a grunt, the heavy hit), pet-viper-1..3 (a strike: a hiss, a fast light hit).
+
+Phone: the first render of the stampede was 82 % under 250 Hz (the toms) and the viper's hiss 55 to 61 % over 4 kHz; the toms went up and high-passed, the hiss low-passed at about 3.3 kHz. All seventeen pass now.
+Sprites: fight-talents.ogg 34 sounds, 179 KB; fight.ogg 97 sounds, 49.7 s, 370 KB (the budget is 60 s). The map: 97 pressed talents, none missing.

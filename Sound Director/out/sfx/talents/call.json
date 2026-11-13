@@ -1,0 +1,13 @@
+{
+  "name": "call",
+  "category": "talents",
+  "gain": 0.289,
+  "use": "a pet called: the Hunter's two-note whistle, up and then falling. The pet's own cue (effect-pet-<pet>) follows it.",
+  "variations": [
+    {
+      "file": "call_1.wav",
+      "seconds": 0.542,
+      "peak_dbfs": -1
+    }
+  ]
+}
