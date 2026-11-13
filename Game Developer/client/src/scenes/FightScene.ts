@@ -109,7 +109,9 @@ type Body = Phaser.GameObjects.Arc | Phaser.GameObjects.Sprite | Phaser.GameObje
 
 /** The pets by the name their hits carry, and the sound an effect borrows until it has its own. */
 const PET_KINDS = new Map(Object.values(ABILITIES).flatMap((a) => (a.ranks[0]?.pet ? [[a.name, a.ranks[0].pet.kind] as const] : [])));
-const EFFECT_SOUND: Record<string, string> = { spellUp: 'attackUp', pet: 'companion', stampede: 'companion', sprung: 'trap' };
+const EFFECT_SOUND: Record<string, string> = { spellUp: 'attackUp' };
+/** The Hunter's whistle (talent-call, 0.54 s) plays at the press; the pet's cue and the stampede follow it after this long (Nigel, SD, 2026-11-13). */
+const CALL_MS = 500;
 
 export class FightScene extends Phaser.Scene {
   private combo: { move: string; at: number; n: number } | null = null;
@@ -528,8 +530,9 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
             // The foe feels it when the bolt, the star or the arrow arrives, not when it leaves.
             const react = () => {
               this.enemy?.play('hit1');
-              // A spell lands with its element's sound (Nigel, SD, 2026-11-03).
-              sfx.play(spell ? spell.sound : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+              // A spell lands with its element's sound (Nigel, SD, 2026-11-03). A ground pet's blow is its own bite, swipe or strike,
+              // crit or not (Nigel, SD's three of each, 2026-11-13; mine that the crit sound stays the arrow's); the owl's lands like an arrow.
+              sfx.play(spell ? spell.sound : petKind && petKind !== 'owl' ? `fight/pet-${petKind}` : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
               if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
               sfx.play(`creature/${this.voice}/hit`);
               this.flash(this.enemyBody, e.damage, e.crit);
@@ -605,7 +608,10 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
         break;
       case 'effect':
         // The Light sounds when a charge comes, not when it is spent: the holy hit has its own sound.
-        if (e.kind !== 'light' || e.rounds > 0) sfx.play(`fight/effect-${EFFECT_SOUND[e.kind] ?? e.kind}`);
+        // A pet's cue is its own (effect-pet-owl, -wolf, -bear, -viper); it and the stampede come after the Hunter's whistle (Nigel, SD, 2026-11-13).
+        const cue = e.kind === 'pet' ? `fight/effect-pet-${PET_KINDS.get(e.name ?? '') ?? 'owl'}` : `fight/effect-${EFFECT_SOUND[e.kind] ?? e.kind}`;
+        if (e.kind === 'pet' || e.kind === 'stampede') this.after(CALL_MS, () => sfx.play(cue));
+        else if (e.kind !== 'light' || e.rounds > 0) sfx.play(cue);
         // Magic Power rises round her feet, behind her (Mitch, AD, 2026-11-03).
         if (e.kind === 'spellUp') {
           const on = playOnce(this, 'power_on', FIGHT_LAYOUT.heroX, this.feetY, 'fx_spells');

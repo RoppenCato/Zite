@@ -409,6 +409,81 @@
       "start": 42.814,
       "end": 43.3154,
       "loop": false
+    },
+    "fight/effect-pet-owl": {
+      "start": 43.3654,
+      "end": 43.8654,
+      "loop": false
+    },
+    "fight/effect-pet-wolf": {
+      "start": 43.9154,
+      "end": 44.5154,
+      "loop": false
+    },
+    "fight/effect-pet-bear": {
+      "start": 44.5654,
+      "end": 45.1431,
+      "loop": false
+    },
+    "fight/effect-pet-viper": {
+      "start": 45.1931,
+      "end": 45.6931,
+      "loop": false
+    },
+    "fight/effect-sprung": {
+      "start": 45.7431,
+      "end": 46.0817,
+      "loop": false
+    },
+    "fight/effect-stampede": {
+      "start": 46.1317,
+      "end": 46.9317,
+      "loop": false
+    },
+    "fight/pet-wolf-1": {
+      "start": 46.9817,
+      "end": 47.1389,
+      "loop": false
+    },
+    "fight/pet-wolf-2": {
+      "start": 47.1889,
+      "end": 47.3226,
+      "loop": false
+    },
+    "fight/pet-wolf-3": {
+      "start": 47.3726,
+      "end": 47.522,
+      "loop": false
+    },
+    "fight/pet-bear-1": {
+      "start": 47.572,
+      "end": 47.9967,
+      "loop": false
+    },
+    "fight/pet-bear-2": {
+      "start": 48.0467,
+      "end": 48.4716,
+      "loop": false
+    },
+    "fight/pet-bear-3": {
+      "start": 48.5216,
+      "end": 48.9293,
+      "loop": false
+    },
+    "fight/pet-viper-1": {
+      "start": 48.9793,
+      "end": 49.1707,
+      "loop": false
+    },
+    "fight/pet-viper-2": {
+      "start": 49.2207,
+      "end": 49.3857,
+      "loop": false
+    },
+    "fight/pet-viper-3": {
+      "start": 49.4357,
+      "end": 49.6223,
+      "loop": false
     }
   }
 }
