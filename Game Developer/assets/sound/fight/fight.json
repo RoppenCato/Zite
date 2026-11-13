@@ -484,6 +484,21 @@
       "start": 49.4357,
       "end": 49.6223,
       "loop": false
+    },
+    "fight/pet-owl-1": {
+      "start": 49.6723,
+      "end": 49.8468,
+      "loop": false
+    },
+    "fight/pet-owl-2": {
+      "start": 49.8967,
+      "end": 50.0376,
+      "loop": false
+    },
+    "fight/pet-owl-3": {
+      "start": 50.0876,
+      "end": 50.2388,
+      "loop": false
     }
   }
 }

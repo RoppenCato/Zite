@@ -530,9 +530,10 @@ ${used ? 'used' : !held ? `needs ${needsWords(a?.needs)}` : `${mana} MP${cost ? 
             // The foe feels it when the bolt, the star or the arrow arrives, not when it leaves.
             const react = () => {
               this.enemy?.play('hit1');
-              // A spell lands with its element's sound (Nigel, SD, 2026-11-03). A ground pet's blow is its own bite, swipe or strike,
-              // crit or not (Nigel, SD's three of each, 2026-11-13; mine that the crit sound stays the arrow's); the owl's lands like an arrow.
-              sfx.play(spell ? spell.sound : petKind && petKind !== 'owl' ? `fight/pet-${petKind}` : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+              // A spell lands with its element's sound (Nigel, SD, 2026-11-03). A pet's blow is its own wingbeat, bite, swipe or strike
+              // (Nigel, SD's three of each, 2026-11-13), with the arrow's crit on top when it crits (his word).
+              sfx.play(spell ? spell.sound : petKind ? `fight/pet-${petKind}` : e.crit ? 'fight/crit' : e.damage >= this.enemyMaxHp * 0.15 ? 'fight/hit-heavy' : 'fight/hit-light');
+              if (petKind && e.crit) sfx.play('fight/crit');
               if (e.move === ABILITIES.meteor?.name) sfx.play('fight/meteor-land');
               sfx.play(`creature/${this.voice}/hit`);
               this.flash(this.enemyBody, e.damage, e.crit);
