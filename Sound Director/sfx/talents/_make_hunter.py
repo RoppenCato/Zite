@@ -74,6 +74,9 @@ T = {
  ("fight", "pet_viper"): ("the viper strikes: a quick hiss and a fast, light hit.", 0.7, -2, 0.6, 3,
   'with_fx :lpf, cutoff: 104 do sample S + "flesh/pain_snake_w_#{v + 1}.wav", rate: r * 1.05, amp: 0.5, attack: 0, sustain: 0.08, release: 0.05 end\n'
   'at [0.07] do sample B + "attack_05.ogg", rate: r * 1.2, amp: 0.4; sample S + "flesh/hit_w_#{v + 1}.wav", rate: r * 1.15, amp: 0.6 end'),
+ ("fight", "pet_owl"): ("the owl strikes (added 2026-11-13, mine, on Miles, GD's offer): a quick wingbeat, the talons' scratch, a light hit.", 0.7, -2, 0.6, 3,
+  'sample S + "ships/sail_flap_b_#{v + 1}.wav", rate: r * 1.9, amp: 0.5, attack: 0, sustain: 0.06, release: 0.05\n'
+  'at [0.05] do sample S + "runes/riposte_a_#{v + 1}.wav", rate: r * 1.3, amp: 0.5; sample S + "flesh/hit_w_#{v + 1}.wav", rate: r * 1.1, amp: 0.6 end'),
 }
 for k, ((sset, name), (desc, gap, target, mx, count, body)) in enumerate(T.items()):
     seed = 10400 + 10 * k

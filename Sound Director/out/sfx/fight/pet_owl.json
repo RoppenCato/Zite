@@ -1,0 +1,23 @@
+{
+  "name": "pet_owl",
+  "category": "fight",
+  "gain": 0.59,
+  "use": "the owl strikes (added 2026-11-13, mine, on Miles, GD's offer): a quick wingbeat, the talons' scratch, a light hit.",
+  "variations": [
+    {
+      "file": "pet_owl_1.wav",
+      "seconds": 0.174,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_owl_2.wav",
+      "seconds": 0.141,
+      "peak_dbfs": -1
+    },
+    {
+      "file": "pet_owl_3.wav",
+      "seconds": 0.151,
+      "peak_dbfs": -1
+    }
+  ]
+}

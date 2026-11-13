@@ -3,7 +3,7 @@
   "sample_rate": 48000,
   "channels": 1,
   "peak_dbfs": -1,
-  "made": "2026-11-13T19:48:12.749Z",
+  "made": "2026-11-13T19:55:49.249Z",
   "sounds": {
     "swing": {
       "files": [
@@ -859,9 +859,7 @@
       "loud_db": -6.7,
       "target_db": -4,
       "use": "the owl comes: wings, then a soft two-note hoot.",
-      "gain": 0.273,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+      "gain": 0.273
     },
     "effect_pet_wolf": {
       "files": [
@@ -873,9 +871,7 @@
       "loud_db": -5.7,
       "target_db": -3,
       "use": "the wolf comes: a short howl and one bark.",
-      "gain": 0.273,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+      "gain": 0.273
     },
     "effect_pet_bear": {
       "files": [
@@ -887,9 +883,7 @@
       "loud_db": -10.1,
       "target_db": -3,
       "use": "the bear comes: two heavy steps and a roar, high-passed so a phone carries it.",
-      "gain": 0.453,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -3 dB relative to it"
+      "gain": 0.453
     },
     "effect_pet_viper": {
       "files": [
@@ -901,9 +895,7 @@
       "loud_db": -7.9,
       "target_db": -4,
       "use": "the viper comes: Robin's snake cry as a hiss, then a dry rattle.",
-      "gain": 0.313,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -4 dB relative to it"
+      "gain": 0.313
     },
     "effect_sprung": {
       "files": [
@@ -915,9 +907,7 @@
       "loud_db": -13.6,
       "target_db": -2,
       "use": "a trap springs on the foe: the jaws snapping shut, a chain, a hit.",
-      "gain": 0.76,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+      "gain": 0.76
     },
     "effect_stampede": {
       "files": [
@@ -929,9 +919,7 @@
       "loud_db": -14,
       "target_db": -1,
       "use": "Stampede, once a fight: running feet quickening, the howl, the roar and the hiss over them, then the blows land together.",
-      "gain": 0.893,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -1 dB relative to it"
+      "gain": 0.893
     },
     "pet_wolf": {
       "files": [
@@ -947,9 +935,7 @@
       "loud_db": -14.4,
       "target_db": -2,
       "use": "the wolf bites: a snarl, the jaws snapping, a slap. Short, it sounds most turns.",
-      "gain": 0.833,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+      "gain": 0.833
     },
     "pet_bear": {
       "files": [
@@ -965,9 +951,7 @@
       "loud_db": -12.6,
       "target_db": -2,
       "use": "the bear swipes: a heavy rush of air, a grunt and the heavy hit.",
-      "gain": 0.677,
-      "loudness": "weighted",
-      "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
+      "gain": 0.677
     },
     "pet_viper": {
       "files": [
@@ -983,7 +967,23 @@
       "loud_db": -11.9,
       "target_db": -2,
       "use": "the viper strikes: a quick hiss and a fast, light hit.",
-      "gain": 0.625,
+      "gain": 0.625
+    },
+    "pet_owl": {
+      "files": [
+        "pet_owl_1.wav",
+        "pet_owl_2.wav",
+        "pet_owl_3.wav"
+      ],
+      "seconds": [
+        0.174,
+        0.141,
+        0.151
+      ],
+      "loud_db": -11.4,
+      "target_db": -2,
+      "use": "the owl strikes (added 2026-11-13, mine, on Miles, GD's offer): a quick wingbeat, the talons' scratch, a light hit.",
+      "gain": 0.59,
       "loudness": "weighted",
       "anchor": "die_land_a_1.wav at gain 1; target -2 dB relative to it"
     }

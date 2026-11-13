@@ -383,5 +383,10 @@
     "target": -2,
     "max": 0.6,
     "use": "the viper strikes: a quick hiss and a fast, light hit."
+  },
+  "pet_owl": {
+    "target": -2,
+    "max": 0.6,
+    "use": "the owl strikes (added 2026-11-13, mine, on Miles, GD's offer): a quick wingbeat, the talons' scratch, a light hit."
   }
 }

@@ -15,3 +15,4 @@ fight/effect_stampede
 fight/pet_wolf
 fight/pet_bear
 fight/pet_viper
+fight/pet_owl

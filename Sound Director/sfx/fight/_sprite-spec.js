@@ -6,7 +6,7 @@
 const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..', '..');
 const set = JSON.parse(fs.readFileSync(path.join(ROOT, 'out/sfx/fight/fight.json'), 'utf8')).sounds;
-const THREE = new Set(['swing', 'hit_light', 'hit_heavy', 'crit', 'miss', 'enemy_hit_light', 'enemy_hit_heavy', 'pet_wolf', 'pet_bear', 'pet_viper']);
+const THREE = new Set(['swing', 'hit_light', 'hit_heavy', 'crit', 'miss', 'enemy_hit_light', 'enemy_hit_heavy', 'pet_wolf', 'pet_bear', 'pet_viper', 'pet_owl']);
 const SPECIAL = { effect_attackup: 'fight/effect-attackUp', effect_surecrit: 'fight/effect-sureCrit', effect_valorup: 'fight/effect-valorUp', ability_heavy_blow: 'fight/ability-heavy-blow',
   ability_shield_bash: 'fight/ability-shield-bash', ability_war_cry: 'fight/ability-war-cry', ability_execute: 'fight/ability-execute',
   ability_rally: 'fight/ability-rally', ability_shield_wall: 'fight/ability-shield-wall' };

@@ -583,6 +583,24 @@
    "file": "out/sfx/fight/pet_viper_3.wav",
    "gain": 0.625,
    "loop": false
+  },
+  {
+   "name": "fight/pet-owl-1",
+   "file": "out/sfx/fight/pet_owl_1.wav",
+   "gain": 0.59,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-owl-2",
+   "file": "out/sfx/fight/pet_owl_2.wav",
+   "gain": 0.59,
+   "loop": false
+  },
+  {
+   "name": "fight/pet-owl-3",
+   "file": "out/sfx/fight/pet_owl_3.wav",
+   "gain": 0.59,
+   "loop": false
   }
  ]
 }
